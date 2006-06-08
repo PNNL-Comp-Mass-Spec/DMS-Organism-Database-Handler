@@ -1,0 +1,131 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "AppUI_OrfDBHandler", "AppUI_OrfDBHandler\AppUI_OrfDBHandler.vbproj", "{78AD9853-60BB-4B10-8FF2-418B3A21092D}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Protein_Exporter", "Protein_Exporter\Protein_Exporter.vbproj", "{A698B58B-15B8-4893-81AD-116D57B9B404}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Protein_Storage", "Protein_Storage\Protein_Storage.vbproj", "{77B1CDDC-23D8-4408-8CA3-6FA8A31A975A}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "TableManipulationBase", "TableManipulationBase\TableManipulationBase.vbproj", "{15939683-D5B9-4784-9E16-89B0C059D3C8}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CompareProteinDatabases", "CompareProteinDatabases\CompareProteinDatabases.vbproj", "{3F7269E7-6E9F-4AA5-A1A6-FD378C7CA75F}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{4F174C21-8C12-11D0-8340-0000F80270F8}") = "Protein_Sequences_Config", "Protein_Sequences_Config\Protein_Sequences_Config.dbp", "{2DEC625F-AD9B-440E-8B59-7B507D0ECEA3}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Protein_Uploader", "Protein_Uploader\Protein_Uploader.vbproj", "{8989FDEF-3CA5-42ED-B080-294CE455A72E}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ExtractAdditionalAnnotations", "ExtractAnnotationFromDescription\ExtractAdditionalAnnotations.vbproj", "{E476B943-B24F-4483-A0F1-FFE2D20B4258}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "NucleotideTranslator", "NucleotideTranslator\NucleotideTranslator.vbproj", "{3AA2CACA-0803-4A08-96A2-C1EAE0F2D832}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Protein_Importer", "Protein_Importer\Protein_Importer.vbproj", "{28D5A54E-B47D-41F3-95AB-96C4346ADE38}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "TranslationTableImport", "TranslationTableImport\TranslationTableImport.vbproj", "{85531A5F-F4DB-42EB-B597-397ADF10B0E9}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ValidateFastaFiles_Dll", "ValidateFastaFiles_NET\ValidateFastaFiles_Dll.vbproj", "{4719F96F-6CFC-4CAB-8959-35233A6505E8}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SequenceInfoCalculator", "SequenceInfoCalculator\SequenceInfoCalculator.vbproj", "{99C5D78C-00DA-49A5-BAC8-19ADFE95FABE}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{4F174C21-8C12-11D0-8340-0000F80270F8}") = "Protein_Sequences_T3_Config", "Protein_Sequences_T3_Config\Protein_Sequences_T3_Config.dbp", "{51231CAE-719C-482B-8E86-B21FC9AC259E}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "FastA_FileMaker_DLL", "FastA_FileMaker_DLL\FastA_FileMaker_DLL.vdproj", "{2D99E116-4859-4F21-9E1F-289B5A381676}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PRISMSeq_Uploader", "PRISMSeq_Uploader\PRISMSeq_Uploader.vdproj", "{D457DD97-D219-493A-9E2A-408F7B6FEED2}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{78AD9853-60BB-4B10-8FF2-418B3A21092D}.Debug.ActiveCfg = Debug|.NET
+		{78AD9853-60BB-4B10-8FF2-418B3A21092D}.Debug.Build.0 = Debug|.NET
+		{78AD9853-60BB-4B10-8FF2-418B3A21092D}.Release.ActiveCfg = Release|.NET
+		{78AD9853-60BB-4B10-8FF2-418B3A21092D}.Release.Build.0 = Release|.NET
+		{A698B58B-15B8-4893-81AD-116D57B9B404}.Debug.ActiveCfg = Debug|.NET
+		{A698B58B-15B8-4893-81AD-116D57B9B404}.Debug.Build.0 = Debug|.NET
+		{A698B58B-15B8-4893-81AD-116D57B9B404}.Release.ActiveCfg = Release|.NET
+		{A698B58B-15B8-4893-81AD-116D57B9B404}.Release.Build.0 = Release|.NET
+		{77B1CDDC-23D8-4408-8CA3-6FA8A31A975A}.Debug.ActiveCfg = Debug|.NET
+		{77B1CDDC-23D8-4408-8CA3-6FA8A31A975A}.Debug.Build.0 = Debug|.NET
+		{77B1CDDC-23D8-4408-8CA3-6FA8A31A975A}.Release.ActiveCfg = Release|.NET
+		{77B1CDDC-23D8-4408-8CA3-6FA8A31A975A}.Release.Build.0 = Release|.NET
+		{15939683-D5B9-4784-9E16-89B0C059D3C8}.Debug.ActiveCfg = Debug|.NET
+		{15939683-D5B9-4784-9E16-89B0C059D3C8}.Debug.Build.0 = Debug|.NET
+		{15939683-D5B9-4784-9E16-89B0C059D3C8}.Release.ActiveCfg = Release|.NET
+		{15939683-D5B9-4784-9E16-89B0C059D3C8}.Release.Build.0 = Release|.NET
+		{3F7269E7-6E9F-4AA5-A1A6-FD378C7CA75F}.Debug.ActiveCfg = Debug|.NET
+		{3F7269E7-6E9F-4AA5-A1A6-FD378C7CA75F}.Debug.Build.0 = Debug|.NET
+		{3F7269E7-6E9F-4AA5-A1A6-FD378C7CA75F}.Release.ActiveCfg = Release|.NET
+		{3F7269E7-6E9F-4AA5-A1A6-FD378C7CA75F}.Release.Build.0 = Release|.NET
+		{8989FDEF-3CA5-42ED-B080-294CE455A72E}.Debug.ActiveCfg = Debug|.NET
+		{8989FDEF-3CA5-42ED-B080-294CE455A72E}.Debug.Build.0 = Debug|.NET
+		{8989FDEF-3CA5-42ED-B080-294CE455A72E}.Release.ActiveCfg = Release|.NET
+		{8989FDEF-3CA5-42ED-B080-294CE455A72E}.Release.Build.0 = Release|.NET
+		{E476B943-B24F-4483-A0F1-FFE2D20B4258}.Debug.ActiveCfg = Debug|.NET
+		{E476B943-B24F-4483-A0F1-FFE2D20B4258}.Debug.Build.0 = Debug|.NET
+		{E476B943-B24F-4483-A0F1-FFE2D20B4258}.Release.ActiveCfg = Release|.NET
+		{E476B943-B24F-4483-A0F1-FFE2D20B4258}.Release.Build.0 = Release|.NET
+		{3AA2CACA-0803-4A08-96A2-C1EAE0F2D832}.Debug.ActiveCfg = Debug|.NET
+		{3AA2CACA-0803-4A08-96A2-C1EAE0F2D832}.Debug.Build.0 = Debug|.NET
+		{3AA2CACA-0803-4A08-96A2-C1EAE0F2D832}.Release.ActiveCfg = Release|.NET
+		{3AA2CACA-0803-4A08-96A2-C1EAE0F2D832}.Release.Build.0 = Release|.NET
+		{28D5A54E-B47D-41F3-95AB-96C4346ADE38}.Debug.ActiveCfg = Debug|.NET
+		{28D5A54E-B47D-41F3-95AB-96C4346ADE38}.Debug.Build.0 = Debug|.NET
+		{28D5A54E-B47D-41F3-95AB-96C4346ADE38}.Release.ActiveCfg = Release|.NET
+		{28D5A54E-B47D-41F3-95AB-96C4346ADE38}.Release.Build.0 = Release|.NET
+		{85531A5F-F4DB-42EB-B597-397ADF10B0E9}.Debug.ActiveCfg = Debug|.NET
+		{85531A5F-F4DB-42EB-B597-397ADF10B0E9}.Debug.Build.0 = Debug|.NET
+		{85531A5F-F4DB-42EB-B597-397ADF10B0E9}.Release.ActiveCfg = Release|.NET
+		{85531A5F-F4DB-42EB-B597-397ADF10B0E9}.Release.Build.0 = Release|.NET
+		{4719F96F-6CFC-4CAB-8959-35233A6505E8}.Debug.ActiveCfg = Debug|.NET
+		{4719F96F-6CFC-4CAB-8959-35233A6505E8}.Debug.Build.0 = Debug|.NET
+		{4719F96F-6CFC-4CAB-8959-35233A6505E8}.Release.ActiveCfg = Release|.NET
+		{4719F96F-6CFC-4CAB-8959-35233A6505E8}.Release.Build.0 = Release|.NET
+		{99C5D78C-00DA-49A5-BAC8-19ADFE95FABE}.Debug.ActiveCfg = Debug|.NET
+		{99C5D78C-00DA-49A5-BAC8-19ADFE95FABE}.Debug.Build.0 = Debug|.NET
+		{99C5D78C-00DA-49A5-BAC8-19ADFE95FABE}.Release.ActiveCfg = Release|.NET
+		{99C5D78C-00DA-49A5-BAC8-19ADFE95FABE}.Release.Build.0 = Release|.NET
+		{2D99E116-4859-4F21-9E1F-289B5A381676}.Debug.ActiveCfg = Debug
+		{2D99E116-4859-4F21-9E1F-289B5A381676}.Release.ActiveCfg = Release
+		{2D99E116-4859-4F21-9E1F-289B5A381676}.Release.Build.0 = Release
+		{D457DD97-D219-493A-9E2A-408F7B6FEED2}.Debug.ActiveCfg = Debug
+		{D457DD97-D219-493A-9E2A-408F7B6FEED2}.Release.ActiveCfg = Release
+		{D457DD97-D219-493A-9E2A-408F7B6FEED2}.Release.Build.0 = Release
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

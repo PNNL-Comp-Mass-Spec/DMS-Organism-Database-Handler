@@ -1,0 +1,20 @@
+# Microsoft Developer Studio Project File - Database Project
+Begin DataProject = "Protein_Sequences_T3_Config"
+   MSDTVersion = "70"
+   DefDBRef = "gigasax.Protein_Sequences_T3.dbo"
+   Begin Folder = "Change Scripts"
+      Script = "ClearAllData.sql"
+      Script = "ResetIndices.sql"
+      Script = "Script1.sql"
+   End
+   Begin Folder = "Create Scripts"
+   End
+   Begin DBRefFolder = "Database References"
+      Begin DBRefNode = "gigasax.Protein_Sequences_T3.dbo"
+         ConnectStr = "Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=Protein_Sequences_T3;Data Source=gigasax;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=wd37348;Use Encryption for Data=False;Tag with column collation when possible=False"
+         Colorizer = 5
+      End
+   End
+   Begin Folder = "Queries"
+   End
+End

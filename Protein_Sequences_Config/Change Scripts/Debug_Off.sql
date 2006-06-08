@@ -1,0 +1,1 @@
+Exec sp_sdidebug 'legacy_off'  
