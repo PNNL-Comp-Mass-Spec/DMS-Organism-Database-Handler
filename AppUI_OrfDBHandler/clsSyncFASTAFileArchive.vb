@@ -253,6 +253,29 @@ Public Class clsSyncFASTAFileArchive
 
     End Sub
 
+    Sub FixArchivedFilePaths()
+        If Me.m_TableGetter Is Nothing Then
+            Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString)
+        End If
+
+        Dim SelectSQL As String
+        SelectSQL = "SELECT * FROM T_Temp_Archive_Path_Fix"
+
+        Dim tmpTable As DataTable = Me.m_TableGetter.GetTable(SelectSQL)
+
+        Dim dr As DataRow
+        Dim tmpOldPath As String
+        Dim tmpNewPath As String
+
+        For Each dr In tmpTable.Rows
+            tmpOldPath = dr.Item("Archived_File_Path").ToString
+            tmpNewPath = dr.Item("Newpath").ToString
+
+            Rename(tmpOldPath, tmpNewPath)
+        Next
+
+    End Sub
+
     Sub CorrectMasses()
 
         Dim proteinList As New Hashtable

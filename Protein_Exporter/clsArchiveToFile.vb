@@ -11,7 +11,6 @@ Public Class clsArchiveToFile
 
     End Sub
 
-
     Protected Overrides Function DispositionFile( _
         ByVal ProteinCollectionID As Integer, _
         ByVal SourceFilePath As String, _
@@ -31,6 +30,7 @@ Public Class clsArchiveToFile
         Dim destFI As System.IO.FileInfo
         Dim di As System.IO.DirectoryInfo
 
+        Dim proteinCount As Integer = Me.GetProteinCount(SourceFilePath)
 
         archivePath = Me.GenerateArchivePath( _
             SourceFilePath, ProteinCollectionID, _
@@ -61,16 +61,23 @@ Public Class clsArchiveToFile
             '    OutputSequenceType), archivePath, _
             '    [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
             ArchivedFileEntryID = Me.RunSP_AddOutputFileArchiveEntry( _
-                ProteinCollectionID, CreationOptionsString, SourceAuthenticationHash, fi.LastWriteTime, fi.Length, _
+                ProteinCollectionID, CreationOptionsString, SourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount, _
                  archivePath, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
 
+            Dim newPath As String = Replace(archivePath, "_00000_", "_" + Format(ArchivedFileEntryID, "000000") + "_")
 
 
+            Rename(archivePath, newPath)
+
+            Me.m_Archived_File_Name = System.IO.Path.GetFileName(newPath)
 
         Catch ex As Exception
             Me.m_LastError = "Stored Procedure Runner error: " + ex.Message
             Return 0
         End Try
+
+        fi = Nothing
+        destFI = Nothing
 
         Return ArchivedFileEntryID
 
@@ -128,8 +135,10 @@ Public Class clsArchiveToFile
     ByVal Authentication_Hash As String, _
     ByVal FileModificationDate As DateTime, _
     ByVal OutputFileSize As Int64, _
+    ByVal ProteinCount As Integer, _
     ByVal ArchivedFileFullPath As String, _
     ByVal ArchivedFileType As String) As Integer
+
 
 
         Dim sp_Save As SqlClient.SqlCommand
@@ -161,6 +170,10 @@ Public Class clsArchiveToFile
         myParam = sp_Save.Parameters.Add("@file_size", SqlDbType.BigInt)
         myParam.Direction = ParameterDirection.Input
         myParam.Value = OutputFileSize
+
+        myParam = sp_Save.Parameters.Add("@protein_count", SqlDbType.Int)
+        myParam.Direction = ParameterDirection.Input
+        myParam.Value = ProteinCount
 
         myParam = sp_Save.Parameters.Add("@archived_file_path", SqlDbType.VarChar, 250)
         myParam.Direction = ParameterDirection.Input

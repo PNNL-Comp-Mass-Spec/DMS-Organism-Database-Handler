@@ -231,10 +231,12 @@ Public Class clsGetFASTAFromDMS
         ByVal OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes) As String '_
 
         Dim CollectionName As String
-
+        Dim FinalOutputPath As String
 
         Dim SHA1 As String
         Dim tmpID As Integer
+        Dim destFI As System.IO.FileInfo
+        Dim finalFI As System.IO.FileInfo
 
         Me.ClassSelector(Me.m_PSConnectionString, DatabaseFormatType, OutputSequenceType)
 
@@ -268,7 +270,19 @@ Public Class clsGetFASTAFromDMS
             counter += 1
         Next
 
+        destFI = New System.IO.FileInfo(Me.m_FinalOutputPath)
+
+        FinalOutputPath = System.IO.Path.Combine(ExportPath, Me.m_Archiver.Archived_File_Name)
+        finalFI = New System.IO.FileInfo(FinalOutputPath)
+        If Not finalFI.Exists Then
+            destFI.CopyTo(FinalOutputPath)
+            destFI.Delete()
+        End If
+
+        Me.OnTaskCompletion(FinalOutputPath)
         Return SHA1
+
+
 
     End Function
 
@@ -278,12 +292,16 @@ Public Class clsGetFASTAFromDMS
     Protected Event FileGenerationStarted(ByVal taskMsg As String) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationStarted
 
     Private Sub OnFileGenerationCompleted(ByVal FullOutputPath As String) Handles m_Getter.FileGenerationCompleted
-        RaiseEvent FileGenerationCompleted(FullOutputPath)
+        'RaiseEvent FileGenerationCompleted(FullOutputPath)
         If Me.m_ArchiveCollectionList Is Nothing Then
             Me.m_ArchiveCollectionList = New ArrayList
         End If
         Me.m_ArchiveCollectionList.Add(System.IO.Path.GetFileName(FullOutputPath))
         Me.m_FinalOutputPath = FullOutputPath
+    End Sub
+
+    Private Sub OnTaskCompletion(ByVal FinalOutputPath As String)
+        RaiseEvent FileGenerationCompleted(FinalOutputPath)
     End Sub
 
 #Region " Pass-Through Functionality "

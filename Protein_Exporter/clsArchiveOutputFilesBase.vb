@@ -6,6 +6,7 @@ Public MustInherit Class clsArchiveOutputFilesBase
     Protected m_PSConnectionString As String
     Protected m_LastError As String
     Protected m_OutputSequenceType As Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes
+    Protected m_Archived_File_Name As String
 
     Protected Event ArchiveStart() Implements IArchiveOutputFiles.ArchiveStart
     Protected Event SubTaskStart(ByVal TaskDescription As String) Implements IArchiveOutputFiles.SubTaskStart
@@ -27,6 +28,13 @@ Public MustInherit Class clsArchiveOutputFilesBase
             Return Me.m_LastError
         End Get
     End Property
+
+    Protected ReadOnly Property Archived_File_Name() As String Implements IArchiveOutputFiles.Archived_File_Name
+        Get
+            Return Me.m_Archived_File_Name
+        End Get
+    End Property
+
 
     Protected Function ArchiveCollection( _
         ByVal ProteinCollectionID As Integer, _
@@ -102,6 +110,33 @@ Public MustInherit Class clsArchiveOutputFilesBase
         ByVal OutputSequenceType As Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes, _
         ByVal ArchivedFileType As IArchiveOutputFiles.CollectionTypes) As Integer
 
+    Protected Function GetProteinCount(ByVal SourceFilePath As String) As Integer
+        Dim idLineRegex As System.Text.RegularExpressions.Regex
+        idLineRegex = New System.Text.RegularExpressions.Regex("^>.*", System.Text.RegularExpressions.RegexOptions.Compiled)
+
+        Dim s As String
+        Dim fi As System.IO.FileInfo
+        Dim tr As System.IO.TextReader
+        Dim counter As Integer = 0
+
+        fi = New System.IO.FileInfo(SourceFilePath)
+        If (fi.Exists) Then
+            tr = fi.OpenText
+            s = tr.ReadLine
+            While Not s Is Nothing
+                If idLineRegex.IsMatch(s) Then
+                    counter += 1
+                End If
+                s = tr.ReadLine
+            End While
+        End If
+
+        tr.Close()
+        fi = Nothing
+
+        Return counter
+
+    End Function
 
     Protected Sub CheckTableGetterStatus()
         If Me.m_TableGetter Is Nothing Then

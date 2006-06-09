@@ -118,6 +118,7 @@ Public Class clsExportProteinsFASTA
             destinationPath = newDestinationPath
         End If
         fi = Nothing
+        copyFI = Nothing
 
         Me.OnExportEnd()
 

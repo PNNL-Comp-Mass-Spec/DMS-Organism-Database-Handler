@@ -92,6 +92,7 @@ Public Class frmCollectionEditor
     Friend WithEvents MenuItem3 As System.Windows.Forms.MenuItem
     Friend WithEvents MenuItem4 As System.Windows.Forms.MenuItem
     Friend WithEvents MenuItem5 As System.Windows.Forms.MenuItem
+    Friend WithEvents MenuItem6 As System.Windows.Forms.MenuItem
 
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -147,12 +148,13 @@ Public Class frmCollectionEditor
         Me.MenuItem1 = New System.Windows.Forms.MenuItem
         Me.MenuItem2 = New System.Windows.Forms.MenuItem
         Me.MenuItem3 = New System.Windows.Forms.MenuItem
+        Me.MenuItem5 = New System.Windows.Forms.MenuItem
         Me.mnuHelp = New System.Windows.Forms.MenuItem
         Me.mnuHelpAbout = New System.Windows.Forms.MenuItem
         Me.lblBatchProgress = New System.Windows.Forms.Label
         Me.VisualStyleProvider1 = New Skybound.VisualStyles.VisualStyleProvider
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog
-        Me.MenuItem5 = New System.Windows.Forms.MenuItem
+        Me.MenuItem6 = New System.Windows.Forms.MenuItem
         Me.gbxSourceCollection.SuspendLayout()
         Me.gbxDestinationCollection.SuspendLayout()
         Me.SuspendLayout()
@@ -299,7 +301,7 @@ Public Class frmCollectionEditor
         Me.lvwSource.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colSrcName, Me.colSrcDesc})
         Me.lvwSource.FullRowSelect = True
         Me.lvwSource.GridLines = True
-        Me.lvwSource.Location = New System.Drawing.Point(14, 110)
+        Me.lvwSource.Location = New System.Drawing.Point(14, 111)
         Me.lvwSource.Name = "lvwSource"
         Me.lvwSource.Size = New System.Drawing.Size(442, 362)
         Me.lvwSource.TabIndex = 2
@@ -360,7 +362,7 @@ Public Class frmCollectionEditor
         'cmdSaveDestCollection
         '
         Me.cmdSaveDestCollection.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdSaveDestCollection.Location = New System.Drawing.Point(134, 482)
+        Me.cmdSaveDestCollection.Location = New System.Drawing.Point(134, 483)
         Me.cmdSaveDestCollection.Name = "cmdSaveDestCollection"
         Me.cmdSaveDestCollection.Size = New System.Drawing.Size(114, 23)
         Me.cmdSaveDestCollection.TabIndex = 1
@@ -374,7 +376,7 @@ Public Class frmCollectionEditor
         Me.lvwDestination.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colName})
         Me.lvwDestination.FullRowSelect = True
         Me.lvwDestination.GridLines = True
-        Me.lvwDestination.Location = New System.Drawing.Point(14, 46)
+        Me.lvwDestination.Location = New System.Drawing.Point(14, 47)
         Me.lvwDestination.Name = "lvwDestination"
         Me.lvwDestination.Size = New System.Drawing.Size(232, 426)
         Me.lvwDestination.TabIndex = 0
@@ -542,7 +544,7 @@ Public Class frmCollectionEditor
         'mnuAdmin
         '
         Me.mnuAdmin.Index = 2
-        Me.mnuAdmin.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.MenuItem4, Me.mnuAdminNameHashRefresh, Me.MenuItem1, Me.MenuItem2, Me.MenuItem3, Me.MenuItem5})
+        Me.mnuAdmin.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.MenuItem4, Me.mnuAdminNameHashRefresh, Me.MenuItem1, Me.MenuItem2, Me.MenuItem3, Me.MenuItem5, Me.MenuItem6})
         Me.mnuAdmin.Text = "Admin"
         '
         'MenuItem4
@@ -570,6 +572,11 @@ Public Class frmCollectionEditor
         Me.MenuItem3.Index = 4
         Me.MenuItem3.Text = "Update Zeroed Masses"
         '
+        'MenuItem5
+        '
+        Me.MenuItem5.Index = 5
+        Me.MenuItem5.Text = "Testing Interface Window..."
+        '
         'mnuHelp
         '
         Me.mnuHelp.Index = 3
@@ -592,10 +599,10 @@ Public Class frmCollectionEditor
         Me.lblBatchProgress.TextAlign = System.Drawing.ContentAlignment.TopRight
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblBatchProgress, True)
         '
-        'MenuItem5
+        'MenuItem6
         '
-        Me.MenuItem5.Index = 5
-        Me.MenuItem5.Text = "Testing Interface Window..."
+        Me.MenuItem6.Index = 6
+        Me.MenuItem6.Text = "Fix Archive Path Names"
         '
         'frmCollectionEditor
         '
@@ -1566,5 +1573,14 @@ Public Class frmCollectionEditor
     Private Sub MenuItem5_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuItem5.Click
         Dim frmTesting As New frmTestingInterface
         frmTesting.Show()
+    End Sub
+
+    Private Sub MenuItem6_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuItem6.Click
+        If Me.m_Syncer Is Nothing Then
+            Me.m_Syncer = New clsSyncFASTAFileArchive(Me.m_PSConnectionString)
+        End If
+
+        Me.m_Syncer.FixArchivedFilePaths()
+
     End Sub
 End Class

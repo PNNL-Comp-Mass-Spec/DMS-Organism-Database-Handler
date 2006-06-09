@@ -478,7 +478,7 @@ Public Class frmTestingInterface
             'fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "HCMV_2003+H_sapiens_IPI_2005-04-04.fasta", filePath)
             'fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "HelaNuc_GT50_2003-09-09.fasta", filePath)
             'fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=forward,filetype=fasta", "na", filePath)
-            fingerprint = Me.m_Exporter.ExportFASTAFile("Shewanella_2003-12-19,MP_06_01", "seq_direction=forward,filetype=fasta", "na", filePath)
+            fingerprint = Me.m_Exporter.ExportFASTAFile("MP_06_01,GDR_2000-03-21", "seq_direction=forward,filetype=fasta", "na", filePath)
             'fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=reversed,filetype=fasta", "na", filePath)
 
             'fingerprint = exporter.ExportFASTAFile(CInt(Me.cboCollectionsList.SelectedValue), filePath)

@@ -6,6 +6,7 @@ Public Interface IArchiveOutputFiles
     End Enum
 
     ReadOnly Property LastErrorMessage() As String
+    ReadOnly Property Archived_File_Name() As String
 
     Event ArchiveStart()
     Event SubTaskStart(ByVal TaskDescription As String)

@@ -70,6 +70,11 @@
                     AssemblyName = "System.Xml"
                 />
                 <Reference
+                    Name = "System.Windows.Forms"
+                    AssemblyName = "System.Windows.Forms"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Windows.Forms.dll"
+                />
+                <Reference
                     Name = "PRISM"
                     AssemblyName = "PRISM"
                     HintPath = "bin\PRISM.dll"
@@ -77,12 +82,7 @@
                 <Reference
                     Name = "SharedVBNetRoutines"
                     AssemblyName = "SharedVBNetRoutines"
-                    HintPath = "..\SharedVBNetRoutines\bin\SharedVBNetRoutines.dll"
-                />
-                <Reference
-                    Name = "System.Windows.Forms"
-                    AssemblyName = "System.Windows.Forms"
-                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Windows.Forms.dll"
+                    HintPath = "bin\SharedVBNetRoutines.dll"
                 />
             </References>
             <Imports>
