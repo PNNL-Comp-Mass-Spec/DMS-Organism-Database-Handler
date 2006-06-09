@@ -189,6 +189,8 @@ Public Class clsGetFASTAFromDMS
                     End If
                     fi.CopyTo(System.IO.Path.Combine(ExportPath, LegacyFASTAFileName))
                     Me.OnFileGenerationCompleted(System.IO.Path.Combine(ExportPath, LegacyFASTAFileName))
+                    Me.OnTaskCompletion(System.IO.Path.Combine(ExportPath, LegacyFASTAFileName))
+
                     Return sha1
                 End If
 
@@ -272,7 +274,7 @@ Public Class clsGetFASTAFromDMS
 
         destFI = New System.IO.FileInfo(Me.m_FinalOutputPath)
 
-        FinalOutputPath = System.IO.Path.Combine(ExportPath, Me.m_Archiver.Archived_File_Name)
+        FinalOutputPath = System.IO.Path.Combine(ExportPath, System.IO.Path.GetFileName(Me.m_Archiver.Archived_File_Name))
         finalFI = New System.IO.FileInfo(FinalOutputPath)
         If Not finalFI.Exists Then
             destFI.CopyTo(FinalOutputPath)

@@ -150,7 +150,7 @@ Public MustInherit Class clsArchiveOutputFilesBase
         ByVal CreationOptionsString As String) As Integer
 
         Dim SQL As String
-        SQL = "SELECT Archived_File_ID " & _
+        SQL = "SELECT Archived_File_ID,  Archived_File_Path " & _
                 "FROM V_Archived_Output_Files " & _
                 "WHERE Authentication_Hash = '" & Authentication_Hash & "' AND " & _
                         "Archived_File_Type = '" & _
@@ -161,7 +161,8 @@ Public MustInherit Class clsArchiveOutputFilesBase
         dt = Me.m_TableGetter.GetTable(SQL)
 
         If dt.Rows.Count > 0 Then
-            Return CInt(dt.Rows(0).Item(0))
+            Me.m_Archived_File_Name = dt.Rows(0).Item("Archived_File_Path").ToString
+            Return CInt(dt.Rows(0).Item("Archived_File_ID"))
         Else
             Return 0
         End If

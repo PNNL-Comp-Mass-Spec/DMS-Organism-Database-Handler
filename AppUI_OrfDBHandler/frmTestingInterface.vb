@@ -476,9 +476,9 @@ Public Class frmTestingInterface
             '    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward)
             Me.m_Exporter = New Protein_Exporter.clsGetFASTAFromDMS(Me.txtConnString.Text)
             'fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "HCMV_2003+H_sapiens_IPI_2005-04-04.fasta", filePath)
-            'fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "HelaNuc_GT50_2003-09-09.fasta", filePath)
+            fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "H_sapiens_IPI_2005-04-04_fwd_and_rev.fasta", filePath)
             'fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=forward,filetype=fasta", "na", filePath)
-            fingerprint = Me.m_Exporter.ExportFASTAFile("MP_06_01,GDR_2000-03-21", "seq_direction=forward,filetype=fasta", "na", filePath)
+            'fingerprint = Me.m_Exporter.ExportFASTAFile("PCQ_ETJ_2004-01-21", "seq_direction=forward,filetype=fasta", "na", filePath)
             'fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=reversed,filetype=fasta", "na", filePath)
 
             'fingerprint = exporter.ExportFASTAFile(CInt(Me.cboCollectionsList.SelectedValue), filePath)
