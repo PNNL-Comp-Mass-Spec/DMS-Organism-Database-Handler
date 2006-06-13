@@ -149,12 +149,12 @@ Public Class frmCollectionEditor
         Me.MenuItem2 = New System.Windows.Forms.MenuItem
         Me.MenuItem3 = New System.Windows.Forms.MenuItem
         Me.MenuItem5 = New System.Windows.Forms.MenuItem
+        Me.MenuItem6 = New System.Windows.Forms.MenuItem
         Me.mnuHelp = New System.Windows.Forms.MenuItem
         Me.mnuHelpAbout = New System.Windows.Forms.MenuItem
         Me.lblBatchProgress = New System.Windows.Forms.Label
         Me.VisualStyleProvider1 = New Skybound.VisualStyles.VisualStyleProvider
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog
-        Me.MenuItem6 = New System.Windows.Forms.MenuItem
         Me.gbxSourceCollection.SuspendLayout()
         Me.gbxDestinationCollection.SuspendLayout()
         Me.SuspendLayout()
@@ -301,7 +301,7 @@ Public Class frmCollectionEditor
         Me.lvwSource.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colSrcName, Me.colSrcDesc})
         Me.lvwSource.FullRowSelect = True
         Me.lvwSource.GridLines = True
-        Me.lvwSource.Location = New System.Drawing.Point(14, 111)
+        Me.lvwSource.Location = New System.Drawing.Point(14, 112)
         Me.lvwSource.Name = "lvwSource"
         Me.lvwSource.Size = New System.Drawing.Size(442, 362)
         Me.lvwSource.TabIndex = 2
@@ -362,7 +362,7 @@ Public Class frmCollectionEditor
         'cmdSaveDestCollection
         '
         Me.cmdSaveDestCollection.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdSaveDestCollection.Location = New System.Drawing.Point(134, 483)
+        Me.cmdSaveDestCollection.Location = New System.Drawing.Point(134, 484)
         Me.cmdSaveDestCollection.Name = "cmdSaveDestCollection"
         Me.cmdSaveDestCollection.Size = New System.Drawing.Size(114, 23)
         Me.cmdSaveDestCollection.TabIndex = 1
@@ -376,7 +376,7 @@ Public Class frmCollectionEditor
         Me.lvwDestination.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colName})
         Me.lvwDestination.FullRowSelect = True
         Me.lvwDestination.GridLines = True
-        Me.lvwDestination.Location = New System.Drawing.Point(14, 47)
+        Me.lvwDestination.Location = New System.Drawing.Point(14, 48)
         Me.lvwDestination.Name = "lvwDestination"
         Me.lvwDestination.Size = New System.Drawing.Size(232, 426)
         Me.lvwDestination.TabIndex = 0
@@ -559,11 +559,13 @@ Public Class frmCollectionEditor
         '
         'MenuItem1
         '
+        Me.MenuItem1.Enabled = False
         Me.MenuItem1.Index = 2
         Me.MenuItem1.Text = "Update File Authentication Hashes"
         '
         'MenuItem2
         '
+        Me.MenuItem2.Enabled = False
         Me.MenuItem2.Index = 3
         Me.MenuItem2.Text = "Update Collections Archive"
         '
@@ -576,6 +578,12 @@ Public Class frmCollectionEditor
         '
         Me.MenuItem5.Index = 5
         Me.MenuItem5.Text = "Testing Interface Window..."
+        '
+        'MenuItem6
+        '
+        Me.MenuItem6.Enabled = False
+        Me.MenuItem6.Index = 6
+        Me.MenuItem6.Text = "Fix Archive Path Names"
         '
         'mnuHelp
         '
@@ -598,11 +606,6 @@ Public Class frmCollectionEditor
         Me.lblBatchProgress.TabIndex = 14
         Me.lblBatchProgress.TextAlign = System.Drawing.ContentAlignment.TopRight
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblBatchProgress, True)
-        '
-        'MenuItem6
-        '
-        Me.MenuItem6.Index = 6
-        Me.MenuItem6.Text = "Fix Archive Path Names"
         '
         'frmCollectionEditor
         '

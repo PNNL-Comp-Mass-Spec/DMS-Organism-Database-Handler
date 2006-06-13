@@ -29,12 +29,32 @@ Public Class clsArchiveToFile
         Dim fi As System.IO.FileInfo = New System.IO.FileInfo(SourceFilePath)
         Dim destFI As System.IO.FileInfo
         Dim di As System.IO.DirectoryInfo
+        Dim finalFI As System.IO.FileInfo
+        Dim proteinCount As Integer
 
-        Dim proteinCount As Integer = Me.GetProteinCount(SourceFilePath)
+        'Check for existence of Archive Entry
+        Dim checkSQL As String = "SELECT Top 1 Archived_File_ID " & _
+                                 "FROM T_Archived_Output_Files " & _
+                                 "WHERE Authentication_Hash = '" & SourceAuthenticationHash & "'"
+
+        Dim tmptable As DataTable = Me.m_TableGetter.GetTable(checkSQL)
+
+        If tmptable.Rows.Count = 0 Then
+            proteinCount = Me.GetProteinCount(SourceFilePath)
+
+            ArchivedFileEntryID = Me.RunSP_AddOutputFileArchiveEntry( _
+                ProteinCollectionID, CreationOptionsString, SourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount, _
+                archivePath, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
+        Else
+            ArchivedFileEntryID = CInt(tmptable.Rows(0).Item("Archived_File_ID"))
+        End If
+
+
 
         archivePath = Me.GenerateArchivePath( _
             SourceFilePath, ProteinCollectionID, _
-            fi.LastWriteTime, SourceAuthenticationHash, _
+            ArchivedFileEntryID, fi.LastWriteTime, _
+            SourceAuthenticationHash, _
             ArchivedFileType, OutputSequenceType)
 
         Try
@@ -60,16 +80,21 @@ Public Class clsArchiveToFile
             '    [Enum].GetName(GetType(Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes), _
             '    OutputSequenceType), archivePath, _
             '    [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
-            ArchivedFileEntryID = Me.RunSP_AddOutputFileArchiveEntry( _
-                ProteinCollectionID, CreationOptionsString, SourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount, _
-                 archivePath, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
+            'ArchivedFileEntryID = Me.RunSP_AddOutputFileArchiveEntry( _
+            '    ProteinCollectionID, CreationOptionsString, SourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount, _
+            '     archivePath, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
 
-            Dim newPath As String = Replace(archivePath, "_00000_", "_" + Format(ArchivedFileEntryID, "000000") + "_")
+            'Dim newPath As String = Replace(archivePath, "_00000_", "_" + Format(ArchivedFileEntryID, "000000") + "_")
 
+            'finalFI = New System.IO.FileInfo(newPath)
 
-            Rename(archivePath, newPath)
+            'If Not finalFI.Exists Then
+            '    Rename(archivePath, newPath)
+            'Else
+            '    Kill(archivePath)
+            'End If
 
-            Me.m_Archived_File_Name = System.IO.Path.GetFileName(newPath)
+            Me.m_Archived_File_Name = System.IO.Path.GetFileName(archivePath)
 
         Catch ex As Exception
             Me.m_LastError = "Stored Procedure Runner error: " + ex.Message
@@ -103,6 +128,7 @@ Public Class clsArchiveToFile
     Protected Function GenerateArchivePath( _
         ByVal SourceFilePath As String, _
         ByVal ProteinCollectionID As Integer, _
+        ByVal ArchivedFileEntryID As Integer, _
         ByVal FileDate As DateTime, _
         ByVal Authentication_Hash As String, _
         ByVal ArchivedFileType As IArchiveOutputFiles.CollectionTypes, _
@@ -111,8 +137,8 @@ Public Class clsArchiveToFile
         Dim pathString As String
         pathString = System.IO.Path.Combine(Me.BASE_ARCHIVE_PATH, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
         pathString = System.IO.Path.Combine(pathString, [Enum].GetName(GetType(Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes), OutputSequenceType))
-        pathString = System.IO.Path.Combine(pathString, "ID_00000_" + Authentication_Hash + System.IO.Path.GetExtension(SourceFilePath))
-        'pathString = System.IO.Path.Combine(pathString, "ID_" & Format(ProteinCollectionID, "00000") + "_" + Authentication_Hash + System.IO.Path.GetExtension(SourceFilePath))
+        'pathString = System.IO.Path.Combine(pathString, "ID_00000_" + Authentication_Hash + System.IO.Path.GetExtension(SourceFilePath))
+        pathString = System.IO.Path.Combine(pathString, "ID_" & Format(ArchivedFileEntryID, "000000") + "_" + Authentication_Hash + System.IO.Path.GetExtension(SourceFilePath))
 
         Return pathString
 
