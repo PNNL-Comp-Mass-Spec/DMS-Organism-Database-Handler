@@ -163,6 +163,7 @@ Public Class clsGetFASTAFromDMS
                 If collectionList Is Nothing Then
                     collectionList = New ArrayList(1)
                 End If
+                CreationOptions = "seq_direction=forward,filetype=fasta"
                 collectionList.Add(legacyCollectionName)
                 Return Me.ExportMultipleFASTAFiles( _
                     collectionList, CreationOptions, _
