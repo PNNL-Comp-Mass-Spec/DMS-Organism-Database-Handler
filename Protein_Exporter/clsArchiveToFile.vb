@@ -5,9 +5,10 @@ Public Class clsArchiveToFile
     'Const BASE_ARCHIVE_PATH As String = "D:\outbox\output_test\archive\"
 
 
-    Sub New(ByVal PSConnectionString As String)
+    Sub New(ByVal PSConnectionString As String, ByRef ExporterModule As Protein_Exporter.clsGetFASTAFromDMS)
 
-        MyBase.New(PSConnectionString)
+
+        MyBase.New(PSConnectionString, ExporterModule)
 
     End Sub
 
@@ -24,6 +25,7 @@ Public Class clsArchiveToFile
         Me.CheckTableGetterStatus()
 
         Dim ArchivedFileEntryID As Integer = 0
+
 
         Dim archivePath As String
         Dim fi As System.IO.FileInfo = New System.IO.FileInfo(SourceFilePath)
@@ -44,31 +46,33 @@ Public Class clsArchiveToFile
 
             archivePath = Me.GenerateArchivePath( _
                 SourceFilePath, ProteinCollectionID, _
-                 fi.LastWriteTime, _
+                fi.LastWriteTime, _
                 SourceAuthenticationHash, _
                 ArchivedFileType, OutputSequenceType)
 
             ArchivedFileEntryID = Me.RunSP_AddOutputFileArchiveEntry( _
                 ProteinCollectionID, CreationOptionsString, SourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount, _
                 archivePath, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
+            tmptable = Me.m_TableGetter.GetTable(checkSQL)
 
         Else
             ArchivedFileEntryID = CInt(tmptable.Rows(0).Item("Archived_File_ID"))
-            Me.m_Archived_File_Name = System.IO.Path.GetFileName(tmptable.Rows(0).Item("Archived_File_Path").ToString)
         End If
+
+        Me.m_Archived_File_Name = tmptable.Rows(0).Item("Archived_File_Path").ToString
 
 
 
 
         Try
-            di = New System.IO.DirectoryInfo(System.IO.Path.GetDirectoryName(archivePath))
-            destFI = New System.IO.FileInfo(archivePath)
+            di = New System.IO.DirectoryInfo(System.IO.Path.GetDirectoryName(Me.m_Archived_File_Name))
+            destFI = New System.IO.FileInfo(Me.m_Archived_File_Name)
             If Not di.Exists Then
                 di.Create()
             End If
 
             If Not destFI.Exists Then
-                fi.CopyTo(archivePath)
+                fi.CopyTo(Me.m_Archived_File_Name)
             End If
 
 
@@ -225,7 +229,8 @@ Public Class clsArchiveToFile
         'Execute the sp
         sp_Save.ExecuteNonQuery()
 
-        Me.m_Archived_File_Name = System.IO.Path.GetFileName(ArchivedFileFullPath)
+        Me.m_Archived_File_Name = ArchivedFileFullPath
+
 
         'Get return value
         Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)

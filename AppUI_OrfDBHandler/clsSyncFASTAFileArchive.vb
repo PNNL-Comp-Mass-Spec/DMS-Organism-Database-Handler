@@ -4,7 +4,8 @@ Public Class clsSyncFASTAFileArchive
     Private m_FileArchiver As Protein_Exporter.IArchiveOutputFiles
     Private m_TableGetter As TableManipulationBase.IGetSQLData
     Private m_Importer As Protein_Importer.IAddUpdateEntries
-    Private WithEvents m_Exporter As Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS
+    'Private WithEvents m_Exporter As Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS
+    Private m_Exporter As Protein_Exporter.clsGetFASTAFromDMS
 
     Event SyncStart(ByVal StatusMsg As String)
     Event SyncProgress(ByVal StatusMsg As String, ByVal fractionDone As Double)
@@ -18,7 +19,7 @@ Public Class clsSyncFASTAFileArchive
     Sub New(ByVal PSConnectionString As String)
 
         Me.m_PSConnectionString = PSConnectionString
-        Me.m_FileArchiver = New Protein_Exporter.clsArchiveToFile(PSConnectionString)
+        Me.m_FileArchiver = New Protein_Exporter.clsArchiveToFile(PSConnectionString, Me.m_Exporter)
         Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString, True)
         Me.m_Importer = New Protein_Importer.clsAddUpdateEntries(Me.m_PSConnectionString)
 
@@ -79,7 +80,7 @@ Public Class clsSyncFASTAFileArchive
 
     Sub UpdateSHA1Hashes() 'Implements IArchiveOutputFiles.UpdateSHA1Hashes
         If Me.m_FileArchiver Is Nothing Then
-            Me.m_FileArchiver = New Protein_Exporter.clsArchiveToFile(Me.m_PSConnectionString)
+            Me.m_FileArchiver = New Protein_Exporter.clsArchiveToFile(Me.m_PSConnectionString, Me.m_Exporter)
         End If
 
         Dim sql As String

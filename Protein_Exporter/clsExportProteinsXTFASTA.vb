@@ -1,8 +1,8 @@
 Public Class clsExportProteinsXTFASTA
     Inherits clsExportProteins
 
-    Public Sub New()
-        MyBase.New()
+    Public Sub New(ByRef ExportComponent As clsGetFASTAFromDMSForward)
+        MyBase.New(ExportComponent)
     End Sub
 
     Const HEADER_STRING As String = "xbang-pro-fasta-format"

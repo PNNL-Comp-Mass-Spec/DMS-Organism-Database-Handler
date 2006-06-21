@@ -22,6 +22,12 @@ Public Class clsGetFASTAFromDMS
 
     End Sub
 
+    Public ReadOnly Property ExporterComponent() As clsGetFASTAFromDMSForward ' Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.ExporterComponent
+        Get
+            Return Me.m_Getter
+        End Get
+    End Property
+
     Public Sub New( _
         ByVal ProteinStorageConnectionString As String, _
         ByVal DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes, _
@@ -63,7 +69,7 @@ Public Class clsGetFASTAFromDMS
                 Me.m_CollectionType = IArchiveOutputFiles.CollectionTypes.dynamic
         End Select
 
-        Me.m_Archiver = New clsArchiveToFile(ProteinStorageConnectionString)
+        Me.m_Archiver = New clsArchiveToFile(ProteinStorageConnectionString, Me)
 
     End Sub
 
@@ -76,7 +82,7 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
-    Protected Overloads Function ExportFASTAFile( _
+    Overloads Function ExportFASTAFile( _
         ByVal ProteinCollectionID As Integer, _
         ByVal ExportPath As String, _
         ByVal DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes, _
@@ -96,7 +102,7 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
-    Protected Overloads Function ExportFASTAFile( _
+    Overloads Function ExportFASTAFile( _
         ByVal ProteinCollectionNameList As String, _
         ByVal CreationOptions As String, _
         ByVal LegacyFASTAFileName As String, _
@@ -290,9 +296,9 @@ Public Class clsGetFASTAFromDMS
     End Function
 
 
-    Protected Event FileGenerationCompleted(ByVal FullOutputPath As String) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationCompleted
-    Protected Event FileGenerationProgress(ByVal statusMsg As String, ByVal fractionDone As Double) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationProgress
-    Protected Event FileGenerationStarted(ByVal taskMsg As String) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationStarted
+    Event FileGenerationCompleted(ByVal FullOutputPath As String) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationCompleted
+    Event FileGenerationProgress(ByVal statusMsg As String, ByVal fractionDone As Double) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationProgress
+    Event FileGenerationStarted(ByVal taskMsg As String) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationStarted
 
     Private Sub OnFileGenerationCompleted(ByVal FullOutputPath As String) Handles m_Getter.FileGenerationCompleted
         'RaiseEvent FileGenerationCompleted(FullOutputPath)
@@ -316,39 +322,39 @@ Public Class clsGetFASTAFromDMS
         RaiseEvent FileGenerationProgress(statusMsg, fractionDone)
     End Sub
 
-    Protected Function GenerateFileAuthenticationHash(ByVal FullFilePath As String) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GenerateFileAuthenticationHash
+    Function GenerateFileAuthenticationHash(ByVal FullFilePath As String) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GenerateFileAuthenticationHash
         Return Me.m_Getter.GetFileHash(FullFilePath)
     End Function
 
-    Protected Function GetAllCollections() As System.Collections.Hashtable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetAllCollections
+    Function GetAllCollections() As System.Collections.Hashtable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetAllCollections
         Return Me.m_Getter.GetCollectionNameList
     End Function
 
-    Protected Function GetCollectionsByOrganism(ByVal OrganismID As Integer) As System.Collections.Hashtable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetCollectionsByOrganism
+    Function GetCollectionsByOrganism(ByVal OrganismID As Integer) As System.Collections.Hashtable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetCollectionsByOrganism
         Return Me.m_Getter.GetCollectionsByOrganism(OrganismID)
     End Function
 
-    Protected Function GetCollectionsByOrganismTable(ByVal OrganismID As Integer) As System.Data.DataTable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetCollectionsByOrganismTable
+    Function GetCollectionsByOrganismTable(ByVal OrganismID As Integer) As System.Data.DataTable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetCollectionsByOrganismTable
         Return Me.m_Getter.GetCollectionsByOrganismTable(OrganismID)
     End Function
 
-    Protected Function GetOrganismList() As System.Collections.Hashtable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetOrganismList
+    Function GetOrganismList() As System.Collections.Hashtable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetOrganismList
         Return Me.m_Getter.GetOrganismList
     End Function
 
-    Protected Function GetOrganismListTable() As System.Data.DataTable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetOrganismListTable
+    Function GetOrganismListTable() As System.Data.DataTable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetOrganismListTable
         Return Me.m_Getter.GetOrganismListTable
     End Function
 
-    Protected Overloads Function GetStoredFileAuthenticationHash(ByVal ProteinCollectionID As Integer) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetStoredFileAuthenticationHash
+    Overloads Function GetStoredFileAuthenticationHash(ByVal ProteinCollectionID As Integer) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetStoredFileAuthenticationHash
         Return Me.m_Getter.GetStoredHash(ProteinCollectionID)
     End Function
 
-    Protected Overloads Function GetStoredFileAuthenticationHash(ByVal ProteinCollectionName As String) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetStoredFileAuthenticationHash
+    Overloads Function GetStoredFileAuthenticationHash(ByVal ProteinCollectionName As String) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetStoredFileAuthenticationHash
         Return Me.m_Getter.GetStoredHash(ProteinCollectionName)
     End Function
 
-    Protected Function GetProteinCollectionID(ByVal ProteinCollectionName As String) As Integer Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetProteinCollectionID
+    Function GetProteinCollectionID(ByVal ProteinCollectionName As String) As Integer Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetProteinCollectionID
         Return Me.m_Getter.FindIDByName(System.IO.Path.GetFileNameWithoutExtension(ProteinCollectionName))
     End Function
 

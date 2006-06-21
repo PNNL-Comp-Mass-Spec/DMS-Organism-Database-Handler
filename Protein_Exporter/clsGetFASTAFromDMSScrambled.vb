@@ -13,7 +13,7 @@ Public Class clsGetFASTAFromDMSScrambled
         'Me.m_RndNumGen = New Random(RandomSeed)
     End Sub
 
-    Protected Overrides Function SequenceExtender(ByVal originalSequence As String, ByVal collectionCount As Integer) As String
+    Overrides Function SequenceExtender(ByVal originalSequence As String, ByVal collectionCount As Integer) As String
 
         Dim sb As New System.Text.StringBuilder(originalSequence.Length)
         Dim sequence As String = originalSequence
@@ -73,7 +73,7 @@ Public Class clsGetFASTAFromDMSScrambled
     End Function
 
 
-    Protected Overrides Function ReferenceExtender(ByVal originalReference As String) As String
+    Overrides Function ReferenceExtender(ByVal originalReference As String) As String
         Return "Scrambled_" + originalReference
     End Function
 End Class

@@ -1055,59 +1055,59 @@ Public Class frmCollectionEditor
         Me.m_UploadHandler = Nothing
     End Sub
 
-    Private Sub cmdExportToFile_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdExportToFile.Click
+    'Private Sub cmdExportToFile_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdExportToFile.Click
 
-        Dim SaveDialog As New SaveFileDialog
-        Dim fileType As Protein_Importer.IImportProteins.ProteinImportFileTypes
-        Dim SelectedSavePath As String
-        Dim tmpSelectedProteinList As ArrayList
-        Dim tmpProteinCollection As Protein_Storage.IProteinStorage
-        Dim tmpProteinReference As String
+    '    Dim SaveDialog As New SaveFileDialog
+    '    Dim fileType As Protein_Importer.IImportProteins.ProteinImportFileTypes
+    '    Dim SelectedSavePath As String
+    '    Dim tmpSelectedProteinList As ArrayList
+    '    Dim tmpProteinCollection As Protein_Storage.IProteinStorage
+    '    Dim tmpProteinReference As String
 
-        With SaveDialog
-            .Title = "Save Protein Database File"
-            .DereferenceLinks = True
-            .Filter = "FASTA Files (*.fasta)|*.fasta|Microsoft Access Databases (*.mdb)|*.mdb|All Files (*.*)|*.*"
-            .FilterIndex = 1
-            .RestoreDirectory = True
-            .OverwritePrompt = True
-            '.FileName = Me.m_ImportHandler.CollectionMembers.FileName
-        End With
+    '    With SaveDialog
+    '        .Title = "Save Protein Database File"
+    '        .DereferenceLinks = True
+    '        .Filter = "FASTA Files (*.fasta)|*.fasta|Microsoft Access Databases (*.mdb)|*.mdb|All Files (*.*)|*.*"
+    '        .FilterIndex = 1
+    '        .RestoreDirectory = True
+    '        .OverwritePrompt = True
+    '        '.FileName = Me.m_ImportHandler.CollectionMembers.FileName
+    '    End With
 
-        If SaveDialog.ShowDialog = DialogResult.OK Then
-            SelectedSavePath = SaveDialog.FileName
-        Else
-            Exit Sub
-        End If
+    '    If SaveDialog.ShowDialog = DialogResult.OK Then
+    '        SelectedSavePath = SaveDialog.FileName
+    '    Else
+    '        Exit Sub
+    '    End If
 
-        If System.IO.Path.GetExtension(Me.m_SelectedFilePath) = ".fasta" Then
-            fileType = Protein_Importer.IImportProteins.ProteinImportFileTypes.FASTA
-        ElseIf System.IO.Path.GetExtension(Me.m_SelectedFilePath) = ".mdb" Then
-            fileType = Protein_Importer.IImportProteins.ProteinImportFileTypes.Access
-        End If
+    '    If System.IO.Path.GetExtension(Me.m_SelectedFilePath) = ".fasta" Then
+    '        fileType = Protein_Importer.IImportProteins.ProteinImportFileTypes.FASTA
+    '    ElseIf System.IO.Path.GetExtension(Me.m_SelectedFilePath) = ".mdb" Then
+    '        fileType = Protein_Importer.IImportProteins.ProteinImportFileTypes.Access
+    '    End If
 
-        If fileType = Protein_Importer.IImportProteins.ProteinImportFileTypes.FASTA Then
-            Me.m_ProteinExporter = New Protein_Exporter.clsExportProteinsFASTA
-        Else
-            Exit Sub
-        End If
+    '    If fileType = Protein_Importer.IImportProteins.ProteinImportFileTypes.FASTA Then
+    '        Me.m_ProteinExporter = New Protein_Exporter.clsExportProteinsFASTA
+    '    Else
+    '        Exit Sub
+    '    End If
 
-        tmpProteinCollection = New Protein_Storage.clsProteinStorage(SelectedSavePath)
+    '    tmpProteinCollection = New Protein_Storage.clsProteinStorage(SelectedSavePath)
 
-        tmpSelectedProteinList = Me.ScanDestinationCollectionWindow(Me.lvwDestination)
+    '    tmpSelectedProteinList = Me.ScanDestinationCollectionWindow(Me.lvwDestination)
 
-        For Each tmpProteinReference In tmpSelectedProteinList
-            tmpProteinCollection.AddProtein( _
-                Me.m_ImportHandler.CollectionMembers.GetProtein(tmpProteinReference))
-        Next
-
-
-        Me.m_ProteinExporter.Export( _
-            Me.m_ImportHandler.CollectionMembers, _
-            SelectedSavePath)
+    '    For Each tmpProteinReference In tmpSelectedProteinList
+    '        tmpProteinCollection.AddProtein( _
+    '            Me.m_ImportHandler.CollectionMembers.GetProtein(tmpProteinReference))
+    '    Next
 
 
-    End Sub
+    '    Me.m_ProteinExporter.Export( _
+    '        Me.m_ImportHandler.CollectionMembers, _
+    '        SelectedSavePath)
+
+
+    'End Sub
 
 #End Region
 

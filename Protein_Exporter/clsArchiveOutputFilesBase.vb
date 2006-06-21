@@ -15,12 +15,13 @@ Public MustInherit Class clsArchiveOutputFilesBase
     Protected Event ArchiveComplete(ByVal ArchivePath As String) Implements IArchiveOutputFiles.ArchiveComplete
 
 
-    Sub New(ByVal PSConnectionString As String)
+    Sub New(ByVal PSConnectionString As String, ByRef ExporterModule As Protein_Exporter.clsGetFASTAFromDMS)
 
 
         Me.m_PSConnectionString = PSConnectionString
         Me.m_TableGetter = New TableManipulationBase.clsDBTask(PSConnectionString, True)
-        Me.m_Exporter = New clsGetFASTAFromDMSForward(PSConnectionString, ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta)
+        'Me.m_Exporter = New clsGetFASTAFromDMSForward(PSConnectionString, ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta)
+        Me.m_Exporter = ExporterModule.ExporterComponent
     End Sub
 
     Protected ReadOnly Property LastErrorMessage() As String Implements IArchiveOutputFiles.LastErrorMessage
@@ -47,31 +48,32 @@ Public MustInherit Class clsArchiveOutputFilesBase
 
         Me.OnArchiveStart()
 
-        Me.OnSubTaskStart("Checking for Existing Archive Entry...")
+        'Me.OnSubTaskStart("Checking for Existing Archive Entry...")
+        'Dim fi As System.IO.FileInfo
 
-        Dim ArchivedFileEntryID As Integer
-        ArchivedFileEntryID = _
-            Me.CheckForExistingArchiveEntry( _
-                Authentication_Hash, _
-                ArchivedFileType, CreationOptionsString)
+        'Dim ArchivedFileEntryID As Integer
+        'ArchivedFileEntryID = _
+        '    Me.CheckForExistingArchiveEntry( _
+        '        Authentication_Hash, _
+        '        ArchivedFileType, CreationOptionsString)
 
-        Me.OnSubTaskProgressUpdate(1.0)
+        'Me.OnSubTaskProgressUpdate(1.0)
 
-        If ArchivedFileEntryID > 0 Then
-            Return ArchivedFileEntryID
-        Else
+        'If ArchivedFileEntryID > 0 Then
+        '    Return ArchivedFileEntryID
+        'Else
 
 
 
-            Return Me.DispositionFile( _
-                ProteinCollectionID, _
-                SourceFilePath, _
-                CreationOptionsString, _
-                Authentication_Hash, _
-                OutputSequenceType, _
-                ArchivedFileType)
+        Return Me.DispositionFile( _
+            ProteinCollectionID, _
+            SourceFilePath, _
+            CreationOptionsString, _
+            Authentication_Hash, _
+            OutputSequenceType, _
+            ArchivedFileType)
 
-        End If
+        'End If
 
     End Function
 

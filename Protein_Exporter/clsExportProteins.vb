@@ -3,8 +3,10 @@ Imports Protein_Exporter.ExportProteinCollectionsIFC
 Public MustInherit Class clsExportProteins
     Implements ExportProteinCollectionsIFC.IExportProteins
 
-    Public Sub New()
+    Protected m_ExportComponent As Protein_Exporter.clsGetFASTAFromDMSForward
 
+    Public Sub New(ByRef ExportComponent As Protein_Exporter.clsGetFASTAFromDMSForward)
+        Me.m_ExportComponent = ExportComponent
     End Sub
 
     Protected Event ExportStart(ByVal taskTitle As String) Implements IExportProteins.ExportStart

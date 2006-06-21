@@ -36,10 +36,10 @@ Public Class clsGetFASTAFromDMSForward
 
         Select Case DatabaseFormatType
             Case IGetFASTAFromDMS.DatabaseFormatTypes.FASTA
-                Me.m_fileDumper = New clsExportProteinsFASTA
+                Me.m_fileDumper = New clsExportProteinsFASTA(Me)
                 Me.m_Extension = ".fasta"
             Case IGetFASTAFromDMS.DatabaseFormatTypes.FASTAPro
-                Me.m_fileDumper = New clsExportProteinsXTFASTA
+                Me.m_fileDumper = New clsExportProteinsXTFASTA(Me)
                 Me.m_Extension = ".fasta.pro"
         End Select
 
@@ -70,11 +70,11 @@ Public Class clsGetFASTAFromDMSForward
 
     End Function
 
-    Protected Overridable Function SequenceExtender(ByVal originalSequence As String, ByVal collectionCount As Integer) As String
+    Overridable Function SequenceExtender(ByVal originalSequence As String, ByVal collectionCount As Integer) As String
         Return originalSequence
     End Function
 
-    Protected Overridable Function ReferenceExtender(ByVal originalReference As String) As String
+    Overridable Function ReferenceExtender(ByVal originalReference As String) As String
         Return originalReference
     End Function
 
@@ -201,7 +201,7 @@ Public Class clsGetFASTAFromDMSForward
                     "SELECT Name, Description, Sequence, Protein_ID " & _
                     "FROM V_Protein_Database_Export " & _
                     "WHERE Protein_Collection_ID = " & tmpID.ToString ' & " " & _
-                    '"ORDER BY Name"
+                '"ORDER BY Name"
 
 
             Else

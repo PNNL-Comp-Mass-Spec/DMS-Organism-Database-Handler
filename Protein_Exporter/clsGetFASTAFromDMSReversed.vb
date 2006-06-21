@@ -12,13 +12,13 @@ Public Class clsGetFASTAFromDMSReversed
     End Sub
 
 
-    Protected Overrides Function SequenceExtender(ByVal originalSequence As String, ByVal collectionCount As Integer) As String
+    Overrides Function SequenceExtender(ByVal originalSequence As String, ByVal collectionCount As Integer) As String
 
         Return StrReverse(originalSequence)
 
     End Function
 
-    Protected Overrides Function ReferenceExtender(ByVal originalReference As String) As String
+    Overrides Function ReferenceExtender(ByVal originalReference As String) As String
         Return "Reversed_" + originalReference
     End Function
 

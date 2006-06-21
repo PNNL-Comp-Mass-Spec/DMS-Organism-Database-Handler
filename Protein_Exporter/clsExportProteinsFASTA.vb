@@ -4,8 +4,8 @@ Public Class clsExportProteinsFASTA
     Private m_seqLineLength As Integer = 60
     'Protected m_FileArchiver As Protein_Exporter.IArchiveOutputFiles
 
-    Public Sub New()
-        MyBase.New()
+    Public Sub New(ByRef ExportComponent As Protein_Exporter.clsGetFASTAFromDMSForward)
+        MyBase.New(ExportComponent)
 
     End Sub
 
@@ -178,7 +178,8 @@ Public Class clsExportProteinsFASTA
 
             For Each dr In foundRows
                 'tmpPC = DirectCast(Proteins.GetProtein(tmpName), Protein_Storage.IProteinStorageEntry)
-                tmpSeq = dr.Item("Sequence").ToString
+                'tmpSeq = dr.Item("Sequence").ToString
+                tmpSeq = Me.m_ExportComponent.SequenceExtender(dr.Item("Sequence").ToString, ProteinTable.Rows.Count)
 
 
                 counter += 1
@@ -189,9 +190,9 @@ Public Class clsExportProteinsFASTA
 
                 proteinLength = tmpSeq.Length
                 tmpDesc = cntrlFinder.Replace(dr.Item("Description").ToString, " ")
+                tmpName = Me.m_ExportComponent.ReferenceExtender(dr.Item("Name").ToString)
 
-
-                sw.WriteLine(Trim(">" & dr.Item("Name").ToString & " " & tmpDesc & tmpAltNames))
+                sw.WriteLine(Trim(">" & tmpName & " " & tmpDesc & tmpAltNames))
 
                 For proteinPosition = 1 To proteinLength Step Me.m_seqLineLength
                     seqLine = Mid(tmpSeq, proteinPosition, Me.m_seqLineLength)
