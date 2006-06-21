@@ -277,6 +277,112 @@ Public Class clsSyncFASTAFileArchive
 
     End Sub
 
+    Sub AddSortingIndices()
+
+        If Me.m_TableGetter Is Nothing Then
+            Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString)
+        End If
+
+        Dim proteinCollectionList As Hashtable
+        Dim getCollectionsSQL As String = "SELECT Protein_Collection_ID, FileName, Organism_ID FROM V_Protein_Collections_By_Organism WHERE Collection_Type_ID = 1 or Collection_Type_ID = 5"
+
+        Dim collectionTable As DataTable = Me.m_TableGetter.GetTable(getCollectionsSQL)
+        Dim collectionEntry As DataRow
+        Dim tmpCollectionName As String
+        Dim tmpCollectionID As Integer
+
+        Dim getLegacyFilesSQL As String = "SELECT DISTINCT FileName, Full_Path, Organism_ID FROM V_Legacy_Static_File_Locations"
+        Dim legacyTable As DataTable = Me.m_TableGetter.GetTable(getLegacyFilesSQL)
+        Dim legacyfoundrows() As DataRow
+        Dim legacyFileEntry As DataRow
+        Dim legacyFullPath As String
+
+        Dim nameIndexHash As Hashtable
+
+        Dim getReferencesSQL As String
+        Dim referencesTable As DataTable
+        Dim referenceEntry As DataRow
+
+        Dim tmpRefName As String
+        Dim tmpRefID As Integer
+        Dim tmpProteinID As Integer
+        Dim tmpSortingIndex As Integer
+        Dim tmpOrgID As Integer
+
+        For Each collectionEntry In collectionTable.Rows
+            tmpCollectionName = collectionEntry.Item("FileName").ToString
+            tmpCollectionID = CInt(collectionEntry.Item("Protein_Collection_ID"))
+            If tmpCollectionID = 1026 Then
+                Debug.WriteLine("")
+            End If
+            tmpOrgID = CInt(collectionEntry.Item("Organism_ID"))
+            legacyfoundrows = legacyTable.Select("FileName = '" & tmpCollectionName & ".fasta' AND Organism_ID = " & tmpOrgID)
+            If legacyfoundrows.Length > 0 Then
+                getReferencesSQL = "SELECT * FROM V_Tmp_Member_Name_Lookup WHERE Protein_Collection_ID = " & tmpCollectionID.ToString & _
+                                    " AND Sorting_Index is NULL"
+                referencesTable = Me.m_TableGetter.GetTable(getReferencesSQL)
+                If referencesTable.Rows.Count > 0 Then
+                    legacyFileEntry = legacyfoundrows(0)
+                    legacyFullPath = legacyFileEntry.Item("Full_Path").ToString
+                    nameIndexHash = Me.GetProteinSortingIndices(legacyFullPath)
+                    For Each referenceEntry In referencesTable.Rows
+                        tmpRefID = DirectCast(referenceEntry.Item("Reference_ID"), Int32)
+                        tmpProteinID = DirectCast(referenceEntry.Item("Protein_ID"), Int32)
+                        tmpRefName = referenceEntry.Item("Name").ToString
+                        'Try
+                        tmpSortingIndex = DirectCast(nameIndexHash.Item(tmpRefName.ToLower), Int32)
+
+                        If tmpSortingIndex > 0 Then
+                            Me.m_Importer.UpdateProteinCollectionMember( _
+                                tmpRefID, tmpProteinID, _
+                                tmpSortingIndex, tmpCollectionID)
+                        End If
+
+                        'Catch ex As Exception
+
+                        'End Try
+                    Next
+                End If
+            End If
+
+        Next
+
+    End Sub
+
+    Private Function GetProteinSortingIndices(ByVal FilePath As String) As Hashtable
+        Dim fi As System.IO.FileInfo = New System.IO.FileInfo(FilePath)
+        Dim tr As System.IO.TextReader
+        Dim s As String
+        Dim nameRegex As System.Text.RegularExpressions.Regex
+        Dim m As System.Text.RegularExpressions.Match
+        Dim nameHash As New Hashtable
+        Dim counter As Integer
+        Dim tmpName As String
+
+        nameRegex = New System.Text.RegularExpressions.Regex( _
+            "^\>(?<name>\S+)\s*(?<description>.*)$", _
+            System.Text.RegularExpressions.RegexOptions.Compiled)
+
+        tr = fi.OpenText
+        s = tr.ReadLine
+
+        While Not s Is Nothing
+            If nameRegex.IsMatch(s) Then
+                counter += 1
+                m = nameRegex.Match(s)
+                tmpName = m.Groups("name").Value
+                If Not nameHash.ContainsKey(tmpName.ToLower) Then
+                    nameHash.Add(tmpName.ToLower, counter)
+                End If
+            End If
+            s = tr.ReadLine
+        End While
+
+        tr.Close()
+
+        Return nameHash
+
+    End Function
     Sub CorrectMasses()
 
         Dim proteinList As New Hashtable

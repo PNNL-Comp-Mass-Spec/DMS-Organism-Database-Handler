@@ -11,57 +11,59 @@ Public Class clsProteinStorageEntry
         ByVal MonoisotopicMass As Double, _
         ByVal AverageMass As Double, _
         ByVal MolecularFormula As String, _
-        ByVal AuthenticationHash As String)
+        ByVal AuthenticationHash As String, _
+        ByVal SortingIndex As Integer)
 
-        m_Reference = Reference
-        m_Description = Description
-        m_Sequence = Sequence
-        m_MonoMass = MonoisotopicMass
-        m_AvgMass = AverageMass
-        m_Length = Length
-        m_MolecularFormula = MolecularFormula
-        m_AuthHash = AuthenticationHash
-
-        m_Protein_ID = 0
-
-    End Sub
-
-    Public Sub New( _
-        ByVal Reference As String, _
-        ByVal Description As String, _
-        ByVal Sequence As String)
-
-        m_Reference = Reference
-        m_Description = Description
-        m_Sequence = Sequence
-        m_MonoMass = 0
-        m_AvgMass = 0
-        m_Length = 0
-        m_MolecularFormula = ""
-        m_AuthHash = ""
+        Me.m_Reference = Reference
+        Me.m_Description = Description
+        Me.m_Sequence = Sequence
+        Me.m_MonoMass = MonoisotopicMass
+        Me.m_AvgMass = AverageMass
+        Me.m_Length = Length
+        Me.m_MolecularFormula = MolecularFormula
+        Me.m_AuthHash = AuthenticationHash
+        Me.m_SortCount = SortingIndex
 
         m_Protein_ID = 0
 
     End Sub
 
-    Public Sub New( _
-        ByVal Reference As String, _
-        ByVal Description As String, _
-        ByVal Sequence As String, _
-        ByVal ProteinID As Integer)
+    'Public Sub New( _
+    '    ByVal Reference As String, _
+    '    ByVal Description As String, _
+    '    ByVal Sequence As String)
 
-        m_Reference = Reference
-        m_Description = Description
-        m_Sequence = Sequence
-        m_MonoMass = 0
-        m_AvgMass = 0
-        m_Length = 0
-        m_MolecularFormula = ""
-        m_AuthHash = ""
+    '    m_Reference = Reference
+    '    m_Description = Description
+    '    m_Sequence = Sequence
+    '    m_MonoMass = 0
+    '    m_AvgMass = 0
+    '    m_Length = 0
+    '    m_MolecularFormula = ""
+    '    m_AuthHash = ""
 
-        m_Protein_ID = ProteinID
+    '    m_Protein_ID = 0
 
-    End Sub
+    'End Sub
+
+    'Public Sub New( _
+    '    ByVal Reference As String, _
+    '    ByVal Description As String, _
+    '    ByVal Sequence As String, _
+    '    ByVal ProteinID As Integer)
+
+    '    m_Reference = Reference
+    '    m_Description = Description
+    '    m_Sequence = Sequence
+    '    m_MonoMass = 0
+    '    m_AvgMass = 0
+    '    m_Length = 0
+    '    m_MolecularFormula = ""
+    '    m_AuthHash = ""
+
+    '    m_Protein_ID = ProteinID
+
+    'End Sub
 
     Protected m_Reference As String
     Protected m_AlternateReference As String
@@ -78,6 +80,7 @@ Public Class clsProteinStorageEntry
     Protected m_Member_ID As Integer
     Protected m_Authority_ID As Integer
     Protected m_XRefList As ArrayList
+    Protected m_SortCount As Integer
 
     Protected m_IsEncrypted As Boolean = False
 
@@ -196,6 +199,15 @@ Public Class clsProteinStorageEntry
         End Get
         Set(ByVal Value As Integer)
             Me.m_Authority_ID = Value
+        End Set
+    End Property
+
+    Protected Property SortingIndex() As Integer Implements IProteinStorageEntry.SortingIndex
+        Get
+            Return Me.m_SortCount
+        End Get
+        Set(ByVal Value As Integer)
+            Me.m_SortCount = Value
         End Set
     End Property
 

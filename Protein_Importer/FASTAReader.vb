@@ -126,7 +126,7 @@ Public Class FASTAReader
                             fastaContents.AddProtein(New Protein_Storage.clsProteinStorageEntry( _
                                 strORFTemp, strDescTemp, strSeqTemp, seqInfo.SequenceLength, _
                                 seqInfo.MonoIsotopicMass, seqInfo.AverageMass, _
-                                seqInfo.MolecularFormula, seqInfo.SHA1Hash))
+                                seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount))
                         End If
 
                         strORFTemp = ""
@@ -159,7 +159,7 @@ Public Class FASTAReader
                 fastaContents.AddProtein(New Protein_Storage.clsProteinStorageEntry( _
                     strORFTemp, strDescTemp, strSeqTemp, seqInfo.SequenceLength, _
                     seqInfo.MonoIsotopicMass, seqInfo.AverageMass, _
-                    seqInfo.MolecularFormula, seqInfo.SHA1Hash))
+                    seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount))
 
 
                 RaiseEvent LoadEnd()

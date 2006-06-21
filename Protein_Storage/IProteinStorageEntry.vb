@@ -20,6 +20,7 @@ Public Interface IProteinStorageEntry
     Property Member_ID() As Integer
     Property Authority_ID() As Integer
     Property IsEncrypted() As Boolean
+    Property SortingIndex() As Integer
 
     Sub AddXRef(ByVal Reference As String)
 

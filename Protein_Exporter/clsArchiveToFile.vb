@@ -82,24 +82,24 @@ Public Class clsArchiveToFile
         End Try
 
         'Try
-        'ArchivedFileEntryID = Me.RunSP_AddOutputFileArchiveEntry( _
-        '    ProteinCollectionID, CreationOptionsString, SourceSHA1Authentication, fi.LastWriteTime, fi.Length, _
-        '    [Enum].GetName(GetType(Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes), _
-        '    OutputSequenceType), archivePath, _
-        '    [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
-        'ArchivedFileEntryID = Me.RunSP_AddOutputFileArchiveEntry( _
-        '    ProteinCollectionID, CreationOptionsString, SourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount, _
-        '     archivePath, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
+            'ArchivedFileEntryID = Me.RunSP_AddOutputFileArchiveEntry( _
+            '    ProteinCollectionID, CreationOptionsString, SourceSHA1Authentication, fi.LastWriteTime, fi.Length, _
+            '    [Enum].GetName(GetType(Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes), _
+            '    OutputSequenceType), archivePath, _
+            '    [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
+            'ArchivedFileEntryID = Me.RunSP_AddOutputFileArchiveEntry( _
+            '    ProteinCollectionID, CreationOptionsString, SourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount, _
+            '     archivePath, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
 
-        'Dim newPath As String = Replace(archivePath, "_00000_", "_" + Format(ArchivedFileEntryID, "000000") + "_")
+            'Dim newPath As String = Replace(archivePath, "_00000_", "_" + Format(ArchivedFileEntryID, "000000") + "_")
 
-        'finalFI = New System.IO.FileInfo(newPath)
+            'finalFI = New System.IO.FileInfo(newPath)
 
-        'If Not finalFI.Exists Then
-        '    Rename(archivePath, newPath)
-        'Else
-        '    Kill(archivePath)
-        'End If
+            'If Not finalFI.Exists Then
+            '    Rename(archivePath, newPath)
+            'Else
+            '    Kill(archivePath)
+            'End If
 
 
         'Catch ex As Exception

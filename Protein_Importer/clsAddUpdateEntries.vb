@@ -35,7 +35,15 @@ Public Interface IAddUpdateEntries
     Function AddProteinCollectionMember( _
         ByVal ReferenceID As Integer, _
         ByVal ProteinID As Integer, _
+        ByVal Sorting_Index As Integer, _
         ByVal ProteinCollectionID As Integer) As Integer
+
+    Function UpdateProteinCollectionMember( _
+        ByVal ReferenceID As Integer, _
+        ByVal ProteinID As Integer, _
+        ByVal Sorting_Index As Integer, _
+        ByVal ProteinCollectionID As Integer) As Integer
+
 
     Function AddAuthenticationHash( _
         ByVal ProteinCollectionID As Integer, _
@@ -296,7 +304,7 @@ Public Class clsAddUpdateEntries
                 Me.OnProgressUpdate(CDbl(counter / counterMax))
             End If
 
-            tmpPC.Member_ID = Me.AddProteinCollectionMember(tmpPC.Reference_ID, tmpPC.Protein_ID, ProteinCollectionID)
+            tmpPC.Member_ID = Me.AddProteinCollectionMember(tmpPC.Reference_ID, tmpPC.Protein_ID, tmpPC.SortingIndex, ProteinCollectionID)
             'tmpPC.Member_ID = Me.AddProteinCollectionMember(tmpPC.Protein_ID, ProteinCollectionID)
         Next
 
@@ -485,10 +493,21 @@ Public Class clsAddUpdateEntries
     Protected Function AddProteinCollectionMember( _
         ByVal ReferenceID As Integer, _
         ByVal ProteinID As Integer, _
+        ByVal Sorting_Index As Integer, _
         ByVal ProteinCollectionID As Integer) As Integer Implements IAddUpdateEntries.AddProteinCollectionMember
 
         'Return Me.RunSP_AddUpdateProteinCollectionMember(ReferenceID, ProteinID, ProteinCollectionID)
-        Return Me.RunSP_AddUpdateProteinCollectionMember(ReferenceID, ProteinID, ProteinCollectionID)
+        Return Me.RunSP_AddProteinCollectionMember(ReferenceID, ProteinID, Sorting_Index, ProteinCollectionID)
+    End Function
+
+    Protected Function UpdateProteinCollectionMember( _
+        ByVal ReferenceID As Integer, _
+        ByVal ProteinID As Integer, _
+        ByVal Sorting_Index As Integer, _
+        ByVal ProteinCollectionID As Integer) As Integer Implements IAddUpdateEntries.UpdateProteinCollectionMember
+
+        Return Me.RunSP_UpdateProteinCollectionMember(ReferenceID, ProteinID, Sorting_Index, ProteinCollectionID)
+
     End Function
 
     Protected Function AddProteinReference( _
@@ -809,13 +828,31 @@ Public Class clsAddUpdateEntries
     End Function
 
 
-    Protected Function RunSP_AddUpdateProteinCollectionMember( _
+    Protected Function RunSP_AddProteinCollectionMember( _
         ByVal Reference_ID As Integer, ByVal Protein_ID As Integer, _
-        ByVal Protein_Collection_ID As Integer) As Integer
+        ByVal SortingIndex As Integer, ByVal Protein_Collection_ID As Integer) As Integer
+
+        Return Me.RunSP_AddUpdateProteinCollectionMember(Reference_ID, Protein_ID, SortingIndex, Protein_Collection_ID, "Add")
+
+    End Function
+
+    Protected Function RunSP_UpdateProteinCollectionMember( _
+    ByVal Reference_ID As Integer, ByVal Protein_ID As Integer, _
+    ByVal SortingIndex As Integer, ByVal Protein_Collection_ID As Integer) As Integer
+
+        Return Me.RunSP_AddUpdateProteinCollectionMember(Reference_ID, Protein_ID, SortingIndex, Protein_Collection_ID, "Update")
+
+    End Function
+
+
+    Protected Function RunSP_AddUpdateProteinCollectionMember( _
+    ByVal Reference_ID As Integer, ByVal Protein_ID As Integer, _
+    ByVal SortingIndex As Integer, ByVal Protein_Collection_ID As Integer, _
+    ByVal Mode As String) As Integer
 
         Dim sp_Save As SqlClient.SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("AddUpdateProteinCollectionMember", Me.m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("AddUpdateProteinCollectionMember_New", Me.m_SQLAccess.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -835,9 +872,17 @@ Public Class clsAddUpdateEntries
         myParam.Direction = ParameterDirection.Input
         myParam.Value = Protein_ID
 
+        myParam = sp_Save.Parameters.Add("@sorting_index", SqlDbType.Int)
+        myParam.Direction = ParameterDirection.Input
+        myParam.Value = SortingIndex
+
         myParam = sp_Save.Parameters.Add("@protein_collection_ID", SqlDbType.Int)
         myParam.Direction = ParameterDirection.Input
         myParam.Value = Protein_Collection_ID
+
+        myParam = sp_Save.Parameters.Add("@mode", SqlDbType.VarChar, 10)
+        myParam.Direction = ParameterDirection.Input
+        myParam.Value = Mode
 
         myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
         myParam.Direction = ParameterDirection.Output

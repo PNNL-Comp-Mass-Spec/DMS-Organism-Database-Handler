@@ -359,79 +359,79 @@ Public Class clsGetFASTAFromDMSForward
             "SELECT ID as Organism_ID, Short_Name as Name FROM V_Organism_Picker ORDER BY Organism_ID")
     End Sub
 
-    Protected Function DataTableToCollection( _
-        ByRef ProteinTable As DataTable, _
-        ByVal NameField As String, _
-        ByVal DescField As String, _
-        ByVal SeqField As String, _
-        ByVal ProteinIDField As String, _
-        ByVal ExportFullPath As String, _
-        ByVal Append As Boolean, _
-        Optional ByVal AlternateNames As Hashtable = Nothing) As Protein_Storage.IProteinStorage
+    'Protected Function DataTableToCollection( _
+    '    ByRef ProteinTable As DataTable, _
+    '    ByVal NameField As String, _
+    '    ByVal DescField As String, _
+    '    ByVal SeqField As String, _
+    '    ByVal ProteinIDField As String, _
+    '    ByVal ExportFullPath As String, _
+    '    ByVal Append As Boolean, _
+    '    Optional ByVal AlternateNames As Hashtable = Nothing) As Protein_Storage.IProteinStorage
 
-        Dim errorCode As Integer = 0
+    '    Dim errorCode As Integer = 0
 
-        'Try
-        'Dim pc As Protein_Storage.IProteinStorage
+    '    'Try
+    '    'Dim pc As Protein_Storage.IProteinStorage
 
-        If Me.m_PSC Is Nothing Or Append = False Then
-            Me.m_PSC = New Protein_Storage.clsProteinStorageDMS(ExportFullPath)
-        End If
-        Dim ce As Protein_Storage.IProteinStorageEntry
+    '    If Me.m_PSC Is Nothing Or Append = False Then
+    '        Me.m_PSC = New Protein_Storage.clsProteinStorageDMS(ExportFullPath)
+    '    End If
+    '    Dim ce As Protein_Storage.IProteinStorageEntry
 
-        If AlternateNames Is Nothing Then
-            AlternateNames = New Hashtable
-        End If
+    '    If AlternateNames Is Nothing Then
+    '        AlternateNames = New Hashtable
+    '    End If
 
-        Dim collectionCount As Integer = ProteinTable.Rows.Count
+    '    Dim collectionCount As Integer = ProteinTable.Rows.Count
 
 
-        Dim dr As DataRow
-        Dim tmpSeq As String
-        Dim tmpName As String
-        Dim tmpDesc As String
-        Dim tmpID As Integer
-        Dim tmpNameList As ArrayList
+    '    Dim dr As DataRow
+    '    Dim tmpSeq As String
+    '    Dim tmpName As String
+    '    Dim tmpDesc As String
+    '    Dim tmpID As Integer
+    '    Dim tmpNameList As ArrayList
 
-        tmpNameList = New ArrayList
+    '    tmpNameList = New ArrayList
 
-        Me.OnExportStart("Transferring entries to storage class")
+    '    Me.OnExportStart("Transferring entries to storage class")
 
-        For Each dr In ProteinTable.Rows
-            tmpName = Me.ReferenceExtender(dr.Item(NameField).ToString)
-            tmpID = CInt(dr.Item(ProteinIDField))
-            If AlternateNames.Contains(tmpID.ToString) Then
-                tmpNameList = DirectCast(AlternateNames(tmpID.ToString), ArrayList) 'AlternateNames.Item(tmpName).ToString
-            Else
-                'tmpNameList = New ArrayList
-                'tmpNameList.Add(tmpName)
-            End If
-            tmpDesc = dr.Item(DescField).ToString
-            tmpSeq = dr.Item(SeqField).ToString
+    '    For Each dr In ProteinTable.Rows
+    '        tmpName = Me.ReferenceExtender(dr.Item(NameField).ToString)
+    '        tmpID = CInt(dr.Item(ProteinIDField))
+    '        If AlternateNames.Contains(tmpID.ToString) Then
+    '            tmpNameList = DirectCast(AlternateNames(tmpID.ToString), ArrayList) 'AlternateNames.Item(tmpName).ToString
+    '        Else
+    '            'tmpNameList = New ArrayList
+    '            'tmpNameList.Add(tmpName)
+    '        End If
+    '        tmpDesc = dr.Item(DescField).ToString
+    '        tmpSeq = dr.Item(SeqField).ToString
 
-            ce = New Protein_Storage.clsProteinStorageEntry( _
-                tmpName, tmpDesc, Me.SequenceExtender(tmpSeq, collectionCount), tmpID)
+    '        ce = New Protein_Storage.clsProteinStorageEntry( _
+    '            tmpName, tmpDesc, Me.SequenceExtender(tmpSeq, collectionCount), tmpID)
 
-            For Each tmpName In tmpNameList
-                ce.AddXRef(tmpName)
-            Next
-            If tmpNameList.Count > 0 Then
-                tmpNameList.Clear()
-            End If
-            Me.m_PSC.AddProtein(ce)
+    '        For Each tmpName In tmpNameList
+    '            ce.AddXRef(tmpName)
+    '        Next
+    '        If tmpNameList.Count > 0 Then
+    '            tmpNameList.Clear()
+    '        End If
+    '        Me.m_PSC.AddProtein(ce)
 
-        Next
+    '    Next
 
-        'Me.OnExportComplete()
+    '    'Me.OnExportComplete()
 
-        Return Me.m_PSC
-        'Catch
-        '    errorCode = Err.Number
-        'End Try
+    '    Return Me.m_PSC
+    '    'Catch
+    '    '    errorCode = Err.Number
+    '    'End Try
 
-        'Return Me.GetFileHash(ExportFullPath)
+    '    'Return Me.GetFileHash(ExportFullPath)
 
-    End Function
+    'End Function
 
     Function FindIDByName(ByVal CollectionName As String) As Integer
         'Dim dr As DataRow

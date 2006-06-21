@@ -374,31 +374,31 @@ Public Class clsImportHandler
 
     End Function
 
-    Protected Function LoadSelectedProteinInfo(ByRef CollectionMemberTable As DataTable, _
-        ByVal SelectedProteinNames As ArrayList) As Protein_Storage.IProteinStorage
+    'Protected Function LoadSelectedProteinInfo(ByRef CollectionMemberTable As DataTable, _
+    '    ByVal SelectedProteinNames As ArrayList) As Protein_Storage.IProteinStorage
 
-        Dim ReferenceList As String
-        Dim Reference As String
+    '    Dim ReferenceList As String
+    '    Dim Reference As String
 
-        For Each Reference In SelectedProteinNames
-            ReferenceList &= Reference.ToString & ", "
-        Next
+    '    For Each Reference In SelectedProteinNames
+    '        ReferenceList &= Reference.ToString & ", "
+    '    Next
 
-        ReferenceList = Left(ReferenceList, ReferenceList.Length - 2)
+    '    ReferenceList = Left(ReferenceList, ReferenceList.Length - 2)
 
-        Dim foundrows() As DataRow = CollectionMemberTable.Select("IN " & ReferenceList)
+    '    Dim foundrows() As DataRow = CollectionMemberTable.Select("IN " & ReferenceList)
 
-        Dim tmpPS As Protein_Storage.IProteinStorage = Me.LoadProteinInfo(foundrows)
+    '    Dim tmpPS As Protein_Storage.IProteinStorage = Me.LoadProteinInfo(foundrows)
 
-        Return tmpPS
+    '    Return tmpPS
 
-    End Function
+    'End Function
 
-    Protected Function LoadAllProteinInfo(ByRef CollectionMemberTable As DataTable) As Protein_Storage.IProteinStorage
-        Dim tmpPS As Protein_Storage.IProteinStorage = Me.LoadProteinInfo(CollectionMemberTable.Select(""))
+    'Protected Function LoadAllProteinInfo(ByRef CollectionMemberTable As DataTable) As Protein_Storage.IProteinStorage
+    '    Dim tmpPS As Protein_Storage.IProteinStorage = Me.LoadProteinInfo(CollectionMemberTable.Select(""))
 
-        Return tmpPS
-    End Function
+    '    Return tmpPS
+    'End Function
 
     Protected Function LoadProteinInfo(ByRef CollectionMembers() As DataRow) As Protein_Storage.IProteinStorage
         Dim dr As DataRow
@@ -430,7 +430,7 @@ Public Class clsImportHandler
                 DirectCast(dr.Item("Monoisotopic_Mass"), Double), _
                 DirectCast(dr.Item("Average_Mass"), Double), _
                 dr.Item("Molecular_Formula").ToString, _
-                dr.Item("SHA1_Hash").ToString)
+                dr.Item("SHA1_Hash").ToString, counter)
 
             If counter Mod triggerCount > 0 Then
                 Me.Task_LoadProgress(CSng(counter / proteinCount))

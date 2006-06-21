@@ -93,6 +93,7 @@ Public Class frmCollectionEditor
     Friend WithEvents MenuItem4 As System.Windows.Forms.MenuItem
     Friend WithEvents MenuItem5 As System.Windows.Forms.MenuItem
     Friend WithEvents MenuItem6 As System.Windows.Forms.MenuItem
+    Friend WithEvents MenuItem8 As System.Windows.Forms.MenuItem
 
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -155,6 +156,7 @@ Public Class frmCollectionEditor
         Me.lblBatchProgress = New System.Windows.Forms.Label
         Me.VisualStyleProvider1 = New Skybound.VisualStyles.VisualStyleProvider
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog
+        Me.MenuItem8 = New System.Windows.Forms.MenuItem
         Me.gbxSourceCollection.SuspendLayout()
         Me.gbxDestinationCollection.SuspendLayout()
         Me.SuspendLayout()
@@ -301,7 +303,7 @@ Public Class frmCollectionEditor
         Me.lvwSource.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colSrcName, Me.colSrcDesc})
         Me.lvwSource.FullRowSelect = True
         Me.lvwSource.GridLines = True
-        Me.lvwSource.Location = New System.Drawing.Point(14, 112)
+        Me.lvwSource.Location = New System.Drawing.Point(14, 113)
         Me.lvwSource.Name = "lvwSource"
         Me.lvwSource.Size = New System.Drawing.Size(442, 362)
         Me.lvwSource.TabIndex = 2
@@ -362,7 +364,7 @@ Public Class frmCollectionEditor
         'cmdSaveDestCollection
         '
         Me.cmdSaveDestCollection.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdSaveDestCollection.Location = New System.Drawing.Point(134, 484)
+        Me.cmdSaveDestCollection.Location = New System.Drawing.Point(134, 485)
         Me.cmdSaveDestCollection.Name = "cmdSaveDestCollection"
         Me.cmdSaveDestCollection.Size = New System.Drawing.Size(114, 23)
         Me.cmdSaveDestCollection.TabIndex = 1
@@ -376,7 +378,7 @@ Public Class frmCollectionEditor
         Me.lvwDestination.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colName})
         Me.lvwDestination.FullRowSelect = True
         Me.lvwDestination.GridLines = True
-        Me.lvwDestination.Location = New System.Drawing.Point(14, 48)
+        Me.lvwDestination.Location = New System.Drawing.Point(14, 49)
         Me.lvwDestination.Name = "lvwDestination"
         Me.lvwDestination.Size = New System.Drawing.Size(232, 426)
         Me.lvwDestination.TabIndex = 0
@@ -544,7 +546,7 @@ Public Class frmCollectionEditor
         'mnuAdmin
         '
         Me.mnuAdmin.Index = 2
-        Me.mnuAdmin.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.MenuItem4, Me.mnuAdminNameHashRefresh, Me.MenuItem1, Me.MenuItem2, Me.MenuItem3, Me.MenuItem5, Me.MenuItem6})
+        Me.mnuAdmin.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.MenuItem4, Me.mnuAdminNameHashRefresh, Me.MenuItem1, Me.MenuItem2, Me.MenuItem3, Me.MenuItem5, Me.MenuItem6, Me.MenuItem8})
         Me.mnuAdmin.Text = "Admin"
         '
         'MenuItem4
@@ -607,11 +609,16 @@ Public Class frmCollectionEditor
         Me.lblBatchProgress.TextAlign = System.Drawing.ContentAlignment.TopRight
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblBatchProgress, True)
         '
+        'MenuItem8
+        '
+        Me.MenuItem8.Index = 7
+        Me.MenuItem8.Text = "Add Sorting Indexes"
+        '
         'frmCollectionEditor
         '
         Me.AutoScaleBaseSize = New System.Drawing.Size(5, 14)
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(808, 595)
+        Me.ClientSize = New System.Drawing.Size(808, 591)
         Me.Controls.Add(Me.pgbMain)
         Me.Controls.Add(Me.cmdDestAdd)
         Me.Controls.Add(Me.gbxDestinationCollection)
@@ -656,6 +663,7 @@ Public Class frmCollectionEditor
     Protected m_SelectedCollectionID As Integer
     Protected m_LastBatchULDirectoryPath As String
     Protected m_PSConnectionString As String = "Data Source=gigasax;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
+    'Protected m_PSConnectionString As String = "Data Source=we10125;Initial Catalog=Protein_Sequences_T3;Integrated Security=SSPI;"
 
     Protected WithEvents m_ImportHandler As Protein_Importer.IImportProteins
     Protected WithEvents m_UploadHandler As Protein_Uploader.IUploadProteins
@@ -1585,5 +1593,11 @@ Public Class frmCollectionEditor
 
         Me.m_Syncer.FixArchivedFilePaths()
 
+    End Sub
+    Private Sub MenuItem8_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuItem8.Click
+        If Me.m_Syncer Is Nothing Then
+            Me.m_Syncer = New clsSyncFASTAFileArchive(Me.m_PSConnectionString)
+        End If
+        Me.m_Syncer.AddSortingIndices()
     End Sub
 End Class
