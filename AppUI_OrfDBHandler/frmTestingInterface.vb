@@ -475,11 +475,21 @@ Public Class frmTestingInterface
             '    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta, _
             '    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward)
             Me.m_Exporter = New Protein_Exporter.clsGetFASTAFromDMS(Me.txtConnString.Text)
-            'fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "HCMV_2003+H_sapiens_IPI_2005-04-04.fasta", filePath)
-            'fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "Shewanella_2003-12-19.fasta", filePath)
-            'fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=forward,filetype=fasta", "na", filePath)
-            'fingerprint = Me.m_Exporter.ExportFASTAFile("PCQ_ETJ_2004-01-21", "seq_direction=forward,filetype=fasta", "na", filePath)
+
+            'True Legacy fasta file
+            fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "HCMV_2003+H_sapiens_IPI_2005-04-04.fasta", filePath)
+
+            'Legacy fasta file with existing protein collection
+            fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "Shewanella_2003-12-19.fasta", filePath)
+
+            'Protein collection from cbo exported forward
+            fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=forward,filetype=fasta", "na", filePath)
+
+            'Protein Collection from cbo exported reversed
             fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=reversed,filetype=fasta", "na", filePath)
+
+            'Protein Collection from cbo exported scrambled
+            fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=scrambled,filetype=fasta", "na", filePath)
 
             'fingerprint = exporter.ExportFASTAFile(CInt(Me.cboCollectionsList.SelectedValue), filePath)
             'exporter = New ExportCollectionsFromDMS.clsExportCollectionsFromDMS(Me.txtConnString.Text, ExportCollectionsFromDMS.IExportCollectionsFromDMS.ExportClasses.clsExportProteinsXTFASTA)
