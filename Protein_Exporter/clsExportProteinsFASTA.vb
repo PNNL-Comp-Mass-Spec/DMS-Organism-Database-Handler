@@ -58,22 +58,6 @@ Public Class clsExportProteinsFASTA
             tmpPC = DirectCast(Proteins.GetProtein(tmpName), Protein_Storage.IProteinStorageEntry)
             tmpSeq = tmpPC.Sequence
 
-            'If Not tmpPC.NameXRefs Is Nothing Then
-            '    tmpAltNamesSB = New System.Text.StringBuilder
-            '    tmpAltNamesSB.Append(" [XRefs: ")
-
-            '    For Each s In tmpPC.NameXRefs
-            '        tmpAltNamesSB.Append(s)
-            '        tmpAltNamesSB.Append(", ")
-            '    Next
-
-            '    tmpAltNamesSB.Remove(tmpAltNamesSB.Length - 2, 2)
-            '    tmpAltNamesSB.Append("]")
-            '    tmpAltNames = tmpAltNamesSB.ToString
-            'Else
-            '    tmpAltNames = ""
-            'End If
-
             counter += 1
 
             If (counter Mod EventTriggerThresh) = 0 Then
@@ -131,12 +115,10 @@ Public Class clsExportProteinsFASTA
         ByRef ProteinTables As DataSet, _
         ByRef destinationPath As String) As String
 
-        'Dim dr As DataRow
         Dim sw As System.IO.StreamWriter = New System.IO.StreamWriter(destinationPath)
 
         Dim pe As Protein_Storage.IProteinStorageEntry
 
-        'Dim nameList As ArrayList
         Dim ProteinTable As DataTable
 
         Dim descLine As String
@@ -173,12 +155,9 @@ Public Class clsExportProteinsFASTA
                 EventTriggerThresh = CInt(counterMax / 10)
             End If
 
-            'nameList = Proteins.GetSortedProteinNames
             foundRows = ProteinTable.Select("")
 
             For Each dr In foundRows
-                'tmpPC = DirectCast(Proteins.GetProtein(tmpName), Protein_Storage.IProteinStorageEntry)
-                'tmpSeq = dr.Item("Sequence").ToString
                 tmpSeq = Me.m_ExportComponent.SequenceExtender(dr.Item("Sequence").ToString, ProteinTable.Rows.Count)
 
 

@@ -18,8 +18,6 @@ Public Class clsGetFASTAFromDMS
 
         Me.m_PSConnectionString = ProteinStorageConnectionString
 
-
-
     End Sub
 
     Public ReadOnly Property ExporterComponent() As clsGetFASTAFromDMSForward ' Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.ExporterComponent
@@ -108,12 +106,7 @@ Public Class clsGetFASTAFromDMS
         ByVal LegacyFASTAFileName As String, _
         ByVal ExportPath As String) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.ExportFASTAFile
 
-        Dim legacyCollectionID As Integer
-        Dim legacyCollectionName As String
-        'Dim tableGetter As TableManipulationBase.IGetSQLData
-        Dim collectionSQL As String
         Dim legacyLocationsSQL As String
-        Dim tmpCollectionTable As DataTable
         Dim foundRows() As DataRow
 
         Dim ProteinCollections() As String
@@ -123,88 +116,15 @@ Public Class clsGetFASTAFromDMS
         Dim legacyStaticFilelocations As DataTable
         Dim legacyStaticFilePath As String
 
-        Dim legacyFileType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes
-        Dim legacyFileTypeRegex As System.Text.RegularExpressions.Regex
-        Dim m As System.Text.RegularExpressions.Match
-
         Dim optionsParser As clsFileCreationOptions
         optionsParser = New clsFileCreationOptions(Me.m_PSConnectionString)
         Dim cleanOptionsString As String
 
-        legacyFileTypeRegex = New System.Text.RegularExpressions.Regex( _
-            ".+\.(?<databasetype>(fasta.pro|fasta))$")
-
-
-        collectionSQL = "SELECT Protein_Collection_ID, FileName, NumProteins, NumResidues " & _
-                "FROM T_Protein_Collections"
-
         If Me.m_TableGetter Is Nothing Then
-            Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString, True)
+            Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString)
         End If
 
-        tmpCollectionTable = Me.m_TableGetter.GetTable(collectionSQL)
-
-
-        'check legacy filename for existing collection with that name
-        If LegacyFASTAFileName.Length > 0 And Not LegacyFASTAFileName.Equals("na") Then
-            'does a collection exist with this name?
-            'tableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString, True)
-            legacyCollectionName = System.IO.Path.GetFileNameWithoutExtension(LegacyFASTAFileName)
-            If legacyFileTypeRegex.IsMatch(LegacyFASTAFileName) Then
-                m = legacyFileTypeRegex.Match(LegacyFASTAFileName)
-                Select Case m.Groups("databasetype").Value
-                    Case "fasta"
-                        legacyFileType = ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta
-                    Case "fasta.pro"
-                        legacyFileType = ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fastapro
-                    Case Else
-                        legacyFileType = ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta
-                End Select
-            End If
-
-            foundRows = tmpCollectionTable.Select("FileName = '" & legacyCollectionName & "'")
-
-            If foundRows.Length > 0 Then
-                legacyCollectionID = CInt(foundRows(0).Item("Protein_Collection_ID"))
-                If collectionList Is Nothing Then
-                    collectionList = New ArrayList(1)
-                End If
-                CreationOptions = "seq_direction=forward,filetype=fasta"
-                collectionList.Add(legacyCollectionName)
-                Return Me.ExportMultipleFASTAFiles( _
-                    collectionList, CreationOptions, _
-                    ExportPath, 0, True, _
-                    legacyFileType, _
-                    ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward)
-            Else
-                'TODO:routine to grab file from DMS static location
-                legacyLocationsSQL = "SELECT FileName, Full_Path FROM V_Legacy_Static_File_Locations"
-                legacyStaticFilelocations = Me.m_TableGetter.GetTable(legacyLocationsSQL)
-                foundRows = legacyStaticFilelocations.Select("FileName = '" & LegacyFASTAFileName & "'")
-
-                Me.m_Getter = New clsGetFASTAFromDMSForward( _
-                    Me.m_PSConnectionString, _
-                    ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta)
-                RunSP_AddLegacyFileUploadRequest(LegacyFASTAFileName)
-                legacyStaticFilePath = foundRows(0).Item("Full_Path").ToString
-                Dim fi As New System.IO.FileInfo(legacyStaticFilePath)
-                Dim copyFI As New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, LegacyFASTAFileName))
-                If fi.Exists Then
-                    Dim sha1 As String = Me.GenerateFileAuthenticationHash(legacyStaticFilePath)
-                    If copyFI.Exists Then
-                        copyFI.Delete()
-                    End If
-                    fi.CopyTo(System.IO.Path.Combine(ExportPath, LegacyFASTAFileName))
-                    Me.OnFileGenerationCompleted(System.IO.Path.Combine(ExportPath, LegacyFASTAFileName))
-                    Me.OnTaskCompletion(System.IO.Path.Combine(ExportPath, LegacyFASTAFileName))
-
-                    Return sha1
-                End If
-
-            End If
-
-
-        Else
+        If ProteinCollectionNameList.Length > 0 And Not ProteinCollectionNameList.Equals("na") Then
             'Parse out protein collections from "," delimited list
             ProteinCollections = ProteinCollectionNameList.Split(","c)
             If collectionList Is Nothing Then
@@ -223,6 +143,35 @@ Public Class clsGetFASTAFromDMS
                 ExportPath, 0, True, _
                 optionsParser.FileFormatType, _
                 optionsParser.SequenceDirection)
+
+        ElseIf LegacyFASTAFileName.Length > 0 And Not LegacyFASTAFileName.Equals("na") Then
+
+            legacyLocationsSQL = "SELECT FileName, Full_Path FROM V_Legacy_Static_File_Locations"
+            legacyStaticFilelocations = Me.m_TableGetter.GetTable(legacyLocationsSQL)
+            foundRows = legacyStaticFilelocations.Select("FileName = '" & LegacyFASTAFileName & "'")
+
+            Me.m_Getter = New clsGetFASTAFromDMSForward( _
+                Me.m_PSConnectionString, _
+                ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta)
+            RunSP_AddLegacyFileUploadRequest(LegacyFASTAFileName)
+            legacyStaticFilePath = foundRows(0).Item("Full_Path").ToString
+            Dim fi As New System.IO.FileInfo(legacyStaticFilePath)
+            Dim copyFI As New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, LegacyFASTAFileName))
+            If fi.Exists Then
+                Dim sha1 As String = Me.GenerateFileAuthenticationHash(legacyStaticFilePath)
+                If copyFI.Exists Then
+                    copyFI.Delete()
+                End If
+                fi.CopyTo(System.IO.Path.Combine(ExportPath, LegacyFASTAFileName))
+                Me.OnFileGenerationCompleted(System.IO.Path.Combine(ExportPath, LegacyFASTAFileName))
+                Me.OnTaskCompletion(System.IO.Path.Combine(ExportPath, LegacyFASTAFileName))
+
+                Return sha1
+            End If
+
+            'End If
+
+
         End If
 
         Return Nothing
@@ -301,7 +250,6 @@ Public Class clsGetFASTAFromDMS
     Event FileGenerationStarted(ByVal taskMsg As String) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationStarted
 
     Private Sub OnFileGenerationCompleted(ByVal FullOutputPath As String) Handles m_Getter.FileGenerationCompleted
-        'RaiseEvent FileGenerationCompleted(FullOutputPath)
         If Me.m_ArchiveCollectionList Is Nothing Then
             Me.m_ArchiveCollectionList = New ArrayList
         End If

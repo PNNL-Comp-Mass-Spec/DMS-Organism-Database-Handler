@@ -480,6 +480,12 @@ Public Class frmTestingInterface
             fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "HCMV_2003+H_sapiens_IPI_2005-04-04.fasta", filePath)
 
             'Legacy fasta file with existing protein collection
+            fingerprint = Me.m_Exporter.ExportFASTAFile("Shewanella_2003-12-19", "seq_direction=forward,filetype=fasta", "Shewanella_2003-12-19.fasta", filePath)
+
+            'Legacy fasta file with existing protein collection
+            fingerprint = Me.m_Exporter.ExportFASTAFile("Shewanella_2003-12-19,CaM_His_Calmodulin_With_His_Tag", "seq_direction=forward,filetype=fasta", "na", filePath)
+
+            'Legacy fasta file with existing protein collection
             fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "Shewanella_2003-12-19.fasta", filePath)
 
             'Protein collection from cbo exported forward
