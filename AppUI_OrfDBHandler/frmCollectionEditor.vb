@@ -1,6 +1,3 @@
-Option Strict On
-Imports Protein_Exporter.ExportProteinCollectionsIFC
-
 Public Class frmCollectionEditor
     Inherits System.Windows.Forms.Form
 
@@ -32,40 +29,44 @@ Public Class frmCollectionEditor
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
+    Friend WithEvents pnlProgBar As System.Windows.Forms.Panel
     Friend WithEvents gbxSourceCollection As System.Windows.Forms.GroupBox
-    Friend WithEvents cboOrganismFilter As System.Windows.Forms.ComboBox
+    Friend WithEvents cboAuthorityPicker As System.Windows.Forms.ComboBox
+    Friend WithEvents lblAuthorityFilter As System.Windows.Forms.Label
+    Friend WithEvents pbxLiveSearchCancel As System.Windows.Forms.PictureBox
+    Friend WithEvents lblSearchCount As System.Windows.Forms.Label
+    Friend WithEvents cmdLoadProteins As System.Windows.Forms.Button
+    Friend WithEvents cmdLoadFile As System.Windows.Forms.Button
+    Friend WithEvents txtLiveSearch As System.Windows.Forms.TextBox
     Friend WithEvents cboCollectionPicker As System.Windows.Forms.ComboBox
-    Friend WithEvents lvwSource As System.Windows.Forms.ListView
-    Friend WithEvents gbxDestinationCollection As System.Windows.Forms.GroupBox
+    Friend WithEvents cboOrganismFilter As System.Windows.Forms.ComboBox
     Friend WithEvents lblOrganismFilter As System.Windows.Forms.Label
     Friend WithEvents lblCollectionPicker As System.Windows.Forms.Label
-    Friend WithEvents lblSourceMembers As System.Windows.Forms.Label
-    Friend WithEvents EditorToolTip As System.Windows.Forms.ToolTip
-    Friend WithEvents txtLiveSearch As System.Windows.Forms.TextBox
     Friend WithEvents pbxLiveSearchBkg As System.Windows.Forms.PictureBox
-    Friend WithEvents lvwDestination As System.Windows.Forms.ListView
-    Friend WithEvents lblCurrProteinCount As System.Windows.Forms.Label
-    Friend WithEvents colName As System.Windows.Forms.ColumnHeader
+    Friend WithEvents lvwSource As System.Windows.Forms.ListView
+    Friend WithEvents lblSourceMembers As System.Windows.Forms.Label
     Friend WithEvents colSrcName As System.Windows.Forms.ColumnHeader
     Friend WithEvents colSrcDesc As System.Windows.Forms.ColumnHeader
-    'Friend WithEvents cmdDestAdd As System.Windows.Forms.Button
     Friend WithEvents cmdDestAdd As UIControls.ImageButton
-    'Friend WithEvents cmdDestRemove As System.Windows.Forms.Button
     Friend WithEvents cmdDestRemove As UIControls.ImageButton
-    Friend WithEvents cmdSaveDestCollection As System.Windows.Forms.Button
-    Friend WithEvents cmdLoadFile As System.Windows.Forms.Button
-    Friend WithEvents cmdLoadProteins As System.Windows.Forms.Button
-    'Friend WithEvents cmdDestAddAll As System.Windows.Forms.Button
     Friend WithEvents cmdDestAddAll As UIControls.ImageButton
-    'Friend WithEvents cmdDestRemoveAll As System.Windows.Forms.Button
     Friend WithEvents cmdDestRemoveAll As UIControls.ImageButton
-    Friend WithEvents lblCurrentTask As System.Windows.Forms.Label
+    Friend WithEvents gbxDestinationCollection As System.Windows.Forms.GroupBox
+    Friend WithEvents lblCurrProteinCount As System.Windows.Forms.Label
+    Friend WithEvents lvwDestination As System.Windows.Forms.ListView
+    Friend WithEvents colName As System.Windows.Forms.ColumnHeader
+    Friend WithEvents pnlProgBarLower As System.Windows.Forms.Panel
     Friend WithEvents pgbMain As System.Windows.Forms.ProgressBar
-    Friend WithEvents cmdExportToFile As System.Windows.Forms.Button
-    Friend WithEvents lblSearchCount As System.Windows.Forms.Label
-    Friend WithEvents pbxLiveSearchCancel As System.Windows.Forms.PictureBox
+    Friend WithEvents pnlSource As System.Windows.Forms.Panel
+    Friend WithEvents SourceDestSplit As System.Windows.Forms.Splitter
+    Friend WithEvents pnlDest As System.Windows.Forms.Panel
+    Friend WithEvents pnlProgBarUpper As System.Windows.Forms.Panel
+    Friend WithEvents lblCurrentTask As System.Windows.Forms.Label
     Friend WithEvents mnuMainGUI As System.Windows.Forms.MainMenu
-    Friend WithEvents MenuItem7 As System.Windows.Forms.MenuItem
+    Friend WithEvents mnuFile As System.Windows.Forms.MenuItem
+    Friend WithEvents mnuHelp As System.Windows.Forms.MenuItem
+    Friend WithEvents mnuTools As System.Windows.Forms.MenuItem
+    Friend WithEvents mnuAdmin As System.Windows.Forms.MenuItem
     Friend WithEvents mnuFileExit As System.Windows.Forms.MenuItem
     Friend WithEvents mnuToolsNucToProt As System.Windows.Forms.MenuItem
     Friend WithEvents mnuToolsConvert As System.Windows.Forms.MenuItem
@@ -73,32 +74,38 @@ Public Class frmCollectionEditor
     Friend WithEvents mnuToolsConvertA2F As System.Windows.Forms.MenuItem
     Friend WithEvents mnuToolsFCheckup As System.Windows.Forms.MenuItem
     Friend WithEvents mnuToolsOptions As System.Windows.Forms.MenuItem
-    Friend WithEvents lblBatchProgress As System.Windows.Forms.Label
     Friend WithEvents mnuToolsCollectionEdit As System.Windows.Forms.MenuItem
-    Friend WithEvents cboAuthorityPicker As System.Windows.Forms.ComboBox
-    Friend WithEvents lblAuthorityFilter As System.Windows.Forms.Label
     Friend WithEvents mnuToolsCompareDBs As System.Windows.Forms.MenuItem
     Friend WithEvents mnuToolsExtractFromFile As System.Windows.Forms.MenuItem
-    Friend WithEvents VisualStyleProvider1 As Skybound.VisualStyles.VisualStyleProvider
-    Friend WithEvents mnuFile As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuTools As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuHelp As System.Windows.Forms.MenuItem
     Friend WithEvents mnuHelpAbout As System.Windows.Forms.MenuItem
-    Friend WithEvents FolderBrowserDialog1 As System.Windows.Forms.FolderBrowserDialog
-    Friend WithEvents mnuAdmin As System.Windows.Forms.MenuItem
     Friend WithEvents mnuAdminNameHashRefresh As System.Windows.Forms.MenuItem
-    Friend WithEvents MenuItem1 As System.Windows.Forms.MenuItem
-    Friend WithEvents MenuItem2 As System.Windows.Forms.MenuItem
-    Friend WithEvents MenuItem3 As System.Windows.Forms.MenuItem
-    Friend WithEvents MenuItem4 As System.Windows.Forms.MenuItem
-    Friend WithEvents MenuItem5 As System.Windows.Forms.MenuItem
-    Friend WithEvents MenuItem6 As System.Windows.Forms.MenuItem
-    Friend WithEvents MenuItem8 As System.Windows.Forms.MenuItem
+    Friend WithEvents mnuToolsSep1 As System.Windows.Forms.MenuItem
+    Friend WithEvents mnuAdminBatchUploadFiles As System.Windows.Forms.MenuItem
+    Friend WithEvents mnuAdminUpdateSHA As System.Windows.Forms.MenuItem
+    Friend WithEvents mnuAdminUpdateCollectionsArchive As System.Windows.Forms.MenuItem
+    Friend WithEvents mnuAdminUpdateZeroedMasses As System.Windows.Forms.MenuItem
+    Friend WithEvents mnuAdminTestingInterface As System.Windows.Forms.MenuItem
+    Friend WithEvents mnuAdminFixArchivePaths As System.Windows.Forms.MenuItem
+    Friend WithEvents mnuAdminAddSortingIndexes As System.Windows.Forms.MenuItem
+    Friend WithEvents lblBatchProgress As System.Windows.Forms.Label
+    Friend WithEvents cmdExportToFile As System.Windows.Forms.Button
+    Friend WithEvents cmdSaveDestCollection As System.Windows.Forms.Button
+    Friend WithEvents VisualStyleProvider2 As Skybound.VisualStyles.VisualStyleProvider
 
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container
         Dim resources As System.Resources.ResourceManager = New System.Resources.ResourceManager(GetType(frmCollectionEditor))
+        Me.pnlProgBar = New System.Windows.Forms.Panel
+        Me.pnlProgBarUpper = New System.Windows.Forms.Panel
+        Me.lblBatchProgress = New System.Windows.Forms.Label
+        Me.lblCurrentTask = New System.Windows.Forms.Label
+        Me.pnlProgBarLower = New System.Windows.Forms.Panel
+        Me.pgbMain = New System.Windows.Forms.ProgressBar
+        Me.pnlSource = New System.Windows.Forms.Panel
+        Me.cmdDestAdd = New UIControls.ImageButton
+        Me.cmdDestRemove = New UIControls.ImageButton
+        Me.cmdDestAddAll = New UIControls.ImageButton
+        Me.cmdDestRemoveAll = New UIControls.ImageButton
         Me.gbxSourceCollection = New System.Windows.Forms.GroupBox
         Me.cboAuthorityPicker = New System.Windows.Forms.ComboBox
         Me.lblAuthorityFilter = New System.Windows.Forms.Label
@@ -116,19 +123,14 @@ Public Class frmCollectionEditor
         Me.colSrcName = New System.Windows.Forms.ColumnHeader
         Me.colSrcDesc = New System.Windows.Forms.ColumnHeader
         Me.lblSourceMembers = New System.Windows.Forms.Label
+        Me.SourceDestSplit = New System.Windows.Forms.Splitter
+        Me.pnlDest = New System.Windows.Forms.Panel
         Me.gbxDestinationCollection = New System.Windows.Forms.GroupBox
+        Me.cmdSaveDestCollection = New System.Windows.Forms.Button
         Me.cmdExportToFile = New System.Windows.Forms.Button
         Me.lblCurrProteinCount = New System.Windows.Forms.Label
-        Me.cmdSaveDestCollection = New System.Windows.Forms.Button
         Me.lvwDestination = New System.Windows.Forms.ListView
         Me.colName = New System.Windows.Forms.ColumnHeader
-        Me.cmdDestAdd = New UIControls.ImageButton
-        Me.cmdDestRemove = New UIControls.ImageButton
-        Me.EditorToolTip = New System.Windows.Forms.ToolTip(Me.components)
-        Me.cmdDestAddAll = New UIControls.ImageButton
-        Me.cmdDestRemoveAll = New UIControls.ImageButton
-        Me.lblCurrentTask = New System.Windows.Forms.Label
-        Me.pgbMain = New System.Windows.Forms.ProgressBar
         Me.mnuMainGUI = New System.Windows.Forms.MainMenu
         Me.mnuFile = New System.Windows.Forms.MenuItem
         Me.mnuFileExit = New System.Windows.Forms.MenuItem
@@ -141,28 +143,172 @@ Public Class frmCollectionEditor
         Me.mnuToolsFCheckup = New System.Windows.Forms.MenuItem
         Me.mnuToolsCompareDBs = New System.Windows.Forms.MenuItem
         Me.mnuToolsExtractFromFile = New System.Windows.Forms.MenuItem
-        Me.MenuItem7 = New System.Windows.Forms.MenuItem
+        Me.mnuToolsSep1 = New System.Windows.Forms.MenuItem
         Me.mnuToolsOptions = New System.Windows.Forms.MenuItem
         Me.mnuAdmin = New System.Windows.Forms.MenuItem
-        Me.MenuItem4 = New System.Windows.Forms.MenuItem
+        Me.mnuAdminBatchUploadFiles = New System.Windows.Forms.MenuItem
         Me.mnuAdminNameHashRefresh = New System.Windows.Forms.MenuItem
-        Me.MenuItem1 = New System.Windows.Forms.MenuItem
-        Me.MenuItem2 = New System.Windows.Forms.MenuItem
-        Me.MenuItem3 = New System.Windows.Forms.MenuItem
-        Me.MenuItem5 = New System.Windows.Forms.MenuItem
-        Me.MenuItem6 = New System.Windows.Forms.MenuItem
+        Me.mnuAdminUpdateSHA = New System.Windows.Forms.MenuItem
+        Me.mnuAdminUpdateCollectionsArchive = New System.Windows.Forms.MenuItem
+        Me.mnuAdminUpdateZeroedMasses = New System.Windows.Forms.MenuItem
+        Me.mnuAdminTestingInterface = New System.Windows.Forms.MenuItem
+        Me.mnuAdminFixArchivePaths = New System.Windows.Forms.MenuItem
+        Me.mnuAdminAddSortingIndexes = New System.Windows.Forms.MenuItem
         Me.mnuHelp = New System.Windows.Forms.MenuItem
         Me.mnuHelpAbout = New System.Windows.Forms.MenuItem
-        Me.lblBatchProgress = New System.Windows.Forms.Label
-        Me.VisualStyleProvider1 = New Skybound.VisualStyles.VisualStyleProvider
-        Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog
-        Me.MenuItem8 = New System.Windows.Forms.MenuItem
+        Me.VisualStyleProvider2 = New Skybound.VisualStyles.VisualStyleProvider
+        Me.pnlProgBar.SuspendLayout()
+        Me.pnlProgBarUpper.SuspendLayout()
+        Me.pnlProgBarLower.SuspendLayout()
+        Me.pnlSource.SuspendLayout()
         Me.gbxSourceCollection.SuspendLayout()
+        Me.pnlDest.SuspendLayout()
         Me.gbxDestinationCollection.SuspendLayout()
         Me.SuspendLayout()
         '
+        'pnlProgBar
+        '
+        Me.pnlProgBar.Controls.Add(Me.pnlProgBarUpper)
+        Me.pnlProgBar.Controls.Add(Me.pnlProgBarLower)
+        Me.pnlProgBar.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.pnlProgBar.Location = New System.Drawing.Point(0, 565)
+        Me.pnlProgBar.Name = "pnlProgBar"
+        Me.pnlProgBar.Size = New System.Drawing.Size(812, 76)
+        Me.pnlProgBar.TabIndex = 0
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pnlProgBar, True)
+        '
+        'pnlProgBarUpper
+        '
+        Me.pnlProgBarUpper.Controls.Add(Me.lblBatchProgress)
+        Me.pnlProgBarUpper.Controls.Add(Me.lblCurrentTask)
+        Me.pnlProgBarUpper.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pnlProgBarUpper.DockPadding.All = 6
+        Me.pnlProgBarUpper.Location = New System.Drawing.Point(0, 0)
+        Me.pnlProgBarUpper.Name = "pnlProgBarUpper"
+        Me.pnlProgBarUpper.Size = New System.Drawing.Size(812, 42)
+        Me.pnlProgBarUpper.TabIndex = 2
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pnlProgBarUpper, True)
+        '
+        'lblBatchProgress
+        '
+        Me.lblBatchProgress.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lblBatchProgress.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblBatchProgress.Location = New System.Drawing.Point(6, 20)
+        Me.lblBatchProgress.Name = "lblBatchProgress"
+        Me.lblBatchProgress.Size = New System.Drawing.Size(800, 16)
+        Me.lblBatchProgress.TabIndex = 16
+        Me.lblBatchProgress.TextAlign = System.Drawing.ContentAlignment.TopRight
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.lblBatchProgress, True)
+        '
+        'lblCurrentTask
+        '
+        Me.lblCurrentTask.Dock = System.Windows.Forms.DockStyle.Top
+        Me.lblCurrentTask.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblCurrentTask.Location = New System.Drawing.Point(6, 6)
+        Me.lblCurrentTask.Name = "lblCurrentTask"
+        Me.lblCurrentTask.Size = New System.Drawing.Size(800, 14)
+        Me.lblCurrentTask.TabIndex = 15
+        Me.lblCurrentTask.Text = "Reading Source File..."
+        Me.lblCurrentTask.TextAlign = System.Drawing.ContentAlignment.BottomLeft
+        Me.lblCurrentTask.Visible = False
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.lblCurrentTask, True)
+        '
+        'pnlProgBarLower
+        '
+        Me.pnlProgBarLower.Controls.Add(Me.pgbMain)
+        Me.pnlProgBarLower.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.pnlProgBarLower.DockPadding.All = 6
+        Me.pnlProgBarLower.Location = New System.Drawing.Point(0, 42)
+        Me.pnlProgBarLower.Name = "pnlProgBarLower"
+        Me.pnlProgBarLower.Size = New System.Drawing.Size(812, 34)
+        Me.pnlProgBarLower.TabIndex = 1
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pnlProgBarLower, True)
+        '
+        'pgbMain
+        '
+        Me.pgbMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pgbMain.Location = New System.Drawing.Point(6, 6)
+        Me.pgbMain.Name = "pgbMain"
+        Me.pgbMain.Size = New System.Drawing.Size(800, 22)
+        Me.pgbMain.TabIndex = 14
+        Me.pgbMain.Visible = False
+        '
+        'pnlSource
+        '
+        Me.pnlSource.Controls.Add(Me.cmdDestAdd)
+        Me.pnlSource.Controls.Add(Me.cmdDestRemove)
+        Me.pnlSource.Controls.Add(Me.cmdDestAddAll)
+        Me.pnlSource.Controls.Add(Me.cmdDestRemoveAll)
+        Me.pnlSource.Controls.Add(Me.gbxSourceCollection)
+        Me.pnlSource.Dock = System.Windows.Forms.DockStyle.Left
+        Me.pnlSource.DockPadding.All = 8
+        Me.pnlSource.Location = New System.Drawing.Point(0, 0)
+        Me.pnlSource.Name = "pnlSource"
+        Me.pnlSource.Size = New System.Drawing.Size(544, 565)
+        Me.pnlSource.TabIndex = 1
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pnlSource, True)
+        '
+        'cmdDestAdd
+        '
+        Me.cmdDestAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdDestAdd.Enabled = False
+        Me.cmdDestAdd.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdDestAdd.ForeColor = System.Drawing.SystemColors.Highlight
+        Me.cmdDestAdd.Image = CType(resources.GetObject("cmdDestAdd.Image"), System.Drawing.Image)
+        Me.cmdDestAdd.Location = New System.Drawing.Point(496, 278)
+        Me.cmdDestAdd.Name = "cmdDestAdd"
+        Me.cmdDestAdd.Size = New System.Drawing.Size(38, 32)
+        Me.cmdDestAdd.TabIndex = 5
+        Me.cmdDestAdd.ThemedImage = CType(resources.GetObject("cmdDestAdd.ThemedImage"), System.Drawing.Bitmap)
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.cmdDestAdd, False)
+        '
+        'cmdDestRemove
+        '
+        Me.cmdDestRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdDestRemove.Enabled = False
+        Me.cmdDestRemove.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdDestRemove.ForeColor = System.Drawing.SystemColors.Highlight
+        Me.cmdDestRemove.Image = CType(resources.GetObject("cmdDestRemove.Image"), System.Drawing.Image)
+        Me.cmdDestRemove.Location = New System.Drawing.Point(496, 327)
+        Me.cmdDestRemove.Name = "cmdDestRemove"
+        Me.cmdDestRemove.Size = New System.Drawing.Size(38, 33)
+        Me.cmdDestRemove.TabIndex = 6
+        Me.cmdDestRemove.ThemedImage = CType(resources.GetObject("cmdDestRemove.ThemedImage"), System.Drawing.Bitmap)
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.cmdDestRemove, False)
+        '
+        'cmdDestAddAll
+        '
+        Me.cmdDestAddAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdDestAddAll.Enabled = False
+        Me.cmdDestAddAll.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdDestAddAll.ForeColor = System.Drawing.SystemColors.Highlight
+        Me.cmdDestAddAll.Image = CType(resources.GetObject("cmdDestAddAll.Image"), System.Drawing.Image)
+        Me.cmdDestAddAll.Location = New System.Drawing.Point(496, 228)
+        Me.cmdDestAddAll.Name = "cmdDestAddAll"
+        Me.cmdDestAddAll.Size = New System.Drawing.Size(38, 33)
+        Me.cmdDestAddAll.TabIndex = 3
+        Me.cmdDestAddAll.ThemedImage = CType(resources.GetObject("cmdDestAddAll.ThemedImage"), System.Drawing.Bitmap)
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.cmdDestAddAll, False)
+        '
+        'cmdDestRemoveAll
+        '
+        Me.cmdDestRemoveAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdDestRemoveAll.Enabled = False
+        Me.cmdDestRemoveAll.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdDestRemoveAll.ForeColor = System.Drawing.SystemColors.Highlight
+        Me.cmdDestRemoveAll.Image = CType(resources.GetObject("cmdDestRemoveAll.Image"), System.Drawing.Image)
+        Me.cmdDestRemoveAll.Location = New System.Drawing.Point(496, 377)
+        Me.cmdDestRemoveAll.Name = "cmdDestRemoveAll"
+        Me.cmdDestRemoveAll.Size = New System.Drawing.Size(38, 32)
+        Me.cmdDestRemoveAll.TabIndex = 4
+        Me.cmdDestRemoveAll.ThemedImage = CType(resources.GetObject("cmdDestRemoveAll.ThemedImage"), System.Drawing.Bitmap)
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.cmdDestRemoveAll, False)
+        '
         'gbxSourceCollection
         '
+        Me.gbxSourceCollection.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Left) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.gbxSourceCollection.Controls.Add(Me.cboAuthorityPicker)
         Me.gbxSourceCollection.Controls.Add(Me.lblAuthorityFilter)
         Me.gbxSourceCollection.Controls.Add(Me.pbxLiveSearchCancel)
@@ -177,135 +323,150 @@ Public Class frmCollectionEditor
         Me.gbxSourceCollection.Controls.Add(Me.pbxLiveSearchBkg)
         Me.gbxSourceCollection.Controls.Add(Me.lvwSource)
         Me.gbxSourceCollection.Controls.Add(Me.lblSourceMembers)
-        Me.gbxSourceCollection.Location = New System.Drawing.Point(12, 14)
+        Me.gbxSourceCollection.Location = New System.Drawing.Point(8, 8)
         Me.gbxSourceCollection.Name = "gbxSourceCollection"
-        Me.gbxSourceCollection.Size = New System.Drawing.Size(472, 510)
-        Me.gbxSourceCollection.TabIndex = 0
+        Me.gbxSourceCollection.Size = New System.Drawing.Size(472, 549)
+        Me.gbxSourceCollection.TabIndex = 1
         Me.gbxSourceCollection.TabStop = False
         Me.gbxSourceCollection.Text = "Source Collection"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.gbxSourceCollection, True)
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.gbxSourceCollection, True)
         '
         'cboAuthorityPicker
         '
+        Me.cboAuthorityPicker.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboAuthorityPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboAuthorityPicker.Location = New System.Drawing.Point(240, 30)
+        Me.cboAuthorityPicker.Location = New System.Drawing.Point(240, 34)
         Me.cboAuthorityPicker.Name = "cboAuthorityPicker"
         Me.cboAuthorityPicker.Size = New System.Drawing.Size(216, 21)
         Me.cboAuthorityPicker.TabIndex = 17
         '
         'lblAuthorityFilter
         '
-        Me.lblAuthorityFilter.Location = New System.Drawing.Point(240, 16)
+        Me.lblAuthorityFilter.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lblAuthorityFilter.Location = New System.Drawing.Point(240, 19)
         Me.lblAuthorityFilter.Name = "lblAuthorityFilter"
-        Me.lblAuthorityFilter.Size = New System.Drawing.Size(212, 16)
+        Me.lblAuthorityFilter.Size = New System.Drawing.Size(212, 17)
         Me.lblAuthorityFilter.TabIndex = 18
         Me.lblAuthorityFilter.Text = "Naming Authority Filter"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblAuthorityFilter, True)
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.lblAuthorityFilter, True)
         '
         'pbxLiveSearchCancel
         '
+        Me.pbxLiveSearchCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.pbxLiveSearchCancel.BackColor = System.Drawing.SystemColors.ActiveCaptionText
         Me.pbxLiveSearchCancel.Image = CType(resources.GetObject("pbxLiveSearchCancel.Image"), System.Drawing.Image)
-        Me.pbxLiveSearchCancel.Location = New System.Drawing.Point(194, 482)
+        Me.pbxLiveSearchCancel.Location = New System.Drawing.Point(194, 519)
         Me.pbxLiveSearchCancel.Name = "pbxLiveSearchCancel"
-        Me.pbxLiveSearchCancel.Size = New System.Drawing.Size(16, 16)
+        Me.pbxLiveSearchCancel.Size = New System.Drawing.Size(16, 17)
         Me.pbxLiveSearchCancel.TabIndex = 16
         Me.pbxLiveSearchCancel.TabStop = False
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.pbxLiveSearchCancel, True)
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pbxLiveSearchCancel, True)
         '
         'lblSearchCount
         '
-        Me.lblSearchCount.Location = New System.Drawing.Point(224, 484)
+        Me.lblSearchCount.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lblSearchCount.Location = New System.Drawing.Point(224, 523)
         Me.lblSearchCount.Name = "lblSearchCount"
-        Me.lblSearchCount.Size = New System.Drawing.Size(88, 15)
+        Me.lblSearchCount.Size = New System.Drawing.Size(88, 16)
         Me.lblSearchCount.TabIndex = 15
         Me.lblSearchCount.Text = "30000/30000"
         Me.lblSearchCount.TextAlign = System.Drawing.ContentAlignment.TopCenter
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblSearchCount, True)
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.lblSearchCount, True)
         '
         'cmdLoadProteins
         '
-        Me.cmdLoadProteins.Location = New System.Drawing.Point(352, 68)
+        Me.cmdLoadProteins.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdLoadProteins.Location = New System.Drawing.Point(352, 73)
         Me.cmdLoadProteins.Name = "cmdLoadProteins"
-        Me.cmdLoadProteins.Size = New System.Drawing.Size(102, 22)
+        Me.cmdLoadProteins.Size = New System.Drawing.Size(102, 24)
         Me.cmdLoadProteins.TabIndex = 14
         Me.cmdLoadProteins.Text = "Load Proteins"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdLoadProteins, True)
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.cmdLoadProteins, True)
         '
         'cmdLoadFile
         '
-        Me.cmdLoadFile.Location = New System.Drawing.Point(316, 478)
+        Me.cmdLoadFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdLoadFile.Location = New System.Drawing.Point(316, 516)
         Me.cmdLoadFile.Name = "cmdLoadFile"
         Me.cmdLoadFile.Size = New System.Drawing.Size(140, 24)
         Me.cmdLoadFile.TabIndex = 10
         Me.cmdLoadFile.Text = "Import New Collection..."
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdLoadFile, True)
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.cmdLoadFile, True)
         '
         'txtLiveSearch
         '
+        Me.txtLiveSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.txtLiveSearch.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.txtLiveSearch.ForeColor = System.Drawing.SystemColors.InactiveCaption
-        Me.txtLiveSearch.Location = New System.Drawing.Point(38, 484)
+        Me.txtLiveSearch.Location = New System.Drawing.Point(38, 521)
         Me.txtLiveSearch.Name = "txtLiveSearch"
         Me.txtLiveSearch.Size = New System.Drawing.Size(154, 14)
         Me.txtLiveSearch.TabIndex = 8
         Me.txtLiveSearch.Text = "Search"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtLiveSearch, True)
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.txtLiveSearch, True)
         '
         'cboCollectionPicker
         '
+        Me.cboCollectionPicker.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboCollectionPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboCollectionPicker.Location = New System.Drawing.Point(14, 68)
+        Me.cboCollectionPicker.Location = New System.Drawing.Point(14, 73)
         Me.cboCollectionPicker.Name = "cboCollectionPicker"
         Me.cboCollectionPicker.Size = New System.Drawing.Size(328, 21)
         Me.cboCollectionPicker.TabIndex = 1
         '
         'cboOrganismFilter
         '
+        Me.cboOrganismFilter.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboOrganismFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboOrganismFilter.Location = New System.Drawing.Point(14, 30)
+        Me.cboOrganismFilter.Location = New System.Drawing.Point(14, 34)
         Me.cboOrganismFilter.Name = "cboOrganismFilter"
         Me.cboOrganismFilter.Size = New System.Drawing.Size(216, 21)
         Me.cboOrganismFilter.TabIndex = 0
         '
         'lblOrganismFilter
         '
-        Me.lblOrganismFilter.Location = New System.Drawing.Point(14, 16)
+        Me.lblOrganismFilter.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lblOrganismFilter.Location = New System.Drawing.Point(14, 19)
         Me.lblOrganismFilter.Name = "lblOrganismFilter"
-        Me.lblOrganismFilter.Size = New System.Drawing.Size(212, 16)
+        Me.lblOrganismFilter.Size = New System.Drawing.Size(212, 17)
         Me.lblOrganismFilter.TabIndex = 3
         Me.lblOrganismFilter.Text = "Organism Selector"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblOrganismFilter, True)
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.lblOrganismFilter, True)
         '
         'lblCollectionPicker
         '
-        Me.lblCollectionPicker.Location = New System.Drawing.Point(14, 54)
+        Me.lblCollectionPicker.Location = New System.Drawing.Point(14, 58)
         Me.lblCollectionPicker.Name = "lblCollectionPicker"
-        Me.lblCollectionPicker.Size = New System.Drawing.Size(100, 15)
+        Me.lblCollectionPicker.Size = New System.Drawing.Size(100, 16)
         Me.lblCollectionPicker.TabIndex = 4
         Me.lblCollectionPicker.Text = "Protein Collection"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblCollectionPicker, True)
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.lblCollectionPicker, True)
         '
         'pbxLiveSearchBkg
         '
+        Me.pbxLiveSearchBkg.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.pbxLiveSearchBkg.Image = CType(resources.GetObject("pbxLiveSearchBkg.Image"), System.Drawing.Image)
-        Me.pbxLiveSearchBkg.Location = New System.Drawing.Point(16, 478)
+        Me.pbxLiveSearchBkg.Location = New System.Drawing.Point(16, 515)
         Me.pbxLiveSearchBkg.Name = "pbxLiveSearchBkg"
-        Me.pbxLiveSearchBkg.Size = New System.Drawing.Size(200, 24)
+        Me.pbxLiveSearchBkg.Size = New System.Drawing.Size(200, 26)
         Me.pbxLiveSearchBkg.TabIndex = 9
         Me.pbxLiveSearchBkg.TabStop = False
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.pbxLiveSearchBkg, True)
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pbxLiveSearchBkg, True)
         '
         'lvwSource
         '
-        Me.lvwSource.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.lvwSource.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lvwSource.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colSrcName, Me.colSrcDesc})
         Me.lvwSource.FullRowSelect = True
         Me.lvwSource.GridLines = True
-        Me.lvwSource.Location = New System.Drawing.Point(14, 113)
+        Me.lvwSource.Location = New System.Drawing.Point(14, 118)
         Me.lvwSource.Name = "lvwSource"
-        Me.lvwSource.Size = New System.Drawing.Size(442, 362)
+        Me.lvwSource.Size = New System.Drawing.Size(442, 390)
         Me.lvwSource.TabIndex = 2
         Me.lvwSource.View = System.Windows.Forms.View.Details
         '
@@ -321,66 +482,93 @@ Public Class frmCollectionEditor
         '
         'lblSourceMembers
         '
-        Me.lblSourceMembers.Location = New System.Drawing.Point(14, 92)
+        Me.lblSourceMembers.Location = New System.Drawing.Point(14, 99)
         Me.lblSourceMembers.Name = "lblSourceMembers"
-        Me.lblSourceMembers.Size = New System.Drawing.Size(128, 15)
+        Me.lblSourceMembers.Size = New System.Drawing.Size(128, 16)
         Me.lblSourceMembers.TabIndex = 5
         Me.lblSourceMembers.Text = "Collection Members"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblSourceMembers, True)
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.lblSourceMembers, True)
+        '
+        'SourceDestSplit
+        '
+        Me.SourceDestSplit.Location = New System.Drawing.Point(544, 0)
+        Me.SourceDestSplit.MinExtra = 265
+        Me.SourceDestSplit.MinSize = 450
+        Me.SourceDestSplit.Name = "SourceDestSplit"
+        Me.SourceDestSplit.Size = New System.Drawing.Size(3, 565)
+        Me.SourceDestSplit.TabIndex = 2
+        Me.SourceDestSplit.TabStop = False
+        '
+        'pnlDest
+        '
+        Me.pnlDest.Controls.Add(Me.gbxDestinationCollection)
+        Me.pnlDest.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pnlDest.DockPadding.All = 8
+        Me.pnlDest.Location = New System.Drawing.Point(547, 0)
+        Me.pnlDest.Name = "pnlDest"
+        Me.pnlDest.Size = New System.Drawing.Size(265, 565)
+        Me.pnlDest.TabIndex = 3
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pnlDest, True)
         '
         'gbxDestinationCollection
         '
+        Me.gbxDestinationCollection.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Left) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.gbxDestinationCollection.Controls.Add(Me.cmdSaveDestCollection)
         Me.gbxDestinationCollection.Controls.Add(Me.cmdExportToFile)
         Me.gbxDestinationCollection.Controls.Add(Me.lblCurrProteinCount)
-        Me.gbxDestinationCollection.Controls.Add(Me.cmdSaveDestCollection)
         Me.gbxDestinationCollection.Controls.Add(Me.lvwDestination)
-        Me.gbxDestinationCollection.Location = New System.Drawing.Point(538, 14)
+        Me.gbxDestinationCollection.Location = New System.Drawing.Point(8, 8)
         Me.gbxDestinationCollection.Name = "gbxDestinationCollection"
-        Me.gbxDestinationCollection.Size = New System.Drawing.Size(260, 510)
-        Me.gbxDestinationCollection.TabIndex = 1
+        Me.gbxDestinationCollection.Size = New System.Drawing.Size(249, 549)
+        Me.gbxDestinationCollection.TabIndex = 2
         Me.gbxDestinationCollection.TabStop = False
         Me.gbxDestinationCollection.Text = "Destination Collection"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.gbxDestinationCollection, True)
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.gbxDestinationCollection, True)
+        '
+        'cmdSaveDestCollection
+        '
+        Me.cmdSaveDestCollection.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdSaveDestCollection.Location = New System.Drawing.Point(124, 514)
+        Me.cmdSaveDestCollection.Name = "cmdSaveDestCollection"
+        Me.cmdSaveDestCollection.Size = New System.Drawing.Size(114, 24)
+        Me.cmdSaveDestCollection.TabIndex = 4
+        Me.cmdSaveDestCollection.Text = "Upload Collection..."
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.cmdSaveDestCollection, True)
         '
         'cmdExportToFile
         '
-        Me.cmdExportToFile.Location = New System.Drawing.Point(16, 478)
+        Me.cmdExportToFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.cmdExportToFile.Enabled = False
+        Me.cmdExportToFile.Location = New System.Drawing.Point(14, 514)
         Me.cmdExportToFile.Name = "cmdExportToFile"
-        Me.cmdExportToFile.Size = New System.Drawing.Size(106, 23)
+        Me.cmdExportToFile.Size = New System.Drawing.Size(102, 24)
         Me.cmdExportToFile.TabIndex = 3
         Me.cmdExportToFile.Text = "Export to File..."
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdExportToFile, True)
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.cmdExportToFile, True)
         '
         'lblCurrProteinCount
         '
         Me.lblCurrProteinCount.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCurrProteinCount.Location = New System.Drawing.Point(14, 18)
+        Me.lblCurrProteinCount.Location = New System.Drawing.Point(14, 19)
         Me.lblCurrProteinCount.Name = "lblCurrProteinCount"
-        Me.lblCurrProteinCount.Size = New System.Drawing.Size(164, 14)
+        Me.lblCurrProteinCount.Size = New System.Drawing.Size(164, 15)
         Me.lblCurrProteinCount.TabIndex = 2
         Me.lblCurrProteinCount.Text = "Protein Count: 0"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblCurrProteinCount, True)
-        '
-        'cmdSaveDestCollection
-        '
-        Me.cmdSaveDestCollection.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdSaveDestCollection.Location = New System.Drawing.Point(134, 485)
-        Me.cmdSaveDestCollection.Name = "cmdSaveDestCollection"
-        Me.cmdSaveDestCollection.Size = New System.Drawing.Size(114, 23)
-        Me.cmdSaveDestCollection.TabIndex = 1
-        Me.cmdSaveDestCollection.Text = "Upload Collection..."
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdSaveDestCollection, True)
+        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.lblCurrProteinCount, True)
         '
         'lvwDestination
         '
-        Me.lvwDestination.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.lvwDestination.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lvwDestination.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colName})
         Me.lvwDestination.FullRowSelect = True
         Me.lvwDestination.GridLines = True
-        Me.lvwDestination.Location = New System.Drawing.Point(14, 49)
+        Me.lvwDestination.Location = New System.Drawing.Point(14, 41)
         Me.lvwDestination.Name = "lvwDestination"
-        Me.lvwDestination.Size = New System.Drawing.Size(232, 426)
+        Me.lvwDestination.Size = New System.Drawing.Size(221, 467)
         Me.lvwDestination.TabIndex = 0
         Me.lvwDestination.View = System.Windows.Forms.View.Details
         '
@@ -388,83 +576,6 @@ Public Class frmCollectionEditor
         '
         Me.colName.Text = "Name"
         Me.colName.Width = 228
-        '
-        'cmdDestAdd
-        '
-        Me.cmdDestAdd.Enabled = False
-        Me.cmdDestAdd.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdDestAdd.ForeColor = System.Drawing.SystemColors.Highlight
-        Me.cmdDestAdd.Image = CType(resources.GetObject("cmdDestAdd.Image"), System.Drawing.Image)
-        Me.cmdDestAdd.Location = New System.Drawing.Point(492, 268)
-        Me.cmdDestAdd.Name = "cmdDestAdd"
-        Me.cmdDestAdd.Size = New System.Drawing.Size(38, 30)
-        Me.cmdDestAdd.TabIndex = 2
-        Me.cmdDestAdd.ThemedImage = CType(resources.GetObject("cmdDestAdd.ThemedImage"), System.Drawing.Bitmap)
-        Me.EditorToolTip.SetToolTip(Me.cmdDestAdd, "Copy Selected Source members to Destination")
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdDestAdd, False)
-        '
-        'cmdDestRemove
-        '
-        Me.cmdDestRemove.Enabled = False
-        Me.cmdDestRemove.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdDestRemove.ForeColor = System.Drawing.SystemColors.Highlight
-        Me.cmdDestRemove.Image = CType(resources.GetObject("cmdDestRemove.Image"), System.Drawing.Image)
-        Me.cmdDestRemove.Location = New System.Drawing.Point(492, 314)
-        Me.cmdDestRemove.Name = "cmdDestRemove"
-        Me.cmdDestRemove.Size = New System.Drawing.Size(38, 30)
-        Me.cmdDestRemove.TabIndex = 2
-        Me.cmdDestRemove.ThemedImage = CType(resources.GetObject("cmdDestRemove.ThemedImage"), System.Drawing.Bitmap)
-        Me.EditorToolTip.SetToolTip(Me.cmdDestRemove, "Remove Selected Members from Destination")
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdDestRemove, False)
-        '
-        'cmdDestAddAll
-        '
-        Me.cmdDestAddAll.Enabled = False
-        Me.cmdDestAddAll.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdDestAddAll.ForeColor = System.Drawing.SystemColors.Highlight
-        Me.cmdDestAddAll.Image = CType(resources.GetObject("cmdDestAddAll.Image"), System.Drawing.Image)
-        Me.cmdDestAddAll.Location = New System.Drawing.Point(492, 222)
-        Me.cmdDestAddAll.Name = "cmdDestAddAll"
-        Me.cmdDestAddAll.Size = New System.Drawing.Size(38, 30)
-        Me.cmdDestAddAll.TabIndex = 2
-        Me.cmdDestAddAll.ThemedImage = CType(resources.GetObject("cmdDestAddAll.ThemedImage"), System.Drawing.Bitmap)
-        Me.EditorToolTip.SetToolTip(Me.cmdDestAddAll, "Copy All Source members to Destination")
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdDestAddAll, False)
-        '
-        'cmdDestRemoveAll
-        '
-        Me.cmdDestRemoveAll.Enabled = False
-        Me.cmdDestRemoveAll.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdDestRemoveAll.ForeColor = System.Drawing.SystemColors.Highlight
-        Me.cmdDestRemoveAll.Image = CType(resources.GetObject("cmdDestRemoveAll.Image"), System.Drawing.Image)
-        Me.cmdDestRemoveAll.Location = New System.Drawing.Point(492, 360)
-        Me.cmdDestRemoveAll.Name = "cmdDestRemoveAll"
-        Me.cmdDestRemoveAll.Size = New System.Drawing.Size(38, 30)
-        Me.cmdDestRemoveAll.TabIndex = 2
-        Me.cmdDestRemoveAll.ThemedImage = CType(resources.GetObject("cmdDestRemoveAll.ThemedImage"), System.Drawing.Bitmap)
-        Me.EditorToolTip.SetToolTip(Me.cmdDestRemoveAll, "Remove All Members from Destination")
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdDestRemoveAll, False)
-        '
-        'lblCurrentTask
-        '
-        Me.lblCurrentTask.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCurrentTask.Location = New System.Drawing.Point(12, 530)
-        Me.lblCurrentTask.Name = "lblCurrentTask"
-        Me.lblCurrentTask.Size = New System.Drawing.Size(378, 20)
-        Me.lblCurrentTask.TabIndex = 14
-        Me.lblCurrentTask.Text = "Reading Source File..."
-        Me.lblCurrentTask.Visible = False
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblCurrentTask, True)
-        '
-        'pgbMain
-        '
-        Me.pgbMain.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pgbMain.Location = New System.Drawing.Point(14, 548)
-        Me.pgbMain.Name = "pgbMain"
-        Me.pgbMain.Size = New System.Drawing.Size(780, 16)
-        Me.pgbMain.TabIndex = 13
-        Me.pgbMain.Visible = False
         '
         'mnuMainGUI
         '
@@ -484,7 +595,7 @@ Public Class frmCollectionEditor
         'mnuTools
         '
         Me.mnuTools.Index = 1
-        Me.mnuTools.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuToolsCollectionEdit, Me.mnuToolsNucToProt, Me.mnuToolsConvert, Me.mnuToolsFCheckup, Me.mnuToolsCompareDBs, Me.mnuToolsExtractFromFile, Me.MenuItem7, Me.mnuToolsOptions})
+        Me.mnuTools.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuToolsCollectionEdit, Me.mnuToolsNucToProt, Me.mnuToolsConvert, Me.mnuToolsFCheckup, Me.mnuToolsCompareDBs, Me.mnuToolsExtractFromFile, Me.mnuToolsSep1, Me.mnuToolsOptions})
         Me.mnuTools.Text = "Tools"
         '
         'mnuToolsCollectionEdit
@@ -533,10 +644,10 @@ Public Class frmCollectionEditor
         Me.mnuToolsExtractFromFile.Index = 5
         Me.mnuToolsExtractFromFile.Text = "Extract Annotations from Text File..."
         '
-        'MenuItem7
+        'mnuToolsSep1
         '
-        Me.MenuItem7.Index = 6
-        Me.MenuItem7.Text = "-"
+        Me.mnuToolsSep1.Index = 6
+        Me.mnuToolsSep1.Text = "-"
         '
         'mnuToolsOptions
         '
@@ -546,46 +657,51 @@ Public Class frmCollectionEditor
         'mnuAdmin
         '
         Me.mnuAdmin.Index = 2
-        Me.mnuAdmin.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.MenuItem4, Me.mnuAdminNameHashRefresh, Me.MenuItem1, Me.MenuItem2, Me.MenuItem3, Me.MenuItem5, Me.MenuItem6, Me.MenuItem8})
+        Me.mnuAdmin.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuAdminBatchUploadFiles, Me.mnuAdminNameHashRefresh, Me.mnuAdminUpdateSHA, Me.mnuAdminUpdateCollectionsArchive, Me.mnuAdminUpdateZeroedMasses, Me.mnuAdminTestingInterface, Me.mnuAdminFixArchivePaths, Me.mnuAdminAddSortingIndexes})
         Me.mnuAdmin.Text = "Admin"
         '
-        'MenuItem4
+        'mnuAdminBatchUploadFiles
         '
-        Me.MenuItem4.Index = 0
-        Me.MenuItem4.Text = "Batch Upload FASTA Files Using DMS..."
+        Me.mnuAdminBatchUploadFiles.Index = 0
+        Me.mnuAdminBatchUploadFiles.Text = "Batch Upload FASTA Files Using DMS..."
         '
         'mnuAdminNameHashRefresh
         '
         Me.mnuAdminNameHashRefresh.Index = 1
         Me.mnuAdminNameHashRefresh.Text = "Refresh Protein Name Hashes"
         '
-        'MenuItem1
+        'mnuAdminUpdateSHA
         '
-        Me.MenuItem1.Enabled = False
-        Me.MenuItem1.Index = 2
-        Me.MenuItem1.Text = "Update File Authentication Hashes"
+        Me.mnuAdminUpdateSHA.Enabled = False
+        Me.mnuAdminUpdateSHA.Index = 2
+        Me.mnuAdminUpdateSHA.Text = "Update File Authentication Hashes"
         '
-        'MenuItem2
+        'mnuAdminUpdateCollectionsArchive
         '
-        Me.MenuItem2.Enabled = False
-        Me.MenuItem2.Index = 3
-        Me.MenuItem2.Text = "Update Collections Archive"
+        Me.mnuAdminUpdateCollectionsArchive.Enabled = False
+        Me.mnuAdminUpdateCollectionsArchive.Index = 3
+        Me.mnuAdminUpdateCollectionsArchive.Text = "Update Collections Archive"
         '
-        'MenuItem3
+        'mnuAdminUpdateZeroedMasses
         '
-        Me.MenuItem3.Index = 4
-        Me.MenuItem3.Text = "Update Zeroed Masses"
+        Me.mnuAdminUpdateZeroedMasses.Index = 4
+        Me.mnuAdminUpdateZeroedMasses.Text = "Update Zeroed Masses"
         '
-        'MenuItem5
+        'mnuAdminTestingInterface
         '
-        Me.MenuItem5.Index = 5
-        Me.MenuItem5.Text = "Testing Interface Window..."
+        Me.mnuAdminTestingInterface.Index = 5
+        Me.mnuAdminTestingInterface.Text = "Testing Interface Window..."
         '
-        'MenuItem6
+        'mnuAdminFixArchivePaths
         '
-        Me.MenuItem6.Enabled = False
-        Me.MenuItem6.Index = 6
-        Me.MenuItem6.Text = "Fix Archive Path Names"
+        Me.mnuAdminFixArchivePaths.Enabled = False
+        Me.mnuAdminFixArchivePaths.Index = 6
+        Me.mnuAdminFixArchivePaths.Text = "Fix Archive Path Names"
+        '
+        'mnuAdminAddSortingIndexes
+        '
+        Me.mnuAdminAddSortingIndexes.Index = 7
+        Me.mnuAdminAddSortingIndexes.Text = "Add Sorting Indexes"
         '
         'mnuHelp
         '
@@ -598,51 +714,31 @@ Public Class frmCollectionEditor
         Me.mnuHelpAbout.Index = 0
         Me.mnuHelpAbout.Text = "About Protein Collection Editor"
         '
-        'lblBatchProgress
-        '
-        Me.lblBatchProgress.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblBatchProgress.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblBatchProgress.Location = New System.Drawing.Point(414, 530)
-        Me.lblBatchProgress.Name = "lblBatchProgress"
-        Me.lblBatchProgress.Size = New System.Drawing.Size(380, 16)
-        Me.lblBatchProgress.TabIndex = 14
-        Me.lblBatchProgress.TextAlign = System.Drawing.ContentAlignment.TopRight
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblBatchProgress, True)
-        '
-        'MenuItem8
-        '
-        Me.MenuItem8.Index = 7
-        Me.MenuItem8.Text = "Add Sorting Indexes"
-        '
-        'frmCollectionEditor
+        'frmCollectionEditorNew
         '
         Me.AutoScaleBaseSize = New System.Drawing.Size(5, 14)
-        Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(808, 591)
-        Me.Controls.Add(Me.pgbMain)
-        Me.Controls.Add(Me.cmdDestAdd)
-        Me.Controls.Add(Me.gbxDestinationCollection)
-        Me.Controls.Add(Me.gbxSourceCollection)
-        Me.Controls.Add(Me.cmdDestRemove)
-        Me.Controls.Add(Me.cmdDestAddAll)
-        Me.Controls.Add(Me.cmdDestRemoveAll)
-        Me.Controls.Add(Me.lblCurrentTask)
-        Me.Controls.Add(Me.lblBatchProgress)
+        Me.ClientSize = New System.Drawing.Size(812, 641)
+        Me.Controls.Add(Me.pnlDest)
+        Me.Controls.Add(Me.SourceDestSplit)
+        Me.Controls.Add(Me.pnlSource)
+        Me.Controls.Add(Me.pnlProgBar)
         Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.MaximumSize = New System.Drawing.Size(816, 629)
-        Me.Menu = Me.mnuMainGUI
-        Me.MinimumSize = New System.Drawing.Size(816, 629)
-        Me.Name = "frmCollectionEditor"
+        Me.MinimumSize = New System.Drawing.Size(820, 675)
+        Me.Name = "frmCollectionEditorNew"
         Me.Text = "Protein Collection Editor"
+        Me.pnlProgBar.ResumeLayout(False)
+        Me.pnlProgBarUpper.ResumeLayout(False)
+        Me.pnlProgBarLower.ResumeLayout(False)
+        Me.pnlSource.ResumeLayout(False)
         Me.gbxSourceCollection.ResumeLayout(False)
+        Me.pnlDest.ResumeLayout(False)
         Me.gbxDestinationCollection.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
 
     <System.STAThread()> Public Shared Sub Main()
-        System.Windows.Forms.Application.EnableVisualStyles()
+        'System.Windows.Forms.Application.EnableVisualStyles()
         Skybound.VisualStyles.VisualStyleProvider.EnableVisualStyles()
         System.Windows.Forms.Application.DoEvents()
         System.Windows.Forms.Application.Run(New frmCollectionEditor)  ' replace frmDecode by the name of your form!!!
@@ -1581,12 +1677,12 @@ Public Class frmCollectionEditor
 
     End Sub
 
-    Private Sub MenuItem5_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuItem5.Click
+    Private Sub MenuItem5_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuAdminTestingInterface.Click
         Dim frmTesting As New frmTestingInterface
         frmTesting.Show()
     End Sub
 
-    Private Sub MenuItem6_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuItem6.Click
+    Private Sub MenuItem6_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuAdminFixArchivePaths.Click
         If Me.m_Syncer Is Nothing Then
             Me.m_Syncer = New clsSyncFASTAFileArchive(Me.m_PSConnectionString)
         End If
@@ -1594,10 +1690,11 @@ Public Class frmCollectionEditor
         Me.m_Syncer.FixArchivedFilePaths()
 
     End Sub
-    Private Sub MenuItem8_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MenuItem8.Click
+    Private Sub MenuItem8_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuAdminAddSortingIndexes.Click
         If Me.m_Syncer Is Nothing Then
             Me.m_Syncer = New clsSyncFASTAFileArchive(Me.m_PSConnectionString)
         End If
         Me.m_Syncer.AddSortingIndices()
     End Sub
+
 End Class
