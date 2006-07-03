@@ -477,25 +477,25 @@ Public Class frmTestingInterface
             Me.m_Exporter = New Protein_Exporter.clsGetFASTAFromDMS(Me.txtConnString.Text)
 
             'True Legacy fasta file
-            fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "HCMV_2003+H_sapiens_IPI_2005-04-04.fasta", filePath)
+            'fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "HCMV_2003+H_sapiens_IPI_2005-04-04.fasta", filePath)
 
             'Legacy fasta file with existing protein collection
-            fingerprint = Me.m_Exporter.ExportFASTAFile("Shewanella_2003-12-19", "seq_direction=forward,filetype=fasta", "Shewanella_2003-12-19.fasta", filePath)
+            'fingerprint = Me.m_Exporter.ExportFASTAFile("Shewanella_2003-12-19", "seq_direction=forward,filetype=fasta", "Shewanella_2003-12-19.fasta", filePath)
 
             'Legacy fasta file with existing protein collection
-            fingerprint = Me.m_Exporter.ExportFASTAFile("Shewanella_2003-12-19,CaM_His_Calmodulin_With_His_Tag", "seq_direction=forward,filetype=fasta", "na", filePath)
+            fingerprint = Me.m_Exporter.ExportFASTAFile("MP_06_01,CaM_His_Calmodulin_With_His_Tag,Shewanella_2003-12-19", "seq_direction=forward,filetype=fasta", "na", filePath)
 
             'Legacy fasta file with existing protein collection
-            fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "Shewanella_2003-12-19.fasta", filePath)
+            'fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "Shewanella_2003-12-19.fasta", filePath)
 
             'Protein collection from cbo exported forward
-            fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=forward,filetype=fasta", "na", filePath)
+            'fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=forward,filetype=fasta", "na", filePath)
 
             'Protein Collection from cbo exported reversed
-            fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=reversed,filetype=fasta", "na", filePath)
+            ' fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=reversed,filetype=fasta", "na", filePath)
 
             'Protein Collection from cbo exported scrambled
-            fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=scrambled,filetype=fasta", "na", filePath)
+            ' fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=scrambled,filetype=fasta", "na", filePath)
 
             'fingerprint = exporter.ExportFASTAFile(CInt(Me.cboCollectionsList.SelectedValue), filePath)
             'exporter = New ExportCollectionsFromDMS.clsExportCollectionsFromDMS(Me.txtConnString.Text, ExportCollectionsFromDMS.IExportCollectionsFromDMS.ExportClasses.clsExportProteinsXTFASTA)

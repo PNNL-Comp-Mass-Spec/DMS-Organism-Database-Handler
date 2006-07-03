@@ -175,6 +175,7 @@ Public Class frmCollectionEditor
         Me.pnlProgBar.Name = "pnlProgBar"
         Me.pnlProgBar.Size = New System.Drawing.Size(812, 76)
         Me.pnlProgBar.TabIndex = 0
+        Me.pnlProgBar.Visible = False
         Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pnlProgBar, True)
         '
         'pnlProgBarUpper
@@ -197,7 +198,6 @@ Public Class frmCollectionEditor
         Me.lblBatchProgress.Name = "lblBatchProgress"
         Me.lblBatchProgress.Size = New System.Drawing.Size(800, 16)
         Me.lblBatchProgress.TabIndex = 16
-        Me.lblBatchProgress.TextAlign = System.Drawing.ContentAlignment.TopRight
         Me.VisualStyleProvider2.SetVisualStyleSupport(Me.lblBatchProgress, True)
         '
         'lblCurrentTask
@@ -241,7 +241,10 @@ Public Class frmCollectionEditor
         Me.pnlSource.Controls.Add(Me.cmdDestRemoveAll)
         Me.pnlSource.Controls.Add(Me.gbxSourceCollection)
         Me.pnlSource.Dock = System.Windows.Forms.DockStyle.Left
-        Me.pnlSource.DockPadding.All = 8
+        Me.pnlSource.DockPadding.Bottom = 10
+        Me.pnlSource.DockPadding.Left = 8
+        Me.pnlSource.DockPadding.Right = 8
+        Me.pnlSource.DockPadding.Top = 8
         Me.pnlSource.Location = New System.Drawing.Point(0, 0)
         Me.pnlSource.Name = "pnlSource"
         Me.pnlSource.Size = New System.Drawing.Size(544, 565)
@@ -325,7 +328,7 @@ Public Class frmCollectionEditor
         Me.gbxSourceCollection.Controls.Add(Me.lblSourceMembers)
         Me.gbxSourceCollection.Location = New System.Drawing.Point(8, 8)
         Me.gbxSourceCollection.Name = "gbxSourceCollection"
-        Me.gbxSourceCollection.Size = New System.Drawing.Size(472, 549)
+        Me.gbxSourceCollection.Size = New System.Drawing.Size(472, 547)
         Me.gbxSourceCollection.TabIndex = 1
         Me.gbxSourceCollection.TabStop = False
         Me.gbxSourceCollection.Text = "Source Collection"
@@ -335,7 +338,7 @@ Public Class frmCollectionEditor
         '
         Me.cboAuthorityPicker.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboAuthorityPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboAuthorityPicker.Location = New System.Drawing.Point(240, 34)
+        Me.cboAuthorityPicker.Location = New System.Drawing.Point(240, 36)
         Me.cboAuthorityPicker.Name = "cboAuthorityPicker"
         Me.cboAuthorityPicker.Size = New System.Drawing.Size(216, 21)
         Me.cboAuthorityPicker.TabIndex = 17
@@ -343,7 +346,7 @@ Public Class frmCollectionEditor
         'lblAuthorityFilter
         '
         Me.lblAuthorityFilter.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblAuthorityFilter.Location = New System.Drawing.Point(240, 19)
+        Me.lblAuthorityFilter.Location = New System.Drawing.Point(240, 21)
         Me.lblAuthorityFilter.Name = "lblAuthorityFilter"
         Me.lblAuthorityFilter.Size = New System.Drawing.Size(212, 17)
         Me.lblAuthorityFilter.TabIndex = 18
@@ -355,7 +358,7 @@ Public Class frmCollectionEditor
         Me.pbxLiveSearchCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.pbxLiveSearchCancel.BackColor = System.Drawing.SystemColors.ActiveCaptionText
         Me.pbxLiveSearchCancel.Image = CType(resources.GetObject("pbxLiveSearchCancel.Image"), System.Drawing.Image)
-        Me.pbxLiveSearchCancel.Location = New System.Drawing.Point(194, 519)
+        Me.pbxLiveSearchCancel.Location = New System.Drawing.Point(194, 517)
         Me.pbxLiveSearchCancel.Name = "pbxLiveSearchCancel"
         Me.pbxLiveSearchCancel.Size = New System.Drawing.Size(16, 17)
         Me.pbxLiveSearchCancel.TabIndex = 16
@@ -365,7 +368,7 @@ Public Class frmCollectionEditor
         'lblSearchCount
         '
         Me.lblSearchCount.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblSearchCount.Location = New System.Drawing.Point(224, 523)
+        Me.lblSearchCount.Location = New System.Drawing.Point(224, 521)
         Me.lblSearchCount.Name = "lblSearchCount"
         Me.lblSearchCount.Size = New System.Drawing.Size(88, 16)
         Me.lblSearchCount.TabIndex = 15
@@ -376,7 +379,7 @@ Public Class frmCollectionEditor
         'cmdLoadProteins
         '
         Me.cmdLoadProteins.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdLoadProteins.Location = New System.Drawing.Point(352, 73)
+        Me.cmdLoadProteins.Location = New System.Drawing.Point(352, 75)
         Me.cmdLoadProteins.Name = "cmdLoadProteins"
         Me.cmdLoadProteins.Size = New System.Drawing.Size(102, 24)
         Me.cmdLoadProteins.TabIndex = 14
@@ -386,7 +389,7 @@ Public Class frmCollectionEditor
         'cmdLoadFile
         '
         Me.cmdLoadFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdLoadFile.Location = New System.Drawing.Point(316, 516)
+        Me.cmdLoadFile.Location = New System.Drawing.Point(316, 514)
         Me.cmdLoadFile.Name = "cmdLoadFile"
         Me.cmdLoadFile.Size = New System.Drawing.Size(140, 24)
         Me.cmdLoadFile.TabIndex = 10
@@ -398,7 +401,7 @@ Public Class frmCollectionEditor
         Me.txtLiveSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.txtLiveSearch.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.txtLiveSearch.ForeColor = System.Drawing.SystemColors.InactiveCaption
-        Me.txtLiveSearch.Location = New System.Drawing.Point(38, 521)
+        Me.txtLiveSearch.Location = New System.Drawing.Point(38, 519)
         Me.txtLiveSearch.Name = "txtLiveSearch"
         Me.txtLiveSearch.Size = New System.Drawing.Size(154, 14)
         Me.txtLiveSearch.TabIndex = 8
@@ -410,7 +413,7 @@ Public Class frmCollectionEditor
         Me.cboCollectionPicker.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboCollectionPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboCollectionPicker.Location = New System.Drawing.Point(14, 73)
+        Me.cboCollectionPicker.Location = New System.Drawing.Point(14, 75)
         Me.cboCollectionPicker.Name = "cboCollectionPicker"
         Me.cboCollectionPicker.Size = New System.Drawing.Size(328, 21)
         Me.cboCollectionPicker.TabIndex = 1
@@ -420,7 +423,7 @@ Public Class frmCollectionEditor
         Me.cboOrganismFilter.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboOrganismFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboOrganismFilter.Location = New System.Drawing.Point(14, 34)
+        Me.cboOrganismFilter.Location = New System.Drawing.Point(14, 36)
         Me.cboOrganismFilter.Name = "cboOrganismFilter"
         Me.cboOrganismFilter.Size = New System.Drawing.Size(216, 21)
         Me.cboOrganismFilter.TabIndex = 0
@@ -429,7 +432,7 @@ Public Class frmCollectionEditor
         '
         Me.lblOrganismFilter.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblOrganismFilter.Location = New System.Drawing.Point(14, 19)
+        Me.lblOrganismFilter.Location = New System.Drawing.Point(14, 21)
         Me.lblOrganismFilter.Name = "lblOrganismFilter"
         Me.lblOrganismFilter.Size = New System.Drawing.Size(212, 17)
         Me.lblOrganismFilter.TabIndex = 3
@@ -449,7 +452,7 @@ Public Class frmCollectionEditor
         '
         Me.pbxLiveSearchBkg.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.pbxLiveSearchBkg.Image = CType(resources.GetObject("pbxLiveSearchBkg.Image"), System.Drawing.Image)
-        Me.pbxLiveSearchBkg.Location = New System.Drawing.Point(16, 515)
+        Me.pbxLiveSearchBkg.Location = New System.Drawing.Point(16, 513)
         Me.pbxLiveSearchBkg.Name = "pbxLiveSearchBkg"
         Me.pbxLiveSearchBkg.Size = New System.Drawing.Size(200, 26)
         Me.pbxLiveSearchBkg.TabIndex = 9
@@ -464,9 +467,9 @@ Public Class frmCollectionEditor
         Me.lvwSource.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colSrcName, Me.colSrcDesc})
         Me.lvwSource.FullRowSelect = True
         Me.lvwSource.GridLines = True
-        Me.lvwSource.Location = New System.Drawing.Point(14, 118)
+        Me.lvwSource.Location = New System.Drawing.Point(14, 120)
         Me.lvwSource.Name = "lvwSource"
-        Me.lvwSource.Size = New System.Drawing.Size(442, 390)
+        Me.lvwSource.Size = New System.Drawing.Size(442, 386)
         Me.lvwSource.TabIndex = 2
         Me.lvwSource.View = System.Windows.Forms.View.Details
         '
@@ -503,7 +506,10 @@ Public Class frmCollectionEditor
         '
         Me.pnlDest.Controls.Add(Me.gbxDestinationCollection)
         Me.pnlDest.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.pnlDest.DockPadding.All = 8
+        Me.pnlDest.DockPadding.Bottom = 10
+        Me.pnlDest.DockPadding.Left = 8
+        Me.pnlDest.DockPadding.Right = 8
+        Me.pnlDest.DockPadding.Top = 8
         Me.pnlDest.Location = New System.Drawing.Point(547, 0)
         Me.pnlDest.Name = "pnlDest"
         Me.pnlDest.Size = New System.Drawing.Size(265, 565)
@@ -521,7 +527,7 @@ Public Class frmCollectionEditor
         Me.gbxDestinationCollection.Controls.Add(Me.lvwDestination)
         Me.gbxDestinationCollection.Location = New System.Drawing.Point(8, 8)
         Me.gbxDestinationCollection.Name = "gbxDestinationCollection"
-        Me.gbxDestinationCollection.Size = New System.Drawing.Size(249, 549)
+        Me.gbxDestinationCollection.Size = New System.Drawing.Size(249, 547)
         Me.gbxDestinationCollection.TabIndex = 2
         Me.gbxDestinationCollection.TabStop = False
         Me.gbxDestinationCollection.Text = "Destination Collection"
@@ -530,7 +536,7 @@ Public Class frmCollectionEditor
         'cmdSaveDestCollection
         '
         Me.cmdSaveDestCollection.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdSaveDestCollection.Location = New System.Drawing.Point(124, 514)
+        Me.cmdSaveDestCollection.Location = New System.Drawing.Point(124, 512)
         Me.cmdSaveDestCollection.Name = "cmdSaveDestCollection"
         Me.cmdSaveDestCollection.Size = New System.Drawing.Size(114, 24)
         Me.cmdSaveDestCollection.TabIndex = 4
@@ -541,7 +547,7 @@ Public Class frmCollectionEditor
         '
         Me.cmdExportToFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.cmdExportToFile.Enabled = False
-        Me.cmdExportToFile.Location = New System.Drawing.Point(14, 514)
+        Me.cmdExportToFile.Location = New System.Drawing.Point(14, 512)
         Me.cmdExportToFile.Name = "cmdExportToFile"
         Me.cmdExportToFile.Size = New System.Drawing.Size(102, 24)
         Me.cmdExportToFile.TabIndex = 3
@@ -566,9 +572,9 @@ Public Class frmCollectionEditor
         Me.lvwDestination.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colName})
         Me.lvwDestination.FullRowSelect = True
         Me.lvwDestination.GridLines = True
-        Me.lvwDestination.Location = New System.Drawing.Point(14, 41)
+        Me.lvwDestination.Location = New System.Drawing.Point(14, 43)
         Me.lvwDestination.Name = "lvwDestination"
-        Me.lvwDestination.Size = New System.Drawing.Size(221, 467)
+        Me.lvwDestination.Size = New System.Drawing.Size(221, 463)
         Me.lvwDestination.TabIndex = 0
         Me.lvwDestination.View = System.Windows.Forms.View.Details
         '
@@ -714,7 +720,7 @@ Public Class frmCollectionEditor
         Me.mnuHelpAbout.Index = 0
         Me.mnuHelpAbout.Text = "About Protein Collection Editor"
         '
-        'frmCollectionEditorNew
+        'frmCollectionEditor
         '
         Me.AutoScaleBaseSize = New System.Drawing.Size(5, 14)
         Me.ClientSize = New System.Drawing.Size(812, 641)
@@ -723,8 +729,9 @@ Public Class frmCollectionEditor
         Me.Controls.Add(Me.pnlSource)
         Me.Controls.Add(Me.pnlProgBar)
         Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Menu = Me.mnuMainGUI
         Me.MinimumSize = New System.Drawing.Size(820, 675)
-        Me.Name = "frmCollectionEditorNew"
+        Me.Name = "frmCollectionEditor"
         Me.Text = "Protein Collection Editor"
         Me.pnlProgBar.ResumeLayout(False)
         Me.pnlProgBarUpper.ResumeLayout(False)
@@ -976,9 +983,9 @@ Public Class frmCollectionEditor
             End If
             Me.m_UploadHandler.InitialSetup()
 
-
+            Me.pnlProgBar.Visible = True
             Me.m_UploadHandler.BatchUpload(tmpSelectedFileList)
-
+            Me.pnlProgBar.Visible = False
             If Not Me.m_UploadHandler.ImportExportCountsMatched Then
 
             End If
@@ -1491,8 +1498,7 @@ Public Class frmCollectionEditor
         m_fileBatcher.LoadStart, _
         m_Syncer.SyncStart
 
-
-
+        Me.pnlProgBar.Visible = True
         Me.pgbMain.Visible = True
         Me.pgbMain.Value = 0
         Me.lblCurrentTask.Text = taskTitle
