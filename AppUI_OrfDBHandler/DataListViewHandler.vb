@@ -64,8 +64,6 @@ Public Class DataListViewHandler
             End If
         Next
 
-        RaiseEvent LoadEnd()
-
         lvw.EndUpdate()
     End Sub
 
