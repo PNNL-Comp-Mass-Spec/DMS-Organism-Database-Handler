@@ -191,6 +191,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "frmAboutBox.vb"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "frmAboutBox.resx"
+                    DependentUpon = "frmAboutBox.vb"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "frmAddAnnotationType.vb"
                     SubType = "Form"
                     BuildAction = "Compile"
