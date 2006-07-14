@@ -145,7 +145,7 @@ Public Class frmAddAnnotationType
         Me.lblAuthority.Name = "lblAuthority"
         Me.lblAuthority.Size = New System.Drawing.Size(265, 16)
         Me.lblAuthority.TabIndex = 8
-        Me.lblAuthority.Text = "Example of Annotation (optional, 128 char max)"
+        Me.lblAuthority.Text = "Naming Authority"
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblAuthority, True)
         '
         'cboAuthorityName

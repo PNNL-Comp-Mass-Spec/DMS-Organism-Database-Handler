@@ -42,7 +42,7 @@ Public Class DataListViewHandler
         itemRows = dt.Select(filterString, "Name")
         triggerCount = itemRows.Length
 
-        RaiseEvent NumberLoadedStatus(itemRows.Length, dt.Rows.Count)
+        'RaiseEvent NumberLoadedStatus(itemRows.Length, dt.Rows.Count)
 
         proteinCount = CInt(itemRows.Length)
         If proteinCount > 20 Then
@@ -51,7 +51,7 @@ Public Class DataListViewHandler
             triggerCount = 1
         End If
 
-        RaiseEvent LoadStart("Filling List...")
+        'RaiseEvent LoadStart("Filling List...")
 
         For Each itemRow In itemRows
             counter += 1
@@ -59,9 +59,9 @@ Public Class DataListViewHandler
             item.Text = CStr(itemRow.Item(0))
             item.SubItems.Add(CStr(itemRow.Item(1)))
             lvw.Items.Add(item)
-            If counter Mod triggerCount > 0 Then
-                RaiseEvent LoadProgress(CSng(counter / proteinCount))
-            End If
+            'If counter Mod triggerCount > 0 Then
+            '    RaiseEvent LoadProgress(CSng(counter / proteinCount))
+            'End If
         Next
 
         lvw.EndUpdate()
