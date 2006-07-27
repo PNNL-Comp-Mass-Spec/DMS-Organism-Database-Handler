@@ -89,6 +89,7 @@ Public Class clsDBTask
                     m_DBCn.Open()
                     retryCount = 0
                 Catch e As SqlException
+                    System.Threading.Thread.Sleep(500)
                     retryCount -= 1
                     m_DBCn.Close()
                 End Try

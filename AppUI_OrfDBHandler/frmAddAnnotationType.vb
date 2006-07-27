@@ -141,7 +141,7 @@ Public Class frmAddAnnotationType
         '
         'lblAuthority
         '
-        Me.lblAuthority.Location = New System.Drawing.Point(7, 136)
+        Me.lblAuthority.Location = New System.Drawing.Point(7, 134)
         Me.lblAuthority.Name = "lblAuthority"
         Me.lblAuthority.Size = New System.Drawing.Size(265, 16)
         Me.lblAuthority.TabIndex = 8
@@ -152,7 +152,7 @@ Public Class frmAddAnnotationType
         '
         Me.cboAuthorityName.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cboAuthorityName.Location = New System.Drawing.Point(7, 152)
+        Me.cboAuthorityName.Location = New System.Drawing.Point(7, 150)
         Me.cboAuthorityName.Name = "cboAuthorityName"
         Me.cboAuthorityName.Size = New System.Drawing.Size(276, 21)
         Me.cboAuthorityName.TabIndex = 9

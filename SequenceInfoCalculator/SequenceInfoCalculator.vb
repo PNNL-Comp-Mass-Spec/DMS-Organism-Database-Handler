@@ -310,13 +310,13 @@ Public Class SequenceInfo
 
     Public ReadOnly Property AverageMass() As Double
         Get
-            Return Me.m_Average_Mass
+            Return Me.m_Average_Mass + 18.0153  'H+OH Average mass
         End Get
     End Property
 
     Public ReadOnly Property MonoisotopicMass() As Double
         Get
-            Return Me.m_Monoisotopic_Mass
+            Return Me.m_Monoisotopic_Mass + 18.0106 'H+OH Mono mass
         End Get
     End Property
 
