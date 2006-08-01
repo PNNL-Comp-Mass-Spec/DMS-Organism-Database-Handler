@@ -102,8 +102,8 @@ Public Interface IAddUpdateEntries
         ByVal Sequence As String, _
         ByVal Length As Integer, _
         ByVal MolecularFormula As String, _
-        ByVal MonoisotopicMass As Single, _
-        ByVal AverageMass As Single, _
+        ByVal MonoisotopicMass As double, _
+        ByVal AverageMass As double, _
         ByVal SHA1Hash As String) As Integer
 
 
@@ -357,8 +357,8 @@ Public Class clsAddUpdateEntries
         ByVal Sequence As String, _
         ByVal Length As Integer, _
         ByVal MolecularFormula As String, _
-        ByVal MonoisotopicMass As Single, _
-        ByVal AverageMass As Single, _
+        ByVal MonoisotopicMass As Double, _
+        ByVal AverageMass As Double, _
         ByVal SHA1Hash As String) As Integer Implements IAddUpdateEntries.UpdateProteinSequenceInfo
 
         Me.RunSP_UpdateProteinSequenceInfo( _
@@ -695,8 +695,8 @@ Public Class clsAddUpdateEntries
         ByVal Sequence As String, _
         ByVal Length As Integer, _
         ByVal MolecularFormula As String, _
-        ByVal MonoisotopicMass As Single, _
-        ByVal AverageMass As Single, _
+        ByVal MonoisotopicMass As double, _
+        ByVal AverageMass As double, _
         ByVal SHA1_Hash As String) As Integer
 
         Dim sp_Save As SqlClient.SqlCommand

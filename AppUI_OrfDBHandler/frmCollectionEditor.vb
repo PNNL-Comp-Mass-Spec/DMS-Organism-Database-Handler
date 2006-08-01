@@ -338,7 +338,7 @@ Public Class frmCollectionEditor
         '
         Me.cboAuthorityPicker.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboAuthorityPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboAuthorityPicker.Location = New System.Drawing.Point(240, 41)
+        Me.cboAuthorityPicker.Location = New System.Drawing.Point(240, 42)
         Me.cboAuthorityPicker.Name = "cboAuthorityPicker"
         Me.cboAuthorityPicker.Size = New System.Drawing.Size(216, 21)
         Me.cboAuthorityPicker.TabIndex = 17
@@ -346,7 +346,7 @@ Public Class frmCollectionEditor
         'lblAuthorityFilter
         '
         Me.lblAuthorityFilter.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblAuthorityFilter.Location = New System.Drawing.Point(240, 26)
+        Me.lblAuthorityFilter.Location = New System.Drawing.Point(240, 27)
         Me.lblAuthorityFilter.Name = "lblAuthorityFilter"
         Me.lblAuthorityFilter.Size = New System.Drawing.Size(212, 17)
         Me.lblAuthorityFilter.TabIndex = 18
@@ -379,7 +379,7 @@ Public Class frmCollectionEditor
         'cmdLoadProteins
         '
         Me.cmdLoadProteins.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdLoadProteins.Location = New System.Drawing.Point(352, 80)
+        Me.cmdLoadProteins.Location = New System.Drawing.Point(352, 81)
         Me.cmdLoadProteins.Name = "cmdLoadProteins"
         Me.cmdLoadProteins.Size = New System.Drawing.Size(102, 24)
         Me.cmdLoadProteins.TabIndex = 14
@@ -413,7 +413,7 @@ Public Class frmCollectionEditor
         Me.cboCollectionPicker.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboCollectionPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboCollectionPicker.Location = New System.Drawing.Point(14, 80)
+        Me.cboCollectionPicker.Location = New System.Drawing.Point(14, 81)
         Me.cboCollectionPicker.Name = "cboCollectionPicker"
         Me.cboCollectionPicker.Size = New System.Drawing.Size(328, 21)
         Me.cboCollectionPicker.TabIndex = 1
@@ -423,7 +423,7 @@ Public Class frmCollectionEditor
         Me.cboOrganismFilter.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboOrganismFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboOrganismFilter.Location = New System.Drawing.Point(14, 41)
+        Me.cboOrganismFilter.Location = New System.Drawing.Point(14, 42)
         Me.cboOrganismFilter.Name = "cboOrganismFilter"
         Me.cboOrganismFilter.Size = New System.Drawing.Size(216, 21)
         Me.cboOrganismFilter.TabIndex = 0
@@ -432,7 +432,7 @@ Public Class frmCollectionEditor
         '
         Me.lblOrganismFilter.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblOrganismFilter.Location = New System.Drawing.Point(14, 26)
+        Me.lblOrganismFilter.Location = New System.Drawing.Point(14, 27)
         Me.lblOrganismFilter.Name = "lblOrganismFilter"
         Me.lblOrganismFilter.Size = New System.Drawing.Size(212, 17)
         Me.lblOrganismFilter.TabIndex = 3
@@ -467,9 +467,9 @@ Public Class frmCollectionEditor
         Me.lvwSource.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colSrcName, Me.colSrcDesc})
         Me.lvwSource.FullRowSelect = True
         Me.lvwSource.GridLines = True
-        Me.lvwSource.Location = New System.Drawing.Point(14, 125)
+        Me.lvwSource.Location = New System.Drawing.Point(14, 126)
         Me.lvwSource.Name = "lvwSource"
-        Me.lvwSource.Size = New System.Drawing.Size(442, 381)
+        Me.lvwSource.Size = New System.Drawing.Size(442, 380)
         Me.lvwSource.TabIndex = 2
         Me.lvwSource.View = System.Windows.Forms.View.Details
         '
@@ -573,9 +573,9 @@ Public Class frmCollectionEditor
         Me.lvwDestination.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colName})
         Me.lvwDestination.FullRowSelect = True
         Me.lvwDestination.GridLines = True
-        Me.lvwDestination.Location = New System.Drawing.Point(14, 48)
+        Me.lvwDestination.Location = New System.Drawing.Point(14, 49)
         Me.lvwDestination.Name = "lvwDestination"
-        Me.lvwDestination.Size = New System.Drawing.Size(221, 458)
+        Me.lvwDestination.Size = New System.Drawing.Size(221, 457)
         Me.lvwDestination.TabIndex = 0
         Me.lvwDestination.View = System.Windows.Forms.View.Details
         '
@@ -667,6 +667,7 @@ Public Class frmCollectionEditor
         Me.mnuAdmin.Index = 2
         Me.mnuAdmin.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuAdminBatchUploadFiles, Me.mnuAdminNameHashRefresh, Me.mnuAdminUpdateSHA, Me.mnuAdminUpdateCollectionsArchive, Me.mnuAdminUpdateZeroedMasses, Me.mnuAdminTestingInterface, Me.mnuAdminFixArchivePaths, Me.mnuAdminAddSortingIndexes})
         Me.mnuAdmin.Text = "Admin"
+        Me.mnuAdmin.Visible = False
         '
         'mnuAdminBatchUploadFiles
         '

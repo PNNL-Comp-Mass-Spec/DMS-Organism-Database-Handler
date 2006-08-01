@@ -404,19 +404,22 @@ Public Class clsSyncFASTAFileArchive
 
         Dim tmpProteinCount As Integer = CInt(dr.Item("TableRowCount"))
 
-
+        Dim startcount As Integer
 
         Dim proteinSelectSQL As String
 
+        Me.OnSyncStart("Starting Mass Update")
+
         While tmpRowCount > 0
-
-            counter = counter + 100
-
-            'proteinSelectSQL = "SELECT Protein_ID, Sequence FROM T_Proteins " & _
-            '    "WHERE Protein_ID <= " + counter.ToString
+            proteinList.Clear()
+            startcount = counter
+            counter = counter + 10000
 
             proteinSelectSQL = "SELECT Protein_ID, Sequence FROM T_Proteins " & _
-                                "WHERE Protein_ID = 1"
+                "WHERE Protein_ID <= " + counter.ToString + " AND Protein_ID > " + startcount.ToString
+
+            'proteinSelectSQL = "SELECT Protein_ID, Sequence FROM T_Proteins " & _
+            '                    "WHERE Protein_ID = 285130"
             '    "WHERE Protein_ID <= " + counter.ToString
 
             proteinTable = Me.m_TableGetter.GetTable(proteinSelectSQL)
@@ -427,12 +430,13 @@ Public Class clsSyncFASTAFileArchive
                 proteinList.Add(CInt(dr.Item("Protein_ID")), dr.Item("Sequence").ToString)
             Next
 
+            Me.OnSyncProgressUpdate("Processing Protein_ID " + startcount.ToString + "-" + counter.ToString + " of " + tmpProteinCount.ToString, CDbl(counter / tmpProteinCount))
             If proteinList.Count > 0 Then
                 Me.UpdateProteinSequenceInfo(proteinList)
             End If
         End While
 
-
+        Me.OnSyncCompletion()
     End Sub
 
     Sub RefreshNameHashes()

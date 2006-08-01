@@ -4,8 +4,8 @@ Public Interface ICalculateSeqInfo
     Sub CalculateSequenceInfo(ByVal Sequence As String)
     Function GenerateSequenceHash(ByVal Sequence As String) As String
 
-    ReadOnly Property MonoIsotopicMass() As Single
-    ReadOnly Property AverageMass() As Single
+    ReadOnly Property MonoIsotopicMass() As Double
+    ReadOnly Property AverageMass() As Double
     ReadOnly Property SequenceLength() As Integer
     ReadOnly Property MolecularFormula() As String
     ReadOnly Property SHA1Hash() As String
@@ -17,8 +17,8 @@ Public Class SequenceInfoCalculator
     Implements ICalculateSeqInfo
     Friend Shared m_AminoAcids As Hashtable
 
-    Private m_MonoIsotopicMass As Single
-    Private m_AverageMass As Single
+    Private m_MonoIsotopicMass As Double
+    Private m_AverageMass As Double
     Private m_Length As Integer
     Private m_MolFormula As String
     Private m_SHA1Hash As String
@@ -40,13 +40,13 @@ Public Class SequenceInfoCalculator
 
 #Region " Ken's Added Properties "
 
-    Friend ReadOnly Property MonoIsotopicMass() As Single Implements ICalculateSeqInfo.MonoIsotopicMass
+    Friend ReadOnly Property MonoIsotopicMass() As Double Implements ICalculateSeqInfo.MonoIsotopicMass
         Get
             Return Me.m_MonoIsotopicMass
         End Get
     End Property
 
-    Friend ReadOnly Property AverageMass() As Single Implements ICalculateSeqInfo.AverageMass
+    Friend ReadOnly Property AverageMass() As Double Implements ICalculateSeqInfo.AverageMass
         Get
             Return Me.m_AverageMass
         End Get
@@ -77,8 +77,8 @@ Public Class SequenceInfoCalculator
     Protected Sub CalculateSequenceInfo(ByVal Sequence As String) Implements ICalculateSeqInfo.CalculateSequenceInfo
         Dim tmpSeqInfo As SequenceInfo
         tmpSeqInfo = SequenceInfo(Sequence)
-        Me.m_MonoIsotopicMass = CSng(tmpSeqInfo.MonoisotopicMass)
-        Me.m_AverageMass = CSng(tmpSeqInfo.AverageMass)
+        Me.m_MonoIsotopicMass = tmpSeqInfo.MonoisotopicMass
+        Me.m_AverageMass = tmpSeqInfo.AverageMass
         Me.m_MolFormula = tmpSeqInfo.MolecularFormula
         Me.m_Length = Sequence.Length
         Me.m_SHA1Hash = Me.GenerateHash(Sequence)
@@ -319,7 +319,7 @@ Public Class SequenceInfo
 
     Public ReadOnly Property MonoisotopicMass() As Double
         Get
-            Return Me.m_Monoisotopic_Mass + 18.01056
+            Return Me.m_Monoisotopic_Mass + 18.0105633
         End Get
     End Property
 
