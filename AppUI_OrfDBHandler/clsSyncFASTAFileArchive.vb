@@ -19,7 +19,7 @@ Public Class clsSyncFASTAFileArchive
     Sub New(ByVal PSConnectionString As String)
 
         Me.m_PSConnectionString = PSConnectionString
-        Me.m_FileArchiver = New Protein_Exporter.clsArchiveToFile(PSConnectionString, Me.m_Exporter)
+        'Me.m_FileArchiver = New Protein_Exporter.clsArchiveToFile(PSConnectionString, Me.m_Exporter)
         Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString, True)
         Me.m_Importer = New Protein_Importer.clsAddUpdateEntries(Me.m_PSConnectionString)
 
@@ -388,21 +388,49 @@ Public Class clsSyncFASTAFileArchive
         Dim proteinList As New Hashtable
         Dim proteinTable As DataTable
         Dim dr As DataRow
+        Dim counter As Integer
+        Dim tmpRowCount As Integer = 1
 
         If Me.m_TableGetter Is Nothing Then
             Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString)
         End If
 
-        Dim proteinSelectSQL As String = "SELECT Protein_ID, Sequence FROM T_Proteins " & _
-            "WHERE Monoisotopic_Mass = 0 or Average_Mass = 0"
+        Dim tmpTableInfo As DataTable = Me.m_TableGetter.GetTable( _
+            "SELECT TOP 1 TableRowCount " + _
+            "FROM V_Table_Row_Counts " + _
+            "WHERE TableName = 'T_Proteins'")
 
-        proteinTable = Me.m_TableGetter.GetTable(proteinSelectSQL)
+        dr = tmpTableInfo.Rows(0)
 
-        For Each dr In proteinTable.Rows
-            proteinList.Add(CInt(dr.Item("Protein_ID")), dr.Item("Sequence").ToString)
-        Next
+        Dim tmpProteinCount As Integer = CInt(dr.Item("TableRowCount"))
 
-        Me.UpdateProteinSequenceInfo(proteinList)
+
+
+        Dim proteinSelectSQL As String
+
+        While tmpRowCount > 0
+
+            counter = counter + 100
+
+            'proteinSelectSQL = "SELECT Protein_ID, Sequence FROM T_Proteins " & _
+            '    "WHERE Protein_ID <= " + counter.ToString
+
+            proteinSelectSQL = "SELECT Protein_ID, Sequence FROM T_Proteins " & _
+                                "WHERE Protein_ID = 1"
+            '    "WHERE Protein_ID <= " + counter.ToString
+
+            proteinTable = Me.m_TableGetter.GetTable(proteinSelectSQL)
+
+            tmpRowCount = proteinTable.Rows.Count
+
+            For Each dr In proteinTable.Rows
+                proteinList.Add(CInt(dr.Item("Protein_ID")), dr.Item("Sequence").ToString)
+            Next
+
+            If proteinList.Count > 0 Then
+                Me.UpdateProteinSequenceInfo(proteinList)
+            End If
+        End While
 
 
     End Sub

@@ -23,7 +23,7 @@ Public Class SequenceInfoCalculator
     Private m_MolFormula As String
     Private m_SHA1Hash As String
     'Private m_SHA1Provider As System.Security.Cryptography.SHA1CryptoServiceProvider
-    Private m_SHA1Provider As System.Security.Cryptography.SHA1Managed
+    Shared m_SHA1Provider As System.Security.Cryptography.SHA1Managed
 
     Private m_DMSConnectionString As String = "Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI;"
 
@@ -32,8 +32,11 @@ Public Class SequenceInfoCalculator
             Me.InitializeFromDMS()
         End If
         'Me.m_SHA1Provider = New System.Security.Cryptography.SHA1CryptoServiceProvider
-        Me.m_SHA1Provider = New System.Security.Cryptography.SHA1Managed
+        If Me.m_SHA1Provider Is Nothing Then
+            Me.m_SHA1Provider = New System.Security.Cryptography.SHA1Managed
+        End If
     End Sub
+
 
 #Region " Ken's Added Properties "
 
@@ -90,7 +93,7 @@ Public Class SequenceInfoCalculator
         Dim aaInfo As AminoAcidInfo
         Dim aaString() As Char
         Dim aa As Char
-        aastring = sequence.ToCharArray
+        aaString = sequence.ToCharArray
 
         For Each aa In aaString
             'For i = 0 To aminoAcids.Length - 1
@@ -310,13 +313,13 @@ Public Class SequenceInfo
 
     Public ReadOnly Property AverageMass() As Double
         Get
-            Return Me.m_Average_Mass + 18.0153  'H+OH Average mass
+            Return Me.m_Average_Mass + 18.01528
         End Get
     End Property
 
     Public ReadOnly Property MonoisotopicMass() As Double
         Get
-            Return Me.m_Monoisotopic_Mass + 18.0106 'H+OH Mono mass
+            Return Me.m_Monoisotopic_Mass + 18.01056
         End Get
     End Property
 
@@ -340,7 +343,7 @@ Public Class SequenceInfo
             Me.m_N_Count = Me.m_N_Count + info.N_Count
             Me.m_O_Count = Me.m_O_Count + info.O_Count
             Me.m_S_Count = Me.m_S_Count + info.S_Count
-            Me.m_Monoisotopic_Mass = Me.m_Monoisotopic_Mass + info.MonoisotopicMass
+            Me.m_Monoisotopic_Mass = Me.m_Monoisotopic_Mass + info.m_Monoisotopic_Mass
             Me.m_Average_Mass = Me.m_Average_Mass + info.m_Average_Mass
         End If
     End Sub
