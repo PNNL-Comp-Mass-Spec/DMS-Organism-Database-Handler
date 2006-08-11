@@ -1091,7 +1091,7 @@ Public Class clsAddUpdateEntries
         myParam.Direction = ParameterDirection.ReturnValue
 
         'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@protein_collection_ID", SqlDbType.Int)
+        myParam = sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int)
         myParam.Direction = ParameterDirection.Input
         myParam.Value = Protein_Collection_ID
 
