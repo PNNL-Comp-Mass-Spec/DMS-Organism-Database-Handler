@@ -336,6 +336,10 @@ Public Class SequenceInfo
 
     Public Sub AddSequenceInfo(ByVal info As SequenceInfo)
 
+        If Me.m_sequence.Length = 0 Then
+            Me.m_H_Count = 2
+            Me.m_O_Count = 1
+        End If
         Me.m_sequence = Me.m_sequence & info.Sequence
         If Not (Me.m_invalidated) Then
             Me.m_C_Count = Me.m_C_Count + info.C_Count
