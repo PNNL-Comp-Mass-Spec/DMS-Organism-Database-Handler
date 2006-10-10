@@ -50,10 +50,13 @@ Public Class clsGetFASTAFromDMSForward
     Event FileGenerationProgress(ByVal statusMsg As String, ByVal fractionDone As Double)
     Event FileGenerationStarted(ByVal taskMsg As String)
 
-    ReadOnly Property FullOutputPath() As String
+    Property FullOutputPath() As String
         Get
             Return Me.m_CurrentFullOutputPath
         End Get
+        Set(ByVal Value As String)
+            Me.m_CurrentFullOutputPath = Value
+        End Set
     End Property
 
     ReadOnly Property ArchivalName() As String
@@ -78,7 +81,7 @@ Public Class clsGetFASTAFromDMSForward
         Return originalReference
     End Function
 
-    Overloads Function ExportFASTAFile( _
+    Overridable Overloads Function ExportFASTAFile( _
        ByVal ProteinCollectionNameList As ArrayList, _
        ByVal ExportPath As String, _
        ByVal AlternateAuthorityID As Integer, _
@@ -278,7 +281,7 @@ Public Class clsGetFASTAFromDMSForward
 
     End Function
 
-    Overloads Function ExportFASTAFile( _
+    Overridable Overloads Function ExportFASTAFile( _
        ByVal ProteinCollectionNameList As ArrayList, _
        ByVal ExportPath As String) As String 'Implements IGetFASTAFromDMS.ExportFASTAFile
 

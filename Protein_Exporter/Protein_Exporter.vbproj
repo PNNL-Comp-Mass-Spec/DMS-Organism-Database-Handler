@@ -141,6 +141,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "clsGetFASTAFromDMSDecoy.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "clsGetFASTAFromDMSForward.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
