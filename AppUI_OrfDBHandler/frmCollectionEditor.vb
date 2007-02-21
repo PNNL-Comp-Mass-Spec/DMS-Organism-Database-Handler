@@ -673,6 +673,7 @@ Public Class frmCollectionEditor
         '
         Me.mnuAdminBatchUploadFiles.Index = 0
         Me.mnuAdminBatchUploadFiles.Text = "Batch Upload FASTA Files Using DMS..."
+        Me.mnuAdminBatchUploadFiles.Visible = False
         '
         'mnuAdminNameHashRefresh
         '
@@ -684,17 +685,20 @@ Public Class frmCollectionEditor
         Me.mnuAdminUpdateSHA.Enabled = False
         Me.mnuAdminUpdateSHA.Index = 2
         Me.mnuAdminUpdateSHA.Text = "Update File Authentication Hashes"
+        Me.mnuAdminUpdateSHA.Visible = False
         '
         'mnuAdminUpdateCollectionsArchive
         '
         Me.mnuAdminUpdateCollectionsArchive.Enabled = False
         Me.mnuAdminUpdateCollectionsArchive.Index = 3
         Me.mnuAdminUpdateCollectionsArchive.Text = "Update Collections Archive"
+        Me.mnuAdminUpdateCollectionsArchive.Visible = False
         '
         'mnuAdminUpdateZeroedMasses
         '
         Me.mnuAdminUpdateZeroedMasses.Index = 4
         Me.mnuAdminUpdateZeroedMasses.Text = "Update Zeroed Masses"
+        Me.mnuAdminUpdateZeroedMasses.Visible = False
         '
         'mnuAdminTestingInterface
         '
@@ -706,11 +710,13 @@ Public Class frmCollectionEditor
         Me.mnuAdminFixArchivePaths.Enabled = False
         Me.mnuAdminFixArchivePaths.Index = 6
         Me.mnuAdminFixArchivePaths.Text = "Fix Archive Path Names"
+        Me.mnuAdminFixArchivePaths.Visible = False
         '
         'mnuAdminAddSortingIndexes
         '
         Me.mnuAdminAddSortingIndexes.Index = 7
         Me.mnuAdminAddSortingIndexes.Text = "Add Sorting Indexes"
+        Me.mnuAdminAddSortingIndexes.Visible = False
         '
         'mnuHelp
         '

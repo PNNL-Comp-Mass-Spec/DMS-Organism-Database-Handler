@@ -81,7 +81,7 @@ Public Class clsDBTask
     Protected Sub OpenConnection(ByVal ConnectionString As String) Implements IGetSQLData.OpenConnection
         Dim retryCount As Integer = 3
         If m_DBCn Is Nothing Then
-            m_DBCn = New SqlConnection(ConnectionString & "Connect Timeout=5")
+            m_DBCn = New SqlConnection(ConnectionString)
         End If
         If m_DBCn.State <> ConnectionState.Open Then
             While retryCount > 0
@@ -161,6 +161,8 @@ Public Class clsDBTask
         Dim tmpIDTable As New DataTable
         Dim GetID_CMD As SqlClient.SqlCommand = New SqlClient.SqlCommand(SelectSQL)
 
+        Dim numTries As Integer = 3
+        Dim tryCount As Integer
         'Try
         If Not Me.m_PersistConnection Then Me.OpenConnection()
 
@@ -173,8 +175,19 @@ Public Class clsDBTask
             SQLCommandBuilder = New SqlClient.SqlCommandBuilder(SQLDataAdapter)
             SQLDataAdapter.SelectCommand = GetID_CMD
 
+            While numTries > 0
+                Try
+                    SQLDataAdapter.Fill(tmpIDTable)
+                    Exit While
+                Catch ex As Exception
+                    numTries -= 1
+                    If numTries = 0 Then
+                        Throw New Exception("could not connect to database after three tries")
+                    End If
+                    System.Threading.Thread.Sleep(1500)
+                End Try
 
-            SQLDataAdapter.Fill(tmpIDTable)
+            End While
 
             'SQLDataAdapter.Dispose()
             'SQLDataAdapter = Nothing
