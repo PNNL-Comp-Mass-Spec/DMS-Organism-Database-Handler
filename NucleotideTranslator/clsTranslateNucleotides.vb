@@ -1,6 +1,7 @@
 Public Interface ITranslateNucleotides
 
     Function LoadMatrix(ByVal TranslationTableID As Integer) As ArrayList
+    Function LoadNucleotidePositionsFromFile(ByVal filePath As String) As Integer
 
 End Interface
 
@@ -67,5 +68,8 @@ Public Class clsTranslateNucleotides
         Return PrimaryList
     End Function
 
+    Protected Function LoadNucPositions(ByVal filePath As String) As Integer Implements ITranslateNucleotides.LoadNucleotidePositionsFromFile
+
+    End Function
 
 End Class

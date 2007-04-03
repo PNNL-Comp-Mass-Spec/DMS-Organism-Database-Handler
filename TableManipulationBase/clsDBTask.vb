@@ -89,8 +89,11 @@ Public Class clsDBTask
                     m_DBCn.Open()
                     retryCount = 0
                 Catch e As SqlException
-                    System.Threading.Thread.Sleep(500)
                     retryCount -= 1
+                    If retryCount = 0 Then
+                        Throw New Exception("could not open database connection after three tries")
+                    End If
+                    System.Threading.Thread.Sleep(3000)
                     m_DBCn.Close()
                 End Try
             End While
@@ -182,9 +185,9 @@ Public Class clsDBTask
                 Catch ex As Exception
                     numTries -= 1
                     If numTries = 0 Then
-                        Throw New Exception("could not connect to database after three tries")
+                        Throw New Exception("could not get records after three tries")
                     End If
-                    System.Threading.Thread.Sleep(1500)
+                    System.Threading.Thread.Sleep(3000)
                 End Try
 
             End While
