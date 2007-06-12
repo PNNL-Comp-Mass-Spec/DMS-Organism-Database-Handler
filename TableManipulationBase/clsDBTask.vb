@@ -169,7 +169,7 @@ Public Class clsDBTask
         'Try
         If Not Me.m_PersistConnection Then Me.OpenConnection()
 
-        GetID_CMD.CommandTimeout = 30
+        GetID_CMD.CommandTimeout = 600
         GetID_CMD.Connection = Me.m_DBCn
 
         If Me.Connected = True Then
