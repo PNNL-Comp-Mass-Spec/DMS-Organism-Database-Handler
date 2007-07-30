@@ -439,6 +439,7 @@ Public Class clsGetFASTAFromDMSForward
     Function FindIDByName(ByVal CollectionName As String) As Integer
         'Dim dr As DataRow
         Dim foundRows() As DataRow
+        CollectionName = Trim(CollectionName)
         foundRows = Me.m_CollectionsCache.Select("[FileName] = '" & CollectionName & "'")
         If foundRows.Length = 0 Then
             Me.RefreshCollectionCache()
