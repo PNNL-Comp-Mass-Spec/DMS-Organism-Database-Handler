@@ -203,8 +203,8 @@ Public Class clsGetFASTAFromDMSForward
                 collectionSQL = _
                     "SELECT Name, Description, Sequence, Protein_ID " & _
                     "FROM V_Protein_Database_Export " & _
-                    "WHERE Protein_Collection_ID = " & tmpID.ToString ' & " " & _
-                '"ORDER BY Name"
+                    "WHERE Protein_Collection_ID = " & tmpID.ToString & " " & _
+                "ORDER BY Sorting_Index"
 
 
             Else
@@ -212,8 +212,8 @@ Public Class clsGetFASTAFromDMSForward
                     "SELECT Name, Description, Sequence, Protein_ID " & _
                     "FROM V_Protein_Database_Export " & _
                     "WHERE Protein_Collection_ID = " & tmpID.ToString & ") " & _
-                        "AND Annotation_Type_ID = " & AlternateAuthorityID ' & _
-                '"ORDER BY Name"
+                        "AND Annotation_Type_ID = " & AlternateAuthorityID & " " & _
+                "ORDER BY Sorting_Index"
                 alternateNames = New Hashtable
 
             End If
