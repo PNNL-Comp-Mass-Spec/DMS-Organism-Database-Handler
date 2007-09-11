@@ -1083,6 +1083,9 @@ Public Class clsAddUpdateEntries
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
+        ' Increase the timeout to 10 minutes
+        sp_Save.CommandTimeout = 600
+
         'Define parameters
         Dim myParam As SqlClient.SqlParameter
 

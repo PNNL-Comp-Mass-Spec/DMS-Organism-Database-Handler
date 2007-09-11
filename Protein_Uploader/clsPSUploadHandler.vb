@@ -327,7 +327,8 @@ Public Class clsPSUploadHandler
 
         XrefID = Me.m_Upload.AddCollectionOrganismXref(collectionID, organismID)
         If XrefID < 1 Then
-            Throw New Exception("Could not add Collection/Organism Xref")
+            'Throw New Exception("Could not add Collection/Organism Xref")
+            MsgBox("Could not add Collection/Organism Xref")
         End If
 
 
