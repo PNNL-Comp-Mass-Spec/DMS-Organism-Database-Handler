@@ -109,7 +109,7 @@ Public Class clsCollectionStatePickerHandler
 
     Function GetStates() As DataTable
         Dim SQL As String = "SELECT State, Collection_State_ID as ID " & _
-            "FROM T_Protein_Collection_States"
+            "FROM T_Protein_Collection_States ORDER BY Collection_State_ID"
         Dim sTable As DataTable = Me.m_GetTables.GetTable(SQL)
 
         Return sTable

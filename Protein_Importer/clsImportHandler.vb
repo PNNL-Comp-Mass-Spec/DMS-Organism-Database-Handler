@@ -117,7 +117,7 @@ Public Class clsImportHandler
     End Function
 
     Protected Function LoadOrganisms() As DataTable Implements IImportProteins.LoadOrganisms
-        Dim orgSQL As String = "SELECT * FROM V_Organism_Picker"
+        Dim orgSQL As String = "SELECT * FROM V_Organism_Picker ORDER BY Short_Name"
         Dim tmpOrgTable As DataTable = Me.m_SQLAccess.GetTable(orgSQL)
 
         Dim dr As DataRow = tmpOrgTable.NewRow
@@ -170,7 +170,8 @@ Public Class clsImportHandler
 
         Dim AuthSQL As String = _
             "SELECT * FROM V_Annotation_Type_Picker " & _
-        "WHERE ID IN (" & authIDSB.ToString & ")"
+            "WHERE ID IN (" & authIDSB.ToString & ") " & _
+            "ORDER BY Display_Name"
 
         Dim tmpAuthTable As DataTable = Me.m_SQLAccess.GetTable(AuthSQL)
 
@@ -197,7 +198,7 @@ Public Class clsImportHandler
     End Function
 
     Protected Function LoadAnnotationTypes() As DataTable Implements IImportProteins.LoadAnnotationTypes
-        Dim AuthSQL As String = "SELECT * FROM V_Annotation_Type_Picker"
+        Dim AuthSQL As String = "SELECT * FROM V_Annotation_Type_Picker ORDER BY Display_Name"
         Dim tmpAnnTypeTable As DataTable = Me.m_SQLAccess.GetTable(AuthSQL)
 
         Dim dr As DataRow = tmpAnnTypeTable.NewRow
@@ -219,7 +220,7 @@ Public Class clsImportHandler
     End Function
 
     Protected Function LoadAuthorities() As DataTable Implements IImportProteins.LoadAuthorities
-        Dim AuthSQL As String = "SELECT * FROM V_Authority_Picker"
+        Dim AuthSQL As String = "SELECT * FROM V_Authority_Picker ORDER BY Display_Name"
         Dim tmpAuthTable As DataTable = Me.m_SQLAccess.GetTable(AuthSQL)
 
         Dim dr As DataRow = tmpAuthTable.NewRow
