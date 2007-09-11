@@ -173,7 +173,7 @@ Public Class frmTestingInterface
         Me.txtConnString.Name = "txtConnString"
         Me.txtConnString.Size = New System.Drawing.Size(590, 20)
         Me.txtConnString.TabIndex = 7
-        Me.txtConnString.Text = "Data Source=gigasax;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
+        Me.txtConnString.Text = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtConnString, True)
         '
         'gbxConnectionString
