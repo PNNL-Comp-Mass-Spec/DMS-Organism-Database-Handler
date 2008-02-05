@@ -17,6 +17,7 @@ Public Class clsGetFASTAFromDMS
     Public Sub New(ByVal ProteinStorageConnectionString As String)
 
         Me.m_PSConnectionString = ProteinStorageConnectionString
+        Me.ClassSelector(ProteinStorageConnectionString, ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta, ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward)
 
     End Sub
 
