@@ -1,7 +1,7 @@
 <VisualStudioProject>
     <VisualBasic
         ProjectType = "Local"
-        ProductVersion = "7.10.3077"
+        ProductVersion = "7.10.6030"
         SchemaVersion = "2.0"
         ProjectGuid = "{78AD9853-60BB-4B10-8FF2-418B3A21092D}"
     >
@@ -123,11 +123,6 @@
                     Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
                 />
                 <Reference
-                    Name = "ValidateFastaFiles_Dll"
-                    Project = "{4719F96F-6CFC-4CAB-8959-35233A6505E8}"
-                    Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
-                />
-                <Reference
                     Name = "ExpTreeLib"
                     AssemblyName = "ExpTreeLib"
                     HintPath = "..\Shared Libraries\ExpTreeLib.dll"
@@ -140,6 +135,11 @@
                 <Reference
                     Name = "SequenceInfoCalculator"
                     Project = "{99C5D78C-00DA-49A5-BAC8-19ADFE95FABE}"
+                    Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
+                />
+                <Reference
+                    Name = "ValidateFastaFiles_Dll"
+                    Project = "{4719F96F-6CFC-4CAB-8959-35233A6505E8}"
                     Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
                 />
             </References>
