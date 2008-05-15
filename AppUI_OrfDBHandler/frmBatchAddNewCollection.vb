@@ -432,8 +432,10 @@ Public Class frmBatchAddNewCollectionTest
             End If
         End If
 
+        If Me.m_FileList Is Nothing Then
+            Me.m_FileList = New Hashtable
+        End If
 
-        Me.m_FileList = New Hashtable
         Me.m_CheckedFileList = New Hashtable
         Me.LoadOrganismPicker(Me.cboOrganismSelect, Me.m_OrganismList)
         Me.LoadAuthorityPicker(Me.cboAuthorityPicker, Me.m_AuthorityList)
@@ -704,44 +706,49 @@ Public Class frmBatchAddNewCollectionTest
         Dim newLi As ListViewItem
         Dim upInfo As Protein_Uploader.IUploadProteins.UploadInfo
 
-        If Me.m_SelectedFileList Is Nothing Then
-            Me.m_SelectedFileList = New Hashtable
-        End If
-
-        For Each li In Me.lvwFolderContents.SelectedItems
-            'upInfo = New UploadInfo
-            upInfo.FileInformation = DirectCast(Me.m_FileList.Item(li.SubItems(4).Text), System.IO.FileInfo)
-            upInfo.OrganismID = DirectCast(Me.cboOrganismSelect.SelectedValue, Int32)
-            upInfo.AuthorityID = DirectCast(Me.cboAuthorityPicker.SelectedValue, Int32)
-            upInfo.EncryptSequences = False
-            upInfo.EncryptionPassphrase = ""
-            If Me.m_SelectedFileList.Contains(upInfo.FileInformation.FullName) Then
-                Me.m_SelectedFileList.Remove(upInfo.FileInformation.FullName)
-                For Each si In Me.lvwSelectedFiles.Items
-                    If si.Text = System.IO.Path.GetFileNameWithoutExtension(upInfo.FileInformation.Name) Then
-                        Me.lvwSelectedFiles.Items.Remove(si)
-                    End If
-                Next
+        Try
+            If Me.m_SelectedFileList Is Nothing Then
+                Me.m_SelectedFileList = New Hashtable
             End If
 
-            'Me.m_SelectedFileList.Add(upInfo.FileInformation.FullName, upInfo)
-            newLi = New ListViewItem(System.IO.Path.GetFileNameWithoutExtension(upInfo.FileInformation.Name))
-            With newLi
-                .SubItems.Add(Me.cboOrganismSelect.Text)
-                .SubItems.Add(Me.cboAuthorityPicker.Text)
-                If Me.chkEncryptionEnable.Checked Then
-                    .SubItems.Add("Yes")
-                    .Tag = Me.txtPassphrase.Text
-                    upInfo.EncryptSequences = True
-                    upInfo.EncryptionPassphrase = newLi.Tag.ToString
-                Else
-                    .SubItems.Add("No")
+            For Each li In Me.lvwFolderContents.SelectedItems
+                'upInfo = New UploadInfo
+                upInfo.FileInformation = DirectCast(Me.m_FileList.Item(li.SubItems(4).Text), System.IO.FileInfo)
+                upInfo.OrganismID = DirectCast(Me.cboOrganismSelect.SelectedValue, Int32)
+                upInfo.AuthorityID = DirectCast(Me.cboAuthorityPicker.SelectedValue, Int32)
+                upInfo.EncryptSequences = False
+                upInfo.EncryptionPassphrase = ""
+                If Me.m_SelectedFileList.Contains(upInfo.FileInformation.FullName) Then
+                    Me.m_SelectedFileList.Remove(upInfo.FileInformation.FullName)
+                    For Each si In Me.lvwSelectedFiles.Items
+                        If si.Text = System.IO.Path.GetFileNameWithoutExtension(upInfo.FileInformation.Name) Then
+                            Me.lvwSelectedFiles.Items.Remove(si)
+                        End If
+                    Next
                 End If
-                .SubItems.Add(upInfo.FileInformation.FullName)
-            End With
-            Me.lvwSelectedFiles.Items.Add(newLi)
-            Me.m_SelectedFileList.Add(upInfo.FileInformation.FullName, upInfo)
-        Next
+
+                'Me.m_SelectedFileList.Add(upInfo.FileInformation.FullName, upInfo)
+                newLi = New ListViewItem(System.IO.Path.GetFileNameWithoutExtension(upInfo.FileInformation.Name))
+                With newLi
+                    .SubItems.Add(Me.cboOrganismSelect.Text)
+                    .SubItems.Add(Me.cboAuthorityPicker.Text)
+                    If Me.chkEncryptionEnable.Checked Then
+                        .SubItems.Add("Yes")
+                        .Tag = Me.txtPassphrase.Text
+                        upInfo.EncryptSequences = True
+                        upInfo.EncryptionPassphrase = newLi.Tag.ToString
+                    Else
+                        .SubItems.Add("No")
+                    End If
+                    .SubItems.Add(upInfo.FileInformation.FullName)
+                End With
+                Me.lvwSelectedFiles.Items.Add(newLi)
+                Me.m_SelectedFileList.Add(upInfo.FileInformation.FullName, upInfo)
+            Next
+        Catch ex As Exception
+            System.Windows.Forms.MessageBox.Show("Error in AddFileToSelectedList: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+      
 
     End Sub
 
