@@ -115,78 +115,96 @@ Public Class clsExportProteinsFASTA
         ByRef ProteinTables As DataSet, _
         ByRef destinationPath As String) As String
 
-        Dim sw As System.IO.StreamWriter = New System.IO.StreamWriter(destinationPath)
-
-        Dim pe As Protein_Storage.IProteinStorageEntry
-
         Dim ProteinTable As DataTable
+        Dim writtenProteinCount As Integer
 
-        Dim descLine As String
-        Dim seqLine As String
-        Dim proteinPosition As Integer
-        Dim proteinLength As Integer
+        For Each ProteinTable In ProteinTables.Tables
+            writtenProteinCount = WriteFromDatatable(ProteinTable, destinationPath)
+        Next
 
-        Dim tmpSeq As String
-        Dim tmpName As String
-        Dim tmpDesc As String
-        'Dim tmpPC As Protein_Storage.IProteinStorageEntry
-        Dim dr As DataRow
-        Dim foundRows() As DataRow
-        Dim tmpAltNamesSB As System.Text.StringBuilder
-        Dim tmpAltNames As String
-        Dim s As String
 
-        'Me.OnExportStart("Writing to FASTA File")
+        Return Me.FinalizeFile(destinationPath)
+
+    End Function
+
+    Protected Overloads Overrides Function Export( _
+        ByRef ProteinTable As DataTable, _
+        ByRef destinationPath As String) As String
+
+        Dim writtenProteinCount As Integer
+
+        If ProteinTable.Rows.Count > 0 Then
+            writtenProteinCount = WriteFromDatatable(ProteinTable, destinationPath)
+        Else
+            Return Me.FinalizeFile(destinationPath)
+        End If
+
+
+    End Function
+
+    Function WriteFromDatatable(ByRef proteinTable As DataTable, ByRef destinationPath As String) As Integer
 
         Dim counterMax As Integer ' = ProteinTable.Rows.Count
         Dim counter As Integer
         Dim cntrlFinder As System.Text.RegularExpressions.Regex = _
             New System.Text.RegularExpressions.Regex("[\x00-\x1F\x7F-\xFF]", Text.RegularExpressions.RegexOptions.Compiled)
-
-
+        Dim dr As DataRow
+        Dim foundRows() As DataRow
+        Dim tmpSeq As String
+        Dim tmpName As String
+        Dim tmpDesc As String
+        Dim descLine As String
+        Dim seqLine As String
+        Dim proteinPosition As Integer
+        Dim proteinLength As Integer
+        Dim tmpAltNamesSB As System.Text.StringBuilder
+        Dim tmpAltNames As String
         Dim EventTriggerThresh As Integer
+        Dim sw As System.IO.StreamWriter
 
-        For Each ProteinTable In ProteinTables.Tables
-            Me.OnExportStart("Writing: " + ProteinTable.TableName)
-            counterMax = ProteinTable.Rows.Count
-            If counterMax <= 10 Then
-                EventTriggerThresh = 1
-            Else
-                EventTriggerThresh = CInt(counterMax / 10)
+        If sw Is Nothing Then
+            sw = New System.IO.StreamWriter(destinationPath, True)
+        End If
+
+        Me.OnExportStart("Writing: " + proteinTable.TableName)
+        counterMax = proteinTable.Rows.Count
+        If counterMax <= 10 Then
+            EventTriggerThresh = 1
+        Else
+            EventTriggerThresh = CInt(counterMax / 10)
+        End If
+
+        foundRows = proteinTable.Select("")
+
+        For Each dr In foundRows
+            tmpSeq = Me.m_ExportComponent.SequenceExtender(dr.Item("Sequence").ToString, proteinTable.Rows.Count)
+
+
+            counter += 1
+
+            If (counter Mod EventTriggerThresh) = 0 Then
+                Me.OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 0))
             End If
 
-            foundRows = ProteinTable.Select("")
+            proteinLength = tmpSeq.Length
+            tmpDesc = cntrlFinder.Replace(dr.Item("Description").ToString, " ")
+            tmpName = Me.m_ExportComponent.ReferenceExtender(dr.Item("Name").ToString)
 
-            For Each dr In foundRows
-                tmpSeq = Me.m_ExportComponent.SequenceExtender(dr.Item("Sequence").ToString, ProteinTable.Rows.Count)
+            sw.WriteLine(Trim(">" & tmpName & " " & tmpDesc & tmpAltNames))
 
-
-                counter += 1
-
-                If (counter Mod EventTriggerThresh) = 0 Then
-                    Me.OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 0))
-                End If
-
-                proteinLength = tmpSeq.Length
-                tmpDesc = cntrlFinder.Replace(dr.Item("Description").ToString, " ")
-                tmpName = Me.m_ExportComponent.ReferenceExtender(dr.Item("Name").ToString)
-
-                sw.WriteLine(Trim(">" & tmpName & " " & tmpDesc & tmpAltNames))
-
-                For proteinPosition = 1 To proteinLength Step Me.m_seqLineLength
-                    seqLine = Mid(tmpSeq, proteinPosition, Me.m_seqLineLength)
-                    sw.WriteLine(seqLine)
-                Next
+            For proteinPosition = 1 To proteinLength Step Me.m_seqLineLength
+                seqLine = Mid(tmpSeq, proteinPosition, Me.m_seqLineLength)
+                sw.WriteLine(seqLine)
             Next
-            counter = 0
         Next
-
+        counter = 0
         sw.Flush()
         sw.Close()
 
         sw = Nothing
+    End Function
 
-
+    Function FinalizeFile(ByRef destinationPath As String) As String
         Dim fingerprint As String = Me.GetFileHash(destinationPath)
 
         Dim fi As System.IO.FileInfo = New System.IO.FileInfo(destinationPath)
@@ -211,9 +229,7 @@ Public Class clsExportProteinsFASTA
         Me.OnExportEnd()
 
         Return fingerprint
-
     End Function
-
 
 
 End Class

@@ -223,6 +223,13 @@ Public Class clsExportProteinsXTFASTA
 
     End Function
 
+    Protected Overloads Overrides Function Export( _
+        ByRef ProteinTable As DataTable, _
+        ByRef destinationPath As String) As String
+
+
+    End Function
+
     Friend Function ConvIntegertoByteArray(ByVal n As Long, ByVal lg As Integer) As Byte()
         'converts an integer to a byte array of length lg
         Dim m() As Byte = New Byte(lg - 1) {}

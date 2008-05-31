@@ -40,6 +40,10 @@ Public MustInherit Class clsExportProteins
         ByRef ProteinTables As DataSet, _
         ByRef destinationPath As String) As String Implements IExportProteins.Export
 
+    Protected MustOverride Function Export( _
+        ByRef ProteinTable As DataTable, _
+        ByRef destinationPath As String) As String Implements IExportProteins.Export
+
 
     Protected Sub OnExportStart(ByVal taskTitle As String)
         RaiseEvent ExportStart(taskTitle)

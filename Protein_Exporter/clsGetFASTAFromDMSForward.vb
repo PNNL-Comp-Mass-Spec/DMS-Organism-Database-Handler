@@ -161,8 +161,21 @@ Public Class clsGetFASTAFromDMSForward
 
         Next
 
+        Dim lengthCheckSQL As String
+        Dim lengthCheckTable As DataTable
+        Dim collectionLength As Integer
+        Dim currentCollectionPos As Integer
+        Dim foundrow As DataRow
+        Dim sectionStart As Integer
+        Dim sectionEnd As Integer
+        Dim tableName As String
+        Dim tmpOutputPath As String
 
+        tmpOutputPath = System.IO.Path.GetTempFileName
         For Each ProteinCollectionName In ProteinCollectionNameList
+            currentCollectionPos = 0
+            sectionStart = currentCollectionPos
+            sectionEnd = 0
             If nameCheckRegex.IsMatch(ProteinCollectionName) Then
                 m = nameCheckRegex.Match(ProteinCollectionName)
                 trueName = m.Groups("collectionname").Value
@@ -170,95 +183,133 @@ Public Class clsGetFASTAFromDMSForward
                 trueName = ProteinCollectionName
             End If
 
-            If PadWithPrimaryAnnotation Then
-                'Dim alternateNameXRefSQL As String = _
-                '    "SELECT Protein_ID, Alternate_Name " & _
-                '    "FROM V_Alternate_Name_Xref " & _
-                '    "WHERE Protein_Collection_ID = " & ProteinCollectionID.ToString & " AND " & _
-                '    "Annotation_Type_ID <> " & PrimaryAnnotationID
+            'Determine collection length
+            lengthCheckSQL = "SELECT NumProteins FROM T_Protein_Collections " & _
+                                "WHERE FileName = '" & ProteinCollectionName & "'"
 
-                '"SELECT Primary_Name, Alternate_Name " & _
-                '"FROM V_Alternate_Name_Xref " & _
-                '"WHERE Protein_Collection_ID = " & ProteinCollectionID.ToString
-                '"WHERE (Protein_ID IN " & _
-                '    "(SELECT Protein_ID " & _
-                '    "FROM T_Protein_Collection_Members " & _
-                '    "WHERE Protein_Collection_ID = " & ProteinCollectionID.ToString & "))"
+            lengthCheckTable = Me.m_TableGrabber.GetTable(lengthCheckSQL)
 
-                'Dim alternateNameTable As DataTable = Me.m_TableGrabber.GetTable(alternateNameXRefSQL)
-
-                'alternateNames = Me.m_TableGrabber.DataTableToComplexHashtable( _
-                '    alternateNameTable, "Protein_ID", "Alternate_Name")
-
-                'alternateNameTable = Nothing
-
-                tmpID = Me.FindIDByName(trueName)
-
-                'collectionSQL = _
-                '    "SELECT Name, Description, Sequence, Protein_ID " & _
-                '    "FROM V_Protein_Database_Export " & _
-                '    "WHERE Protein_Collection_ID = " & tmpID.ToString & " " & _
-                '        "AND Primary_Annotation_Type_ID = Annotation_Type_ID " & _
-                '    "ORDER BY Name"
-                collectionSQL = _
-                    "SELECT Name, Description, Sequence, Protein_ID " & _
-                    "FROM V_Protein_Database_Export " & _
-                    "WHERE Protein_Collection_ID = " & tmpID.ToString & " " & _
-                "ORDER BY Sorting_Index"
-
-
+            If lengthCheckTable.Rows.Count > 0 Then
+                foundrow = lengthCheckTable.Rows(0)
+                collectionLength = CType(foundrow.Item(0), Int32)
             Else
-                collectionSQL = _
-                    "SELECT Name, Description, Sequence, Protein_ID " & _
-                    "FROM V_Protein_Database_Export " & _
-                    "WHERE Protein_Collection_ID = " & tmpID.ToString & ") " & _
-                        "AND Annotation_Type_ID = " & AlternateAuthorityID & " " & _
-                "ORDER BY Sorting_Index"
-                alternateNames = New Hashtable
-
+                collectionLength = -1
             End If
 
-            'Me.OnExportStart("Retrieving: " + trueName)
+
+            While currentCollectionPos <= collectionLength
+                sectionStart = currentCollectionPos
+                sectionEnd = sectionStart + 10000
 
 
+                If PadWithPrimaryAnnotation Then
+                    'Dim alternateNameXRefSQL As String = _
+                    '    "SELECT Protein_ID, Alternate_Name " & _
+                    '    "FROM V_Alternate_Name_Xref " & _
+                    '    "WHERE Protein_Collection_ID = " & ProteinCollectionID.ToString & " AND " & _
+                    '    "Annotation_Type_ID <> " & PrimaryAnnotationID
 
-            collectionTable = Me.m_TableGrabber.GetTable(collectionSQL)
+                    '"SELECT Primary_Name, Alternate_Name " & _
+                    '"FROM V_Alternate_Name_Xref " & _
+                    '"WHERE Protein_Collection_ID = " & ProteinCollectionID.ToString
+                    '"WHERE (Protein_ID IN " & _
+                    '    "(SELECT Protein_ID " & _
+                    '    "FROM T_Protein_Collection_Members " & _
+                    '    "WHERE Protein_Collection_ID = " & ProteinCollectionID.ToString & "))"
 
-            If Not collectionPassphrases Is Nothing Then
-                If collectionPassphrases.ContainsKey(trueName) Then
-                    '    If collectionPassphrases.ContainsKey(trueName) Then
+                    'Dim alternateNameTable As DataTable = Me.m_TableGrabber.GetTable(alternateNameXRefSQL)
 
-                    Me.m_RijndaelDecryption = New clsRijndaelEncryptionHandler(collectionPassphrases.Item(trueName).ToString)
-                    For Each decryptionRow In collectionTable.Rows
-                        cipherSeq = decryptionRow.Item("Sequence").ToString
-                        clearSeq = Me.m_RijndaelDecryption.Decrypt(cipherSeq)
-                        decryptionRow.Item("Sequence") = clearSeq
-                        decryptionRow.AcceptChanges()
-                    Next
+                    'alternateNames = Me.m_TableGrabber.DataTableToComplexHashtable( _
+                    '    alternateNameTable, "Protein_ID", "Alternate_Name")
+
+                    'alternateNameTable = Nothing
+
+                    tmpID = Me.FindIDByName(trueName)
+
+                    'collectionSQL = _
+                    '    "SELECT Name, Description, Sequence, Protein_ID " & _
+                    '    "FROM V_Protein_Database_Export " & _
+                    '    "WHERE Protein_Collection_ID = " & tmpID.ToString & " " & _
+                    '        "AND Primary_Annotation_Type_ID = Annotation_Type_ID " & _
+                    '    "ORDER BY Name"         
+
+                    collectionSQL = _
+                        "SELECT Name, Description, Sequence, Protein_ID " & _
+                        "FROM V_Protein_Database_Export " & _
+                        "WHERE " & _
+                            "Protein_Collection_ID = " & tmpID.ToString & " " & _
+                            "AND Sorting_Index BETWEEN " & sectionStart.ToString & " AND " & sectionEnd.ToString & " " & _
+                    "ORDER BY Sorting_Index"
+
+
+                Else
+                    collectionSQL = _
+                        "SELECT Name, Description, Sequence, Protein_ID " & _
+                        "FROM V_Protein_Database_Export " & _
+                        "WHERE Protein_Collection_ID = " & tmpID.ToString & ") " & _
+                            "AND Annotation_Type_ID = " & AlternateAuthorityID & " " & _
+                            "AND Sorting_Index BETWEEN " & sectionStart.ToString & " AND " & sectionEnd.ToString & " " & _
+                    "ORDER BY Sorting_Index"
+                    alternateNames = New Hashtable
+
                 End If
-            End If
 
-            collectionTable.TableName = trueName
+                'Me.OnExportStart("Retrieving: " + trueName)
 
-            Me.m_CurrentFileProteinCount = collectionTable.Rows.Count
 
-            collection.Tables.Add(collectionTable)
 
-            'collection = Me.DataTableToCollection( _
-            '            collectionTable, "Name", "Description", "Sequence", "Protein_ID", _
-            '            Me.ExtendedExportPath(ExportPath, ProteinCollectionName), appendMultiples, _
-            '            alternateNames)
+                collectionTable = Me.m_TableGrabber.GetTable(collectionSQL)
 
-            If appendMultiples Then
-                AddnXRefList.Add(tmpID)
-            End If
+                If Not collectionPassphrases Is Nothing Then
+                    If collectionPassphrases.ContainsKey(trueName) Then
+                        '    If collectionPassphrases.ContainsKey(trueName) Then
 
-            appendMultiples = True
+                        Me.m_RijndaelDecryption = New clsRijndaelEncryptionHandler(collectionPassphrases.Item(trueName).ToString)
+                        For Each decryptionRow In collectionTable.Rows
+                            cipherSeq = decryptionRow.Item("Sequence").ToString
+                            clearSeq = Me.m_RijndaelDecryption.Decrypt(cipherSeq)
+                            decryptionRow.Item("Sequence") = clearSeq
+                            decryptionRow.AcceptChanges()
+                        Next
+                    End If
+                End If
+
+                If collectionLength < 10000 Then
+                    tableName = trueName
+                Else
+                    tableName = trueName + "_" + Format(sectionStart, "0000000000") + "-" + Format(sectionEnd, "0000000000")
+                End If
+
+                collectionTable.TableName = tableName
+
+                Me.m_CurrentFileProteinCount = collectionTable.Rows.Count
+
+                'collection.Tables.Add(collectionTable)
+                Me.m_fileDumper.Export(collectionTable, tmpOutputPath)
+
+                'collection = Me.DataTableToCollection( _
+                '            collectionTable, "Name", "Description", "Sequence", "Protein_ID", _
+                '            Me.ExtendedExportPath(ExportPath, ProteinCollectionName), appendMultiples, _
+                '            alternateNames)
+
+                If appendMultiples Then
+                    AddnXRefList.Add(tmpID)
+                End If
+
+                appendMultiples = True
+
+
+
+                currentCollectionPos = sectionEnd + 1
+
+            End While
 
             tmpIDListSB.Append(Format(tmpID, "000000"))
             tmpIDListSB.Append("+")
-
         Next
+
+        Dim tmpFI As System.IO.FileInfo = New System.IO.FileInfo(tmpOutputPath)
+
         tmpIDListSB.Remove(tmpIDListSB.Length - 1, 1)
         Dim name As String
 
@@ -271,7 +322,14 @@ Public Class clsGetFASTAFromDMSForward
         Me.m_CurrentFullOutputPath = Me.ExtendedExportPath(ExportPath, name)
         Me.m_CurrentArchiveFileName = tmpIDListSB.ToString
 
-        Dim fingerprint As String = Me.m_fileDumper.Export(collection, Me.m_CurrentFullOutputPath)
+        tmpFI.CopyTo(Me.m_CurrentFullOutputPath)
+
+        Dim outputfi As System.IO.FileInfo = New System.IO.FileInfo(Me.m_CurrentFullOutputPath)
+        If outputfi.Exists Then
+            tmpFI.Delete()
+        End If
+
+        Dim fingerprint As String = Me.m_fileDumper.Export(New DataTable, Me.m_CurrentFullOutputPath)
 
 
         Me.OnExportComplete()

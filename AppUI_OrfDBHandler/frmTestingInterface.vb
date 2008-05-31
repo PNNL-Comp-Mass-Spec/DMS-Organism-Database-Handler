@@ -332,12 +332,12 @@ Public Class frmTestingInterface
 
     End Sub
 
-    '<System.STAThread()> Public Shared Sub Main()
-    '    'System.Windows.Forms.Application.EnableVisualStyles()
-    '    Skybound.VisualStyles.VisualStyleProvider.EnableVisualStyles()
-    '    System.Windows.Forms.Application.DoEvents()
-    '    System.Windows.Forms.Application.Run(New frmTestingInterface)  ' replace frmDecode by the name of your form!!!
-    'End Sub
+    <System.STAThread()> Public Shared Sub Main()
+        'System.Windows.Forms.Application.EnableVisualStyles()
+        Skybound.VisualStyles.VisualStyleProvider.EnableVisualStyles()
+        System.Windows.Forms.Application.DoEvents()
+        System.Windows.Forms.Application.Run(New frmTestingInterface)  ' replace frmDecode by the name of your form!!!
+    End Sub
 
 
 #End Region
@@ -483,7 +483,7 @@ Public Class frmTestingInterface
             'fingerprint = Me.m_Exporter.ExportFASTAFile("Shewanella_2003-12-19", "seq_direction=forward,filetype=fasta", "Shewanella_2003-12-19.fasta", filePath)
 
             'Legacy fasta file with existing protein collection
-            fingerprint = Me.m_Exporter.ExportFASTAFile("MP_06_01,CaM_His_Calmodulin_With_His_Tag,Shewanella_2003-12-19", "seq_direction=forward,filetype=fasta", "na", filePath)
+            fingerprint = Me.m_Exporter.ExportFASTAFile("MP_06_01,Venter_MMG_Condensed_2006-07-21", "seq_direction=forward,filetype=fasta", "na", filePath)
 
             'Legacy fasta file with existing protein collection
             'fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "Shewanella_2003-12-19.fasta", filePath)

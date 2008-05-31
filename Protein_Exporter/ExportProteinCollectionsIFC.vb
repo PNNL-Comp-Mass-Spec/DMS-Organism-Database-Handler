@@ -19,6 +19,10 @@ Namespace ExportProteinCollectionsIFC
             ByRef ProteinTables As DataSet, _
             ByRef destinationPath As String) As String
 
+        Function Export( _
+            ByRef ProteinTable As DataTable, _
+            ByRef destintationPath As String) As String
+
         Function GenerateFileAuthenticationHash(ByVal FullFilePath As String) As String
 
     End Interface
