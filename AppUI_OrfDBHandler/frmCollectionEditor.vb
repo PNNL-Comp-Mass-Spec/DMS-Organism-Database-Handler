@@ -797,6 +797,7 @@ Public Class frmCollectionEditor
 
     Private m_FileErrorList As Hashtable
     Private m_SummarizedFileErrorList As Hashtable
+
     Private m_ValidUploadsList As Hashtable
 
     Protected WithEvents m_Syncer As clsSyncFASTAFileArchive
@@ -956,6 +957,9 @@ Public Class frmCollectionEditor
             Me.m_ValidUploadsList.Clear()
         End If
 
+        If Not Me.m_SummarizedFileErrorList Is Nothing Then
+            Me.m_SummarizedFileErrorList.Clear()
+        End If
 
         Dim frmBatchUpload As New frmBatchAddNewCollectionTest( _
             Me.m_Organisms, _

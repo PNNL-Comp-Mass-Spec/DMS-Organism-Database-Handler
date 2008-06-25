@@ -228,7 +228,8 @@ Public Class frmValidationReport
 
 #End Region
 
-    Private m_ErrorCollection As ArrayList
+    Private m_ErrorCollection As ArrayList      ' Array of type ValidateFastaFile.ICustomValidation.udtErrorInfoExtended
+
     Private m_FileErrorList As Hashtable
     Private m_FileValidList As Hashtable
     Private m_SummarizedFileErrors As Hashtable
@@ -245,13 +246,20 @@ Public Class frmValidationReport
     End Sub
 
     Private Sub cmdExportErrorDetails_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdExportErrorDetails.Click
-        Me.DumpDetailedErrorList(Me.m_ErrorCollection, Me.cboFileList.Text)
+        If Me.m_ErrorCollection Is Nothing OrElse Me.m_ErrorCollection.Count = 0 Then
+            System.Windows.Forms.MessageBox.Show("Error list is empty; nothing to export", "Nothing to do", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        Else
+            Me.DumpDetailedErrorList(Me.m_ErrorCollection, Me.cboFileList.Text)
+        End If
     End Sub
 
     Private Sub cboFileList_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboFileList.SelectedIndexChanged
         Me.lvwErrorList.Items.Clear()
-        If Not Me.m_ErrorCollection Is Nothing Then
+        If Not Me.m_FileErrorList Is Nothing AndAlso Me.m_FileErrorList.Count > 0 Then
             Me.m_ErrorCollection = DirectCast(Me.m_FileErrorList.Item(Me.cboFileList.Text), ArrayList)
+        End If
+
+        If Not m_SummarizedFileErrors Is Nothing AndAlso m_SummarizedFileErrors.Count > 0 Then
             Dim errorSummary As New Hashtable
             errorSummary = DirectCast(Me.m_SummarizedFileErrors.Item(Me.cboFileList.Text), Hashtable)
             Me.FillErrorListView(errorSummary)
@@ -386,6 +394,8 @@ Public Class frmValidationReport
         Dim errorDetail As ValidateFastaFile.ICustomValidation.udtErrorInfoExtended
         Dim fileErrors As ArrayList
 
+        Dim intErrorCount As Integer = 0
+
         With SaveDialog
             .Title = "Save Protein Database File"
             .DereferenceLinks = True
@@ -406,13 +416,17 @@ Public Class frmValidationReport
 
         sw.WriteLine("Protein Name" & ControlChars.Tab & "Line Number" & ControlChars.Tab & "Error Type" & ControlChars.Tab & "Error Message")
 
-        For Each errorDetail In errorList
-            sw.WriteLine( _
-                errorDetail.ProteinName & ControlChars.Tab & _
-                errorDetail.LineNumber & ControlChars.Tab & _
-                errorDetail.Type & ControlChars.Tab & _
-                errorDetail.MessageText)
-        Next
+        If Not errorList Is Nothing AndAlso errorList.Count > 0 Then
+            For Each errorDetail In errorList
+                sw.WriteLine( _
+                    errorDetail.ProteinName & ControlChars.Tab & _
+                    errorDetail.LineNumber & ControlChars.Tab & _
+                    errorDetail.Type & ControlChars.Tab & _
+                    errorDetail.MessageText)
+
+                intErrorCount += 1
+            Next
+        End If
 
         sw.WriteLine("")
 
@@ -421,7 +435,7 @@ Public Class frmValidationReport
 
         sw = Nothing
 
-        MessageBox.Show("Wrote " & errorList.Count & " errors to " & SaveDialog.FileName, "Detailed Error List", MessageBoxButtons.OK)
+        MessageBox.Show("Wrote " & intErrorCount.ToString & " errors to " & SaveDialog.FileName, "Detailed Error List", MessageBoxButtons.OK)
 
     End Sub
 
