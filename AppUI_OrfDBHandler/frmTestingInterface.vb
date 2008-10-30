@@ -483,7 +483,10 @@ Public Class frmTestingInterface
             'fingerprint = Me.m_Exporter.ExportFASTAFile("Shewanella_2003-12-19", "seq_direction=forward,filetype=fasta", "Shewanella_2003-12-19.fasta", filePath)
 
             'Legacy fasta file with existing protein collection
-            fingerprint = Me.m_Exporter.ExportFASTAFile("MP_06_01,Venter_MMG_Condensed_2006-07-21", "seq_direction=forward,filetype=fasta", "na", filePath)
+            'fingerprint = Me.m_Exporter.ExportFASTAFile("M_Musculus_2007-10-24_IPI,Y_pestis_CO92_2006-05-22,Y_pestis_PestoidesF_2006-05-23,Y_pseudotuberculosis_All_2005-08-25", "seq_direction=forward,filetype=fasta", "na", filePath)
+
+            'Legacy fasta file with existing protein collection
+            fingerprint = Me.m_Exporter.ExportFASTAFile("H_sapiens_IPI_2008-02-07", "seq_direction=decoy", "na", filePath)
 
             'Legacy fasta file with existing protein collection
             'fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "Shewanella_2003-12-19.fasta", filePath)

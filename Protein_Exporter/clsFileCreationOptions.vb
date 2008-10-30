@@ -46,7 +46,7 @@ Friend Class clsFileCreationOptions
 
         Dim cleanOptionsString As New System.Text.StringBuilder
 
-        keywordTableSQL = "SELECT Keyword_ID, Keyword FROM T_Creation_Option_Keywords"
+        keywordTableSQL = "SELECT Keyword_ID, Keyword, Default_Value FROM T_Creation_Option_Keywords"
         'valuesTableSQL = "SELECT Value_ID, Value_String, Keyword_ID FROM T_Creation_Option_Values"
         creationValuesSQL = "SELECT Keyword, Value_String, String_Element FROM V_Creation_String_Lookup"
 
@@ -114,7 +114,12 @@ Friend Class clsFileCreationOptions
             End If
 
             tmpKeyword = dr.Item("Keyword").ToString
-            tmpValue = optionsHash.Item(tmpKeyword).ToString
+            If optionsHash.ContainsKey(tmpKeyword) Then
+                tmpValue = optionsHash.Item(tmpKeyword).ToString
+            Else
+                tmpValue = dr.Item("Default_Value").ToString
+            End If
+
 
             Select Case tmpKeyword
                 Case "seq_direction"
