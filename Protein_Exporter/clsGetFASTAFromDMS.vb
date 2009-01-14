@@ -130,6 +130,11 @@ Public Class clsGetFASTAFromDMS
             Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString)
         End If
 
+        ProteinCollectionNameList = ProteinCollectionNameList.Trim(","c)
+        Dim extraCommaCheckRegex As New System.Text.RegularExpressions.Regex("[,]{2,}")
+
+        ProteinCollectionNameList = extraCommaCheckRegex.Replace(ProteinCollectionNameList, ",")
+
         If ProteinCollectionNameList.Length > 0 And Not ProteinCollectionNameList.Equals("na") Then
             'Parse out protein collections from "," delimited list
             ProteinCollections = ProteinCollectionNameList.Split(","c)
@@ -238,10 +243,8 @@ Public Class clsGetFASTAFromDMS
 
         FinalOutputPath = System.IO.Path.Combine(ExportPath, System.IO.Path.GetFileName(Me.m_Archiver.Archived_File_Name))
         finalFI = New System.IO.FileInfo(FinalOutputPath)
-        If Not finalFI.Exists Then
-            destFI.CopyTo(FinalOutputPath)
-            destFI.Delete()
-        End If
+        destFI.CopyTo(FinalOutputPath, True)
+        destFI.Delete()
 
         Me.OnTaskCompletion(FinalOutputPath)
         Return SHA1

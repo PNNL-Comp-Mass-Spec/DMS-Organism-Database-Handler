@@ -122,11 +122,16 @@ Public Class clsGetFASTAFromDMSForward
 
         Dim nameCheckRegex As New System.Text.RegularExpressions.Regex("(?<collectionname>.+)(?<direction>_(forward|reversed|scrambled)).*\.(?<type>(fasta|fasta\.pro))")
 
+        If Not CheckProteinCollectionNameValidity(ProteinCollectionNameList) Then
+            Return ""
+        End If
+
         Dim m As System.Text.RegularExpressions.Match
 
         Dim user As New System.Security.Principal.WindowsPrincipal(System.Security.Principal.WindowsIdentity.GetCurrent)
         Dim user_ID As String = user.Identity.Name
         Dim collectionPassphrases As Hashtable
+
 
         'check each collectionname for encryption of contents
         Dim nameString As String
@@ -351,6 +356,19 @@ Public Class clsGetFASTAFromDMSForward
 
     End Function
 
+    Protected Function CheckProteinCollectionNameValidity(ByVal proteinCollectionNameList As ArrayList) As Boolean
+        Dim name As String
+        Dim id As Integer
+        For Each name In proteinCollectionNameList
+            id = Me.FindIDByName(name)
+            If id < 1 Then
+                Throw New Exception("The collection named '" + name + "' does not exist in the system")
+                Return False
+            End If
+        Next
+        Return True
+    End Function
+
     Protected Function GetPrimaryAuthorityID(ByVal proteinCollectionID As Integer) As Integer
         Dim dr As DataRow
         Dim foundrows() As DataRow
@@ -495,6 +513,9 @@ Public Class clsGetFASTAFromDMSForward
     'End Function
 
     Function FindIDByName(ByVal CollectionName As String) As Integer
+        If CollectionName.Length = 0 Then
+            Return 0
+        End If
         'Dim dr As DataRow
         Dim foundRows() As DataRow
         CollectionName = Trim(CollectionName)
@@ -503,7 +524,13 @@ Public Class clsGetFASTAFromDMSForward
             Me.RefreshCollectionCache()
             foundRows = Me.m_CollectionsCache.Select("[FileName] = '" & CollectionName & "'")
         End If
-        Return CInt(foundRows(0).Item("Protein_Collection_ID"))
+        Dim id As Integer
+        Try
+            id = CInt(foundRows(0).Item("Protein_Collection_ID"))
+        Catch ex As Exception
+            id = -1
+        End Try
+        Return id
     End Function
 
     Function FindNameByID(ByVal CollectionID As Integer) As String
