@@ -24,12 +24,14 @@ Public Class clsGetFASTAFromDMSForward
     Protected m_Extension As String = ""
 
     Protected m_RijndaelDecryption As clsRijndaelEncryptionHandler
+    'Protected m_SHA1Provider As System.Security.Cryptography.SHA1Managed
 
 
     Public Sub New( _
         ByVal ProteinStorageConnectionString As String, _
         ByVal DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes)
 
+        'Me.m_SHA1Provider = New System.Security.Cryptography.SHA1Managed
         Me.m_TableGrabber = New TableManipulationBase.clsDBTask(ProteinStorageConnectionString, True)
         Me.m_AllCollections = Me.GetCollectionNameList()
         Me.m_OrganismList = Me.GetOrganismList
@@ -86,6 +88,19 @@ Public Class clsGetFASTAFromDMSForward
        ByVal ExportPath As String, _
        ByVal AlternateAuthorityID As Integer, _
        ByVal PadWithPrimaryAnnotation As Boolean) As String 'Implements IGetFASTAFromDMS.ExportFASTAFile
+
+        'Dim hashableString As String
+        'hashableString = Join(ProteinCollectionNameList.ToArray, ",")
+
+        'Dim hash As String = Me.GenerateHash(hashableString)
+        'Dim lockFI As System.IO.FileInfo = New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, hash + ".lock"))
+        'Dim lockStream As System.io.FileStream
+
+        'If lockFI.Exists Then
+        '    Return ""
+        'Else
+        '    lockStream = lockFI.Create()
+        'End If
 
         Dim ProteinCollectionName As String
         Dim collectionSQL As String
@@ -177,6 +192,7 @@ Public Class clsGetFASTAFromDMSForward
         Dim tmpOutputPath As String
 
         tmpOutputPath = System.IO.Path.GetTempFileName
+
         For Each ProteinCollectionName In ProteinCollectionNameList
             currentCollectionPos = 0
             sectionStart = currentCollectionPos
@@ -208,36 +224,7 @@ Public Class clsGetFASTAFromDMSForward
 
 
                 If PadWithPrimaryAnnotation Then
-                    'Dim alternateNameXRefSQL As String = _
-                    '    "SELECT Protein_ID, Alternate_Name " & _
-                    '    "FROM V_Alternate_Name_Xref " & _
-                    '    "WHERE Protein_Collection_ID = " & ProteinCollectionID.ToString & " AND " & _
-                    '    "Annotation_Type_ID <> " & PrimaryAnnotationID
-
-                    '"SELECT Primary_Name, Alternate_Name " & _
-                    '"FROM V_Alternate_Name_Xref " & _
-                    '"WHERE Protein_Collection_ID = " & ProteinCollectionID.ToString
-                    '"WHERE (Protein_ID IN " & _
-                    '    "(SELECT Protein_ID " & _
-                    '    "FROM T_Protein_Collection_Members " & _
-                    '    "WHERE Protein_Collection_ID = " & ProteinCollectionID.ToString & "))"
-
-                    'Dim alternateNameTable As DataTable = Me.m_TableGrabber.GetTable(alternateNameXRefSQL)
-
-                    'alternateNames = Me.m_TableGrabber.DataTableToComplexHashtable( _
-                    '    alternateNameTable, "Protein_ID", "Alternate_Name")
-
-                    'alternateNameTable = Nothing
-
                     tmpID = Me.FindIDByName(trueName)
-
-                    'collectionSQL = _
-                    '    "SELECT Name, Description, Sequence, Protein_ID " & _
-                    '    "FROM V_Protein_Database_Export " & _
-                    '    "WHERE Protein_Collection_ID = " & tmpID.ToString & " " & _
-                    '        "AND Primary_Annotation_Type_ID = Annotation_Type_ID " & _
-                    '    "ORDER BY Name"         
-
                     collectionSQL = _
                         "SELECT Name, Description, Sequence, Protein_ID " & _
                         "FROM V_Protein_Database_Export " & _
@@ -245,7 +232,6 @@ Public Class clsGetFASTAFromDMSForward
                             "Protein_Collection_ID = " & tmpID.ToString & " " & _
                             "AND Sorting_Index BETWEEN " & sectionStart.ToString & " AND " & sectionEnd.ToString & " " & _
                     "ORDER BY Sorting_Index"
-
 
                 Else
                     collectionSQL = _
@@ -316,7 +302,7 @@ Public Class clsGetFASTAFromDMSForward
         Dim tmpFI As System.IO.FileInfo = New System.IO.FileInfo(tmpOutputPath)
 
         tmpIDListSB.Remove(tmpIDListSB.Length - 1, 1)
-        Dim name As String
+        Dim name As String '= hash
 
         If ProteinCollectionNameList.Count > 1 Then
             name = tmpIDListSB.ToString
@@ -336,6 +322,12 @@ Public Class clsGetFASTAFromDMSForward
 
         Dim fingerprint As String = Me.m_fileDumper.Export(New DataTable, Me.m_CurrentFullOutputPath)
 
+        'lockStream.Close()
+
+        'lockFI = New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, hash + ".lock"))
+        'If lockFI.Exists Then
+        '    'lockFI.Delete()
+        'End If
 
         Me.OnExportComplete()
 
@@ -563,6 +555,19 @@ Public Class clsGetFASTAFromDMSForward
         Dim ProteinCollectionName As String = CStr(Me.m_AllCollections.Item(ProteinCollectionID))
         Return Me.GetStoredHash(ProteinCollectionName)
     End Function
+
+    'Protected Function GenerateHash(ByVal SourceText As String) As String
+    '    'Create an encoding object to ensure the encoding standard for the source text
+    '    Dim Ue As New System.Text.ASCIIEncoding
+    '    'Retrieve a byte array based on the source text
+    '    Dim ByteSourceText() As Byte = Ue.GetBytes(SourceText)
+    '    'Compute the hash value from the source
+    '    Dim SHA1_hash() As Byte = Me.m_SHA1Provider.ComputeHash(ByteSourceText)
+    '    'And convert it to String format for return
+    '    Dim SHA1string As String = Convert.ToBase64String(SHA1_hash)
+
+    '    Return SHA1string
+    'End Function
 
     Protected Sub OnExportStart(ByVal taskMsg As String) Handles m_fileDumper.ExportStart
         RaiseEvent FileGenerationStarted(taskMsg)

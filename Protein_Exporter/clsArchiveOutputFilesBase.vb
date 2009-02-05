@@ -44,7 +44,8 @@ Public MustInherit Class clsArchiveOutputFilesBase
         ByVal DatabaseFormatType As Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes, _
         ByVal SourceFilePath As String, _
         ByVal CreationOptionsString As String, _
-        ByVal Authentication_Hash As String) As Integer Implements IArchiveOutputFiles.ArchiveCollection
+        ByVal Authentication_Hash As String, _
+        ByVal ProteinCollectionList As String) As Integer Implements IArchiveOutputFiles.ArchiveCollection
 
         Me.OnArchiveStart()
 
@@ -71,7 +72,8 @@ Public MustInherit Class clsArchiveOutputFilesBase
             CreationOptionsString, _
             Authentication_Hash, _
             OutputSequenceType, _
-            ArchivedFileType)
+            ArchivedFileType, _
+            ProteinCollectionList)
 
         'End If
 
@@ -84,7 +86,8 @@ Public MustInherit Class clsArchiveOutputFilesBase
         ByVal DatabaseFormatType As Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes, _
         ByVal SourceFilePath As String, _
         ByVal CreationOptionsString As String, _
-        ByVal Authentication_Hash As String) As Integer Implements IArchiveOutputFiles.ArchiveCollection
+        ByVal Authentication_Hash As String, _
+        ByVal ProteinCollectionList As String) As Integer Implements IArchiveOutputFiles.ArchiveCollection
 
 
         'Dim directionMatchingRegex As New System.Text.RegularExpressions.Regex("(?<collectionname>.+)(?<direction>_(forward|reversed|scrambled)).*\.(?<type>(fasta|fasta\.pro))")
@@ -100,7 +103,8 @@ Public MustInherit Class clsArchiveOutputFilesBase
             DatabaseFormatType, _
             SourceFilePath, _
             CreationOptionsString, _
-            Authentication_Hash)
+            Authentication_Hash, _
+            ProteinCollectionList)
 
     End Function
 
@@ -110,7 +114,7 @@ Public MustInherit Class clsArchiveOutputFilesBase
         ByVal CreationOptionsString As String, _
         ByVal SourceAuthenticationHash As String, _
         ByVal OutputSequenceType As Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes, _
-        ByVal ArchivedFileType As IArchiveOutputFiles.CollectionTypes) As Integer
+        ByVal ArchivedFileType As IArchiveOutputFiles.CollectionTypes, ByVal ProteinCollectionsList As String) As Integer
 
     Protected Function GetProteinCount(ByVal SourceFilePath As String) As Integer
         Dim idLineRegex As System.Text.RegularExpressions.Regex

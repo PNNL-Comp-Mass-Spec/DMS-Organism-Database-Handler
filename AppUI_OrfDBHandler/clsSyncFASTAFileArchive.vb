@@ -31,6 +31,9 @@ Public Class clsSyncFASTAFileArchive
         SQL = "SELECT Protein_Collection_ID, FileName, Authentication_Hash, DateModified, Collection_Type_ID, NumProteins " & _
             "FROM V_Missing_Archive_Entries"
 
+        'TODO add collection list string
+        Dim proteinCollectionList As String = ""
+
 
         Dim dt As DataTable
         dt = Me.m_TableGetter.GetTable(SQL)
@@ -68,7 +71,7 @@ Public Class clsSyncFASTAFileArchive
             ArchiveEntryID = Me.m_FileArchiver.ArchiveCollection( _
                 proteinCollectionID, _
                 Protein_Exporter.IArchiveOutputFiles.CollectionTypes.static, _
-                outputSequenceType, databaseFormatType, sourceFilePath, CreationOptionsString, SHA1)
+                outputSequenceType, databaseFormatType, sourceFilePath, CreationOptionsString, SHA1, proteinCollectionList)
 
         Next
 
@@ -185,7 +188,7 @@ Public Class clsSyncFASTAFileArchive
                 Protein_Exporter.IArchiveOutputFiles.CollectionTypes.static, _
                 Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward, _
                 Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta, _
-                tmpFullPath, creationOptionsString, tmpGenSHA)
+                tmpFullPath, creationOptionsString, tmpGenSHA, "")
             'Me.ArchiveCollection( _
             '    tmpID, _
             '    IArchiveOutputFiles.CollectionTypes.static, _

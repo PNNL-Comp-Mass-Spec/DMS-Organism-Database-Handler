@@ -29,7 +29,8 @@ Public Interface IArchiveOutputFiles
         ByVal DatabaseFormatType As Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes, _
         ByVal SourceFilePath As String, _
         ByVal CreationOptionsString As String, _
-        ByVal Authentication_Hash As String) As Integer
+        ByVal Authentication_Hash As String, _
+        ByVal ProteinCollectionList As String) As Integer
 
     'Function ArchiveCollection( _
     '    ByVal ProteinCollectionName As String, _
@@ -46,7 +47,8 @@ Public Interface IArchiveOutputFiles
         ByVal DatabaseFormatType As Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes, _
         ByVal SourceFilePath As String, _
         ByVal CreationOptionsString As String, _
-        ByVal Authentication_Hash As String) As Integer
+        ByVal Authentication_Hash As String, _
+        ByVal ProteinCollectionList As String) As Integer
 
     Sub AddArchiveCollectionXRef( _
         ByVal ProteinCollectionID As Integer, _

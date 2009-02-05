@@ -173,7 +173,8 @@ Public Class frmTestingInterface
         Me.txtConnString.Name = "txtConnString"
         Me.txtConnString.Size = New System.Drawing.Size(590, 20)
         Me.txtConnString.TabIndex = 7
-        Me.txtConnString.Text = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
+        Me.txtConnString.Text = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSP" & _
+        "I;"
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtConnString, True)
         '
         'gbxConnectionString
@@ -297,7 +298,7 @@ Public Class frmTestingInterface
         Me.lblProgress.Name = "lblProgress"
         Me.lblProgress.Size = New System.Drawing.Size(780, 16)
         Me.lblProgress.TabIndex = 11
-        Me.lblProgress.Visible = False
+        Me.lblProgress.Text = "No Progress Status Yet"
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblProgress, True)
         '
         'pgbAdminConsole
@@ -312,6 +313,7 @@ Public Class frmTestingInterface
         '
         Me.AutoScaleBaseSize = New System.Drawing.Size(5, 13)
         Me.ClientSize = New System.Drawing.Size(796, 408)
+        Me.Controls.Add(Me.lblProgress)
         Me.Controls.Add(Me.pgbAdminConsole)
         Me.Controls.Add(Me.gbxOtherStuff)
         Me.Controls.Add(Me.gbxConnectionString)
@@ -319,9 +321,8 @@ Public Class frmTestingInterface
         Me.Controls.Add(Me.gbxTransTableImportTest)
         Me.Controls.Add(Me.GroupBox2)
         Me.Controls.Add(Me.GroupBox3)
-        Me.Controls.Add(Me.lblProgress)
         Me.Name = "frmTestingInterface"
-        Me.Text = "Admin Console"
+        Me.Text = "-"
         Me.gbxTransTableImportTest.ResumeLayout(False)
         Me.gbxFASTAImportTest.ResumeLayout(False)
         Me.gbxConnectionString.ResumeLayout(False)
@@ -492,7 +493,7 @@ Public Class frmTestingInterface
             'fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "Shewanella_2003-12-19.fasta", filePath)
 
             'Collection of existing collections
-            fingerprint = Me.m_Exporter.ExportFASTAFile("Geobacter_bemidjiensis_Bem_T_2006-10-10,Geobacter_lovelyi_SZ_2007-06-19,Geobacter_metallireducens_GS-15_2007-10-02,Geobacter_sp_", "seq_direction=forward,filetype=fasta", "", filePath)
+            fingerprint = Me.m_Exporter.ExportFASTAFile("Geobacter_bemidjiensis_Bem_T_2006-10-10,Geobacter_lovelyi_SZ_2007-06-19,Geobacter_metallireducens_GS-15_2007-10-02", "seq_direction=forward,filetype=fasta", "", filePath)
 
             'Protein collection from cbo exported forward
             'fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=forward,filetype=fasta", "na", filePath)
@@ -601,7 +602,7 @@ Public Class frmTestingInterface
             "Wrote " + _
             System.IO.Path.GetFileName(fullOutputPath) + _
             " to " + System.IO.Path.GetDirectoryName(fullOutputPath)
-        Me.lblProgress.Visible = False
+        Me.lblProgress.Visible = True
         Me.m_FullOutputPath = fullOutputPath
     End Sub
 

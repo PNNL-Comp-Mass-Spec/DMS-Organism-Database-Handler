@@ -13,12 +13,14 @@ Public Class clsGetFASTAFromDMS
     Protected m_ArchiveCollectionList As ArrayList
     Protected m_TableGetter As TableManipulationBase.IGetSQLData
     Protected m_UserID As String
+    Protected m_SHA1Provider As System.Security.Cryptography.SHA1Managed
+    Protected m_WaitingForLockFile As Boolean = False
 
     Public Sub New(ByVal ProteinStorageConnectionString As String)
 
         Me.m_PSConnectionString = ProteinStorageConnectionString
         Me.ClassSelector(ProteinStorageConnectionString, ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta, ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward)
-
+        Me.m_SHA1Provider = New System.Security.Cryptography.SHA1Managed
     End Sub
 
     Public ReadOnly Property ExporterComponent() As clsGetFASTAFromDMSForward ' Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.ExporterComponent
@@ -31,7 +33,7 @@ Public Class clsGetFASTAFromDMS
         ByVal ProteinStorageConnectionString As String, _
         ByVal DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes, _
         ByVal OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes)
-
+        Me.m_SHA1Provider = New System.Security.Cryptography.SHA1Managed
         Me.m_PSConnectionString = ProteinStorageConnectionString
 
         Dim user As New System.Security.Principal.WindowsPrincipal(System.Security.Principal.WindowsIdentity.GetCurrent())
@@ -207,11 +209,74 @@ Public Class clsGetFASTAFromDMS
         Dim destFI As System.IO.FileInfo
         Dim finalFI As System.IO.FileInfo
 
+        Dim hashableString As String
+        hashableString = Join(ProteinCollectionNameList.ToArray, ",") + "/" + CreationOptionsString
+        Dim hash As String = Me.GenerateHash(hashableString)
+
+        Dim finalFileName As String
+        Dim fileNameSql As String
+        Dim finalFileHash As String
+        Dim fileNameTable As DataTable
+        Dim foundRow As DataRow
+
+        fileNameSql = "SELECT TOP 1 Archived_File_Path,Archived_File_ID,Authentication_Hash FROM T_Archived_Output_Files WHERE Collection_List_Hash = '" & hash & "'"
+        fileNameTable = Me.m_TableGetter.GetTable(fileNameSql)
+        If fileNameTable.Rows.Count > 0 Then
+            foundRow = fileNameTable.Rows(0)
+            finalFileName = System.IO.Path.GetFileName(CStr(foundRow.Item("Archived_File_Path")))
+            finalFileHash = CStr(foundRow.Item("Authentication_Hash"))
+        Else
+            finalFileName = ""
+            finalFileHash = ""
+        End If
+
+        Dim finalFileFI As System.IO.FileInfo
+
+        If finalFileName.Length > 0 Then
+            finalFileFI = New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, finalFileName))
+            If finalFileFI.Exists Then
+                Me.OnTaskCompletion(finalFileFI.FullName)
+                Return finalFileHash
+            End If
+        End If
+
+
+
+        Dim lockFi As System.IO.FileInfo = New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, hash + ".lock"))
+        Dim lockStream As System.io.FileStream
+
+        If lockFi.Exists Then
+            Me.m_WaitingForLockFile = True
+            While lockFi.Exists
+                'Debug.WriteLine("Lockfile In Place")
+                System.Threading.Thread.Sleep(10000)
+                lockFi.Refresh()
+            End While
+            'Debug.WriteLine("Lockfile gone")
+        Else
+            lockStream = lockFi.Create()
+        End If
+
+        If Not finalFileFI Is Nothing Then
+            finalFileFI.Refresh()
+            If finalFileFI.Exists Then
+                Me.OnTaskCompletion(FinalOutputPath)
+                Return Me.GenerateFileAuthenticationHash(finalFileFI.FullName)
+            End If
+        End If
+
+
+
+
         Me.ClassSelector(Me.m_PSConnectionString, DatabaseFormatType, OutputSequenceType)
 
         If ProteinCollectionNameList.Count > 1 Then
             Me.m_CollectionType = IArchiveOutputFiles.CollectionTypes.dynamic
         End If
+
+
+
+
 
 
         SHA1 = Me.m_Getter.ExportFASTAFile( _
@@ -223,6 +288,10 @@ Public Class clsGetFASTAFromDMS
         Dim counter As Integer = 0
         Dim Archived_File_ID As Integer
 
+        If SHA1.Length = 0 Then
+            Return SHA1
+        End If
+
         For Each CollectionName In ProteinCollectionNameList
             If counter = 0 Then
                 Archived_File_ID = Me.m_Archiver.ArchiveCollection( _
@@ -231,7 +300,7 @@ Public Class clsGetFASTAFromDMS
                     Me.m_OutputSequenceType, _
                     Me.m_DatabaseFormatType, _
                     Me.m_FinalOutputPath, _
-                    CreationOptionsString, SHA1)
+                    CreationOptionsString, SHA1, hashableString)
             Else
                 tmpID = Me.GetProteinCollectionID(CollectionName)
                 Me.m_Archiver.AddArchiveCollectionXRef(tmpID, Archived_File_ID)
@@ -243,8 +312,19 @@ Public Class clsGetFASTAFromDMS
 
         FinalOutputPath = System.IO.Path.Combine(ExportPath, System.IO.Path.GetFileName(Me.m_Archiver.Archived_File_Name))
         finalFI = New System.IO.FileInfo(FinalOutputPath)
-        destFI.CopyTo(FinalOutputPath, True)
-        destFI.Delete()
+        If Not finalFI.Exists Then
+            destFI.CopyTo(FinalOutputPath, True)
+            destFI.Delete()
+        End If
+
+        If Not lockStream Is Nothing Then
+            lockStream.Close()
+        End If
+
+        lockFi = New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, hash + ".lock"))
+        If lockFi.Exists Then
+            lockFi.Delete()
+        End If
 
         Me.OnTaskCompletion(FinalOutputPath)
         Return SHA1
@@ -353,6 +433,19 @@ Public Class clsGetFASTAFromDMS
 
         Return ret
 
+    End Function
+
+    Protected Function GenerateHash(ByVal SourceText As String) As String
+        'Create an encoding object to ensure the encoding standard for the source text
+        Dim Ue As New System.Text.ASCIIEncoding
+        'Retrieve a byte array based on the source text
+        Dim ByteSourceText() As Byte = Ue.GetBytes(SourceText)
+        'Compute the hash value from the source
+        Dim SHA1_hash() As Byte = Me.m_SHA1Provider.ComputeHash(ByteSourceText)
+        'And convert it to String format for return
+        Dim SHA1string As String = Convert.ToBase64String(SHA1_hash)
+
+        Return SHA1string
     End Function
 
 End Class
