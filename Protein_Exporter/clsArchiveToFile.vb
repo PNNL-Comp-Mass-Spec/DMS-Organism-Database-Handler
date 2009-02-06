@@ -36,12 +36,12 @@ Public Class clsArchiveToFile
         Dim proteinCount As Integer
 
         'Check for existence of Archive Entry
-        Dim checkSQL As String = "SELECT Top 1 Archived_File_ID, Archived_File_Path, Protein_Collection_List, Collection_List_Hash " & _
+        Dim checkSQL As String = "SELECT Top 1 Archived_File_ID, Archived_File_Path, Protein_Collection_List, Collection_List_Hex_Hash " & _
                                  "FROM T_Archived_Output_Files " & _
                                  "WHERE Authentication_Hash = '" & SourceAuthenticationHash & "'"
 
         Dim tmptable As DataTable = Me.m_TableGetter.GetTable(checkSQL)
-
+        CollectionListHash = Me.GenerateHash(ProteinCollectionsList)
         If tmptable.Rows.Count = 0 Then
             proteinCount = Me.GetProteinCount(SourceFilePath)
 
@@ -53,13 +53,12 @@ Public Class clsArchiveToFile
 
             ArchivedFileEntryID = Me.RunSP_AddOutputFileArchiveEntry( _
                 ProteinCollectionID, CreationOptionsString, SourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount, _
-                archivePath, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
+                archivePath, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType), ProteinCollectionsList, CollectionListHash)
             tmptable = Me.m_TableGetter.GetTable(checkSQL)
 
         Else
             ArchivedFileEntryID = CInt(tmptable.Rows(0).Item("Archived_File_ID"))
             If tmptable.Rows(0).Item("Protein_Collection_List").GetType.Name = "DBNull" Then
-                CollectionListHash = Me.GenerateHash(ProteinCollectionsList)
                 Me.RunSP_UpdateFileArchiveEntryCollectionList(ArchivedFileEntryID, ProteinCollectionsList, CollectionListHash)
             End If
         End If
@@ -127,7 +126,8 @@ Public Class clsArchiveToFile
         'Compute the hash value from the source
         Dim SHA1_hash() As Byte = Me.m_SHA1Provider.ComputeHash(ByteSourceText)
         'And convert it to String format for return
-        Dim SHA1string As String = Convert.ToBase64String(SHA1_hash)
+        'Dim SHA1string As String = Convert.ToBase64String(SHA1_hash)
+        Dim SHA1string As String = BitConverter.ToString(SHA1_hash).Replace("-", "").ToLower
 
         Return SHA1string
     End Function
@@ -231,7 +231,9 @@ Public Class clsArchiveToFile
     ByVal OutputFileSize As Int64, _
     ByVal ProteinCount As Integer, _
     ByVal ArchivedFileFullPath As String, _
-    ByVal ArchivedFileType As String) As Integer
+    ByVal ArchivedFileType As String, _
+    ByVal ProteinCollectionsList As String, _
+    ByVal CollectionListHash As String) As Integer
 
 
 
@@ -274,6 +276,14 @@ Public Class clsArchiveToFile
         myParam.Value = ArchivedFileFullPath
 
         myParam = sp_Save.Parameters.Add("@creation_options", SqlDbType.VarChar, 250)
+        myParam.Direction = ParameterDirection.Input
+        myParam.Value = CreationOptionsString
+
+        myParam = sp_Save.Parameters.Add("@protein_collection_string", SqlDbType.VarChar)
+        myParam.Direction = ParameterDirection.Input
+        myParam.Value = CreationOptionsString
+
+        myParam = sp_Save.Parameters.Add("@collection_string_hash", SqlDbType.VarChar, 40)
         myParam.Direction = ParameterDirection.Input
         myParam.Value = CreationOptionsString
 

@@ -219,7 +219,7 @@ Public Class clsGetFASTAFromDMS
         Dim fileNameTable As DataTable
         Dim foundRow As DataRow
 
-        fileNameSql = "SELECT TOP 1 Archived_File_Path,Archived_File_ID,Authentication_Hash FROM T_Archived_Output_Files WHERE Collection_List_Hash = '" & hash & "'"
+        fileNameSql = "SELECT TOP 1 Archived_File_Path,Archived_File_ID,Authentication_Hash FROM T_Archived_Output_Files WHERE Collection_List_Hex_Hash = '" & hash & "'"
         fileNameTable = Me.m_TableGetter.GetTable(fileNameSql)
         If fileNameTable.Rows.Count > 0 Then
             foundRow = fileNameTable.Rows(0)
@@ -244,13 +244,15 @@ Public Class clsGetFASTAFromDMS
 
         Dim lockFi As System.IO.FileInfo = New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, hash + ".lock"))
         Dim lockStream As System.io.FileStream
-
+        Dim startTime As DateTime = DateTime.Now
+        Dim elapsedTime As TimeSpan
         If lockFi.Exists Then
             Me.m_WaitingForLockFile = True
-            While lockFi.Exists
+            While lockFi.Exists And elapsedTime.Minutes < 60
                 'Debug.WriteLine("Lockfile In Place")
                 System.Threading.Thread.Sleep(10000)
                 lockFi.Refresh()
+                elapsedTime = DateTime.Now.Subtract(startTime)
             End While
             'Debug.WriteLine("Lockfile gone")
         Else
@@ -322,8 +324,10 @@ Public Class clsGetFASTAFromDMS
         End If
 
         lockFi = New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, hash + ".lock"))
-        If lockFi.Exists Then
-            lockFi.Delete()
+        If Not lockFi Is Nothing Then
+            If lockFi.Exists Then
+                lockFi.Delete()
+            End If
         End If
 
         Me.OnTaskCompletion(FinalOutputPath)
@@ -443,8 +447,8 @@ Public Class clsGetFASTAFromDMS
         'Compute the hash value from the source
         Dim SHA1_hash() As Byte = Me.m_SHA1Provider.ComputeHash(ByteSourceText)
         'And convert it to String format for return
-        Dim SHA1string As String = Convert.ToBase64String(SHA1_hash)
-
+        'Dim SHA1string As String = Convert.ToBase64String(SHA1_hash)
+        Dim SHA1string As String = BitConverter.ToString(SHA1_hash).Replace("-", "").ToLower
         Return SHA1string
     End Function
 

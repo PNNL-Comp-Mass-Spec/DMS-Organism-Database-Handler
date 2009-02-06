@@ -113,11 +113,6 @@
                     Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
                 />
                 <Reference
-                    Name = "skybound.visualstyles"
-                    AssemblyName = "Skybound.VisualStyles"
-                    HintPath = "..\Shared Libraries\skybound.visualstyles.dll"
-                />
-                <Reference
                     Name = "Protein_Exporter"
                     Project = "{A698B58B-15B8-4893-81AD-116D57B9B404}"
                     Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
@@ -141,6 +136,11 @@
                     Name = "ValidateFastaFiles_Dll"
                     Project = "{4719F96F-6CFC-4CAB-8959-35233A6505E8}"
                     Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
+                />
+                <Reference
+                    Name = "skybound.visualstyles"
+                    AssemblyName = "skybound.visualstyles"
+                    HintPath = "..\Shared Libraries\skybound.visualstyles.dll"
                 />
             </References>
             <Imports>

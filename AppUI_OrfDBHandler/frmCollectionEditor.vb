@@ -754,12 +754,12 @@ Public Class frmCollectionEditor
 
     End Sub
 
-    '<System.STAThread()> Public Shared Sub Main()
-    '    'System.Windows.Forms.Application.EnableVisualStyles()
-    '    Skybound.VisualStyles.VisualStyleProvider.EnableVisualStyles()
-    '    System.Windows.Forms.Application.DoEvents()
-    '    System.Windows.Forms.Application.Run(New frmCollectionEditor)  ' replace frmDecode by the name of your form!!!
-    'End Sub
+    <System.STAThread()> Public Shared Sub Main()
+        'System.Windows.Forms.Application.EnableVisualStyles()
+        Skybound.VisualStyles.VisualStyleProvider.EnableVisualStyles()
+        System.Windows.Forms.Application.DoEvents()
+        System.Windows.Forms.Application.Run(New frmCollectionEditor)  ' replace frmDecode by the name of your form!!!
+    End Sub
 
 
 #End Region

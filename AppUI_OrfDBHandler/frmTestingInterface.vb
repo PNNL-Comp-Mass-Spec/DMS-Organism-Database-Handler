@@ -333,12 +333,12 @@ Public Class frmTestingInterface
 
     End Sub
 
-    <System.STAThread()> Public Shared Sub Main()
-        'System.Windows.Forms.Application.EnableVisualStyles()
-        Skybound.VisualStyles.VisualStyleProvider.EnableVisualStyles()
-        System.Windows.Forms.Application.DoEvents()
-        System.Windows.Forms.Application.Run(New frmTestingInterface)  ' replace frmDecode by the name of your form!!!
-    End Sub
+    '<System.STAThread()> Public Shared Sub Main()
+    '    'System.Windows.Forms.Application.EnableVisualStyles()
+    '    Skybound.VisualStyles.VisualStyleProvider.EnableVisualStyles()
+    '    System.Windows.Forms.Application.DoEvents()
+    '    System.Windows.Forms.Application.Run(New frmTestingInterface)  ' replace frmDecode by the name of your form!!!
+    'End Sub
 
 
 #End Region
@@ -493,7 +493,7 @@ Public Class frmTestingInterface
             'fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "Shewanella_2003-12-19.fasta", filePath)
 
             'Collection of existing collections
-            fingerprint = Me.m_Exporter.ExportFASTAFile("Geobacter_bemidjiensis_Bem_T_2006-10-10,Geobacter_lovelyi_SZ_2007-06-19,Geobacter_metallireducens_GS-15_2007-10-02", "seq_direction=forward,filetype=fasta", "", filePath)
+            fingerprint = Me.m_Exporter.ExportFASTAFile("Shewanella_2006-07-11", "seq_direction=forward,filetype=fasta", "", filePath)
 
             'Protein collection from cbo exported forward
             'fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=forward,filetype=fasta", "na", filePath)
