@@ -271,31 +271,31 @@ Public Class clsArchiveToFile
         myParam.Direction = ParameterDirection.Input
         myParam.Value = ProteinCount
 
-        myParam = sp_Save.Parameters.Add("@archived_file_path", SqlDbType.VarChar, 250)
-        myParam.Direction = ParameterDirection.InputOutput
-        myParam.Value = ArchivedFileFullPath
+        myParam = sp_Save.Parameters.Add("@archived_file_type", SqlDbType.VarChar, 64)
+        myParam.Direction = ParameterDirection.Input
+        myParam.Value = ArchivedFileType
 
         myParam = sp_Save.Parameters.Add("@creation_options", SqlDbType.VarChar, 250)
         myParam.Direction = ParameterDirection.Input
         myParam.Value = CreationOptionsString
 
-        myParam = sp_Save.Parameters.Add("@protein_collection_string", SqlDbType.VarChar)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = CreationOptionsString
+        myParam = sp_Save.Parameters.Add("@archived_file_path", SqlDbType.VarChar, 250)
+        myParam.Direction = ParameterDirection.InputOutput
+        myParam.Value = ArchivedFileFullPath
 
-        myParam = sp_Save.Parameters.Add("@collection_string_hash", SqlDbType.VarChar, 40)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = CreationOptionsString
+        'myParam = sp_Save.Parameters.Add("@protein_collection_string", SqlDbType.VarChar)
+        'myParam.Direction = ParameterDirection.Input
+        'myParam.Value = CreationOptionsString
 
-        myParam = sp_Save.Parameters.Add("@archived_file_type", SqlDbType.VarChar, 64)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = ArchivedFileType
+        'myParam = sp_Save.Parameters.Add("@collection_string_hash", SqlDbType.VarChar, 40)
+        'myParam.Direction = ParameterDirection.Input
+        'myParam.Value = CreationOptionsString
 
         'myParam = sp_Save.Parameters.Add("@output_sequence_type", SqlDbType.VarChar, 64)
         'myParam.Direction = ParameterDirection.Input
         'myParam.Value = OutputSequenceType
 
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 250)
+        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 512)
         myParam.Direction = ParameterDirection.Output
 
 
