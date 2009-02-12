@@ -68,7 +68,7 @@ Public Class clsExportProteinsXTFASTA
             counter += 1
 
             If (counter Mod EventTriggerThresh) = 0 Then
-                Me.OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 0))
+                Me.OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
 
             End If
 
@@ -182,7 +182,7 @@ Public Class clsExportProteinsXTFASTA
                 counter += 1
 
                 If (counter Mod EventTriggerThresh) = 0 Then
-                    Me.OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 0))
+                    Me.OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
                 End If
 
                 proteinLength = tmpSeq.Length

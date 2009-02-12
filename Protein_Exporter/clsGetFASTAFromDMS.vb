@@ -114,15 +114,16 @@ Public Class clsGetFASTAFromDMS
         ByVal LegacyFASTAFileName As String, _
         ByVal ExportPath As String) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.ExportFASTAFile
 
+        ' Returns the Sha1 hash of the exported file
+        ' Returns nothing or "" if an error
+
         Dim legacyLocationsSQL As String
-        Dim foundRows() As DataRow
 
         Dim ProteinCollections() As String
         Dim collectionName As String
 
         Dim collectionList As ArrayList
         Dim legacyStaticFilelocations As DataTable
-        Dim legacyStaticFilePath As String
 
         Dim optionsParser As clsFileCreationOptions
         optionsParser = New clsFileCreationOptions(Me.m_PSConnectionString)
@@ -137,7 +138,7 @@ Public Class clsGetFASTAFromDMS
 
         ProteinCollectionNameList = extraCommaCheckRegex.Replace(ProteinCollectionNameList, ",")
 
-        If ProteinCollectionNameList.Length > 0 And Not ProteinCollectionNameList.Equals("na") Then
+        If ProteinCollectionNameList.Length > 0 And Not ProteinCollectionNameList.ToLower.Equals("na") Then
             'Parse out protein collections from "," delimited list
             ProteinCollections = ProteinCollectionNameList.Split(","c)
             If collectionList Is Nothing Then
@@ -157,33 +158,103 @@ Public Class clsGetFASTAFromDMS
                 optionsParser.FileFormatType, _
                 optionsParser.SequenceDirection)
 
-        ElseIf LegacyFASTAFileName.Length > 0 And Not LegacyFASTAFileName.Equals("na") Then
+        ElseIf LegacyFASTAFileName.Length > 0 And Not LegacyFASTAFileName.ToLower.Equals("na") Then
 
-            legacyLocationsSQL = "SELECT FileName, Full_Path FROM V_Legacy_Static_File_Locations"
+            Dim legacyStaticFilePath As String
+            Dim finalFileHash As String = "XYZ"
+
+            ' Lookup the details for LegacyFASTAFileName in the database
+            legacyLocationsSQL = "SELECT FileName, Full_Path, Authentication_Hash FROM V_Legacy_Static_File_Locations WHERE FileName = '" & LegacyFASTAFileName & "'"
+
             legacyStaticFilelocations = Me.m_TableGetter.GetTable(legacyLocationsSQL)
-            foundRows = legacyStaticFilelocations.Select("FileName = '" & LegacyFASTAFileName & "'")
+            If legacyStaticFilelocations.Rows.Count = 0 Then
+                Throw New System.Exception("Legacy fasta file " & LegacyFASTAFileName & " not found in V_Legacy_Static_File_Locations; unable to continue")
+            End If
 
+            legacyStaticFilePath = legacyStaticFilelocations.Rows(0).Item("Full_Path").ToString
+            finalFileHash = legacyStaticFilelocations.Rows(0).Item("Authentication_Hash").ToString
+
+            ' Instantiate m_Getter (though it doesn't actually appear to be used)
             Me.m_Getter = New clsGetFASTAFromDMSForward( _
                 Me.m_PSConnectionString, _
                 ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta)
-            RunSP_AddLegacyFileUploadRequest(LegacyFASTAFileName)
-            legacyStaticFilePath = foundRows(0).Item("Full_Path").ToString
-            Dim fi As New System.IO.FileInfo(legacyStaticFilePath)
-            Dim copyFI As New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, LegacyFASTAFileName))
-            If fi.Exists Then
-                Dim sha1 As String = Me.GenerateFileAuthenticationHash(legacyStaticFilePath)
-                If copyFI.Exists Then
-                    copyFI.Delete()
-                End If
-                fi.CopyTo(System.IO.Path.Combine(ExportPath, LegacyFASTAFileName))
-                Me.OnFileGenerationCompleted(System.IO.Path.Combine(ExportPath, LegacyFASTAFileName))
-                Me.OnTaskCompletion(System.IO.Path.Combine(ExportPath, LegacyFASTAFileName))
 
-                Return sha1
+            ' Look for file LegacyFASTAFileName in folder ExportPath
+            ' If it exists, we can safely assume the .Fasta file is ready for use
+            '
+            ' Note: we could use Me.GenerateFileAuthenticationHash(finalFileFI.FullName) to generate a hash for the given file
+            ' However, for large .Fasta files this will be time consuming so we will not perform this extra step every time
+
+            Dim finalFileFI As System.IO.FileInfo
+            finalFileFI = New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, LegacyFASTAFileName))
+            If finalFileFI.Exists AndAlso finalFileFI.Length > 0 Then
+                Me.OnTaskCompletion(finalFileFI.FullName)
+                Return finalFileHash
             End If
 
-            'End If
 
+            ' The file is not present on the local computer
+            ' We need to create a lock file, then copy the .fasta file locally
+
+            If legacyStaticFilePath Is Nothing OrElse legacyStaticFilePath.Length = 0 Then
+                Throw New System.Exception("Storage path for " & LegacyFASTAFileName & " is empty according to V_Legacy_Static_File_Locations; unable to continue")
+            End If
+
+            Dim FastaSourceFI As New System.IO.FileInfo(legacyStaticFilePath)
+            If Not FastaSourceFI.Exists Then
+                Throw New System.Exception("Legacy fasta file not found: " & legacyStaticFilePath & " (path comes from V_Legacy_Static_File_Locations)")
+            Else
+
+                Dim strCollectionListHexHash As String = Me.GenerateHash(LegacyFASTAFileName)
+                Dim lockStream As System.io.FileStream
+                lockStream = CreateLockStream(ExportPath, strCollectionListHexHash, LegacyFASTAFileName)
+
+                If lockStream Is Nothing Then
+                    ' Unable to create a lock stream; an exception has likely already been thrown
+                    Throw New System.Exception("Unable to create lock file required to export " & LegacyFASTAFileName)
+                End If
+
+                If Not finalFileFI Is Nothing Then
+                    ' Check again for the existence of the desired .Fasta file
+                    finalFileFI.Refresh()
+                    If finalFileFI.Exists AndAlso finalFileFI.Length > 0 Then
+                        ' The final file now does exist (and is non-zero in size); we're good to go
+                        Me.OnTaskCompletion(finalFileFI.FullName)
+                        DeleteLockStream(ExportPath, strCollectionListHexHash, lockStream)
+                        Return finalFileHash
+                    End If
+
+                End If
+
+                ' Copy the .Fasta file from the remote computer to this computer
+                ' We're temporarily naming it with the hash name
+                Dim TargetFI As New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, strCollectionListHexHash & "_" & System.IO.Path.GetFileNameWithoutExtension(legacyStaticFilePath) & ".fasta"))
+                If TargetFI.Exists Then
+                    TargetFI.Delete()
+                End If
+                FastaSourceFI.CopyTo(TargetFI.FullName)
+
+                ' Now that the copy is done, rename the file to the final name
+                finalFileFI.Refresh()
+                If finalFileFI.Exists Then
+                    finalFileFI.Delete()
+                End If
+
+                TargetFI.MoveTo(finalFileFI.FullName)
+
+                ' Generate the finalFileHash hash for this file
+                finalFileHash = Me.GenerateFileAuthenticationHash(finalFileFI.FullName)
+
+                Me.OnFileGenerationCompleted(finalFileFI.FullName)
+                Me.OnTaskCompletion(finalFileFI.FullName)
+
+                ' Add an entry to T_Legacy_File_Upload_Requests
+                ' Also store the Sha hash for future use
+                RunSP_AddLegacyFileUploadRequest(LegacyFASTAFileName, finalFileHash)
+
+                DeleteLockStream(ExportPath, strCollectionListHexHash, lockStream)
+                Return finalFileHash
+            End If
 
         End If
 
@@ -202,16 +273,15 @@ Public Class clsGetFASTAFromDMS
         ByVal OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes) As String '_
 
         Dim CollectionName As String
-        Dim FinalOutputPath As String
 
         Dim SHA1 As String
         Dim tmpID As Integer
-        Dim destFI As System.IO.FileInfo
+        Dim InterimFastaFI As System.IO.FileInfo
         Dim finalFI As System.IO.FileInfo
 
         Dim hashableString As String
         hashableString = Join(ProteinCollectionNameList.ToArray, ",") + "/" + CreationOptionsString
-        Dim hash As String = Me.GenerateHash(hashableString)
+        Dim strCollectionListHexHash As String = Me.GenerateHash(hashableString)
 
         Dim finalFileName As String
         Dim fileNameSql As String
@@ -219,7 +289,7 @@ Public Class clsGetFASTAFromDMS
         Dim fileNameTable As DataTable
         Dim foundRow As DataRow
 
-        fileNameSql = "SELECT TOP 1 Archived_File_Path,Archived_File_ID,Authentication_Hash FROM T_Archived_Output_Files WHERE Collection_List_Hex_Hash = '" & hash & "'"
+        fileNameSql = "SELECT TOP 1 Archived_File_Path,Archived_File_ID,Authentication_Hash FROM T_Archived_Output_Files WHERE Collection_List_Hex_Hash = '" & strCollectionListHexHash & "'"
         fileNameTable = Me.m_TableGetter.GetTable(fileNameSql)
         If fileNameTable.Rows.Count > 0 Then
             foundRow = fileNameTable.Rows(0)
@@ -233,54 +303,51 @@ Public Class clsGetFASTAFromDMS
         Dim finalFileFI As System.IO.FileInfo
 
         If finalFileName.Length > 0 Then
+            ' Look for file finalFileName in folder ExportPath
+            ' If it exists, we can safely assume the .Fasta file is ready for use
+
+            '
+            ' Note: we could use Me.GenerateFileAuthenticationHash(finalFileFI.FullName) to generate a hash for the given file
+            ' However, for large .Fasta files this will be time consuming so we will not perform this extra step
+
             finalFileFI = New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, finalFileName))
-            If finalFileFI.Exists Then
+            If finalFileFI.Exists AndAlso finalFileFI.Length > 0 Then
                 Me.OnTaskCompletion(finalFileFI.FullName)
                 Return finalFileHash
             End If
         End If
 
+        ' Either finalFileName = "" or the file is not present
+        ' We need to create a lock file, then export the database
 
-
-        Dim lockFi As System.IO.FileInfo = New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, hash + ".lock"))
         Dim lockStream As System.io.FileStream
-        Dim startTime As DateTime = DateTime.Now
-        Dim elapsedTime As TimeSpan
-        If lockFi.Exists Then
-            Me.m_WaitingForLockFile = True
-            While lockFi.Exists And elapsedTime.Minutes < 60
-                'Debug.WriteLine("Lockfile In Place")
-                System.Threading.Thread.Sleep(10000)
-                lockFi.Refresh()
-                elapsedTime = DateTime.Now.Subtract(startTime)
-            End While
-            'Debug.WriteLine("Lockfile gone")
-        Else
-            lockStream = lockFi.Create()
+        lockStream = CreateLockStream(ExportPath, strCollectionListHexHash, finalFileName)
+
+        If lockStream Is Nothing Then
+            ' Unable to create a lock stream; an exception has likely already been thrown
+            Throw New System.Exception("Unable to create lock file required to export " & finalFileName)
         End If
 
         If Not finalFileFI Is Nothing Then
+            ' Check again for the existence of the desired .Fasta file
             finalFileFI.Refresh()
-            If finalFileFI.Exists Then
-                Me.OnTaskCompletion(FinalOutputPath)
-                Return Me.GenerateFileAuthenticationHash(finalFileFI.FullName)
+            If finalFileFI.Exists AndAlso finalFileFI.Length > 0 Then
+                ' The final file now does exist (and is non-zero in size); we're good to go
+                Me.OnTaskCompletion(finalFileFI.FullName)
+                DeleteLockStream(ExportPath, strCollectionListHexHash, lockStream)
+                Return finalFileHash
             End If
         End If
 
-
-
-
+        ' Initialize the ClassSelector
         Me.ClassSelector(Me.m_PSConnectionString, DatabaseFormatType, OutputSequenceType)
 
+        ' If more than one protein collection, then we're generating a dynamic protein collection
         If ProteinCollectionNameList.Count > 1 Then
             Me.m_CollectionType = IArchiveOutputFiles.CollectionTypes.dynamic
         End If
 
-
-
-
-
-
+        ' Export the fasta file
         SHA1 = Me.m_Getter.ExportFASTAFile( _
                     ProteinCollectionNameList, _
                     ExportPath, _
@@ -291,6 +358,7 @@ Public Class clsGetFASTAFromDMS
         Dim Archived_File_ID As Integer
 
         If SHA1.Length = 0 Then
+            Throw New Exception("m_Getter.ExportFASTAFile returned a blank string for the Sha1 authentication has; this likely represents a problem")
             Return SHA1
         End If
 
@@ -310,33 +378,114 @@ Public Class clsGetFASTAFromDMS
             counter += 1
         Next
 
-        destFI = New System.IO.FileInfo(Me.m_FinalOutputPath)
+        ' Rename the new protein collection to the correct, final name on the local computer
+        InterimFastaFI = New System.IO.FileInfo(Me.m_FinalOutputPath)
 
-        FinalOutputPath = System.IO.Path.Combine(ExportPath, System.IO.Path.GetFileName(Me.m_Archiver.Archived_File_Name))
-        finalFI = New System.IO.FileInfo(FinalOutputPath)
-        If Not finalFI.Exists Then
-            destFI.CopyTo(FinalOutputPath, True)
-            destFI.Delete()
+        finalFileName = System.IO.Path.GetFileName(Me.m_Archiver.Archived_File_Name)
+        finalFileFI = New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, finalFileName))
+
+        If finalFileFI.Exists Then
+            ' Somehow the final file has appeared in the folder (this shouldn't have happened with the lock file present)
+            ' Delete it
+            finalFileFI.Delete()
         End If
+        InterimFastaFI.MoveTo(finalFileFI.FullName)
+
+        DeleteLockStream(ExportPath, strCollectionListHexHash, lockStream)
+
+        Me.OnTaskCompletion(finalFileFI.FullName)
+        Return SHA1
+
+    End Function
+
+    Protected Function CreateLockStream(ByVal ExportPath As String, ByVal LockFileHash As String, ByVal FinalFileName As String) As System.io.FileStream
+
+        ' Returns True if an existing file is found, False if not present
+        ' If an existing file is not found, but a lock file was successfully created, then lockStream will be a valid file stream
+
+        Dim lockFi As System.IO.FileInfo
+        Dim startTime As DateTime = DateTime.Now
+        Dim intAttemptCount As Integer = 0
+
+        Dim lockStream As System.IO.FileStream
+
+        lockFi = New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, LockFileHash + ".lock"))
+
+        Do
+            intAttemptCount += 1
+
+            Try
+                lockFi.Refresh()
+                If lockFi.Exists Then
+                    Me.m_WaitingForLockFile = True
+                    Dim LockTimeoutTime As DateTime = lockFi.LastWriteTime.AddMinutes(60)
+                    RaiseEvent FileGenerationProgress("Lockfile found; waiting until it is deleted or until " & LockTimeoutTime.ToString() & ": " & lockFi.Name, 0)
+
+                    While lockFi.Exists AndAlso System.DateTime.Now < LockTimeoutTime
+                        System.Threading.Thread.Sleep(5000)
+                        lockFi.Refresh()
+                        If DateTime.Now.Subtract(startTime).TotalMinutes >= 60 Then
+                            Exit While
+                        End If
+                    End While
+
+                    lockFi.Refresh()
+                    If lockFi.Exists Then
+                        RaiseEvent FileGenerationProgress("Lockfile still exists; assuming another process timed out; thus, now deleting file " & lockFi.Name, 0)
+                        lockFi.Delete()
+                    End If
+                    'Debug.WriteLine("Lockfile gone")
+
+                    ' Now that the lock file is gone, check whether the final files is now ready
+
+                End If
+
+                ' Try to create a lock file so that the calling procedure can create the required .Fasta file
+
+                ' Try to create the lock file
+                ' If another process is still using it, an exception will be thrown
+                lockStream = lockFi.Create()
+
+                ' We have successfully created a lock file, 
+                ' so we should exit the Do Loop
+                Exit Do
+
+            Catch ex As Exception
+                RaiseEvent FileGenerationProgress("Exception while monitoring lockfile: " & ex.Message, 0)
+            End Try
+
+            ' Something went wrong; wait for 15 seconds then try again
+            System.Threading.Thread.Sleep(15000)
+
+            If intAttemptCount >= 4 Then
+                ' Something went wrong 4 times in a row (typically either creating or deleting the .Lock file)
+                ' Give up trying to export
+                If FinalFileName Is Nothing Then FinalFileName = "??"
+
+                Throw New System.Exception("Unable to create lock file required to export " & FinalFileName & "; tried 4 times without success")
+            End If
+        Loop
+
+
+        Return lockStream
+
+    End Function
+
+    Protected Sub DeleteLockStream(ByVal ExportPath As String, ByVal LockFileHash As String, ByVal lockStream As System.IO.FileStream)
 
         If Not lockStream Is Nothing Then
             lockStream.Close()
         End If
 
-        lockFi = New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, hash + ".lock"))
+        Dim lockFi As System.IO.FileInfo
+        lockFi = New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, LockFileHash + ".lock"))
         If Not lockFi Is Nothing Then
             If lockFi.Exists Then
                 lockFi.Delete()
             End If
         End If
 
-        Me.OnTaskCompletion(FinalOutputPath)
-        Return SHA1
-
-
-
-    End Function
-
+    End Sub
 
     Event FileGenerationCompleted(ByVal FullOutputPath As String) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationCompleted
     Event FileGenerationProgress(ByVal statusMsg As String, ByVal fractionDone As Double) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationProgress
@@ -405,7 +554,7 @@ Public Class clsGetFASTAFromDMS
 #End Region
 
 
-    Protected Function RunSP_AddLegacyFileUploadRequest(ByVal LegacyFilename As String) As Integer
+    Protected Function RunSP_AddLegacyFileUploadRequest(ByVal LegacyFilename As String, ByVal AuthenticationHash As String) As Integer
 
         Dim sp_Save As SqlClient.SqlCommand
 
@@ -428,6 +577,9 @@ Public Class clsGetFASTAFromDMS
         myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
         myParam.Direction = ParameterDirection.Output
 
+        myParam = sp_Save.Parameters.Add("@AuthenticationHash", SqlDbType.VarChar, 8)
+        myParam.Direction = ParameterDirection.Input
+        myParam.Value = AuthenticationHash
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()

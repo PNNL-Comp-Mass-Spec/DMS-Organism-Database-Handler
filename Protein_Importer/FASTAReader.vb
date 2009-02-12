@@ -187,7 +187,7 @@ Public Class FASTAReader
         Dim testchar() As Char
         Dim testcode As Integer
         Dim testcode2 As Integer
-        Dim counter As Integer
+        Dim counter As Long
         Dim endCount As Integer
 
         fi = New FileInfo(m_FASTAFilePath)
