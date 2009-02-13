@@ -5,6 +5,7 @@ Module modMain
 
     Const m_DebugLevel As Integer = 4
     Const FASTA_GEN_TIMEOUT_INTERVAL_MINUTES As Integer = 70
+    Const DEFAULT_COLLECTION_OPTIONS As String = "seq_direction=forward,filetype=fasta"
 
     Private WithEvents m_FastaTools As ExportProteinCollectionsIFC.IGetFASTAFromDMS
 
@@ -17,6 +18,11 @@ Module modMain
     Private m_GenerationStarted As Boolean = False
 
     Private m_FastaGenStartTime As DateTime = System.DateTime.Now
+
+    Private mProteinCollectionList As String
+    Private mCreationOpts As String
+    Private mLegacyFasta As String
+    Private mDestFolder As String
 
 #Region "Event handlers"
     Private Sub m_FastaTools_FileGenerationStarted(ByVal taskMsg As String) Handles m_FastaTools.FileGenerationStarted
@@ -61,23 +67,150 @@ Module modMain
 
 
     Public Sub Main()
-        Dim CollectionList As String
-        Dim CreationOpts As String
-        Dim LegacyFasta As String
-        Dim DestFolder As String
+        Dim objParseCommandLine As New clsParseCommandLine
+        Dim blnProceed As Boolean
 
-        CollectionList = "Shewanella_2006-07-11"
-        CollectionList = "Aspergillus_fumigatus_2008-03-07"
-        CreationOpts = "seq_direction=forward,filetype=fasta"
-        LegacyFasta = "na"
+        Try
+            blnProceed = False
 
-        'CollectionList = "na"
-        'CreationOpts = "na"
-        'LegacyFasta = "A_Thaliana_AGI_TIGR_2002-01-09.fasta"
+            mProteinCollectionList = String.Empty
+            mCreationOpts = String.Empty
+            mLegacyFasta = String.Empty
+            mDestFolder = String.Empty
 
-        DestFolder = "C:\DMS_Temp_Org"
+            If objParseCommandLine.ParseCommandLine Then
+                If SetOptionsUsingCommandLineParameters(objParseCommandLine) Then blnProceed = True
+            End If
 
-        TestExport(CollectionList, CreationOpts, LegacyFasta, DestFolder)
+            If Not blnProceed OrElse _
+               objParseCommandLine.NeedToShowHelp OrElse _
+               objParseCommandLine.ParameterCount + objParseCommandLine.NonSwitchParameterCount = 0 OrElse _
+               (mProteinCollectionList.Length = 0 AndAlso mLegacyFasta.Length = 0) Then
+                ShowProgramHelp()
+            Else
+
+                ' To hard-code defaults, enter them here
+                'mProteinCollectionList = "Shewanella_2006-07-11"
+                'mCreationOpts = "seq_direction=forward,filetype=fasta"
+                'mLegacyFasta = "na"
+                'mDestFolder = "C:\DMS_Temp_Org"
+
+                If mLegacyFasta.Length = 0 Then
+                    mLegacyFasta = "na"
+                End If
+
+                If mCreationOpts.Length = 0 Then
+                    mCreationOpts = DEFAULT_COLLECTION_OPTIONS
+                End If
+
+                If mDestFolder.Length = 0 Then
+                    mDestFolder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
+                End If
+
+                TestExport(mProteinCollectionList, mCreationOpts, mLegacyFasta, mDestFolder)
+
+                End If
+
+        Catch ex As Exception
+            Console.WriteLine("Error occurred in modMain->Main: " & ControlChars.NewLine & ex.Message)
+        End Try
+
+
+
+    End Sub
+
+    Private Function SetOptionsUsingCommandLineParameters(ByVal objParseCommandLine As clsParseCommandLine) As Boolean
+        ' Returns True if no problems; otherwise, returns false
+
+        Dim strValue As String = String.Empty
+        Dim strValidParameters() As String = New String() {"P", "C", "L", "O"}
+
+        Try
+            ' Make sure no invalid parameters are present
+            If objParseCommandLine.InvalidParametersPresent(strValidParameters) Then
+                Return False
+            Else
+                With objParseCommandLine
+                    ' Query objParseCommandLine to see if various parameters are present
+                    If .RetrieveValueForParameter("P", strValue) Then mProteinCollectionList = strValue
+                    If .RetrieveValueForParameter("C", strValue) Then mCreationOpts = strValue
+                    If .RetrieveValueForParameter("L", strValue) Then mLegacyFasta = strValue
+                    If .RetrieveValueForParameter("O", strValue) Then mDestFolder = strValue
+
+                    If mProteinCollectionList.Length > 0 Then
+                        mLegacyFasta = String.Empty
+                    ElseIf mLegacyFasta.Length = 0 Then
+                        ' Neither /P nor /L were used
+
+                        If .NonSwitchParameterCount > 0 Then
+                            ' User specified a non-switch parameter
+                            ' Assume it is a protein collection list
+                            mProteinCollectionList = .RetrieveNonSwitchParameter(0)
+                            If mProteinCollectionList.ToLower.EndsWith(".fasta") OrElse _
+                               mProteinCollectionList.ToLower.EndsWith(".fasta""") Then
+                                ' User specified a .fasta file
+                                mLegacyFasta = String.Copy(mProteinCollectionList)
+                                mProteinCollectionList = String.Empty
+                            End If
+                        End If
+                    End If
+
+                End With
+
+                Return True
+            End If
+
+        Catch ex As Exception
+            Console.WriteLine("Error parsing the command line parameters: " & ControlChars.NewLine & ex.Message)
+        End Try
+
+    End Function
+
+    Private Sub ShowProgramHelp()
+
+        Try
+
+            Console.WriteLine("This program can export protein collection(s) from the DMS Protein_Sequences database to create a .Fasta file. ")
+            Console.WriteLine("Alternatively, you can specify a legacy .Fasta file name to retrieve")
+            Console.WriteLine()
+            Console.WriteLine("Program syntax:")
+            Console.WriteLine("  " & System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location) & _
+                                        " /P:ProteinCollectionList [/C:ProteinCollectionCreationOptions] [/O:OutputFolder]")
+            Console.WriteLine("   or   ")
+            Console.WriteLine("  " & System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location) & _
+                                        " /L:LegacyFastaFileName [/O:OutputFolder]")
+            Console.WriteLine()
+            Console.WriteLine("To export one or more protein collections, specify the protein collection names as a comma separated list after the /P switch.")
+            Console.WriteLine("When exporting protein collections, use optional switch /C to change the protein collection export options.  The default is: " & DEFAULT_COLLECTION_OPTIONS)
+            Console.WriteLine()
+            Console.WriteLine("To export a legacy fasta file, use /L, for example /L:FileName.fasta")
+            Console.WriteLine()
+            Console.WriteLine("Optionally use /O to specify the output folder.")
+            Console.WriteLine()
+
+            Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2009")
+            Console.WriteLine()
+
+            Console.WriteLine("E-mail: matthew.monroe@pnl.gov or matt@alchemistmatt.com")
+            Console.WriteLine("Website: http://ncrr.pnl.gov/ or http://www.sysbio.org/resources/staff/")
+            Console.WriteLine()
+
+            Console.WriteLine("Licensed under the Apache License, Version 2.0; you may not use this file except in compliance with the License.  " & _
+                              "You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0")
+            Console.WriteLine()
+
+            Console.WriteLine("Notice: This computer software was prepared by Battelle Memorial Institute, " & _
+                              "hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the " & _
+                              "Department of Energy (DOE).  All rights in the computer software are reserved " & _
+                              "by DOE on behalf of the United States Government and the Contractor as " & _
+                              "provided in the Contract.  NEITHER THE GOVERNMENT NOR THE CONTRACTOR MAKES ANY " & _
+                              "WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY LIABILITY FOR THE USE OF THIS " & _
+                              "SOFTWARE.  This notice including this sentence must appear on any copies of " & _
+                              "this computer software.")
+
+        Catch ex As Exception
+            Console.WriteLine("Error displaying the program syntax: " & ex.Message)
+        End Try
 
     End Sub
 

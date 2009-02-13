@@ -91,6 +91,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "clsParseCommandLine.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "modMain.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
