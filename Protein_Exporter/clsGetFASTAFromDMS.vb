@@ -117,13 +117,10 @@ Public Class clsGetFASTAFromDMS
         ' Returns the Sha1 hash of the exported file
         ' Returns nothing or "" if an error
 
-        Dim legacyLocationsSQL As String
-
         Dim ProteinCollections() As String
         Dim collectionName As String
 
         Dim collectionList As ArrayList
-        Dim legacyStaticFilelocations As DataTable
 
         Dim optionsParser As clsFileCreationOptions
         optionsParser = New clsFileCreationOptions(Me.m_PSConnectionString)
@@ -163,16 +160,11 @@ Public Class clsGetFASTAFromDMS
             Dim legacyStaticFilePath As String
             Dim finalFileHash As String = "XYZ"
 
-            ' Lookup the details for LegacyFASTAFileName in the database
-            legacyLocationsSQL = "SELECT FileName, Full_Path, Authentication_Hash FROM V_Legacy_Static_File_Locations WHERE FileName = '" & LegacyFASTAFileName & "'"
-
-            legacyStaticFilelocations = Me.m_TableGetter.GetTable(legacyLocationsSQL)
-            If legacyStaticFilelocations.Rows.Count = 0 Then
-                Throw New System.Exception("Legacy fasta file " & LegacyFASTAFileName & " not found in V_Legacy_Static_File_Locations; unable to continue")
+            If Not LookupLegacyFastaFileDetails(LegacyFASTAFileName, legacyStaticFilePath, finalFileHash) Then
+                ' Could not find LegacyFASTAFileName in V_Legacy_Static_File_Locations
+                ' An exception has probably already been thrown
+                Return Nothing
             End If
-
-            legacyStaticFilePath = legacyStaticFilelocations.Rows(0).Item("Full_Path").ToString
-            finalFileHash = legacyStaticFilelocations.Rows(0).Item("Authentication_Hash").ToString
 
             ' Instantiate m_Getter (though it doesn't actually appear to be used)
             Me.m_Getter = New clsGetFASTAFromDMSForward( _
@@ -183,11 +175,17 @@ Public Class clsGetFASTAFromDMS
             ' If it exists, we can safely assume the .Fasta file is ready for use
             '
             ' Note: we could use Me.GenerateFileAuthenticationHash(finalFileFI.FullName) to generate a hash for the given file
-            ' However, for large .Fasta files this will be time consuming so we will not perform this extra step every time
+            ' However, for large .Fasta files this will be time consuming so we will not perform this extra step every time,
+            '  and we'll instead return the value stored in finalFileHash
+
 
             Dim finalFileFI As System.IO.FileInfo
             finalFileFI = New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, LegacyFASTAFileName))
             If finalFileFI.Exists AndAlso finalFileFI.Length > 0 Then
+                If finalFileHash.Length = 0 Then
+                    finalFileHash = GenerateAndStoreLegacyFileHash(finalFileFI.FullName)
+                End If
+
                 Me.OnTaskCompletion(finalFileFI.FullName)
                 Return finalFileHash
             End If
@@ -218,7 +216,18 @@ Public Class clsGetFASTAFromDMS
                     ' Check again for the existence of the desired .Fasta file
                     finalFileFI.Refresh()
                     If finalFileFI.Exists AndAlso finalFileFI.Length > 0 Then
-                        ' The final file now does exist (and is non-zero in size); we're good to go
+                        ' The final file now does exist (and is non-zero in size)
+                        ' The other process that made the file should have updated the database with the file hash; determine the hash now
+                        If Not LookupLegacyFastaFileDetails(LegacyFASTAFileName, legacyStaticFilePath, finalFileHash) Then
+                            ' Could not find LegacyFASTAFileName in V_Legacy_Static_File_Locations
+                            ' An exception has probably already been thrown
+                            Return Nothing
+                        End If
+
+                        If finalFileHash.Length = 0 Then
+                            finalFileHash = GenerateAndStoreLegacyFileHash(finalFileFI.FullName)
+                        End If
+
                         Me.OnTaskCompletion(finalFileFI.FullName)
                         DeleteLockStream(ExportPath, strCollectionListHexHash, lockStream)
                         Return finalFileHash
@@ -242,19 +251,17 @@ Public Class clsGetFASTAFromDMS
 
                 TargetFI.MoveTo(finalFileFI.FullName)
 
-                ' Generate the finalFileHash hash for this file
-                finalFileHash = Me.GenerateFileAuthenticationHash(finalFileFI.FullName)
+                If finalFileHash.Length = 0 Then
+                    ' Generate and store theh has for this file
+                    finalFileHash = GenerateAndStoreLegacyFileHash(finalFileFI.FullName)
+                End If
 
                 Me.OnFileGenerationCompleted(finalFileFI.FullName)
                 Me.OnTaskCompletion(finalFileFI.FullName)
 
-                ' Add an entry to T_Legacy_File_Upload_Requests
-                ' Also store the Sha hash for future use
-                RunSP_AddLegacyFileUploadRequest(LegacyFASTAFileName, finalFileHash)
-
                 DeleteLockStream(ExportPath, strCollectionListHexHash, lockStream)
                 Return finalFileHash
-            End If
+                End If
 
         End If
 
@@ -486,6 +493,45 @@ Public Class clsGetFASTAFromDMS
         End If
 
     End Sub
+
+    Protected Function GenerateAndStoreLegacyFileHash(ByVal strFastaFilePath As String) As String
+        Dim FileHash As String = String.Empty
+
+        ' The database does not have a valid Authentication_Hash values for this .Fasta file; generate one now
+        FileHash = Me.GenerateFileAuthenticationHash(strFastaFilePath)
+
+        ' Add an entry to T_Legacy_File_Upload_Requests
+        ' Also store the Sha1 hash for future use
+        RunSP_AddLegacyFileUploadRequest(System.IO.Path.GetFileName(strFastaFilePath), FileHash)
+
+        Return FileHash
+
+    End Function
+
+    Protected Function LookupLegacyFastaFileDetails(ByVal LegacyFASTAFileName As String, _
+                                                    ByRef LegacyStaticFilePathOutput As String, _
+                                                    ByRef FileHashOutput As String) As Boolean
+
+        Dim legacyLocationsSQL As String
+
+        Dim legacyStaticFilelocations As DataTable
+
+        ' Lookup the details for LegacyFASTAFileName in the database
+        legacyLocationsSQL = "SELECT FileName, Full_Path, Authentication_Hash FROM V_Legacy_Static_File_Locations WHERE FileName = '" & LegacyFASTAFileName & "'"
+
+        legacyStaticFilelocations = Me.m_TableGetter.GetTable(legacyLocationsSQL)
+        If legacyStaticFilelocations.Rows.Count = 0 Then
+            Throw New System.Exception("Legacy fasta file " & LegacyFASTAFileName & " not found in V_Legacy_Static_File_Locations; unable to continue")
+            Return False
+        End If
+
+        LegacyStaticFilePathOutput = legacyStaticFilelocations.Rows(0).Item("Full_Path").ToString
+        FileHashOutput = legacyStaticFilelocations.Rows(0).Item("Authentication_Hash").ToString
+        If FileHashOutput Is Nothing Then FileHashOutput = String.Empty
+
+        Return True
+
+    End Function
 
     Event FileGenerationCompleted(ByVal FullOutputPath As String) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationCompleted
     Event FileGenerationProgress(ByVal statusMsg As String, ByVal fractionDone As Double) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationProgress
