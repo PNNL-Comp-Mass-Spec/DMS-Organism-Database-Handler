@@ -333,12 +333,12 @@ Public Class frmTestingInterface
 
     End Sub
 
-    '<System.STAThread()> Public Shared Sub Main()
-    '    'System.Windows.Forms.Application.EnableVisualStyles()
-    '    Skybound.VisualStyles.VisualStyleProvider.EnableVisualStyles()
-    '    System.Windows.Forms.Application.DoEvents()
-    '    System.Windows.Forms.Application.Run(New frmTestingInterface)  ' replace frmDecode by the name of your form!!!
-    'End Sub
+    <System.STAThread()> Public Shared Sub Main()
+        'System.Windows.Forms.Application.EnableVisualStyles()
+        Skybound.VisualStyles.VisualStyleProvider.EnableVisualStyles()
+        System.Windows.Forms.Application.DoEvents()
+        System.Windows.Forms.Application.Run(New frmTestingInterface)  ' replace frmDecode by the name of your form!!!
+    End Sub
 
 
 #End Region
@@ -493,7 +493,11 @@ Public Class frmTestingInterface
             'fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "Shewanella_2003-12-19.fasta", filePath)
 
             'Collection of existing collections
-            fingerprint = Me.m_Exporter.ExportFASTAFile("Shewanella_2006-07-11", "seq_direction=forward,filetype=fasta", "", filePath)
+            'fingerprint = Me.m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=forward,filetype=fasta", "", filePath)
+            'fingerprint = Me.m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=reversed,filetype=fasta", "", filePath)
+            'fingerprint = Me.m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=decoy,filetype=fasta", "", filePath)
+            fingerprint = Me.m_Exporter.ExportFASTAFile("M_Musculus_2006-07-25_IPI", "seq_direction=decoy,filetype=fasta", "", filePath)
+
 
             'Protein collection from cbo exported forward
             'fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=forward,filetype=fasta", "na", filePath)

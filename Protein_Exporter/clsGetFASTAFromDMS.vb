@@ -296,9 +296,11 @@ Public Class clsGetFASTAFromDMS
         Dim fileNameTable As DataTable
         Dim foundRow As DataRow
 
-        fileNameSql = "SELECT TOP 1 Archived_File_Path,Archived_File_ID,Authentication_Hash FROM T_Archived_Output_Files WHERE Collection_List_Hex_Hash = '" & strCollectionListHexHash & "'"
+        fileNameSql = "SELECT Archived_File_Path,Archived_File_ID,Authentication_Hash FROM T_Archived_Output_Files " & _
+                        "WHERE Collection_List_Hex_Hash = '" & strCollectionListHexHash & "' AND " & _
+                            "Protein_Collection_List = '" & Join(ProteinCollectionNameList.ToArray, ",") & "' ORDER BY File_Modification_Date desc"
         fileNameTable = Me.m_TableGetter.GetTable(fileNameSql)
-        If fileNameTable.Rows.Count > 0 Then
+        If fileNameTable.Rows.Count = 1 Then
             foundRow = fileNameTable.Rows(0)
             finalFileName = System.IO.Path.GetFileName(CStr(foundRow.Item("Archived_File_Path")))
             finalFileHash = CStr(foundRow.Item("Authentication_Hash"))
@@ -365,7 +367,7 @@ Public Class clsGetFASTAFromDMS
         Dim Archived_File_ID As Integer
 
         If SHA1.Length = 0 Then
-            Throw New Exception("m_Getter.ExportFASTAFile returned a blank string for the Sha1 authentication has; this likely represents a problem")
+            Throw New Exception("m_Getter.ExportFASTAFile returned a blank string for the Sha1 authentication hash; this likely represents a problem")
             Return SHA1
         End If
 
@@ -377,7 +379,7 @@ Public Class clsGetFASTAFromDMS
                     Me.m_OutputSequenceType, _
                     Me.m_DatabaseFormatType, _
                     Me.m_FinalOutputPath, _
-                    CreationOptionsString, SHA1, hashableString)
+                    CreationOptionsString, SHA1, Join(ProteinCollectionNameList.ToArray, ","))
             Else
                 tmpID = Me.GetProteinCollectionID(CollectionName)
                 Me.m_Archiver.AddArchiveCollectionXRef(tmpID, Archived_File_ID)

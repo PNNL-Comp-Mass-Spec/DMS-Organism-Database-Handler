@@ -24,6 +24,8 @@ Public Class clsArchiveToFile
         Dim CollectionListHexHash As String
         Dim CollectionListHexHashInDB As String
 
+        Dim ProteinCollectionsListFromDB As String
+
         Me.CheckTableGetterStatus()
 
         Dim ArchivedFileEntryID As Integer = 0
@@ -37,12 +39,12 @@ Public Class clsArchiveToFile
         Dim proteinCount As Integer
 
         'Check for existence of Archive Entry
-        Dim checkSQL As String = "SELECT Top 1 Archived_File_ID, Archived_File_Path, Protein_Collection_List, IsNull(Collection_List_Hex_Hash, '') AS Collection_List_Hex_Hash " & _
+        Dim checkSQL As String = "SELECT Archived_File_ID, Archived_File_Path, IsNull(Protein_Collection_List, '') as Protein_Collection_List, IsNull(Collection_List_Hex_Hash, '') AS Collection_List_Hex_Hash " & _
                                  "FROM T_Archived_Output_Files " & _
-                                 "WHERE Authentication_Hash = '" & SourceAuthenticationHash & "'"
+                                 "WHERE Authentication_Hash = '" & SourceAuthenticationHash & "' ORDER BY File_Modification_Date DESC"
 
         Dim tmptable As DataTable = Me.m_TableGetter.GetTable(checkSQL)
-        CollectionListHexHash = Me.GenerateHash(ProteinCollectionsList)
+        CollectionListHexHash = Me.GenerateHash(ProteinCollectionsList + "/" + CreationOptionsString)
         If tmptable.Rows.Count = 0 Then
             proteinCount = Me.GetProteinCount(SourceFilePath)
 
@@ -60,8 +62,12 @@ Public Class clsArchiveToFile
         Else
             ArchivedFileEntryID = CInt(tmptable.Rows(0).Item("Archived_File_ID"))
             CollectionListHexHashInDB = CStr(tmptable.Rows(0).Item("Collection_List_Hex_Hash"))
+            ProteinCollectionsListFromDB = CStr(tmptable.Rows(0).Item("Protein_Collection_List"))
 
-            If tmptable.Rows(0).Item("Protein_Collection_List").GetType.Name = "DBNull" OrElse CollectionListHexHashInDB = "" OrElse CollectionListHexHashInDB <> CollectionListHexHash Then
+            If tmptable.Rows(0).Item("Protein_Collection_List").GetType.Name = "DBNull" OrElse _
+                CollectionListHexHashInDB = "" OrElse _
+                ProteinCollectionsListFromDB <> ProteinCollectionsList OrElse _
+                CollectionListHexHashInDB <> CollectionListHexHash Then
                 Me.RunSP_UpdateFileArchiveEntryCollectionList(ArchivedFileEntryID, ProteinCollectionsList, SourceAuthenticationHash, CollectionListHexHash)
             End If
         End If
@@ -87,32 +93,6 @@ Public Class clsArchiveToFile
             Return 0
         End Try
 
-        'Try
-        'ArchivedFileEntryID = Me.RunSP_AddOutputFileArchiveEntry( _
-        '    ProteinCollectionID, CreationOptionsString, SourceSHA1Authentication, fi.LastWriteTime, fi.Length, _
-        '    [Enum].GetName(GetType(Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes), _
-        '    OutputSequenceType), archivePath, _
-        '    [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
-        'ArchivedFileEntryID = Me.RunSP_AddOutputFileArchiveEntry( _
-        '    ProteinCollectionID, CreationOptionsString, SourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount, _
-        '     archivePath, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
-
-        'Dim newPath As String = Replace(archivePath, "_00000_", "_" + Format(ArchivedFileEntryID, "000000") + "_")
-
-        'finalFI = New System.IO.FileInfo(newPath)
-
-        'If Not finalFI.Exists Then
-        '    Rename(archivePath, newPath)
-        'Else
-        '    Kill(archivePath)
-        'End If
-
-
-        'Catch ex As Exception
-        '     Me.m_LastError = "Stored Procedure Runner error: " + ex.Message
-        'Return 0
-        'End Try
-
         fi = Nothing
         destFI = Nothing
 
@@ -135,21 +115,6 @@ Public Class clsArchiveToFile
         Return SHA1string
     End Function
 
-    'Protected Function GenerateArchivePath( _
-    '    ByVal SourceFilePath As String, _
-    '    ByVal FileDate As DateTime, _
-    '    ByVal ArchivedFileType As IArchiveOutputFiles.CollectionTypes, _
-    '    ByVal OutputSequenceType As Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes) As String
-
-    '    Dim pathString As String
-    '    pathString = System.IO.Path.Combine(Me.BASE_ARCHIVE_PATH, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
-    '    pathString = System.IO.Path.Combine(pathString, [Enum].GetName(GetType(Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes), OutputSequenceType))
-    '    pathString = System.IO.Path.Combine(pathString, System.IO.Path.GetFileName(SourceFilePath))
-
-    '    Return pathString
-
-    'End Function
-
     Protected Function GenerateArchivePath( _
         ByVal SourceFilePath As String, _
         ByVal ProteinCollectionID As Integer, _
@@ -162,7 +127,6 @@ Public Class clsArchiveToFile
         pathString = System.IO.Path.Combine(Me.BASE_ARCHIVE_PATH, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
         pathString = System.IO.Path.Combine(pathString, [Enum].GetName(GetType(Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes), OutputSequenceType))
         pathString = System.IO.Path.Combine(pathString, "ID_00000_" + Authentication_Hash + System.IO.Path.GetExtension(SourceFilePath))
-        'pathString = System.IO.Path.Combine(pathString, "ID_" & Format(ArchivedFileEntryID, "000000") + "_" + Authentication_Hash + System.IO.Path.GetExtension(SourceFilePath))
 
         Return pathString
 
@@ -193,7 +157,7 @@ Public Class clsArchiveToFile
         myParam.Direction = ParameterDirection.Input
         myParam.Value = ArchivedFileEntryID
 
-        myParam = sp_Save.Parameters.Add("@ProteinCollectionList", SqlDbType.VarChar)
+        myParam = sp_Save.Parameters.Add("@ProteinCollectionList", SqlDbType.VarChar, 8000)
         myParam.Direction = ParameterDirection.Input
         myParam.Value = ProteinCollectionsList
 
@@ -221,15 +185,6 @@ Public Class clsArchiveToFile
 
     End Function
 
-    'Protected Function RunSP_AddOutputFileArchiveEntry( _
-    '    ByVal ProteinCollectionID As Integer, _
-    '    ByVal CreationOptionsString As String, _
-    '    ByVal SHA1AuthenticationHash As String, _
-    '    ByVal FileModificationDate As DateTime, _
-    '    ByVal OutputFileSize As Int64, _
-    '    ByVal OutputSequenceType As String, _
-    '    ByVal ArchivedFileFullPath As String, _
-    '    ByVal ArchivedFileType As String) As Integer
     Protected Function RunSP_AddOutputFileArchiveEntry( _
         ByVal ProteinCollectionID As Integer, _
         ByVal CreationOptionsString As String, _
@@ -286,7 +241,7 @@ Public Class clsArchiveToFile
         myParam.Direction = ParameterDirection.Input
         myParam.Value = CreationOptionsString
 
-        myParam = sp_Save.Parameters.Add("@protein_collection_string", SqlDbType.VarChar)
+        myParam = sp_Save.Parameters.Add("@protein_collection_string", SqlDbType.VarChar, 8000)
         myParam.Direction = ParameterDirection.Input
         myParam.Value = ProteinCollectionsList
 
