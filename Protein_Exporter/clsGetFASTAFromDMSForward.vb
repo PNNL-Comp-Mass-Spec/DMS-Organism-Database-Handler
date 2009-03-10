@@ -190,11 +190,13 @@ Public Class clsGetFASTAFromDMSForward
         Dim sectionEnd As Integer
         Dim tableName As String
         Dim tmpOutputPath As String
+        Dim currentCollectionCount As Integer
 
         tmpOutputPath = System.IO.Path.GetTempFileName
 
         For Each ProteinCollectionName In ProteinCollectionNameList
             currentCollectionPos = 0
+            currentCollectionCount = 0
             sectionStart = currentCollectionPos
             sectionEnd = 0
             If nameCheckRegex.IsMatch(ProteinCollectionName) Then
@@ -218,7 +220,8 @@ Public Class clsGetFASTAFromDMSForward
             End If
 
 
-            While currentCollectionPos <= collectionLength
+            'While currentCollectionPos <= collectionLength
+            Do
                 sectionStart = currentCollectionPos
                 sectionEnd = sectionStart + 10000
 
@@ -292,11 +295,16 @@ Public Class clsGetFASTAFromDMSForward
 
 
                 currentCollectionPos = sectionEnd + 1
-
-            End While
+                currentCollectionCount += collectionTable.Rows.Count
+            Loop Until collectionTable.Rows.Count = 0
 
             tmpIDListSB.Append(Format(tmpID, "000000"))
             tmpIDListSB.Append("+")
+            If currentCollectionCount <> collectionLength Then
+                Throw New Exception("The number of proteins exported for collection '" + ProteinCollectionName + _
+                    "' does not match the value stored in the Protein Collections Table [" + _
+                    currentCollectionCount.ToString + " counted / " + collectionLength.ToString + " expected]")
+            End If
         Next
 
         Dim tmpFI As System.IO.FileInfo = New System.IO.FileInfo(tmpOutputPath)

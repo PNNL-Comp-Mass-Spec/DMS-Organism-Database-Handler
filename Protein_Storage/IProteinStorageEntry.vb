@@ -23,6 +23,7 @@ Public Interface IProteinStorageEntry
     Property SortingIndex() As Integer
 
     Sub AddXRef(ByVal Reference As String)
+    Sub SetReferenceName(ByVal NewName As String)
 
 
 End Interface

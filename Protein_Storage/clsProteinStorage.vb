@@ -23,7 +23,9 @@ Public Class clsProteinStorage
             Me.m_ProteinNames.Add(proteinEntry.Reference)
             Me.m_ResidueCount += proteinEntry.Sequence.Length
         Else
-            Me.m_Duplicates.Add(proteinEntry.Reference)
+            'Me.m_Duplicates.Add(proteinEntry.Reference)
+            proteinEntry.SetReferenceName(proteinEntry.Reference + "_dup_" + proteinEntry.SHA1Hash.Substring(1, 10))
+            Me.Add(proteinEntry)
             'flag with some kinda error so we can check out the duplicate entry and rename it
         End If
     End Sub

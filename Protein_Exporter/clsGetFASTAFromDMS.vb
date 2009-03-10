@@ -295,7 +295,9 @@ Public Class clsGetFASTAFromDMS
         Dim finalFileHash As String
         Dim fileNameTable As DataTable
         Dim foundRow As DataRow
-
+        If Me.m_TableGetter Is Nothing Then
+            Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString)
+        End If
         fileNameSql = "SELECT Archived_File_Path,Archived_File_ID,Authentication_Hash FROM T_Archived_Output_Files " & _
                         "WHERE Collection_List_Hex_Hash = '" & strCollectionListHexHash & "' AND " & _
                             "Protein_Collection_List = '" & Join(ProteinCollectionNameList.ToArray, ",") & "' ORDER BY File_Modification_Date desc"
@@ -521,6 +523,9 @@ Public Class clsGetFASTAFromDMS
         ' Lookup the details for LegacyFASTAFileName in the database
         legacyLocationsSQL = "SELECT FileName, Full_Path, Authentication_Hash FROM V_Legacy_Static_File_Locations WHERE FileName = '" & LegacyFASTAFileName & "'"
 
+        If Me.m_TableGetter Is Nothing Then
+            Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString)
+        End If
         legacyStaticFilelocations = Me.m_TableGetter.GetTable(legacyLocationsSQL)
         If legacyStaticFilelocations.Rows.Count = 0 Then
             Throw New System.Exception("Legacy fasta file " & LegacyFASTAFileName & " not found in V_Legacy_Static_File_Locations; unable to continue")

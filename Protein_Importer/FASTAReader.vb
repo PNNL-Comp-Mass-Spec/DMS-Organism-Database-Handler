@@ -122,7 +122,6 @@ Public Class FASTAReader
                             If recordCount Mod 100 = 0 Then
                                 RaiseEvent LoadProgress(CSng(currPos / fileLength))     'trigger pgb update every 10th record
                             End If
-
                             fastaContents.AddProtein(New Protein_Storage.clsProteinStorageEntry( _
                                 strORFTemp, strDescTemp, strSeqTemp, seqInfo.SequenceLength, _
                                 seqInfo.MonoIsotopicMass, seqInfo.AverageMass, _

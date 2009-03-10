@@ -186,6 +186,10 @@ Public Class clsBatchUploadFromFileList
         'Next
 
         LoadedCollectionsSQL = "SELECT FileName, Full_Path, Organism_Name, Organism_ID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered"
+
+        If Me.m_TableGetter Is Nothing Then
+            Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString)
+        End If
         fileTable = Me.m_TableGetter.GetTable(LoadedCollectionsSQL)
 
         If Me.m_CurrentFileList Is Nothing Then

@@ -224,4 +224,8 @@ Public Class clsProteinStorageEntry
         Me.m_XRefList.Add(Reference)
     End Sub
 
+    Protected Sub ChangeReferenceName(ByVal NewName As String) Implements IProteinStorageEntry.SetReferenceName
+        Me.m_Reference = NewName
+    End Sub
+
 End Class

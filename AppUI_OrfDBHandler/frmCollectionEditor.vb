@@ -754,12 +754,12 @@ Public Class frmCollectionEditor
 
     End Sub
 
-    '<System.STAThread()> Public Shared Sub Main()
-    '    'System.Windows.Forms.Application.EnableVisualStyles()
-    '    Skybound.VisualStyles.VisualStyleProvider.EnableVisualStyles()
-    '    System.Windows.Forms.Application.DoEvents()
-    '    System.Windows.Forms.Application.Run(New frmCollectionEditor)  ' replace frmDecode by the name of your form!!!
-    'End Sub
+    <System.STAThread()> Public Shared Sub Main()
+        'System.Windows.Forms.Application.EnableVisualStyles()
+        Skybound.VisualStyles.VisualStyleProvider.EnableVisualStyles()
+        System.Windows.Forms.Application.DoEvents()
+        System.Windows.Forms.Application.Run(New frmCollectionEditor)  ' replace frmDecode by the name of your form!!!
+    End Sub
 
 
 #End Region
@@ -775,8 +775,8 @@ Public Class frmCollectionEditor
     Protected m_SelectedFilePath As String
     Protected m_SelectedCollectionID As Integer
     Protected m_LastBatchULDirectoryPath As String
-    Protected m_PSConnectionString As String = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences_Test;Integrated Security=SSPI;"
-    'Protected m_PSConnectionString As String = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
+    'Protected m_PSConnectionString As String = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences_Test;Integrated Security=SSPI;"
+    Protected m_PSConnectionString As String = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
     'Protected m_PSConnectionString As String = "Data Source=we10125;Initial Catalog=Protein_Sequences_T3;Integrated Security=SSPI;"
 
     Protected WithEvents m_ImportHandler As Protein_Importer.IImportProteins
