@@ -23,6 +23,7 @@ Module modMain
     Private mCreationOpts As String
     Private mLegacyFasta As String
     Private mDestFolder As String
+    Private mLogProteinFileDetails As Boolean
 
 #Region "Event handlers"
     Private Sub m_FastaTools_FileGenerationStarted(ByVal taskMsg As String) Handles m_FastaTools.FileGenerationStarted
@@ -65,7 +66,6 @@ Module modMain
 
 #End Region
 
-
     Public Sub Main()
         Dim objParseCommandLine As New clsParseCommandLine
         Dim blnProceed As Boolean
@@ -77,6 +77,7 @@ Module modMain
             mCreationOpts = String.Empty
             mLegacyFasta = String.Empty
             mDestFolder = String.Empty
+            mLogProteinFileDetails = False
 
             If objParseCommandLine.ParseCommandLine Then
                 If SetOptionsUsingCommandLineParameters(objParseCommandLine) Then blnProceed = True
@@ -94,6 +95,7 @@ Module modMain
                 'mCreationOpts = "seq_direction=forward,filetype=fasta"
                 'mLegacyFasta = "na"
                 'mDestFolder = "C:\DMS_Temp_Org"
+                'mLogProteinFileDetails = True
 
                 If mLegacyFasta.Length = 0 Then
                     mLegacyFasta = "na"
@@ -107,9 +109,9 @@ Module modMain
                     mDestFolder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
                 End If
 
-                TestExport(mProteinCollectionList, mCreationOpts, mLegacyFasta, mDestFolder)
+                TestExport(mProteinCollectionList, mCreationOpts, mLegacyFasta, mDestFolder, mLogProteinFileDetails)
 
-                End If
+            End If
 
         Catch ex As Exception
             Console.WriteLine("Error occurred in modMain->Main: " & ControlChars.NewLine & ex.Message)
@@ -119,11 +121,105 @@ Module modMain
 
     End Sub
 
+    Private Function GetHumanReadableTimeInterval(ByVal dtInterval As System.TimeSpan) As String
+
+        If dtInterval.TotalDays >= 1 Then
+            ' Report Days
+            Return dtInterval.TotalDays.ToString("0.00") & " days"
+        ElseIf dtInterval.TotalHours >= 1 Then
+            ' Report hours
+            Return dtInterval.TotalHours.ToString("0.00") & " hours"
+        ElseIf dtInterval.TotalMinutes >= 1 Then
+            ' Report minutes
+            Return dtInterval.TotalMinutes.ToString("0.00") & " minutes"
+        Else
+            ' Report seconds
+            Return dtInterval.TotalSeconds.ToString("0.0") & " seconds"
+        End If
+
+    End Function
+
+    Private Sub LogProteinFileDetails(ByVal CollectionList As String, _
+                                      ByVal CreationOpts As String, _
+                                      ByVal LegacyFasta As String, _
+                                      ByVal HashString As String, _
+                                      ByVal DestFolder As String, _
+                                      ByVal FastaFileName As String, _
+                                      ByVal LogFolderPath As String)
+
+
+        ' Appends a new entry to the log file
+        Dim swOutFile As System.IO.StreamWriter
+
+        Dim strLogFileName As String
+        Dim strLogFilePath As String
+        Dim blnWriteHeader As Boolean = False
+
+        Try
+            ' Create a new log file each day
+            strLogFileName = "FastaFileMakerLog_" & System.DateTime.Now.ToString("yyyy-MM-dd") & ".txt"
+
+            If Not LogFolderPath Is Nothing AndAlso LogFolderPath.Length > 0 Then
+                strLogFilePath = System.IO.Path.Combine(LogFolderPath, strLogFileName)
+            Else
+                strLogFilePath = String.Copy(strLogFileName)
+            End If
+
+            If Not System.IO.File.Exists(strLogFilePath) Then
+                blnWriteHeader = True
+            End If
+
+            swOutFile = New System.IO.StreamWriter(New System.IO.FileStream(strLogFilePath, IO.FileMode.Append, IO.FileAccess.Write, IO.FileShare.Read))
+
+            If blnWriteHeader Then
+                swOutFile.WriteLine("Date" & ControlChars.Tab & _
+                                    "Time" & ControlChars.Tab & _
+                                    "Protein_Collection_List" & ControlChars.Tab & _
+                                    "Creation_Options" & ControlChars.Tab & _
+                                    "Legacy_Fasta_Name" & ControlChars.Tab & _
+                                    "Hash_String" & ControlChars.Tab & _
+                                    "Fasta_File_Name" & ControlChars.Tab & _
+                                    "Fasta_File_Last_Modified" & ControlChars.Tab & _
+                                    "Fasta_File_Created" & ControlChars.Tab & _
+                                    "Fasta_File_Size_Bytes" & ControlChars.Tab & _
+                                    "Fasta_File_Age_vs_PresentTime")
+            End If
+
+            Dim fiFastaFile As System.IO.FileInfo
+            If Not DestFolder Is Nothing AndAlso DestFolder.Length > 0 Then
+                fiFastaFile = New System.IO.FileInfo(System.IO.Path.Combine(DestFolder, FastaFileName))
+            Else
+                fiFastaFile = New System.IO.FileInfo(FastaFileName)
+            End If
+
+
+            swOutFile.WriteLine(System.DateTime.Now.ToString("yyyy-MM-dd") & ControlChars.Tab & _
+                                System.DateTime.Now.ToString("hh:mm:ss tt") & ControlChars.Tab & _
+                                CollectionList & ControlChars.Tab & _
+                                CreationOpts & ControlChars.Tab & _
+                                LegacyFasta & ControlChars.Tab & _
+                                HashString & ControlChars.Tab & _
+                                FastaFileName & ControlChars.Tab & _
+                                fiFastaFile.LastWriteTime.ToString() & ControlChars.Tab & _
+                                fiFastaFile.CreationTime.ToString() & ControlChars.Tab & _
+                                fiFastaFile.Length & ControlChars.Tab & _
+                                GetHumanReadableTimeInterval(System.DateTime.Now.Subtract(fiFastaFile.LastWriteTime)))
+
+            If Not swOutFile Is Nothing Then
+                swOutFile.Close()
+            End If
+
+        Catch
+            ' Ignore errors here
+        End Try
+
+    End Sub
+
     Private Function SetOptionsUsingCommandLineParameters(ByVal objParseCommandLine As clsParseCommandLine) As Boolean
         ' Returns True if no problems; otherwise, returns false
 
         Dim strValue As String = String.Empty
-        Dim strValidParameters() As String = New String() {"P", "C", "L", "O"}
+        Dim strValidParameters() As String = New String() {"P", "C", "L", "O", "D"}
 
         Try
             ' Make sure no invalid parameters are present
@@ -136,6 +232,8 @@ Module modMain
                     If .RetrieveValueForParameter("C", strValue) Then mCreationOpts = strValue
                     If .RetrieveValueForParameter("L", strValue) Then mLegacyFasta = strValue
                     If .RetrieveValueForParameter("O", strValue) Then mDestFolder = strValue
+
+                    If .RetrieveValueForParameter("D", strValue) Then mLogProteinFileDetails = True
 
                     If mProteinCollectionList.Length > 0 Then
                         mLegacyFasta = String.Empty
@@ -175,10 +273,10 @@ Module modMain
             Console.WriteLine()
             Console.WriteLine("Program syntax:")
             Console.WriteLine("  " & System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location) & _
-                                        " /P:ProteinCollectionList [/C:ProteinCollectionCreationOptions] [/O:OutputFolder]")
+                                        " /P:ProteinCollectionList [/C:ProteinCollectionCreationOptions] [/O:OutputFolder] [/D]")
             Console.WriteLine("   or   ")
             Console.WriteLine("  " & System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location) & _
-                                        " /L:LegacyFastaFileName [/O:OutputFolder]")
+                                        " /L:LegacyFastaFileName [/O:OutputFolder] [/D]")
             Console.WriteLine()
             Console.WriteLine("To export one or more protein collections, specify the protein collection names as a comma separated list after the /P switch.")
             Console.WriteLine("When exporting protein collections, use optional switch /C to change the protein collection export options.  The default is: " & DEFAULT_COLLECTION_OPTIONS)
@@ -186,6 +284,7 @@ Module modMain
             Console.WriteLine("To export a legacy fasta file, use /L, for example /L:FileName.fasta")
             Console.WriteLine()
             Console.WriteLine("Optionally use /O to specify the output folder.")
+            Console.WriteLine("Optionally use /D to log the details of the protein collections, options, and resultant file to a log file.")
             Console.WriteLine()
 
             Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2009")
@@ -217,7 +316,8 @@ Module modMain
     Public Function TestExport(ByVal CollectionList As String, _
                                ByVal CreationOpts As String, _
                                ByVal LegacyFasta As String, _
-                               ByVal DestFolder As String) As Boolean
+                               ByVal DestFolder As String, _
+                               ByVal blnLogProteinFileDetails As Boolean) As Boolean
 
         Dim HashString As String
 
@@ -268,6 +368,11 @@ Module modMain
             Return False
         End If
 
+        If blnLogProteinFileDetails Then
+            LogProteinFileDetails(CollectionList, CreationOpts, LegacyFasta, HashString, DestFolder, m_FastaFileName, "")
+        End If
+
+        Return True
 
     End Function
 
