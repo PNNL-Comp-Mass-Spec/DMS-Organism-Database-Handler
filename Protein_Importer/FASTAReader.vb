@@ -112,7 +112,7 @@ Public Class FASTAReader
                 RaiseEvent LoadStart("Reading Source File...") 'Trigger the setup of the pgb
 
                 tr = fi.OpenText
-                s = tr.ReadLine
+                s = tr.ReadLine.Trim
                 Do While Not s Is Nothing
                     If Me.m_DescLineMatcher.IsMatch(s) Then
                         'DescriptionLine, new record
