@@ -11,6 +11,8 @@ Public Class frmCollectionEditor
         Me.CheckTransferButtonsEnabledStatus()
         'Add any initialization after the InitializeComponent() call
 
+        ReadSettings()
+
     End Sub
 
     'Form overrides dispose to clean up the component list.
@@ -393,7 +395,7 @@ Public Class frmCollectionEditor
         Me.cmdLoadFile.Name = "cmdLoadFile"
         Me.cmdLoadFile.Size = New System.Drawing.Size(140, 24)
         Me.cmdLoadFile.TabIndex = 10
-        Me.cmdLoadFile.Text = "Import New Collection..."
+        Me.cmdLoadFile.Text = "&Import New Collection..."
         Me.VisualStyleProvider2.SetVisualStyleSupport(Me.cmdLoadFile, True)
         '
         'txtLiveSearch
@@ -541,7 +543,7 @@ Public Class frmCollectionEditor
         Me.cmdSaveDestCollection.Name = "cmdSaveDestCollection"
         Me.cmdSaveDestCollection.Size = New System.Drawing.Size(114, 24)
         Me.cmdSaveDestCollection.TabIndex = 4
-        Me.cmdSaveDestCollection.Text = "Upload Collection..."
+        Me.cmdSaveDestCollection.Text = "&Upload Collection..."
         Me.VisualStyleProvider2.SetVisualStyleSupport(Me.cmdSaveDestCollection, True)
         '
         'cmdExportToFile
@@ -592,23 +594,23 @@ Public Class frmCollectionEditor
         '
         Me.mnuFile.Index = 0
         Me.mnuFile.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuFileExit})
-        Me.mnuFile.Text = "File"
+        Me.mnuFile.Text = "&File"
         '
         'mnuFileExit
         '
         Me.mnuFileExit.Index = 0
-        Me.mnuFileExit.Text = "Exit"
+        Me.mnuFileExit.Text = "E&xit"
         '
         'mnuTools
         '
         Me.mnuTools.Index = 1
         Me.mnuTools.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuToolsCollectionEdit, Me.mnuToolsNucToProt, Me.mnuToolsConvert, Me.mnuToolsFCheckup, Me.mnuToolsCompareDBs, Me.mnuToolsExtractFromFile, Me.mnuToolsSep1, Me.mnuToolsOptions})
-        Me.mnuTools.Text = "Tools"
+        Me.mnuTools.Text = "&Tools"
         '
         'mnuToolsCollectionEdit
         '
         Me.mnuToolsCollectionEdit.Index = 0
-        Me.mnuToolsCollectionEdit.Text = "Edit Collection States..."
+        Me.mnuToolsCollectionEdit.Text = "&Edit Collection States..."
         '
         'mnuToolsNucToProt
         '
@@ -722,12 +724,12 @@ Public Class frmCollectionEditor
         '
         Me.mnuHelp.Index = 3
         Me.mnuHelp.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuHelpAbout})
-        Me.mnuHelp.Text = "Help"
+        Me.mnuHelp.Text = "&Help"
         '
         'mnuHelpAbout
         '
         Me.mnuHelpAbout.Index = 0
-        Me.mnuHelpAbout.Text = "About Protein Collection Editor"
+        Me.mnuHelpAbout.Text = "&About Protein Collection Editor"
         '
         'frmCollectionEditor
         '
@@ -779,6 +781,10 @@ Public Class frmCollectionEditor
     Protected m_PSConnectionString As String = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
     'Protected m_PSConnectionString As String = "Data Source=we10125;Initial Catalog=Protein_Sequences_T3;Integrated Security=SSPI;"
 
+    Protected m_LastSelectedOrganism As String = ""
+    Protected m_LastSelectedAnnotationType As String = ""
+    Protected m_LastValueForAllowAsterisks As Boolean = False
+
     Protected WithEvents m_ImportHandler As Protein_Importer.IImportProteins
     Protected WithEvents m_UploadHandler As Protein_Uploader.IUploadProteins
     Protected WithEvents m_SourceListViewHandler As DataListViewHandler
@@ -798,6 +804,9 @@ Public Class frmCollectionEditor
 
     Private m_FileErrorList As Hashtable
     Private m_SummarizedFileErrorList As Hashtable
+
+    Private m_FileWarningList As Hashtable
+    Private m_SummarizedFileWarningList As Hashtable
 
     Private m_ValidUploadsList As Hashtable
 
@@ -954,12 +963,21 @@ Public Class frmCollectionEditor
         If Not Me.m_FileErrorList Is Nothing Then
             Me.m_FileErrorList.Clear()
         End If
+
+        If Not Me.m_FileWarningList Is Nothing Then
+            Me.m_FileWarningList.Clear()
+        End If
+
         If Not Me.m_ValidUploadsList Is Nothing Then
             Me.m_ValidUploadsList.Clear()
         End If
 
         If Not Me.m_SummarizedFileErrorList Is Nothing Then
             Me.m_SummarizedFileErrorList.Clear()
+        End If
+
+        If Not Me.m_SummarizedFileWarningList Is Nothing Then
+            Me.m_SummarizedFileWarningList.Clear()
         End If
 
         Dim frmBatchUpload As New frmBatchAddNewCollectionTest( _
@@ -974,9 +992,35 @@ Public Class frmCollectionEditor
 
         Me.lblBatchProgress.Text = ""
 
+        If Not m_LastSelectedOrganism Is Nothing AndAlso m_LastSelectedOrganism.Length > 0 Then
+            frmBatchUpload.SelectedOrganismName = m_LastSelectedOrganism
+        End If
+
+        If Not m_LastSelectedAnnotationType Is Nothing AndAlso m_LastSelectedAnnotationType.Length > 0 Then
+            frmBatchUpload.SelectedAnnotationType = m_LastSelectedAnnotationType
+        End If
+
+        frmBatchUpload.ValidationAllowAsterisks = m_LastValueForAllowAsterisks
+
+        ' Set the last directory used
         frmBatchUpload.CurrentDirectory = Me.m_LastBatchULDirectoryPath
 
+        ' Show the window
         resultReturn = frmBatchUpload.ShowDialog
+
+        ' Save the selected organism and annotation type
+        m_LastSelectedOrganism = frmBatchUpload.SelectedOrganismName
+        m_LastSelectedAnnotationType = frmBatchUpload.SelectedAnnotationType
+        m_LastValueForAllowAsterisks = frmBatchUpload.ValidationAllowAsterisks
+
+        Try
+            ' Save these settings to the registry
+            SaveSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedOrganism", m_LastSelectedOrganism)
+            SaveSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedAnnotationType", m_LastSelectedAnnotationType)
+        Catch ex As Exception
+            ' Ignore errors here
+        End Try
+
 
         If resultReturn = DialogResult.OK Then
 
@@ -999,22 +1043,25 @@ Public Class frmCollectionEditor
             Me.m_UploadHandler.InitialSetup()
 
             Me.pnlProgBar.Visible = True
+
+            Me.m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues, frmBatchUpload.ValidationAllowAsterisks)
+
             Me.m_UploadHandler.BatchUpload(tmpSelectedFileList)
             Me.pnlProgBar.Visible = False
-            If Not Me.m_UploadHandler.ImportExportCountsMatched Then
 
+            If Not Me.m_UploadHandler.ImportExportCountsMatched Then
+                ' Number of files to load didn't match the number of files that succeeded
             End If
 
-            'If Me.m_FileErrorList.Count > 0 Then
+            ' Display any errors that occurred
             Dim errorDisplay As New frmValidationReport
             errorDisplay.FileErrorList = Me.m_FileErrorList
+            errorDisplay.FileWarningList = Me.m_FileWarningList
             errorDisplay.FileValidList = Me.m_ValidUploadsList
             errorDisplay.ErrorSummaryList = Me.m_SummarizedFileErrorList
+            errorDisplay.WarningSummaryList = Me.m_SummarizedFileWarningList
             errorDisplay.OrganismList = Me.m_Organisms
             errorDisplay.ShowDialog()
-            'Else
-
-            'End If
 
             Me.lblBatchProgress.Text = "Updating Protein Collections List..."
             System.Windows.Forms.Application.DoEvents()
@@ -1034,10 +1081,16 @@ Public Class frmCollectionEditor
             Me.m_LastBatchULDirectoryPath = frmBatchUpload.CurrentDirectory
 
             Me.m_BatchLoadCurrentCount = 0
-
-
-
         End If
+    End Sub
+
+    Private Sub ReadSettings()
+        Try
+            m_LastSelectedOrganism = GetSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedOrganism", "")
+            m_LastSelectedAnnotationType = GetSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedAnnotationType", "")
+        Catch ex As Exception
+            ' Ignore errors here
+        End Try
     End Sub
 
     Private Sub ShowAboutBox()
@@ -1109,7 +1162,7 @@ Public Class frmCollectionEditor
 
         If Me.m_SelectedCollectionID > 0 Then
             Dim foundRows() As DataRow = Me.m_ProteinCollections.Select("[Protein_Collection_ID] = " & Me.m_SelectedCollectionID.ToString)
-            Me.m_SelectedAnnotationTypeID = CInt(foundRows(0).Item("Annotation_Type_ID"))
+            Me.m_SelectedAnnotationTypeID = CInt(foundRows(0).Item("Authority_ID"))
             'ElseIf Me.m_SelectedAuthorityID = -2 Then
             '    'Bring up addition dialog
             '    Dim AuthAdd As New clsAddNamingAuthority(Me.m_PSConnectionString)
@@ -1635,19 +1688,38 @@ Public Class frmCollectionEditor
 
     End Sub
 
+    Private Sub FASTAFileWarningsHandler(ByVal FASTAFilePath As String, ByVal warningCollection As ArrayList) _
+    Handles m_UploadHandler.FASTAFileWarnings
+
+        If Me.m_FileWarningList Is Nothing Then
+            Me.m_FileWarningList = New Hashtable
+        End If
+
+        Me.m_FileWarningList.Add(System.IO.Path.GetFileName(FASTAFilePath), warningCollection)
+
+        If Me.m_SummarizedFileWarningList Is Nothing Then
+            Me.m_SummarizedFileWarningList = New Hashtable
+        End If
+
+        Me.m_SummarizedFileWarningList.Add(System.IO.Path.GetFileName(FASTAFilePath), Me.SummarizeErrors(warningCollection))
+
+    End Sub
+
     Private Function SummarizeErrors(ByRef errorCollection As ArrayList) As Hashtable
         Dim errorSummary As New Hashtable
         Dim errorEntry As ValidateFastaFile.ICustomValidation.udtErrorInfoExtended
         Dim currentCount As Integer
 
-        For Each errorEntry In errorCollection
-            If Not errorSummary.Contains(errorEntry.MessageText.ToString) Then
-                errorSummary.Add(errorEntry.MessageText.ToString, "1")
-            Else
-                currentCount = CInt(errorSummary.Item(errorEntry.MessageText.ToString))
-                errorSummary.Item(errorEntry.MessageText.ToString) = (currentCount + 1).ToString
-            End If
-        Next
+        If Not errorCollection Is Nothing AndAlso errorCollection.Count > 0 Then
+            For Each errorEntry In errorCollection
+                If Not errorSummary.Contains(errorEntry.MessageText.ToString) Then
+                    errorSummary.Add(errorEntry.MessageText.ToString, "1")
+                Else
+                    currentCount = CInt(errorSummary.Item(errorEntry.MessageText.ToString))
+                    errorSummary.Item(errorEntry.MessageText.ToString) = (currentCount + 1).ToString
+                End If
+            Next
+        End If
 
         Return errorSummary
 

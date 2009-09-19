@@ -105,10 +105,33 @@ Public Class clsProteinStorageDMS
     End Function
 
     Protected Sub ClearProteins() Implements IProteinStorage.ClearProteinEntries
+
         Me.m_ResidueCount = 0
-        Me.m_Proteins.Clear()
-        Me.m_ProteinNameList.Clear()
-        Me.m_UniqueProteinIDList.Clear()
+
+        Try
+            If Not m_Proteins Is Nothing Then
+                Me.m_Proteins.Clear()
+            End If
+        Catch ex As Exception
+            ' Ignore errors here
+        End Try
+
+        Try
+            If Not m_ProteinNameList Is Nothing Then
+                Me.m_ProteinNameList.Clear()
+            End If
+        Catch ex As Exception
+            ' Ignore errors here
+        End Try
+
+        Try
+            If Not m_UniqueProteinIDList Is Nothing Then
+                Me.m_UniqueProteinIDList.Clear()
+            End If
+        Catch ex As Exception
+            ' Ignore errors here
+        End Try
+
     End Sub
 
     Protected ReadOnly Property TotalResidueCount() As Integer Implements IProteinStorage.TotalResidueCount

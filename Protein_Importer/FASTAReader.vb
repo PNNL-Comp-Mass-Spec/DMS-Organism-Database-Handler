@@ -111,7 +111,7 @@ Public Class FASTAReader
 
                 RaiseEvent LoadStart("Reading Source File...") 'Trigger the setup of the pgb
 
-                tr = fi.OpenText
+                tr = New System.IO.StreamReader(New System.IO.FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
                 s = tr.ReadLine.Trim
                 Do While Not s Is Nothing
                     If Me.m_DescLineMatcher.IsMatch(s) Then
@@ -148,7 +148,12 @@ Public Class FASTAReader
                         Exit Do
                     End If
                     currPos += s.Length + lineEndCharCount
-                    s = tr.ReadLine
+
+                    If tr.Peek() >= 0 Then
+                        s = tr.ReadLine.Trim
+                    Else
+                        Exit Do
+                    End If
                 Loop
 
                 'dump the last record
@@ -168,6 +173,8 @@ Public Class FASTAReader
 
 
         Catch e As Exception
+            ' Exception occurred
+            ' For safety, we will clear fastaContents
             Me.m_LastError = e.Message
         Finally
             If (Not tr Is Nothing) Then

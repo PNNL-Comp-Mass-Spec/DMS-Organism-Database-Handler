@@ -112,6 +112,23 @@ Public Class clsImportHandler
         Dim fastaContents As Protein_Storage.IProteinStorage
         fastaContents = Me.m_Importer.GetProteinEntries(filePath)
 
+        Dim strErrorMessage As String = Me.m_Importer.LastErrorMessage()
+
+        If Not strErrorMessage Is Nothing AndAlso strErrorMessage.Length > 0 Then
+            Dim intProteinsLoaded As Integer
+
+            Try
+                If Not fastaContents Is Nothing Then
+                    intProteinsLoaded = fastaContents.ProteinCount
+                End If
+            Catch ex As Exception
+                ' Ignore errors here
+            End Try
+            Windows.Forms.MessageBox.Show("GetProteinEntries returned an error after loading " & intProteinsLoaded.ToString & " proteins: " & strErrorMessage, "Error", Windows.Forms.MessageBoxButtons.OK, Windows.Forms.MessageBoxIcon.Error)
+
+            fastaContents.ClearProteinEntries()
+        End If
+
         Return fastaContents
 
     End Function
@@ -503,6 +520,8 @@ Public Class clsImportHandler
         ByVal FullFilePath As String, _
         ByVal SelectedOrganismID As Integer, _
         ByVal SelectedAuthorityID As Integer) As Protein_Storage.IProteinStorage Implements IImportProteins.LoadProteinsForBatch
+
+        Dim strErrorMessage As String
 
         Dim ps As Protein_Storage.IProteinStorage = Me.LoadFASTA(FullFilePath)
 

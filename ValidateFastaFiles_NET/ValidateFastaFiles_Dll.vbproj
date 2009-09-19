@@ -74,16 +74,6 @@
                     AssemblyName = "System.Windows.Forms"
                     HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Windows.Forms.dll"
                 />
-                <Reference
-                    Name = "PRISM"
-                    AssemblyName = "PRISM"
-                    HintPath = "bin\PRISM.dll"
-                />
-                <Reference
-                    Name = "SharedVBNetRoutines"
-                    AssemblyName = "SharedVBNetRoutines"
-                    HintPath = "bin\SharedVBNetRoutines.dll"
-                />
             </References>
             <Imports>
                 <Import Namespace = "Microsoft.VisualBasic" />
@@ -106,12 +96,27 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "clsHashGenerator.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "clsParseCommandLine.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "clsProcessFilesBaseClass.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "clsValidateFastaFile.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "clsXmlSettingsFileAccessor.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

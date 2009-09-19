@@ -83,8 +83,10 @@ Public Interface IValidateFastaFile
     Property ProteinLineStartCharacter() As Char
     Property ProteinNameInvalidCharactersToRemove() As String
 
+    Property ProteinNameFirstRefSepChars() As String
+    Property ProteinNameSubsequentRefSepChars() As String
 
-
+    Property ShowMessages() As Boolean
 
     Structure udtMsgInfoType
         Public LineNumber As Integer
@@ -107,19 +109,31 @@ Public Interface IValidateFastaFile
         AllowAsteriskInResidues
         CheckForDuplicateProteinNames
         GenerateFixedFASTAFile
-        SplitOutMultipleRefsinProteinName
+        SplitOutMultipleRefsInProteinName
         OutputToStatsFile
         WarnBlankLinesBetweenProteins
         WarnLineStartsWithSpace
         NormalizeFileLineEndCharacters
+        CheckForDuplicateProteinSequences
+        FixedFastaRenameDuplicateNameProteins
+        SaveProteinSequenceHashInfoFiles
+        FixedFastaConsolidateDuplicateProteinSeqs
+        FixedFastaConsolidateDupsIgnoreILDiff
+        FixedFastaTruncateLongProteinNames
+        FixedFastaSplitOutMultipleRefsForKnownAccession
+        FixedFastaWrapLongResidueLines
+        FixedFastaRemoveInvalidResidues
+        SaveBasicProteinHashInfoFile
     End Enum
 
     Enum FixedFASTAFileValues
-        DuplicateProteinsSkippedCount
+        DuplicateProteinNamesSkippedCount
         ProteinNamesInvalidCharsReplaced
         ProteinNamesMultipleRefsRemoved
         TruncatedProteinNameCount
         UpdatedResidueLines
+        DuplicateProteinNamesRenamedCount
+        DuplicateProteinSeqsSkippedCount
     End Enum
 
     Enum ErrorWarningCountTypes
