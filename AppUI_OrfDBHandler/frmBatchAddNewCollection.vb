@@ -19,6 +19,9 @@ Public Class frmBatchAddNewCollectionTest
 
         'Add any initialization after the InitializeComponent() call
         Me.m_OrganismList = OrganismList
+        Me.m_OrganismListSorted = New DataView(Me.m_OrganismList)
+        m_OrganismListSorted.Sort = "Display_Name"
+
         Me.m_AuthorityList = AuthorityList
         Me.m_CollectionsTable = ExistingCollectionsList
         Me.m_PSConnectionString = PSConnectionString
@@ -406,6 +409,8 @@ Public Class frmBatchAddNewCollectionTest
     Private m_CheckedFileList As Hashtable
     Private m_SelectedFileList As Hashtable
     Private m_OrganismList As DataTable
+    Private m_OrganismListSorted As DataView
+
     Private m_AuthorityList As DataTable
     Private m_CollectionsTable As DataTable
     Private m_CollectionsList As Hashtable
@@ -507,7 +512,7 @@ Public Class frmBatchAddNewCollectionTest
         End If
 
         Me.m_CheckedFileList = New Hashtable
-        Me.LoadOrganismPicker(Me.cboOrganismSelect, Me.m_OrganismList)
+        Me.LoadOrganismPicker(Me.cboOrganismSelect, Me.m_OrganismListSorted)
         Me.LoadAuthorityPicker(Me.cboAuthorityPicker, Me.m_AuthorityList)
         Me.cmdUploadChecked.Enabled = False
         Me.cmdAddFile.Enabled = True
@@ -645,7 +650,7 @@ Public Class frmBatchAddNewCollectionTest
         lvw.EndUpdate()
     End Sub
 
-    Private Sub LoadOrganismPicker(ByVal cbo As ComboBox, ByVal orgList As DataTable)
+    Private Sub LoadOrganismPicker(ByVal cbo As ComboBox, ByVal orgList As DataView)
         RemoveHandler cboOrganismSelect.SelectedIndexChanged, AddressOf cboOrganismSelect_SelectedIndexChanged
         With cbo
             .DataSource = orgList
@@ -925,8 +930,8 @@ Public Class frmBatchAddNewCollectionTest
                 Me.LoadAuthorityPicker(Me.cboAuthorityPicker, Me.m_AuthorityList)
                 Me.m_SelectedAuthorityID = tmpAnnTypeID
 
+                Me.cboAuthorityPicker.SelectedValue = tmpAnnTypeID
             End If
-            Me.cboAuthorityPicker.SelectedValue = tmpAnnTypeID
             AnnTypeAdd = Nothing
 
         End If
