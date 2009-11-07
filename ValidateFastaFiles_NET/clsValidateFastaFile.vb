@@ -28,7 +28,7 @@ Public Class clsValidateFastaFile
     Implements IValidateFastaFile
 
     Public Sub New()
-        MyBase.mFileDate = "July 28, 2008"
+        MyBase.mFileDate = "November 6, 2009"
         InitializeLocalVariables()
     End Sub
 
@@ -56,6 +56,7 @@ Public Class clsValidateFastaFile
     Public Const MESSAGE_TEXT_PROTEIN_DESCRIPTION_MISSING As String = "Line contains a protein name, but not a description"
     Public Const MESSAGE_TEXT_PROTEIN_DESCRIPTION_TOO_LONG As String = "Protein description is over 900 characters long"
     Public Const MESSAGE_TEXT_ASTERISK_IN_RESIDUES As String = "An asterisk was found in the residues"
+    Public Const MESSAGE_TEXT_DASH_IN_RESIDUES As String = "A dash was found in the residues"
 
     Public Const XML_SECTION_OPTIONS As String = "ValidateFastaFileOptions"
     Public Const XML_SECTION_FIXED_FASTA_FILE_OPTIONS As String = "ValidateFastaFixedFASTAFileOptions"
@@ -230,6 +231,7 @@ Public Class clsValidateFastaFile
     Protected mProteinLineStartChar As Char
 
     Protected mAllowAsteriskInResidues As Boolean
+    Protected mAllowDashInResidues As Boolean
     Protected mWarnBlankLinesBetweenProteins As Boolean
     Protected mWarnLineStartsWithSpace As Boolean
     Protected mNormalizeFileLineEndCharacters As Boolean
@@ -292,6 +294,8 @@ Public Class clsValidateFastaFile
                 Me.mFixedFastaOptions.RemoveInvalidResidues = State
             Case IValidateFastaFile.SwitchOptions.SaveBasicProteinHashInfoFile
                 Me.mSaveBasicProteinHashInfoFile = State
+            Case IValidateFastaFile.SwitchOptions.AllowDashInResidues
+                Me.mAllowDashInResidues = State
         End Select
 
     End Sub
@@ -338,6 +342,8 @@ Public Class clsValidateFastaFile
                 Return Me.mFixedFastaOptions.RemoveInvalidResidues
             Case IValidateFastaFile.SwitchOptions.SaveBasicProteinHashInfoFile
                 Return Me.mSaveBasicProteinHashInfoFile
+            Case IValidateFastaFile.SwitchOptions.AllowDashInResidues
+                Return Me.mAllowDashInResidues
         End Select
 
     End Function
@@ -704,6 +710,7 @@ Public Class clsValidateFastaFile
 
         Dim strLineIn As String
         Dim strResiduesClean As String
+        Dim strNonLetterResidueSpec As String
 
         Dim sbCurrentResidues As System.Text.StringBuilder
 
@@ -817,15 +824,13 @@ Public Class clsValidateFastaFile
             End With
 
             ' Non-letter characters in residues
-            If mAllowAsteriskInResidues Then
-                reNonLetterResidues = _
-                    New System.Text.RegularExpressions.Regex("[^A-Z*]", _
-                    Text.RegularExpressions.RegexOptions.Singleline Or Text.RegularExpressions.RegexOptions.Compiled)
-            Else
-                reNonLetterResidues = _
-                    New System.Text.RegularExpressions.Regex("[^A-Z]", _
-                    Text.RegularExpressions.RegexOptions.Singleline Or Text.RegularExpressions.RegexOptions.Compiled)
-            End If
+            strNonLetterResidueSpec = "A-Z"
+            If mAllowAsteriskInResidues Then strNonLetterResidueSpec &= "*"
+            If mAllowDashInResidues Then strNonLetterResidueSpec &= "-"
+
+            reNonLetterResidues = _
+                New System.Text.RegularExpressions.Regex("[^" & strNonLetterResidueSpec & "]", _
+                Text.RegularExpressions.RegexOptions.Singleline Or Text.RegularExpressions.RegexOptions.Compiled)
 
             ' Make sure mFixedFastaOptions.LongProteinNameSplitChars contains at least one character
             If mFixedFastaOptions.LongProteinNameSplitChars Is Nothing OrElse mFixedFastaOptions.LongProteinNameSplitChars.Length = 0 Then
@@ -2448,6 +2453,7 @@ Public Class clsValidateFastaFile
         Me.ProteinLineStartChar = DEFAULT_PROTEIN_LINE_START_CHAR
 
         Me.OptionSwitch(IValidateFastaFile.SwitchOptions.AllowAsteriskInResidues) = False
+        Me.OptionSwitch(IValidateFastaFile.SwitchOptions.AllowDashInResidues) = False
         Me.OptionSwitch(IValidateFastaFile.SwitchOptions.WarnBlankLinesBetweenProteins) = False
         Me.OptionSwitch(IValidateFastaFile.SwitchOptions.WarnLineStartsWithSpace) = True
 
@@ -2560,6 +2566,9 @@ Public Class clsValidateFastaFile
                     Me.OptionSwitch(IValidateFastaFile.SwitchOptions.AllowAsteriskInResidues) = _
                         objSettingsFile.GetParam(XML_SECTION_OPTIONS, "AllowAsteriskInResidues", _
                         Me.OptionSwitch(IValidateFastaFile.SwitchOptions.AllowAsteriskInResidues))
+                    Me.OptionSwitch(IValidateFastaFile.SwitchOptions.AllowDashInResidues) = _
+                        objSettingsFile.GetParam(XML_SECTION_OPTIONS, "AllowDashInResidues", _
+                        Me.OptionSwitch(IValidateFastaFile.SwitchOptions.AllowDashInResidues))
                     Me.OptionSwitch(IValidateFastaFile.SwitchOptions.CheckForDuplicateProteinNames) = _
                         objSettingsFile.GetParam(XML_SECTION_OPTIONS, "CheckForDuplicateProteinNames", _
                         Me.OptionSwitch(IValidateFastaFile.SwitchOptions.CheckForDuplicateProteinNames))
@@ -3724,6 +3733,8 @@ Public Class clsValidateFastaFile
 
             objSettingsFile.SetParam(XML_SECTION_OPTIONS, "AddMissingLinefeedAtEOF", Me.OptionSwitch(IValidateFastaFile.SwitchOptions.AddMissingLinefeedatEOF))
             objSettingsFile.SetParam(XML_SECTION_OPTIONS, "AllowAsteriskInResidues", Me.OptionSwitch(IValidateFastaFile.SwitchOptions.AllowAsteriskInResidues))
+            objSettingsFile.SetParam(XML_SECTION_OPTIONS, "AllowDashInResidues", Me.OptionSwitch(IValidateFastaFile.SwitchOptions.AllowDashInResidues))
+
             objSettingsFile.SetParam(XML_SECTION_OPTIONS, "CheckForDuplicateProteinNames", Me.OptionSwitch(IValidateFastaFile.SwitchOptions.CheckForDuplicateProteinNames))
             objSettingsFile.SetParam(XML_SECTION_OPTIONS, "CheckForDuplicateProteinSequences", Me.OptionSwitch(IValidateFastaFile.SwitchOptions.CheckForDuplicateProteinSequences))
             objSettingsFile.SetParam(XML_SECTION_OPTIONS, "SaveProteinSequenceHashInfoFiles", Me.OptionSwitch(IValidateFastaFile.SwitchOptions.SaveProteinSequenceHashInfoFiles))
@@ -3835,9 +3846,13 @@ Public Class clsValidateFastaFile
             Me.SetRule(IValidateFastaFile.RuleTypes.ProteinSequence, "\*", True, MESSAGE_TEXT_ASTERISK_IN_RESIDUES, 7)
         End If
 
-        ' Note: we look for a space, tab, and asterisk with separate rules (defined above), so we
+        If Not mAllowDashInResidues Then
+            Me.SetRule(IValidateFastaFile.RuleTypes.ProteinSequence, "\-", True, MESSAGE_TEXT_DASH_IN_RESIDUES, 7)
+        End If
+
+        ' Note: we look for a space, tab, asterisk, and dash with separate rules (defined above), so we
         ' therefore include them in this RegEx
-        Me.SetRule(IValidateFastaFile.RuleTypes.ProteinSequence, "[^A-IK-Z \t*]", True, "Invalid residues found", 7, True)
+        Me.SetRule(IValidateFastaFile.RuleTypes.ProteinSequence, "[^A-IK-Z \t\*\-]", True, "Invalid residues found", 7, True)
 
         ' Protein sequence warnings
         Me.SetRule(IValidateFastaFile.RuleTypes.ProteinSequence, "U", True, "Residues line contains U (selenocysteine); this residue is unsupported by Sequest", 3)

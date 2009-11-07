@@ -784,6 +784,7 @@ Public Class frmCollectionEditor
     Protected m_LastSelectedOrganism As String = ""
     Protected m_LastSelectedAnnotationType As String = ""
     Protected m_LastValueForAllowAsterisks As Boolean = False
+    Protected m_LastValueForAllowDash As Boolean = False
 
     Protected WithEvents m_ImportHandler As Protein_Importer.IImportProteins
     Protected WithEvents m_UploadHandler As Protein_Uploader.IUploadProteins
@@ -1001,6 +1002,7 @@ Public Class frmCollectionEditor
         End If
 
         frmBatchUpload.ValidationAllowAsterisks = m_LastValueForAllowAsterisks
+        frmBatchUpload.ValidationAllowDash = m_LastValueForAllowDash
 
         ' Set the last directory used
         frmBatchUpload.CurrentDirectory = Me.m_LastBatchULDirectoryPath
@@ -1012,6 +1014,7 @@ Public Class frmCollectionEditor
         m_LastSelectedOrganism = frmBatchUpload.SelectedOrganismName
         m_LastSelectedAnnotationType = frmBatchUpload.SelectedAnnotationType
         m_LastValueForAllowAsterisks = frmBatchUpload.ValidationAllowAsterisks
+        m_LastValueForAllowDash = frmBatchUpload.ValidationAllowDash
 
         Try
             ' Save these settings to the registry
@@ -1045,6 +1048,7 @@ Public Class frmCollectionEditor
             Me.pnlProgBar.Visible = True
 
             Me.m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues, frmBatchUpload.ValidationAllowAsterisks)
+            Me.m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowDashInResidues, frmBatchUpload.ValidationAllowDash)
 
             Me.m_UploadHandler.BatchUpload(tmpSelectedFileList)
             Me.pnlProgBar.Visible = False

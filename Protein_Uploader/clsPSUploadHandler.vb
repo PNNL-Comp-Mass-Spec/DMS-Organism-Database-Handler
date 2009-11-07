@@ -4,6 +4,7 @@ Public Interface IUploadProteins
 
     Enum eValidationOptionConstants As Integer
         AllowAsterisksInResidues = 0
+        AllowDashInResidues = 1
     End Enum
 
     Function UploadCollection( _
@@ -219,11 +220,17 @@ Public Class clsPSUploadHandler
             ' Configure the validator to possibly allow asterisks in the residues
             Me.m_Validator.OptionSwitches(ValidateFastaFile.IValidateFastaFile.SwitchOptions.AllowAsteriskInResidues) = mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues)
 
+            ' Configure the validator to possibly allow dashes in the residues
+            Me.m_Validator.OptionSwitches(ValidateFastaFile.IValidateFastaFile.SwitchOptions.AllowDashInResidues) = mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowDashInResidues)
+
             ' Configure the additional validation options
             Me.m_Validator.SetValidationOptions(ValidateFastaFile.ICustomValidation.eValidationOptionConstants.AllowAsterisksInResidues, _
                                                 mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues))
 
-            ' Update the default rules (important if AllowAsteriskInResidues = True)
+            Me.m_Validator.SetValidationOptions(ValidateFastaFile.ICustomValidation.eValidationOptionConstants.AllowDashInResidues, _
+                                    mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowDashInResidues))
+
+            ' Update the default rules (important if AllowAsteriskInResidues = True or AllowDashInResidues = True)
             Me.m_Validator.SetDefaultRules()
             Me.m_Validator.ShowMessages = True
 
