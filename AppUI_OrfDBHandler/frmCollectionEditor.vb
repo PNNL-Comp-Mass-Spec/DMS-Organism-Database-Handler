@@ -1018,8 +1018,13 @@ Public Class frmCollectionEditor
 
         Try
             ' Save these settings to the registry
-            SaveSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedOrganism", m_LastSelectedOrganism)
-            SaveSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedAnnotationType", m_LastSelectedAnnotationType)
+            If Not m_LastSelectedOrganism Is Nothing AndAlso m_LastSelectedOrganism.Length > 0 Then
+                SaveSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedOrganism", m_LastSelectedOrganism)
+            End If
+
+            If Not m_LastSelectedAnnotationType Is Nothing AndAlso m_LastSelectedAnnotationType.Length > 0 Then
+                SaveSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedAnnotationType", m_LastSelectedAnnotationType)
+            End If
         Catch ex As Exception
             ' Ignore errors here
         End Try

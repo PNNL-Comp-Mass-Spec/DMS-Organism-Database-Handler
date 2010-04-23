@@ -873,10 +873,12 @@ Public Class frmBatchAddNewCollectionTest
                 For intIndex = 0 To objComboBox.Items.Count - 1
                     objRow = DirectCast(objComboBox.Items.Item(intIndex), System.Data.DataRowView)
 
-                    If CStr(objRow.Item(intDataColumnIndexToCheck)) = strValue Then
-                        objComboBox.SelectedIndex = intIndex
-                        Exit For
+                    If Not System.DBNull.Value.Equals(objRow.Item(intDataColumnIndexToCheck)) Then
+                        If CStr(objRow.Item(intDataColumnIndexToCheck)) = strValue Then
+                            objComboBox.SelectedIndex = intIndex
+                            Exit For
 
+                        End If
                     End If
                 Next
             End If
