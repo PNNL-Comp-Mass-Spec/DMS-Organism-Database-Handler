@@ -165,7 +165,7 @@ Public Class clsDBTask
         Dim GetID_CMD As SqlClient.SqlCommand = New SqlClient.SqlCommand(SelectSQL)
 
         Dim numTries As Integer = 3
-        Dim tryCount As Integer
+        'Dim tryCount As Integer
         'Try
         If Not Me.m_PersistConnection Then Me.OpenConnection()
 

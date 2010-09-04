@@ -1,3 +1,5 @@
+Option Strict On
+
 Public Class clsGetFASTAFromDMSDecoy
     Inherits clsGetFASTAFromDMSForward
 

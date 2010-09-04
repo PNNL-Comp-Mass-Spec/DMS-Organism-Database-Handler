@@ -16,7 +16,7 @@ Friend Class clsGetAnnotationsFromDB
     Function GetAnnotationDetails(ByVal ProteinCollectionID As Integer) As clsAnnotationInfo
         Me.m_DatabaseHelper = New TableManipulationBase.clsDBTask(Me.m_ConnectionString, True)
 
-        Dim CollectionName As String
+        Dim CollectionName As String = String.Empty
 
 
         Dim SQLStatement As String
@@ -29,13 +29,13 @@ Friend Class clsGetAnnotationsFromDB
         Dim tmpProtID As Integer
         Dim tmpNameAuthID As Integer
 
+        ' FYI: The constructor for clsAnnotationInfo() doesn't use CollectionName or ProteinCollectionID at present
         Dim info As New clsAnnotationInfo(CollectionName, ProteinCollectionID)
 
         Dim tmpNameTable As DataTable
         Dim tmpAuthorityTable As DataTable
         Dim tmpAnnotationGroupTable As DataTable
         Dim tmpAnnotationTable As DataTable
-        Dim tmpAddAnnotationTable As DataTable
 
         'Get Protein Collection Name
         SQLStatement = "SELECT TOP 1 Name FROM V_Collection_Picker " & _

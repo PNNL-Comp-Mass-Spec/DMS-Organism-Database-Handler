@@ -107,8 +107,6 @@ Public Class clsImportHandler
     Protected Function LoadFASTA(ByVal filePath As String) As Protein_Storage.IProteinStorage
 
         'check for existence of current file
-        Dim UpdateMode As Boolean
-
         Dim fastaContents As Protein_Storage.IProteinStorage
         fastaContents = Me.m_Importer.GetProteinEntries(filePath)
 
@@ -520,8 +518,6 @@ Public Class clsImportHandler
         ByVal FullFilePath As String, _
         ByVal SelectedOrganismID As Integer, _
         ByVal SelectedAuthorityID As Integer) As Protein_Storage.IProteinStorage Implements IImportProteins.LoadProteinsForBatch
-
-        Dim strErrorMessage As String
 
         Dim ps As Protein_Storage.IProteinStorage = Me.LoadFASTA(FullFilePath)
 

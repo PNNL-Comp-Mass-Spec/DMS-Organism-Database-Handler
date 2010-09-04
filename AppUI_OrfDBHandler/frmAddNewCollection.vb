@@ -370,7 +370,7 @@ Public Class frmAddNewCollection
         ByVal DisplayMember As String, _
         ByVal ValueMember As String)
 
-        Dim dr As DataRow
+        'Dim dr As DataRow
         'For Each dr In list.Rows
         '    Debug.WriteLine(dr.Item(0).ToString & ", " & dr.Item(1).ToString & ", " & dr.Item(2).ToString & ", ")
         'Next

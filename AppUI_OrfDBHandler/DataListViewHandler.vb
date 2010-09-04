@@ -27,7 +27,7 @@ Public Class DataListViewHandler
 
         Dim itemRow As DataRow
         Dim itemRows() As DataRow
-        Dim filterString As String
+        Dim filterString As String = String.Empty
         Dim proteinCount As Integer
         Dim triggerCount As Integer
         Dim counter As Integer

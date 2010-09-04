@@ -23,7 +23,6 @@ Public Class clsTranslateNucleotides
     End Sub
 
     Protected Function LoadTransMatrix(ByVal TranslationTableID As Integer) As ArrayList Implements ITranslateNucleotides.LoadMatrix
-        Dim tmpTE As clsTranslationEntry
 
         Dim BaseArray() As Char = "ATGC".ToCharArray
         Dim base_1 As Char

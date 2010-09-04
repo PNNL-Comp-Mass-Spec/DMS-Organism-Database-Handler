@@ -282,7 +282,6 @@ Public Class frmExtractFromFlatfile
     End Sub
 
     Private Sub RefreshRawFileListViewHeaders()
-        Dim ch As System.Windows.Forms.ColumnHeader
 
         Dim columnCollection As Hashtable = Me.m_Extract.ColumnNames
 
@@ -308,8 +307,6 @@ Public Class frmExtractFromFlatfile
         Dim hash As Hashtable
         Dim maxIndex As Integer = fc.Count - 1
         Dim maxColumnCount As Integer
-        Dim item As String
-        Dim blankColumnCount As Integer
 
         Dim ch As System.Windows.Forms.ColumnHeader
 
@@ -384,7 +381,6 @@ Public Class frmExtractFromFlatfile
 
         Dim a As New ArrayList
         Dim memberEnum As IDictionaryEnumerator = authList.GetEnumerator
-        Dim authName As String
 
         cbo.BeginUpdate()
         While memberEnum.MoveNext = True

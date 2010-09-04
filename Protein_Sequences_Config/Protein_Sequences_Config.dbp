@@ -1,6 +1,6 @@
 # Microsoft Developer Studio Project File - Database Project
 Begin DataProject = "Protein_Sequences_Config"
-   MSDTVersion = "70"
+   MSDTVersion = "80"
    Begin Folder = "Change Scripts"
       Script = "ClearAllData.sql"
       Script = "Debug_Off.sql"
@@ -14,7 +14,8 @@ Begin DataProject = "Protein_Sequences_Config"
    End
    Begin DBRefFolder = "Database References"
       Begin DBRefNode = "proteinseqs.Protein_Sequences.dbo"
-         ConnectStr = "Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=Protein_Sequences;Data Source=proteinseqs;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=wd37348;Use Encryption for Data=False;Tag with column collation when possible=False"
+         ConnectStr = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=True;Connect Timeout=0;Encrypt=False;Packet Size=4096;Workstation ID=wd37348"
+         Provider = "{91510608-8809-4020-8897-FBA057E22D54}"
          Colorizer = 5
       End
    End

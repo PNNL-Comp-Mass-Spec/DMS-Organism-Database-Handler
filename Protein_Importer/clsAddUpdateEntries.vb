@@ -197,10 +197,8 @@ Public Class clsAddUpdateEntries
         ByRef pc As Protein_Storage.IProteinStorage, _
         ByVal SelectedProteinList As ArrayList) Implements IAddUpdateEntries.CompareProteinID
 
-        Dim tmpTable As DataTable
-        Dim SQL As String
         Dim tmpPC As Protein_Storage.IProteinStorageEntry
-        Dim dr As DataRow
+
         Dim s As String
 
 
@@ -283,8 +281,7 @@ Public Class clsAddUpdateEntries
 
         Dim tmpPC As Protein_Storage.IProteinStorageEntry
         Dim counter As Integer
-        Dim counterMax As Integer = SelectedProteinList.Count
-        Dim memberID As Integer
+        Dim counterMax As Integer = SelectedProteinList.Count        
         Dim s As String
 
         Dim EventTriggerThresh As Integer

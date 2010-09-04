@@ -1,3 +1,4 @@
+Option Strict On
 
 Namespace ExportProteinCollectionsIFC
 

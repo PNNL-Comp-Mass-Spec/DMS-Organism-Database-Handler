@@ -1,3 +1,5 @@
+Option Strict On
+
 Public Class clsArchiveToFile
     Inherits clsArchiveOutputFilesBase
 
@@ -35,7 +37,7 @@ Public Class clsArchiveToFile
         Dim fi As System.IO.FileInfo = New System.IO.FileInfo(SourceFilePath)
         Dim destFI As System.IO.FileInfo
         Dim di As System.IO.DirectoryInfo
-        Dim finalFI As System.IO.FileInfo
+
         Dim proteinCount As Integer
 
         'Check for existence of Archive Entry
@@ -124,7 +126,7 @@ Public Class clsArchiveToFile
         ByVal OutputSequenceType As Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes) As String
 
         Dim pathString As String
-        pathString = System.IO.Path.Combine(Me.BASE_ARCHIVE_PATH, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
+        pathString = System.IO.Path.Combine(clsArchiveToFile.BASE_ARCHIVE_PATH, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
         pathString = System.IO.Path.Combine(pathString, [Enum].GetName(GetType(Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes), OutputSequenceType))
         pathString = System.IO.Path.Combine(pathString, "ID_00000_" + Authentication_Hash + System.IO.Path.GetExtension(SourceFilePath))
 

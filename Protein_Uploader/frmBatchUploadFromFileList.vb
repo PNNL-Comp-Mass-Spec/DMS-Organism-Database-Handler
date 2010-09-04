@@ -298,14 +298,14 @@ Public Class frmBatchUploadFromFileList
     Private Sub LoadFileNamingAuthorities()
         Dim loadFilePath As String = System.IO.Path.Combine(Me.m_SavePath, Me.m_SaveFileName)
         Dim fi As System.IO.FileInfo = New System.IO.FileInfo(loadFilePath)
-        Dim tr As System.IO.TextReader
-        Dim s As String
+        'Dim tr As System.IO.TextReader
+        'Dim s As String
 
-        Dim tmpFileName As String
-        Dim tmpAnnotationID As Integer
-        Dim fields() As String
+        'Dim tmpFileName As String
+        'Dim tmpAnnotationID As Integer
+        'Dim fields() As String
 
-        Dim fli As clsBatchUploadFromFileList.FileListInfo
+        'Dim fli As clsBatchUploadFromFileList.FileListInfo
 
         'If fi.Exists And Not Me.m_FileCollection Is Nothing Then
         '    tr = fi.OpenText
@@ -387,7 +387,6 @@ Public Class frmBatchUploadFromFileList
     Sub PopulateListView()
         Dim fli As clsBatchUploadFromFileList.FileListInfo
         Dim li As System.Windows.Forms.ListViewItem
-        Dim tmpAnnotationType As String
         Dim foundRows() As DataRow
 
         RemoveHandler lvwFiles.SelectedIndexChanged, AddressOf lvwFiles_SelectedIndexChanged
@@ -423,7 +422,6 @@ Public Class frmBatchUploadFromFileList
         End If
 
         Dim li As System.Windows.Forms.ListViewItem
-        Dim fli As clsBatchUploadFromFileList.FileListInfo
 
         For Each li In Me.lvwFiles.CheckedItems
             Me.m_SelectedFilesCollection.Add( _

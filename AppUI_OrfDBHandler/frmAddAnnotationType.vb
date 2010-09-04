@@ -328,7 +328,7 @@ Public Class frmAddAnnotationType
 
     Private Sub cboAuthorityName_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboAuthorityName.SelectedIndexChanged
         Dim cbo As ComboBox = DirectCast(sender, ComboBox)
-        Dim tmpUpInfo As Protein_Uploader.IUploadProteins.UploadInfo
+
 
         If cbo.SelectedValue.GetType Is System.Type.GetType("System.Int32") Then
             Me.m_AuthID = CInt(cbo.SelectedValue)
@@ -337,7 +337,7 @@ Public Class frmAddAnnotationType
         End If
 
         Dim tmpAuthID As Integer
-        Dim tmpIndex As Integer
+
 
         If Me.m_AuthID = -2 Then
             'Bring up addition dialog

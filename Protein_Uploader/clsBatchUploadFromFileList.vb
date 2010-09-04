@@ -56,8 +56,6 @@ Public Class clsBatchUploadFromFileList
         Me.m_AuthorityTable = Me.GetAuthorityTable
         Me.m_OrganismTable = Me.GetOrganismsTable
 
-        Dim UploadInfoMember As Protein_Uploader.IUploadProteins.UploadInfo
-
         Me.m_BatchForm = New frmBatchUploadFromFileList(Me.m_AuthorityTable, Me.m_AnnotationTypeTable, Me.m_OrganismTable)
 
         Me.m_CurrentFileList = Me.GetDMSFileEntities
@@ -162,8 +160,7 @@ Public Class clsBatchUploadFromFileList
         Dim fileList As New Hashtable
         Dim collectionList As New ArrayList
         Dim fileTable As DataTable
-        Dim collectionTable As DataTable
-        'Dim DMSOrgDBSQL As String
+      
         Dim dr As DataRow
 
         Dim LoadedCollectionsSQL As String
@@ -219,7 +216,6 @@ Public Class clsBatchUploadFromFileList
 
     Protected Function UploadSelectedFiles(ByVal fileNameList As Hashtable) As Integer
 
-        Dim fileName As String
         Dim upInfoContainer As IUploadProteins.UploadInfo
         Dim fli As FileListInfo
         Dim selectedFileList As Hashtable = New Hashtable

@@ -59,7 +59,7 @@ Public Class clsTransTableHandler
 
         dba = New TableManipulationBase.clsDBTask(Me.m_ConnectionString, True)
 
-        Dim EntrySQL As String = "SELECT * FROM " & Me.EntriesTableName
+        Dim EntrySQL As String = "SELECT * FROM " & clsTransTableHandler.EntriesTableName
         Dim entryDA As SqlClient.SqlDataAdapter = New SqlClient.SqlDataAdapter(EntrySQL, dba.Connection)
         Dim entryCB As SqlClient.SqlCommandBuilder = New SqlClient.SqlCommandBuilder(entryDA)
 
@@ -67,7 +67,7 @@ Public Class clsTransTableHandler
 
 
 
-        Dim idSQL As String = "SELECT * FROM " & Me.IDTableName
+        Dim idSQL As String = "SELECT * FROM " & clsTransTableHandler.IDTableName
         Dim idDA As SqlClient.SqlDataAdapter = New SqlClient.SqlDataAdapter(idSQL, dba.Connection)
         Dim idCB As SqlClient.SqlCommandBuilder = New SqlClient.SqlCommandBuilder(idDA)
 
@@ -115,7 +115,7 @@ Public Class clsTransTableHandler
     Private Sub SyncLocalToDMS()
         Dim dba As TableManipulationBase.IGetSQLData = New TableManipulationBase.clsDBTask(Me.m_ConnectionString)
 
-        Dim dmsDA As SqlClient.SqlDataAdapter = New SqlClient.SqlDataAdapter("SELECT * FROM " & Me.EntriesTableName, dba.Connection)
+        Dim dmsDA As SqlClient.SqlDataAdapter = New SqlClient.SqlDataAdapter("SELECT * FROM " & clsTransTableHandler.EntriesTableName, dba.Connection)
         Dim dmsCB As SqlClient.SqlCommandBuilder = New SqlClient.SqlCommandBuilder(dmsDA)
 
         dmsCB.QuotePrefix = "["
@@ -123,7 +123,7 @@ Public Class clsTransTableHandler
 
         Dim dmsDS As DataSet = New DataSet
 
-        dmsDA.Fill(dmsDS, Me.EntriesTableName)
+        dmsDA.Fill(dmsDS, clsTransTableHandler.EntriesTableName)
 
 
 
@@ -132,11 +132,11 @@ Public Class clsTransTableHandler
 
     Private Sub ProcessTranslationEntry(ByVal rawEntryCollection As System.Collections.Specialized.StringCollection)
         Dim id As Integer
-        Dim AAList As String
-        Dim StartList As String
-        Dim Base1List As String
-        Dim Base2List As String
-        Dim Base3List As String
+        Dim AAList As String = String.Empty
+        Dim StartList As String = String.Empty
+        Dim Base1List As String = String.Empty
+        Dim Base2List As String = String.Empty
+        Dim Base3List As String = String.Empty
         Dim nameList As New System.Collections.Specialized.StringCollection
         Dim tmpNameList() As String
         Dim tmpName As String

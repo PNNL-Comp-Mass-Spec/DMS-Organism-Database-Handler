@@ -1,3 +1,5 @@
+Option Strict On
+
 Public Interface IArchiveOutputFiles
 
     Enum CollectionTypes

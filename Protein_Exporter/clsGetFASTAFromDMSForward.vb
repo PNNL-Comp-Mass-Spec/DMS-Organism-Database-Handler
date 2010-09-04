@@ -1,3 +1,5 @@
+Option Strict On
+
 Imports Protein_Exporter.ExportProteinCollectionsIFC
 
 Public Class clsGetFASTAFromDMSForward
@@ -89,27 +91,11 @@ Public Class clsGetFASTAFromDMSForward
        ByVal AlternateAuthorityID As Integer, _
        ByVal PadWithPrimaryAnnotation As Boolean) As String 'Implements IGetFASTAFromDMS.ExportFASTAFile
 
-        'Dim hashableString As String
-        'hashableString = Join(ProteinCollectionNameList.ToArray, ",")
-
-        'Dim hash As String = Me.GenerateHash(hashableString)
-        'Dim lockFI As System.IO.FileInfo = New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, hash + ".lock"))
-        'Dim lockStream As System.io.FileStream
-
-        'If lockFI.Exists Then
-        '    Return ""
-        'Else
-        '    lockStream = lockFI.Create()
-        'End If
-
         Dim ProteinCollectionName As String
         Dim collectionSQL As String
         Dim collectionTable As DataTable
-        Dim tmpCollectionTable As DataTable
+
         Dim alternateNames As Hashtable
-        Dim PrimaryAnnotationID As Integer
-        Dim ProteinCollectionID As Integer
-        Dim appendMultiples As Boolean
 
         Dim authorizationSQL As String
         Dim authorizationTable As DataTable
@@ -120,7 +106,7 @@ Public Class clsGetFASTAFromDMSForward
         Dim encCheckRows() As DataRow
         Dim authCheckRows() As DataRow
 
-        Dim trueName As String
+        Dim trueName As String = String.Empty
 
         Dim tmpID As Integer
         Dim tmpIDListSB As New System.Text.StringBuilder
@@ -128,12 +114,6 @@ Public Class clsGetFASTAFromDMSForward
         Dim clearSeq As String
 
         Dim decryptionRow As DataRow
-
-
-        'Dim collection As Protein_Storage.IProteinStorage
-        Dim collection As New DataSet
-        appendMultiples = False
-        Dim AddnXRefList As New ArrayList
 
         Dim nameCheckRegex As New System.Text.RegularExpressions.Regex("(?<collectionname>.+)(?<direction>_(forward|reversed|scrambled)).*\.(?<type>(fasta|fasta\.pro))")
 
@@ -189,10 +169,29 @@ Public Class clsGetFASTAFromDMSForward
         Dim sectionStart As Integer
         Dim sectionEnd As Integer
         Dim tableName As String
+
         Dim tmpOutputPath As String
+        Dim tmpOutputPathCandidate As String
+
         Dim currentCollectionCount As Integer
 
-        tmpOutputPath = System.IO.Path.GetTempFileName
+        ' Get a temp file name; however, create the file in the target folder path 
+        ' (in case the system-defined temp directory is on a different drive than the target folder)
+
+        Dim fiOutputPathCheck As System.IO.FileInfo
+        Do
+            tmpOutputPathCandidate = System.IO.Path.GetTempFileName
+            Try
+                ' The GetTempFileName function created a temp file that we don't need; delete it now (but use try/catch just in case the deletion fails for some freak reason)
+                System.IO.File.Delete(tmpOutputPathCandidate)
+            Catch ex As Exception
+            End Try
+
+            tmpOutputPath = System.IO.Path.Combine(ExportPath, System.IO.Path.GetFileName(tmpOutputPathCandidate))
+            fiOutputPathCheck = New System.IO.FileInfo(tmpOutputPath)
+
+        Loop While fiOutputPathCheck.Exists
+
 
         For Each ProteinCollectionName In ProteinCollectionNameList
             currentCollectionPos = 0
@@ -208,7 +207,7 @@ Public Class clsGetFASTAFromDMSForward
 
             'Determine collection length
             lengthCheckSQL = "SELECT NumProteins FROM T_Protein_Collections " & _
-                                "WHERE FileName = '" & ProteinCollectionName & "'"
+                             "WHERE FileName = '" & ProteinCollectionName & "'"
 
             lengthCheckTable = Me.m_TableGrabber.GetTable(lengthCheckSQL)
 
@@ -220,11 +219,9 @@ Public Class clsGetFASTAFromDMSForward
             End If
 
 
-            'While currentCollectionPos <= collectionLength
             Do
                 sectionStart = currentCollectionPos
                 sectionEnd = sectionStart + 10000
-
 
                 If PadWithPrimaryAnnotation Then
                     tmpID = Me.FindIDByName(trueName)
@@ -247,9 +244,6 @@ Public Class clsGetFASTAFromDMSForward
                     alternateNames = New Hashtable
 
                 End If
-
-                'Me.OnExportStart("Retrieving: " + trueName)
-
 
 
                 collectionTable = Me.m_TableGrabber.GetTable(collectionSQL)
@@ -281,18 +275,6 @@ Public Class clsGetFASTAFromDMSForward
                 'collection.Tables.Add(collectionTable)
                 Me.m_fileDumper.Export(collectionTable, tmpOutputPath)
 
-                'collection = Me.DataTableToCollection( _
-                '            collectionTable, "Name", "Description", "Sequence", "Protein_ID", _
-                '            Me.ExtendedExportPath(ExportPath, ProteinCollectionName), appendMultiples, _
-                '            alternateNames)
-
-                If appendMultiples Then
-                    AddnXRefList.Add(tmpID)
-                End If
-
-                appendMultiples = True
-
-
 
                 currentCollectionPos = sectionEnd + 1
                 currentCollectionCount += collectionTable.Rows.Count
@@ -321,25 +303,29 @@ Public Class clsGetFASTAFromDMSForward
         Me.m_CurrentFullOutputPath = Me.ExtendedExportPath(ExportPath, name)
         Me.m_CurrentArchiveFileName = tmpIDListSB.ToString
 
-        tmpFI.CopyTo(Me.m_CurrentFullOutputPath)
+        ' Rename (move) the temporary file to the final, full name
+        If System.IO.File.Exists(Me.m_CurrentFullOutputPath) Then
+            System.IO.File.Delete(Me.m_CurrentFullOutputPath)
+        End If
+        tmpFI.MoveTo(Me.m_CurrentFullOutputPath)
 
+        ' Assuming the final file now exists, delete the temporary file (if present)
         Dim outputfi As System.IO.FileInfo = New System.IO.FileInfo(Me.m_CurrentFullOutputPath)
         If outputfi.Exists Then
-            tmpFI.Delete()
+            tmpFI = New System.IO.FileInfo(tmpOutputPath)
+            If tmpFI.Exists Then
+                tmpFI.Delete()
+            End If
         End If
 
-        Dim fingerprint As String = Me.m_fileDumper.Export(New DataTable, Me.m_CurrentFullOutputPath)
-
-        'lockStream.Close()
-
-        'lockFI = New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, hash + ".lock"))
-        'If lockFI.Exists Then
-        '    'lockFI.Delete()
-        'End If
+        ' Determine the SHA-hash of the output file
+        ' This process will also rename the file, e.g. from "C:\Temp\SAR116_RBH_AA_012809_forward.fasta" to "C:\Temp\38FFACAC.fasta"
+        Dim SHA1 As String
+        SHA1 = Me.m_fileDumper.Export(New DataTable, Me.m_CurrentFullOutputPath)
 
         Me.OnExportComplete()
 
-        Return fingerprint
+        Return SHA1
 
 
     End Function
@@ -370,7 +356,6 @@ Public Class clsGetFASTAFromDMSForward
     End Function
 
     Protected Function GetPrimaryAuthorityID(ByVal proteinCollectionID As Integer) As Integer
-        Dim dr As DataRow
         Dim foundrows() As DataRow
 
         foundrows = Me.m_CollectionsCache.Select("Protein_Collection_ID = " & proteinCollectionID.ToString)

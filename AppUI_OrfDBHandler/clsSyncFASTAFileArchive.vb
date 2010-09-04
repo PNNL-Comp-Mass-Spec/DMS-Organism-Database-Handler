@@ -104,8 +104,6 @@ Public Class clsSyncFASTAFileArchive
         Dim tmpFilename As String
         Dim fi As System.IO.FileInfo
         Dim tmpFullPath As String
-        Dim tmpNameList As ArrayList
-        Dim totalProteinCount As Integer
         Dim currentProteinCount As Integer = 0
 
         For Each dr In dt.Rows
@@ -286,7 +284,6 @@ Public Class clsSyncFASTAFileArchive
             Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString)
         End If
 
-        Dim proteinCollectionList As Hashtable
         Dim getCollectionsSQL As String = "SELECT Protein_Collection_ID, FileName, Organism_ID FROM V_Protein_Collections_By_Organism WHERE Collection_Type_ID = 1 or Collection_Type_ID = 5"
 
         Dim collectionTable As DataTable = Me.m_TableGetter.GetTable(getCollectionsSQL)
@@ -447,7 +444,7 @@ Public Class clsSyncFASTAFileArchive
         Dim NameCountSQL As String = "SELECT TOP 1 Reference_ID FROM T_Protein_Names ORDER BY Reference_ID DESC"
         Dim tmptable As DataTable
         Dim dr As DataRow
-        Dim foundRows() As DataRow
+
         tmptable = Me.m_TableGetter.GetTable(NameCountSQL)
         TotalNameCount = CInt(tmptable.Rows(0).Item("Reference_ID"))
 

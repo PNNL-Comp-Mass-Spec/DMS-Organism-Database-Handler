@@ -132,8 +132,7 @@ Public Class frmFilePreview
 #End Region
 
     Event RefreshRequest(ByVal lineCount As Integer)
-    Event FormClosing()
-
+    Shadows Event FormClosing()
 
     Private validationRegex As System.Text.RegularExpressions.Regex
     Private m_currentLineCount As Integer = 100

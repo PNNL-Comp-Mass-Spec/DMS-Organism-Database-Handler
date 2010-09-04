@@ -10,8 +10,8 @@ Friend Class clsCollectionEncryptor
 
         Me.m_RijndaelEncryptor = New Protein_Exporter.clsRijndaelEncryptionHandler(PassPhrase)
 
-        If Me.m_TableGrabber Is Nothing Then
-            Me.m_TableGrabber = New TableManipulationBase.clsDBTask(PSConnectionString, True)
+        If clsCollectionEncryptor.m_TableGrabber Is Nothing Then
+            clsCollectionEncryptor.m_TableGrabber = New TableManipulationBase.clsDBTask(PSConnectionString, True)
         End If
 
     End Sub

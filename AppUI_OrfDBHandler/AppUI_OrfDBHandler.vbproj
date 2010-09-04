@@ -1,293 +1,293 @@
-<VisualStudioProject>
-    <VisualBasic
-        ProjectType = "Local"
-        ProductVersion = "7.10.3077"
-        SchemaVersion = "2.0"
-        ProjectGuid = "{78AD9853-60BB-4B10-8FF2-418B3A21092D}"
-    >
-        <Build>
-            <Settings
-                ApplicationIcon = "PRISMSeq_Favicon.ico"
-                AssemblyKeyContainerName = ""
-                AssemblyName = "PRISMSeq Uploader"
-                AssemblyOriginatorKeyFile = ""
-                AssemblyOriginatorKeyMode = "None"
-                DefaultClientScript = "JScript"
-                DefaultHTMLPageLayout = "Grid"
-                DefaultTargetSchema = "IE50"
-                DelaySign = "false"
-                OutputType = "WinExe"
-                OptionCompare = "Binary"
-                OptionExplicit = "On"
-                OptionStrict = "On"
-                RootNamespace = "AppUI_OrfDBHandler"
-                StartupObject = ""
-            >
-                <Config
-                    Name = "Debug"
-                    BaseAddress = "285212672"
-                    ConfigurationOverrideFile = ""
-                    DefineConstants = ""
-                    DefineDebug = "true"
-                    DefineTrace = "true"
-                    DebugSymbols = "true"
-                    IncrementalBuild = "true"
-                    Optimize = "false"
-                    OutputPath = "..\Executables\Debug\"
-                    RegisterForComInterop = "false"
-                    RemoveIntegerChecks = "false"
-                    TreatWarningsAsErrors = "false"
-                    WarningLevel = "1"
-                />
-                <Config
-                    Name = "Release"
-                    BaseAddress = "285212672"
-                    ConfigurationOverrideFile = ""
-                    DefineConstants = ""
-                    DefineDebug = "false"
-                    DefineTrace = "true"
-                    DebugSymbols = "false"
-                    IncrementalBuild = "false"
-                    Optimize = "true"
-                    OutputPath = "..\Executables\Release\"
-                    RegisterForComInterop = "false"
-                    RemoveIntegerChecks = "false"
-                    TreatWarningsAsErrors = "false"
-                    WarningLevel = "1"
-                />
-            </Settings>
-            <References>
-                <Reference
-                    Name = "System"
-                    AssemblyName = "System"
-                />
-                <Reference
-                    Name = "System.Data"
-                    AssemblyName = "System.Data"
-                />
-                <Reference
-                    Name = "System.Drawing"
-                    AssemblyName = "System.Drawing"
-                />
-                <Reference
-                    Name = "System.Windows.Forms"
-                    AssemblyName = "System.Windows.Forms"
-                />
-                <Reference
-                    Name = "System.XML"
-                    AssemblyName = "System.Xml"
-                />
-                <Reference
-                    Name = "TranslationTableImport"
-                    Project = "{85531A5F-F4DB-42EB-B597-397ADF10B0E9}"
-                    Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
-                />
-                <Reference
-                    Name = "Protein_Importer"
-                    Project = "{28D5A54E-B47D-41F3-95AB-96C4346ADE38}"
-                    Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
-                />
-                <Reference
-                    Name = "Protein_Storage"
-                    Project = "{77B1CDDC-23D8-4408-8CA3-6FA8A31A975A}"
-                    Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
-                />
-                <Reference
-                    Name = "TableManipulationBase"
-                    Project = "{15939683-D5B9-4784-9E16-89B0C059D3C8}"
-                    Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
-                />
-                <Reference
-                    Name = "Protein_Uploader"
-                    Project = "{8989FDEF-3CA5-42ED-B080-294CE455A72E}"
-                    Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
-                />
-                <Reference
-                    Name = "ExtractAdditionalAnnotations"
-                    Project = "{E476B943-B24F-4483-A0F1-FFE2D20B4258}"
-                    Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
-                />
-                <Reference
-                    Name = "NucleotideTranslator"
-                    Project = "{3AA2CACA-0803-4A08-96A2-C1EAE0F2D832}"
-                    Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
-                />
-                <Reference
-                    Name = "Protein_Exporter"
-                    Project = "{A698B58B-15B8-4893-81AD-116D57B9B404}"
-                    Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
-                />
-                <Reference
-                    Name = "ExpTreeLib"
-                    AssemblyName = "ExpTreeLib"
-                    HintPath = "..\Shared Libraries\ExpTreeLib.dll"
-                />
-                <Reference
-                    Name = "UIControls"
-                    AssemblyName = "UIControls"
-                    HintPath = "bin\UIControls.dll"
-                />
-                <Reference
-                    Name = "SequenceInfoCalculator"
-                    Project = "{99C5D78C-00DA-49A5-BAC8-19ADFE95FABE}"
-                    Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
-                />
-                <Reference
-                    Name = "ValidateFastaFiles_Dll"
-                    Project = "{4719F96F-6CFC-4CAB-8959-35233A6505E8}"
-                    Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
-                />
-                <Reference
-                    Name = "skybound.visualstyles"
-                    AssemblyName = "skybound.visualstyles"
-                    HintPath = "..\Shared Libraries\skybound.visualstyles.dll"
-                />
-            </References>
-            <Imports>
-                <Import Namespace = "Microsoft.VisualBasic" />
-                <Import Namespace = "System" />
-                <Import Namespace = "System.Collections" />
-                <Import Namespace = "System.Data" />
-                <Import Namespace = "System.Drawing" />
-                <Import Namespace = "System.Diagnostics" />
-                <Import Namespace = "System.Windows.Forms" />
-            </Imports>
-        </Build>
-        <Files>
-            <Include>
-                <File
-                    RelPath = "AssemblyInfo.vb"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "clsAddAnnotationType.vb"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "clsAddNamingAuthority.vb"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "clsCollectionStatePickerHandler.vb"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "clsFilePreviewHandler.vb"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "clsSyncFASTAFileArchive.vb"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DataListViewHandler.vb"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "frmAddAnnotationType.vb"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "frmAddAnnotationType.resx"
-                    DependentUpon = "frmAddAnnotationType.vb"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "frmAddNamingAuthority.vb"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "frmAddNamingAuthority.resx"
-                    DependentUpon = "frmAddNamingAuthority.vb"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "frmAddNewCollection.vb"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "frmAddNewCollection.resx"
-                    DependentUpon = "frmAddNewCollection.vb"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "frmBatchAddNewCollection.vb"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "frmBatchAddNewCollection.resx"
-                    DependentUpon = "frmBatchAddNewCollection.vb"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "frmCollectionEditor.vb"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "frmCollectionEditor.resx"
-                    DependentUpon = "frmCollectionEditor.vb"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "frmCollectionStateEditor.vb"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "frmCollectionStateEditor.resx"
-                    DependentUpon = "frmCollectionStateEditor.vb"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "frmFilePreview.vb"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "frmFilePreview.resx"
-                    DependentUpon = "frmFilePreview.vb"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "frmTestingInterface.vb"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "frmTestingInterface.resx"
-                    DependentUpon = "frmTestingInterface.vb"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "frmValidationReport.vb"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "frmValidationReport.resx"
-                    DependentUpon = "frmValidationReport.vb"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "PRISMSeq_Favicon.ico"
-                    BuildAction = "Content"
-                />
-                <Folder RelPath = "bin\" />
-                <Folder RelPath = "obj\Debug\temp\" />
-            </Include>
-        </Files>
-    </VisualBasic>
-</VisualStudioProject>
-
+﻿<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{78AD9853-60BB-4B10-8FF2-418B3A21092D}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>PRISMSeq_Favicon.ico</ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>PRISMSeq Uploader</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyMode>None</AssemblyOriginatorKeyMode>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>WinExe</OutputType>
+    <OptionCompare>Binary</OptionCompare>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionStrict>On</OptionStrict>
+    <RootNamespace>AppUI_OrfDBHandler</RootNamespace>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <MyType>WindowsFormsWithCustomSubMain</MyType>
+    <OldToolsVersion>0.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>..\Executables\Debug\</OutputPath>
+    <DocumentationFile>PRISMSeq Uploader.xml</DocumentationFile>
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>
+    </DefineConstants>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>1</WarningLevel>
+    <NoWarn>42016,42017,42018,42019,42032</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>..\Executables\Release\</OutputPath>
+    <DocumentationFile>PRISMSeq Uploader.xml</DocumentationFile>
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>
+    </DefineConstants>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <DebugSymbols>false</DebugSymbols>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>1</WarningLevel>
+    <NoWarn>42016,42017,42018,42019,42032</NoWarn>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ExpTreeLib">
+      <Name>ExpTreeLib</Name>
+      <HintPath>..\Shared Libraries\ExpTreeLib.dll</HintPath>
+    </Reference>
+    <Reference Include="skybound.visualstyles">
+      <Name>skybound.visualstyles</Name>
+      <HintPath>..\Shared Libraries\skybound.visualstyles.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+    <Reference Include="UIControls">
+      <Name>UIControls</Name>
+      <HintPath>bin\UIControls.dll</HintPath>
+    </Reference>
+    <ProjectReference Include="..\ExtractAnnotationFromDescription\ExtractAdditionalAnnotations.vbproj">
+      <Name>ExtractAdditionalAnnotations</Name>
+      <Project>{E476B943-B24F-4483-A0F1-FFE2D20B4258}</Project>
+      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\NucleotideTranslator\NucleotideTranslator.vbproj">
+      <Name>NucleotideTranslator</Name>
+      <Project>{3AA2CACA-0803-4A08-96A2-C1EAE0F2D832}</Project>
+      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\Protein_Exporter\Protein_Exporter.vbproj">
+      <Name>Protein_Exporter</Name>
+      <Project>{A698B58B-15B8-4893-81AD-116D57B9B404}</Project>
+      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\Protein_Importer\Protein_Importer.vbproj">
+      <Name>Protein_Importer</Name>
+      <Project>{28D5A54E-B47D-41F3-95AB-96C4346ADE38}</Project>
+      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\Protein_Storage\Protein_Storage.vbproj">
+      <Name>Protein_Storage</Name>
+      <Project>{77B1CDDC-23D8-4408-8CA3-6FA8A31A975A}</Project>
+      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\Protein_Uploader\Protein_Uploader.vbproj">
+      <Name>Protein_Uploader</Name>
+      <Project>{8989FDEF-3CA5-42ED-B080-294CE455A72E}</Project>
+      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\SequenceInfoCalculator\SequenceInfoCalculator.vbproj">
+      <Name>SequenceInfoCalculator</Name>
+      <Project>{99C5D78C-00DA-49A5-BAC8-19ADFE95FABE}</Project>
+      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\TableManipulationBase\TableManipulationBase.vbproj">
+      <Name>TableManipulationBase</Name>
+      <Project>{15939683-D5B9-4784-9E16-89B0C059D3C8}</Project>
+      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\TranslationTableImport\TranslationTableImport.vbproj">
+      <Name>TranslationTableImport</Name>
+      <Project>{85531A5F-F4DB-42EB-B597-397ADF10B0E9}</Project>
+      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\ValidateFastaFiles_NET\ValidateFastaFiles_Dll.vbproj">
+      <Name>ValidateFastaFiles_Dll</Name>
+      <Project>{4719F96F-6CFC-4CAB-8959-35233A6505E8}</Project>
+      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="clsAddAnnotationType.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="clsAddNamingAuthority.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="clsCollectionStatePickerHandler.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="clsFilePreviewHandler.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="clsSyncFASTAFileArchive.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataListViewHandler.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="frmAddAnnotationType.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAddNamingAuthority.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAddNewCollection.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmBatchAddNewCollection.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCollectionEditor.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCollectionStateEditor.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmFilePreview.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTestingInterface.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmValidationReport.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <EmbeddedResource Include="frmAddAnnotationType.resx">
+      <DependentUpon>frmAddAnnotationType.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAddNamingAuthority.resx">
+      <DependentUpon>frmAddNamingAuthority.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAddNewCollection.resx">
+      <DependentUpon>frmAddNewCollection.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmBatchAddNewCollection.resx">
+      <DependentUpon>frmBatchAddNewCollection.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCollectionEditor.resx">
+      <DependentUpon>frmCollectionEditor.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCollectionStateEditor.resx">
+      <DependentUpon>frmCollectionStateEditor.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmFilePreview.resx">
+      <DependentUpon>frmFilePreview.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTestingInterface.resx">
+      <DependentUpon>frmTestingInterface.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmValidationReport.resx">
+      <DependentUpon>frmValidationReport.vb</DependentUpon>
+    </EmbeddedResource>
+    <Content Include="PRISMSeq_Favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\" />
+    <Folder Include="My Project\" />
+    <Folder Include="obj\Debug\temp\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

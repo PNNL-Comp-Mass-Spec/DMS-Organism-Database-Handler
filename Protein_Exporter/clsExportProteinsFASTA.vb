@@ -1,3 +1,5 @@
+Option Strict On
+
 Public Class clsExportProteinsFASTA
     Inherits clsExportProteins
 
@@ -16,23 +18,19 @@ Public Class clsExportProteinsFASTA
         'Dim dr As DataRow
         Dim sw As System.IO.StreamWriter = New System.IO.StreamWriter(destinationPath)
 
-        Dim pe As Protein_Storage.IProteinStorageEntry
-
         Dim nameList As ArrayList
 
         'Dim e As IEnumerator = Proteins.GetEnumerator
-        Dim descLine As String
-        Dim seqLine As String
         Dim proteinPosition As Integer
         Dim proteinLength As Integer
 
         Dim tmpSeq As String
         Dim tmpName As String
         Dim tmpDesc As String
+        Dim seqLine As String
         Dim tmpPC As Protein_Storage.IProteinStorageEntry
-        Dim tmpAltNamesSB As System.Text.StringBuilder
-        Dim tmpAltNames As String
-        Dim s As String
+        Dim tmpAltNames As String = String.Empty
+
 
         Me.OnExportStart("Writing to FASTA File")
 
@@ -91,18 +89,17 @@ Public Class clsExportProteinsFASTA
                 System.IO.Path.GetDirectoryName(destinationPath), _
                 fingerprint + System.IO.Path.GetExtension(destinationPath))
 
-        Dim copyFI As System.IO.FileInfo = New System.IO.FileInfo(newDestinationPath)
+        Dim targetFI As System.IO.FileInfo = New System.IO.FileInfo(newDestinationPath)
 
         If fi.Exists Then
-            If copyFI.Exists Then
-                copyFI.Delete()
+            If targetFI.Exists Then
+                targetFI.Delete()
             End If
-            fi.CopyTo(newDestinationPath)
-            fi.Delete()
+            fi.MoveTo(newDestinationPath)
             destinationPath = newDestinationPath
         End If
         fi = Nothing
-        copyFI = Nothing
+        targetFI = Nothing
 
         Me.OnExportEnd()
 
@@ -139,6 +136,7 @@ Public Class clsExportProteinsFASTA
             Return Me.FinalizeFile(destinationPath)
         End If
 
+        Return destinationPath
 
     End Function
 
@@ -151,20 +149,19 @@ Public Class clsExportProteinsFASTA
         Dim dr As DataRow
         Dim foundRows() As DataRow
         Dim tmpSeq As String
-        Dim tmpName As String
+        Dim tmpName As String = String.Empty
         Dim tmpDesc As String
-        Dim descLine As String
-        Dim seqLine As String
+
+        Dim seqLinePortion As String
         Dim proteinPosition As Integer
         Dim proteinLength As Integer
-        Dim tmpAltNamesSB As System.Text.StringBuilder
-        Dim tmpAltNames As String
+
+        Dim tmpAltNames As String = String.Empty
         Dim EventTriggerThresh As Integer
         Dim sw As System.IO.StreamWriter
 
-        If sw Is Nothing Then
-            sw = New System.IO.StreamWriter(destinationPath, True)
-        End If
+        ' Open the output file for append
+        sw = New System.IO.StreamWriter(New System.IO.FileStream(destinationPath, IO.FileMode.Append, IO.FileAccess.Write, IO.FileShare.Read))
 
         Me.OnExportStart("Writing: " + proteinTable.TableName)
         counterMax = proteinTable.Rows.Count
@@ -193,8 +190,8 @@ Public Class clsExportProteinsFASTA
             sw.WriteLine(Trim(">" & tmpName & " " & tmpDesc & tmpAltNames))
 
             For proteinPosition = 1 To proteinLength Step Me.m_seqLineLength
-                seqLine = Mid(tmpSeq, proteinPosition, Me.m_seqLineLength)
-                sw.WriteLine(seqLine)
+                seqLinePortion = Mid(tmpSeq, proteinPosition, Me.m_seqLineLength)
+                sw.WriteLine(seqLinePortion)
             Next
         Next
         counter = 0
@@ -214,14 +211,13 @@ Public Class clsExportProteinsFASTA
                 System.IO.Path.GetDirectoryName(destinationPath), _
                 fingerprint + System.IO.Path.GetExtension(destinationPath))
 
-        Dim copyFI As System.IO.FileInfo = New System.IO.FileInfo(newDestinationPath)
+        Dim targetFI As System.IO.FileInfo = New System.IO.FileInfo(newDestinationPath)
 
         If fi.Exists Then
-            If copyFI.Exists Then
-                copyFI.Delete()
+            If targetFI.Exists Then
+                targetFI.Delete()
             End If
-            fi.CopyTo(newDestinationPath)
-            fi.Delete()
+            fi.MoveTo(newDestinationPath)
             destinationPath = newDestinationPath
         End If
         fi = Nothing

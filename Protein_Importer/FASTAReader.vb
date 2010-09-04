@@ -49,10 +49,6 @@ Public Class FASTAReader
         Me.m_DescLineRegEx = New System.Text.RegularExpressions.Regex("^\>(?<name>\S+)\s+(?<description>.*)$")
         Me.m_NoDescLineRegEx = New System.Text.RegularExpressions.Regex("^\>(?<name>\S+)$")
 
-        Dim rList() As System.Text.RegularExpressions.RegexCompilationInfo
-
-
-
     End Sub
 
     Private Sub InitFASTAReader(ByVal FASTAFilePath As String)
@@ -72,28 +68,21 @@ Public Class FASTAReader
         Dim fi As FileInfo
         Dim tr As TextReader
         Dim s As String
-        Dim nextChar As String
+
         Dim fileLength As Integer
         Dim currPos As Integer = 0
 
         Dim fastaContents As Protein_Storage.IProteinStorage = New Protein_Storage.clsProteinStorage(FilePath)
 
-        Dim strORFTemp As String
-        Dim strDescTemp As String
-        Dim strSeqTemp As String
-        Dim newRecordFlag As Boolean
-        Dim readDescLine As Boolean
-
-        Dim checkRows() As DataRow
-
+        Dim strORFTemp As String = String.Empty
+        Dim strDescTemp As String = String.Empty
+        Dim strSeqTemp As String = String.Empty
         Dim descMatch As System.Text.RegularExpressions.Match
 
-        Dim descLineSplitPoint As Integer
         Dim seqInfo As SequenceInfoCalculator.ICalculateSeqInfo
         seqInfo = New SequenceInfoCalculator.SequenceInfoCalculator
 
         Dim recordCount As Integer
-        Dim workrow As DataRow
 
         Me.m_FASTAFilePath = FilePath
         Dim fileName As String = System.IO.Path.GetFileNameWithoutExtension(FilePath)
@@ -107,7 +96,6 @@ Public Class FASTAReader
             fi = New FileInfo(m_FASTAFilePath)
             fileLength = fi.Length
             If (fi.Exists) Then
-
 
                 RaiseEvent LoadStart("Reading Source File...") 'Trigger the setup of the pgb
 
@@ -175,11 +163,7 @@ Public Class FASTAReader
         Catch e As Exception
             ' Exception occurred
             ' For safety, we will clear fastaContents
-            Me.m_LastError = e.Message
-        Finally
-            If (Not tr Is Nothing) Then
-                tr.Close()
-            End If
+            Me.m_LastError = e.Message       
         End Try
 
         Return fastaContents
@@ -189,12 +173,9 @@ Public Class FASTAReader
     Protected Function LineEndCharacterCount(ByVal FilePath As String) As Integer
         Dim fi As FileInfo
         Dim tr As TextReader
-        Dim s As String
-        Dim testchar() As Char
         Dim testcode As Integer
         Dim testcode2 As Integer
         Dim counter As Long
-        Dim endCount As Integer
 
         fi = New FileInfo(m_FASTAFilePath)
         If (fi.Exists) Then

@@ -1,3 +1,5 @@
+Option Strict On
+
 Public MustInherit Class clsArchiveOutputFilesBase
     Implements IArchiveOutputFiles
 
@@ -135,9 +137,9 @@ Public MustInherit Class clsArchiveOutputFilesBase
                 End If
                 s = tr.ReadLine
             End While
+            tr.Close()
         End If
 
-        tr.Close()
         fi = Nothing
 
         Return counter

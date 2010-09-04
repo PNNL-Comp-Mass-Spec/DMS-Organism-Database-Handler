@@ -150,9 +150,7 @@ Friend Class clsExtractFromFlatfile
         Dim fi As New System.IO.FileInfo(filePath)
         Dim tr As TextReader = fi.OpenText
         Dim entryLine As String
-        Dim columnID As Integer
         Dim lineHash As Hashtable
-        Dim columnNumber As Integer
 
         Me.m_FileContents = New ArrayList
 
@@ -184,13 +182,9 @@ Friend Class clsExtractFromFlatfile
 
         'Me.m_AnnotationStorage = New AnnotationStorage
 
-        Dim columnName As String
-        Dim columnID As Integer
-
         Dim columnNumber As Integer
 
         Dim primaryRef As String
-        Dim xref As String
 
         'For columnNumber = 1 To Me.m_ColumnNameLookup.Count
         '    Me.m_AnnotationStorage.AddAnnotationGroup( _
@@ -254,7 +248,6 @@ Friend Class clsExtractFromFlatfile
         Dim ag As AnnotationGroup
         Dim groupCount As Integer = Me.m_AnnotationStorage.GroupCount
         Dim columnCount As Integer
-        Dim xrefs As ArrayList
         Dim referenceLookup As Hashtable
         Dim proteinName As String
 

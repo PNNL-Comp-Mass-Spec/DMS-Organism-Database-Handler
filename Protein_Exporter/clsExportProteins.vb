@@ -1,3 +1,5 @@
+Option Strict On
+
 Imports Protein_Exporter.ExportProteinCollectionsIFC
 
 Public MustInherit Class clsExportProteins
@@ -66,7 +68,6 @@ Public MustInherit Class clsExportProteins
         crcGen = New CRC32
         Dim crc As Integer = 0
 
-        Dim tmpSHA() As Byte
         Dim fi As New System.IO.FileInfo(FullFilePath)
         Dim f As System.IO.Stream
 

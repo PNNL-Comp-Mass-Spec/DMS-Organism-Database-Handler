@@ -1,3 +1,5 @@
+Option Strict On
+
 Friend Class clsFileCreationOptions
     Private m_TableGetter As TableManipulationBase.IGetSQLData
     Private m_PSConnectionString As String

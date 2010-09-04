@@ -96,7 +96,8 @@ Public Class frmCollectionEditor
 
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Dim resources As System.Resources.ResourceManager = New System.Resources.ResourceManager(GetType(frmCollectionEditor))
+        Me.components = New System.ComponentModel.Container
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmCollectionEditor))
         Me.pnlProgBar = New System.Windows.Forms.Panel
         Me.pnlProgBarUpper = New System.Windows.Forms.Panel
         Me.lblBatchProgress = New System.Windows.Forms.Label
@@ -133,7 +134,7 @@ Public Class frmCollectionEditor
         Me.lblCurrProteinCount = New System.Windows.Forms.Label
         Me.lvwDestination = New System.Windows.Forms.ListView
         Me.colName = New System.Windows.Forms.ColumnHeader
-        Me.mnuMainGUI = New System.Windows.Forms.MainMenu
+        Me.mnuMainGUI = New System.Windows.Forms.MainMenu(Me.components)
         Me.mnuFile = New System.Windows.Forms.MenuItem
         Me.mnuFileExit = New System.Windows.Forms.MenuItem
         Me.mnuTools = New System.Windows.Forms.MenuItem
@@ -164,6 +165,8 @@ Public Class frmCollectionEditor
         Me.pnlProgBarLower.SuspendLayout()
         Me.pnlSource.SuspendLayout()
         Me.gbxSourceCollection.SuspendLayout()
+        CType(Me.pbxLiveSearchCancel, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.pbxLiveSearchBkg, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlDest.SuspendLayout()
         Me.gbxDestinationCollection.SuspendLayout()
         Me.SuspendLayout()
@@ -185,9 +188,9 @@ Public Class frmCollectionEditor
         Me.pnlProgBarUpper.Controls.Add(Me.lblBatchProgress)
         Me.pnlProgBarUpper.Controls.Add(Me.lblCurrentTask)
         Me.pnlProgBarUpper.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.pnlProgBarUpper.DockPadding.All = 6
         Me.pnlProgBarUpper.Location = New System.Drawing.Point(0, 0)
         Me.pnlProgBarUpper.Name = "pnlProgBarUpper"
+        Me.pnlProgBarUpper.Padding = New System.Windows.Forms.Padding(6)
         Me.pnlProgBarUpper.Size = New System.Drawing.Size(812, 42)
         Me.pnlProgBarUpper.TabIndex = 2
         Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pnlProgBarUpper, True)
@@ -219,9 +222,9 @@ Public Class frmCollectionEditor
         '
         Me.pnlProgBarLower.Controls.Add(Me.pgbMain)
         Me.pnlProgBarLower.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.pnlProgBarLower.DockPadding.All = 6
         Me.pnlProgBarLower.Location = New System.Drawing.Point(0, 42)
         Me.pnlProgBarLower.Name = "pnlProgBarLower"
+        Me.pnlProgBarLower.Padding = New System.Windows.Forms.Padding(6)
         Me.pnlProgBarLower.Size = New System.Drawing.Size(812, 34)
         Me.pnlProgBarLower.TabIndex = 1
         Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pnlProgBarLower, True)
@@ -243,12 +246,9 @@ Public Class frmCollectionEditor
         Me.pnlSource.Controls.Add(Me.cmdDestRemoveAll)
         Me.pnlSource.Controls.Add(Me.gbxSourceCollection)
         Me.pnlSource.Dock = System.Windows.Forms.DockStyle.Left
-        Me.pnlSource.DockPadding.Bottom = 10
-        Me.pnlSource.DockPadding.Left = 8
-        Me.pnlSource.DockPadding.Right = 8
-        Me.pnlSource.DockPadding.Top = 8
         Me.pnlSource.Location = New System.Drawing.Point(0, 0)
         Me.pnlSource.Name = "pnlSource"
+        Me.pnlSource.Padding = New System.Windows.Forms.Padding(8, 8, 8, 10)
         Me.pnlSource.Size = New System.Drawing.Size(544, 565)
         Me.pnlSource.TabIndex = 1
         Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pnlSource, True)
@@ -257,9 +257,9 @@ Public Class frmCollectionEditor
         '
         Me.cmdDestAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdDestAdd.Enabled = False
+        Me.cmdDestAdd.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.cmdDestAdd.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdDestAdd.ForeColor = System.Drawing.SystemColors.Highlight
-        Me.cmdDestAdd.Image = CType(resources.GetObject("cmdDestAdd.Image"), System.Drawing.Image)
         Me.cmdDestAdd.Location = New System.Drawing.Point(496, 278)
         Me.cmdDestAdd.Name = "cmdDestAdd"
         Me.cmdDestAdd.Size = New System.Drawing.Size(38, 32)
@@ -271,9 +271,9 @@ Public Class frmCollectionEditor
         '
         Me.cmdDestRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdDestRemove.Enabled = False
+        Me.cmdDestRemove.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.cmdDestRemove.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdDestRemove.ForeColor = System.Drawing.SystemColors.Highlight
-        Me.cmdDestRemove.Image = CType(resources.GetObject("cmdDestRemove.Image"), System.Drawing.Image)
         Me.cmdDestRemove.Location = New System.Drawing.Point(496, 327)
         Me.cmdDestRemove.Name = "cmdDestRemove"
         Me.cmdDestRemove.Size = New System.Drawing.Size(38, 33)
@@ -285,9 +285,9 @@ Public Class frmCollectionEditor
         '
         Me.cmdDestAddAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdDestAddAll.Enabled = False
+        Me.cmdDestAddAll.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.cmdDestAddAll.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdDestAddAll.ForeColor = System.Drawing.SystemColors.Highlight
-        Me.cmdDestAddAll.Image = CType(resources.GetObject("cmdDestAddAll.Image"), System.Drawing.Image)
         Me.cmdDestAddAll.Location = New System.Drawing.Point(496, 228)
         Me.cmdDestAddAll.Name = "cmdDestAddAll"
         Me.cmdDestAddAll.Size = New System.Drawing.Size(38, 33)
@@ -299,9 +299,9 @@ Public Class frmCollectionEditor
         '
         Me.cmdDestRemoveAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdDestRemoveAll.Enabled = False
+        Me.cmdDestRemoveAll.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.cmdDestRemoveAll.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdDestRemoveAll.ForeColor = System.Drawing.SystemColors.Highlight
-        Me.cmdDestRemoveAll.Image = CType(resources.GetObject("cmdDestRemoveAll.Image"), System.Drawing.Image)
         Me.cmdDestRemoveAll.Location = New System.Drawing.Point(496, 377)
         Me.cmdDestRemoveAll.Name = "cmdDestRemoveAll"
         Me.cmdDestRemoveAll.Size = New System.Drawing.Size(38, 32)
@@ -473,6 +473,7 @@ Public Class frmCollectionEditor
         Me.lvwSource.Name = "lvwSource"
         Me.lvwSource.Size = New System.Drawing.Size(442, 376)
         Me.lvwSource.TabIndex = 2
+        Me.lvwSource.UseCompatibleStateImageBehavior = False
         Me.lvwSource.View = System.Windows.Forms.View.Details
         '
         'colSrcName
@@ -509,12 +510,9 @@ Public Class frmCollectionEditor
         '
         Me.pnlDest.Controls.Add(Me.gbxDestinationCollection)
         Me.pnlDest.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.pnlDest.DockPadding.Bottom = 10
-        Me.pnlDest.DockPadding.Left = 8
-        Me.pnlDest.DockPadding.Right = 8
-        Me.pnlDest.DockPadding.Top = 8
         Me.pnlDest.Location = New System.Drawing.Point(547, 0)
         Me.pnlDest.Name = "pnlDest"
+        Me.pnlDest.Padding = New System.Windows.Forms.Padding(8, 8, 8, 10)
         Me.pnlDest.Size = New System.Drawing.Size(265, 565)
         Me.pnlDest.TabIndex = 3
         Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pnlDest, True)
@@ -579,6 +577,7 @@ Public Class frmCollectionEditor
         Me.lvwDestination.Name = "lvwDestination"
         Me.lvwDestination.Size = New System.Drawing.Size(221, 453)
         Me.lvwDestination.TabIndex = 0
+        Me.lvwDestination.UseCompatibleStateImageBehavior = False
         Me.lvwDestination.View = System.Windows.Forms.View.Details
         '
         'colName
@@ -669,7 +668,6 @@ Public Class frmCollectionEditor
         Me.mnuAdmin.Index = 2
         Me.mnuAdmin.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuAdminBatchUploadFiles, Me.mnuAdminNameHashRefresh, Me.mnuAdminUpdateSHA, Me.mnuAdminUpdateCollectionsArchive, Me.mnuAdminUpdateZeroedMasses, Me.mnuAdminTestingInterface, Me.mnuAdminFixArchivePaths, Me.mnuAdminAddSortingIndexes})
         Me.mnuAdmin.Text = "Admin"
-        Me.mnuAdmin.Visible = False
         '
         'mnuAdminBatchUploadFiles
         '
@@ -750,6 +748,9 @@ Public Class frmCollectionEditor
         Me.pnlProgBarLower.ResumeLayout(False)
         Me.pnlSource.ResumeLayout(False)
         Me.gbxSourceCollection.ResumeLayout(False)
+        Me.gbxSourceCollection.PerformLayout()
+        CType(Me.pbxLiveSearchCancel, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.pbxLiveSearchBkg, System.ComponentModel.ISupportInitialize).EndInit()
         Me.pnlDest.ResumeLayout(False)
         Me.gbxDestinationCollection.ResumeLayout(False)
         Me.ResumeLayout(False)
@@ -987,8 +988,6 @@ Public Class frmCollectionEditor
             Me.m_ProteinCollectionNames, _
             Me.m_PSConnectionString)
 
-        Dim tmpOrganismID As Integer
-        Dim tmpAuthorityID As Integer
         Dim tmpSelectedFileList As Hashtable
 
         Me.lblBatchProgress.Text = ""
@@ -1166,8 +1165,6 @@ Public Class frmCollectionEditor
         Else
             'Me.m_SelectedAuthorityID = 0
         End If
-
-        Dim tmpAuthID As Integer
 
         If Me.m_SelectedCollectionID > 0 Then
             Dim foundRows() As DataRow = Me.m_ProteinCollections.Select("[Protein_Collection_ID] = " & Me.m_SelectedCollectionID.ToString)
@@ -1462,8 +1459,7 @@ Public Class frmCollectionEditor
         ByVal lvwSrc As ListView, ByVal lvwDest As ListView, ByVal SelectAll As Boolean)
 
         Dim entry As ListViewItem
-        Dim dest As ListViewItem
-        Dim dup As Boolean
+    
 
         If SelectAll Then
             For Each entry In lvwSrc.Items
@@ -1572,12 +1568,10 @@ Public Class frmCollectionEditor
 
         If r = DialogResult.OK Then
             outputPath = f.SelectedPath
+
+            Dim errorCode As Integer
+            errorCode = Me.m_Syncer.SyncCollectionsAndArchiveTables(outputPath)
         End If
-
-        Dim errorCode As Integer
-
-        errorCode = Me.m_Syncer.SyncCollectionsAndArchiveTables(outputPath)
-
 
     End Sub
 

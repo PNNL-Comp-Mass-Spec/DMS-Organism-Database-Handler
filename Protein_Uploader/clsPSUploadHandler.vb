@@ -195,7 +195,6 @@ Public Class clsPSUploadHandler
 
         SetupImporterClass()
 
-        Dim fileContents As Protein_Storage.IProteinStorage
         Dim upInfo As IUploadProteins.UploadInfo
         Dim fi As System.io.FileInfo
         Dim tmpPS As Protein_Storage.IProteinStorage
@@ -209,9 +208,7 @@ Public Class clsPSUploadHandler
         Dim errorText As String
         Dim errorLabel As String
         Dim errorCollection As ArrayList
-        Dim exportedProteinCount As Integer
-
-        Dim en As IEnumerator
+      
 
         For Each upInfo In fileInfoList.Values
             'upInfo.OriginalFileInformation = upInfo.FileInformation

@@ -66,10 +66,6 @@ Public Class clsAddNamingAuthority
 
         Dim errorResult As DialogResult
 
-        Dim shortName As String
-        Dim fullName As String
-        Dim webAddress As String
-
         Dim r As DialogResult = frmAuth.ShowDialog
 
 

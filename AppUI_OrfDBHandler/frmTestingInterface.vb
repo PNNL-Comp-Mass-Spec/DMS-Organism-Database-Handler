@@ -447,8 +447,7 @@ Public Class frmTestingInterface
         Dim filePath As String
         Dim r As DialogResult
         Dim fingerprint As String
-        Dim outputFI As System.IO.FileInfo
-        Dim destFI As System.IO.FileInfo
+     
         'Dim exporter As Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS
         'Dim tmpNameList As New ArrayList
 
@@ -458,7 +457,7 @@ Public Class frmTestingInterface
         sd.SelectedPath = Me.m_LastOutputDirectory
 
         r = sd.ShowDialog
-        Dim destPath As String
+
 
         If r = DialogResult.OK Then
             filePath = sd.SelectedPath
@@ -491,13 +490,16 @@ Public Class frmTestingInterface
 
             'Legacy fasta file with existing protein collection
             'fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "Shewanella_2003-12-19.fasta", filePath)
+            fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "GOs_Surface_Sargasso_Meso_2009-02-11_24.fasta", filePath)
 
             'Collection of existing collections
             'fingerprint = Me.m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=forward,filetype=fasta", "", filePath)
-            'fingerprint = Me.m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=reversed,filetype=fasta", "", filePath)
+            fingerprint = Me.m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=reversed,filetype=fasta", "", filePath)
+
             'fingerprint = Me.m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=decoy,filetype=fasta", "", filePath)
             fingerprint = Me.m_Exporter.ExportFASTAFile("SAR116_RBH_AA_012809", "seq_direction=forward,filetype=fasta", "", filePath)
 
+            fingerprint = Me.m_Exporter.ExportFASTAFile("Phycomyces_blakesleeanus_v2_filtered_2009-12-16", "seq_direction=forward,filetype=fasta", "", filePath)
 
             'Protein collection from cbo exported forward
             'fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=forward,filetype=fasta", "na", filePath)
@@ -542,15 +544,14 @@ Public Class frmTestingInterface
 
     Private Sub cmdUpdateArchiveTables_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUpdateArchiveTables.Click
         Dim f As FolderBrowserDialog = New FolderBrowserDialog
-        Dim r As DialogResult
-        Dim outputPath As String
 
         If Me.m_Syncer Is Nothing Then
             Me.m_Syncer = New clsSyncFASTAFileArchive(Me.txtConnString.Text)
         End If
 
 
-
+        'Dim r As DialogResult
+        'Dim outputPath As String
         'With f
         '    .RootFolder = Environment.SpecialFolder.MyComputer
         '    .ShowNewFolderButton = True

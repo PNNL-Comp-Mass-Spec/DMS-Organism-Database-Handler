@@ -429,7 +429,6 @@ Public Class frmValidationReport
 
     Private Function GetOrganismName(ByVal organismID As Integer) As String
         Dim foundrows() As DataRow
-        Dim dr As DataRow
 
         foundrows = Me.m_Organisms.Select("ID = " & organismID.ToString)
 
@@ -558,14 +557,11 @@ Public Class frmValidationReport
     Private Sub DumpDetailedErrorOrWarningList(ByVal errorList As ArrayList, ByVal FASTAFileName As String, ByVal strMessageType As String)
 
         Dim SaveDialog As New SaveFileDialog
-        Dim fileType As Protein_Importer.IImportProteins.ProteinImportFileTypes
+
         Dim SelectedSavePath As String
-        Dim tmpSelectedProteinList As ArrayList
-        Dim currentFileName As String
-
+        
         Dim errorDetail As ValidateFastaFile.ICustomValidation.udtErrorInfoExtended
-        Dim fileErrors As ArrayList
-
+        
         Dim intErrorCount As Integer = 0
 
         If strMessageType Is Nothing OrElse strMessageType.Length = 0 Then

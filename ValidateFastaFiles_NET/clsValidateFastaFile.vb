@@ -705,8 +705,8 @@ Public Class clsValidateFastaFile
         Dim intTerminatorSize As Integer
         Dim sngPercentComplete As Single
 
-        Dim strFastaFilePathOut As String
-        Dim strBasicProteinHashInfoFilePath As String
+        Dim strFastaFilePathOut As String = String.Empty
+        Dim strBasicProteinHashInfoFilePath As String = String.Empty
 
         Dim strLineIn As String
         Dim strResiduesClean As String
@@ -1670,7 +1670,6 @@ Public Class clsValidateFastaFile
 
         Dim strProteinName As String
         Dim strProteinDescription As String
-        Dim strDuplicateProteinList As String
         Dim strMasterProteinInfo As String
 
         ' This hashtable contains the protein names that we will keep, the hash values are the index values pointing into udtProteinSeqHashInfo
@@ -2348,8 +2347,6 @@ Public Class clsValidateFastaFile
 
     Protected Function GetFileErrorByIndex(ByVal intFileErrorIndex As Integer) As IValidateFastaFile.udtMsgInfoType
 
-        Dim strProteinName As String
-
         If mFileErrorCount <= 0 Or intFileErrorIndex < 0 Or intFileErrorIndex >= mFileErrorCount Then
             Return New IValidateFastaFile.udtMsgInfoType
         Else
@@ -2400,8 +2397,6 @@ Public Class clsValidateFastaFile
     End Function
 
     Protected Function GetFileWarningByIndex(ByVal intFileWarningIndex As Integer) As IValidateFastaFile.udtMsgInfoType
-
-        Dim strProteinName As String
 
         If mFileWarningCount <= 0 Or intFileWarningIndex < 0 Or intFileWarningIndex >= mFileWarningCount Then
             Return New IValidateFastaFile.udtMsgInfoType
@@ -2528,9 +2523,7 @@ Public Class clsValidateFastaFile
         Dim blnSuccess As Boolean
 
         Dim strCharacterList As String
-        Dim blnOption As Boolean
-        Dim blnValueNotPresent As Boolean
-
+    
         Try
 
             If strParameterFilePath Is Nothing OrElse strParameterFilePath.Length = 0 Then
@@ -3705,8 +3698,7 @@ Public Class clsValidateFastaFile
         Dim srOutFile As System.IO.StreamWriter
         Dim objSettingsFile As New XmlSettingsFileAccessor
 
-        Dim blnCustomRulesLoaded As Boolean
-        Dim blnSuccess As Boolean
+
 
         Try
 

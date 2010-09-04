@@ -1,3 +1,5 @@
+Option Strict On
+
 Public Class clsExportProteinsXTFASTA
     Inherits clsExportProteins
 
@@ -24,9 +26,7 @@ Public Class clsExportProteinsXTFASTA
         bw.BaseStream.Seek(0, IO.SeekOrigin.Begin)
 
         Dim e As IEnumerator = Proteins.GetEnumerator
-        Dim descLine As String
-        Dim seqLine As String
-        Dim proteinPosition As Integer
+    
         Dim proteinLength As Integer
 
         Dim tmpSeq As String
@@ -125,9 +125,7 @@ Public Class clsExportProteinsXTFASTA
         bw.BaseStream.Seek(0, IO.SeekOrigin.Begin)
 
         'Dim e As IEnumerator = Proteins.GetEnumerator
-        Dim descLine As String
-        Dim seqLine As String
-        Dim proteinPosition As Integer
+   
         Dim proteinLength As Integer
 
         Dim proteinTable As DataTable
@@ -137,7 +135,7 @@ Public Class clsExportProteinsXTFASTA
 
         Dim tmpSeq As String
         Dim tmpName As String
-        Dim tmpPC As Protein_Storage.IProteinStorageEntry
+
         Dim tmpNum As Int32
 
         Me.OnExportStart("Writing to X!Tandem formatted FASTA File")

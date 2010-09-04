@@ -562,11 +562,10 @@ Public Class frmBatchAddNewCollectionTest
         totalItems = dirList.Count
         Me.m_LastUsedDirectory = pathName
 
-        If totalItems > 0 Then
-            Dim item As CShItem
+        If totalItems > 0 Then         
             dirList.Sort()
         End If
-        If pathName <> CSI.strMyComputer And pathName <> CSI.strSystemFolder And pathName <> "Desktop" Then
+        If pathName <> CShItem.strMyComputer And pathName <> CShItem.strSystemFolder And pathName <> "Desktop" Then
             Me.ScanDirectory(pathName, Me.lvwFolderContents)
             Me.lblFolderContents.Text = "Results Files In: '" & pathName & "'"
         Else
@@ -598,26 +597,21 @@ Public Class frmBatchAddNewCollectionTest
 
     End Function
 
-    Private Function ScanDirectory(ByVal DirectoryPath As String, ByVal lvw As System.Windows.Forms.ListView) As ArrayList
+    Private Sub ScanDirectory(ByVal DirectoryPath As String, ByVal lvw As System.Windows.Forms.ListView)
 
         Dim di As New System.IO.DirectoryInfo(DirectoryPath)
         Dim fi As System.IO.FileInfo
         Dim foundFASTAFiles() As System.IO.FileInfo
 
-        Dim tmpFASTAFileName As String
-        Dim tmpFileSize As Long
-        Dim tmpModTime As DateTime
         Dim tmpParsedType As String
 
 
         'Dim outArrayList As New ArrayList
 
-        Dim foundIndex As Integer
-
         If di.Exists Then
             foundFASTAFiles = di.GetFiles()
         Else
-            Exit Function
+            Exit Sub
         End If
 
         If Not Me.m_FileList Is Nothing Then
@@ -637,7 +631,7 @@ Public Class frmBatchAddNewCollectionTest
 
         Me.LoadListView(Me.lvwFolderContents)
 
-    End Function
+    End Sub
 #End Region
 
 #Region " UI Loading Functions "
@@ -740,11 +734,13 @@ Public Class frmBatchAddNewCollectionTest
         ' variant)
         For i = UBound(bSize) To 0 Step -1
             If b >= (1024 ^ i) Then
-                Numeric2Bytes = ThreeNonZeroDigits(b / (1024 ^ _
-                    i)) & " " & bSize(i)
+                Return ThreeNonZeroDigits(b / (1024 ^ i)) & " " & bSize(i)
                 Exit For
             End If
         Next
+
+        Return b.ToString() & " Bytes"
+
     End Function
 
     ' Return the value formatted to include at most three
@@ -775,7 +771,6 @@ Public Class frmBatchAddNewCollectionTest
         Dim upInfo As Protein_Uploader.IUploadProteins.UploadInfo
         Dim fi As System.IO.FileInfo
         Dim li As ListViewItem
-        Dim s As String
 
         Dim tmpNameList As New ArrayList
 
@@ -810,7 +805,6 @@ Public Class frmBatchAddNewCollectionTest
             End If
 
             For Each li In Me.lvwFolderContents.SelectedItems
-                'upInfo = New UploadInfo
                 upInfo.FileInformation = DirectCast(Me.m_FileList.Item(li.SubItems(4).Text), System.IO.FileInfo)
                 upInfo.OrganismID = DirectCast(Me.cboOrganismSelect.SelectedValue, Int32)
                 upInfo.AuthorityID = DirectCast(Me.cboAuthorityPicker.SelectedValue, Int32)
@@ -974,7 +968,6 @@ Public Class frmBatchAddNewCollectionTest
 
     Private Sub chkEncryptionEnable_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkEncryptionEnable.CheckedChanged
         Dim chk As CheckBox = DirectCast(sender, CheckBox)
-        Dim tmpUpInfo As Protein_Uploader.IUploadProteins.UploadInfo
         Dim encryptSequences As Boolean = False
 
         If chk.CheckState = CheckState.Checked Then
@@ -985,6 +978,7 @@ Public Class frmBatchAddNewCollectionTest
 
         Me.CheckTransferEnable()
 
+        'Dim tmpUpInfo As Protein_Uploader.IUploadProteins.UploadInfo
         'If Me.lvwSelectedFiles.SelectedItems.Count > 0 Then
         '    Dim li As ListViewItem
         '    For Each li In Me.lvwSelectedFiles.SelectedItems
@@ -1093,11 +1087,7 @@ Public Class frmBatchAddNewCollectionTest
         Dim selectedAuthority As String
         Dim selectedOrganism As String
 
-        Dim prevAuthority As String
-        Dim prevOrganism As String
-
         Dim encryptSeq As Boolean
-        Dim prevEncryptState As Boolean
 
         Dim li As ListViewItem = Me.lvwSelectedFiles.SelectedItems.Item(0)
 
@@ -1129,8 +1119,8 @@ Public Class frmBatchAddNewCollectionTest
     Private Sub frmBatchAddNewCollectionTest_Closing(ByVal sender As Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles MyBase.Closing
         If Me.lvwSelectedFiles.Items.Count > 0 And Not Me.m_ReallyClose Then
             Dim r As System.Windows.Forms.DialogResult
-            Dim m As System.Windows.Forms.MessageBox
-            r = m.Show("You have files selected for upload. Really close the form?", _
+
+            r = MessageBox.Show("You have files selected for upload. Really close the form?", _
                 "Files selected for upload", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation)
             If r = DialogResult.No Then
                 e.Cancel = True

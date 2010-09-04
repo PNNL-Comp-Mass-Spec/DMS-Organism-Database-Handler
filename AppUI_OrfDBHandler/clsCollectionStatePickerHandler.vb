@@ -55,7 +55,7 @@ Public Class clsCollectionStatePickerHandler
         Dim collectionRows() As DataRow
         Dim cRow As DataRow
 
-        Dim filterString As String
+        Dim filterString As String = String.Empty
         Dim filterElement As String
 
         If criteriaCollection.Length > 0 And filterCriteria.Length > 0 Then

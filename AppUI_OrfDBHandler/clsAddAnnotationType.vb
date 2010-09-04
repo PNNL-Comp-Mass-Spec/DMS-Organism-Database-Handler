@@ -85,10 +85,6 @@ Public Class clsAddAnnotationType
 
         Dim errorResult As DialogResult
 
-        Dim shortName As String
-        Dim fullName As String
-        Dim webAddress As String
-
         frmAnn.AuthorityTable = Me.m_Authorities
         frmAnn.ConnectionString = Me.m_ConnectionString
         frmAnn.DesktopLocation = Me.m_FormLocation

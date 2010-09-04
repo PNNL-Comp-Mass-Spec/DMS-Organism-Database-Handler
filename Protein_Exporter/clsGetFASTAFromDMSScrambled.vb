@@ -1,3 +1,5 @@
+Option Strict On
+
 Public Class clsGetFASTAFromDMSScrambled
     Inherits clsGetFASTAFromDMSForward
 

@@ -28,12 +28,12 @@ Public Class SequenceInfoCalculator
     Private m_DMSConnectionString As String = "Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI;"
 
     Public Sub New()
-        If Me.m_AminoAcids Is Nothing Then
+        If SequenceInfoCalculator.m_AminoAcids Is Nothing Then
             Me.InitializeFromDMS()
         End If
-        'Me.m_SHA1Provider = New System.Security.Cryptography.SHA1CryptoServiceProvider
-        If Me.m_SHA1Provider Is Nothing Then
-            Me.m_SHA1Provider = New System.Security.Cryptography.SHA1Managed
+        'SequenceInfoCalculator.m_SHA1Provider = New System.Security.Cryptography.SHA1CryptoServiceProvider
+        If SequenceInfoCalculator.m_SHA1Provider Is Nothing Then
+            SequenceInfoCalculator.m_SHA1Provider = New System.Security.Cryptography.SHA1Managed
         End If
     End Sub
 
@@ -99,7 +99,7 @@ Public Class SequenceInfoCalculator
             'For i = 0 To aminoAcids.Length - 1
             'Dim aaString As String = New String(aminoAcids, i, 1)
             'Dim aaInfo As AminoAcidInfo = DirectCast(m_AminoAcids.Item(aaString), AminoAcidInfo)
-            aaInfo = DirectCast(Me.m_AminoAcids.Item(aa.ToString), AminoAcidInfo)
+            aaInfo = DirectCast(SequenceInfoCalculator.m_AminoAcids.Item(aa.ToString), AminoAcidInfo)
             If (aaInfo) Is Nothing Then
                 'result.Invalidate()
                 result.AddSequenceInfo(New SequenceInfo(aaString, "Not Found, adding input", 0, 0, 0, 0, 0, 0, 0))
@@ -117,7 +117,7 @@ Public Class SequenceInfoCalculator
         'Retrieve a byte array based on the source text
         Dim ByteSourceText() As Byte = Ue.GetBytes(SourceText)
         'Compute the hash value from the source
-        Dim SHA1_hash() As Byte = Me.m_SHA1Provider.ComputeHash(ByteSourceText)
+        Dim SHA1_hash() As Byte = SequenceInfoCalculator.m_SHA1Provider.ComputeHash(ByteSourceText)
         'And convert it to String format for return
         Dim SHA1string As String = HexConverter.ToHexString(SHA1_hash)
 
@@ -125,7 +125,7 @@ Public Class SequenceInfoCalculator
     End Function
 
     Private Sub InitializeFromDMS()
-        Me.m_AminoAcids = New Hashtable(30)
+        SequenceInfoCalculator.m_AminoAcids = New Hashtable(30)
         Dim getSQL As TableManipulationBase.IGetSQLData
 
         Dim tmpSLC As String

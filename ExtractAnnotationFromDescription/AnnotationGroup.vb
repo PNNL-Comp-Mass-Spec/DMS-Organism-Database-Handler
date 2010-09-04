@@ -93,7 +93,6 @@ Friend Class AnnotationGroup
 
         If Me.m_Delimiter.Length > 0 Then
             Dim addnXRefs() As String
-            Dim addnXRef As String
             Dim primeXRef As String
             Dim XRefCount As Integer
             Dim newXReflist As New ArrayList
