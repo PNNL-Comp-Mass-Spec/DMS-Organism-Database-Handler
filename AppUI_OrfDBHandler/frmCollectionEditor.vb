@@ -767,6 +767,8 @@ Public Class frmCollectionEditor
 
 #End Region
 
+    Protected Const PROGRAM_DATE As String = "January 18, 2011"
+
     Protected m_Organisms As DataTable
     Protected m_ProteinCollections As DataTable
     Protected m_ProteinCollectionNames As DataTable
@@ -1051,10 +1053,16 @@ Public Class frmCollectionEditor
 
             Me.pnlProgBar.Visible = True
 
-            Me.m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues, frmBatchUpload.ValidationAllowAsterisks)
-            Me.m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowDashInResidues, frmBatchUpload.ValidationAllowDash)
+            Try
+                Me.m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues, frmBatchUpload.ValidationAllowAsterisks)
+                Me.m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowDashInResidues, frmBatchUpload.ValidationAllowDash)
 
-            Me.m_UploadHandler.BatchUpload(tmpSelectedFileList)
+                Me.m_UploadHandler.BatchUpload(tmpSelectedFileList)
+
+            Catch ex As Exception
+                System.Windows.Forms.MessageBox.Show("Error uploading collection: " & ex.Message, "Error")
+            End Try
+
             Me.pnlProgBar.Visible = False
 
             If Not Me.m_UploadHandler.ImportExportCountsMatched Then
@@ -1109,7 +1117,7 @@ Public Class frmCollectionEditor
 
         Dim strMessage As String
 
-        strMessage = "This is version " & Application.ProductVersion
+        strMessage = "This is version " & Application.ProductVersion & ", " & PROGRAM_DATE
 
         System.Windows.Forms.MessageBox.Show(strMessage, "About Protein Collection Editor", MessageBoxButtons.OK, MessageBoxIcon.Information)
 

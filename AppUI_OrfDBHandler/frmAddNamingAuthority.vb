@@ -254,6 +254,7 @@ Public Class frmAddNamingAuthority
 
         End If
 
+        Return rawAddress
     End Function
 
 

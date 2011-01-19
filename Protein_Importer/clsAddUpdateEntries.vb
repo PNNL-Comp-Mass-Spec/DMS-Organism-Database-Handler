@@ -766,7 +766,6 @@ Public Class clsAddUpdateEntries
         ByVal numResidues As Integer, _
         ByVal mode As IAddUpdateEntries.SPModes) As Integer
 
-
         Dim sp_Save As SqlClient.SqlCommand
 
         sp_Save = New SqlClient.SqlCommand("AddUpdateProteinCollection", Me.m_SQLAccess.Connection)
@@ -822,6 +821,24 @@ Public Class clsAddUpdateEntries
 
         'Get return value
         Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+
+        If ret = 0 Then
+            ' A zero was returned for the protein collection ID; this indicates and error
+            ' Raise an exception
+
+            Dim Message As String
+            Dim SPMsg As String
+
+            Message = "AddUpdateProteinCollection returned 0 for the Protein Collection ID"
+
+            SPMsg = CStr(sp_Save.Parameters("@Message").Value)
+
+            If Not String.IsNullOrEmpty(SPMsg) Then Message &= "; " & SPMsg
+
+            Throw New System.Data.ConstraintException(Message)
+
+        End If
+
 
         Return ret
 

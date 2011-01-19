@@ -28,7 +28,7 @@ Public Class clsValidateFastaFile
     Implements IValidateFastaFile
 
     Public Sub New()
-        MyBase.mFileDate = "December 16, 2009"
+        MyBase.mFileDate = "July 30, 2010"
         InitializeLocalVariables()
     End Sub
 
@@ -890,6 +890,11 @@ Public Class clsValidateFastaFile
 
             End If
 
+            If mGenerateFixedFastaFile And mFixedFastaOptions.RenameProteinsWithDuplicateNames Then
+                ' Make sure mCheckForDuplicateProteinNames is enabled
+                mCheckForDuplicateProteinNames = True
+            End If
+
             ' Optionally, initialize htProteinNames
             If mCheckForDuplicateProteinNames Then
                 htProteinNames = New System.Collections.Specialized.StringDictionary
@@ -987,7 +992,6 @@ Public Class clsValidateFastaFile
                                 udtProteinSequenceRuleDetails, _
                                 reProteinNameTruncation)
 
-
                             If blnBlankLineProcessed Then
                                 ' The previous line was blank; raise a warning
                                 If mWarnBlankLinesBetweenProteins Then
@@ -1049,9 +1053,12 @@ Public Class clsValidateFastaFile
                                 End If
 
                                 If mCheckForDuplicateProteinSequences OrElse mFixedFastaOptions.WrapLongResidueLines Then
-                                    sbCurrentResidues.Append(strResiduesClean)
-                                    If strResiduesClean.Length > intCurrentValidResidueLineLengthMax Then
-                                        intCurrentValidResidueLineLengthMax = strResiduesClean.Length
+                                    ' Only add the residues if this is not a duplicate/invalid protein
+                                    If Not blnProcessingDuplicateOrInvalidProtein Then
+                                        sbCurrentResidues.Append(strResiduesClean)
+                                        If strResiduesClean.Length > intCurrentValidResidueLineLengthMax Then
+                                            intCurrentValidResidueLineLengthMax = strResiduesClean.Length
+                                        End If
                                     End If
                                 End If
                             End If
@@ -1181,7 +1188,7 @@ Public Class clsValidateFastaFile
 
         Dim strNewProteinName As String
         Dim strExtraProteinNameText As String
-        Dim strProteinDescription As String
+        Dim strProteinDescription As String = String.Empty
 
         Dim reMatch As System.Text.RegularExpressions.Match
 
@@ -1467,8 +1474,8 @@ Public Class clsValidateFastaFile
         Dim swUniqueProteinSeqsOut As System.IO.StreamWriter
         Dim swDuplicateProteinMapping As System.IO.StreamWriter
 
-        Dim strUniqueProteinSeqsFileOut As String
-        Dim strDuplicateProteinMappingFileOut As String
+        Dim strUniqueProteinSeqsFileOut As String = String.Empty
+        Dim strDuplicateProteinMappingFileOut As String = String.Empty
         Dim strLineOut As String
 
         Dim intIndex As Integer
@@ -1665,11 +1672,11 @@ Public Class clsValidateFastaFile
         Dim sngPercentComplete As Single
         Dim intLineCount As Integer
 
-        Dim strFixedFastaFilePathTemp As String
+        Dim strFixedFastaFilePathTemp As String = String.Empty
         Dim strLineIn As String
 
-        Dim strProteinName As String
-        Dim strProteinDescription As String
+        Dim strProteinName As String = String.Empty
+        Dim strProteinDescription As String = String.Empty
         Dim strMasterProteinInfo As String
 
         ' This hashtable contains the protein names that we will keep, the hash values are the index values pointing into udtProteinSeqHashInfo
@@ -1696,6 +1703,22 @@ Public Class clsValidateFastaFile
         If intProteinSequenceHashCount <= 0 Then
             Return True
         End If
+
+        ''''''''''''''''''''''
+        ' Processing Steps
+        ''''''''''''''''''''''
+        '
+        ' Open strFixedFastaFilePath with the fasta file reader
+        ' Create a new fasta file with a writer
+
+        ' For each protein, check whether it has duplicates
+        ' If not, just write it out to the new fasta file
+
+        ' If it does have duplicates and it is the master, then append the duplicate protein names to the end of the description for the protein
+        '  and write out the name, new description, and sequence to the new fasta file
+
+        ' Otherwise, check if it is a duplicate of a master protein
+        ' If it is, then do not write the name, description, or sequence to the new fasta file
 
         Try
             strFixedFastaFilePathTemp = strFixedFastaFilePath & ".TempFixed"
@@ -1911,20 +1934,6 @@ Public Class clsValidateFastaFile
             End Try
         End Try
 
-
-        ' Open strFixedFastaFilePath with the fasta file reader
-        ' Create a new fasta file with a writer
-
-        ' For each protein, check whether it has duplicates
-        ' If not, just write it out to the new fasta file
-
-        ' If it does have duplicates and it is the master, then append the duplicate protein names to the end of the description for the protein
-        '  and write out the name, new description, and sequence to the new fasta file
-
-        ' Otherwise, check if it is a duplicate of a master protein
-        ' If it is, then do not write the name, description, or sequence to the new fasta file
-
-
         Return blnSuccess
 
     End Function
@@ -1943,7 +1952,7 @@ Public Class clsValidateFastaFile
 
     Protected Function ConstructStatsFilePath(ByVal strOutputFolderPath As String) As String
 
-        Dim strStatsFilePath As String
+        Dim strStatsFilePath As String = String.Empty
         Dim dtNow As System.DateTime
 
         Try
@@ -2075,7 +2084,7 @@ Public Class clsValidateFastaFile
         ByVal newFileName As String, _
         ByVal desiredLineEndCharacterType As IValidateFastaFile.eLineEndingCharacters) As String
 
-        Dim newEndChar As String
+        Dim newEndChar As String = ControlChars.CrLf
 
         Dim endCharType As IValidateFastaFile.eLineEndingCharacters = _
             Me.DetermineLineTerminatorType(pathOfFileToFix)
@@ -2523,7 +2532,7 @@ Public Class clsValidateFastaFile
         Dim blnSuccess As Boolean
 
         Dim strCharacterList As String
-    
+
         Try
 
             If strParameterFilePath Is Nothing OrElse strParameterFilePath.Length = 0 Then
@@ -2719,7 +2728,7 @@ Public Class clsValidateFastaFile
 
     Public Function LookupMessageDescription(ByVal intErrorMessageCode As Integer) As String _
         Implements IValidateFastaFile.LookupMessageDescription
-        Me.LookupMessageDescription(intErrorMessageCode, Nothing)
+        Return Me.LookupMessageDescription(intErrorMessageCode, Nothing)
     End Function
 
     Public Function LookupMessageDescription(ByVal intErrorMessageCode As Integer, ByVal strExtraInfo As String) As String _
@@ -3697,8 +3706,6 @@ Public Class clsValidateFastaFile
 
         Dim srOutFile As System.IO.StreamWriter
         Dim objSettingsFile As New XmlSettingsFileAccessor
-
-
 
         Try
 

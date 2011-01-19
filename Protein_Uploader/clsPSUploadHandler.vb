@@ -370,8 +370,12 @@ Public Class clsPSUploadHandler
             Dim totalLength As Integer
             totalLength = Me.m_Upload.GetTotalResidueCount(fileContents, selectedProteins)
             collectionID = Me.m_Upload.MakeNewProteinCollection( _
-            System.IO.Path.GetFileNameWithoutExtension(filepath), description, _
-            collectionType, authorityID, selectedProteins.Count, totalLength)
+                              System.IO.Path.GetFileNameWithoutExtension(filepath), description, _
+                              collectionType, authorityID, selectedProteins.Count, totalLength)
+
+            If collectionID = 0 Then
+                ' Error making the new protein collection
+            End If
         End If
 
         If memberCount > 0 Then
