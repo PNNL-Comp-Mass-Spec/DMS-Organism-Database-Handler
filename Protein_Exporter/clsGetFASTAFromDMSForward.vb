@@ -198,6 +198,10 @@ Public Class clsGetFASTAFromDMSForward
             currentCollectionCount = 0
             sectionStart = currentCollectionPos
             sectionEnd = 0
+
+            ' Make sure there are no leading or trailing spaces
+            ProteinCollectionName = ProteinCollectionName.Trim()
+
             If nameCheckRegex.IsMatch(ProteinCollectionName) Then
                 m = nameCheckRegex.Match(ProteinCollectionName)
                 trueName = m.Groups("collectionname").Value
@@ -503,7 +507,9 @@ Public Class clsGetFASTAFromDMSForward
         End If
         'Dim dr As DataRow
         Dim foundRows() As DataRow
-        CollectionName = Trim(CollectionName)
+
+        ' Make sure there are no leading or trailing spaces
+        CollectionName = CollectionName.Trim()
         foundRows = Me.m_CollectionsCache.Select("[FileName] = '" & CollectionName & "'")
         If foundRows.Length = 0 Then
             Me.RefreshCollectionCache()

@@ -66,7 +66,7 @@ Public Class clsExportProteinsFASTA
             tmpDesc = cntrlFinder.Replace(tmpPC.Description, " ")
 
 
-            sw.WriteLine(Trim(">" & tmpPC.Reference & " " & tmpDesc & tmpAltNames))
+            sw.WriteLine((">" & tmpPC.Reference & " " & tmpDesc & tmpAltNames).Trim())
 
             For proteinPosition = 1 To proteinLength Step Me.m_seqLineLength
                 seqLine = Mid(tmpSeq, proteinPosition, Me.m_seqLineLength)
@@ -187,7 +187,7 @@ Public Class clsExportProteinsFASTA
             tmpDesc = cntrlFinder.Replace(dr.Item("Description").ToString, " ")
             tmpName = Me.m_ExportComponent.ReferenceExtender(dr.Item("Name").ToString)
 
-            sw.WriteLine(Trim(">" & tmpName & " " & tmpDesc & tmpAltNames))
+            sw.WriteLine((">" & tmpName & " " & tmpDesc & tmpAltNames).Trim())
 
             For proteinPosition = 1 To proteinLength Step Me.m_seqLineLength
                 seqLinePortion = Mid(tmpSeq, proteinPosition, Me.m_seqLineLength)

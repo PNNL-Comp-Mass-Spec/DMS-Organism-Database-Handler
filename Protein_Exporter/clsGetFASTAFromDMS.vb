@@ -140,8 +140,12 @@ Public Class clsGetFASTAFromDMS
             Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString)
         End If
 
+        ' Trim any leading or trailing commas
         ProteinCollectionNameList = ProteinCollectionNameList.Trim(","c)
-        Dim extraCommaCheckRegex As New System.Text.RegularExpressions.Regex("[,]{2,}")
+
+        ' Look for cases of multiple commas in a row or spaces around a comma
+        ' Replace any matches with a single comma
+        Dim extraCommaCheckRegex As New System.Text.RegularExpressions.Regex("[, ]{2,}")
 
         ProteinCollectionNameList = extraCommaCheckRegex.Replace(ProteinCollectionNameList, ",")
 
@@ -152,7 +156,7 @@ Public Class clsGetFASTAFromDMS
                 collectionList = New ArrayList(ProteinCollections.Length)
             End If
             For Each collectionName In ProteinCollections
-                collectionList.Add(collectionName)
+                collectionList.Add(collectionName.Trim())
             Next
 
             'Parse options string
