@@ -1218,6 +1218,23 @@ Public Class clsAddUpdateEntries
         'Get return value
         Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
 
+        If ret = 0 Then
+            ' A zero was returned for the protein reference ID; this indicates and error
+            ' Raise an exception
+
+            Dim Message As String
+            Dim SPMsg As String
+
+            Message = "AddProteinReference returned 0"
+
+            SPMsg = CStr(sp_Save.Parameters("@Message").Value)
+
+            If Not String.IsNullOrEmpty(SPMsg) Then Message &= "; " & SPMsg
+
+            Throw New System.Data.ConstraintException(Message)
+
+        End If
+
         Return ret
 
 
