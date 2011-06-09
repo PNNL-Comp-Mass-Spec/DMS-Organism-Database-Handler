@@ -300,12 +300,30 @@ Public Class clsGetFASTAFromDMSForward
 
         If ProteinCollectionNameList.Count > 1 Then
             name = tmpIDListSB.ToString
+            If ExportPath.Length + name.Length > 225 Then
+                ' If exporting a large number of protein collections, name can be very long
+                ' This can lead to error: The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters
+                ' Thus, truncate name
+                Dim intMaxNameLength As Integer
+                intMaxNameLength = 225 - ExportPath.Length
+                If intMaxNameLength < 30 Then intMaxNameLength = 30
+
+                name = name.Substring(0, intMaxNameLength)
+
+                ' Find the last plus sign and truncate just before it
+                Dim intLastPlusLocation As Integer
+                intLastPlusLocation = name.LastIndexOf("+"c)
+                If intLastPlusLocation > 30 Then
+                    name = name.Substring(0, intLastPlusLocation)
+                End If
+
+            End If
         Else
             name = trueName
         End If
 
         Me.m_CurrentFullOutputPath = Me.ExtendedExportPath(ExportPath, name)
-        Me.m_CurrentArchiveFileName = tmpIDListSB.ToString
+        Me.m_CurrentArchiveFileName = name
 
         ' Rename (move) the temporary file to the final, full name
         If System.IO.File.Exists(Me.m_CurrentFullOutputPath) Then
