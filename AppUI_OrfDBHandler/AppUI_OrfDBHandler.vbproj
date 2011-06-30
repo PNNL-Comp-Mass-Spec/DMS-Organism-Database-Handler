@@ -112,7 +112,7 @@
     </Reference>
     <Reference Include="UIControls">
       <Name>UIControls</Name>
-      <HintPath>bin\UIControls.dll</HintPath>
+      <HintPath>..\Shared Libraries\UIControls.dll</HintPath>
     </Reference>
     <ProjectReference Include="..\ExtractAnnotationFromDescription\ExtractAdditionalAnnotations.vbproj">
       <Name>ExtractAdditionalAnnotations</Name>
