@@ -5,7 +5,7 @@ Public Class clsGetFASTAFromDMSDecoy
 
     Private m_RndNumGen As Random
     'Private m_FwdGenerator As clsGetFASTAFromDMSForward
-    Private m_RevGenerator As clsGetFASTAFromDMSReversed
+    Protected m_RevGenerator As clsGetFASTAFromDMSReversed
 
     Public Sub New( _
         ByVal ProteinStorageConnectionString As String, _

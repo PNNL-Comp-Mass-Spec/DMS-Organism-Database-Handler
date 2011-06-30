@@ -63,6 +63,7 @@ Namespace ExportProteinCollectionsIFC
             reversed = 2
             scrambled = 3
             decoy = 4
+            decoyX = 5
         End Enum
 
         Enum DatabaseFormatTypes

@@ -78,8 +78,14 @@ Public Class clsGetFASTAFromDMS
                 Me.m_Getter = New clsGetFASTAFromDMSScrambled( _
                     ProteinStorageConnectionString, DatabaseFormatType)
                 Me.m_CollectionType = IArchiveOutputFiles.CollectionTypes.dynamic
+
             Case ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.decoy
                 Me.m_Getter = New clsGetFASTAFromDMSDecoy( _
+                    ProteinStorageConnectionString, DatabaseFormatType)
+                Me.m_CollectionType = IArchiveOutputFiles.CollectionTypes.dynamic
+
+            Case ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.decoyX
+                Me.m_Getter = New clsGetFASTAFromDMSDecoyX( _
                     ProteinStorageConnectionString, DatabaseFormatType)
                 Me.m_CollectionType = IArchiveOutputFiles.CollectionTypes.dynamic
 

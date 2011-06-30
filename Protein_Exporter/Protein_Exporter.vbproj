@@ -131,6 +131,7 @@
     <Compile Include="clsGetFASTAFromDMSDecoy.vb">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="clsGetFASTAFromDMSDecoyX.vb" />
     <Compile Include="clsGetFASTAFromDMSForward.vb">
       <SubType>Code</SubType>
     </Compile>
