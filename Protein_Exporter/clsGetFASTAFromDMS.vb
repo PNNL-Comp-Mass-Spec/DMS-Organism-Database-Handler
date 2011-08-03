@@ -409,7 +409,7 @@ Public Class clsGetFASTAFromDMS
             End If
         End If
 
-        ' If we get here, then finalFileName = "" or the file is not present or the LockFile is present
+        ' If we get here, then finalFileName = "" or the file is not present or the LockFile is present or the hash file is out-of-date
         ' Try to create a lock file, then either wait for an existing lock file to go away or export the database
         Dim lockStream As System.IO.FileStream
         lockStream = CreateLockStream(ExportPath, LockFileHash, "Protein collection list " & strProteinCollectionList)
@@ -444,6 +444,8 @@ Public Class clsGetFASTAFromDMS
 
             End If
         End If
+
+        ' We're finally ready to generate the .Fasta file
 
         ' Initialize the ClassSelector
         Me.ClassSelector(Me.m_PSConnectionString, DatabaseFormatType, OutputSequenceType)
@@ -496,6 +498,11 @@ Public Class clsGetFASTAFromDMS
             ' Delete it
             finalFileFI.Delete()
         End If
+
+        ' Delete any other files that exist with the same extension as finalFileFI.FullName
+        ' These are likely index files used by Inspect or MSGFDB and they will need to be re-generated
+        DeleteFASTAIndexFiles(finalFileFI)
+
         InterimFastaFI.MoveTo(finalFileFI.FullName)
 
         ' Update the hash validation file
@@ -585,6 +592,55 @@ Public Class clsGetFASTAFromDMS
         Return lockStream
 
     End Function
+
+    Protected Sub DeleteFASTAIndexFiles(ByRef fiFinalFastaFile As System.IO.FileInfo)
+
+        Try
+            Dim strBaseName As String
+            strBaseName = System.IO.Path.GetFileNameWithoutExtension(fiFinalFastaFile.Name)
+
+            ' Delete files with the same name but different extensions
+            ' For example, Inspect's PrepDB.py script creates these files:
+            ' ID_002750_1363538A.index
+            ' ID_002750_1363538A_shuffle.index
+            ' ID_002750_1363538A.trie
+            ' ID_002750_1363538A_shuffle.trie
+            ' ID_002750_1363538A_shuffle_Log.txt
+
+            ' MSGFDB's BuildSA function creates these files:
+            ' ID_002614_23305E80.revConcat.fasta
+            ' ID_002614_23305E80.fasta.23305E80.hashcheck
+            ' ID_002614_23305E80_sarray.lock
+            ' ID_002614_23305E80.revConcat.sarray
+            ' ID_002614_23305E80.sarray
+            ' ID_002614_23305E80.revConcat.seq
+            ' ID_002614_23305E80.seq
+            ' ID_002614_23305E80.revConcat.seqanno
+            ' ID_002614_23305E80.seqanno
+
+            ' This code will also delete the .hashcheck file; that's OK
+            ' e.g., ID_002750_1363538A.fasta.1363538A.hashcheck
+
+            For Each fiFileToDelete As System.IO.FileInfo In fiFinalFastaFile.Directory.GetFileSystemInfos(strBaseName & ".*")
+                DeleteFastaIndexFile(fiFileToDelete.FullName)
+            Next
+
+            For Each fiFileToDelete As System.IO.FileInfo In fiFinalFastaFile.Directory.GetFileSystemInfos(strBaseName & "_shuffle*.*")
+                DeleteFastaIndexFile(fiFileToDelete.FullName)
+            Next
+        Catch ex As Exception
+
+        End Try
+
+    End Sub
+
+    Protected Sub DeleteFastaIndexFile(ByVal strFilePath As String)
+        Try
+            System.IO.File.Delete(strFilePath)
+        Catch ex As Exception
+            Console.WriteLine("Error deleting file: " & ex.Message)
+        End Try
+    End Sub
 
     Protected Sub DeleteLockStream(ByVal ExportPath As String, ByVal LockFileHash As String, ByVal lockStream As System.IO.FileStream)
 
