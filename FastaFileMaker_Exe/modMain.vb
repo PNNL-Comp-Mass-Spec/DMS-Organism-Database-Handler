@@ -17,7 +17,7 @@ Module modMain
     Private m_GenerationComplete As Boolean = False
     Private m_GenerationStarted As Boolean = False
 
-    Private m_FastaGenStartTime As DateTime = System.DateTime.Now
+    Private m_FastaGenStartTime As DateTime = System.DateTime.UtcNow
 
     Private mProteinCollectionList As String
     Private mCreationOpts As String
@@ -46,9 +46,9 @@ Module modMain
 
         If m_DebugLevel >= 3 Then
             ' Limit the logging to once every MINIMUM_LOG_INTERVAL_SEC seconds
-            If System.DateTime.Now.Subtract(dtLastLogTime).TotalSeconds >= MINIMUM_LOG_INTERVAL_SEC OrElse _
+            If System.DateTime.UtcNow.Subtract(dtLastLogTime).TotalSeconds >= MINIMUM_LOG_INTERVAL_SEC OrElse _
                fractionDone - dblFractionDoneSaved >= 0.25 Then
-                dtLastLogTime = System.DateTime.Now
+                dtLastLogTime = System.DateTime.UtcNow
                 dblFractionDoneSaved = fractionDone
                 Console.WriteLine("Generating Fasta file, " & (fractionDone * 100).ToString("0.0") & "% complete, " & statusMsg)
             End If
@@ -57,8 +57,8 @@ Module modMain
 
     Private Sub m_FastaTimer_Elapsed(ByVal sender As Object, ByVal e As System.Timers.ElapsedEventArgs) Handles m_FastaTimer.Elapsed
 
-        If System.DateTime.Now.Subtract(m_FastaGenStartTime).TotalMinutes >= FASTA_GEN_TIMEOUT_INTERVAL_MINUTES Then
-            m_FastaGenTimeOut = True      'Set the timeout flag so an error will be reported
+        If System.DateTime.UtcNow.Subtract(m_FastaGenStartTime).TotalMinutes >= FASTA_GEN_TIMEOUT_INTERVAL_MINUTES Then
+            m_FastaGenTimeOut = True        'Set the timeout flag so an error will be reported
             m_GenerationComplete = True     'Set the completion flag so the fasta generation wait loop will exit
         End If
 
@@ -203,7 +203,7 @@ Module modMain
                                 fiFastaFile.LastWriteTime.ToString() & ControlChars.Tab & _
                                 fiFastaFile.CreationTime.ToString() & ControlChars.Tab & _
                                 fiFastaFile.Length & ControlChars.Tab & _
-                                GetHumanReadableTimeInterval(System.DateTime.Now.Subtract(fiFastaFile.LastWriteTime)))
+                                GetHumanReadableTimeInterval(System.DateTime.UtcNow.Subtract(fiFastaFile.LastWriteTimeUtc)))
 
             If Not swOutFile Is Nothing Then
                 swOutFile.Close()
@@ -343,7 +343,7 @@ Module modMain
         '   Since it does not spawn a new thread, the while loop after this Try block won't actually get reached while m_FastaTools.ExportFASTAFile is running
         '   Furthermore, even if m_FastaTimer_Elapsed sets m_FastaGenTimeOut to True, this won't do any good since m_FastaTools.ExportFASTAFile will still be running
         m_FastaGenTimeOut = False
-        m_FastaGenStartTime = System.DateTime.Now
+        m_FastaGenStartTime = System.DateTime.UtcNow
         Try
             m_FastaTimer.Start()
             HashString = m_FastaTools.ExportFASTAFile(CollectionList, CreationOpts, LegacyFasta, DestFolder)
@@ -356,7 +356,7 @@ Module modMain
         'Wait for fasta creation to finish
         While Not m_GenerationComplete
             System.Threading.Thread.Sleep(2000)
-            If System.DateTime.Now.Subtract(m_FastaGenStartTime).TotalMinutes >= FASTA_GEN_TIMEOUT_INTERVAL_MINUTES Then
+            If System.DateTime.UtcNow.Subtract(m_FastaGenStartTime).TotalMinutes >= FASTA_GEN_TIMEOUT_INTERVAL_MINUTES Then
                 m_FastaGenTimeOut = True
                 Exit While
             End If

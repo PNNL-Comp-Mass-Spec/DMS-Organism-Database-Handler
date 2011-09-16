@@ -523,7 +523,7 @@ Public Class clsGetFASTAFromDMS
         ' If an existing file is not found, but a lock file was successfully created, then lockStream will be a valid file stream
 
         Dim lockFi As System.IO.FileInfo
-        Dim startTime As DateTime = DateTime.Now
+		Dim startTime As DateTime = DateTime.UtcNow
         Dim intAttemptCount As Integer = 0
 
         Dim lockStream As System.IO.FileStream
@@ -538,15 +538,15 @@ Public Class clsGetFASTAFromDMS
                 If lockFi.Exists Then
                     Me.m_WaitingForLockFile = True
 
-                    Dim LockTimeoutTime As DateTime = lockFi.LastWriteTime.AddMinutes(60)
-                    RaiseEvent FileGenerationProgress(LOCK_FILE_PROGRESS_TEXT & " found; waiting until it is deleted or until " & LockTimeoutTime.ToString() & ": " & lockFi.Name, 0)
+                    Dim LockTimeoutTime As DateTime = lockFi.LastWriteTimeUtc.AddMinutes(60)
+                    RaiseEvent FileGenerationProgress(LOCK_FILE_PROGRESS_TEXT & " found; waiting until it is deleted or until " & LockTimeoutTime.ToLocalTime().ToString() & ": " & lockFi.Name, 0)
 
-                    While lockFi.Exists AndAlso System.DateTime.Now < LockTimeoutTime
+                    While lockFi.Exists AndAlso System.DateTime.UtcNow < LockTimeoutTime
                         System.Threading.Thread.Sleep(5000)
                         lockFi.Refresh()
-                        If DateTime.Now.Subtract(startTime).TotalMinutes >= 60 Then
-                            Exit While
-                        End If
+						If DateTime.UtcNow.Subtract(startTime).TotalMinutes >= 60 Then
+							Exit While
+						End If
                     End While
 
                     lockFi.Refresh()
@@ -756,7 +756,7 @@ Public Class clsGetFASTAFromDMS
                 fiHashValidationFile = GetHashFileValidationInfo(strFastaFilePath, strExpectedHash)
 
                 If fiHashValidationFile.Exists And Not blnForceRegenerateHash Then
-                    If System.DateTime.Now.Subtract(fiHashValidationFile.LastWriteTime).TotalHours <= intRetryHoldoffHours Then
+                    If System.DateTime.UtcNow.Subtract(fiHashValidationFile.LastWriteTimeUtc).TotalHours <= intRetryHoldoffHours Then
                         ' Hash check file exists, and the file is less than 48 hours old
                         Return True
                     End If

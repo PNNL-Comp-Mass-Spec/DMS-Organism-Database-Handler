@@ -126,15 +126,14 @@ Public Class clsSyncFASTAFileArchive
         Dim creationOptionsString As String
         creationOptionsString = "seq_direction=forward,filetype=fasta"
         Me.OnSyncStart("Updating Collections and Archive Entries")
-        starttime = System.DateTime.Now
+        starttime = System.DateTime.UtcNow
 
         For Each dr In dt.Rows
             tmpID = CInt(dr.Item("Protein_Collection_ID"))
             tmpStoredSHA = dr.Item("Authentication_Hash").ToString
             tmpFilename = dr.Item("FileName").ToString
             elapsedTimeSB.Remove(0, elapsedTimeSB.Length)
-            'elapsedTime = Format(System.DateTime.Now.op_Subtraction(System.DateTime.Now, starttime), "H:mm:ss")
-            elapsedTime = System.DateTime.Now.Subtract(starttime)
+            elapsedTime = System.DateTime.UtcNow.Subtract(starttime)
             If elapsedTime.Minutes < 1 And elapsedTime.Hours = 0 Then
                 elapsedTimeSB.Append("less than ")
             Else
