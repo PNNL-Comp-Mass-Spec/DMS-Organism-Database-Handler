@@ -767,7 +767,7 @@ Public Class frmCollectionEditor
 
 #End Region
 
-    Protected Const PROGRAM_DATE As String = "February 11, 2011"
+	Protected Const PROGRAM_DATE As String = "January 6, 2012"
 
     Protected m_Organisms As DataTable
     Protected m_ProteinCollections As DataTable
@@ -1016,19 +1016,26 @@ Public Class frmCollectionEditor
         m_LastSelectedAnnotationType = frmBatchUpload.SelectedAnnotationType
         m_LastValueForAllowAsterisks = frmBatchUpload.ValidationAllowAsterisks
         m_LastValueForAllowDash = frmBatchUpload.ValidationAllowDash
+		m_LastBatchULDirectoryPath = frmBatchUpload.CurrentDirectory
 
         Try
             ' Save these settings to the registry
-            If Not m_LastSelectedOrganism Is Nothing AndAlso m_LastSelectedOrganism.Length > 0 Then
-                SaveSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedOrganism", m_LastSelectedOrganism)
-            End If
+			If Not String.IsNullOrEmpty(m_LastSelectedOrganism) Then
+				SaveSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedOrganism", m_LastSelectedOrganism)
+			End If
 
-            If Not m_LastSelectedAnnotationType Is Nothing AndAlso m_LastSelectedAnnotationType.Length > 0 Then
-                SaveSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedAnnotationType", m_LastSelectedAnnotationType)
-            End If
+			If Not String.IsNullOrEmpty(m_LastSelectedAnnotationType) Then
+				SaveSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedAnnotationType", m_LastSelectedAnnotationType)
+			End If
+
+			If Not String.IsNullOrEmpty(m_LastBatchULDirectoryPath) Then
+				SaveSetting("ProteinCollectionEditor", "UserOptions", "LastBatchULDirectoryPath", m_LastBatchULDirectoryPath)
+			End If
+
         Catch ex As Exception
             ' Ignore errors here
         End Try
+
 
 
         If resultReturn = DialogResult.OK Then
@@ -1094,7 +1101,6 @@ Public Class frmCollectionEditor
             Me.cmdDestAddAll.Enabled = True
             Me.cmdDestRemove.Enabled = True
             Me.cmdDestRemoveAll.Enabled = True
-            Me.m_LastBatchULDirectoryPath = frmBatchUpload.CurrentDirectory
 
             Me.m_BatchLoadCurrentCount = 0
         End If
@@ -1103,7 +1109,8 @@ Public Class frmCollectionEditor
     Private Sub ReadSettings()
         Try
             m_LastSelectedOrganism = GetSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedOrganism", "")
-            m_LastSelectedAnnotationType = GetSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedAnnotationType", "")
+			m_LastSelectedAnnotationType = GetSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedAnnotationType", "")
+			m_LastBatchULDirectoryPath = GetSetting("ProteinCollectionEditor", "UserOptions", "LastBatchULDirectoryPath", "")
         Catch ex As Exception
             ' Ignore errors here
         End Try
