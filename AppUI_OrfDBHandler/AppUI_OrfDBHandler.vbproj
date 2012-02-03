@@ -227,6 +227,7 @@
     </Compile>
     <EmbeddedResource Include="frmAddAnnotationType.resx">
       <DependentUpon>frmAddAnnotationType.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmAddNamingAuthority.resx">
       <DependentUpon>frmAddNamingAuthority.vb</DependentUpon>

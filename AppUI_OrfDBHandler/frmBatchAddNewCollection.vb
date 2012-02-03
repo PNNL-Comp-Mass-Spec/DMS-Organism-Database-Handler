@@ -74,6 +74,8 @@ Public Class frmBatchAddNewCollectionTest
     Friend WithEvents fraValidationOptions As System.Windows.Forms.GroupBox
 	Friend WithEvents chkValidationAllowAsterisks As System.Windows.Forms.CheckBox
 	Friend WithEvents cmdRefreshFiles As System.Windows.Forms.Button
+	Friend WithEvents txtMaximumProteinNameLength As System.Windows.Forms.TextBox
+	Friend WithEvents lblMaximumProteinNameLength As System.Windows.Forms.Label
 	Friend WithEvents chkValidationAllowDash As System.Windows.Forms.CheckBox
 	<System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
 		Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBatchAddNewCollectionTest))
@@ -105,6 +107,8 @@ Public Class frmBatchAddNewCollectionTest
 		Me.lblPassphrase = New System.Windows.Forms.Label()
 		Me.txtPassphrase = New System.Windows.Forms.TextBox()
 		Me.fraValidationOptions = New System.Windows.Forms.GroupBox()
+		Me.txtMaximumProteinNameLength = New System.Windows.Forms.TextBox()
+		Me.lblMaximumProteinNameLength = New System.Windows.Forms.Label()
 		Me.chkValidationAllowAsterisks = New System.Windows.Forms.CheckBox()
 		Me.chkValidationAllowDash = New System.Windows.Forms.CheckBox()
 		Me.cmdRefreshFiles = New System.Windows.Forms.Button()
@@ -352,15 +356,35 @@ Public Class frmBatchAddNewCollectionTest
 		'fraValidationOptions
 		'
 		Me.fraValidationOptions.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+		Me.fraValidationOptions.Controls.Add(Me.txtMaximumProteinNameLength)
+		Me.fraValidationOptions.Controls.Add(Me.lblMaximumProteinNameLength)
 		Me.fraValidationOptions.Controls.Add(Me.chkValidationAllowAsterisks)
 		Me.fraValidationOptions.Controls.Add(Me.chkValidationAllowDash)
 		Me.fraValidationOptions.Location = New System.Drawing.Point(4, 521)
 		Me.fraValidationOptions.Name = "fraValidationOptions"
-		Me.fraValidationOptions.Size = New System.Drawing.Size(336, 48)
+		Me.fraValidationOptions.Size = New System.Drawing.Size(491, 48)
 		Me.fraValidationOptions.TabIndex = 16
 		Me.fraValidationOptions.TabStop = False
 		Me.fraValidationOptions.Text = "Fasta Validation Options"
 		Me.VisualStyleProvider1.SetVisualStyleSupport(Me.fraValidationOptions, True)
+		'
+		'txtMaximumProteinNameLength
+		'
+		Me.txtMaximumProteinNameLength.Location = New System.Drawing.Point(407, 17)
+		Me.txtMaximumProteinNameLength.Name = "txtMaximumProteinNameLength"
+		Me.txtMaximumProteinNameLength.Size = New System.Drawing.Size(60, 21)
+		Me.txtMaximumProteinNameLength.TabIndex = 16
+		Me.txtMaximumProteinNameLength.Text = "34"
+		Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtMaximumProteinNameLength, True)
+		'
+		'lblMaximumProteinNameLength
+		'
+		Me.lblMaximumProteinNameLength.Location = New System.Drawing.Point(324, 13)
+		Me.lblMaximumProteinNameLength.Name = "lblMaximumProteinNameLength"
+		Me.lblMaximumProteinNameLength.Size = New System.Drawing.Size(92, 28)
+		Me.lblMaximumProteinNameLength.TabIndex = 15
+		Me.lblMaximumProteinNameLength.Text = "Max Protein Name Length"
+		Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblMaximumProteinNameLength, True)
 		'
 		'chkValidationAllowAsterisks
 		'
@@ -421,6 +445,7 @@ Public Class frmBatchAddNewCollectionTest
 		Me.Name = "frmBatchAddNewCollectionTest"
 		Me.Text = "Batch Upload FASTA Files"
 		Me.fraValidationOptions.ResumeLayout(False)
+		Me.fraValidationOptions.PerformLayout()
 		Me.ResumeLayout(False)
 		Me.PerformLayout()
 
@@ -528,6 +553,20 @@ Public Class frmBatchAddNewCollectionTest
 		End Set
 	End Property
 
+	Property ValidationMaxProteinNameLength() As Integer
+		Get
+			Dim intValue As Integer
+			If Integer.TryParse(txtMaximumProteinNameLength.Text, intValue) Then
+				Return intValue
+			Else
+				Return ValidateFastaFile.clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
+			End If
+		End Get
+		Set(value As Integer)
+			If value < 5 Then value = 5
+			txtMaximumProteinNameLength.Text = value.ToString()
+		End Set
+	End Property
 
 #End Region
 
@@ -564,8 +603,8 @@ Public Class frmBatchAddNewCollectionTest
 	End Sub
 
 	Private Sub AfterNodeSelect( _
-		ByVal pathName As String, _
-		ByVal CSI As CShItem) Handles expUploadFolderSelect.ExpTreeNodeSelected
+	 ByVal pathName As String, _
+	 ByVal CSI As CShItem) Handles expUploadFolderSelect.ExpTreeNodeSelected
 
 		Dim dirList As New ArrayList
 
@@ -766,7 +805,7 @@ Public Class frmBatchAddNewCollectionTest
 	'         1.23
 	'         0.12
 	Private Function ThreeNonZeroDigits(ByVal value As Double) _
-		As String
+	 As String
 		If value >= 100 Then
 			' No digits after the decimal.
 			Return Format$(CInt(value))
@@ -973,7 +1012,7 @@ Public Class frmBatchAddNewCollectionTest
 			For Each li In Me.lvwSelectedFiles.SelectedItems
 				tmpUpInfo = DirectCast(Me.m_SelectedFileList.Item(li.SubItems(4).Text), Protein_Uploader.IUploadProteins.UploadInfo)
 				Me.m_SelectedFileList.Item(li.SubItems(4).Text) = _
-					New Protein_Uploader.IUploadProteins.UploadInfo(tmpUpInfo.FileInformation, Me.m_SelectedOrganismID, Me.m_SelectedAuthorityID) 'tmpUpInfo.AuthorityID)
+				 New Protein_Uploader.IUploadProteins.UploadInfo(tmpUpInfo.FileInformation, Me.m_SelectedOrganismID, Me.m_SelectedAuthorityID) 'tmpUpInfo.AuthorityID)
 				li.SubItems(2).Text = cbo.Text
 			Next
 		End If
@@ -1016,9 +1055,9 @@ Public Class frmBatchAddNewCollectionTest
 	Private Sub CheckTransferEnable()
 		If Me.chkEncryptionEnable.Checked = True Then
 			If Me.m_SelectedOrganismID > 0 And _
-				Me.m_SelectedAuthorityID > 0 And _
-				Me.lvwFolderContents.SelectedItems.Count > 0 And _
-				Me.txtPassphrase.Text.Length > 0 Then
+			 Me.m_SelectedAuthorityID > 0 And _
+			 Me.lvwFolderContents.SelectedItems.Count > 0 And _
+			 Me.txtPassphrase.Text.Length > 0 Then
 
 				m_AllowAddFiles = True
 				m_AllowAddFilesMessage = ""
@@ -1135,7 +1174,7 @@ Public Class frmBatchAddNewCollectionTest
 			Dim r As System.Windows.Forms.DialogResult
 
 			r = MessageBox.Show("You have files selected for upload. Really close the form?", _
-				"Files selected for upload", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation)
+			 "Files selected for upload", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation)
 			If r = DialogResult.No Then
 				e.Cancel = True
 			Else
@@ -1190,6 +1229,22 @@ Public Class frmBatchAddNewCollectionTest
 		Catch ex As Exception
 			System.Windows.Forms.MessageBox.Show("Error refreshing folders and files: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
 		End Try
+
+	End Sub
+
+	Private Sub txtMaximumProteinNameLength_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtMaximumProteinNameLength.Validating
+		If txtMaximumProteinNameLength.TextLength = 0 Then
+			txtMaximumProteinNameLength.Text = ValidateFastaFile.clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH.ToString()
+		Else
+			Dim intValue As Integer = 0
+			If Integer.TryParse(txtMaximumProteinNameLength.Text, intValue) Then
+				If intValue < 5 Then
+					txtMaximumProteinNameLength.Text = "5"
+				End If
+			Else
+				txtMaximumProteinNameLength.Text = ValidateFastaFile.clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH.ToString()
+			End If
+		End If
 
 	End Sub
 End Class

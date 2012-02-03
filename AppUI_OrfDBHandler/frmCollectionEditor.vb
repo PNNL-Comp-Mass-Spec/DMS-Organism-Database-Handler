@@ -767,7 +767,7 @@ Public Class frmCollectionEditor
 
 #End Region
 
-	Protected Const PROGRAM_DATE As String = "January 6, 2012"
+	Protected Const PROGRAM_DATE As String = "February 2, 2012"
 
     Protected m_Organisms As DataTable
     Protected m_ProteinCollections As DataTable
@@ -787,7 +787,8 @@ Public Class frmCollectionEditor
     Protected m_LastSelectedOrganism As String = ""
     Protected m_LastSelectedAnnotationType As String = ""
     Protected m_LastValueForAllowAsterisks As Boolean = False
-    Protected m_LastValueForAllowDash As Boolean = False
+	Protected m_LastValueForAllowDash As Boolean = False
+	Protected m_LastValueForMaxProteinNameLength As Integer = ValidateFastaFile.clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
 
     Protected WithEvents m_ImportHandler As Protein_Importer.IImportProteins
     Protected WithEvents m_UploadHandler As Protein_Uploader.IUploadProteins
@@ -1003,7 +1004,8 @@ Public Class frmCollectionEditor
         End If
 
         frmBatchUpload.ValidationAllowAsterisks = m_LastValueForAllowAsterisks
-        frmBatchUpload.ValidationAllowDash = m_LastValueForAllowDash
+		frmBatchUpload.ValidationAllowDash = m_LastValueForAllowDash
+		frmBatchUpload.ValidationMaxProteinNameLength = m_LastValueForMaxProteinNameLength
 
         ' Set the last directory used
         frmBatchUpload.CurrentDirectory = Me.m_LastBatchULDirectoryPath
@@ -1015,7 +1017,9 @@ Public Class frmCollectionEditor
         m_LastSelectedOrganism = frmBatchUpload.SelectedOrganismName
         m_LastSelectedAnnotationType = frmBatchUpload.SelectedAnnotationType
         m_LastValueForAllowAsterisks = frmBatchUpload.ValidationAllowAsterisks
-        m_LastValueForAllowDash = frmBatchUpload.ValidationAllowDash
+		m_LastValueForAllowDash = frmBatchUpload.ValidationAllowDash
+		m_LastValueForMaxProteinNameLength = frmBatchUpload.ValidationMaxProteinNameLength
+
 		m_LastBatchULDirectoryPath = frmBatchUpload.CurrentDirectory
 
         Try
@@ -1064,7 +1068,9 @@ Public Class frmCollectionEditor
                 Me.m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues, frmBatchUpload.ValidationAllowAsterisks)
                 Me.m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowDashInResidues, frmBatchUpload.ValidationAllowDash)
 
-                Me.m_UploadHandler.BatchUpload(tmpSelectedFileList)
+				Me.m_UploadHandler.MaximumProteinNameLength = frmBatchUpload.ValidationMaxProteinNameLength
+
+				Me.m_UploadHandler.BatchUpload(tmpSelectedFileList)
 
             Catch ex As Exception
                 System.Windows.Forms.MessageBox.Show("Error uploading collection: " & ex.Message, "Error")
