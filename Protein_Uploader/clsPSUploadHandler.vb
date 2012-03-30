@@ -3,8 +3,8 @@ Imports Protein_Exporter.ExportProteinCollectionsIFC
 Public Interface IUploadProteins
 
     Enum eValidationOptionConstants As Integer
-        AllowAsterisksInResidues = 0
-        AllowDashInResidues = 1
+		AllowAsterisksInResidues = 0
+		AllowDashInResidues = 1
     End Enum
 
     Function UploadCollection( _
