@@ -185,7 +185,7 @@ Public Class clsDBTask
                 Catch ex As Exception
                     numTries -= 1
                     If numTries = 0 Then
-                        Throw New Exception("could not get records after three tries")
+						Throw New Exception("could not get records after three tries: " & ex.Message)
                     End If
                     System.Threading.Thread.Sleep(3000)
                 End Try

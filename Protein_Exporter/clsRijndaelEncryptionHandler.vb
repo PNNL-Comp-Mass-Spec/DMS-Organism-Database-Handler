@@ -107,9 +107,10 @@ Public Class clsRijndaelEncryptionHandler
 
     End Sub
 
-    Public Function GetHashedPassword() As String
-        'return me.m_SymmetricKey.
-    End Function
+	' Not implemented
+	'Public Function GetHashedPassword() As String
+	'    'return me.m_SymmetricKey.
+	'End Function
 
     Public Function Encrypt(ByVal plainText As String) As String
 

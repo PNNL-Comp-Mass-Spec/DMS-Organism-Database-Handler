@@ -225,6 +225,8 @@ Public Class clsExportProteinsXTFASTA
         ByRef ProteinTable As DataTable, _
         ByRef destinationPath As String) As String
 
+		' Not implemented for this class
+		Return String.Empty
 
     End Function
 

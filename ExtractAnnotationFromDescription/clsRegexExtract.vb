@@ -16,8 +16,4 @@ Public Class clsRegexExtract
 
     End Sub
 
-    Protected Function GetFullAnnotationSet(ByVal ProteinCollectionID As Integer) As String
-
-    End Function
-
 End Class

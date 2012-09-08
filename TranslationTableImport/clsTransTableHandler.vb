@@ -41,7 +41,10 @@ Public Class clsTransTableHandler
     End Sub
 
     Friend Function GetAllTranslationTableEntries(ByVal FilePath As String) As DataTable Implements ITransTableImport.GetAllTranslationTableEntries
-        Me.ScanFileForEntries(FilePath)
+		Me.ScanFileForEntries(FilePath)
+
+		' Not implemented
+		Return New DataTable()
     End Function
 
     Private Sub ScanFileForEntries(ByVal filePath As String)
