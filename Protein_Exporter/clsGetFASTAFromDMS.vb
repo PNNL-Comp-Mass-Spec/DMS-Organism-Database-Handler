@@ -20,11 +20,15 @@ Public Class clsGetFASTAFromDMS
     Protected m_SHA1Provider As System.Security.Cryptography.SHA1Managed
     Protected m_WaitingForLockFile As Boolean = False
 
+	Protected WithEvents m_FileTools As PRISM.Files.clsFileTools
+	Protected m_LastLockQueueWaitTimeLog As System.DateTime
+
     Public Sub New(ByVal ProteinStorageConnectionString As String)
 
-        Me.m_PSConnectionString = ProteinStorageConnectionString
-        Me.ClassSelector(ProteinStorageConnectionString, ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta, ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward)
-        Me.m_SHA1Provider = New System.Security.Cryptography.SHA1Managed
+		m_PSConnectionString = ProteinStorageConnectionString
+		ClassSelector(ProteinStorageConnectionString, ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta, ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward)
+		m_SHA1Provider = New System.Security.Cryptography.SHA1Managed
+		m_FileTools = New PRISM.Files.clsFileTools
     End Sub
 
     Public ReadOnly Property ExporterComponent() As clsGetFASTAFromDMSForward ' Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.ExporterComponent
@@ -278,8 +282,10 @@ Public Class clsGetFASTAFromDMS
             Dim InterimFastaFI As New System.IO.FileInfo(System.IO.Path.Combine(ExportPath, strCollectionListHexHash & "_" & System.IO.Path.GetFileNameWithoutExtension(legacyStaticFilePath) & ".fasta"))
             If InterimFastaFI.Exists Then
                 InterimFastaFI.Delete()
-            End If
-            FastaSourceFI.CopyTo(InterimFastaFI.FullName)
+			End If
+
+			m_LastLockQueueWaitTimeLog = System.DateTime.UtcNow
+			m_FileTools.CopyFileUsingLocks(FastaSourceFI, InterimFastaFI.FullName, "OrgDBHandler", Overwrite:=False)
 
             ' Now that the copy is done, rename the file to the final name
             finalFileFI.Refresh()
@@ -539,7 +545,7 @@ Public Class clsGetFASTAFromDMS
                     Me.m_WaitingForLockFile = True
 
                     Dim LockTimeoutTime As DateTime = lockFi.LastWriteTimeUtc.AddMinutes(60)
-                    RaiseEvent FileGenerationProgress(LOCK_FILE_PROGRESS_TEXT & " found; waiting until it is deleted or until " & LockTimeoutTime.ToLocalTime().ToString() & ": " & lockFi.Name, 0)
+					OnFileGenerationProgressUpdate(LOCK_FILE_PROGRESS_TEXT & " found; waiting until it is deleted or until " & LockTimeoutTime.ToLocalTime().ToString() & ": " & lockFi.Name, 0)
 
                     While lockFi.Exists AndAlso System.DateTime.UtcNow < LockTimeoutTime
                         System.Threading.Thread.Sleep(5000)
@@ -551,7 +557,7 @@ Public Class clsGetFASTAFromDMS
 
                     lockFi.Refresh()
                     If lockFi.Exists Then
-                        RaiseEvent FileGenerationProgress(LOCK_FILE_PROGRESS_TEXT & " still exists; assuming another process timed out; thus, now deleting file " & lockFi.Name, 0)
+						OnFileGenerationProgressUpdate(LOCK_FILE_PROGRESS_TEXT & " still exists; assuming another process timed out; thus, now deleting file " & lockFi.Name, 0)
                         lockFi.Delete()
                     End If
 
@@ -571,7 +577,7 @@ Public Class clsGetFASTAFromDMS
                 Exit Do
 
             Catch ex As Exception
-                RaiseEvent FileGenerationProgress("Exception while monitoring " & LOCK_FILE_PROGRESS_TEXT & ": " & ex.Message, 0)
+				OnFileGenerationProgressUpdate("Exception while monitoring " & LOCK_FILE_PROGRESS_TEXT & ": " & ex.Message, 0)
             End Try
 
             ' Something went wrong; wait for 15 seconds then try again
@@ -783,128 +789,150 @@ Public Class clsGetFASTAFromDMS
                 End If
             End If
         Catch ex As Exception
-            RaiseEvent FileGenerationProgress("Exception while re-computing the hash of the fasta file: " & ex.Message, 0)
+			OnFileGenerationProgressUpdate("Exception while re-computing the hash of the fasta file: " & ex.Message, 0)
         End Try
 
         Return False
 
     End Function
 
+#Region "Events and Event Handlers"
+	Public Event FileGenerationCompleted(ByVal FullOutputPath As String) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationCompleted
+	Public Event FileGenerationProgress(ByVal statusMsg As String, ByVal fractionDone As Double) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationProgress
+	Public Event FileGenerationStarted(ByVal taskMsg As String) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationStarted
 
-    Event FileGenerationCompleted(ByVal FullOutputPath As String) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationCompleted
-    Event FileGenerationProgress(ByVal statusMsg As String, ByVal fractionDone As Double) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationProgress
-    Event FileGenerationStarted(ByVal taskMsg As String) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationStarted
+	Private Sub OnFileGenerationCompleted(ByVal FullOutputPath As String) Handles m_Getter.FileGenerationCompleted
+		If Me.m_ArchiveCollectionList Is Nothing Then
+			Me.m_ArchiveCollectionList = New ArrayList
+		End If
+		Me.m_ArchiveCollectionList.Add(System.IO.Path.GetFileName(FullOutputPath))
+		Me.m_FinalOutputPath = FullOutputPath
+	End Sub
 
-    Private Sub OnFileGenerationCompleted(ByVal FullOutputPath As String) Handles m_Getter.FileGenerationCompleted
-        If Me.m_ArchiveCollectionList Is Nothing Then
-            Me.m_ArchiveCollectionList = New ArrayList
-        End If
-        Me.m_ArchiveCollectionList.Add(System.IO.Path.GetFileName(FullOutputPath))
-        Me.m_FinalOutputPath = FullOutputPath
-    End Sub
+	Private Sub OnTaskCompletion(ByVal FinalOutputPath As String)
+		RaiseEvent FileGenerationCompleted(FinalOutputPath)
+	End Sub
 
-    Private Sub OnTaskCompletion(ByVal FinalOutputPath As String)
-        RaiseEvent FileGenerationCompleted(FinalOutputPath)
-    End Sub
 
-#Region " Pass-Through Functionality "
-    Private Sub OnFileGenerationStarted(ByVal taskMsg As String) Handles m_Getter.FileGenerationStarted
-        RaiseEvent FileGenerationStarted(taskMsg)
-    End Sub
+	Private Sub m_FileTools_WaitingForLockQueue(SourceFilePath As String, TargetFilePath As String, MBBacklogSource As Integer, MBBacklogTarget As Integer) Handles m_FileTools.WaitingForLockQueue
+		Dim strServers As String
 
-    Private Sub OnFileGenerationProgressUpdate(ByVal statusMsg As String, ByVal fractionDone As Double) Handles m_Getter.FileGenerationProgress
-        RaiseEvent FileGenerationProgress(statusMsg, fractionDone)
-    End Sub
+		If System.DateTime.UtcNow.Subtract(m_LastLockQueueWaitTimeLog).TotalSeconds >= 30 Then
+			m_LastLockQueueWaitTimeLog = System.DateTime.UtcNow
+			Console.WriteLine("Waiting for lockfile queue to fall below threshold to fall below threshold (Protein_Exporter); SourceBacklog=" & MBBacklogSource & " MB, TargetBacklog=" & MBBacklogTarget & " MB, Source=" & SourceFilePath & ", Target=" & TargetFilePath)
 
-    Function GenerateFileAuthenticationHash(ByVal FullFilePath As String) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GenerateFileAuthenticationHash
-        Return Me.m_Getter.GetFileHash(FullFilePath)
-    End Function
+			If MBBacklogSource > 0 AndAlso MBBacklogTarget > 0 Then
+				strServers = m_FileTools.GetServerShareBase(SourceFilePath) & " and " & m_FileTools.GetServerShareBase(TargetFilePath)
+			ElseIf MBBacklogTarget > 0 Then
+				strServers = m_FileTools.GetServerShareBase(TargetFilePath)
+			Else
+				strServers = m_FileTools.GetServerShareBase(SourceFilePath)
+			End If
 
-    Function GetAllCollections() As System.Collections.Hashtable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetAllCollections
-        Return Me.m_Getter.GetCollectionNameList
-    End Function
+			OnFileGenerationProgressUpdate("Waiting for lockfile queue on " & strServers & " to fall below threshold", 0)
+		End If
+	End Sub
 
-    Function GetCollectionsByOrganism(ByVal OrganismID As Integer) As System.Collections.Hashtable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetCollectionsByOrganism
-        Return Me.m_Getter.GetCollectionsByOrganism(OrganismID)
-    End Function
-
-    Function GetCollectionsByOrganismTable(ByVal OrganismID As Integer) As System.Data.DataTable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetCollectionsByOrganismTable
-        Return Me.m_Getter.GetCollectionsByOrganismTable(OrganismID)
-    End Function
-
-    Function GetOrganismList() As System.Collections.Hashtable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetOrganismList
-        Return Me.m_Getter.GetOrganismList
-    End Function
-
-    Function GetOrganismListTable() As System.Data.DataTable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetOrganismListTable
-        Return Me.m_Getter.GetOrganismListTable
-    End Function
-
-    Overloads Function GetStoredFileAuthenticationHash(ByVal ProteinCollectionID As Integer) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetStoredFileAuthenticationHash
-        Return Me.m_Getter.GetStoredHash(ProteinCollectionID)
-    End Function
-
-    Overloads Function GetStoredFileAuthenticationHash(ByVal ProteinCollectionName As String) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetStoredFileAuthenticationHash
-        Return Me.m_Getter.GetStoredHash(ProteinCollectionName)
-    End Function
-
-    Function GetProteinCollectionID(ByVal ProteinCollectionName As String) As Integer Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetProteinCollectionID
-        Return Me.m_Getter.FindIDByName(System.IO.Path.GetFileNameWithoutExtension(ProteinCollectionName))
-    End Function
-
-    Protected Function GetProteinCollectionName(ByVal ProteinCollectionID As Integer) As String
-        Return Me.m_Getter.FindNameByID(ProteinCollectionID)
-    End Function
 #End Region
 
-    Protected Function RunSP_AddLegacyFileUploadRequest(ByVal LegacyFilename As String, ByVal AuthenticationHash As String) As Integer
+#Region " Pass-Through Functionality "
+	Private Sub OnFileGenerationStarted(ByVal taskMsg As String) Handles m_Getter.FileGenerationStarted
+		RaiseEvent FileGenerationStarted(taskMsg)
+	End Sub
 
-        Dim sp_Save As SqlClient.SqlCommand
+	Private Sub OnFileGenerationProgressUpdate(ByVal statusMsg As String, ByVal fractionDone As Double) Handles m_Getter.FileGenerationProgress
+		RaiseEvent FileGenerationProgress(statusMsg, fractionDone)
+	End Sub
 
-        sp_Save = New SqlClient.SqlCommand("AddLegacyFileUploadRequest", Me.m_TableGetter.Connection)
+	Function GenerateFileAuthenticationHash(ByVal FullFilePath As String) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GenerateFileAuthenticationHash
+		Return Me.m_Getter.GetFileHash(FullFilePath)
+	End Function
 
-        sp_Save.CommandType = CommandType.StoredProcedure
+	Function GetAllCollections() As System.Collections.Hashtable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetAllCollections
+		Return Me.m_Getter.GetCollectionNameList
+	End Function
 
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
+	Function GetCollectionsByOrganism(ByVal OrganismID As Integer) As System.Collections.Hashtable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetCollectionsByOrganism
+		Return Me.m_Getter.GetCollectionsByOrganism(OrganismID)
+	End Function
 
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
+	Function GetCollectionsByOrganismTable(ByVal OrganismID As Integer) As System.Data.DataTable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetCollectionsByOrganismTable
+		Return Me.m_Getter.GetCollectionsByOrganismTable(OrganismID)
+	End Function
 
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@legacy_File_name", SqlDbType.VarChar, 128)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = LegacyFilename
+	Function GetOrganismList() As System.Collections.Hashtable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetOrganismList
+		Return Me.m_Getter.GetOrganismList
+	End Function
 
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
-        myParam.Direction = ParameterDirection.Output
+	Function GetOrganismListTable() As System.Data.DataTable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetOrganismListTable
+		Return Me.m_Getter.GetOrganismListTable
+	End Function
 
-        myParam = sp_Save.Parameters.Add("@AuthenticationHash", SqlDbType.VarChar, 8)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = AuthenticationHash
+	Overloads Function GetStoredFileAuthenticationHash(ByVal ProteinCollectionID As Integer) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetStoredFileAuthenticationHash
+		Return Me.m_Getter.GetStoredHash(ProteinCollectionID)
+	End Function
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
+	Overloads Function GetStoredFileAuthenticationHash(ByVal ProteinCollectionName As String) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetStoredFileAuthenticationHash
+		Return Me.m_Getter.GetStoredHash(ProteinCollectionName)
+	End Function
 
-        'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+	Function GetProteinCollectionID(ByVal ProteinCollectionName As String) As Integer Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetProteinCollectionID
+		Return Me.m_Getter.FindIDByName(System.IO.Path.GetFileNameWithoutExtension(ProteinCollectionName))
+	End Function
 
-        Return ret
+	Protected Function GetProteinCollectionName(ByVal ProteinCollectionID As Integer) As String
+		Return Me.m_Getter.FindNameByID(ProteinCollectionID)
+	End Function
+#End Region
 
-    End Function
+	Protected Function RunSP_AddLegacyFileUploadRequest(ByVal LegacyFilename As String, ByVal AuthenticationHash As String) As Integer
 
-    Protected Function GenerateHash(ByVal SourceText As String) As String
-        'Create an encoding object to ensure the encoding standard for the source text
-        Dim Ue As New System.Text.ASCIIEncoding
-        'Retrieve a byte array based on the source text
-        Dim ByteSourceText() As Byte = Ue.GetBytes(SourceText)
-        'Compute the hash value from the source
-        Dim SHA1_hash() As Byte = Me.m_SHA1Provider.ComputeHash(ByteSourceText)
-        'And convert it to String format for return
-        'Dim SHA1string As String = Convert.ToBase64String(SHA1_hash)
-        Dim SHA1string As String = BitConverter.ToString(SHA1_hash).Replace("-", "").ToLower
-        Return SHA1string
-    End Function
+		Dim sp_Save As SqlClient.SqlCommand
+
+		sp_Save = New SqlClient.SqlCommand("AddLegacyFileUploadRequest", Me.m_TableGetter.Connection)
+
+		sp_Save.CommandType = CommandType.StoredProcedure
+
+		'Define parameters
+		Dim myParam As SqlClient.SqlParameter
+
+		'Define parameter for sp's return value
+		myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
+		myParam.Direction = ParameterDirection.ReturnValue
+
+		'Define parameters for the sp's arguments
+		myParam = sp_Save.Parameters.Add("@legacy_File_name", SqlDbType.VarChar, 128)
+		myParam.Direction = ParameterDirection.Input
+		myParam.Value = LegacyFilename
+
+		myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
+		myParam.Direction = ParameterDirection.Output
+
+		myParam = sp_Save.Parameters.Add("@AuthenticationHash", SqlDbType.VarChar, 8)
+		myParam.Direction = ParameterDirection.Input
+		myParam.Value = AuthenticationHash
+
+		'Execute the sp
+		sp_Save.ExecuteNonQuery()
+
+		'Get return value
+		Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+
+		Return ret
+
+	End Function
+
+	Protected Function GenerateHash(ByVal SourceText As String) As String
+		'Create an encoding object to ensure the encoding standard for the source text
+		Dim Ue As New System.Text.ASCIIEncoding
+		'Retrieve a byte array based on the source text
+		Dim ByteSourceText() As Byte = Ue.GetBytes(SourceText)
+		'Compute the hash value from the source
+		Dim SHA1_hash() As Byte = Me.m_SHA1Provider.ComputeHash(ByteSourceText)
+		'And convert it to String format for return
+		'Dim SHA1string As String = Convert.ToBase64String(SHA1_hash)
+		Dim SHA1string As String = BitConverter.ToString(SHA1_hash).Replace("-", "").ToLower
+		Return SHA1string
+	End Function
 
 End Class

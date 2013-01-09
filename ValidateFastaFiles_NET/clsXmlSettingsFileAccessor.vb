@@ -357,14 +357,14 @@ Public Class XmlSettingsFileAccessor
             Try
 				If Short.TryParse(strResult, intValue) Then
 					Return intValue
-				ElseIf strResult.ToLower = "true" Then
-					Return -1
-				ElseIf strResult.ToLower = "false" Then
-					Return 0
-				Else
-					valueNotPresent = True
-					Return valueIfMissing
-				End If
+                ElseIf strResult.ToLower = "true" Then
+                    Return -1
+                ElseIf strResult.ToLower = "false" Then
+                    Return 0
+                Else
+                    valueNotPresent = True
+                    Return valueIfMissing
+                End If
             Catch ex As System.Exception
                 valueNotPresent = True
                 Return valueIfMissing
@@ -395,14 +395,14 @@ Public Class XmlSettingsFileAccessor
             Try
 				If Integer.TryParse(strResult, intValue) Then
 					Return intValue
-				ElseIf strResult.ToLower = "true" Then
-					Return -1
-				ElseIf strResult.ToLower = "false" Then
-					Return 0
-				Else
-					valueNotPresent = True
-					Return valueIfMissing
-				End If
+                ElseIf strResult.ToLower = "true" Then
+                    Return -1
+                ElseIf strResult.ToLower = "false" Then
+                    Return 0
+                Else
+                    valueNotPresent = True
+                    Return valueIfMissing
+                End If
             Catch ex As System.Exception
                 valueNotPresent = True
                 Return valueIfMissing
@@ -420,34 +420,34 @@ Public Class XmlSettingsFileAccessor
     ''' <param name="valueNotPresent">Set to True if "sectionName" or "keyName" is missing.  Returned ByRef.</param>
     ''' <return>The function returns the name of the "value" attribute as a Long.  If "value" is "true" returns -1.  If "value" is "false" returns 0.</return>
 	Public Function GetParam(ByVal sectionName As String, ByVal keyName As String, ByVal valueIfMissing As Long, Optional ByRef valueNotPresent As Boolean = False) As Int64
-		Dim strResult As String
-		Dim blnNotFound As Boolean = False
+        Dim strResult As String
+        Dim blnNotFound As Boolean = False
 		Dim intValue As Int64
 
-		strResult = Me.GetParam(sectionName, keyName, valueIfMissing.ToString, blnNotFound)
-		If strResult Is Nothing OrElse blnNotFound Then
-			valueNotPresent = True
-			Return valueIfMissing
-		Else
-			valueNotPresent = False
-			Try
+        strResult = Me.GetParam(sectionName, keyName, valueIfMissing.ToString, blnNotFound)
+        If strResult Is Nothing OrElse blnNotFound Then
+            valueNotPresent = True
+            Return valueIfMissing
+        Else
+            valueNotPresent = False
+            Try
 				If Int64.TryParse(strResult, intValue) Then
 					Return intValue
-				ElseIf strResult.ToLower = "true" Then
-					Return -1
-				ElseIf strResult.ToLower = "false" Then
-					Return 0
-				Else
-					valueNotPresent = True
-					Return valueIfMissing
-				End If
-			Catch ex As System.Exception
-				valueNotPresent = True
-				Return valueIfMissing
-			End Try
-		End If
+                ElseIf strResult.ToLower = "true" Then
+                    Return -1
+                ElseIf strResult.ToLower = "false" Then
+                    Return 0
+                Else
+                    valueNotPresent = True
+                    Return valueIfMissing
+                End If
+            Catch ex As System.Exception
+                valueNotPresent = True
+                Return valueIfMissing
+            End Try
+        End If
 
-	End Function
+    End Function
 
     ''' <summary>
     ''' The function gets the name of the "value" attribute in section "sectionName".
@@ -471,14 +471,14 @@ Public Class XmlSettingsFileAccessor
             Try
 				If Single.TryParse(strResult, sngValue) Then
 					Return sngValue
-				ElseIf strResult.ToLower = "true" Then
-					Return -1
-				ElseIf strResult.ToLower = "false" Then
-					Return 0
-				Else
-					valueNotPresent = True
-					Return valueIfMissing
-				End If
+                ElseIf strResult.ToLower = "true" Then
+                    Return -1
+                ElseIf strResult.ToLower = "false" Then
+                    Return 0
+                Else
+                    valueNotPresent = True
+                    Return valueIfMissing
+                End If
             Catch ex As System.Exception
                 valueNotPresent = True
                 Return valueIfMissing
@@ -509,14 +509,14 @@ Public Class XmlSettingsFileAccessor
             Try
 				If Double.TryParse(strResult, dblValue) Then
 					Return dblValue
-				ElseIf strResult.ToLower = "true" Then
-					Return -1
-				ElseIf strResult.ToLower = "false" Then
-					Return 0
-				Else
-					valueNotPresent = True
-					Return valueIfMissing
-				End If
+                ElseIf strResult.ToLower = "true" Then
+                    Return -1
+                ElseIf strResult.ToLower = "false" Then
+                    Return 0
+                Else
+                    valueNotPresent = True
+                    Return valueIfMissing
+                End If
             Catch ex As System.Exception
                 valueNotPresent = True
                 Return valueIfMissing
@@ -744,8 +744,11 @@ Public Class XmlSettingsFileAccessor
         ''' <return>The function returns the name of ini file.</return>
         Public ReadOnly Property XmlFilename() As String
             Get
-                If Not Initialized Then Throw New XMLFileReaderNotInitializedException
-                Return (m_XmlFilename)
+				If Not Initialized Then
+					Return String.Empty
+				Else
+					Return (m_XmlFilename)
+				End If
             End Get
         End Property
 
@@ -1093,9 +1096,10 @@ Public Class XmlSettingsFileAccessor
         Public ReadOnly Property AllSections() As System.Collections.Specialized.StringCollection
             Get
                 If Not Initialized Then
-                    Throw New XMLFileReaderNotInitializedException
-                End If
-                Return sections
+					Return New Collections.Specialized.StringCollection()
+				Else
+					Return sections
+				End If
             End Get
         End Property
 
@@ -1328,6 +1332,7 @@ Public Class XmlSettingsFileAccessor
         ''' <param name="strLine">The name of the string to be parse.</param>
         ''' <param name="doc">The name of the System.Xml.XmlDocument.</param>
         ''' <returns>True if success, false if not a recognized line format</returns>
+        ''' <remarks>Returns True for blank lines</remarks>
         Private Function ParseLineManual(ByVal strLine As String, ByRef doc As System.Xml.XmlDocument) As Boolean
             Const SECTION_NAME_TAG As String = "<section name="
             Const KEY_TAG As String = "key="
@@ -1419,8 +1424,8 @@ Public Class XmlSettingsFileAccessor
                                 Natt.Value = SetNameCase(strKey)
                                 N.Attributes.SetNamedItem(Natt)
 
-                            Natt = doc.CreateAttribute("value")
-                            Natt.Value = strValue
+                                Natt = doc.CreateAttribute("value")
+                                Natt.Value = strValue
                                 N.Attributes.SetNamedItem(Natt)
 
                                 GetLastSection().AppendChild(N)
@@ -1469,8 +1474,11 @@ Public Class XmlSettingsFileAccessor
         ''' <summary>It Sets or Gets the output file name.</summary>
         Public Property OutputFilename() As String
             Get
-                If Not Initialized Then Throw New XMLFileReaderNotInitializedException
-                Return m_SaveFilename
+				If Not Initialized Then
+					Return String.Empty
+				Else
+					Return m_SaveFilename
+				End If
             End Get
             Set(ByVal Value As String)
                 Dim fi As System.IO.FileInfo
@@ -1515,8 +1523,11 @@ Public Class XmlSettingsFileAccessor
         ''' <summary>It gets the System.Xml.XmlDocument.</summary>
         Public ReadOnly Property XmlDoc() As System.Xml.XmlDocument
             Get
-                If Not Initialized Then Throw New XMLFileReaderNotInitializedException
-                Return m_XmlDoc
+				If Not Initialized Then
+					Return New System.Xml.XmlDocument
+				Else
+					Return m_XmlDoc
+				End If
             End Get
         End Property
 
@@ -1524,17 +1535,21 @@ Public Class XmlSettingsFileAccessor
         ''' <return>It returns the XML document formatted as a string.</return>
         Public ReadOnly Property XML() As String
             Get
-                If Not Initialized Then Throw New XMLFileReaderNotInitializedException
-                Dim sb As System.Text.StringBuilder = New System.Text.StringBuilder
-                Dim sw As System.IO.StringWriter = New System.IO.StringWriter(sb)
-                Dim xw As System.Xml.XmlTextWriter = New System.Xml.XmlTextWriter(sw)
-                xw.Indentation = 3
-                xw.Formatting = System.Xml.Formatting.Indented
-                m_XmlDoc.WriteContentTo(xw)
-                xw.Close()
-                sw.Close()
-                Return sb.ToString()
-            End Get
+				If Not Initialized Then
+					Return String.Empty
+				End If
+
+				Dim sb As System.Text.StringBuilder = New System.Text.StringBuilder
+				Using sw As System.IO.StringWriter = New System.IO.StringWriter(sb)
+					Using xw As System.Xml.XmlTextWriter = New System.Xml.XmlTextWriter(sw)
+						xw.Indentation = 3
+						xw.Formatting = System.Xml.Formatting.Indented
+						m_XmlDoc.WriteContentTo(xw)
+					End Using
+				End Using
+
+				Return sb.ToString()
+			End Get
         End Property
 
     End Class

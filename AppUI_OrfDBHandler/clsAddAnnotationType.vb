@@ -6,7 +6,7 @@ Public Class clsAddAnnotationType
     Protected m_Description As String
     Protected m_Example As String
     Protected m_AuthID As Integer
-    Protected m_EntryExists As Boolean = False
+	Protected m_EntryExists As Boolean = False
     Protected m_AuthAdd As clsAddNamingAuthority
     Protected m_Authorities As DataTable
     Protected m_FormLocation As System.Drawing.Point

@@ -858,6 +858,8 @@ Public Class frmBatchAddNewCollectionTest
 			End If
 
 			For Each li In Me.lvwFolderContents.SelectedItems
+				upInfo = New Protein_Uploader.IUploadProteins.UploadInfo
+
 				upInfo.FileInformation = DirectCast(Me.m_FileList.Item(li.SubItems(4).Text), System.IO.FileInfo)
 				upInfo.OrganismID = DirectCast(Me.cboOrganismSelect.SelectedValue, Int32)
 				upInfo.AuthorityID = DirectCast(Me.cboAuthorityPicker.SelectedValue, Int32)
