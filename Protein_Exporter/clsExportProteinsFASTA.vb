@@ -41,11 +41,11 @@ Public Class clsExportProteinsFASTA
 
 
         Dim EventTriggerThresh As Integer
-        If counterMax <= 10 Then
-            EventTriggerThresh = 1
-        Else
-            EventTriggerThresh = CInt(counterMax / 10)
-        End If
+		If counterMax <= 25 Then
+			EventTriggerThresh = 1
+		Else
+			EventTriggerThresh = CInt(counterMax / 25)
+		End If
 
         nameList = Proteins.GetSortedProteinNames
 
@@ -163,13 +163,14 @@ Public Class clsExportProteinsFASTA
         ' Open the output file for append
         sw = New System.IO.StreamWriter(New System.IO.FileStream(destinationPath, IO.FileMode.Append, IO.FileAccess.Write, IO.FileShare.Read))
 
-        Me.OnExportStart("Writing: " + proteinTable.TableName)
+		'Me.OnDetailedExportStart("Writing: " + proteinTable.TableName)
+
         counterMax = proteinTable.Rows.Count
-        If counterMax <= 10 Then
-            EventTriggerThresh = 1
-        Else
-            EventTriggerThresh = CInt(counterMax / 10)
-        End If
+		If counterMax <= 25 Then
+			EventTriggerThresh = 1
+		Else
+			EventTriggerThresh = CInt(counterMax / 25)
+		End If
 
         foundRows = proteinTable.Select("")
 
@@ -180,7 +181,7 @@ Public Class clsExportProteinsFASTA
             counter += 1
 
             If (counter Mod EventTriggerThresh) = 0 Then
-                Me.OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
+				'Me.OnDetailedProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
             End If
 
             proteinLength = tmpSeq.Length

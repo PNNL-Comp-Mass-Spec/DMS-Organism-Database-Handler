@@ -127,39 +127,41 @@ Public Class clsGetFASTAFromDMSForward
         Dim user_ID As String = user.Identity.Name
         Dim collectionPassphrases As Hashtable
 
+		Dim collectionNameList As String = String.Empty
 
-        'check each collectionname for encryption of contents
-        Dim nameString As String
-        For Each nameString In ProteinCollectionNameList
-            encCheckRows = Me.m_CollectionsCache.Select("Filename = '" & nameString & "' AND Contents_Encrypted > 0")
+		' Check each collectionname for encryption of contents
+		For Each nameString As String In ProteinCollectionNameList
+			encCheckRows = Me.m_CollectionsCache.Select("Filename = '" & nameString & "' AND Contents_Encrypted > 0")
 
-            If encCheckRows.Length > 0 Then
-                'Determine the encrypted collections to which this user has access
-                authorizationSQL = "SELECT Protein_Collection_ID, Protein_Collection_Name " & _
-                                    "FROM V_Encrypted_Collection_Authorizations " & _
-                                    "WHERE Login_Name = '" & user_ID & "'"
+			If encCheckRows.Length > 0 Then
+				'Determine the encrypted collections to which this user has access
+				authorizationSQL = "SELECT Protein_Collection_ID, Protein_Collection_Name " & _
+				  "FROM V_Encrypted_Collection_Authorizations " & _
+				  "WHERE Login_Name = '" & user_ID & "'"
 
-                authorizationTable = Me.m_TableGrabber.GetTable(authorizationSQL)
-                authCheckRows = authorizationTable.Select("Protein_Collection_Name = '" & nameString & "' OR Protein_Collection_Name = 'Administrator'")
-                If authCheckRows.Length > 0 Then
-                    tmpID = Me.FindIDByName(nameString)
-                    passPhraseSQL = "SELECT Passphrase " & _
-                                    "FROM T_Encrypted_Collection_Passphrases " & _
-                                    "WHERE Protein_Collection_ID = " & tmpID.ToString
-                    passPhraseTable = Me.m_TableGrabber.GetTable(passPhraseSQL)
+				authorizationTable = Me.m_TableGrabber.GetTable(authorizationSQL)
+				authCheckRows = authorizationTable.Select("Protein_Collection_Name = '" & nameString & "' OR Protein_Collection_Name = 'Administrator'")
+				If authCheckRows.Length > 0 Then
+					tmpID = Me.FindIDByName(nameString)
+					passPhraseSQL = "SELECT Passphrase " & _
+					 "FROM T_Encrypted_Collection_Passphrases " & _
+					 "WHERE Protein_Collection_ID = " & tmpID.ToString
+					passPhraseTable = Me.m_TableGrabber.GetTable(passPhraseSQL)
 
-                    If collectionPassphrases Is Nothing Then
-                        collectionPassphrases = New Hashtable
-                    End If
-                    collectionPassphrases.Add(nameString, passPhraseTable.Rows(0).Item("Passphrase").ToString)
-                Else
-                    Throw New Exception("User " & user_ID & " does not have access to the encrypted collection '" & nameString & "'")
-                    Me.OnExportComplete()
-                    Exit Function
-                End If
-            End If
+					If collectionPassphrases Is Nothing Then
+						collectionPassphrases = New Hashtable
+					End If
+					collectionPassphrases.Add(nameString, passPhraseTable.Rows(0).Item("Passphrase").ToString)
+				Else
+					Throw New Exception("User " & user_ID & " does not have access to the encrypted collection '" & nameString & "'")
+					Me.OnExportComplete()
+					Exit Function
+				End If
+			End If
 
-        Next
+			If collectionNameList.Length > 0 Then collectionNameList &= ", "
+			collectionNameList &= nameString
+		Next
 
         Dim lengthCheckSQL As String
         Dim lengthCheckTable As DataTable
@@ -174,6 +176,7 @@ Public Class clsGetFASTAFromDMSForward
         Dim tmpOutputPathCandidate As String
 
         Dim currentCollectionCount As Integer
+		Dim proteinCollectionsExported As Integer
 
         ' Get a temp file name; however, create the file in the target folder path 
         ' (in case the system-defined temp directory is on a different drive than the target folder)
@@ -192,165 +195,179 @@ Public Class clsGetFASTAFromDMSForward
 
         Loop While fiOutputPathCheck.Exists
 
+		If ProteinCollectionNameList.Count = 1 Then
+			OnExportStart("Exporting protein collection " & collectionNameList)
+		Else
+			OnExportStart("Exporting " & ProteinCollectionNameList.Count & "protein collections: " & collectionNameList)
+		End If
 
-        For Each ProteinCollectionName In ProteinCollectionNameList
-            currentCollectionPos = 0
-            currentCollectionCount = 0
-            sectionStart = currentCollectionPos
-            sectionEnd = 0
+		proteinCollectionsExported = 0
+		For Each ProteinCollectionName In ProteinCollectionNameList
+			currentCollectionPos = 0
+			currentCollectionCount = 0
+			sectionStart = currentCollectionPos
+			sectionEnd = 0
 
-            ' Make sure there are no leading or trailing spaces
-            ProteinCollectionName = ProteinCollectionName.Trim()
+			' Make sure there are no leading or trailing spaces
+			ProteinCollectionName = ProteinCollectionName.Trim()
 
-            If nameCheckRegex.IsMatch(ProteinCollectionName) Then
-                m = nameCheckRegex.Match(ProteinCollectionName)
-                trueName = m.Groups("collectionname").Value
-            Else
-                trueName = ProteinCollectionName
-            End If
+			If nameCheckRegex.IsMatch(ProteinCollectionName) Then
+				m = nameCheckRegex.Match(ProteinCollectionName)
+				trueName = m.Groups("collectionname").Value
+			Else
+				trueName = ProteinCollectionName
+			End If
 
-            'Determine collection length
-            lengthCheckSQL = "SELECT NumProteins FROM T_Protein_Collections " & _
-                             "WHERE FileName = '" & ProteinCollectionName & "'"
+			' Lookup the number of proteins that should be in this protein collection
+			lengthCheckSQL = "SELECT NumProteins FROM T_Protein_Collections " & _
+							 "WHERE FileName = '" & ProteinCollectionName & "'"
 
-            lengthCheckTable = Me.m_TableGrabber.GetTable(lengthCheckSQL)
+			lengthCheckTable = Me.m_TableGrabber.GetTable(lengthCheckSQL)
 
-            If lengthCheckTable.Rows.Count > 0 Then
-                foundrow = lengthCheckTable.Rows(0)
-                collectionLength = CType(foundrow.Item(0), Int32)
-            Else
-                collectionLength = -1
-            End If
+			If lengthCheckTable.Rows.Count > 0 Then
+				foundrow = lengthCheckTable.Rows(0)
+				collectionLength = CType(foundrow.Item(0), Int32)
+			Else
+				collectionLength = -1
+			End If
 
+			Do
+				sectionStart = currentCollectionPos
+				sectionEnd = sectionStart + 10000
 
-            Do
-                sectionStart = currentCollectionPos
-                sectionEnd = sectionStart + 10000
+				If PadWithPrimaryAnnotation Then
+					tmpID = Me.FindIDByName(trueName)
+					collectionSQL = _
+						"SELECT Name, Description, Sequence, Protein_ID " & _
+						"FROM V_Protein_Database_Export " & _
+						"WHERE " & _
+							"Protein_Collection_ID = " & tmpID.ToString & " " & _
+							"AND Sorting_Index BETWEEN " & sectionStart.ToString & " AND " & sectionEnd.ToString & " " & _
+					"ORDER BY Sorting_Index"
 
-                If PadWithPrimaryAnnotation Then
-                    tmpID = Me.FindIDByName(trueName)
-                    collectionSQL = _
-                        "SELECT Name, Description, Sequence, Protein_ID " & _
-                        "FROM V_Protein_Database_Export " & _
-                        "WHERE " & _
-                            "Protein_Collection_ID = " & tmpID.ToString & " " & _
-                            "AND Sorting_Index BETWEEN " & sectionStart.ToString & " AND " & sectionEnd.ToString & " " & _
-                    "ORDER BY Sorting_Index"
+				Else
+					collectionSQL = _
+						"SELECT Name, Description, Sequence, Protein_ID " & _
+						"FROM V_Protein_Database_Export " & _
+						"WHERE Protein_Collection_ID = " & tmpID.ToString & ") " & _
+							"AND Annotation_Type_ID = " & AlternateAuthorityID & " " & _
+							"AND Sorting_Index BETWEEN " & sectionStart.ToString & " AND " & sectionEnd.ToString & " " & _
+					"ORDER BY Sorting_Index"
+					alternateNames = New Hashtable
 
-                Else
-                    collectionSQL = _
-                        "SELECT Name, Description, Sequence, Protein_ID " & _
-                        "FROM V_Protein_Database_Export " & _
-                        "WHERE Protein_Collection_ID = " & tmpID.ToString & ") " & _
-                            "AND Annotation_Type_ID = " & AlternateAuthorityID & " " & _
-                            "AND Sorting_Index BETWEEN " & sectionStart.ToString & " AND " & sectionEnd.ToString & " " & _
-                    "ORDER BY Sorting_Index"
-                    alternateNames = New Hashtable
-
-                End If
-
-
-                collectionTable = Me.m_TableGrabber.GetTable(collectionSQL)
-
-                If Not collectionPassphrases Is Nothing Then
-                    If collectionPassphrases.ContainsKey(trueName) Then
-                        '    If collectionPassphrases.ContainsKey(trueName) Then
-
-                        Me.m_RijndaelDecryption = New clsRijndaelEncryptionHandler(collectionPassphrases.Item(trueName).ToString)
-                        For Each decryptionRow In collectionTable.Rows
-                            cipherSeq = decryptionRow.Item("Sequence").ToString
-                            clearSeq = Me.m_RijndaelDecryption.Decrypt(cipherSeq)
-                            decryptionRow.Item("Sequence") = clearSeq
-                            decryptionRow.AcceptChanges()
-                        Next
-                    End If
-                End If
-
-                If collectionLength < 10000 Then
-                    tableName = trueName
-                Else
-                    tableName = trueName + "_" + Format(sectionStart, "0000000000") + "-" + Format(sectionEnd, "0000000000")
-                End If
-
-                collectionTable.TableName = tableName
-
-                Me.m_CurrentFileProteinCount = collectionTable.Rows.Count
-
-                'collection.Tables.Add(collectionTable)
-                Me.m_fileDumper.Export(collectionTable, tmpOutputPath)
+				End If
 
 
-                currentCollectionPos = sectionEnd + 1
-                currentCollectionCount += collectionTable.Rows.Count
-            Loop Until collectionTable.Rows.Count = 0
+				collectionTable = Me.m_TableGrabber.GetTable(collectionSQL)
 
-            tmpIDListSB.Append(Format(tmpID, "000000"))
-            tmpIDListSB.Append("+")
-            If currentCollectionCount <> collectionLength Then
-                Throw New Exception("The number of proteins exported for collection '" + ProteinCollectionName + _
-                    "' does not match the value stored in the Protein Collections Table [" + _
-                    currentCollectionCount.ToString + " counted / " + collectionLength.ToString + " expected]")
-            End If
-        Next
+				If Not collectionPassphrases Is Nothing Then
+					If collectionPassphrases.ContainsKey(trueName) Then
+						'    If collectionPassphrases.ContainsKey(trueName) Then
 
-        Dim tmpFI As System.IO.FileInfo = New System.IO.FileInfo(tmpOutputPath)
+						Me.m_RijndaelDecryption = New clsRijndaelEncryptionHandler(collectionPassphrases.Item(trueName).ToString)
+						For Each decryptionRow In collectionTable.Rows
+							cipherSeq = decryptionRow.Item("Sequence").ToString
+							clearSeq = Me.m_RijndaelDecryption.Decrypt(cipherSeq)
+							decryptionRow.Item("Sequence") = clearSeq
+							decryptionRow.AcceptChanges()
+						Next
+					End If
+				End If
 
-        tmpIDListSB.Remove(tmpIDListSB.Length - 1, 1)
-        Dim name As String '= hash
+				If collectionLength < 10000 Then
+					tableName = trueName
+				Else
+					tableName = trueName + "_" + Format(sectionStart, "0000000000") + "-" + Format(sectionEnd, "0000000000")
+				End If
 
-        If ProteinCollectionNameList.Count > 1 Then
-            name = tmpIDListSB.ToString
-            If ExportPath.Length + name.Length > 225 Then
-                ' If exporting a large number of protein collections, name can be very long
-                ' This can lead to error: The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters
-                ' Thus, truncate name
-                Dim intMaxNameLength As Integer
-                intMaxNameLength = 225 - ExportPath.Length
-                If intMaxNameLength < 30 Then intMaxNameLength = 30
+				collectionTable.TableName = tableName
 
-                name = name.Substring(0, intMaxNameLength)
+				Me.m_CurrentFileProteinCount = collectionTable.Rows.Count
 
-                ' Find the last plus sign and truncate just before it
-                Dim intLastPlusLocation As Integer
-                intLastPlusLocation = name.LastIndexOf("+"c)
-                If intLastPlusLocation > 30 Then
-                    name = name.Substring(0, intLastPlusLocation)
-                End If
-
-            End If
-        Else
-            name = trueName
-        End If
-
-        Me.m_CurrentFullOutputPath = Me.ExtendedExportPath(ExportPath, name)
-        Me.m_CurrentArchiveFileName = name
-
-        ' Rename (move) the temporary file to the final, full name
-        If System.IO.File.Exists(Me.m_CurrentFullOutputPath) Then
-            System.IO.File.Delete(Me.m_CurrentFullOutputPath)
-        End If
-        tmpFI.MoveTo(Me.m_CurrentFullOutputPath)
-
-        ' Assuming the final file now exists, delete the temporary file (if present)
-        Dim outputfi As System.IO.FileInfo = New System.IO.FileInfo(Me.m_CurrentFullOutputPath)
-        If outputfi.Exists Then
-            tmpFI = New System.IO.FileInfo(tmpOutputPath)
-            If tmpFI.Exists Then
-                tmpFI.Delete()
-            End If
-        End If
-
-        ' Determine the SHA-hash of the output file
-        ' This process will also rename the file, e.g. from "C:\Temp\SAR116_RBH_AA_012809_forward.fasta" to "C:\Temp\38FFACAC.fasta"
-        Dim SHA1 As String
-        SHA1 = Me.m_fileDumper.Export(New DataTable, Me.m_CurrentFullOutputPath)
-
-        Me.OnExportComplete()
-
-        Return SHA1
+				'collection.Tables.Add(collectionTable)
+				Me.m_fileDumper.Export(collectionTable, tmpOutputPath)
 
 
-    End Function
+				currentCollectionPos = sectionEnd + 1
+				currentCollectionCount += collectionTable.Rows.Count
+
+				Dim fractionDoneOverall As Double
+				fractionDoneOverall = (proteinCollectionsExported / ProteinCollectionNameList.Count) + (currentCollectionCount / collectionLength) / ProteinCollectionNameList.Count
+
+				OnExportProgressUpdate(currentCollectionCount & " entries exported, collection " & (proteinCollectionsExported + 1) & " of " & (ProteinCollectionNameList.Count), fractionDoneOverall)
+
+			Loop Until collectionTable.Rows.Count = 0
+
+			tmpIDListSB.Append(Format(tmpID, "000000"))
+			tmpIDListSB.Append("+")
+			If currentCollectionCount <> collectionLength Then
+				Throw New Exception("The number of proteins exported for collection '" + ProteinCollectionName + _
+					"' does not match the value stored in the Protein Collections Table [" + _
+					currentCollectionCount.ToString + " counted / " + collectionLength.ToString + " expected]")
+			End If
+
+			proteinCollectionsExported += 1
+		Next
+		OnExportComplete()
+
+		Dim tmpFI As System.IO.FileInfo = New System.IO.FileInfo(tmpOutputPath)
+
+		tmpIDListSB.Remove(tmpIDListSB.Length - 1, 1)
+		Dim name As String '= hash
+
+		If ProteinCollectionNameList.Count > 1 Then
+			name = tmpIDListSB.ToString
+			If ExportPath.Length + name.Length > 225 Then
+				' If exporting a large number of protein collections, name can be very long
+				' This can lead to error: The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters
+				' Thus, truncate name
+				Dim intMaxNameLength As Integer
+				intMaxNameLength = 225 - ExportPath.Length
+				If intMaxNameLength < 30 Then intMaxNameLength = 30
+
+				name = name.Substring(0, intMaxNameLength)
+
+				' Find the last plus sign and truncate just before it
+				Dim intLastPlusLocation As Integer
+				intLastPlusLocation = name.LastIndexOf("+"c)
+				If intLastPlusLocation > 30 Then
+					name = name.Substring(0, intLastPlusLocation)
+				End If
+
+			End If
+		Else
+			name = trueName
+		End If
+
+		Me.m_CurrentFullOutputPath = Me.ExtendedExportPath(ExportPath, name)
+		Me.m_CurrentArchiveFileName = name
+
+		' Rename (move) the temporary file to the final, full name
+		If System.IO.File.Exists(Me.m_CurrentFullOutputPath) Then
+			System.IO.File.Delete(Me.m_CurrentFullOutputPath)
+		End If
+		tmpFI.MoveTo(Me.m_CurrentFullOutputPath)
+
+		' Assuming the final file now exists, delete the temporary file (if present)
+		Dim outputfi As System.IO.FileInfo = New System.IO.FileInfo(Me.m_CurrentFullOutputPath)
+		If outputfi.Exists Then
+			tmpFI = New System.IO.FileInfo(tmpOutputPath)
+			If tmpFI.Exists Then
+				tmpFI.Delete()
+			End If
+		End If
+
+		' Determine the SHA-hash of the output file
+		' This process will also rename the file, e.g. from "C:\Temp\SAR116_RBH_AA_012809_forward.fasta" to "C:\Temp\38FFACAC.fasta"
+		Dim SHA1 As String
+		SHA1 = Me.m_fileDumper.Export(New DataTable, Me.m_CurrentFullOutputPath)
+
+		Me.OnExportComplete()
+
+		Return SHA1
+
+
+	End Function
 
     Overridable Overloads Function ExportFASTAFile( _
        ByVal ProteinCollectionNameList As ArrayList, _

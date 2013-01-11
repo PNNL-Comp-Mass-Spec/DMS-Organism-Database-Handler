@@ -25,19 +25,19 @@ Friend Class clsCollectionEncryptor
         Me.OnEncryptionStart("Encrypting Sequences")
         Dim counter As Integer = 0
         Dim counterMax As Integer = StorageCollection.ProteinCount
-        Dim eventTriggerEdge As Integer
+		Dim EventTriggerThresh As Integer
 
-        If counterMax > 20 Then
-            eventTriggerEdge = CInt(counterMax / 20)
-        Else
-            eventTriggerEdge = 1
-        End If
+		If counterMax <= 50 Then
+			EventTriggerThresh = 1
+		Else
+			EventTriggerThresh = CInt(counterMax / 50)
+		End If
 
 
         While e.MoveNext = True
-            If counter Mod eventTriggerEdge = 0 Then
-                Me.OnEncryptionProgressUpdate(CDbl(counter / counterMax))
-            End If
+			If counter Mod EventTriggerThresh = 0 Then
+				Me.OnEncryptionProgressUpdate(CDbl(counter / counterMax))
+			End If
             ce = DirectCast(e.Value, Protein_Storage.IProteinStorageEntry)
             ce.Sequence = Me.m_RijndaelEncryptor.Encrypt(ce.Sequence)
             ce.SHA1Hash = Me.m_RijndaelEncryptor.MakeArbitraryHash(ce.Sequence)

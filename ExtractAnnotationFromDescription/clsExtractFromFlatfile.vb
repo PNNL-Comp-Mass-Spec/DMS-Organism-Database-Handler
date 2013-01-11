@@ -13,6 +13,8 @@ Friend Class clsExtractFromFlatfile
     Private m_ProteinIDLookup As Hashtable
     Private m_ProteinIDGlobalLookup As Hashtable
 
+	Private m_MaxProteinNameLength As Integer
+
     'AuthorityLookupHash key = AuthorityID, value = AuthorityName
     Sub New(ByVal AuthorityList As Hashtable, ByVal PSConnectionString As String)
         Me.m_Authorities = AuthorityList
@@ -259,8 +261,8 @@ Friend Class clsExtractFromFlatfile
                 ag = Me.m_AnnotationStorage.GetGroup(columnCount)
                 referenceLookup = ag.GetAllXRefs()
                 For Each proteinName In referenceLookup.Keys
-                    Me.m_Uploader.AddProteinReference(proteinName, _
-                        "", 0, ag.AnnotationAuthorityID, DirectCast(Me.m_ProteinIDLookup.Item(proteinName), Int32))
+					Me.m_Uploader.AddProteinReference(proteinName, _
+					 String.Empty, 0, ag.AnnotationAuthorityID, CInt(Me.m_ProteinIDLookup.Item(proteinName)), m_MaxProteinNameLength)
                 Next
 
             End If

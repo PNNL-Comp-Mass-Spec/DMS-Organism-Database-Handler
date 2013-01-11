@@ -116,6 +116,7 @@ Public Class clsPSUploadHandler
 		End Get
 		Set(value As Integer)
 			mMaximumProteinNameLength = value
+			m_Upload.MaximumProteinNameLength = value
 		End Set
 	End Property
 
@@ -250,9 +251,13 @@ Public Class clsPSUploadHandler
 
 			Me.m_Validator.MaximumProteinNameLength = mMaximumProteinNameLength
 
+			OnLoadStart("Validating fasta files")
+
 			' Validate the fasta file (send full path)
 			' This function returns True if the file is successfully processed (even if it has errors)
 			blnFileValidated = Me.m_Validator.StartValidateFASTAFile(fi.FullName)
+
+			OnLoadEnd()
 
 			If blnFileValidated Then
 
@@ -410,16 +415,21 @@ Public Class clsPSUploadHandler
 		'task 4 - Add new collection members to T_Protein_Collection_Members
 		Me.m_Upload.UpdateProteinCollectionMembers(collectionID, fileContents, selectedProteins)
 
+		Me.OnLoadStart("Associating protein collection with organism using T_Collection_Organism_Xref")
 		XrefID = Me.m_Upload.AddCollectionOrganismXref(collectionID, organismID)
+		Me.OnLoadEnd()
+
 		If XrefID < 1 Then
 			'Throw New Exception("Could not add Collection/Organism Xref")
-			MsgBox("Could not add Collection/Organism Xref")
+			MsgBox("Could not add Collection/Organism Xref; m_Upload.AddCollectionOrganismXref returned " & XrefID)
 		End If
 
 
 		'task 5 - Update encryption metadata (if applicable)
 		If fileContents.EncryptSequences Then
+			Me.OnLoadStart("Storing encryption metadata")
 			Me.m_Upload.UpdateEncryptionMetadata(collectionID, fileContents.PassPhrase)
+			Me.OnLoadEnd()
 		End If
 
 
@@ -434,7 +444,10 @@ Public Class clsPSUploadHandler
 
 		'Dim tmpFi As System.IO.FileInfo = New System.IO.FileInfo(tmpFileName)
 
-		Dim fingerprint As String = Me.m_Export.ExportFASTAFile(collectionID, tmpFileName, IGetFASTAFromDMS.DatabaseFormatTypes.fasta, IGetFASTAFromDMS.SequenceTypes.forward)
+		Dim fingerprint As String
+		Me.OnLoadStart("Generating Hash fingerprint")
+		fingerprint = Me.m_Export.ExportFASTAFile(collectionID, tmpFileName, IGetFASTAFromDMS.DatabaseFormatTypes.fasta, IGetFASTAFromDMS.SequenceTypes.forward)
+		Me.OnLoadEnd()
 
 		'If Me.m_Export.ExportedProteinCount = fileContents.ProteinCount Then
 		'    Me.m_ImportExportCountsMatched = True
@@ -442,7 +455,9 @@ Public Class clsPSUploadHandler
 		'    Me.m_ImportExportCountsMatched = False
 		'End If
 
+		Me.OnLoadStart("Storing fingerprint in T_Protein_Collections")
 		Me.m_Upload.AddAuthenticationHash(collectionID, fingerprint)
+		Me.OnLoadEnd()
 
 		'TODO add in hash return
 		Return 0
@@ -476,4 +491,11 @@ Public Class clsPSUploadHandler
 		mValidationOptions(eValidationOptionName) = blnEnabled
 	End Sub
 
+	Private Sub m_Export_FileGenerationCompleted(FullOutputPath As String) Handles m_Export.FileGenerationCompleted
+
+	End Sub
+
+	Private Sub m_Export_FileGenerationProgress(statusMsg As String, fractionDone As Double) Handles m_Export.FileGenerationProgress
+		OnProgressUpdate(fractionDone)
+	End Sub
 End Class

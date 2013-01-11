@@ -52,11 +52,11 @@ Public Class clsExportProteinsXTFASTA
         Dim encoding As New System.Text.ASCIIEncoding
 
         Dim EventTriggerThresh As Integer
-        If counterMax <= 10 Then
-            EventTriggerThresh = 1
-        Else
-            EventTriggerThresh = CInt(counterMax / 10)
-        End If
+		If counterMax <= 25 Then
+			EventTriggerThresh = 1
+		Else
+			EventTriggerThresh = CInt(counterMax / 25)
+		End If
 
         bw.Write(buffer)
 
@@ -162,11 +162,11 @@ Public Class clsExportProteinsXTFASTA
             Dim encoding As New System.Text.ASCIIEncoding
 
             Dim EventTriggerThresh As Integer
-            If counterMax <= 10 Then
-                EventTriggerThresh = 1
-            Else
-                EventTriggerThresh = CInt(counterMax / 10)
-            End If
+			If counterMax <= 25 Then
+				EventTriggerThresh = 1
+			Else
+				EventTriggerThresh = CInt(counterMax / 25)
+			End If
 
             bw.Write(buffer)
 

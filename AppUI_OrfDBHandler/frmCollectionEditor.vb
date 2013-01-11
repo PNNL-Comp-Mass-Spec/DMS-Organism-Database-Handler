@@ -767,7 +767,7 @@ Public Class frmCollectionEditor
 
 #End Region
 
-	Protected Const PROGRAM_DATE As String = "January 9, 2013"
+	Protected Const PROGRAM_DATE As String = "January 10, 2013"
 
     Protected m_Organisms As DataTable
     Protected m_ProteinCollections As DataTable
@@ -1641,9 +1641,7 @@ Public Class frmCollectionEditor
         m_UploadHandler.LoadEnd, m_fileBatcher.LoadEnd, _
         m_Syncer.SyncComplete
 
-        Me.pnlProgBar.Visible = False
-        Me.lblCurrentTask.Text = ""
-        Me.lblCurrentTask.Visible = False
+		Me.lblCurrentTask.Text = "Complete: " & Me.lblCurrentTask.Text
         Me.Invalidate()
         Me.gbxDestinationCollection.Invalidate()
         Me.gbxSourceCollection.Invalidate()
