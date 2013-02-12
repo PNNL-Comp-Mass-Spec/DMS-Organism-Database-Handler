@@ -372,17 +372,15 @@ Public Class frmRegexSpecifyFromDescription
     End Sub
 
     Private Sub rdbSourceSelect_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles rdbNameSelect.CheckedChanged, rdbDescriptionSelect.CheckedChanged
-        Dim rdb As System.Windows.Forms.RadioButton
-        If rdb.Checked = True Then
-            If rdb.Name = "rdbNameSelect" Then
-                Me.m_ExtractionSource = ExtractionSources.Name
-            ElseIf rdb.Name = "rdbDescriptionSelect" Then
-                Me.m_ExtractionSource = ExtractionSources.Description
-            End If
+		Dim rdb As System.Windows.Forms.RadioButton = CType(sender, System.Windows.Forms.RadioButton)
 
-
-
-        End If
+		If rdb.Checked = True Then
+			If rdb.Name = Me.rdbNameSelect.Name Then
+				Me.m_ExtractionSource = ExtractionSources.Name
+			ElseIf rdb.Name = Me.rdbDescriptionSelect.Name Then
+				Me.m_ExtractionSource = ExtractionSources.Description
+			End If
+		End If
 
     End Sub
 End Class

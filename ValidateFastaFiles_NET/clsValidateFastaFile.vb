@@ -732,19 +732,19 @@ Public Class clsValidateFastaFile
         Dim blnBlankLineProcessed As Boolean
 
         ' Note that text is stored in the string dictionary lowercase, and searches are thus case-insensitive
-        Dim htProteinNames As System.Collections.Specialized.StringDictionary
+		Dim htProteinNames As System.Collections.Specialized.StringDictionary = Nothing
 
         ' This hashtable provides a quick lookup for existing protein hashes
-        Dim htProteinSequenceHashes As Hashtable
+		Dim htProteinSequenceHashes As Hashtable = Nothing
 
         ' This array tracks protein hash details
         Dim intProteinSequenceHashCount As Integer
-        Dim udtProteinSeqHashInfo() As udtProteinHashInfoType
+		Dim udtProteinSeqHashInfo() As udtProteinHashInfoType = Nothing
 
-        Dim udtHeaderLineRuleDetails() As udtRuleDefinitionExtendedType
-        Dim udtProteinNameRuleDetails() As udtRuleDefinitionExtendedType
-        Dim udtProteinDescriptionRuleDetails() As udtRuleDefinitionExtendedType
-        Dim udtProteinSequenceRuleDetails() As udtRuleDefinitionExtendedType
+		Dim udtHeaderLineRuleDetails() As udtRuleDefinitionExtendedType = Nothing
+		Dim udtProteinNameRuleDetails() As udtRuleDefinitionExtendedType = Nothing
+		Dim udtProteinDescriptionRuleDetails() As udtRuleDefinitionExtendedType = Nothing
+		Dim udtProteinSequenceRuleDetails() As udtRuleDefinitionExtendedType = Nothing
 
         Dim reProteinNameTruncation As udtProteinNameTruncationRegex
 
@@ -1465,7 +1465,7 @@ Public Class clsValidateFastaFile
 	 ByVal strFastaFilePathOut As String) As Boolean
 
 		Dim swUniqueProteinSeqsOut As System.IO.StreamWriter
-		Dim swDuplicateProteinMapping As System.IO.StreamWriter
+		Dim swDuplicateProteinMapping As System.IO.StreamWriter = Nothing
 
 		Dim strUniqueProteinSeqsFileOut As String = String.Empty
 		Dim strDuplicateProteinMappingFileOut As String = String.Empty

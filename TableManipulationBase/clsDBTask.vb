@@ -211,8 +211,8 @@ Public Class clsDBTask
     End Function
 
     Protected Function GetTable(ByVal SelectSQL As String) As DataTable Implements IGetSQLData.GetTable
-        Dim tmpDA As SqlClient.SqlDataAdapter
-        Dim tmpCB As SqlClient.SqlCommandBuilder
+		Dim tmpDA As SqlClient.SqlDataAdapter = Nothing
+		Dim tmpCB As SqlClient.SqlCommandBuilder = Nothing
 
         Dim tmpTable As DataTable = GetTable(SelectSQL, tmpDA, tmpCB)
         tmpDA.Dispose()

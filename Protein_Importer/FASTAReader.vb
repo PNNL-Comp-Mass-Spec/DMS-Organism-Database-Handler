@@ -66,7 +66,6 @@ Public Class FASTAReader
 
     Protected Function LoadFASTAFile(ByVal FilePath As String, ByVal NumRecordsToLoad As Integer) As Protein_Storage.IProteinStorage Implements IReadProteinImportFile.GetProteinEntries
         Dim fi As FileInfo
-        Dim tr As TextReader
         Dim s As String
 
         Dim fileLength As Integer
@@ -99,66 +98,67 @@ Public Class FASTAReader
 
                 RaiseEvent LoadStart("Reading Source File...") 'Trigger the setup of the pgb
 
-                tr = New System.IO.StreamReader(New System.IO.FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
-                s = tr.ReadLine.Trim
-                Do While Not s Is Nothing
-                    If Me.m_DescLineMatcher.IsMatch(s) Then
-                        'DescriptionLine, new record
-                        If currPos > 0 Then 'dump current record
-                            seqInfo.CalculateSequenceInfo(strSeqTemp)
-                            recordCount += 1
-                            If recordCount Mod 100 = 0 Then
-                                RaiseEvent LoadProgress(CSng(currPos / fileLength))     'trigger pgb update every 10th record
-                            End If
-                            fastaContents.AddProtein(New Protein_Storage.clsProteinStorageEntry( _
-                                strORFTemp, strDescTemp, strSeqTemp, seqInfo.SequenceLength, _
-                                seqInfo.MonoIsotopicMass, seqInfo.AverageMass, _
-                                seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount))
-                        End If
+				Using tr As TextReader = New System.IO.StreamReader(New System.IO.FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
 
-                        strORFTemp = ""
-                        strDescTemp = ""
-                        strSeqTemp = ""
+					s = tr.ReadLine.Trim
+					Do While Not s Is Nothing
+						If Me.m_DescLineMatcher.IsMatch(s) Then
+							'DescriptionLine, new record
+							If currPos > 0 Then	'dump current record
+								seqInfo.CalculateSequenceInfo(strSeqTemp)
+								recordCount += 1
+								If recordCount Mod 100 = 0 Then
+									RaiseEvent LoadProgress(CSng(currPos / fileLength))		'trigger pgb update every 10th record
+								End If
+								fastaContents.AddProtein(New Protein_Storage.clsProteinStorageEntry( _
+								 strORFTemp, strDescTemp, strSeqTemp, seqInfo.SequenceLength, _
+								 seqInfo.MonoIsotopicMass, seqInfo.AverageMass, _
+								 seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount))
+							End If
 
-                        If Me.m_DescLineRegEx.IsMatch(s) Then
-                            descMatch = Me.m_DescLineRegEx.Match(s)
-                            strORFTemp = descMatch.Groups("name").Value
-                            strDescTemp = descMatch.Groups("description").Value
-                        ElseIf Me.m_NoDescLineRegEx.IsMatch(s) Then
-                            descMatch = Me.m_NoDescLineRegEx.Match(s)
-                            strORFTemp = descMatch.Groups(1).Value
-                            strDescTemp = ""
-                        End If
-                    Else
-                        strSeqTemp &= s
-                    End If
-                    If NumRecordsToLoad > 0 And recordCount >= NumRecordsToLoad - 1 Then
-                        Exit Do
-                    End If
-                    currPos += s.Length + lineEndCharCount
+							strORFTemp = ""
+							strDescTemp = ""
+							strSeqTemp = ""
 
-                    If tr.Peek() >= 0 Then
-                        s = tr.ReadLine.Trim
-                    Else
-                        Exit Do
-                    End If
-                Loop
+							If Me.m_DescLineRegEx.IsMatch(s) Then
+								descMatch = Me.m_DescLineRegEx.Match(s)
+								strORFTemp = descMatch.Groups("name").Value
+								strDescTemp = descMatch.Groups("description").Value
+							ElseIf Me.m_NoDescLineRegEx.IsMatch(s) Then
+								descMatch = Me.m_NoDescLineRegEx.Match(s)
+								strORFTemp = descMatch.Groups(1).Value
+								strDescTemp = ""
+							End If
+						Else
+							strSeqTemp &= s
+						End If
+						If NumRecordsToLoad > 0 And recordCount >= NumRecordsToLoad - 1 Then
+							Exit Do
+						End If
+						currPos += s.Length + lineEndCharCount
 
-                'dump the last record
-                seqInfo.CalculateSequenceInfo(strSeqTemp)
-                recordCount += 1
+						If tr.Peek() >= 0 Then
+							s = tr.ReadLine.Trim
+						Else
+							Exit Do
+						End If
+					Loop
 
-                fastaContents.AddProtein(New Protein_Storage.clsProteinStorageEntry( _
-                    strORFTemp, strDescTemp, strSeqTemp, seqInfo.SequenceLength, _
-                    seqInfo.MonoIsotopicMass, seqInfo.AverageMass, _
-                    seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount))
+					'dump the last record
+					seqInfo.CalculateSequenceInfo(strSeqTemp)
+					recordCount += 1
+
+					fastaContents.AddProtein(New Protein_Storage.clsProteinStorageEntry( _
+					 strORFTemp, strDescTemp, strSeqTemp, seqInfo.SequenceLength, _
+					 seqInfo.MonoIsotopicMass, seqInfo.AverageMass, _
+					 seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount))
 
 
-                RaiseEvent LoadEnd()
+					RaiseEvent LoadEnd()
 
-            End If
-            tr.Close()
+				End Using
 
+			End If
 
         Catch e As Exception
             ' Exception occurred
