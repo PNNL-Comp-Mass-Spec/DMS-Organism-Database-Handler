@@ -242,6 +242,16 @@ Public Class clsGetFASTAFromDMS
 			Throw New System.Exception("Legacy fasta file not found: " & legacyStaticFilePath & " (path comes from V_Legacy_Static_File_Locations)")
 		Else
 
+			' Make sure we have enough disk free space
+
+			Dim errorMessage As String = String.Empty
+			Dim sourceFileSizeMB As Double = FastaSourceFI.Length / 1024.0 / 1024.0
+
+			If Not PRISM.Files.clsFileTools.ValidateFreeDiskSpace(System.IO.Path.Combine(ExportPath, "TargetFile.tmp"), sourceFileSizeMB, 150, errorMessage) Then
+				If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
+				Throw New System.IO.IOException("Unable to copy legacy FASTA file to " & ExportPath & ". " & errorMessage)
+			End If
+
 			' If we get here, then finalFileName = "" or the file is not present or the LockFile is present
 			' Try to create a lock file, then either wait for an existing lock file to go away or export the database
 			Dim lockStream As System.IO.FileStream

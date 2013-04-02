@@ -2,6 +2,7 @@ Option Strict On
 Imports Protein_Exporter
 
 Module modMain
+	Public Const PROGRAM_DATE As String = "April 1, 2013"
 
     Const m_DebugLevel As Integer = 4
     Const FASTA_GEN_TIMEOUT_INTERVAL_MINUTES As Integer = 70
@@ -120,6 +121,10 @@ Module modMain
 
 
     End Sub
+
+	Private Function GetAppVersion(ByVal strProgramDate As String) As String
+		Return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() & " (" & strProgramDate & ")"
+	End Function
 
     Private Function GetHumanReadableTimeInterval(ByVal dtInterval As System.TimeSpan) As String
 
@@ -287,7 +292,8 @@ Module modMain
             Console.WriteLine("Optionally use /D to log the details of the protein collections, options, and resultant file to a log file.")
             Console.WriteLine()
 
-            Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2009")
+			Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2009")
+			Console.WriteLine("Version: " & GetAppVersion(PROGRAM_DATE))
             Console.WriteLine()
 
             Console.WriteLine("E-mail: matthew.monroe@pnl.gov or matt@alchemistmatt.com")

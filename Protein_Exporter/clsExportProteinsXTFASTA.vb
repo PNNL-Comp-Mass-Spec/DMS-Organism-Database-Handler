@@ -21,6 +21,12 @@ Public Class clsExportProteinsXTFASTA
 
         ReDim Preserve buffer(255)
 
+		Dim errorMessage As String = String.Empty
+		If Not PRISM.Files.clsFileTools.ValidateFreeDiskSpace(destinationPath, 150, errorMessage) Then
+			If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
+			Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
+		End If
+
         Dim bw As System.IO.BinaryWriter = New System.IO.BinaryWriter(IO.File.OpenWrite(destinationPath))
 
         bw.BaseStream.Seek(0, IO.SeekOrigin.Begin)
@@ -119,6 +125,13 @@ Public Class clsExportProteinsXTFASTA
         buffer = System.Text.Encoding.Default.GetBytes(HEADER_STRING)
 
         ReDim Preserve buffer(255)
+
+
+		Dim errorMessage As String = String.Empty
+		If Not PRISM.Files.clsFileTools.ValidateFreeDiskSpace(destinationPath, 150, errorMessage) Then
+			If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
+			Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
+		End If
 
         Dim bw As System.IO.BinaryWriter = New System.IO.BinaryWriter(IO.File.OpenWrite(destinationPath))
 

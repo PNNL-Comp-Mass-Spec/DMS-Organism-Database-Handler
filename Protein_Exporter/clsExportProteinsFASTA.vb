@@ -15,97 +15,108 @@ Public Class clsExportProteinsFASTA
         ByRef Proteins As Protein_Storage.IProteinStorage, _
         ByRef destinationPath As String) As String
 
-        'Dim dr As DataRow
-        Dim sw As System.IO.StreamWriter = New System.IO.StreamWriter(destinationPath)
+		Dim errorMessage As String = String.Empty
 
-        Dim nameList As ArrayList
+		If Not PRISM.Files.clsFileTools.ValidateFreeDiskSpace(destinationPath, 150, errorMessage) Then
+			If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
+			Throw New System.IO.IOException("Unable to save FASTA file at " & destinationPath & ". " & errorMessage)
+		End If
 
-        'Dim e As IEnumerator = Proteins.GetEnumerator
-        Dim proteinPosition As Integer
-        Dim proteinLength As Integer
+		'Dim dr As DataRow
+		Dim sw As System.IO.StreamWriter = New System.IO.StreamWriter(destinationPath)
 
-        Dim tmpSeq As String
-        Dim tmpName As String
-        Dim tmpDesc As String
-        Dim seqLine As String
-        Dim tmpPC As Protein_Storage.IProteinStorageEntry
-        Dim tmpAltNames As String = String.Empty
+		Dim nameList As ArrayList
+
+		'Dim e As IEnumerator = Proteins.GetEnumerator
+		Dim proteinPosition As Integer
+		Dim proteinLength As Integer
+
+		Dim tmpSeq As String
+		Dim tmpName As String
+		Dim tmpDesc As String
+		Dim seqLine As String
+		Dim tmpPC As Protein_Storage.IProteinStorageEntry
+		Dim tmpAltNames As String = String.Empty
+
+		If Not PRISM.Files.clsFileTools.ValidateFreeDiskSpace(destinationPath, 150, errorMessage) Then
+			If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
+			Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
+		End If
+
+		Me.OnExportStart("Writing to FASTA File")
+
+		Dim counterMax As Integer = Proteins.ProteinCount
+		Dim counter As Integer
+		Dim cntrlFinder As System.Text.RegularExpressions.Regex = _
+		 New System.Text.RegularExpressions.Regex("[\x00-\x1F\x7F-\xFF]", Text.RegularExpressions.RegexOptions.Compiled)
 
 
-        Me.OnExportStart("Writing to FASTA File")
-
-        Dim counterMax As Integer = Proteins.ProteinCount
-        Dim counter As Integer
-        Dim cntrlFinder As System.Text.RegularExpressions.Regex = _
-            New System.Text.RegularExpressions.Regex("[\x00-\x1F\x7F-\xFF]", Text.RegularExpressions.RegexOptions.Compiled)
-
-
-        Dim EventTriggerThresh As Integer
+		Dim EventTriggerThresh As Integer
 		If counterMax <= 25 Then
 			EventTriggerThresh = 1
 		Else
 			EventTriggerThresh = CInt(counterMax / 25)
 		End If
 
-        nameList = Proteins.GetSortedProteinNames
+		nameList = Proteins.GetSortedProteinNames
 
-        For Each tmpName In nameList
+		For Each tmpName In nameList
 
-            Me.OnExportStart("Writing: " + tmpName)
+			Me.OnExportStart("Writing: " + tmpName)
 
-            tmpPC = DirectCast(Proteins.GetProtein(tmpName), Protein_Storage.IProteinStorageEntry)
-            tmpSeq = tmpPC.Sequence
+			tmpPC = DirectCast(Proteins.GetProtein(tmpName), Protein_Storage.IProteinStorageEntry)
+			tmpSeq = tmpPC.Sequence
 
-            counter += 1
+			counter += 1
 
-            If (counter Mod EventTriggerThresh) = 0 Then
-                Me.OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
-            End If
+			If (counter Mod EventTriggerThresh) = 0 Then
+				Me.OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
+			End If
 
-            proteinLength = tmpSeq.Length
-            tmpDesc = cntrlFinder.Replace(tmpPC.Description, " ")
-
-
-            sw.WriteLine((">" & tmpPC.Reference & " " & tmpDesc & tmpAltNames).Trim())
-
-            For proteinPosition = 1 To proteinLength Step Me.m_seqLineLength
-                seqLine = Mid(tmpSeq, proteinPosition, Me.m_seqLineLength)
-                sw.WriteLine(seqLine)
-            Next
-        Next
-
-        sw.Flush()
-        sw.Close()
-
-        sw = Nothing
+			proteinLength = tmpSeq.Length
+			tmpDesc = cntrlFinder.Replace(tmpPC.Description, " ")
 
 
-        Dim fingerprint As String = Me.GetFileHash(destinationPath)
+			sw.WriteLine((">" & tmpPC.Reference & " " & tmpDesc & tmpAltNames).Trim())
 
-        Dim fi As System.IO.FileInfo = New System.IO.FileInfo(destinationPath)
+			For proteinPosition = 1 To proteinLength Step Me.m_seqLineLength
+				seqLine = Mid(tmpSeq, proteinPosition, Me.m_seqLineLength)
+				sw.WriteLine(seqLine)
+			Next
+		Next
 
-        Dim newDestinationPath As String
-        newDestinationPath = System.IO.Path.Combine( _
-                System.IO.Path.GetDirectoryName(destinationPath), _
-                fingerprint + System.IO.Path.GetExtension(destinationPath))
+		sw.Flush()
+		sw.Close()
 
-        Dim targetFI As System.IO.FileInfo = New System.IO.FileInfo(newDestinationPath)
+		sw = Nothing
 
-        If fi.Exists Then
-            If targetFI.Exists Then
-                targetFI.Delete()
-            End If
-            fi.MoveTo(newDestinationPath)
-            destinationPath = newDestinationPath
-        End If
-        fi = Nothing
-        targetFI = Nothing
 
-        Me.OnExportEnd()
+		Dim fingerprint As String = Me.GetFileHash(destinationPath)
 
-        Return fingerprint
+		Dim fi As System.IO.FileInfo = New System.IO.FileInfo(destinationPath)
 
-    End Function
+		Dim newDestinationPath As String
+		newDestinationPath = System.IO.Path.Combine( _
+		  System.IO.Path.GetDirectoryName(destinationPath), _
+		  fingerprint + System.IO.Path.GetExtension(destinationPath))
+
+		Dim targetFI As System.IO.FileInfo = New System.IO.FileInfo(newDestinationPath)
+
+		If fi.Exists Then
+			If targetFI.Exists Then
+				targetFI.Delete()
+			End If
+			fi.MoveTo(newDestinationPath)
+			destinationPath = newDestinationPath
+		End If
+		fi = Nothing
+		targetFI = Nothing
+
+		Me.OnExportEnd()
+
+		Return fingerprint
+
+	End Function
 
 
     Protected Overloads Overrides Function Export( _
@@ -159,6 +170,12 @@ Public Class clsExportProteinsFASTA
         Dim tmpAltNames As String = String.Empty
         Dim EventTriggerThresh As Integer
         Dim sw As System.IO.StreamWriter
+
+		Dim errorMessage As String = String.Empty
+		If Not PRISM.Files.clsFileTools.ValidateFreeDiskSpace(destinationPath, 150, errorMessage) Then
+			If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
+			Throw New System.IO.IOException("Unable to append to FASTA file at " & destinationPath & ". " & errorMessage)
+		End If
 
         ' Open the output file for append
         sw = New System.IO.StreamWriter(New System.IO.FileStream(destinationPath, IO.FileMode.Append, IO.FileAccess.Write, IO.FileShare.Read))

@@ -94,6 +94,10 @@
       <Name>ExpTreeLib</Name>
       <HintPath>..\Shared Libraries\ExpTreeLib.dll</HintPath>
     </Reference>
+    <Reference Include="PRISM, Version=2.2.4839.25226, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Shared Libraries\PRISM.dll</HintPath>
+    </Reference>
     <Reference Include="skybound.visualstyles">
       <Name>skybound.visualstyles</Name>
       <HintPath>..\Shared Libraries\skybound.visualstyles.dll</HintPath>
@@ -162,11 +166,10 @@
       <Project>{85531A5F-F4DB-42EB-B597-397ADF10B0E9}</Project>
       <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
     </ProjectReference>
-    <ProjectReference Include="..\ValidateFastaFiles_NET\ValidateFastaFiles_Dll.vbproj">
-      <Name>ValidateFastaFiles_Dll</Name>
-      <Project>{4719F96F-6CFC-4CAB-8959-35233A6505E8}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
+    <Reference Include="ValidateFastaFile, Version=2.1.4834.35819, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Shared Libraries\ValidateFastaFile.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
