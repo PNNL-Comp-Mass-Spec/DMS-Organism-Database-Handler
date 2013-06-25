@@ -480,7 +480,7 @@ Public Class clsGetFASTAFromDMS
 		   AlternateAnnotationTypeID, _
 		   PadWithPrimaryAnnotation)
 
-		Dim counter As Integer = 0
+		Dim counter As Integer
 		Dim Archived_File_ID As Integer
 
 		If String.IsNullOrEmpty(SHA1) Then
@@ -488,6 +488,7 @@ Public Class clsGetFASTAFromDMS
 			Return SHA1
 		End If
 
+		counter = 0
 		For Each CollectionName In ProteinCollectionNameList
 			If counter = 0 Then
 				Archived_File_ID = Me.m_Archiver.ArchiveCollection( _
@@ -497,6 +498,12 @@ Public Class clsGetFASTAFromDMS
 				 Me.m_DatabaseFormatType, _
 				 Me.m_FinalOutputPath, _
 				 CreationOptionsString, SHA1, strProteinCollectionList)
+
+				If Archived_File_ID = 0 Then
+					' Error making an entry in T_Archived_Output_Files; abort
+					Throw New Exception("Error archiving collection; Archived_File_ID = 0")
+				End If
+
 			Else
 				tmpID = Me.GetProteinCollectionID(CollectionName)
 				Me.m_Archiver.AddArchiveCollectionXRef(tmpID, Archived_File_ID)
@@ -589,7 +596,7 @@ Public Class clsGetFASTAFromDMS
 				Exit Do
 
 			Catch ex As Exception
-				OnFileGenerationProgressUpdate("Exception while monitoring " & LOCK_FILE_PROGRESS_TEXT & ": " & ex.Message, 0)
+				OnFileGenerationProgressUpdate("Exception while monitoring " & LOCK_FILE_PROGRESS_TEXT & " " & lockFi.FullName & ": " & ex.Message, 0)
 			End Try
 
 			' Something went wrong; wait for 15 seconds then try again
@@ -602,6 +609,7 @@ Public Class clsGetFASTAFromDMS
 					ProteinCollectionListOrLegacyFastaFileName = "??"
 				End If
 
+				' Exception: Unable to create Lockfile required to export Protein collection ...
 				Throw New System.Exception("Unable to create " & LOCK_FILE_PROGRESS_TEXT & " required to export " & ProteinCollectionListOrLegacyFastaFileName & "; tried 4 times without success")
 			End If
 		Loop

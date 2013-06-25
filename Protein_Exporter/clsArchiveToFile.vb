@@ -64,6 +64,8 @@ Public Class clsArchiveToFile
 			tmptable = Me.m_TableGetter.GetTable(checkSQL)
 
 		Else
+			' Archived file entry already exists
+
 			ArchivedFileEntryID = CInt(tmptable.Rows(0).Item("Archived_File_ID"))
 			CollectionListHexHashInDB = CStr(tmptable.Rows(0).Item("Collection_List_Hex_Hash"))
 			ProteinCollectionsListFromDB = CStr(tmptable.Rows(0).Item("Protein_Collection_List"))
@@ -78,8 +80,6 @@ Public Class clsArchiveToFile
 		Me.m_Archived_File_Name = tmptable.Rows(0).Item("Archived_File_Path").ToString
 
 
-
-
 		Try
 			di = New System.IO.DirectoryInfo(System.IO.Path.GetDirectoryName(Me.m_Archived_File_Name))
 			destFI = New System.IO.FileInfo(Me.m_Archived_File_Name)
@@ -91,7 +91,8 @@ Public Class clsArchiveToFile
 				fi.CopyTo(Me.m_Archived_File_Name)
 			End If
 
-
+		Catch exUnauthorized As System.UnauthorizedAccessException
+			Console.WriteLine("  Warning: access denied copying file to " & Me.m_Archived_File_Name)
 		Catch ex As Exception
 			Me.m_LastError = "File copying error: " + ex.Message
 			Return 0
