@@ -50,7 +50,8 @@ Public Class clsRijndaelEncryptionHandler
     Const INIT_VECTOR As String = "@3k8573j4083j410"
     Const KEY_SIZE As Integer = 192
     Private m_passPhrase As String
-    Private m_Password As PasswordDeriveBytes
+	'Private m_Password As PasswordDeriveBytes
+	Private m_Password As Rfc2898DeriveBytes
 
     Private m_SymmetricKey As RijndaelManaged
     Private m_Hashgen As SHA1Managed
@@ -68,27 +69,23 @@ Public Class clsRijndaelEncryptionHandler
         ' Let us assume that strings only contain ASCII codes.
         ' If strings include Unicode characters, use Unicode, UTF7, or UTF8 
         ' encoding.
-        'Dim initVectorBytes As Byte()
-        Me.m_initVectorBytes = Encoding.ASCII.GetBytes(INIT_VECTOR)
+		Me.m_initVectorBytes = Encoding.ASCII.GetBytes(INIT_VECTOR)
 
-        'Dim saltValueBytes As Byte()
-        Me.m_saltValueBytes = Encoding.ASCII.GetBytes(SALT_VALUE)
+		Me.m_saltValueBytes = Encoding.ASCII.GetBytes(SALT_VALUE)
 
         ' First, we must create a password, from which the key will be derived.
         ' This password will be generated from the specified passphrase and 
         ' salt value. The password will be created using the specified hash 
         ' algorithm. Password creation can be done in several iterations.
-        Me.m_Password = New PasswordDeriveBytes(passPhrase, _
-                                           Me.m_saltValueBytes, _
-                                           HASH_ALGORITHM, _
-                                           NUM_PW_ITERATIONS)
+		Me.m_Password = New Rfc2898DeriveBytes(passPhrase, Me.m_saltValueBytes, NUM_PW_ITERATIONS)
+		'Old: Me.m_Password = New PasswordDeriveBytes(passPhrase, Me.m_saltValueBytes, HASH_ALGORITHM, NUM_PW_ITERATIONS)
 
         ' Use the password to generate pseudo-random bytes for the encryption
         ' key. Specify the size of the key in bytes (instead of bits).
-        'Dim keyBytes As Byte()
-        Me.m_KeyBytes = Me.m_Password.GetBytes(CInt(KEY_SIZE / 8))
+		Me.m_KeyBytes = Me.m_Password.GetBytes(CInt(KEY_SIZE / 8))
+		'Old: Me.m_KeyBytes = Me.m_Password.GetBytes(CInt(KEY_SIZE / 8))
 
-        ' Create uninitialized Rijndael encryption object.
+		' Create uninitialized Rijndael encryption object.
         Me.m_SymmetricKey = New RijndaelManaged
 
         ' It is reasonable to set encryption mode to Cipher Block Chaining
@@ -101,9 +98,6 @@ Public Class clsRijndaelEncryptionHandler
         Me.m_Encryptor = Me.m_SymmetricKey.CreateEncryptor(Me.m_KeyBytes, Me.m_initVectorBytes)
 
         Me.m_Decryptor = Me.m_SymmetricKey.CreateDecryptor(Me.m_KeyBytes, Me.m_initVectorBytes)
-
-
-
 
     End Sub
 
