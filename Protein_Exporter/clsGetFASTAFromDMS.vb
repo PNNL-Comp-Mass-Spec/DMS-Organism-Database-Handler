@@ -544,7 +544,7 @@ Public Class clsGetFASTAFromDMS
 	   ByVal LockFileHash As String, _
 	   ByVal ProteinCollectionListOrLegacyFastaFileName As String) As System.IO.FileStream
 
-		' Returns True if an existing lock file is found, False if not present
+		' Creates a new lock file
 		' If an existing file is not found, but a lock file was successfully created, then lockStream will be a valid file stream
 
 		Dim lockFi As System.IO.FileInfo
@@ -582,7 +582,6 @@ Public Class clsGetFASTAFromDMS
 
 					Me.m_WaitingForLockFile = False
 
-					' Now that the lock file is gone, check whether the final file is now ready
 				End If
 
 				' Try to create a lock file so that the calling procedure can create the required .Fasta file (or validate that it now exists)

@@ -182,7 +182,11 @@ Public MustInherit Class clsArchiveOutputFilesBase
         ByVal ProteinCollectionID As Integer, _
         ByVal ArchivedFileID As Integer) Implements IArchiveOutputFiles.AddArchiveCollectionXRef
 
-        Me.RunSP_AddArchivedFileEntryXRef(ProteinCollectionID, ArchivedFileID)
+		Dim intReturn As Integer = Me.RunSP_AddArchivedFileEntryXRef(ProteinCollectionID, ArchivedFileID)
+
+		If intReturn <> 0 Then
+			Throw New Exception("Error calling RunSP_AddArchivedFileEntryXRef with ProteinCollectionID " & ProteinCollectionID & " and ArchivedFileID " & ArchivedFileID & ", ReturnCode=" & intReturn)
+		End If
 
     End Sub
 
