@@ -1,3 +1,5 @@
+Imports System.Collections.Generic
+
 Public Class clsBatchUploadFromFileList
 
     Protected WithEvents m_Uploader As IUploadProteins
@@ -49,8 +51,7 @@ Public Class clsBatchUploadFromFileList
         Dim fce As FileListInfo
 
         Dim ui As Protein_Uploader.IUploadProteins.UploadInfo
-        Dim uiList As Hashtable
-        uiList = New Hashtable
+        Dim uiList As List(Of IUploadProteins.UploadInfo) = New List(Of IUploadProteins.UploadInfo)
 
         Me.m_AnnotationTypeTable = Me.GetAnnotationTypeTable()
         Me.m_AuthorityTable = Me.GetAuthorityTable
@@ -73,7 +74,7 @@ Public Class clsBatchUploadFromFileList
             End If
             For Each fce In fileCollection.Values
                 ui = Me.TransformToUploadInfo(fce)
-                uiList.Add(fce.FullFilePath, ui)
+                uiList.Add(ui)
             Next
 
             Me.m_Uploader.InitialSetup()
@@ -85,17 +86,17 @@ Public Class clsBatchUploadFromFileList
     End Sub
 
     Protected Function GetAuthorityTable() As DataTable
-        Dim authSQL As String = "SELECT ID, Display_Name, Details FROM V_Authority_Picker"
+        Const authSQL As String = "SELECT ID, Display_Name, Details FROM V_Authority_Picker"
         Return Me.m_TableGetter.GetTable(authSQL)
     End Function
 
     Protected Function GetAnnotationTypeTable() As DataTable
-        Dim annoSQL As String = "SELECT ID, Display_Name, Details FROM V_Annotation_Type_Picker"
+        Const annoSQL As String = "SELECT ID, Display_Name, Details FROM V_Annotation_Type_Picker"
         Return Me.m_TableGetter.GetTable(annoSQL)
     End Function
 
     Protected Function GetOrganismsTable() As DataTable
-        Dim orgSQL As String = "SELECT ID, Short_Name, Display_Name, Organism_Name FROM V_Organism_Picker"
+        Const orgSQL As String = "SELECT ID, Short_Name, Display_Name, Organism_Name FROM V_Organism_Picker"
         Return Me.m_TableGetter.GetTable(orgSQL)
     End Function
 
@@ -160,7 +161,7 @@ Public Class clsBatchUploadFromFileList
         Dim fileList As New Hashtable
         Dim collectionList As New ArrayList
         Dim fileTable As DataTable
-      
+
         Dim dr As DataRow
 
         Dim LoadedCollectionsSQL As String
@@ -218,13 +219,13 @@ Public Class clsBatchUploadFromFileList
 
         Dim upInfoContainer As IUploadProteins.UploadInfo
         Dim fli As FileListInfo
-        Dim selectedFileList As Hashtable = New Hashtable
+        Dim selectedFileList As List(Of IUploadProteins.UploadInfo) = New List(Of IUploadProteins.UploadInfo)
 
         For Each fli In fileNameList.Values
             upInfoContainer = New IUploadProteins.UploadInfo( _
                 New System.IO.FileInfo(fli.FullFilePath), _
                 fli.OrganismID, fli.NamingAuthorityID)
-            selectedFileList.Add(fli.FullFilePath, upInfoContainer)
+            selectedFileList.Add(upInfoContainer)
         Next
 
         Me.m_Uploader.BatchUpload(selectedFileList)
@@ -237,7 +238,6 @@ Public Class clsBatchUploadFromFileList
         Private m_FullFilePath As String
         Private m_Organism As String
         Private m_OrganismID As Integer
-        Private m_NamingAuthority As String
         Private m_NamingAuthorityID As Integer
         Private m_AnnotationType As String
         Private m_AnnotationTypeID As Integer
@@ -315,12 +315,6 @@ Public Class clsBatchUploadFromFileList
             Set(ByVal Value As Integer)
                 Me.m_NamingAuthorityID = Value
             End Set
-        End Property
-
-        ReadOnly Property NamingAuthority() As String
-            Get
-                Return Me.m_NamingAuthority
-            End Get
         End Property
 
         Property AnnotationTypeID() As Integer

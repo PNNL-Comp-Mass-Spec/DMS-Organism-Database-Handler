@@ -1,13 +1,12 @@
 Public Class frmBatchUploadFromFileList
     Inherits System.Windows.Forms.Form
 
-    Private m_AuthorityList As DataTable
-    Private m_AnnotationTypeList As DataTable
-    Private m_OrganismList As DataTable
+    Private ReadOnly m_AnnotationTypeList As DataTable
+    Private ReadOnly m_OrganismList As DataTable
     Private m_FileCollection As Hashtable
     Private m_SelectedFilesCollection As Hashtable
-    Private m_SaveFileName As String = "FASTAFile_NamingAuth_XRef.txt"
-    Private m_SavePath As String = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly.Location)
+    Private Const m_SaveFileName As String = "FASTAFile_NamingAuth_XRef.txt"
+    Private ReadOnly m_SavePath As String = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly.Location)
 
 
 #Region " Windows Form Designer generated code "
@@ -18,7 +17,6 @@ Public Class frmBatchUploadFromFileList
         ByVal OrganismList As DataTable)
 
         MyBase.New()
-        Me.m_AuthorityList = AuthorityList
         Me.m_AnnotationTypeList = AnnotationTypeList
         Me.m_OrganismList = OrganismList
 
@@ -240,13 +238,13 @@ Public Class frmBatchUploadFromFileList
     End Property
 
     Private Sub SaveFileNamingAuthorities()
-        Dim saveFilePath As String = System.IO.Path.Combine(Me.m_SavePath, Me.m_SaveFileName)
+        Dim saveFilePath As String = System.IO.Path.Combine(Me.m_SavePath, m_SaveFileName)
         Dim sw As System.IO.StreamWriter
         Dim fi As System.IO.FileInfo = New System.IO.FileInfo(saveFilePath)
         If fi.Exists Then
             fi.Delete()
         End If
-        sw = New System.IO.StreamWriter(System.IO.Path.Combine(Me.m_SavePath, Me.m_SaveFileName))
+        sw = New System.IO.StreamWriter(System.IO.Path.Combine(Me.m_SavePath, m_SaveFileName))
 
         Dim fli As clsBatchUploadFromFileList.FileListInfo
 
@@ -296,7 +294,7 @@ Public Class frmBatchUploadFromFileList
     'End Sub
 
     Private Sub LoadFileNamingAuthorities()
-        Dim loadFilePath As String = System.IO.Path.Combine(Me.m_SavePath, Me.m_SaveFileName)
+        Dim loadFilePath As String = System.IO.Path.Combine(Me.m_SavePath, m_SaveFileName)
         Dim fi As System.IO.FileInfo = New System.IO.FileInfo(loadFilePath)
         'Dim tr As System.IO.TextReader
         'Dim s As String

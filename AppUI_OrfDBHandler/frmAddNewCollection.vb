@@ -46,42 +46,41 @@ Public Class frmAddNewCollection
     Friend WithEvents txtDescription As System.Windows.Forms.TextBox
     Friend WithEvents VisualStyleProvider1 As Skybound.VisualStyles.VisualStyleProvider
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.txtCollectionName = New System.Windows.Forms.TextBox
-        Me.lblCollectionName = New System.Windows.Forms.Label
-        Me.cboOrganismPicker = New System.Windows.Forms.ComboBox
-        Me.lblOrganismPicker = New System.Windows.Forms.Label
-        Me.lblAuthorityPicker = New System.Windows.Forms.Label
-        Me.cboAuthorityPicker = New System.Windows.Forms.ComboBox
-        Me.cmdAddOrganism = New System.Windows.Forms.Button
-        Me.cmdAddAuthority = New System.Windows.Forms.Button
-        Me.gbxMetaData = New System.Windows.Forms.GroupBox
-        Me.lblDescription = New System.Windows.Forms.Label
-        Me.txtDescription = New System.Windows.Forms.TextBox
-        Me.cmdCancel = New System.Windows.Forms.Button
-        Me.cmdOK = New System.Windows.Forms.Button
-        Me.lblProteinCount = New System.Windows.Forms.Label
-        Me.lblResidueCount = New System.Windows.Forms.Label
-        Me.VisualStyleProvider1 = New Skybound.VisualStyles.VisualStyleProvider
+        Me.txtCollectionName = New System.Windows.Forms.TextBox()
+        Me.lblCollectionName = New System.Windows.Forms.Label()
+        Me.cboOrganismPicker = New System.Windows.Forms.ComboBox()
+        Me.lblOrganismPicker = New System.Windows.Forms.Label()
+        Me.lblAuthorityPicker = New System.Windows.Forms.Label()
+        Me.cboAuthorityPicker = New System.Windows.Forms.ComboBox()
+        Me.cmdAddOrganism = New System.Windows.Forms.Button()
+        Me.cmdAddAuthority = New System.Windows.Forms.Button()
+        Me.gbxMetaData = New System.Windows.Forms.GroupBox()
+        Me.lblDescription = New System.Windows.Forms.Label()
+        Me.txtDescription = New System.Windows.Forms.TextBox()
+        Me.cmdCancel = New System.Windows.Forms.Button()
+        Me.cmdOK = New System.Windows.Forms.Button()
+        Me.lblProteinCount = New System.Windows.Forms.Label()
+        Me.lblResidueCount = New System.Windows.Forms.Label()
+        Me.VisualStyleProvider1 = New Skybound.VisualStyles.VisualStyleProvider()
         Me.gbxMetaData.SuspendLayout()
         Me.SuspendLayout()
         '
         'txtCollectionName
         '
         Me.txtCollectionName.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtCollectionName.BackColor = System.Drawing.SystemColors.Window
-        Me.txtCollectionName.Location = New System.Drawing.Point(12, 30)
+        Me.txtCollectionName.Location = New System.Drawing.Point(17, 36)
         Me.txtCollectionName.Name = "txtCollectionName"
-        Me.txtCollectionName.Size = New System.Drawing.Size(328, 21)
+        Me.txtCollectionName.Size = New System.Drawing.Size(374, 24)
         Me.txtCollectionName.TabIndex = 0
-        Me.txtCollectionName.Text = ""
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtCollectionName, True)
         '
         'lblCollectionName
         '
-        Me.lblCollectionName.Location = New System.Drawing.Point(10, 16)
+        Me.lblCollectionName.Location = New System.Drawing.Point(14, 19)
         Me.lblCollectionName.Name = "lblCollectionName"
-        Me.lblCollectionName.Size = New System.Drawing.Size(100, 12)
+        Me.lblCollectionName.Size = New System.Drawing.Size(140, 15)
         Me.lblCollectionName.TabIndex = 1
         Me.lblCollectionName.Text = "Name"
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblCollectionName, True)
@@ -89,27 +88,27 @@ Public Class frmAddNewCollection
         'cboOrganismPicker
         '
         Me.cboOrganismPicker.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboOrganismPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboOrganismPicker.Location = New System.Drawing.Point(12, 139)
+        Me.cboOrganismPicker.Location = New System.Drawing.Point(17, 169)
         Me.cboOrganismPicker.Name = "cboOrganismPicker"
-        Me.cboOrganismPicker.Size = New System.Drawing.Size(302, 21)
+        Me.cboOrganismPicker.Size = New System.Drawing.Size(338, 25)
         Me.cboOrganismPicker.TabIndex = 2
         '
         'lblOrganismPicker
         '
-        Me.lblOrganismPicker.Location = New System.Drawing.Point(10, 122)
+        Me.lblOrganismPicker.Location = New System.Drawing.Point(14, 148)
         Me.lblOrganismPicker.Name = "lblOrganismPicker"
-        Me.lblOrganismPicker.Size = New System.Drawing.Size(100, 16)
+        Me.lblOrganismPicker.Size = New System.Drawing.Size(140, 20)
         Me.lblOrganismPicker.TabIndex = 3
         Me.lblOrganismPicker.Text = "Organism"
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblOrganismPicker, True)
         '
         'lblAuthorityPicker
         '
-        Me.lblAuthorityPicker.Location = New System.Drawing.Point(10, 164)
+        Me.lblAuthorityPicker.Location = New System.Drawing.Point(14, 199)
         Me.lblAuthorityPicker.Name = "lblAuthorityPicker"
-        Me.lblAuthorityPicker.Size = New System.Drawing.Size(100, 16)
+        Me.lblAuthorityPicker.Size = New System.Drawing.Size(140, 20)
         Me.lblAuthorityPicker.TabIndex = 4
         Me.lblAuthorityPicker.Text = "Authority"
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblAuthorityPicker, True)
@@ -117,11 +116,11 @@ Public Class frmAddNewCollection
         'cboAuthorityPicker
         '
         Me.cboAuthorityPicker.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboAuthorityPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboAuthorityPicker.Location = New System.Drawing.Point(12, 181)
+        Me.cboAuthorityPicker.Location = New System.Drawing.Point(17, 220)
         Me.cboAuthorityPicker.Name = "cboAuthorityPicker"
-        Me.cboAuthorityPicker.Size = New System.Drawing.Size(302, 21)
+        Me.cboAuthorityPicker.Size = New System.Drawing.Size(338, 25)
         Me.cboAuthorityPicker.TabIndex = 5
         '
         'cmdAddOrganism
@@ -130,9 +129,9 @@ Public Class frmAddNewCollection
         Me.cmdAddOrganism.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.cmdAddOrganism.Enabled = False
         Me.cmdAddOrganism.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdAddOrganism.Location = New System.Drawing.Point(320, 139)
+        Me.cmdAddOrganism.Location = New System.Drawing.Point(363, 169)
         Me.cmdAddOrganism.Name = "cmdAddOrganism"
-        Me.cmdAddOrganism.Size = New System.Drawing.Size(20, 21)
+        Me.cmdAddOrganism.Size = New System.Drawing.Size(28, 25)
         Me.cmdAddOrganism.TabIndex = 10
         Me.cmdAddOrganism.Text = "+"
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdAddOrganism, True)
@@ -143,9 +142,9 @@ Public Class frmAddNewCollection
         Me.cmdAddAuthority.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.cmdAddAuthority.Enabled = False
         Me.cmdAddAuthority.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdAddAuthority.Location = New System.Drawing.Point(320, 181)
+        Me.cmdAddAuthority.Location = New System.Drawing.Point(363, 220)
         Me.cmdAddAuthority.Name = "cmdAddAuthority"
-        Me.cmdAddAuthority.Size = New System.Drawing.Size(20, 21)
+        Me.cmdAddAuthority.Size = New System.Drawing.Size(28, 25)
         Me.cmdAddAuthority.TabIndex = 11
         Me.cmdAddAuthority.Text = "+"
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdAddAuthority, True)
@@ -153,7 +152,7 @@ Public Class frmAddNewCollection
         'gbxMetaData
         '
         Me.gbxMetaData.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.gbxMetaData.Controls.Add(Me.cmdAddOrganism)
         Me.gbxMetaData.Controls.Add(Me.cboAuthorityPicker)
         Me.gbxMetaData.Controls.Add(Me.cmdAddAuthority)
@@ -164,9 +163,9 @@ Public Class frmAddNewCollection
         Me.gbxMetaData.Controls.Add(Me.lblOrganismPicker)
         Me.gbxMetaData.Controls.Add(Me.lblDescription)
         Me.gbxMetaData.Controls.Add(Me.txtDescription)
-        Me.gbxMetaData.Location = New System.Drawing.Point(8, 6)
+        Me.gbxMetaData.Location = New System.Drawing.Point(11, 7)
         Me.gbxMetaData.Name = "gbxMetaData"
-        Me.gbxMetaData.Size = New System.Drawing.Size(352, 212)
+        Me.gbxMetaData.Size = New System.Drawing.Size(408, 258)
         Me.gbxMetaData.TabIndex = 13
         Me.gbxMetaData.TabStop = False
         Me.gbxMetaData.Text = "Collection Information"
@@ -174,9 +173,9 @@ Public Class frmAddNewCollection
         '
         'lblDescription
         '
-        Me.lblDescription.Location = New System.Drawing.Point(10, 56)
+        Me.lblDescription.Location = New System.Drawing.Point(14, 68)
         Me.lblDescription.Name = "lblDescription"
-        Me.lblDescription.Size = New System.Drawing.Size(100, 12)
+        Me.lblDescription.Size = New System.Drawing.Size(140, 15)
         Me.lblDescription.TabIndex = 1
         Me.lblDescription.Text = "Description"
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblDescription, True)
@@ -184,23 +183,23 @@ Public Class frmAddNewCollection
         'txtDescription
         '
         Me.txtDescription.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtDescription.BackColor = System.Drawing.SystemColors.Window
-        Me.txtDescription.Location = New System.Drawing.Point(12, 73)
+        Me.txtDescription.Location = New System.Drawing.Point(17, 89)
         Me.txtDescription.MaxLength = 256
         Me.txtDescription.Multiline = True
         Me.txtDescription.Name = "txtDescription"
-        Me.txtDescription.Size = New System.Drawing.Size(328, 46)
+        Me.txtDescription.Size = New System.Drawing.Size(374, 56)
         Me.txtDescription.TabIndex = 0
-        Me.txtDescription.Text = ""
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtDescription, True)
         '
         'cmdCancel
         '
         Me.cmdCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cmdCancel.Location = New System.Drawing.Point(284, 232)
+        Me.cmdCancel.Location = New System.Drawing.Point(313, 292)
         Me.cmdCancel.Name = "cmdCancel"
+        Me.cmdCancel.Size = New System.Drawing.Size(105, 28)
         Me.cmdCancel.TabIndex = 14
         Me.cmdCancel.Text = "Cancel"
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdCancel, True)
@@ -209,8 +208,9 @@ Public Class frmAddNewCollection
         '
         Me.cmdOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.cmdOK.Location = New System.Drawing.Point(200, 232)
+        Me.cmdOK.Location = New System.Drawing.Point(195, 292)
         Me.cmdOK.Name = "cmdOK"
+        Me.cmdOK.Size = New System.Drawing.Size(105, 28)
         Me.cmdOK.TabIndex = 15
         Me.cmdOK.Text = "OK"
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdOK, True)
@@ -218,9 +218,9 @@ Public Class frmAddNewCollection
         'lblProteinCount
         '
         Me.lblProteinCount.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblProteinCount.Location = New System.Drawing.Point(8, 228)
+        Me.lblProteinCount.Location = New System.Drawing.Point(11, 287)
         Me.lblProteinCount.Name = "lblProteinCount"
-        Me.lblProteinCount.Size = New System.Drawing.Size(100, 12)
+        Me.lblProteinCount.Size = New System.Drawing.Size(140, 14)
         Me.lblProteinCount.TabIndex = 17
         Me.lblProteinCount.Text = "Protein Count: -"
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblProteinCount, True)
@@ -228,9 +228,9 @@ Public Class frmAddNewCollection
         'lblResidueCount
         '
         Me.lblResidueCount.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblResidueCount.Location = New System.Drawing.Point(8, 244)
+        Me.lblResidueCount.Location = New System.Drawing.Point(11, 306)
         Me.lblResidueCount.Name = "lblResidueCount"
-        Me.lblResidueCount.Size = New System.Drawing.Size(100, 12)
+        Me.lblResidueCount.Size = New System.Drawing.Size(140, 15)
         Me.lblResidueCount.TabIndex = 16
         Me.lblResidueCount.Text = "Residue Count: -"
         Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblResidueCount, True)
@@ -238,20 +238,21 @@ Public Class frmAddNewCollection
         'frmAddNewCollection
         '
         Me.AcceptButton = Me.cmdOK
-        Me.AutoScaleBaseSize = New System.Drawing.Size(5, 14)
+        Me.AutoScaleBaseSize = New System.Drawing.Size(7, 17)
         Me.CancelButton = Me.cmdCancel
-        Me.ClientSize = New System.Drawing.Size(368, 264)
+        Me.ClientSize = New System.Drawing.Size(430, 317)
         Me.Controls.Add(Me.lblProteinCount)
         Me.Controls.Add(Me.lblResidueCount)
         Me.Controls.Add(Me.cmdOK)
         Me.Controls.Add(Me.cmdCancel)
         Me.Controls.Add(Me.gbxMetaData)
         Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.MaximumSize = New System.Drawing.Size(640, 298)
-        Me.MinimumSize = New System.Drawing.Size(320, 298)
+        Me.MaximumSize = New System.Drawing.Size(896, 362)
+        Me.MinimumSize = New System.Drawing.Size(448, 362)
         Me.Name = "frmAddNewCollection"
         Me.Text = "Upload a Protein Collection"
         Me.gbxMetaData.ResumeLayout(False)
+        Me.gbxMetaData.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub

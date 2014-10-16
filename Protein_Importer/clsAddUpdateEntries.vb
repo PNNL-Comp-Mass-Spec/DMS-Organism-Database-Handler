@@ -72,7 +72,7 @@ Public Interface IAddUpdateEntries
         ByVal FileName As String, _
         ByVal Description As String, _
         ByVal CollectionType As CollectionTypes, _
-        ByVal PrimaryAuthorityID As Integer, _
+        ByVal AnnotationTypeID As Integer, _
         ByVal NumProteins As Integer, _
         ByVal NumResidues As Integer) As Integer
 
@@ -416,23 +416,23 @@ Public Class clsAddUpdateEntries
 	End Function
 
 
-	Protected Function MakeNewProteinCollection( _
-		ByVal FileName As String, _
-		ByVal Description As String, _
-		ByVal CollectionType As IAddUpdateEntries.CollectionTypes, _
-		ByVal PrimaryAuthorityID As Integer, _
-		ByVal NumProteins As Integer, _
-		ByVal NumResidues As Integer) As Integer Implements IAddUpdateEntries.MakeNewProteinCollection
+    Protected Function MakeNewProteinCollection( _
+        ByVal FileName As String, _
+        ByVal Description As String, _
+        ByVal CollectionType As IAddUpdateEntries.CollectionTypes, _
+        ByVal AnnotationTypeID As Integer, _
+        ByVal NumProteins As Integer, _
+        ByVal NumResidues As Integer) As Integer Implements IAddUpdateEntries.MakeNewProteinCollection
 
-		Dim tmpProteinCollectionID As Integer
+        Dim tmpProteinCollectionID As Integer
 
-		tmpProteinCollectionID = Me.RunSP_AddUpdateProteinCollection( _
-			FileName, Description, CollectionType, IAddUpdateEntries.CollectionStates.NewEntry, _
-			PrimaryAuthorityID, NumProteins, NumResidues, IAddUpdateEntries.SPModes.add)
+        tmpProteinCollectionID = Me.RunSP_AddUpdateProteinCollection( _
+            FileName, Description, CollectionType, IAddUpdateEntries.CollectionStates.NewEntry, _
+            AnnotationTypeID, NumProteins, NumResidues, IAddUpdateEntries.SPModes.add)
 
-		Return tmpProteinCollectionID
+        Return tmpProteinCollectionID
 
-	End Function
+    End Function
 
 	Protected Function UpdateEncryptionMetadata( _
 		ByVal ProteinCollectionID As Integer, _
