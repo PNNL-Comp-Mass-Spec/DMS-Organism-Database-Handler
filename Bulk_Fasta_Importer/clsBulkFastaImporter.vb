@@ -68,6 +68,8 @@ Public Class clsBulkFastaImporter
     Private mAnnotationViewInfoShown As Boolean
     Private mOrganismViewInfoShown As Boolean
 
+    Private mLastProgressTime As DateTime
+
     Private mLocalErrorCode As eBulkImporterErrorCodes
 #End Region
 
@@ -122,6 +124,7 @@ Public Class clsBulkFastaImporter
         mProteinCollectionInfo = New Dictionary(Of String, Integer)(StringComparer.CurrentCultureIgnoreCase)
 
         mLocalErrorCode = eBulkImporterErrorCodes.NoError
+        mLastProgressTime = DateTime.UtcNow()
 
         Me.DMSConnectionString = DMS_CONNECTION_STRING
         Me.ProteinSeqsConnectionString = PROTEINSEQS_CONNECTION_STRING
@@ -529,9 +532,9 @@ Public Class clsBulkFastaImporter
         End Try
 
         Try
-
+            Console.WriteLine()
             If Me.PreviewMode Then
-                Console.WriteLine("Files to upload")
+                ShowMessage("Previewing upload of " & fileInfoList.Count & " file(s)")
                 For Each fileInfo In fileInfoList
                     Console.WriteLine(fileInfo.FileInformation.FullName)
                 Next
@@ -543,11 +546,6 @@ Public Class clsBulkFastaImporter
             ' Start the upload
             m_UploadHandler.BatchUpload(fileInfoList)
 
-            If Not Me.m_UploadHandler.ImportExportCountsMatched Then
-                Console.WriteLine("Number of files to load didn't match the number of files that succeeded")
-                Return False
-            End If
-
             Return True
 
         Catch ex As Exception
@@ -558,19 +556,51 @@ Public Class clsBulkFastaImporter
     End Function
 
     Private Sub m_UploadHandler_BatchProgress(status As String) Handles m_UploadHandler.BatchProgress
-
+        If DateTime.UtcNow.Subtract(mLastProgressTime).TotalSeconds >= 1 Then
+            mLastProgressTime = DateTime.UtcNow
+            Console.WriteLine(status)
+        End If
     End Sub
 
     Private Sub m_UploadHandler_FASTAFileWarnings(FASTAFilePath As String, warningCollection As ArrayList) Handles m_UploadHandler.FASTAFileWarnings
-
+        Try
+            For Each warningInfo In warningCollection
+                Dim udtWarningInfo = CType(warningInfo, ValidateFastaFile.ICustomValidation.udtErrorInfoExtended)
+                ShowMessage("  ... Warning: " & udtWarningInfo.MessageText & ": " & udtWarningInfo.ProteinName)
+            Next
+        Catch ex As Exception
+            Console.WriteLine("warningCollection is not type ValidateFastaFile.ICustomValidation.udtErrorInfoExtended")
+        End Try
+        
     End Sub
 
     Private Sub m_UploadHandler_FASTAValidationComplete(FASTAFilePath As String, UploadInfo As Protein_Uploader.IUploadProteins.UploadInfo) Handles m_UploadHandler.FASTAValidationComplete
+        ShowMessage("Validated " & FASTAFilePath)
+        ShowMessage("  ... ProteinCount: " & UploadInfo.ProteinCount)
 
+        Try
+            If Not UploadInfo.ErrorList Is Nothing AndAlso UploadInfo.ErrorList.Count > 0 Then
+                ShowMessage("  ... Error count: " & UploadInfo.ErrorList.Count)
+            End If
+        Catch ex As Exception
+            Console.WriteLine("Exception examining UploadInfo.ErrorList: " & ex.Message)
+        End Try
+        
     End Sub
 
     Private Sub m_UploadHandler_InvalidFASTAFile(FASTAFilePath As String, errorCollection As ArrayList) Handles m_UploadHandler.InvalidFASTAFile
+        ShowWarning("Invalid fasta file: " & FASTAFilePath)
 
+        Try
+            For Each errorInfo In errorCollection
+                Dim udtErrorInfo As ValidateFastaFile.ICustomValidation.udtErrorInfoExtended
+                udtErrorInfo = CType(errorInfo, ValidateFastaFile.ICustomValidation.udtErrorInfoExtended)
+                ShowMessage("  ... Error: " & udtErrorInfo.MessageText & ": " & udtErrorInfo.ProteinName)
+            Next
+        Catch ex As Exception
+            Console.WriteLine("errorCollection is not type ValidateFastaFile.ICustomValidation.udtErrorInfoExtended")
+        End Try
+      
     End Sub
 
     Private Sub m_UploadHandler_LoadEnd() Handles m_UploadHandler.LoadEnd
@@ -578,11 +608,14 @@ Public Class clsBulkFastaImporter
     End Sub
 
     Private Sub m_UploadHandler_LoadProgress(fractionDone As Double) Handles m_UploadHandler.LoadProgress
-
+        If DateTime.UtcNow.Subtract(mLastProgressTime).TotalSeconds >= 1 Then
+            mLastProgressTime = DateTime.UtcNow
+            Console.WriteLine("  " & (fractionDone * 100).ToString("0.0") & "%")
+        End If
     End Sub
 
     Private Sub m_UploadHandler_LoadStart(taskTitle As String) Handles m_UploadHandler.LoadStart
-
+        ShowMessage(taskTitle)
     End Sub
 
     Private Sub m_UploadHandler_ValidationProgress(taskTitle As String, fractionDone As Double) Handles m_UploadHandler.ValidationProgress
@@ -590,11 +623,21 @@ Public Class clsBulkFastaImporter
     End Sub
 
     Private Sub m_UploadHandler_ValidFASTAFileLoaded(FASTAFilePath As String, UploadData As Protein_Uploader.IUploadProteins.UploadInfo) Handles m_UploadHandler.ValidFASTAFileLoaded
+        ShowMessage("Uploaded " & FASTAFilePath)
+        ShowMessage("  ... ProteinCount: " & UploadData.ProteinCount)
+
+        Try
+            If Not UploadData.ErrorList Is Nothing AndAlso UploadData.ErrorList.Count > 0 Then
+                ShowMessage("  ... Error count: " & UploadData.ErrorList.Count)
+            End If
+        Catch ex As Exception
+            Console.WriteLine("Exception examining UploadData.ErrorList: " & ex.Message)
+        End Try        
 
     End Sub
 
     Private Sub m_UploadHandler_WroteLineEndNormalizedFASTA(newFilePath As String) Handles m_UploadHandler.WroteLineEndNormalizedFASTA
-
+        Console.WriteLine("WroteLineEndNormalizedFASTA: " & newFilePath)
     End Sub
 
 End Class
