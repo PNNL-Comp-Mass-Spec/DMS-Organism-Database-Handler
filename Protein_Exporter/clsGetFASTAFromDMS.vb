@@ -657,7 +657,7 @@ Public Class clsGetFASTAFromDMS
 				DeleteFastaIndexFile(fiFileToDelete.FullName)
 			Next
 		Catch ex As Exception
-
+            ' Ignore errors here
 		End Try
 
 	End Sub

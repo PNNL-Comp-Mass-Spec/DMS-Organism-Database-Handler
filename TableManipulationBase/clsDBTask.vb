@@ -27,7 +27,7 @@ Public Interface IGetSQLData
         Optional ByVal filterString As String = "") As Hashtable
 
     Sub OpenConnection()
-    Sub OpenConnection(ByVal ConnectionString As String)
+    Sub OpenConnection(ByVal connString As String)
     Sub CloseConnection()
 
     Property ConnectionString() As String
@@ -50,22 +50,21 @@ Public Class clsDBTask
 #End Region
 
     ' constructor
-    Public Sub New(ByVal ConnectionString As String, Optional ByVal PersistConnection As Boolean = False)
-        Me.m_connection_str = ConnectionString
-        Me.SetupNew(PersistConnection)
-
+    Public Sub New(ByVal connString As String, Optional ByVal persistConnection As Boolean = False)
+        Me.m_connection_str = connString
+        Me.SetupNew(persistConnection)
     End Sub
 
-    Public Sub New(Optional ByVal PersistConnection As Boolean = False)
-        Me.SetupNew(PersistConnection)
+    Public Sub New(Optional ByVal persistConnection As Boolean = False)
+        Me.SetupNew(persistConnection)
     End Sub
 
-    Private Sub SetupNew(ByVal PersistConnection As Boolean)
-        Me.m_PersistConnection = PersistConnection
+    Private Sub SetupNew(ByVal persistConnection As Boolean)
+        Me.m_PersistConnection = persistConnection
         If Me.m_PersistConnection Then
             Me.OpenConnection(Me.m_connection_str)
         Else
-
+            ' Nothing to do
         End If
     End Sub
 
@@ -78,20 +77,20 @@ Public Class clsDBTask
         OpenConnection(Me.m_connection_str)
     End Sub
 
-    Protected Sub OpenConnection(ByVal ConnectionString As String) Implements IGetSQLData.OpenConnection
+    Protected Sub OpenConnection(ByVal connString As String) Implements IGetSQLData.OpenConnection
         Dim retryCount As Integer = 3
         If m_DBCn Is Nothing Then
-            m_DBCn = New SqlConnection(ConnectionString)
+            m_DBCn = New SqlConnection(connString)
         End If
         If m_DBCn.State <> ConnectionState.Open Then
             While retryCount > 0
                 Try
                     m_DBCn.Open()
                     retryCount = 0
-                Catch e As SqlException
+                Catch ex As SqlException
                     retryCount -= 1
                     If retryCount = 0 Then
-                        Throw New Exception("could not open database connection after three tries")
+                        Throw New Exception("could not open database connection after three tries using " & connString & ": " & ex.Message)
                     End If
                     System.Threading.Thread.Sleep(3000)
                     m_DBCn.Close()
@@ -165,8 +164,7 @@ Public Class clsDBTask
         Dim GetID_CMD As SqlClient.SqlCommand = New SqlClient.SqlCommand(SelectSQL)
 
         Dim numTries As Integer = 3
-        'Dim tryCount As Integer
-        'Try
+
         If Not Me.m_PersistConnection Then Me.OpenConnection()
 
         GetID_CMD.CommandTimeout = 600
@@ -199,12 +197,6 @@ Public Class clsDBTask
         Else
             tmpIDTable = Nothing
         End If
-        'Catch ex As Exception
-        '    Dim m As System.Windows.Forms.MessageBox
-        '    m.Show(ex.Message, "Error!", Windows.Forms.MessageBoxButtons.OK, Windows.Forms.MessageBoxIcon.Error, Windows.Forms.MessageBoxDefaultButton.Button1)
-        '    tmpIDTable = Nothing
-        'End Try
-
 
         Return tmpIDTable
 

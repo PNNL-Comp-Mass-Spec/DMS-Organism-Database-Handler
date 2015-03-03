@@ -10,7 +10,7 @@ Module modMain
 
     Private WithEvents m_FastaTools As ExportProteinCollectionsIFC.IGetFASTAFromDMS
 
-    Private m_FastaToolsCnStr As String = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
+    Private Const m_FastaToolsCnStr As String = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
     Private m_message As String
     Private m_FastaFileName As String
     Private WithEvents m_FastaTimer As System.Timers.Timer
