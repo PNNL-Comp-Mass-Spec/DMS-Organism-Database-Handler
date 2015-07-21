@@ -36,7 +36,6 @@ Public Class frmFilePreview
     Friend WithEvents colName As System.Windows.Forms.ColumnHeader
     Friend WithEvents colDescription As System.Windows.Forms.ColumnHeader
     Friend WithEvents lvwPreview As System.Windows.Forms.ListView
-    Friend WithEvents VisualStyleProvider1 As Skybound.VisualStyles.VisualStyleProvider
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.lvwPreview = New System.Windows.Forms.ListView
         Me.colName = New System.Windows.Forms.ColumnHeader
@@ -45,7 +44,6 @@ Public Class frmFilePreview
         Me.cmdRefresh = New System.Windows.Forms.Button
         Me.lblLineCount = New System.Windows.Forms.Label
         Me.lblPreviewTitle = New System.Windows.Forms.Label
-        Me.VisualStyleProvider1 = New Skybound.VisualStyles.VisualStyleProvider
         Me.SuspendLayout()
         '
         'lvwPreview
@@ -81,7 +79,6 @@ Public Class frmFilePreview
         Me.txtLineCount.TabIndex = 1
         Me.txtLineCount.Text = ""
         Me.txtLineCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtLineCount, True)
         '
         'cmdRefresh
         '
@@ -90,7 +87,6 @@ Public Class frmFilePreview
         Me.cmdRefresh.Size = New System.Drawing.Size(76, 20)
         Me.cmdRefresh.TabIndex = 2
         Me.cmdRefresh.Text = "Refresh List"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdRefresh, True)
         '
         'lblLineCount
         '
@@ -99,7 +95,6 @@ Public Class frmFilePreview
         Me.lblLineCount.Size = New System.Drawing.Size(98, 16)
         Me.lblLineCount.TabIndex = 3
         Me.lblLineCount.Text = "# Lines to Preview"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblLineCount, True)
         '
         'lblPreviewTitle
         '
@@ -109,7 +104,6 @@ Public Class frmFilePreview
         Me.lblPreviewTitle.Size = New System.Drawing.Size(184, 16)
         Me.lblPreviewTitle.TabIndex = 4
         Me.lblPreviewTitle.Text = "Preview of File Contents"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblPreviewTitle, True)
         '
         'frmFilePreview
         '

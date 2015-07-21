@@ -368,30 +368,32 @@ Public Class clsPSUploadHandler
         Dim collectionID As Integer
         collectionID = Me.m_Upload.GetProteinCollectionID(filepath)
 
-        Me.m_Upload.GetProteinCollectionState(collectionID)
+        Dim collectionState = Me.m_Upload.GetProteinCollectionState(collectionID)
 
-        Dim memberCount As Integer
+        Dim memberCount = 0
+
         If collectionID > 0 Then
             'collection already exists, check if any members already exist
             memberCount = Me.m_Upload.GetProteinCollectionMemberCount(collectionID)
-        Else
-            memberCount = 0
         End If
 
 
+        Dim numProteins = selectedProteins.Count
+        Dim numResidues = Me.m_Upload.GetTotalResidueCount(fileContents, selectedProteins)
+
         If collectionID = 0 Then
-            Dim totalLength As Integer
-            totalLength = Me.m_Upload.GetTotalResidueCount(fileContents, selectedProteins)
+
             collectionID = Me.m_Upload.MakeNewProteinCollection( _
                               System.IO.Path.GetFileNameWithoutExtension(filepath), description, _
-                              collectionType, annotationTypeID, selectedProteins.Count, totalLength)
+                              collectionType, annotationTypeID, numProteins, numResidues)
 
             If collectionID = 0 Then
                 ' Error making the new protein collection
             End If
-        End If
 
-        If memberCount > 0 Then
+        Else
+            ' Make sure there are no proteins defined for this protein collection
+            ' In addition, this will update NumProteins and NumResidues to be 0
             Me.m_Upload.DeleteProteinCollectionMembers(collectionID)
         End If
 
@@ -439,7 +441,7 @@ Public Class clsPSUploadHandler
         Me.OnLoadEnd()
 
         Me.OnLoadStart("Storing fingerprint in T_Protein_Collections")
-        Me.m_Upload.AddAuthenticationHash(collectionID, fingerprint)
+        Me.m_Upload.AddAuthenticationHash(collectionID, fingerprint, numProteins, numResidues)
         Me.OnLoadEnd()
 
         'TODO add in hash return

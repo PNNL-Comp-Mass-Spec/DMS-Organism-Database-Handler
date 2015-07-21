@@ -1,41 +1,41 @@
 Option Strict On
 Public Interface IImportProteins
 
-    Function LoadProteins(ByVal filePath As String, _
-        ByVal fileType As IImportProteins.ProteinImportFileTypes) As DataTable
+    Function LoadProteins(filePath As String, _
+        fileType As IImportProteins.ProteinImportFileTypes) As DataTable
     Function LoadProteinsForBatch( _
-        ByVal filePath As String, _
-        ByVal SelectedOrganismID As Integer, _
-        ByVal SelectedAuthorityID As Integer) As Protein_Storage.IProteinStorage
+        filePath As String, _
+        SelectedOrganismID As Integer, _
+        SelectedAuthorityID As Integer) As Protein_Storage.IProteinStorage
 
     Function LoadOrganisms() As DataTable
     Function LoadAuthorities() As DataTable
-    'Function LoadAuthorities(ByVal proteinCollectionID As Integer) As DataTable
+    'Function LoadAuthorities(proteinCollectionID As Integer) As DataTable
     Function LoadAnnotationTypes() As DataTable
-    Function LoadAnnotationTypes(ByVal proteinCollectionID As Integer) As DataTable
+    Function LoadAnnotationTypes(proteinCollectionID As Integer) As DataTable
 
     Function LoadProteinCollections() As DataTable
     Function LoadProteinCollectionNames() As DataTable
     Sub ClearProteinCollection()
     Sub TriggerProteinCollectionsLoad()
-    Sub TriggerProteinCollectionsLoad(ByVal organism_ID As Integer)
+    Sub TriggerProteinCollectionsLoad(organism_ID As Integer)
     Sub TriggerProteinCollectionTableUpdate()
     Function LoadCollectionMembersByID( _
-        ByVal collectionID As Integer, _
-        ByVal namingAuthorityID As Integer) As DataTable
+        collectionID As Integer, _
+        namingAuthorityID As Integer) As DataTable
     Function LoadCollectionMembersByName( _
-        ByVal collectionName As String, _
-        ByVal namingAuthorityID As Integer) As DataTable
+        collectionName As String, _
+        namingAuthorityID As Integer) As DataTable
 
     ReadOnly Property CollectionMembers() As Protein_Storage.IProteinStorage
     ReadOnly Property Authorities() As Hashtable
 
-    Event LoadStart(ByVal taskTitle As String)
-    Event LoadProgress(ByVal fractionDone As Double)
-    'Event ValidationProgress(ByVal taskTitle As String, ByVal fractionDone As Double)
+    Event LoadStart(taskTitle As String)
+    Event LoadProgress(fractionDone As Double)
+    'Event ValidationProgress(taskTitle As String, fractionDone As Double)
     Event LoadEnd()
-    Event CollectionLoadComplete(ByVal CollectionsTable As DataTable)
-    'Event InvalidFASTAFile(ByVal FASTAFilePath As String, ByVal errorCollection As ArrayList)
+    Event CollectionLoadComplete(CollectionsTable As DataTable)
+    'Event InvalidFASTAFile(FASTAFilePath As String, errorCollection As ArrayList)
 
     Enum ProteinImportFileTypes
         FASTA
@@ -69,15 +69,15 @@ Public Class clsImportHandler
     Protected m_AuthoritiesList As Hashtable
     Protected m_AuthoritiesTable As DataTable
 
-    Protected Event LoadStart(ByVal taskTitle As String) Implements IImportProteins.LoadStart
-    Protected Event LoadProgress(ByVal fractionDone As Double) Implements IImportProteins.LoadProgress
+    Protected Event LoadStart(taskTitle As String) Implements IImportProteins.LoadStart
+    Protected Event LoadProgress(fractionDone As Double) Implements IImportProteins.LoadProgress
     Protected Event LoadEnd() Implements IImportProteins.LoadEnd
-    'Protected Event ValidationProgress(ByVal taskTitle As String, ByVal fractionDone As Double) Implements IImportProteins.ValidationProgress
-    Protected Event CollectionLoadComplete(ByVal CollectionsTable As DataTable) Implements IImportProteins.CollectionLoadComplete
-    'Protected Event InvalidFASTAFile(ByVal FASTAFilePath As String, ByVal errorCollection As ArrayList) Implements IImportProteins.InvalidFASTAFile
+    'Protected Event ValidationProgress(taskTitle As String, fractionDone As Double) Implements IImportProteins.ValidationProgress
+    Protected Event CollectionLoadComplete(CollectionsTable As DataTable) Implements IImportProteins.CollectionLoadComplete
+    'Protected Event InvalidFASTAFile(FASTAFilePath As String, errorCollection As ArrayList) Implements IImportProteins.InvalidFASTAFile
 
 
-    Public Sub New(ByVal PISConnectionString As String)
+    Public Sub New(PISConnectionString As String)
         Me.m_SQLAccess = New TableManipulationBase.clsDBTask(PISConnectionString, True)
         Me.m_PISConnectionString = PISConnectionString
         Me.m_Importer = New FASTAReader
@@ -96,7 +96,7 @@ Public Class clsImportHandler
         End Get
     End Property
 
-    Protected Function GetCollectionNameFromID(ByVal ProteinCollectionID As Integer) As String
+    Protected Function GetCollectionNameFromID(ProteinCollectionID As Integer) As String
         Dim foundrows() As DataRow = Me.m_CollectionsList.Select("Protein_Collection_ID = " & CStr(ProteinCollectionID))
         Dim dr As DataRow = foundrows(0)
         Dim collectionName As String = CStr(dr.Item("FileName"))
@@ -104,7 +104,7 @@ Public Class clsImportHandler
         Return collectionName
     End Function
 
-    Protected Function LoadFASTA(ByVal filePath As String) As Protein_Storage.IProteinStorage
+    Protected Function LoadFASTA(filePath As String) As Protein_Storage.IProteinStorage
 
         'check for existence of current file
         Dim fastaContents As Protein_Storage.IProteinStorage
@@ -159,7 +159,7 @@ Public Class clsImportHandler
     End Function
 
     Protected Function LoadAnnotationTypes( _
-        ByVal proteinCollectionID As Integer) As DataTable Implements IImportProteins.LoadAnnotationTypes
+        proteinCollectionID As Integer) As DataTable Implements IImportProteins.LoadAnnotationTypes
 
         Dim AnnTypeIDSQL As String
         AnnTypeIDSQL = _
@@ -265,7 +265,7 @@ Public Class clsImportHandler
         Me.OnCollectionLoadComplete(Me.LoadProteinCollections)
     End Sub
 
-    Protected Sub TriggerProteinCollectionsLoad(ByVal Organism_ID As Integer) Implements IImportProteins.TriggerProteinCollectionsLoad
+    Protected Sub TriggerProteinCollectionsLoad(Organism_ID As Integer) Implements IImportProteins.TriggerProteinCollectionsLoad
         Me.OnCollectionLoadComplete(Me.LoadProteinCollections(Organism_ID))
     End Sub
 
@@ -299,7 +299,7 @@ Public Class clsImportHandler
         Return tmpPCTable
     End Function
 
-    Protected Function LoadProteinCollections(ByVal Organism_ID As Integer) As DataTable
+    Protected Function LoadProteinCollections(Organism_ID As Integer) As DataTable
         Dim PCSQL As String
 
         PCSQL = "SELECT FileName, Protein_Collection_ID, Organism_ID, Authority_ID, Display, Authentication_Hash" & _
@@ -342,8 +342,8 @@ Public Class clsImportHandler
     End Function
 
     Protected Function LoadCollectionMembersByID( _
-        ByVal collectionID As Integer, _
-        ByVal authorityID As Integer) As DataTable Implements IImportProteins.LoadCollectionMembersByID
+        collectionID As Integer, _
+        authorityID As Integer) As DataTable Implements IImportProteins.LoadCollectionMembersByID
 
         Me.m_CollectionsList = Me.LoadProteinCollections
 
@@ -363,8 +363,8 @@ Public Class clsImportHandler
     End Function
 
     Protected Function LoadCollectionMembersByName( _
-        ByVal collectionName As String, _
-        ByVal authorityID As Integer) As DataTable Implements IImportProteins.LoadCollectionMembersByName
+        collectionName As String, _
+        authorityID As Integer) As DataTable Implements IImportProteins.LoadCollectionMembersByName
 
         Dim GetIDSQL As String = "SELECT Protein_Collection_ID, Primary_Annotation_Type_ID " & _
             "FROM T_Protein_Collections " & _
@@ -379,7 +379,7 @@ Public Class clsImportHandler
 
     End Function
 
-    Private Function LoadCollectionMembers(ByVal SelectStatement As String) As DataTable
+    Private Function LoadCollectionMembers(SelectStatement As String) As DataTable
         Dim tmpMemberTable As DataTable = Me.m_SQLAccess.GetTable(SelectStatement)
 
         'Dim ProteinNames As New ArrayList
@@ -391,7 +391,7 @@ Public Class clsImportHandler
     End Function
 
     'Protected Function LoadSelectedProteinInfo(ByRef CollectionMemberTable As DataTable, _
-    '    ByVal SelectedProteinNames As ArrayList) As Protein_Storage.IProteinStorage
+    '    SelectedProteinNames As ArrayList) As Protein_Storage.IProteinStorage
 
     '    Dim ReferenceList As String
     '    Dim Reference As String
@@ -464,8 +464,8 @@ Public Class clsImportHandler
     'Function to load fasta file contents with no checking against the existing database entries
     'used to load up the source collection listview
     Protected Function LoadProteinsRaw( _
-        ByVal filePath As String, _
-        ByVal fileType As IImportProteins.ProteinImportFileTypes) As DataTable Implements IImportProteins.LoadProteins
+        filePath As String, _
+        fileType As IImportProteins.ProteinImportFileTypes) As DataTable Implements IImportProteins.LoadProteins
 
         Dim tmpProteinTable As DataTable = Me.m_SQLAccess.GetTableTemplate("V_Protein_Database_Export")
         Dim counter As Integer
@@ -515,9 +515,9 @@ Public Class clsImportHandler
     End Function
 
     Protected Function LoadProteinsForBatch( _
-        ByVal FullFilePath As String, _
-        ByVal SelectedOrganismID As Integer, _
-        ByVal SelectedAuthorityID As Integer) As Protein_Storage.IProteinStorage Implements IImportProteins.LoadProteinsForBatch
+        FullFilePath As String, _
+        SelectedOrganismID As Integer, _
+        SelectedAuthorityID As Integer) As Protein_Storage.IProteinStorage Implements IImportProteins.LoadProteinsForBatch
 
         Dim ps As Protein_Storage.IProteinStorage = Me.LoadFASTA(FullFilePath)
 
@@ -528,16 +528,16 @@ Public Class clsImportHandler
 #Region " Event Handlers "
 
     'handles loadstart event for fasta importer module
-    Protected Sub Task_LoadStart(ByVal taskTitle As String) Handles m_Importer.LoadStart
+    Protected Sub Task_LoadStart(taskTitle As String) Handles m_Importer.LoadStart
         'Me.m_PersistentTaskNum += 1
         RaiseEvent LoadStart(taskTitle)
     End Sub
 
-    Protected Sub Task_LoadProgress(ByVal fractionDone As Double) Handles m_Importer.LoadProgress
+    Protected Sub Task_LoadProgress(fractionDone As Double) Handles m_Importer.LoadProgress
         RaiseEvent LoadProgress(fractionDone)
     End Sub
 
-    'Private Sub Task_LoadProgress(ByVal taskTitle As String, ByVal fractionDone As Double) Handles m_Importer.ValidationProgress
+    'Private Sub Task_LoadProgress(taskTitle As String, fractionDone As Double) Handles m_Importer.ValidationProgress
     '    RaiseEvent ValidationProgress(taskTitle, fractionDone)
     'End Sub
 
@@ -545,11 +545,11 @@ Public Class clsImportHandler
         RaiseEvent LoadEnd()
     End Sub
 
-    'Private Sub OnInvalidFASTAFile(ByVal FASTAFilePath As String, ByVal errorCollection As ArrayList) Handles m_Importer.InvalidFASTAFile
+    'Private Sub OnInvalidFASTAFile(FASTAFilePath As String, errorCollection As ArrayList) Handles m_Importer.InvalidFASTAFile
     '    RaiseEvent InvalidFASTAFile(FASTAFilePath, errorCollection)
     'End Sub
 
-    Protected Sub OnCollectionLoadComplete(ByVal CollectionsList As DataTable)
+    Protected Sub OnCollectionLoadComplete(CollectionsList As DataTable)
         RaiseEvent CollectionLoadComplete(CollectionsList)
     End Sub
 #End Region

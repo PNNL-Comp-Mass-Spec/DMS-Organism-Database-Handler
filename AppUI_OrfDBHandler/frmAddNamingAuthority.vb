@@ -37,7 +37,6 @@ Public Class frmAddNamingAuthority
     Friend WithEvents cmdOK As System.Windows.Forms.Button
     Friend WithEvents txtAuthFullName As System.Windows.Forms.TextBox
     Friend WithEvents lblAuthFullName As System.Windows.Forms.Label
-    Friend WithEvents VisualStyleProvider1 As Skybound.VisualStyles.VisualStyleProvider
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.lblAuthShortName = New System.Windows.Forms.Label
         Me.txtAuthName = New System.Windows.Forms.TextBox
@@ -47,7 +46,6 @@ Public Class frmAddNamingAuthority
         Me.lblAuthWeb = New System.Windows.Forms.Label
         Me.cmdCancel = New System.Windows.Forms.Button
         Me.cmdOK = New System.Windows.Forms.Button
-        Me.VisualStyleProvider1 = New Skybound.VisualStyles.VisualStyleProvider
         Me.SuspendLayout()
         '
         'lblAuthShortName
@@ -57,7 +55,6 @@ Public Class frmAddNamingAuthority
         Me.lblAuthShortName.Size = New System.Drawing.Size(266, 16)
         Me.lblAuthShortName.TabIndex = 0
         Me.lblAuthShortName.Text = "Authority Short Name (64 char max)"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblAuthShortName, True)
         '
         'txtAuthName
         '
@@ -69,7 +66,6 @@ Public Class frmAddNamingAuthority
         Me.txtAuthName.Size = New System.Drawing.Size(278, 21)
         Me.txtAuthName.TabIndex = 1
         Me.txtAuthName.Text = ""
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtAuthName, True)
         '
         'txtAuthFullName
         '
@@ -81,7 +77,6 @@ Public Class frmAddNamingAuthority
         Me.txtAuthFullName.Size = New System.Drawing.Size(278, 21)
         Me.txtAuthFullName.TabIndex = 3
         Me.txtAuthFullName.Text = ""
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtAuthFullName, True)
         '
         'lblAuthFullName
         '
@@ -90,7 +85,6 @@ Public Class frmAddNamingAuthority
         Me.lblAuthFullName.Size = New System.Drawing.Size(265, 16)
         Me.lblAuthFullName.TabIndex = 2
         Me.lblAuthFullName.Text = "Authority Full Name (128 char max)"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblAuthFullName, True)
         '
         'txtAuthWeb
         '
@@ -102,7 +96,6 @@ Public Class frmAddNamingAuthority
         Me.txtAuthWeb.Size = New System.Drawing.Size(278, 21)
         Me.txtAuthWeb.TabIndex = 5
         Me.txtAuthWeb.Text = ""
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtAuthWeb, True)
         '
         'lblAuthWeb
         '
@@ -111,7 +104,6 @@ Public Class frmAddNamingAuthority
         Me.lblAuthWeb.Size = New System.Drawing.Size(265, 16)
         Me.lblAuthWeb.TabIndex = 4
         Me.lblAuthWeb.Text = "Web Address (optional, 128 char max)"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblAuthWeb, True)
         '
         'cmdCancel
         '
@@ -122,7 +114,6 @@ Public Class frmAddNamingAuthority
         Me.cmdCancel.Name = "cmdCancel"
         Me.cmdCancel.TabIndex = 6
         Me.cmdCancel.Text = "Cancel"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdCancel, True)
         '
         'cmdOK
         '
@@ -133,7 +124,6 @@ Public Class frmAddNamingAuthority
         Me.cmdOK.Name = "cmdOK"
         Me.cmdOK.TabIndex = 7
         Me.cmdOK.Text = "OK"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdOK, True)
         '
         'frmAddNamingAuthority
         '

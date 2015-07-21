@@ -65,7 +65,6 @@ Public Class frmBatchAddNewCollectionTest
     Friend WithEvents lvwSelectedFiles As System.Windows.Forms.ListView
     Friend WithEvents cmdAddFile As UIControls.ImageButton
     Friend WithEvents cmdRemoveFile As UIControls.ImageButton
-    Friend WithEvents VisualStyleProvider1 As Skybound.VisualStyles.VisualStyleProvider
     Friend WithEvents lblAnnAuth As System.Windows.Forms.Label
     Friend WithEvents colAnnType As System.Windows.Forms.ColumnHeader
     Friend WithEvents cmdPreviewFile As System.Windows.Forms.Button
@@ -104,7 +103,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.lblSelectedFiles = New System.Windows.Forms.Label()
         Me.cmdAddFile = New UIControls.ImageButton()
         Me.cmdRemoveFile = New UIControls.ImageButton()
-        Me.VisualStyleProvider1 = New Skybound.VisualStyles.VisualStyleProvider()
         Me.cmdPreviewFile = New System.Windows.Forms.Button()
         Me.chkEncryptionEnable = New System.Windows.Forms.CheckBox()
         Me.lblPassphrase = New System.Windows.Forms.Label()
@@ -126,7 +124,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.expUploadFolderSelect.Name = "expUploadFolderSelect"
         Me.expUploadFolderSelect.Size = New System.Drawing.Size(308, 403)
         Me.expUploadFolderSelect.TabIndex = 1
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.expUploadFolderSelect, True)
         '
         'cboOrganismSelect
         '
@@ -145,7 +142,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.lblBatchUploadTree.Size = New System.Drawing.Size(260, 20)
         Me.lblBatchUploadTree.TabIndex = 0
         Me.lblBatchUploadTree.Text = "Select Source Folder for Upload"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblBatchUploadTree, True)
         '
         'lblOrganismSelect
         '
@@ -155,7 +151,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.lblOrganismSelect.Size = New System.Drawing.Size(261, 20)
         Me.lblOrganismSelect.TabIndex = 9
         Me.lblOrganismSelect.Text = "Select Destination Organism"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblOrganismSelect, True)
         '
         'lblFolderContents
         '
@@ -166,7 +161,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.lblFolderContents.Size = New System.Drawing.Size(738, 20)
         Me.lblFolderContents.TabIndex = 2
         Me.lblFolderContents.Text = "Selected Folder Contents"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblFolderContents, True)
         '
         'cmdCancel
         '
@@ -177,7 +171,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.cmdCancel.Size = New System.Drawing.Size(84, 27)
         Me.cmdCancel.TabIndex = 18
         Me.cmdCancel.Text = "Cancel"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdCancel, True)
         '
         'cmdUploadChecked
         '
@@ -187,7 +180,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.cmdUploadChecked.Size = New System.Drawing.Size(168, 27)
         Me.cmdUploadChecked.TabIndex = 17
         Me.cmdUploadChecked.Text = "&Upload Selected List"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdUploadChecked, True)
         '
         'lvwFolderContents
         '
@@ -243,7 +235,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.lblAnnAuth.Size = New System.Drawing.Size(285, 20)
         Me.lblAnnAuth.TabIndex = 11
         Me.lblAnnAuth.Text = "Select Annotation Type"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblAnnAuth, True)
         '
         'lvwSelectedFiles
         '
@@ -287,7 +278,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.lblSelectedFiles.Size = New System.Drawing.Size(868, 19)
         Me.lblSelectedFiles.TabIndex = 4
         Me.lblSelectedFiles.Text = "FASTA Files Selected for Upload"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblSelectedFiles, True)
         '
         'cmdAddFile
         '
@@ -299,7 +289,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.cmdAddFile.Size = New System.Drawing.Size(48, 44)
         Me.cmdAddFile.TabIndex = 5
         Me.cmdAddFile.ThemedImage = CType(resources.GetObject("cmdAddFile.ThemedImage"), System.Drawing.Bitmap)
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdAddFile, False)
         '
         'cmdRemoveFile
         '
@@ -311,7 +300,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.cmdRemoveFile.Size = New System.Drawing.Size(48, 44)
         Me.cmdRemoveFile.TabIndex = 6
         Me.cmdRemoveFile.ThemedImage = CType(resources.GetObject("cmdRemoveFile.ThemedImage"), System.Drawing.Bitmap)
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdRemoveFile, False)
         '
         'cmdPreviewFile
         '
@@ -322,7 +310,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.cmdPreviewFile.Size = New System.Drawing.Size(182, 26)
         Me.cmdPreviewFile.TabIndex = 7
         Me.cmdPreviewFile.Text = "&Preview Selected File"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdPreviewFile, True)
         '
         'chkEncryptionEnable
         '
@@ -332,7 +319,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.chkEncryptionEnable.Size = New System.Drawing.Size(174, 23)
         Me.chkEncryptionEnable.TabIndex = 15
         Me.chkEncryptionEnable.Text = "Encrypt Sequences?"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.chkEncryptionEnable, True)
         '
         'lblPassphrase
         '
@@ -342,7 +328,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.lblPassphrase.Size = New System.Drawing.Size(178, 20)
         Me.lblPassphrase.TabIndex = 13
         Me.lblPassphrase.Text = "Encryption Passphrase"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblPassphrase, True)
         '
         'txtPassphrase
         '
@@ -353,7 +338,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.txtPassphrase.PasswordChar = Global.Microsoft.VisualBasic.ChrW(8226)
         Me.txtPassphrase.Size = New System.Drawing.Size(154, 24)
         Me.txtPassphrase.TabIndex = 14
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtPassphrase, True)
         '
         'fraValidationOptions
         '
@@ -368,7 +352,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.fraValidationOptions.TabIndex = 16
         Me.fraValidationOptions.TabStop = False
         Me.fraValidationOptions.Text = "Fasta Validation Options"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.fraValidationOptions, True)
         '
         'txtMaximumProteinNameLength
         '
@@ -377,7 +360,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.txtMaximumProteinNameLength.Size = New System.Drawing.Size(84, 24)
         Me.txtMaximumProteinNameLength.TabIndex = 16
         Me.txtMaximumProteinNameLength.Text = "34"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtMaximumProteinNameLength, True)
         '
         'lblMaximumProteinNameLength
         '
@@ -386,7 +368,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.lblMaximumProteinNameLength.Size = New System.Drawing.Size(128, 34)
         Me.lblMaximumProteinNameLength.TabIndex = 15
         Me.lblMaximumProteinNameLength.Text = "Max Protein Name Length"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblMaximumProteinNameLength, True)
         '
         'chkValidationAllowAsterisks
         '
@@ -395,7 +376,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.chkValidationAllowAsterisks.Size = New System.Drawing.Size(219, 25)
         Me.chkValidationAllowAsterisks.TabIndex = 2
         Me.chkValidationAllowAsterisks.Text = "Allow asterisks in residues"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.chkValidationAllowAsterisks, True)
         '
         'chkValidationAllowDash
         '
@@ -404,7 +384,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.chkValidationAllowDash.Size = New System.Drawing.Size(218, 25)
         Me.chkValidationAllowDash.TabIndex = 3
         Me.chkValidationAllowDash.Text = "Allow dash in residues"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.chkValidationAllowDash, True)
         '
         'cmdRefreshFiles
         '
@@ -414,7 +393,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.cmdRefreshFiles.Size = New System.Drawing.Size(182, 26)
         Me.cmdRefreshFiles.TabIndex = 19
         Me.cmdRefreshFiles.Text = "&Refresh Files"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdRefreshFiles, True)
         '
         'frmBatchAddNewCollectionTest
         '

@@ -1,11 +1,14 @@
+Imports System.Runtime.InteropServices
+Imports Protein_Importer
+
 Public Class clsSyncFASTAFileArchive
 
-    Private m_PSConnectionString As String
+    Private ReadOnly m_PSConnectionString As String
     Private m_FileArchiver As Protein_Exporter.IArchiveOutputFiles
     Private m_TableGetter As TableManipulationBase.IGetSQLData
     Private m_Importer As Protein_Importer.IAddUpdateEntries
-    'Private WithEvents m_Exporter As Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS
-    Private m_Exporter As Protein_Exporter.clsGetFASTAFromDMS
+
+    Private WithEvents m_Exporter As Protein_Exporter.clsGetFASTAFromDMS
 
     Event SyncStart(ByVal StatusMsg As String)
     Event SyncProgress(ByVal StatusMsg As String, ByVal fractionDone As Double)
@@ -15,6 +18,8 @@ Public Class clsSyncFASTAFileArchive
     Private m_CurrentStatusMsg As String
     Private m_CurrentProteinCount As Integer
     Private m_TotalProteinsCount As Integer
+
+    Private m_GeneratedFastaFilePath As String
 
     Sub New(ByVal PSConnectionString As String)
 
@@ -132,6 +137,8 @@ Public Class clsSyncFASTAFileArchive
             tmpID = CInt(dr.Item("Protein_Collection_ID"))
             tmpStoredSHA = dr.Item("Authentication_Hash").ToString
             tmpFilename = dr.Item("FileName").ToString
+            m_GeneratedFastaFilePath = String.Empty
+
             elapsedTimeSB.Remove(0, elapsedTimeSB.Length)
             elapsedTime = System.DateTime.UtcNow.Subtract(starttime)
             If elapsedTime.Minutes < 1 And elapsedTime.Hours = 0 Then
@@ -174,7 +181,14 @@ Public Class clsSyncFASTAFileArchive
                 Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward)
 
             If Not tmpStoredSHA.Equals(tmpGenSHA) Then
-                Me.m_Importer.AddAuthenticationHash(tmpID, tmpGenSHA)
+                Dim currentFastaProteinCount = 0
+                Dim currentFastaResidueCount = 0
+
+                If Not String.IsNullOrEmpty(m_GeneratedFastaFilePath) Then
+                    CountProteinsAndResidues(m_GeneratedFastaFilePath, currentFastaProteinCount, currentFastaResidueCount)
+                End If
+
+                Me.m_Importer.AddAuthenticationHash(tmpID, tmpGenSHA, currentFastaProteinCount, currentFastaResidueCount)
             End If
 
             'Debug.WriteLine("End: " & tmpFilename & ": " & DateTime.Now.ToLongTimeString)
@@ -251,6 +265,23 @@ Public Class clsSyncFASTAFileArchive
         '            Debug.WriteLine(counter.ToString)
         '        End If
         '    Next
+
+    End Sub
+
+    Private Sub CountProteinsAndResidues(fastaFilePath As String, <Out()> ByRef proteinCount As Integer, <Out()> ByRef residueCount As Integer)
+
+        proteinCount = 0
+        residueCount = 0
+
+        Dim oReader = New ProteinFileReader.FastaFileReader()
+        If oReader.OpenFile(fastaFilePath) Then
+            While oReader.ReadNextProteinEntry()
+                proteinCount += 1
+                residueCount += oReader.ProteinSequence.Length
+            End While
+        End If
+
+        oReader.CloseFile()
 
     End Sub
 
@@ -533,10 +564,7 @@ Public Class clsSyncFASTAFileArchive
         RaiseEvent SyncComplete()
     End Sub
 
-    'Private Sub OnExportProgressUpdate(ByVal currentProteinCount As Integer) Handles m_Exporter.FileGenerationProgress
-    '    RaiseEvent SyncProgress(Me.m_CurrentStatusMsg, CDbl((Me.m_CurrentProteinCount + currentProteinCount) / Me.m_TotalProteinsCount))
-    'End Sub
-
-
-
+    Private Sub m_Exporter_FileGenerationCompleted(FullOutputPath As String) Handles m_Exporter.FileGenerationCompleted
+        m_GeneratedFastaFilePath = FullOutputPath
+    End Sub
 End Class

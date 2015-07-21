@@ -54,7 +54,6 @@ Public Class frmRegexSpecifyFromDescription
     Friend WithEvents rdbNameSelect As System.Windows.Forms.RadioButton
     Friend WithEvents rdbDescriptionSelect As System.Windows.Forms.RadioButton
     Friend WithEvents gbxExtractionSource As System.Windows.Forms.GroupBox
-    Friend WithEvents VisualStyleProvider1 As Skybound.VisualStyles.VisualStyleProvider
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.lblStoredExpressions = New System.Windows.Forms.Label
         Me.cboStoredExpressions = New System.Windows.Forms.ComboBox
@@ -80,7 +79,6 @@ Public Class frmRegexSpecifyFromDescription
         Me.rdbNameSelect = New System.Windows.Forms.RadioButton
         Me.rdbDescriptionSelect = New System.Windows.Forms.RadioButton
         Me.gbxExtractionSource = New System.Windows.Forms.GroupBox
-        Me.VisualStyleProvider1 = New Skybound.VisualStyles.VisualStyleProvider
         Me.gbxExtractionSource.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -92,7 +90,6 @@ Public Class frmRegexSpecifyFromDescription
         Me.lblStoredExpressions.Size = New System.Drawing.Size(164, 12)
         Me.lblStoredExpressions.TabIndex = 3
         Me.lblStoredExpressions.Text = "Stored and Recent Expressions"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblStoredExpressions, True)
         '
         'cboStoredExpressions
         '
@@ -112,7 +109,6 @@ Public Class frmRegexSpecifyFromDescription
         Me.lblRegexEditor.Size = New System.Drawing.Size(246, 18)
         Me.lblRegexEditor.TabIndex = 4
         Me.lblRegexEditor.Text = "Current Regular Expression"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblRegexEditor, True)
         '
         'txtRegexEditor
         '
@@ -124,7 +120,6 @@ Public Class frmRegexSpecifyFromDescription
         Me.txtRegexEditor.Size = New System.Drawing.Size(440, 58)
         Me.txtRegexEditor.TabIndex = 5
         Me.txtRegexEditor.Text = ""
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtRegexEditor, True)
         '
         'lblNewNames
         '
@@ -135,7 +130,6 @@ Public Class frmRegexSpecifyFromDescription
         Me.lblNewNames.Size = New System.Drawing.Size(130, 16)
         Me.lblNewNames.TabIndex = 6
         Me.lblNewNames.Text = "Extracted Annotations"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblNewNames, True)
         '
         'lvwNewNames
         '
@@ -181,7 +175,6 @@ Public Class frmRegexSpecifyFromDescription
         Me.lblMatchCount.TabIndex = 8
         Me.lblMatchCount.Text = "(Matches 0/0 Descriptions)"
         Me.lblMatchCount.TextAlign = System.Drawing.ContentAlignment.BottomRight
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblMatchCount, True)
         '
         'cmdUploadAnnotations
         '
@@ -192,7 +185,6 @@ Public Class frmRegexSpecifyFromDescription
         Me.cmdUploadAnnotations.Size = New System.Drawing.Size(158, 22)
         Me.cmdUploadAnnotations.TabIndex = 9
         Me.cmdUploadAnnotations.Text = "Upload Extracted Annotations"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdUploadAnnotations, True)
         '
         'cmdAddExpression
         '
@@ -204,7 +196,6 @@ Public Class frmRegexSpecifyFromDescription
         Me.cmdAddExpression.Size = New System.Drawing.Size(20, 20)
         Me.cmdAddExpression.TabIndex = 10
         Me.cmdAddExpression.Text = "+"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdAddExpression, True)
         '
         'cmdRemoveExpression
         '
@@ -216,7 +207,6 @@ Public Class frmRegexSpecifyFromDescription
         Me.cmdRemoveExpression.Size = New System.Drawing.Size(20, 20)
         Me.cmdRemoveExpression.TabIndex = 11
         Me.cmdRemoveExpression.Text = "-"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdRemoveExpression, True)
         '
         'lblCurrentCollectionInfo
         '
@@ -228,7 +218,6 @@ Public Class frmRegexSpecifyFromDescription
         Me.lblCurrentCollectionInfo.Size = New System.Drawing.Size(594, 16)
         Me.lblCurrentCollectionInfo.TabIndex = 12
         Me.lblCurrentCollectionInfo.TextAlign = System.Drawing.ContentAlignment.BottomCenter
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblCurrentCollectionInfo, True)
         '
         'cmdMatch
         '
@@ -239,7 +228,6 @@ Public Class frmRegexSpecifyFromDescription
         Me.cmdMatch.Size = New System.Drawing.Size(126, 22)
         Me.cmdMatch.TabIndex = 13
         Me.cmdMatch.Text = "Test Current Expression"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdMatch, True)
         '
         'lblNamingAuthority
         '
@@ -250,7 +238,6 @@ Public Class frmRegexSpecifyFromDescription
         Me.lblNamingAuthority.Size = New System.Drawing.Size(264, 18)
         Me.lblNamingAuthority.TabIndex = 16
         Me.lblNamingAuthority.Text = "Annotation Type for Selected Group"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblNamingAuthority, True)
         '
         'cboNamingAuthority
         '
@@ -294,7 +281,6 @@ Public Class frmRegexSpecifyFromDescription
         Me.rdbNameSelect.Size = New System.Drawing.Size(104, 16)
         Me.rdbNameSelect.TabIndex = 20
         Me.rdbNameSelect.Text = "Protein Name"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.rdbNameSelect, True)
         '
         'rdbDescriptionSelect
         '
@@ -303,7 +289,6 @@ Public Class frmRegexSpecifyFromDescription
         Me.rdbDescriptionSelect.Size = New System.Drawing.Size(104, 14)
         Me.rdbDescriptionSelect.TabIndex = 21
         Me.rdbDescriptionSelect.Text = "Description Text"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.rdbDescriptionSelect, True)
         '
         'gbxExtractionSource
         '
@@ -315,7 +300,6 @@ Public Class frmRegexSpecifyFromDescription
         Me.gbxExtractionSource.TabIndex = 22
         Me.gbxExtractionSource.TabStop = False
         Me.gbxExtractionSource.Text = "Extract From"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.gbxExtractionSource, True)
         '
         'frmRegexSpecifyFromDescription
         '

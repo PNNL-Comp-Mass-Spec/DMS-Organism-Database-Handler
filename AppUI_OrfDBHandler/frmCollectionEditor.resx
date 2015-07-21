@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="VisualStyleProvider2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>133, 17</value>
-  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="cmdDestAdd.ThemedImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -202,8 +199,8 @@
   <data name="pbxLiveSearchCancel.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAALEQAA
-        CxEBf2RfkQAAAYtJREFUOE99k79OwzAQxu8lPWZjZOQdEM/AysLaBcTUNkOKWqRECAmpqXCCVFUqNG1R
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAALDgAA
+        Cw4BQL7hQQAAAYtJREFUOE99k79OwzAQxu8lPWZjZOQdEM/AysLaBcTUNkOKWqRECAmpqXCCVFUqNG1R
         /yTBMf5cneWkEsMnX+78/eycbWqapiuhtRYYWUqpoKrri/2xvFquNvQ2+6ReGNP13RORmexLrNfr2+l0
         qieTiR4OhzoMQxsjh5oBBrvDkT7mS3qMXlsAkee5jKJI9/t9q8FgYMXfo9FIYw52VVY1yfmXA4gsyyRW
         ZINv9EGYAwg8h2NlAXbb/spxHJ+ZkyRxEMyFR5mdWECapq4IM3JSygVDECPHYMxFT5CzgPF47AAY2WB+

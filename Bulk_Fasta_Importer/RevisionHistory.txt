@@ -1,4 +1,4 @@
 Bulk Fasta Importer
 
-Version 1.0.x; October 10, 2014
+Version 1.0.5396; October 10, 2014
 	- Initial release

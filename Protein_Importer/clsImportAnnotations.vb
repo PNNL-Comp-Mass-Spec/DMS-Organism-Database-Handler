@@ -37,7 +37,7 @@ Public Class GeneOntologyEntry
         Get
             Return Me.m_ID
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             Me.m_ID = Me.CleanUpLine(Value)
         End Set
     End Property
@@ -45,7 +45,7 @@ Public Class GeneOntologyEntry
         Get
             Return Me.m_Name
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             Me.m_Name = Me.CleanUpLine(Value)
         End Set
     End Property
@@ -53,7 +53,7 @@ Public Class GeneOntologyEntry
         Get
             Return Me.m_Namespace
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             Me.m_Namespace = Me.CleanUpLine(Value)
         End Set
     End Property
@@ -61,7 +61,7 @@ Public Class GeneOntologyEntry
         Get
             Return Me.m_Definition
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             Me.m_Definition = Me.CleanUpLine(Value)
         End Set
     End Property
@@ -69,7 +69,7 @@ Public Class GeneOntologyEntry
         Get
             Return Me.m_Comment
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             Me.m_Comment = Me.CleanUpLine(Value)
         End Set
     End Property
@@ -77,7 +77,7 @@ Public Class GeneOntologyEntry
         Get
             Return Me.m_IsObsolete
         End Get
-        Set(ByVal Value As Boolean)
+        Set(Value As Boolean)
             Me.m_IsObsolete = Value
         End Set
     End Property
@@ -108,23 +108,23 @@ Public Class GeneOntologyEntry
     End Property
 
 
-    Sub Add_ExactSynonym_Entry(ByVal synonym As String)
+    Sub Add_ExactSynonym_Entry(synonym As String)
         Me.m_ExactSynonym.Add(Me.CleanUpLine(synonym))
     End Sub
-    Sub Add_IsA_Entry(ByVal IsAReference As String)
+    Sub Add_IsA_Entry(IsAReference As String)
         Me.m_IsA.Add(IsAReference)
     End Sub
-    Sub Add_XRefAnalog_Entry(ByVal XRef As String)
+    Sub Add_XRefAnalog_Entry(XRef As String)
         Me.m_XRefAnalog.Add(XRef)
     End Sub
-    Sub Add_RelationShip_Entry(ByVal Relationship As String)
+    Sub Add_RelationShip_Entry(Relationship As String)
         Me.m_Relationship.Add(Relationship)
     End Sub
-    Sub Add_Subset_Entry(ByVal Subset As String)
+    Sub Add_Subset_Entry(Subset As String)
         Me.m_SubSet.Add(Subset)
     End Sub
 
-    Private Function CleanUpLine(ByVal entryLine As String) As String
+    Private Function CleanUpLine(entryLine As String) As String
         Dim tmpEntryLine As String = entryLine.Replace("\"c, Nothing)
         Return tmpEntryLine
     End Function
@@ -154,7 +154,7 @@ Public Class GeneOntologyListOBO
 
 
     'Send it the text block from a single entry
-    Sub New(ByVal GOEntryText As System.Collections.Specialized.StringCollection)
+    Sub New(GOEntryText As System.Collections.Specialized.StringCollection)
 
     End Sub
 
@@ -162,7 +162,7 @@ Public Class GeneOntologyListOBO
 
     End Sub
 
-    Protected Sub ProcessEntry(ByVal EntryCollection As System.Collections.Specialized.StringCollection)
+    Protected Sub ProcessEntry(EntryCollection As System.Collections.Specialized.StringCollection)
 
     End Sub
 

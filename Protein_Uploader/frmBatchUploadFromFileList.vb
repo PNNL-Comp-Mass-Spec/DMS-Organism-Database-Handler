@@ -50,7 +50,6 @@ Public Class frmBatchUploadFromFileList
     Friend WithEvents colAnnType As System.Windows.Forms.ColumnHeader
     Friend WithEvents cmdCheckAll As System.Windows.Forms.Button
     Friend WithEvents colOrganism As System.Windows.Forms.ColumnHeader
-    Friend WithEvents VisualStyleProvider1 As Skybound.VisualStyles.VisualStyleProvider
     Friend WithEvents cboAnnotationType As System.Windows.Forms.ComboBox
     Friend WithEvents cmdUncheckAll As System.Windows.Forms.Button
     Friend WithEvents lblAnnotationType As System.Windows.Forms.Label
@@ -59,20 +58,19 @@ Public Class frmBatchUploadFromFileList
     Friend WithEvents cboOrganismPicker As System.Windows.Forms.ComboBox
     Friend WithEvents txtFilePath As System.Windows.Forms.TextBox
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.cmdUploadFiles = New System.Windows.Forms.Button
-        Me.lblOrganismPicker = New System.Windows.Forms.Label
-        Me.cboOrganismPicker = New System.Windows.Forms.ComboBox
-        Me.lvwFiles = New System.Windows.Forms.ListView
-        Me.colFileName = New System.Windows.Forms.ColumnHeader
-        Me.colFilePath = New System.Windows.Forms.ColumnHeader
-        Me.colOrganism = New System.Windows.Forms.ColumnHeader
-        Me.colAnnType = New System.Windows.Forms.ColumnHeader
-        Me.cboAnnotationType = New System.Windows.Forms.ComboBox
-        Me.lblAnnotationType = New System.Windows.Forms.Label
-        Me.cmdCheckAll = New System.Windows.Forms.Button
-        Me.cmdUncheckAll = New System.Windows.Forms.Button
-        Me.VisualStyleProvider1 = New Skybound.VisualStyles.VisualStyleProvider
-        Me.txtFilePath = New System.Windows.Forms.TextBox
+        Me.cmdUploadFiles = New System.Windows.Forms.Button()
+        Me.lblOrganismPicker = New System.Windows.Forms.Label()
+        Me.cboOrganismPicker = New System.Windows.Forms.ComboBox()
+        Me.lvwFiles = New System.Windows.Forms.ListView()
+        Me.colFileName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colFilePath = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colOrganism = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colAnnType = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.cboAnnotationType = New System.Windows.Forms.ComboBox()
+        Me.lblAnnotationType = New System.Windows.Forms.Label()
+        Me.cmdCheckAll = New System.Windows.Forms.Button()
+        Me.cmdUncheckAll = New System.Windows.Forms.Button()
+        Me.txtFilePath = New System.Windows.Forms.TextBox()
         Me.SuspendLayout()
         '
         'cmdUploadFiles
@@ -80,37 +78,35 @@ Public Class frmBatchUploadFromFileList
         Me.cmdUploadFiles.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdUploadFiles.DialogResult = System.Windows.Forms.DialogResult.OK
         Me.cmdUploadFiles.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.cmdUploadFiles.Location = New System.Drawing.Point(550, 528)
+        Me.cmdUploadFiles.Location = New System.Drawing.Point(587, 630)
         Me.cmdUploadFiles.Name = "cmdUploadFiles"
-        Me.cmdUploadFiles.Size = New System.Drawing.Size(158, 22)
+        Me.cmdUploadFiles.Size = New System.Drawing.Size(221, 27)
         Me.cmdUploadFiles.TabIndex = 9
         Me.cmdUploadFiles.Text = "Upload Checked Files"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdUploadFiles, True)
         '
         'lblOrganismPicker
         '
         Me.lblOrganismPicker.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblOrganismPicker.Location = New System.Drawing.Point(10, 478)
+        Me.lblOrganismPicker.Location = New System.Drawing.Point(14, 569)
         Me.lblOrganismPicker.Name = "lblOrganismPicker"
-        Me.lblOrganismPicker.Size = New System.Drawing.Size(228, 18)
+        Me.lblOrganismPicker.Size = New System.Drawing.Size(319, 22)
         Me.lblOrganismPicker.TabIndex = 16
         Me.lblOrganismPicker.Text = "Organism"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblOrganismPicker, True)
         '
         'cboOrganismPicker
         '
         Me.cboOrganismPicker.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cboOrganismPicker.Location = New System.Drawing.Point(10, 494)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cboOrganismPicker.Location = New System.Drawing.Point(14, 589)
         Me.cboOrganismPicker.Name = "cboOrganismPicker"
-        Me.cboOrganismPicker.Size = New System.Drawing.Size(406, 21)
+        Me.cboOrganismPicker.Size = New System.Drawing.Size(385, 25)
         Me.cboOrganismPicker.TabIndex = 17
         '
         'lvwFiles
         '
         Me.lvwFiles.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lvwFiles.CheckBoxes = True
         Me.lvwFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colFileName, Me.colFilePath, Me.colOrganism, Me.colAnnType})
         Me.lvwFiles.FullRowSelect = True
@@ -118,9 +114,10 @@ Public Class frmBatchUploadFromFileList
         Me.lvwFiles.HideSelection = False
         Me.lvwFiles.Location = New System.Drawing.Point(1, 2)
         Me.lvwFiles.Name = "lvwFiles"
-        Me.lvwFiles.Size = New System.Drawing.Size(716, 466)
+        Me.lvwFiles.Size = New System.Drawing.Size(820, 555)
         Me.lvwFiles.Sorting = System.Windows.Forms.SortOrder.Ascending
         Me.lvwFiles.TabIndex = 19
+        Me.lvwFiles.UseCompatibleStateImageBehavior = False
         Me.lvwFiles.View = System.Windows.Forms.View.Details
         '
         'colFileName
@@ -146,56 +143,51 @@ Public Class frmBatchUploadFromFileList
         'cboAnnotationType
         '
         Me.cboAnnotationType.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cboAnnotationType.Location = New System.Drawing.Point(430, 494)
+        Me.cboAnnotationType.Location = New System.Drawing.Point(419, 589)
         Me.cboAnnotationType.Name = "cboAnnotationType"
-        Me.cboAnnotationType.Size = New System.Drawing.Size(280, 21)
+        Me.cboAnnotationType.Size = New System.Drawing.Size(392, 25)
         Me.cboAnnotationType.TabIndex = 21
         '
         'lblAnnotationType
         '
         Me.lblAnnotationType.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblAnnotationType.Location = New System.Drawing.Point(432, 478)
+        Me.lblAnnotationType.Location = New System.Drawing.Point(422, 569)
         Me.lblAnnotationType.Name = "lblAnnotationType"
-        Me.lblAnnotationType.Size = New System.Drawing.Size(210, 18)
+        Me.lblAnnotationType.Size = New System.Drawing.Size(294, 22)
         Me.lblAnnotationType.TabIndex = 20
         Me.lblAnnotationType.Text = "Annotation Type"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblAnnotationType, True)
         '
         'cmdCheckAll
         '
         Me.cmdCheckAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.cmdCheckAll.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.cmdCheckAll.Location = New System.Drawing.Point(10, 528)
+        Me.cmdCheckAll.Location = New System.Drawing.Point(14, 630)
         Me.cmdCheckAll.Name = "cmdCheckAll"
-        Me.cmdCheckAll.Size = New System.Drawing.Size(100, 22)
+        Me.cmdCheckAll.Size = New System.Drawing.Size(140, 27)
         Me.cmdCheckAll.TabIndex = 22
         Me.cmdCheckAll.Text = "Check All"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdCheckAll, True)
         '
         'cmdUncheckAll
         '
         Me.cmdUncheckAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.cmdUncheckAll.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.cmdUncheckAll.Location = New System.Drawing.Point(118, 528)
+        Me.cmdUncheckAll.Location = New System.Drawing.Point(165, 630)
         Me.cmdUncheckAll.Name = "cmdUncheckAll"
-        Me.cmdUncheckAll.Size = New System.Drawing.Size(100, 22)
+        Me.cmdUncheckAll.Size = New System.Drawing.Size(140, 27)
         Me.cmdUncheckAll.TabIndex = 23
         Me.cmdUncheckAll.Text = "Uncheck All"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdUncheckAll, True)
         '
         'txtFilePath
         '
-        Me.txtFilePath.Location = New System.Drawing.Point(228, 528)
+        Me.txtFilePath.Location = New System.Drawing.Point(319, 641)
         Me.txtFilePath.Name = "txtFilePath"
-        Me.txtFilePath.Size = New System.Drawing.Size(308, 21)
+        Me.txtFilePath.Size = New System.Drawing.Size(431, 24)
         Me.txtFilePath.TabIndex = 24
-        Me.txtFilePath.Text = ""
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtFilePath, True)
         '
         'frmBatchUploadFromFileList
         '
-        Me.AutoScaleBaseSize = New System.Drawing.Size(5, 14)
-        Me.ClientSize = New System.Drawing.Size(718, 558)
+        Me.AutoScaleBaseSize = New System.Drawing.Size(7, 17)
+        Me.ClientSize = New System.Drawing.Size(822, 667)
         Me.Controls.Add(Me.txtFilePath)
         Me.Controls.Add(Me.cmdUncheckAll)
         Me.Controls.Add(Me.cmdCheckAll)
@@ -206,10 +198,11 @@ Public Class frmBatchUploadFromFileList
         Me.Controls.Add(Me.lblOrganismPicker)
         Me.Controls.Add(Me.cmdUploadFiles)
         Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.MinimumSize = New System.Drawing.Size(600, 586)
+        Me.MinimumSize = New System.Drawing.Size(840, 712)
         Me.Name = "frmBatchUploadFromFileList"
         Me.Text = "Batch Upload FASTA Files from FileList"
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
 

@@ -31,7 +31,6 @@ Public Class frmAddAnnotationType
     'Do not modify it using the code editor.
     Friend WithEvents cmdCancel As System.Windows.Forms.Button
     Friend WithEvents cmdOK As System.Windows.Forms.Button
-    Friend WithEvents VisualStyleProvider1 As Skybound.VisualStyles.VisualStyleProvider
     Friend WithEvents lblAnnTypeName As System.Windows.Forms.Label
     Friend WithEvents txtAnnTypeName As System.Windows.Forms.TextBox
     Friend WithEvents txtDescription As System.Windows.Forms.TextBox
@@ -49,7 +48,6 @@ Public Class frmAddAnnotationType
         Me.lblTypeExample = New System.Windows.Forms.Label
         Me.cmdCancel = New System.Windows.Forms.Button
         Me.cmdOK = New System.Windows.Forms.Button
-        Me.VisualStyleProvider1 = New Skybound.VisualStyles.VisualStyleProvider
         Me.lblAuthority = New System.Windows.Forms.Label
         Me.cboAuthorityName = New System.Windows.Forms.ComboBox
         Me.SuspendLayout()
@@ -61,7 +59,6 @@ Public Class frmAddAnnotationType
         Me.lblAnnTypeName.Size = New System.Drawing.Size(266, 16)
         Me.lblAnnTypeName.TabIndex = 0
         Me.lblAnnTypeName.Text = "Annotation Type Name (64 char max)"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblAnnTypeName, True)
         '
         'txtAnnTypeName
         '
@@ -73,7 +70,6 @@ Public Class frmAddAnnotationType
         Me.txtAnnTypeName.Size = New System.Drawing.Size(276, 21)
         Me.txtAnnTypeName.TabIndex = 1
         Me.txtAnnTypeName.Text = ""
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtAnnTypeName, True)
         '
         'txtDescription
         '
@@ -85,7 +81,6 @@ Public Class frmAddAnnotationType
         Me.txtDescription.Size = New System.Drawing.Size(276, 21)
         Me.txtDescription.TabIndex = 3
         Me.txtDescription.Text = ""
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtDescription, True)
         '
         'lblDescription
         '
@@ -94,7 +89,6 @@ Public Class frmAddAnnotationType
         Me.lblDescription.Size = New System.Drawing.Size(265, 16)
         Me.lblDescription.TabIndex = 2
         Me.lblDescription.Text = "Annotation Type Description (128 char max)"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblDescription, True)
         '
         'txtTypeExample
         '
@@ -106,7 +100,6 @@ Public Class frmAddAnnotationType
         Me.txtTypeExample.Size = New System.Drawing.Size(276, 21)
         Me.txtTypeExample.TabIndex = 5
         Me.txtTypeExample.Text = ""
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtTypeExample, True)
         '
         'lblTypeExample
         '
@@ -115,7 +108,6 @@ Public Class frmAddAnnotationType
         Me.lblTypeExample.Size = New System.Drawing.Size(265, 16)
         Me.lblTypeExample.TabIndex = 4
         Me.lblTypeExample.Text = "Example of Annotation (optional, 128 char max)"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblTypeExample, True)
         '
         'cmdCancel
         '
@@ -126,7 +118,6 @@ Public Class frmAddAnnotationType
         Me.cmdCancel.Name = "cmdCancel"
         Me.cmdCancel.TabIndex = 6
         Me.cmdCancel.Text = "Cancel"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdCancel, True)
         '
         'cmdOK
         '
@@ -137,7 +128,6 @@ Public Class frmAddAnnotationType
         Me.cmdOK.Name = "cmdOK"
         Me.cmdOK.TabIndex = 7
         Me.cmdOK.Text = "OK"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdOK, True)
         '
         'lblAuthority
         '
@@ -146,7 +136,6 @@ Public Class frmAddAnnotationType
         Me.lblAuthority.Size = New System.Drawing.Size(265, 16)
         Me.lblAuthority.TabIndex = 8
         Me.lblAuthority.Text = "Naming Authority"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblAuthority, True)
         '
         'cboAuthorityName
         '

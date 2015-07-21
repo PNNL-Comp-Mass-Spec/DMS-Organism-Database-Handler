@@ -43,7 +43,6 @@ Public Class frmCollectionStateEditor
     Friend WithEvents MainMenu1 As System.Windows.Forms.MainMenu
     Friend WithEvents mnuTools As System.Windows.Forms.MenuItem
     Friend WithEvents mnuToolsDeleteSelected As System.Windows.Forms.MenuItem
-    Friend WithEvents VisualStyleProvider1 As Skybound.VisualStyles.VisualStyleProvider
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Dim resources As System.Resources.ResourceManager = New System.Resources.ResourceManager(GetType(frmCollectionStateEditor))
         Me.lvwCollections = New System.Windows.Forms.ListView
@@ -60,7 +59,6 @@ Public Class frmCollectionStateEditor
         Me.MainMenu1 = New System.Windows.Forms.MainMenu
         Me.mnuTools = New System.Windows.Forms.MenuItem
         Me.mnuToolsDeleteSelected = New System.Windows.Forms.MenuItem
-        Me.VisualStyleProvider1 = New Skybound.VisualStyles.VisualStyleProvider
         Me.SuspendLayout()
         '
         'lvwCollections
@@ -103,7 +101,6 @@ Public Class frmCollectionStateEditor
         Me.lblCollectionsListView.Size = New System.Drawing.Size(590, 20)
         Me.lblCollectionsListView.TabIndex = 1
         Me.lblCollectionsListView.Text = "Available Collections"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblCollectionsListView, True)
         '
         'txtLiveSearch
         '
@@ -115,7 +112,6 @@ Public Class frmCollectionStateEditor
         Me.txtLiveSearch.Size = New System.Drawing.Size(154, 14)
         Me.txtLiveSearch.TabIndex = 17
         Me.txtLiveSearch.Text = "Search"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtLiveSearch, True)
         '
         'pbxLiveSearchBkg
         '
@@ -126,7 +122,6 @@ Public Class frmCollectionStateEditor
         Me.pbxLiveSearchBkg.Size = New System.Drawing.Size(200, 24)
         Me.pbxLiveSearchBkg.TabIndex = 18
         Me.pbxLiveSearchBkg.TabStop = False
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.pbxLiveSearchBkg, True)
         '
         'lblStateChanger
         '
@@ -136,7 +131,6 @@ Public Class frmCollectionStateEditor
         Me.lblStateChanger.Size = New System.Drawing.Size(182, 14)
         Me.lblStateChanger.TabIndex = 19
         Me.lblStateChanger.Text = "Change Selected Collections To..."
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblStateChanger, True)
         '
         'cboStateChanger
         '
@@ -156,7 +150,6 @@ Public Class frmCollectionStateEditor
         Me.cmdStateChanger.Size = New System.Drawing.Size(68, 20)
         Me.cmdStateChanger.TabIndex = 21
         Me.cmdStateChanger.Text = "Change"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdStateChanger, True)
         '
         'MainMenu1
         '

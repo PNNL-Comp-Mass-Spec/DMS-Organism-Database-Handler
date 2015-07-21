@@ -443,7 +443,7 @@ Public Class clsGetFASTAFromDMS
 		If Not finalFileFI Is Nothing Then
 
 			' Check again for the existence of the desired .Fasta file
-			' It's possible another process created .Fasta file while this process was waiting for the other process's lock file to disappear
+            ' It's possible another process created the .Fasta file while this process was waiting for the other process's lock file to disappear
 			finalFileFI.Refresh()
 			If finalFileFI.Exists AndAlso finalFileFI.Length > 0 Then
 				' The final file now does exist (and is non-zero in size); we're good to go
@@ -831,6 +831,11 @@ Public Class clsGetFASTAFromDMS
 		Me.m_FinalOutputPath = FullOutputPath
 	End Sub
 
+    ''' <summary>
+    ''' Raises event FileGenerationCompleted is raised once the fasta file is done being created
+    ''' </summary>
+    ''' <param name="FinalOutputPath"></param>
+    ''' <remarks></remarks>
 	Private Sub OnTaskCompletion(ByVal FinalOutputPath As String)
 		RaiseEvent FileGenerationCompleted(FinalOutputPath)
 	End Sub

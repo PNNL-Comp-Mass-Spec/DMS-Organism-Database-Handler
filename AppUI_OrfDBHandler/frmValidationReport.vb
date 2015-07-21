@@ -43,7 +43,6 @@ Public Class frmValidationReport
     Friend WithEvents pgbListViewLoad As System.Windows.Forms.ProgressBar
     Friend WithEvents colNumOccurences As System.Windows.Forms.ColumnHeader
     Friend WithEvents cmdExportErrorDetails As System.Windows.Forms.Button
-    Friend WithEvents VisualStyleProvider1 As Skybound.VisualStyles.VisualStyleProvider
     Friend WithEvents colActualCount As System.Windows.Forms.ColumnHeader
     Friend WithEvents fraFastaFileWarnings As System.Windows.Forms.GroupBox
     Friend WithEvents lvwWarningList As System.Windows.Forms.ListView
@@ -69,7 +68,6 @@ Public Class frmValidationReport
         Me.colActualCount = New System.Windows.Forms.ColumnHeader
         Me.gbxInvalidFileList = New System.Windows.Forms.GroupBox
         Me.pgbListViewLoad = New System.Windows.Forms.ProgressBar
-        Me.VisualStyleProvider1 = New Skybound.VisualStyles.VisualStyleProvider
         Me.fraFastaFileWarnings = New System.Windows.Forms.GroupBox
         Me.lvwWarningList = New System.Windows.Forms.ListView
         Me.ColumnHeader1 = New System.Windows.Forms.ColumnHeader
@@ -100,7 +98,6 @@ Public Class frmValidationReport
         Me.cmdExportErrorDetails.Size = New System.Drawing.Size(114, 20)
         Me.cmdExportErrorDetails.TabIndex = 3
         Me.cmdExportErrorDetails.Text = "Export Detailed List"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdExportErrorDetails, True)
         '
         'lblErrorList
         '
@@ -109,7 +106,6 @@ Public Class frmValidationReport
         Me.lblErrorList.Size = New System.Drawing.Size(406, 16)
         Me.lblErrorList.TabIndex = 4
         Me.lblErrorList.Text = "Recorded Validation Errors"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblErrorList, True)
         '
         'cmdClose
         '
@@ -120,7 +116,6 @@ Public Class frmValidationReport
         Me.cmdClose.Size = New System.Drawing.Size(84, 24)
         Me.cmdClose.TabIndex = 5
         Me.cmdClose.Text = "Close"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdClose, True)
         '
         'lvwErrorList
         '
@@ -159,7 +154,6 @@ Public Class frmValidationReport
         Me.gbxValidFileList.TabIndex = 7
         Me.gbxValidFileList.TabStop = False
         Me.gbxValidFileList.Text = "FASTA Files Successfully Uploaded"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.gbxValidFileList, True)
         '
         'lvwValidList
         '
@@ -211,7 +205,6 @@ Public Class frmValidationReport
         Me.gbxInvalidFileList.TabIndex = 8
         Me.gbxInvalidFileList.TabStop = False
         Me.gbxInvalidFileList.Text = "FASTA Files Not Uploaded Due to Errors"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.gbxInvalidFileList, True)
         '
         'pgbListViewLoad
         '
@@ -237,7 +230,6 @@ Public Class frmValidationReport
         Me.fraFastaFileWarnings.TabIndex = 10
         Me.fraFastaFileWarnings.TabStop = False
         Me.fraFastaFileWarnings.Text = "Fasta File Warnings"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.fraFastaFileWarnings, True)
         '
         'lvwWarningList
         '
@@ -273,7 +265,6 @@ Public Class frmValidationReport
         Me.cmdExportWarningDetails.Size = New System.Drawing.Size(114, 20)
         Me.cmdExportWarningDetails.TabIndex = 3
         Me.cmdExportWarningDetails.Text = "Export Detailed List"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdExportWarningDetails, True)
         '
         'cboFileListWarnings
         '
@@ -292,7 +283,6 @@ Public Class frmValidationReport
         Me.lblWarning.Size = New System.Drawing.Size(406, 16)
         Me.lblWarning.TabIndex = 4
         Me.lblWarning.Text = "Recorded Validation Warnings"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblWarning, True)
         '
         'frmValidationReport
         '

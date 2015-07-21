@@ -44,7 +44,6 @@ Public Class frmTestingInterface
     Friend WithEvents GroupBox3 As System.Windows.Forms.GroupBox
     Friend WithEvents cmdExportFASTA As System.Windows.Forms.Button
     Friend WithEvents cboCollectionsList As System.Windows.Forms.ComboBox
-    Friend WithEvents VisualStyleProvider1 As Skybound.VisualStyles.VisualStyleProvider
     Friend WithEvents gbxConnectionString As System.Windows.Forms.GroupBox
     Friend WithEvents cmdBatchLoadDMS As System.Windows.Forms.Button
     Friend WithEvents gbxOtherStuff As System.Windows.Forms.GroupBox
@@ -70,7 +69,6 @@ Public Class frmTestingInterface
         Me.cmdBatchLoadDMS = New System.Windows.Forms.Button
         Me.cboCollectionsList = New System.Windows.Forms.ComboBox
         Me.cmdExportFASTA = New System.Windows.Forms.Button
-        Me.VisualStyleProvider1 = New Skybound.VisualStyles.VisualStyleProvider
         Me.gbxOtherStuff = New System.Windows.Forms.GroupBox
         Me.cmdUpdateArchiveTables = New System.Windows.Forms.Button
         Me.Button3 = New System.Windows.Forms.Button
@@ -92,7 +90,6 @@ Public Class frmTestingInterface
         Me.txtTransFilePath.TabIndex = 0
         Me.txtTransFilePath.Text = "C:\Documents and Settings\d3k857\My Documents\Visual Studio Projects\Organism Dat" & _
         "abase Handler\Aux_Files\gc.ptr"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtTransFilePath, True)
         '
         'cmdLoadTT
         '
@@ -101,7 +98,6 @@ Public Class frmTestingInterface
         Me.cmdLoadTT.Name = "cmdLoadTT"
         Me.cmdLoadTT.TabIndex = 1
         Me.cmdLoadTT.Text = "Load"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdLoadTT, True)
         '
         'cmdBrowseTT
         '
@@ -110,7 +106,6 @@ Public Class frmTestingInterface
         Me.cmdBrowseTT.Name = "cmdBrowseTT"
         Me.cmdBrowseTT.TabIndex = 3
         Me.cmdBrowseTT.Text = "Browse..."
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdBrowseTT, True)
         '
         'gbxTransTableImportTest
         '
@@ -124,7 +119,6 @@ Public Class frmTestingInterface
         Me.gbxTransTableImportTest.TabIndex = 5
         Me.gbxTransTableImportTest.TabStop = False
         Me.gbxTransTableImportTest.Text = "Translation Table Import Test"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.gbxTransTableImportTest, True)
         '
         'gbxFASTAImportTest
         '
@@ -138,7 +132,6 @@ Public Class frmTestingInterface
         Me.gbxFASTAImportTest.TabIndex = 6
         Me.gbxFASTAImportTest.TabStop = False
         Me.gbxFASTAImportTest.Text = "FASTA File Import Test"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.gbxFASTAImportTest, True)
         '
         'cmdBrowseFF
         '
@@ -147,7 +140,6 @@ Public Class frmTestingInterface
         Me.cmdBrowseFF.Name = "cmdBrowseFF"
         Me.cmdBrowseFF.TabIndex = 5
         Me.cmdBrowseFF.Text = "Browse..."
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdBrowseFF, True)
         '
         'cmdLoadFF
         '
@@ -156,7 +148,6 @@ Public Class frmTestingInterface
         Me.cmdLoadFF.Name = "cmdLoadFF"
         Me.cmdLoadFF.TabIndex = 4
         Me.cmdLoadFF.Text = "Load"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdLoadFF, True)
         '
         'txtFASTAFilePath
         '
@@ -165,7 +156,6 @@ Public Class frmTestingInterface
         Me.txtFASTAFilePath.Size = New System.Drawing.Size(590, 20)
         Me.txtFASTAFilePath.TabIndex = 0
         Me.txtFASTAFilePath.Text = "D:\Org_DB\Shewanella\FASTA\Shewanella_Heme_proteins_2003-11-19.fasta"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtFASTAFilePath, True)
         '
         'txtConnString
         '
@@ -175,7 +165,6 @@ Public Class frmTestingInterface
         Me.txtConnString.TabIndex = 7
         Me.txtConnString.Text = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSP" & _
         "I;"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtConnString, True)
         '
         'gbxConnectionString
         '
@@ -187,7 +176,6 @@ Public Class frmTestingInterface
         Me.gbxConnectionString.TabIndex = 8
         Me.gbxConnectionString.TabStop = False
         Me.gbxConnectionString.Text = "Connection String"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.gbxConnectionString, True)
         '
         'GroupBox2
         '
@@ -200,7 +188,6 @@ Public Class frmTestingInterface
         Me.GroupBox2.TabIndex = 6
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Translation Table Import Test"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.GroupBox2, True)
         '
         'Button2
         '
@@ -209,7 +196,6 @@ Public Class frmTestingInterface
         Me.Button2.Name = "Button2"
         Me.Button2.TabIndex = 4
         Me.Button2.Text = "Load"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.Button2, True)
         '
         'TextBox1
         '
@@ -218,7 +204,6 @@ Public Class frmTestingInterface
         Me.TextBox1.Size = New System.Drawing.Size(590, 20)
         Me.TextBox1.TabIndex = 0
         Me.TextBox1.Text = "1"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.TextBox1, True)
         '
         'GroupBox3
         '
@@ -232,7 +217,6 @@ Public Class frmTestingInterface
         Me.GroupBox3.TabIndex = 7
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "FASTA File Import Test"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.GroupBox3, True)
         '
         'cmdBatchLoadDMS
         '
@@ -241,7 +225,6 @@ Public Class frmTestingInterface
         Me.cmdBatchLoadDMS.Name = "cmdBatchLoadDMS"
         Me.cmdBatchLoadDMS.TabIndex = 9
         Me.cmdBatchLoadDMS.Text = "Batch Load"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdBatchLoadDMS, True)
         '
         'cboCollectionsList
         '
@@ -258,7 +241,6 @@ Public Class frmTestingInterface
         Me.cmdExportFASTA.Name = "cmdExportFASTA"
         Me.cmdExportFASTA.TabIndex = 4
         Me.cmdExportFASTA.Text = "Export"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdExportFASTA, True)
         '
         'gbxOtherStuff
         '
@@ -271,7 +253,6 @@ Public Class frmTestingInterface
         Me.gbxOtherStuff.TabIndex = 9
         Me.gbxOtherStuff.TabStop = False
         Me.gbxOtherStuff.Text = "Miscellaneous"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.gbxOtherStuff, True)
         '
         'cmdUpdateArchiveTables
         '
@@ -281,7 +262,6 @@ Public Class frmTestingInterface
         Me.cmdUpdateArchiveTables.Size = New System.Drawing.Size(120, 23)
         Me.cmdUpdateArchiveTables.TabIndex = 9
         Me.cmdUpdateArchiveTables.Text = "Sync Archive Tables"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdUpdateArchiveTables, True)
         '
         'Button3
         '
@@ -290,7 +270,6 @@ Public Class frmTestingInterface
         Me.Button3.Name = "Button3"
         Me.Button3.TabIndex = 4
         Me.Button3.Text = "Export"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.Button3, True)
         '
         'lblProgress
         '
@@ -299,7 +278,6 @@ Public Class frmTestingInterface
         Me.lblProgress.Size = New System.Drawing.Size(780, 16)
         Me.lblProgress.TabIndex = 11
         Me.lblProgress.Text = "No Progress Status Yet"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblProgress, True)
         '
         'pgbAdminConsole
         '
@@ -332,13 +310,6 @@ Public Class frmTestingInterface
         Me.ResumeLayout(False)
 
     End Sub
-
-    '<System.STAThread()> Public Shared Sub Main()
-    '    'System.Windows.Forms.Application.EnableVisualStyles()
-    '    Skybound.VisualStyles.VisualStyleProvider.EnableVisualStyles()
-    '    System.Windows.Forms.Application.DoEvents()
-    '    System.Windows.Forms.Application.Run(New frmTestingInterface)  ' replace frmDecode by the name of your form!!!
-    'End Sub
 
 
 #End Region

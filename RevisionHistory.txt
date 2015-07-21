@@ -1,0 +1,13 @@
+PRISMSeq Uploader Change Log
+
+Version 1.4.5679; July 20, 2015
+	- Removed Skybound.Visualstyles.dll
+		- Allows for compiling as AnyCPU
+	- Updated call to AddCRC32FileAuthentication to add parameters @numProteins and @totalResidueCount
+
+Version 1.4.5540; March 3, 2015
+	- Updated the exception handler in OpenConnection to include the exception details
+
+Version 1.4.5401; October 15, 2014
+	- Rename Authority variables and controls to AnnotationType to accurately reflect the information being tracked
+	- Replace some hashtables with strongly typed lists / dictionaries

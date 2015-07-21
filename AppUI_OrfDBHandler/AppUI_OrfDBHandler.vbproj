@@ -67,7 +67,7 @@
     <WarningLevel>1</WarningLevel>
     <NoWarn>42016,42017,42018,42019,42032,42353,42354,42355</NoWarn>
     <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>..\Executables\Release\</OutputPath>
@@ -79,15 +79,21 @@
     </DefineConstants>
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <DebugSymbols>false</DebugSymbols>
+    <DebugSymbols>true</DebugSymbols>
     <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningLevel>1</WarningLevel>
     <NoWarn>42016,42017,42018,42019,42032,42353,42354,42355</NoWarn>
-    <DebugType>none</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>Full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ExpTreeLib">
@@ -98,9 +104,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Shared Libraries\PRISM.dll</HintPath>
     </Reference>
-    <Reference Include="skybound.visualstyles">
-      <Name>skybound.visualstyles</Name>
-      <HintPath>..\Shared Libraries\skybound.visualstyles.dll</HintPath>
+    <Reference Include="ProteinFileReader, Version=1.2.5371.24645, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Shared Libraries\ProteinFileReader.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -253,6 +259,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmTestingInterface.resx">
       <DependentUpon>frmTestingInterface.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmValidationReport.resx">
       <DependentUpon>frmValidationReport.vb</DependentUpon>
@@ -288,11 +295,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\" />
-    <Folder Include="My Project\" />
     <Folder Include="obj\Debug\temp\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="My Project\app.manifest" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>

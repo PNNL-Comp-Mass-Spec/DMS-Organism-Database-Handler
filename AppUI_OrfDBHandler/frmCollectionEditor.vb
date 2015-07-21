@@ -12,6 +12,7 @@ Public Class frmCollectionEditor
         'This call is required by the Windows Form Designer.
         InitializeComponent()
         Me.CheckTransferButtonsEnabledStatus()
+
         'Add any initialization after the InitializeComponent() call
 
         ReadSettings()
@@ -95,7 +96,6 @@ Public Class frmCollectionEditor
     Friend WithEvents lblBatchProgress As System.Windows.Forms.Label
     Friend WithEvents cmdExportToFile As System.Windows.Forms.Button
     Friend WithEvents cmdSaveDestCollection As System.Windows.Forms.Button
-    Friend WithEvents VisualStyleProvider2 As Skybound.VisualStyles.VisualStyleProvider
 
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -162,7 +162,6 @@ Public Class frmCollectionEditor
         Me.mnuAdminAddSortingIndexes = New System.Windows.Forms.MenuItem()
         Me.mnuHelp = New System.Windows.Forms.MenuItem()
         Me.mnuHelpAbout = New System.Windows.Forms.MenuItem()
-        Me.VisualStyleProvider2 = New Skybound.VisualStyles.VisualStyleProvider()
         Me.pnlProgBar.SuspendLayout()
         Me.pnlProgBarUpper.SuspendLayout()
         Me.pnlProgBarLower.SuspendLayout()
@@ -184,7 +183,6 @@ Public Class frmCollectionEditor
         Me.pnlProgBar.Size = New System.Drawing.Size(1130, 92)
         Me.pnlProgBar.TabIndex = 0
         Me.pnlProgBar.Visible = False
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pnlProgBar, True)
         '
         'pnlProgBarUpper
         '
@@ -196,7 +194,6 @@ Public Class frmCollectionEditor
         Me.pnlProgBarUpper.Padding = New System.Windows.Forms.Padding(6)
         Me.pnlProgBarUpper.Size = New System.Drawing.Size(1130, 51)
         Me.pnlProgBarUpper.TabIndex = 2
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pnlProgBarUpper, True)
         '
         'lblBatchProgress
         '
@@ -206,7 +203,6 @@ Public Class frmCollectionEditor
         Me.lblBatchProgress.Name = "lblBatchProgress"
         Me.lblBatchProgress.Size = New System.Drawing.Size(1118, 22)
         Me.lblBatchProgress.TabIndex = 16
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.lblBatchProgress, True)
         '
         'lblCurrentTask
         '
@@ -219,7 +215,6 @@ Public Class frmCollectionEditor
         Me.lblCurrentTask.Text = "Reading Source File..."
         Me.lblCurrentTask.TextAlign = System.Drawing.ContentAlignment.BottomLeft
         Me.lblCurrentTask.Visible = False
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.lblCurrentTask, True)
         '
         'pnlProgBarLower
         '
@@ -230,7 +225,6 @@ Public Class frmCollectionEditor
         Me.pnlProgBarLower.Padding = New System.Windows.Forms.Padding(6)
         Me.pnlProgBarLower.Size = New System.Drawing.Size(1130, 41)
         Me.pnlProgBarLower.TabIndex = 1
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pnlProgBarLower, True)
         '
         'pgbMain
         '
@@ -254,7 +248,6 @@ Public Class frmCollectionEditor
         Me.pnlSource.Padding = New System.Windows.Forms.Padding(8, 8, 8, 10)
         Me.pnlSource.Size = New System.Drawing.Size(762, 683)
         Me.pnlSource.TabIndex = 1
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pnlSource, True)
         '
         'cmdDestAdd
         '
@@ -268,7 +261,6 @@ Public Class frmCollectionEditor
         Me.cmdDestAdd.Size = New System.Drawing.Size(54, 38)
         Me.cmdDestAdd.TabIndex = 5
         Me.cmdDestAdd.ThemedImage = CType(resources.GetObject("cmdDestAdd.ThemedImage"), System.Drawing.Bitmap)
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.cmdDestAdd, False)
         '
         'cmdDestRemove
         '
@@ -282,7 +274,6 @@ Public Class frmCollectionEditor
         Me.cmdDestRemove.Size = New System.Drawing.Size(54, 40)
         Me.cmdDestRemove.TabIndex = 6
         Me.cmdDestRemove.ThemedImage = CType(resources.GetObject("cmdDestRemove.ThemedImage"), System.Drawing.Bitmap)
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.cmdDestRemove, False)
         '
         'cmdDestAddAll
         '
@@ -296,7 +287,6 @@ Public Class frmCollectionEditor
         Me.cmdDestAddAll.Size = New System.Drawing.Size(54, 40)
         Me.cmdDestAddAll.TabIndex = 3
         Me.cmdDestAddAll.ThemedImage = CType(resources.GetObject("cmdDestAddAll.ThemedImage"), System.Drawing.Bitmap)
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.cmdDestAddAll, False)
         '
         'cmdDestRemoveAll
         '
@@ -310,7 +300,6 @@ Public Class frmCollectionEditor
         Me.cmdDestRemoveAll.Size = New System.Drawing.Size(54, 39)
         Me.cmdDestRemoveAll.TabIndex = 4
         Me.cmdDestRemoveAll.ThemedImage = CType(resources.GetObject("cmdDestRemoveAll.ThemedImage"), System.Drawing.Bitmap)
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.cmdDestRemoveAll, False)
         '
         'gbxSourceCollection
         '
@@ -337,7 +326,6 @@ Public Class frmCollectionEditor
         Me.gbxSourceCollection.TabIndex = 1
         Me.gbxSourceCollection.TabStop = False
         Me.gbxSourceCollection.Text = "Source Collection"
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.gbxSourceCollection, True)
         '
         'cboAnnotationTypePicker
         '
@@ -356,7 +344,6 @@ Public Class frmCollectionEditor
         Me.lblAnnotationTypeFilter.Size = New System.Drawing.Size(297, 20)
         Me.lblAnnotationTypeFilter.TabIndex = 18
         Me.lblAnnotationTypeFilter.Text = "Naming Authority Filter"
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.lblAnnotationTypeFilter, True)
         '
         'pbxLiveSearchCancel
         '
@@ -368,7 +355,6 @@ Public Class frmCollectionEditor
         Me.pbxLiveSearchCancel.Size = New System.Drawing.Size(22, 20)
         Me.pbxLiveSearchCancel.TabIndex = 16
         Me.pbxLiveSearchCancel.TabStop = False
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pbxLiveSearchCancel, True)
         '
         'lblSearchCount
         '
@@ -379,7 +365,6 @@ Public Class frmCollectionEditor
         Me.lblSearchCount.TabIndex = 15
         Me.lblSearchCount.Text = "30000/30000"
         Me.lblSearchCount.TextAlign = System.Drawing.ContentAlignment.TopCenter
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.lblSearchCount, True)
         '
         'cmdLoadProteins
         '
@@ -389,7 +374,6 @@ Public Class frmCollectionEditor
         Me.cmdLoadProteins.Size = New System.Drawing.Size(143, 29)
         Me.cmdLoadProteins.TabIndex = 14
         Me.cmdLoadProteins.Text = "Load Proteins"
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.cmdLoadProteins, True)
         '
         'cmdLoadFile
         '
@@ -399,7 +383,6 @@ Public Class frmCollectionEditor
         Me.cmdLoadFile.Size = New System.Drawing.Size(196, 29)
         Me.cmdLoadFile.TabIndex = 10
         Me.cmdLoadFile.Text = "&Import New Collection..."
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.cmdLoadFile, True)
         '
         'txtLiveSearch
         '
@@ -411,7 +394,6 @@ Public Class frmCollectionEditor
         Me.txtLiveSearch.Size = New System.Drawing.Size(216, 17)
         Me.txtLiveSearch.TabIndex = 8
         Me.txtLiveSearch.Text = "Search"
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.txtLiveSearch, True)
         '
         'cboCollectionPicker
         '
@@ -442,16 +424,14 @@ Public Class frmCollectionEditor
         Me.lblOrganismFilter.Size = New System.Drawing.Size(296, 20)
         Me.lblOrganismFilter.TabIndex = 3
         Me.lblOrganismFilter.Text = "Organism Selector"
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.lblOrganismFilter, True)
         '
         'lblCollectionPicker
         '
-        Me.lblCollectionPicker.Location = New System.Drawing.Point(20, 78)
+        Me.lblCollectionPicker.Location = New System.Drawing.Point(20, 82)
         Me.lblCollectionPicker.Name = "lblCollectionPicker"
         Me.lblCollectionPicker.Size = New System.Drawing.Size(140, 19)
         Me.lblCollectionPicker.TabIndex = 4
         Me.lblCollectionPicker.Text = "Protein Collection"
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.lblCollectionPicker, True)
         '
         'pbxLiveSearchBkg
         '
@@ -462,7 +442,6 @@ Public Class frmCollectionEditor
         Me.pbxLiveSearchBkg.Size = New System.Drawing.Size(280, 32)
         Me.pbxLiveSearchBkg.TabIndex = 9
         Me.pbxLiveSearchBkg.TabStop = False
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pbxLiveSearchBkg, True)
         '
         'lvwSource
         '
@@ -491,12 +470,11 @@ Public Class frmCollectionEditor
         '
         'lblSourceMembers
         '
-        Me.lblSourceMembers.Location = New System.Drawing.Point(20, 131)
+        Me.lblSourceMembers.Location = New System.Drawing.Point(20, 135)
         Me.lblSourceMembers.Name = "lblSourceMembers"
         Me.lblSourceMembers.Size = New System.Drawing.Size(179, 20)
         Me.lblSourceMembers.TabIndex = 5
         Me.lblSourceMembers.Text = "Collection Members"
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.lblSourceMembers, True)
         '
         'SourceDestSplit
         '
@@ -518,7 +496,6 @@ Public Class frmCollectionEditor
         Me.pnlDest.Padding = New System.Windows.Forms.Padding(8, 8, 8, 10)
         Me.pnlDest.Size = New System.Drawing.Size(364, 683)
         Me.pnlDest.TabIndex = 3
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.pnlDest, True)
         '
         'gbxDestinationCollection
         '
@@ -535,7 +512,6 @@ Public Class frmCollectionEditor
         Me.gbxDestinationCollection.TabIndex = 2
         Me.gbxDestinationCollection.TabStop = False
         Me.gbxDestinationCollection.Text = "Destination Collection"
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.gbxDestinationCollection, True)
         '
         'cmdSaveDestCollection
         '
@@ -545,7 +521,6 @@ Public Class frmCollectionEditor
         Me.cmdSaveDestCollection.Size = New System.Drawing.Size(159, 29)
         Me.cmdSaveDestCollection.TabIndex = 4
         Me.cmdSaveDestCollection.Text = "&Upload Collection..."
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.cmdSaveDestCollection, True)
         '
         'cmdExportToFile
         '
@@ -556,7 +531,6 @@ Public Class frmCollectionEditor
         Me.cmdExportToFile.Size = New System.Drawing.Size(142, 29)
         Me.cmdExportToFile.TabIndex = 3
         Me.cmdExportToFile.Text = "Export to File..."
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.cmdExportToFile, True)
         '
         'lblCurrProteinCount
         '
@@ -566,7 +540,6 @@ Public Class frmCollectionEditor
         Me.lblCurrProteinCount.Size = New System.Drawing.Size(229, 18)
         Me.lblCurrProteinCount.TabIndex = 2
         Me.lblCurrProteinCount.Text = "Protein Count: 0"
-        Me.VisualStyleProvider2.SetVisualStyleSupport(Me.lblCurrProteinCount, True)
         '
         'lvwDestination
         '
@@ -761,16 +734,15 @@ Public Class frmCollectionEditor
     End Sub
 
     <System.STAThread()> Public Shared Sub Main()
-        'System.Windows.Forms.Application.EnableVisualStyles()
-        Skybound.VisualStyles.VisualStyleProvider.EnableVisualStyles()
+        System.Windows.Forms.Application.EnableVisualStyles()
         System.Windows.Forms.Application.DoEvents()
-        System.Windows.Forms.Application.Run(New frmCollectionEditor)  ' replace frmDecode by the name of your form!!!
+        System.Windows.Forms.Application.Run(New frmCollectionEditor)
     End Sub
 
 
 #End Region
 
-    Protected Const PROGRAM_DATE As String = "October 13, 2014"
+    Protected Const PROGRAM_DATE As String = "July 20, 2015"
 
     Protected m_Organisms As DataTable
     Protected m_ProteinCollections As DataTable

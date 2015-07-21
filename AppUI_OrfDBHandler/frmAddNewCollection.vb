@@ -44,7 +44,6 @@ Public Class frmAddNewCollection
     Friend WithEvents lblResidueCount As System.Windows.Forms.Label
     Friend WithEvents lblDescription As System.Windows.Forms.Label
     Friend WithEvents txtDescription As System.Windows.Forms.TextBox
-    Friend WithEvents VisualStyleProvider1 As Skybound.VisualStyles.VisualStyleProvider
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.txtCollectionName = New System.Windows.Forms.TextBox()
         Me.lblCollectionName = New System.Windows.Forms.Label()
@@ -61,7 +60,6 @@ Public Class frmAddNewCollection
         Me.cmdOK = New System.Windows.Forms.Button()
         Me.lblProteinCount = New System.Windows.Forms.Label()
         Me.lblResidueCount = New System.Windows.Forms.Label()
-        Me.VisualStyleProvider1 = New Skybound.VisualStyles.VisualStyleProvider()
         Me.gbxMetaData.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -74,7 +72,6 @@ Public Class frmAddNewCollection
         Me.txtCollectionName.Name = "txtCollectionName"
         Me.txtCollectionName.Size = New System.Drawing.Size(374, 24)
         Me.txtCollectionName.TabIndex = 0
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtCollectionName, True)
         '
         'lblCollectionName
         '
@@ -83,7 +80,6 @@ Public Class frmAddNewCollection
         Me.lblCollectionName.Size = New System.Drawing.Size(140, 15)
         Me.lblCollectionName.TabIndex = 1
         Me.lblCollectionName.Text = "Name"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblCollectionName, True)
         '
         'cboOrganismPicker
         '
@@ -102,7 +98,6 @@ Public Class frmAddNewCollection
         Me.lblOrganismPicker.Size = New System.Drawing.Size(140, 20)
         Me.lblOrganismPicker.TabIndex = 3
         Me.lblOrganismPicker.Text = "Organism"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblOrganismPicker, True)
         '
         'lblAuthorityPicker
         '
@@ -111,7 +106,6 @@ Public Class frmAddNewCollection
         Me.lblAuthorityPicker.Size = New System.Drawing.Size(140, 20)
         Me.lblAuthorityPicker.TabIndex = 4
         Me.lblAuthorityPicker.Text = "Authority"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblAuthorityPicker, True)
         '
         'cboAuthorityPicker
         '
@@ -134,7 +128,6 @@ Public Class frmAddNewCollection
         Me.cmdAddOrganism.Size = New System.Drawing.Size(28, 25)
         Me.cmdAddOrganism.TabIndex = 10
         Me.cmdAddOrganism.Text = "+"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdAddOrganism, True)
         '
         'cmdAddAuthority
         '
@@ -147,7 +140,6 @@ Public Class frmAddNewCollection
         Me.cmdAddAuthority.Size = New System.Drawing.Size(28, 25)
         Me.cmdAddAuthority.TabIndex = 11
         Me.cmdAddAuthority.Text = "+"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdAddAuthority, True)
         '
         'gbxMetaData
         '
@@ -169,7 +161,6 @@ Public Class frmAddNewCollection
         Me.gbxMetaData.TabIndex = 13
         Me.gbxMetaData.TabStop = False
         Me.gbxMetaData.Text = "Collection Information"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.gbxMetaData, True)
         '
         'lblDescription
         '
@@ -178,7 +169,6 @@ Public Class frmAddNewCollection
         Me.lblDescription.Size = New System.Drawing.Size(140, 15)
         Me.lblDescription.TabIndex = 1
         Me.lblDescription.Text = "Description"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblDescription, True)
         '
         'txtDescription
         '
@@ -191,7 +181,6 @@ Public Class frmAddNewCollection
         Me.txtDescription.Name = "txtDescription"
         Me.txtDescription.Size = New System.Drawing.Size(374, 56)
         Me.txtDescription.TabIndex = 0
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.txtDescription, True)
         '
         'cmdCancel
         '
@@ -202,7 +191,6 @@ Public Class frmAddNewCollection
         Me.cmdCancel.Size = New System.Drawing.Size(105, 28)
         Me.cmdCancel.TabIndex = 14
         Me.cmdCancel.Text = "Cancel"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdCancel, True)
         '
         'cmdOK
         '
@@ -213,7 +201,6 @@ Public Class frmAddNewCollection
         Me.cmdOK.Size = New System.Drawing.Size(105, 28)
         Me.cmdOK.TabIndex = 15
         Me.cmdOK.Text = "OK"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.cmdOK, True)
         '
         'lblProteinCount
         '
@@ -223,7 +210,6 @@ Public Class frmAddNewCollection
         Me.lblProteinCount.Size = New System.Drawing.Size(140, 14)
         Me.lblProteinCount.TabIndex = 17
         Me.lblProteinCount.Text = "Protein Count: -"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblProteinCount, True)
         '
         'lblResidueCount
         '
@@ -233,7 +219,6 @@ Public Class frmAddNewCollection
         Me.lblResidueCount.Size = New System.Drawing.Size(140, 15)
         Me.lblResidueCount.TabIndex = 16
         Me.lblResidueCount.Text = "Residue Count: -"
-        Me.VisualStyleProvider1.SetVisualStyleSupport(Me.lblResidueCount, True)
         '
         'frmAddNewCollection
         '
