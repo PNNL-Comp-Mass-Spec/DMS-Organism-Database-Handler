@@ -235,6 +235,11 @@
     <Compile Include="frmValidationReport.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="frmAddAnnotationType.resx">
       <DependentUpon>frmAddAnnotationType.vb</DependentUpon>
       <SubType>Designer</SubType>
@@ -300,6 +305,11 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="My Project\app.manifest" />
+    <None Include="My Project\Settings.settings">
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>

@@ -438,7 +438,10 @@ Public Class frmBatchAddNewCollectionTest
     Private m_LastSelectedAnnotationType As String = ""
     Private m_FileList As Hashtable
     Private m_CheckedFileList As List(Of IUploadProteins.UploadInfo)
-    Private m_SelectedFileList As Hashtable
+
+    ' Keys are file paths, values are UploadInfo objects
+    Private m_SelectedFileList As Dictionary(Of String, IUploadProteins.UploadInfo)
+
     Private ReadOnly m_OrganismList As DataTable
     Private ReadOnly m_OrganismListSorted As DataView
 
@@ -586,11 +589,9 @@ Public Class frmBatchAddNewCollectionTest
      ByVal pathName As String, _
      ByVal CSI As CShItem) Handles expUploadFolderSelect.ExpTreeNodeSelected
 
-        Dim dirList As New ArrayList
-
         Dim totalItems As Integer
 
-        dirList = CSI.GetDirectories
+        Dim dirList = CSI.GetDirectories
 
         totalItems = dirList.Count
         Me.m_LastUsedDirectory = pathName
@@ -598,6 +599,7 @@ Public Class frmBatchAddNewCollectionTest
         If totalItems > 0 Then
             dirList.Sort()
         End If
+
         If pathName <> CShItem.strMyComputer And pathName <> CShItem.strSystemFolder And pathName <> "Desktop" Then
             Me.ScanDirectory(pathName, Me.lvwFolderContents)
             Me.lblFolderContents.Text = "Results Files In: '" & pathName & "'"
@@ -637,9 +639,6 @@ Public Class frmBatchAddNewCollectionTest
         Dim foundFASTAFiles() As System.IO.FileInfo
 
         Dim tmpParsedType As String
-
-
-        'Dim outArrayList As New ArrayList
 
         If di.Exists Then
             foundFASTAFiles = di.GetFiles()
@@ -801,22 +800,25 @@ Public Class frmBatchAddNewCollectionTest
 #End Region
 
     Private Sub MakeCheckedFileList()
-        Dim upInfo As Protein_Uploader.IUploadProteins.UploadInfo
-        Dim fi As System.IO.FileInfo
+
         Dim li As ListViewItem
 
-        Dim tmpNameList As New ArrayList
-
+        Dim tmpNameList As New SortedSet(Of String)
 
         For Each li In Me.lvwSelectedFiles.Items
-            tmpNameList.Add(li.SubItems(4).Text)
+            Dim currentFilePath = li.SubItems(4).Text
+
+            If Not tmpNameList.Contains(currentFilePath) Then
+                tmpNameList.Add(currentFilePath)
+            End If
+
         Next
 
-        Dim counter As IDictionaryEnumerator = Me.m_SelectedFileList.GetEnumerator
+        Dim counter = Me.m_SelectedFileList.GetEnumerator
 
-        While counter.MoveNext = True
-            upInfo = DirectCast(counter.Value, Protein_Uploader.IUploadProteins.UploadInfo)
-            fi = upInfo.FileInformation
+        While counter.MoveNext()
+            Dim upInfo = counter.Current.Value
+            Dim fi = upInfo.FileInformation
 
             If tmpNameList.Contains(fi.FullName) Then
                 Me.m_CheckedFileList.Add(upInfo)
@@ -834,7 +836,7 @@ Public Class frmBatchAddNewCollectionTest
 
         Try
             If Me.m_SelectedFileList Is Nothing Then
-                Me.m_SelectedFileList = New Hashtable
+                Me.m_SelectedFileList = New Dictionary(Of String, IUploadProteins.UploadInfo)(StringComparer.CurrentCultureIgnoreCase)
             End If
 
             For Each li In Me.lvwFolderContents.SelectedItems
@@ -845,7 +847,7 @@ Public Class frmBatchAddNewCollectionTest
                 upInfo.AnnotationTypeID = DirectCast(Me.cboAnnotationTypePicker.SelectedValue, Int32)
                 upInfo.EncryptSequences = False
                 upInfo.EncryptionPassphrase = ""
-                If Me.m_SelectedFileList.Contains(upInfo.FileInformation.FullName) Then
+                If Me.m_SelectedFileList.ContainsKey(upInfo.FileInformation.FullName) Then
                     Me.m_SelectedFileList.Remove(upInfo.FileInformation.FullName)
                     For Each si In Me.lvwSelectedFiles.Items
                         If si.Text = System.IO.Path.GetFileNameWithoutExtension(upInfo.FileInformation.Name) Then
@@ -854,7 +856,6 @@ Public Class frmBatchAddNewCollectionTest
                     Next
                 End If
 
-                'Me.m_SelectedFileList.Add(upInfo.FileInformation.FullName, upInfo)
                 newLi = New ListViewItem(System.IO.Path.GetFileNameWithoutExtension(upInfo.FileInformation.Name))
                 With newLi
                     .SubItems.Add(Me.cboOrganismSelect.Text)
@@ -929,12 +930,9 @@ Public Class frmBatchAddNewCollectionTest
         If Me.lvwSelectedFiles.SelectedItems.Count > 0 Then
             Dim li As ListViewItem
             For Each li In Me.lvwSelectedFiles.SelectedItems
-                tmpUpInfo = DirectCast(Me.m_SelectedFileList.Item(li.SubItems(4).Text), Protein_Uploader.IUploadProteins.UploadInfo)
+                tmpUpInfo = Me.m_SelectedFileList.Item(li.SubItems(4).Text)
                 tmpUpInfo.OrganismID = Me.m_SelectedOrganismID
                 Me.m_SelectedFileList.Item(li.SubItems(4).Text) = tmpUpInfo
-                'New Protein_Uploader.IUploadProteins.UploadInfo(tmpUpInfo.FileInformation, Me.m_SelectedOrganismID, tmpUpInfo.AuthorityID)
-                'Me.m_SelectedFileList.Item(li.SubItems(3).ToString) = _
-                '    New Protein_Uploader.IUploadProteins.UploadInfo(tmpUpInfo.FileInformation, Me.m_SelectedOrganismID, tmpUpInfo.AuthorityID)
                 li.SubItems(1).Text = cbo.Text
             Next
         End If
@@ -989,9 +987,11 @@ Public Class frmBatchAddNewCollectionTest
         If Me.lvwSelectedFiles.SelectedItems.Count > 0 Then
             Dim li As ListViewItem
             For Each li In Me.lvwSelectedFiles.SelectedItems
-                tmpUpInfo = DirectCast(Me.m_SelectedFileList.Item(li.SubItems(4).Text), Protein_Uploader.IUploadProteins.UploadInfo)
-                Me.m_SelectedFileList.Item(li.SubItems(4).Text) = _
-                 New Protein_Uploader.IUploadProteins.UploadInfo(tmpUpInfo.FileInformation, Me.m_SelectedOrganismID, Me.m_SelectedAnnotationTypeID) 'tmpUpInfo.AuthorityID)
+                tmpUpInfo = Me.m_SelectedFileList.Item(li.SubItems(4).Text)
+
+                Me.m_SelectedFileList.Item(li.SubItems(4).Text) =
+                    New Protein_Uploader.IUploadProteins.UploadInfo(tmpUpInfo.FileInformation, Me.m_SelectedOrganismID, Me.m_SelectedAnnotationTypeID) 'tmpUpInfo.AuthorityID)
+
                 li.SubItems(2).Text = cbo.Text
             Next
         End If
@@ -1115,7 +1115,7 @@ Public Class frmBatchAddNewCollectionTest
 #End Region
 
 	Private Sub lvwSelectedFiles_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles lvwSelectedFiles.Click
-		Dim lvw As ListView = DirectCast(sender, ListView)
+
         Dim selectedAnnotationType As String
 		Dim selectedOrganism As String
 

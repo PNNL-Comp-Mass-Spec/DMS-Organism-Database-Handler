@@ -1,113 +1,85 @@
+Imports System.Collections.Generic
+
 Friend Class AnnotationGroup
-    Private m_AnnotationAuthorityID As Integer
-    Private m_GroupName As String
-    Private m_ImportThisGroup As Boolean
-    Private m_AnnotationData As Hashtable       'key=PrimaryReferenceName, value=arraylist of xrefs
+    Private m_AnnotationData As Dictionary(Of String, SortedSet(Of String))       'key=PrimaryReferenceName, value=SortedSet of xrefs
     Private m_Delimiter As String
 
     Sub New(ByVal GroupName As String)
-        Me.m_GroupName = GroupName
+        Me.GroupName = GroupName
     End Sub
 
-    Property GroupName() As String
-        Get
-            Return Me.m_GroupName
-        End Get
-        Set(ByVal Value As String)
-            Me.m_GroupName = Value
-        End Set
-    End Property
+    Public Property GroupName As String
 
-    Property AnnotationAuthorityID() As Integer
-        Get
-            Return Me.m_AnnotationAuthorityID
-        End Get
-        Set(ByVal Value As Integer)
-            Me.m_AnnotationAuthorityID = Value
-        End Set
-    End Property
+    Public Property AnnotationAuthorityID As Integer
 
     Property XRefDelimiter() As String
         Get
             Return Me.m_Delimiter
         End Get
-        Set(ByVal Value As String)
-            Me.m_Delimiter = Value
+        Set(ByVal value As String)
+            Me.m_Delimiter = value
         End Set
     End Property
+    
+    Public Property ImportThisGroup As Boolean
 
+    Sub AddAnnotation(ByVal PrimaryReferenceName As String, ByVal XRefName As String)
 
-    Property ImportThisGroup() As Boolean
-        Get
-            Return Me.m_ImportThisGroup
-        End Get
-        Set(ByVal Value As Boolean)
-            Me.m_ImportThisGroup = Value
-        End Set
-    End Property
-
-    Sub AddAnnotation( _
-        ByVal PrimaryReferenceName As String, _
-        ByVal XRefName As String)
-
-        Dim xrefList As ArrayList
+        Dim xrefList As SortedSet(Of String)
 
         If Me.m_AnnotationData Is Nothing Then
-            Me.m_AnnotationData = New Hashtable
+            Me.m_AnnotationData = New Dictionary(Of String, SortedSet(Of String))
         End If
 
-        If Not Me.m_AnnotationData.Contains(PrimaryReferenceName) Then
-            xrefList = New ArrayList
+        If Not Me.m_AnnotationData.ContainsKey(PrimaryReferenceName) Then
+            xrefList = New SortedSet(Of String)
             xrefList.Add(XRefName)
-            xrefList = Nothing
         Else
-            xrefList = DirectCast(Me.m_AnnotationData.Item(PrimaryReferenceName.ToString), ArrayList)
+            xrefList = m_AnnotationData.Item(PrimaryReferenceName.ToString)
             If Not xrefList.Contains(XRefName) Then
                 xrefList.Add(XRefName)
                 Me.m_AnnotationData.Item(PrimaryReferenceName.ToString) = xrefList
             End If
-            xrefList = Nothing
         End If
-
     End Sub
 
-    Function GetAllXRefs() As Hashtable
+    Function GetAllXRefs() As Dictionary(Of String, SortedSet(Of String))
         Return Me.m_AnnotationData
     End Function
 
-    Function GetAllPrimaryReferences() As ArrayList
+    Function GetAllPrimaryReferences() As SortedSet(Of String)
         Dim s As String
-        Dim al As New ArrayList(Me.m_AnnotationData.Count)
+        Dim annotationKeys As New SortedSet(Of String)
         For Each s In Me.m_AnnotationData.Keys
-            al.Add(s)
+            annotationKeys.Add(s)
         Next
 
-        al.Sort()
-
-        Return al
+        Return annotationKeys
     End Function
 
-    Function GetXRefs(ByVal PrimaryReferenceName As String) As ArrayList
-        Dim xrefList As ArrayList
-        xrefList = DirectCast(Me.m_AnnotationData.Item(PrimaryReferenceName), ArrayList)
+    Function GetXRefs(ByVal PrimaryReferenceName As String) As SortedSet(Of String)
+        Dim xrefList = Me.m_AnnotationData.Item(PrimaryReferenceName)
 
         If Me.m_Delimiter.Length > 0 Then
             Dim addnXRefs() As String
             Dim primeXRef As String
             Dim XRefCount As Integer
-            Dim newXReflist As New ArrayList
+            Dim newXReflist As New SortedSet(Of String)
 
             For Each primeXRef In xrefList
                 addnXRefs = primeXRef.Split(Me.m_Delimiter.ToCharArray)
                 For XRefCount = 0 To addnXRefs.Length - 1
-                    newXReflist.Add(addnXRefs(XRefCount).ToString)
+                    Dim newItem = addnXRefs(XRefCount).ToString
+                    If Not newXReflist.Contains(newItem) Then
+                        newXReflist.Add(newItem)
+                    End If
                 Next
             Next
-            xrefList.Clear()
+
             xrefList = newXReflist
 
         End If
+
         Return xrefList
     End Function
-
 End Class

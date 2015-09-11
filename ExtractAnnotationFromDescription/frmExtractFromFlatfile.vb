@@ -300,19 +300,14 @@ Public Class frmExtractFromFlatfile
     End Sub
 
     Private Sub LoadRawFileListView()
-        Dim lineHash As Hashtable
-        Dim li As System.Windows.Forms.ListViewItem
-        Dim lineCount As Integer
-        Dim fc As ArrayList = Me.m_Extract.FileContents
-        Dim hash As Hashtable
+
+        Dim fc = Me.m_Extract.FileContents
         Dim maxIndex As Integer = fc.Count - 1
-        Dim maxColumnCount As Integer
+        Dim maxColumnCount As Integer = 0
 
-        Dim ch As System.Windows.Forms.ColumnHeader
-
-        For Each hash In fc
-            If hash.Count > maxColumnCount Then
-                maxColumnCount = hash.Count
+        For Each item In fc
+            If item.Count > maxColumnCount Then
+                maxColumnCount = item.Count
             End If
         Next
 
@@ -325,35 +320,35 @@ Public Class frmExtractFromFlatfile
         Dim columnCount As Integer = columnCollection.Count
         Dim columnNumber As Integer
         For columnNumber = 1 To columnCount
-            ch = New System.Windows.Forms.ColumnHeader
+            Dim ch = New System.Windows.Forms.ColumnHeader
             ch.Text = columnCollection.Item(columnNumber).ToString
             ch.Width = 70
             Me.lvwProteins.Columns.Add(ch)
         Next
 
         For lineCount = 0 To maxIndex
-            lineHash = DirectCast(fc.Item(lineCount), Hashtable)
-            li = Me.m_Extract.HashToListViewItem(lineHash, lineCount)
+            Dim lineHash = fc.Item(lineCount)
+            Dim lvItem = Me.m_Extract.HashToListViewItem(lineHash, lineCount)
 
-            'li = New System.Windows.Forms.ListViewItem((lineCount + 1).ToString)
+            'lvItem = New System.Windows.Forms.ListViewItem((lineCount + 1).ToString)
             'columnCount = lineHash.Count
             'For columnNumber = 1 To columnCount
 
             '    item = lineHash.Item(columnNumber).ToString
             '    If item.Length > 0 Then
-            '        li.SubItems.Add(lineHash.Item(columnNumber).ToString)
+            '        lvItem.SubItems.Add(lineHash.Item(columnNumber).ToString)
             '    Else
-            '        li.SubItems.Add("---")
+            '        lvItem.SubItems.Add("---")
             '    End If
             'Next
             'blankColumnCount = maxColumnCount - columnCount
             'If blankColumnCount > 0 Then
             '    For columnNumber = 1 To blankColumnCount
-            '        li.SubItems.Add("---")
+            '        lvItem.SubItems.Add("---")
             '    Next
             'End If
 
-            Me.lvwProteins.Items.Add(li)
+            Me.lvwProteins.Items.Add(lvItem)
         Next
 
         Me.lvwProteins.EndUpdate()
@@ -363,13 +358,13 @@ Public Class frmExtractFromFlatfile
     Private Sub LoadAnnotationGroupListView()
         Dim maxIndex As Integer = Me.m_Extract.Annotations.GroupCount
         Dim groupID As Integer
-        Dim li As System.Windows.Forms.ListViewItem
+        Dim lvItem As System.Windows.Forms.ListViewItem
 
         Me.lvwNewNames.BeginUpdate()
         Me.lvwNewNames.Items.Clear()
         For groupID = 1 To maxIndex
-            li = Me.m_Extract.GetListViewItemForGroup(groupID)
-            Me.lvwNewNames.Items.Add(li)
+            lvItem = Me.m_Extract.GetListViewItemForGroup(groupID)
+            Me.lvwNewNames.Items.Add(lvItem)
         Next
         Me.lvwNewNames.EndUpdate()
 
@@ -380,10 +375,10 @@ Public Class frmExtractFromFlatfile
         ByVal authList As Hashtable)
 
         Dim a As New ArrayList
-        Dim memberEnum As IDictionaryEnumerator = authList.GetEnumerator
+        Dim memberEnum = authList.GetEnumerator
 
         cbo.BeginUpdate()
-        While memberEnum.MoveNext = True
+        While memberEnum.MoveNext()
             a.Add(New AuthorityContainer(memberEnum.Value.ToString, CInt(memberEnum.Key)))
         End While
 

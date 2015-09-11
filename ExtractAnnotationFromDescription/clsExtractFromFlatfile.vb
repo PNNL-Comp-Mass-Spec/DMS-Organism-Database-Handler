@@ -1,28 +1,27 @@
+Imports System.Collections.Generic
 Imports System.IO
 
 Friend Class clsExtractFromFlatfile
 
     Private m_FilePath As String
-    Private m_FileContents As ArrayList
+    Private m_FileContents As List(Of Hashtable)
     Private m_ColumnNameLookup As Hashtable
-    Private m_Authorities As Hashtable
+    Private ReadOnly m_Authorities As Hashtable
     Private m_AnnotationStorage As AnnotationStorage
     Private m_firstLine As String
-    Private m_PSConnectionString As String
+    Private ReadOnly m_PSConnectionString As String
     Private m_Uploader As Protein_Importer.IAddUpdateEntries
-    Private m_ProteinIDLookup As Hashtable
-    Private m_ProteinIDGlobalLookup As Hashtable
+    Private m_ProteinIDLookup As Dictionary(Of String, Integer)
 
-	Private m_MaxProteinNameLength As Integer
+    Private m_MaxProteinNameLength As Integer = 32
 
     'AuthorityLookupHash key = AuthorityID, value = AuthorityName
     Sub New(ByVal AuthorityList As Hashtable, ByVal PSConnectionString As String)
         Me.m_Authorities = AuthorityList
         Me.m_PSConnectionString = PSConnectionString
     End Sub
-
-
-    ReadOnly Property FileContents() As ArrayList
+    
+    ReadOnly Property FileContents() As List(Of Hashtable)
         Get
             Return Me.m_FileContents
         End Get
@@ -101,11 +100,11 @@ Friend Class clsExtractFromFlatfile
 
     End Function
 
-    Function HashToListViewItem( _
-        ByVal lineHash As Hashtable, _
+    Function HashToListViewItem(
+        ByVal lineHash As Hashtable,
         ByVal lineCount As Integer) As System.Windows.Forms.ListViewItem
 
-        Dim li As System.Windows.Forms.ListViewItem
+        Dim lvItem As System.Windows.Forms.ListViewItem
         Dim columnCount As Integer = lineHash.Count
         Dim columnNumber As Integer
         Dim item As String
@@ -113,25 +112,24 @@ Friend Class clsExtractFromFlatfile
 
         Dim blankColumnCount As Integer
 
-
-        li = New System.Windows.Forms.ListViewItem(lineHash.Item(1).ToString)
+        lvItem = New System.Windows.Forms.ListViewItem(lineHash.Item(1).ToString)
         For columnNumber = 2 To columnCount
 
             item = lineHash.Item(columnNumber).ToString
             If item.Length > 0 Then
-                li.SubItems.Add(lineHash.Item(columnNumber).ToString)
+                lvItem.SubItems.Add(lineHash.Item(columnNumber).ToString)
             Else
-                li.SubItems.Add("---")
+                lvItem.SubItems.Add("---")
             End If
         Next
         blankColumnCount = maxColumnCount - columnCount
         If blankColumnCount > 0 Then
             For columnNumber = 1 To blankColumnCount
-                li.SubItems.Add("---")
+                lvItem.SubItems.Add("---")
             Next
         End If
 
-        Return li
+        Return lvItem
 
     End Function
 
@@ -154,7 +152,7 @@ Friend Class clsExtractFromFlatfile
         Dim entryLine As String
         Dim lineHash As Hashtable
 
-        Me.m_FileContents = New ArrayList
+        Me.m_FileContents = New List(Of Hashtable)
 
         entryLine = tr.ReadLine
         Me.m_firstLine = entryLine
@@ -247,44 +245,42 @@ Friend Class clsExtractFromFlatfile
             Me.m_Uploader = New Protein_Importer.clsAddUpdateEntries(Me.m_PSConnectionString)
         End If
 
-        Dim ag As AnnotationGroup
         Dim groupCount As Integer = Me.m_AnnotationStorage.GroupCount
-        Dim columnCount As Integer
-        Dim referenceLookup As Hashtable
-        Dim proteinName As String
 
-        'Dim al As ArrayList = Me.m_AnnotationStorage.GetAllPrimaryReferences
         Me.m_ProteinIDLookup = Me.GetProteinIDsForPrimaryReferences(Me.m_AnnotationStorage.GetAllPrimaryReferences)
 
         For columnCount = 1 To groupCount
             If Not columnCount.Equals(PrimaryReferenceNameColumnID) Then
-                ag = Me.m_AnnotationStorage.GetGroup(columnCount)
-                referenceLookup = ag.GetAllXRefs()
+                Dim ag = Me.m_AnnotationStorage.GetGroup(columnCount)
+                Dim referenceLookup = ag.GetAllXRefs()
                 For Each proteinName In referenceLookup.Keys
-					Me.m_Uploader.AddProteinReference(proteinName, _
-					 String.Empty, 0, ag.AnnotationAuthorityID, CInt(Me.m_ProteinIDLookup.Item(proteinName)), m_MaxProteinNameLength)
+                    Me.m_Uploader.AddProteinReference(
+                       proteinName,
+                       String.Empty,
+                       0,
+                       ag.AnnotationAuthorityID,
+                       m_ProteinIDLookup.Item(proteinName),
+                       m_MaxProteinNameLength)
                 Next
 
             End If
         Next
-
-
+        
     End Sub
 
-    Private Function GetProteinIDsForPrimaryReferences(ByVal PrimaryReferences As ArrayList) As Hashtable
+    Private Function GetProteinIDsForPrimaryReferences(ByVal PrimaryReferences As SortedSet(Of String)) As Dictionary(Of String, Integer)
         Dim name As String
-        Dim ht As New Hashtable(PrimaryReferences.Count)
+        Dim ht As New Dictionary(Of String, Integer)(PrimaryReferences.Count)
         Dim id As Integer
 
         If Me.m_Uploader Is Nothing Then
             Me.m_Uploader = New Protein_Importer.clsAddUpdateEntries(Me.m_PSConnectionString)
         End If
-
-
+        
         For Each name In PrimaryReferences
-            If Not ht.Contains(name) Then
-                If Me.m_ProteinIDLookup.Contains(name) Then
-                    id = DirectCast(Me.m_ProteinIDLookup(name), Int32)
+            If Not ht.ContainsKey(name) Then
+                If Me.m_ProteinIDLookup.ContainsKey(name) Then
+                    id = m_ProteinIDLookup(name)
                 Else
                     id = Me.m_Uploader.GetProteinIDFromName(name)
                 End If

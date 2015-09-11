@@ -5,10 +5,11 @@
 
 Module modMain
 
-    Public Const PROGRAM_DATE As String = "October 14, 2014"
+    Public Const PROGRAM_DATE As String = "September 11, 2015"
 
     Private mInputFilePath As String
     Private mPreviewMode As Boolean
+    Private mMaxProteinNameLength As Integer = ValidateFastaFile.clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
 
     Private mLogMessagesToFile As Boolean
     Private mLogFilePath As String
@@ -50,6 +51,20 @@ Module modMain
 
                 mBulkImporter = New clsBulkFastaImporter
                 mBulkImporter.PreviewMode = mPreviewMode
+                mBulkImporter.ValidationMaxProteinNameLength = mMaxProteinNameLength
+
+                ' Data Source=proteinseqs;Initial Catalog=Protein_Sequences
+                Dim proteinSeqsConnectionString = My.Settings.ProteinSeqsDBConnectStr
+                Dim dmsConnectionString = My.Settings.DMSConnectStr
+
+                If Not String.IsNullOrWhiteSpace(proteinSeqsConnectionString) Then
+                    mBulkImporter.ProteinSeqsConnectionString = proteinSeqsConnectionString
+                End If
+
+                If Not String.IsNullOrWhiteSpace(dmsConnectionString) Then
+                    mBulkImporter.DMSConnectionString = dmsConnectionString
+                End If
+                
 
                 mBulkImporter.ShowMessages = True
                 mBulkImporter.LogMessagesToFile = mLogMessagesToFile
@@ -98,7 +113,7 @@ Module modMain
         ' Returns True if no problems; otherwise, returns false
 
         Dim strValue As String = String.Empty
-        Dim strValidParameters() As String = New String() {"I", "L", "Preview"}
+        Dim strValidParameters() As String = New String() {"I", "L", "Preview", "MaxLength"}
 
         Try
             ' Make sure no invalid parameters are present
@@ -121,6 +136,13 @@ Module modMain
                     End If
 
                     If .IsParameterPresent("Preview") Then mPreviewMode = True
+
+                    If .RetrieveValueForParameter("MaxLength", strValue) Then
+                        If Not Integer.TryParse(strValue, mMaxProteinNameLength) Then
+                            ShowErrorMessage("Integer not found for the /MaxLength switch")
+                            Return False
+                        End If
+                    End If
 
                 End With
 

@@ -1,22 +1,24 @@
-Friend Class AnnotationStorage
-    Private m_AnnotationGroups As Hashtable
-    Private m_GroupNameLookup As Hashtable
-    Private m_GlobalProteinNameList As ArrayList
+Imports System.Collections.Generic
 
-    Sub AddAnnotationGroup(ByVal GroupID As Integer, ByVal GroupName As String)
+Friend Class AnnotationStorage
+    Private m_AnnotationGroups As Dictionary(Of Integer, AnnotationGroup)
+    Private m_GroupNameLookup As Dictionary(Of String, Integer)
+    Private ReadOnly m_GlobalProteinNameList As New SortedSet(Of String)
+
+    Sub AddAnnotationGroup(ByVal GroupID As Integer, ByVal groupNameToAdd As String)
 
         If Me.m_GroupNameLookup Is Nothing Then
-            Me.m_GroupNameLookup = New Hashtable
+            Me.m_GroupNameLookup = New Dictionary(Of String, Integer)
         End If
 
         If Me.m_AnnotationGroups Is Nothing Then
-            Me.m_AnnotationGroups = New Hashtable
+            Me.m_AnnotationGroups = New Dictionary(Of Integer, AnnotationGroup)
         End If
 
-        Dim newGroup As New AnnotationGroup(GroupName)
+        Dim newGroup As New AnnotationGroup(groupNameToAdd)
         newGroup.ImportThisGroup = False
         Me.m_AnnotationGroups.Add(GroupID, newGroup)
-        Me.m_GroupNameLookup.Add(GroupID, GroupName)
+        Me.m_GroupNameLookup.Add(groupNameToAdd, GroupID)
 
     End Sub
 
@@ -29,9 +31,9 @@ Friend Class AnnotationStorage
         End If
     End Sub
 
-    Sub AddAnnotation( _
-        ByVal groupID As Integer, _
-        ByVal PrimaryReferenceName As String, _
+    Sub AddAnnotation(
+        ByVal groupID As Integer,
+        ByVal PrimaryReferenceName As String,
         ByVal XRefName As String)
 
         Dim ag As AnnotationGroup = Me.GetGroup(groupID)
@@ -42,8 +44,8 @@ Friend Class AnnotationStorage
         End If
     End Sub
 
-    Sub AddDelimiter( _
-        ByVal groupID As Integer, _
+    Sub AddDelimiter(
+        ByVal groupID As Integer,
         ByVal newDelimiter As String)
 
         Me.GetGroup(groupID).XRefDelimiter = newDelimiter
@@ -51,21 +53,19 @@ Friend Class AnnotationStorage
     End Sub
 
     Sub SetAnnotationGroupStatus(ByVal GroupID As Integer, ByVal NewState As Boolean)
-        Dim group As AnnotationGroup
-        group = DirectCast(Me.m_AnnotationGroups.Item(GroupID), AnnotationGroup)
+        Dim group = Me.m_AnnotationGroups.Item(GroupID)
         group.ImportThisGroup = NewState
         Me.m_AnnotationGroups.Item(GroupID) = group
         group = Nothing
     End Sub
 
     'Controls the import state of the named annotation group
-    Sub SetAnnotationGroupStatus(ByVal GroupName As String, ByVal NewState As Boolean)
-        Dim groupID As Integer
-        groupID = DirectCast(Me.m_GroupNameLookup(GroupName), Int32)
-        Me.SetAnnotationGroupStatus(groupID, NewState)
+    Sub SetAnnotationGroupStatus(ByVal groupNameToUpdate As String, ByVal newStateForGroup As Boolean)
+        Dim groupID = Me.m_GroupNameLookup(groupNameToUpdate)
+        Me.SetAnnotationGroupStatus(groupID, newStateForGroup)
     End Sub
 
-    Function GetAllPrimaryReferences() As ArrayList
+    Function GetAllPrimaryReferences() As SortedSet(Of String)
         Return Me.m_GlobalProteinNameList
     End Function
 
@@ -83,12 +83,10 @@ Friend Class AnnotationStorage
 
     Property AnnotationAuthorityID(ByVal GroupID As Integer) As Integer
         Get
-            Return DirectCast(Me.m_AnnotationGroups.Item(GroupID), _
-                AnnotationGroup).AnnotationAuthorityID
+            Return Me.m_AnnotationGroups.Item(GroupID).AnnotationAuthorityID
         End Get
         Set(ByVal Value As Integer)
-            DirectCast(Me.m_AnnotationGroups.Item(GroupID), _
-                AnnotationGroup).AnnotationAuthorityID = Value
+            Me.m_AnnotationGroups.Item(GroupID).AnnotationAuthorityID = Value
         End Set
     End Property
 
@@ -110,7 +108,7 @@ Friend Class AnnotationStorage
 
     'Function GetAnnotationGroup(ByVal GroupName As String) As Hashtable
     '    Dim groupID As Integer
-    '    groupID = DirectCast(Me.m_GroupNameLookup(GroupName), Int32)
+    '    groupID = Me.m_GroupNameLookup(GroupName)
     '    Return Me.GetAnnotationGroupData(groupID)
     'End Function
 
@@ -119,17 +117,17 @@ Friend Class AnnotationStorage
     'End Function
 
     'Returns hashtable containing all the added primary reference names as keys
-    'and arraylists of their corresponding xref names for the specified 
+    'and SortedSets of their corresponding xref names for the specified 
     'Annotation group id
-    Function GetAllRawXRefs(ByVal GroupID As Integer) As Hashtable
+    Function GetAllRawXRefs(ByVal GroupID As Integer) As Dictionary(Of String, SortedSet(Of String))
         Return Me.GetGroup(GroupID).GetAllXRefs
     End Function
 
-    'Returns an arraylist containing all the xref names for the given 
+    'Returns a SortedSet containing all the xref names for the given 
     'primary reference name
-    Function GetXRefs( _
-        ByVal PrimaryReferenceName As String, _
-        ByVal GroupID As Integer) As ArrayList
+    Function GetXRefs(
+        ByVal PrimaryReferenceName As String,
+        ByVal GroupID As Integer) As SortedSet(Of String)
 
         Dim group As AnnotationGroup = Me.GetGroup(GroupID)
         Return group.GetXRefs(PrimaryReferenceName)
@@ -138,7 +136,7 @@ Friend Class AnnotationStorage
 
     Function GetGroup(ByVal groupid As Integer) As AnnotationGroup
         Dim group As AnnotationGroup
-        group = DirectCast(Me.m_AnnotationGroups(groupid), AnnotationGroup)
+        group = Me.m_AnnotationGroups(groupid)
         Return group
 
     End Function

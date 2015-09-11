@@ -1,16 +1,16 @@
 Option Strict On
 Public Interface IImportProteins
 
-    Function LoadProteins(filePath As String, _
+    Function LoadProteins(filePath As String,
         fileType As IImportProteins.ProteinImportFileTypes) As DataTable
-    Function LoadProteinsForBatch( _
-        filePath As String, _
-        SelectedOrganismID As Integer, _
+    Function LoadProteinsForBatch(
+        filePath As String,
+        SelectedOrganismID As Integer,
         SelectedAuthorityID As Integer) As Protein_Storage.IProteinStorage
 
     Function LoadOrganisms() As DataTable
     Function LoadAuthorities() As DataTable
-    'Function LoadAuthorities(proteinCollectionID As Integer) As DataTable
+
     Function LoadAnnotationTypes() As DataTable
     Function LoadAnnotationTypes(proteinCollectionID As Integer) As DataTable
 
@@ -20,11 +20,13 @@ Public Interface IImportProteins
     Sub TriggerProteinCollectionsLoad()
     Sub TriggerProteinCollectionsLoad(organism_ID As Integer)
     Sub TriggerProteinCollectionTableUpdate()
-    Function LoadCollectionMembersByID( _
-        collectionID As Integer, _
+
+    Function LoadCollectionMembersByID(
+        collectionID As Integer,
         namingAuthorityID As Integer) As DataTable
-    Function LoadCollectionMembersByName( _
-        collectionName As String, _
+
+    Function LoadCollectionMembersByName(
+        collectionName As String,
         namingAuthorityID As Integer) As DataTable
 
     ReadOnly Property CollectionMembers() As Protein_Storage.IProteinStorage
@@ -35,7 +37,6 @@ Public Interface IImportProteins
     'Event ValidationProgress(taskTitle As String, fractionDone As Double)
     Event LoadEnd()
     Event CollectionLoadComplete(CollectionsTable As DataTable)
-    'Event InvalidFASTAFile(FASTAFilePath As String, errorCollection As ArrayList)
 
     Enum ProteinImportFileTypes
         FASTA
@@ -72,9 +73,7 @@ Public Class clsImportHandler
     Protected Event LoadStart(taskTitle As String) Implements IImportProteins.LoadStart
     Protected Event LoadProgress(fractionDone As Double) Implements IImportProteins.LoadProgress
     Protected Event LoadEnd() Implements IImportProteins.LoadEnd
-    'Protected Event ValidationProgress(taskTitle As String, fractionDone As Double) Implements IImportProteins.ValidationProgress
     Protected Event CollectionLoadComplete(CollectionsTable As DataTable) Implements IImportProteins.CollectionLoadComplete
-    'Protected Event InvalidFASTAFile(FASTAFilePath As String, errorCollection As ArrayList) Implements IImportProteins.InvalidFASTAFile
 
 
     Public Sub New(PISConnectionString As String)
@@ -158,13 +157,13 @@ Public Class clsImportHandler
 
     End Function
 
-    Protected Function LoadAnnotationTypes( _
+    Protected Function LoadAnnotationTypes(
         proteinCollectionID As Integer) As DataTable Implements IImportProteins.LoadAnnotationTypes
 
         Dim AnnTypeIDSQL As String
-        AnnTypeIDSQL = _
-            "SELECT Annotation_Type_ID " & _
-            "FROM V_Protein_Collection_Authority " & _
+        AnnTypeIDSQL =
+            "SELECT Annotation_Type_ID " &
+            "FROM V_Protein_Collection_Authority " &
             "WHERE Protein_Collection_ID = " & proteinCollectionID.ToString
 
         Dim tmpAnnTypeIDTable As DataTable
@@ -183,9 +182,9 @@ Public Class clsImportHandler
 
         authIDSB.Remove(authIDSB.Length - 2, 2)
 
-        Dim AuthSQL As String = _
-            "SELECT * FROM V_Annotation_Type_Picker " & _
-            "WHERE ID IN (" & authIDSB.ToString & ") " & _
+        Dim AuthSQL As String =
+            "SELECT * FROM V_Annotation_Type_Picker " &
+            "WHERE ID IN (" & authIDSB.ToString & ") " &
             "ORDER BY Display_Name"
 
         Dim tmpAuthTable As DataTable = Me.m_SQLAccess.GetTable(AuthSQL)
@@ -277,11 +276,11 @@ Public Class clsImportHandler
     Protected Function LoadProteinCollections() As DataTable Implements IImportProteins.LoadProteinCollections
         Dim PCSQL As String
 
-        PCSQL = "SELECT MIN(FileName) AS FileName, Protein_Collection_ID, " & _
-                    "MIN(Organism_ID) AS Organism_ID, MIN(Authority_ID) AS Authority_ID, " & _
-                    "MIN(Display) AS Display, MIN(Authentication_Hash) AS Authentication_Hash " & _
-                "FROM V_Protein_Collections_By_Organism " & _
-                "GROUP BY Protein_Collection_ID " & _
+        PCSQL = "SELECT MIN(FileName) AS FileName, Protein_Collection_ID, " &
+                    "MIN(Organism_ID) AS Organism_ID, MIN(Authority_ID) AS Authority_ID, " &
+                    "MIN(Display) AS Display, MIN(Authentication_Hash) AS Authentication_Hash " &
+                "FROM V_Protein_Collections_By_Organism " &
+                "GROUP BY Protein_Collection_ID " &
                 "ORDER BY MIN(FileName)"
 
         Dim tmpPCTable As DataTable = Me.m_SQLAccess.GetTable(PCSQL)
@@ -302,9 +301,9 @@ Public Class clsImportHandler
     Protected Function LoadProteinCollections(Organism_ID As Integer) As DataTable
         Dim PCSQL As String
 
-        PCSQL = "SELECT FileName, Protein_Collection_ID, Organism_ID, Authority_ID, Display, Authentication_Hash" & _
-                              " FROM V_Protein_Collections_By_Organism" & _
-                              " WHERE Organism_ID = " & Organism_ID & _
+        PCSQL = "SELECT FileName, Protein_Collection_ID, Organism_ID, Authority_ID, Display, Authentication_Hash" &
+                              " FROM V_Protein_Collections_By_Organism" &
+                              " WHERE Organism_ID = " & Organism_ID &
                               " ORDER BY [FileName]"
         Dim tmpPCTable As DataTable = Me.m_SQLAccess.GetTable(PCSQL)
 
@@ -322,9 +321,9 @@ Public Class clsImportHandler
     End Function
 
     Protected Function LoadProteinCollectionNames() As DataTable Implements IImportProteins.LoadProteinCollectionNames
-        Dim PCSQL As String = _
-            "SELECT Protein_Collection_ID, FileName, Authority_ID " & _
-            "FROM V_Protein_Collections_By_Organism " & _
+        Dim PCSQL As String =
+            "SELECT Protein_Collection_ID, FileName, Authority_ID " &
+            "FROM V_Protein_Collections_By_Organism " &
             "ORDER BY FileName"
         Dim tmpPCTable As DataTable = Me.m_SQLAccess.GetTable(PCSQL)
 
@@ -341,8 +340,8 @@ Public Class clsImportHandler
         Return tmpPCTable
     End Function
 
-    Protected Function LoadCollectionMembersByID( _
-        collectionID As Integer, _
+    Protected Function LoadCollectionMembersByID(
+        collectionID As Integer,
         authorityID As Integer) As DataTable Implements IImportProteins.LoadCollectionMembersByID
 
         Me.m_CollectionsList = Me.LoadProteinCollections
@@ -354,20 +353,20 @@ Public Class clsImportHandler
 
         End If
 
-        Dim MemberSQL As String = _
-            "SELECT * From V_Protein_Storage_Entry_Import " & _
-            "WHERE [Protein_Collection_ID] = " & collectionID.ToString & " " & _
-                "AND Annotation_Type_ID = " & authorityID.ToString & " " & _
+        Dim MemberSQL As String =
+            "SELECT * From V_Protein_Storage_Entry_Import " &
+            "WHERE [Protein_Collection_ID] = " & collectionID.ToString & " " &
+                "AND Annotation_Type_ID = " & authorityID.ToString & " " &
                 "ORDER BY [Name]"
         Return Me.LoadCollectionMembers(MemberSQL)
     End Function
 
-    Protected Function LoadCollectionMembersByName( _
-        collectionName As String, _
+    Protected Function LoadCollectionMembersByName(
+        collectionName As String,
         authorityID As Integer) As DataTable Implements IImportProteins.LoadCollectionMembersByName
 
-        Dim GetIDSQL As String = "SELECT Protein_Collection_ID, Primary_Annotation_Type_ID " & _
-            "FROM T_Protein_Collections " & _
+        Dim GetIDSQL As String = "SELECT Protein_Collection_ID, Primary_Annotation_Type_ID " &
+            "FROM T_Protein_Collections " &
             "WHERE [FileName] = " & collectionName & " ORDER BY [Name]"
 
         Dim tmpTable As DataTable = Me.m_SQLAccess.GetTable(GetIDSQL)
@@ -382,70 +381,37 @@ Public Class clsImportHandler
     Private Function LoadCollectionMembers(SelectStatement As String) As DataTable
         Dim tmpMemberTable As DataTable = Me.m_SQLAccess.GetTable(SelectStatement)
 
-        'Dim ProteinNames As New ArrayList
-
         Me.m_FileContents = Me.LoadProteinInfo(tmpMemberTable.Select(""))
 
         Return tmpMemberTable
 
     End Function
 
-    'Protected Function LoadSelectedProteinInfo(ByRef CollectionMemberTable As DataTable, _
-    '    SelectedProteinNames As ArrayList) As Protein_Storage.IProteinStorage
-
-    '    Dim ReferenceList As String
-    '    Dim Reference As String
-
-    '    For Each Reference In SelectedProteinNames
-    '        ReferenceList &= Reference.ToString & ", "
-    '    Next
-
-    '    ReferenceList = Left(ReferenceList, ReferenceList.Length - 2)
-
-    '    Dim foundrows() As DataRow = CollectionMemberTable.Select("IN " & ReferenceList)
-
-    '    Dim tmpPS As Protein_Storage.IProteinStorage = Me.LoadProteinInfo(foundrows)
-
-    '    Return tmpPS
-
-    'End Function
-
-    'Protected Function LoadAllProteinInfo(ByRef CollectionMemberTable As DataTable) As Protein_Storage.IProteinStorage
-    '    Dim tmpPS As Protein_Storage.IProteinStorage = Me.LoadProteinInfo(CollectionMemberTable.Select(""))
-
-    '    Return tmpPS
-    'End Function
-
-    Protected Function LoadProteinInfo(ByRef CollectionMembers() As DataRow) As Protein_Storage.IProteinStorage
-        Dim dr As DataRow
-
-        Dim ce As Protein_Storage.IProteinStorageEntry
-        Dim tmpPS As Protein_Storage.IProteinStorage
-        tmpPS = New Protein_Storage.clsProteinStorageDMS("")
+    Protected Function LoadProteinInfo(ByVal proteinCollectionMembers() As DataRow) As Protein_Storage.IProteinStorage
+        Dim tmpPS = New Protein_Storage.clsProteinStorageDMS("")
         Dim proteinCount As Integer
         Dim triggerCount As Integer
         Dim counter As Integer
 
         RaiseEvent LoadStart("Retrieving Protein Entries...")
 
-        proteinCount = CollectionMembers.Length
+        proteinCount = proteinCollectionMembers.Length
 
         If proteinCount > 20 Then
             triggerCount = CInt(proteinCount / 20)
         Else
             triggerCount = 1
         End If
-
-
-        For Each dr In CollectionMembers
-            ce = New Protein_Storage.clsProteinStorageEntry( _
-                dr.Item("Name").ToString, _
-                dr.Item("Description").ToString, _
-                dr.Item("Sequence").ToString, _
-                DirectCast(dr.Item("Length"), Int32), _
-                DirectCast(dr.Item("Monoisotopic_Mass"), Double), _
-                DirectCast(dr.Item("Average_Mass"), Double), _
-                dr.Item("Molecular_Formula").ToString, _
+        
+        For Each dr As DataRow In proteinCollectionMembers
+            Dim ce = New Protein_Storage.clsProteinStorageEntry(
+                dr.Item("Name").ToString,
+                dr.Item("Description").ToString,
+                dr.Item("Sequence").ToString,
+                DirectCast(dr.Item("Length"), Int32),
+                DirectCast(dr.Item("Monoisotopic_Mass"), Double),
+                DirectCast(dr.Item("Average_Mass"), Double),
+                dr.Item("Molecular_Formula").ToString,
                 dr.Item("SHA1_Hash").ToString, counter)
 
             If counter Mod triggerCount > 0 Then
@@ -463,8 +429,8 @@ Public Class clsImportHandler
 
     'Function to load fasta file contents with no checking against the existing database entries
     'used to load up the source collection listview
-    Protected Function LoadProteinsRaw( _
-        filePath As String, _
+    Protected Function LoadProteinsRaw(
+        filePath As String,
         fileType As IImportProteins.ProteinImportFileTypes) As DataTable Implements IImportProteins.LoadProteins
 
         Dim tmpProteinTable As DataTable = Me.m_SQLAccess.GetTableTemplate("V_Protein_Database_Export")
@@ -490,15 +456,13 @@ Public Class clsImportHandler
             triggerCount = 1
         End If
 
-        Dim contentsEnum As IDictionaryEnumerator = Me.m_FileContents.GetEnumerator
-        Dim entry As Protein_Storage.IProteinStorageEntry
-        Dim dr As DataRow
+        Dim contentsEnum = Me.m_FileContents.GetEnumerator
 
         'Move certain elements of the protein record to a datatable for display in the source window
         Me.Task_LoadStart("Updating Display List...")
-        Do While contentsEnum.MoveNext = True
-            entry = DirectCast(contentsEnum.Value, Protein_Storage.clsProteinStorageEntry)
-            dr = tmpProteinTable.NewRow
+        Do While contentsEnum.MoveNext()
+            Dim entry = contentsEnum.Current.Value
+            Dim dr = tmpProteinTable.NewRow
             dr.Item("Name") = entry.Reference
             dr.Item("Description") = entry.Description
             dr.Item("Sequence") = entry.Sequence
@@ -514,9 +478,9 @@ Public Class clsImportHandler
 
     End Function
 
-    Protected Function LoadProteinsForBatch( _
-        FullFilePath As String, _
-        SelectedOrganismID As Integer, _
+    Protected Function LoadProteinsForBatch(
+        FullFilePath As String,
+        SelectedOrganismID As Integer,
         SelectedAuthorityID As Integer) As Protein_Storage.IProteinStorage Implements IImportProteins.LoadProteinsForBatch
 
         Dim ps As Protein_Storage.IProteinStorage = Me.LoadFASTA(FullFilePath)
@@ -559,7 +523,7 @@ Public Class clsImportHandler
 
         Dim sp_Save As SqlClient.SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("UpdateProteinCollectionsByOrganism", _
+        sp_Save = New SqlClient.SqlCommand("UpdateProteinCollectionsByOrganism",
             Me.m_SQLAccess.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure

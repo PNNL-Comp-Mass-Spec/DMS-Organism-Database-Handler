@@ -81,11 +81,25 @@
     <Compile Include="clsProcessFilesOrFoldersBase.vb" />
     <Compile Include="modMain.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="My Project\Settings.settings">
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Protein_Exporter\Protein_Exporter.vbproj">
+      <Project>{a698b58b-15b8-4893-81ad-116d57b9b404}</Project>
+      <Name>Protein_Exporter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Protein_Importer\Protein_Importer.vbproj">
       <Project>{28d5a54e-b47d-41f3-95ab-96c4346ade38}</Project>
       <Name>Protein_Importer</Name>

@@ -1,3 +1,5 @@
+Imports System.Collections.Generic
+
 Public Interface IProteinStorageEntry
 
     ReadOnly Property Reference() As String
@@ -12,7 +14,7 @@ Public Interface IProteinStorageEntry
     ReadOnly Property MolecularFormula() As String
     Property SHA1Hash() As String
 
-    ReadOnly Property NameXRefs() As ArrayList
+    ReadOnly Property NameXRefs() As List(Of String)
 
     Property AlternateReference() As String
     Property Protein_ID() As Integer
@@ -22,7 +24,7 @@ Public Interface IProteinStorageEntry
     Property IsEncrypted() As Boolean
     Property SortingIndex() As Integer
 
-    Sub AddXRef(ByVal Reference As String)
+    Sub AddXRef(ByVal newReference As String)
     Sub SetReferenceName(ByVal NewName As String)
 
 

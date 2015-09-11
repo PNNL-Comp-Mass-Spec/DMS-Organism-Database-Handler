@@ -4,9 +4,8 @@ Public Class clsExportProteinsFASTA
     Inherits clsExportProteins
 
     Private m_seqLineLength As Integer = 60
-    'Protected m_FileArchiver As Protein_Exporter.IArchiveOutputFiles
 
-    Public Sub New(ByRef ExportComponent As Protein_Exporter.clsGetFASTAFromDMSForward)
+    Public Sub New(ByRef ExportComponent As clsGetFASTAFromDMSForward)
         MyBase.New(ExportComponent)
 
     End Sub
@@ -25,9 +24,7 @@ Public Class clsExportProteinsFASTA
 		'Dim dr As DataRow
 		Dim sw As System.IO.StreamWriter = New System.IO.StreamWriter(destinationPath)
 
-		Dim nameList As ArrayList
-
-		'Dim e As IEnumerator = Proteins.GetEnumerator
+        'Dim e As IEnumerator = Proteins.GetEnumerator
 		Dim proteinPosition As Integer
 		Dim proteinLength As Integer
 
@@ -58,13 +55,13 @@ Public Class clsExportProteinsFASTA
 			EventTriggerThresh = CInt(counterMax / 25)
 		End If
 
-		nameList = Proteins.GetSortedProteinNames
+        Dim nameList = Proteins.GetSortedProteinNames
 
 		For Each tmpName In nameList
 
 			Me.OnExportStart("Writing: " + tmpName)
 
-			tmpPC = DirectCast(Proteins.GetProtein(tmpName), Protein_Storage.IProteinStorageEntry)
+            tmpPC = Proteins.GetProtein(tmpName)
 			tmpSeq = tmpPC.Sequence
 
 			counter += 1

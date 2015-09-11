@@ -89,7 +89,7 @@ Public Class clsBulkFastaImporter
 
 
     Public Sub New()
-        MyBase.mFileDate = "October 13, 2014"
+        MyBase.mFileDate = "September 11, 2015"
         InitializeLocalVariables()
     End Sub
 
@@ -130,7 +130,7 @@ Public Class clsBulkFastaImporter
         Me.ProteinSeqsConnectionString = PROTEINSEQS_CONNECTION_STRING
         Me.ValidationAllowAsterisks = True
         Me.ValidationAllowDash = True
-        Me.ValidationMaxProteinNameLength = 34
+        Me.ValidationMaxProteinNameLength = ValidateFastaFile.clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
 
     End Sub
 

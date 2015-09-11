@@ -1,18 +1,22 @@
-Imports System.Security.Cryptography
+Imports System.Collections.Generic
 
 Public Class clsProteinStorageEntry
     Implements IProteinStorageEntry
 
-    Public Sub New( _
-        ByVal Reference As String, _
-        ByVal Description As String, _
-        ByVal Sequence As String, _
-        ByVal Length As Integer, _
-        ByVal MonoisotopicMass As Double, _
-        ByVal AverageMass As Double, _
-        ByVal MolecularFormula As String, _
-        ByVal AuthenticationHash As String, _
+    Public Sub New(
+        ByVal Reference As String,
+        ByVal Description As String,
+        ByVal Sequence As String,
+        ByVal Length As Integer,
+        ByVal MonoisotopicMass As Double,
+        ByVal AverageMass As Double,
+        ByVal MolecularFormula As String,
+        ByVal AuthenticationHash As String,
         ByVal SortingIndex As Integer)
+
+        If String.IsNullOrWhiteSpace(Reference) Then
+            Throw New Exception("Reference name cannot be empty")
+        End If
 
         Me.m_Reference = Reference
         Me.m_Description = Description
@@ -28,43 +32,6 @@ Public Class clsProteinStorageEntry
 
     End Sub
 
-    'Public Sub New( _
-    '    ByVal Reference As String, _
-    '    ByVal Description As String, _
-    '    ByVal Sequence As String)
-
-    '    m_Reference = Reference
-    '    m_Description = Description
-    '    m_Sequence = Sequence
-    '    m_MonoMass = 0
-    '    m_AvgMass = 0
-    '    m_Length = 0
-    '    m_MolecularFormula = ""
-    '    m_AuthHash = ""
-
-    '    m_Protein_ID = 0
-
-    'End Sub
-
-    'Public Sub New( _
-    '    ByVal Reference As String, _
-    '    ByVal Description As String, _
-    '    ByVal Sequence As String, _
-    '    ByVal ProteinID As Integer)
-
-    '    m_Reference = Reference
-    '    m_Description = Description
-    '    m_Sequence = Sequence
-    '    m_MonoMass = 0
-    '    m_AvgMass = 0
-    '    m_Length = 0
-    '    m_MolecularFormula = ""
-    '    m_AuthHash = ""
-
-    '    m_Protein_ID = ProteinID
-
-    'End Sub
-
     Protected m_Reference As String
     Protected m_AlternateReference As String
     Protected m_Description As String
@@ -79,7 +46,7 @@ Public Class clsProteinStorageEntry
     Protected m_Reference_ID As Integer
     Protected m_Member_ID As Integer
     Protected m_Authority_ID As Integer
-    Protected m_XRefList As ArrayList
+    Protected m_XRefList As List(Of String)
     Protected m_SortCount As Integer
 
     Protected m_IsEncrypted As Boolean = False
@@ -166,7 +133,7 @@ Public Class clsProteinStorageEntry
         End Set
     End Property
 
-    Protected Property Protein_ID() As Integer Implements IProteinStorageEntry.Protein_ID
+    Public Property Protein_ID() As Integer Implements IProteinStorageEntry.Protein_ID
         Get
             Return Me.m_Protein_ID
         End Get
@@ -211,21 +178,33 @@ Public Class clsProteinStorageEntry
         End Set
     End Property
 
-    Protected ReadOnly Property NameXRefs() As ArrayList Implements IProteinStorageEntry.NameXRefs
+    Protected ReadOnly Property NameXRefs() As List(Of String) Implements IProteinStorageEntry.NameXRefs
         Get
             Return Me.m_XRefList
         End Get
     End Property
 
-    Protected Sub AddXRef(ByVal Reference As String) Implements IProteinStorageEntry.AddXRef
+    Protected Sub AddXRef(ByVal newReference As String) Implements IProteinStorageEntry.AddXRef
         If Me.m_XRefList Is Nothing Then
-            Me.m_XRefList = New ArrayList
+            Me.m_XRefList = New List(Of String)
         End If
-        Me.m_XRefList.Add(Reference)
+        Me.m_XRefList.Add(newReference)
     End Sub
 
-    Protected Sub ChangeReferenceName(ByVal NewName As String) Implements IProteinStorageEntry.SetReferenceName
-        Me.m_Reference = NewName
+    Protected Sub ChangeReferenceName(ByVal newName As String) Implements IProteinStorageEntry.SetReferenceName
+        If String.IsNullOrWhiteSpace(newName) Then
+            Throw New Exception("New protein name cannot be empty")
+        End If
+        Me.m_Reference = newName
     End Sub
 
+    Public Overrides Function ToString() As String
+
+        If String.IsNullOrWhiteSpace(m_Sequence) Then
+            Return m_Reference & ", ResidueCount=0"
+        Else
+            Return m_Reference & ", ResidueCount=" & m_Length & ", " & m_Sequence.Substring(0, 20)
+        End If
+        
+    End Function
 End Class

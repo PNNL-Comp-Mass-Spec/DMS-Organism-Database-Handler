@@ -742,7 +742,7 @@ Public Class frmCollectionEditor
 
 #End Region
 
-    Protected Const PROGRAM_DATE As String = "July 20, 2015"
+    Protected Const PROGRAM_DATE As String = "September 11, 2015"
 
     Protected m_Organisms As DataTable
     Protected m_ProteinCollections As DataTable
@@ -755,9 +755,7 @@ Public Class frmCollectionEditor
     Protected m_SelectedFilePath As String
     Protected m_SelectedCollectionID As Integer
     Protected m_LastBatchULDirectoryPath As String
-    'Protected m_PSConnectionString As String = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences_Test;Integrated Security=SSPI;"
     Protected m_PSConnectionString As String = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
-    'Protected m_PSConnectionString As String = "Data Source=we10125;Initial Catalog=Protein_Sequences_T3;Integrated Security=SSPI;"
 
     Protected m_LastSelectedOrganism As String = ""
     Protected m_LastSelectedAnnotationType As String = ""
@@ -801,7 +799,14 @@ Public Class frmCollectionEditor
     Private Sub frmCollectionEditor_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         'Get initial info - organism list, full collections list
 
-        'TODO Need to get this from prefs file, not hard code
+
+        ' Data Source=proteinseqs;Initial Catalog=Protein_Sequences
+        Dim connectionString = My.Settings.ProteinSeqsDBConnectStr
+
+        If Not String.IsNullOrWhiteSpace(connectionString) Then
+            m_PSConnectionString = connectionString
+        End If
+
         Me.m_ImportHandler = New Protein_Importer.clsImportHandler(m_PSConnectionString)
         'Me.mnuToolsFBatchUpload.Enabled = False
 
@@ -1201,7 +1206,7 @@ Public Class frmCollectionEditor
         Dim frmAddCollection As New frmAddNewCollection
         Dim tmpOrganismID As Integer
         Dim tmpAnnotationTypeID As Integer
-        Dim tmpSelectedProteinList As ArrayList
+        Dim tmpSelectedProteinList As List(Of String)
 
         If Me.lvwDestination.Items.Count > 0 Then
 
@@ -1471,8 +1476,8 @@ Public Class frmCollectionEditor
 
     End Sub
 
-    Protected Function ScanDestinationCollectionWindow(ByVal lvwDest As ListView) As ArrayList
-        Dim selectedList As New ArrayList
+    Protected Function ScanDestinationCollectionWindow(ByVal lvwDest As ListView) As List(Of String)
+        Dim selectedList As New List(Of String)
         Dim li As ListViewItem
 
         For Each li In lvwDest.Items

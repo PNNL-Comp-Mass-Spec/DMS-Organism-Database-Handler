@@ -428,16 +428,15 @@ Public Class frmValidationReport
 
     Private Sub BindFileListToErrorComboBox(ByVal contents As Hashtable)
 
-        Dim counter As IDictionaryEnumerator
         Dim errorCount As Integer
         RemoveHandler cboFileListErrors.SelectedIndexChanged, AddressOf cboFileListErrors_SelectedIndexChanged
 
         If Not contents Is Nothing Then
-            counter = contents.GetEnumerator
+            Dim counter = contents.GetEnumerator
 
             Me.cboFileListErrors.BeginUpdate()
 
-            While counter.MoveNext = True
+            While counter.MoveNext()
                 errorCount = DirectCast(Me.m_FileErrorList.Item(counter.Key), ArrayList).Count
                 Me.cboFileListErrors.Items.Add(counter.Key) '.ToString & " (" & errorCount & " Errors)")
             End While
@@ -456,16 +455,15 @@ Public Class frmValidationReport
 
     Private Sub BindFileListToWarningComboBox(ByVal contents As Hashtable)
 
-        Dim counter As IDictionaryEnumerator
         Dim WarningCount As Integer
         RemoveHandler cboFileListWarnings.SelectedIndexChanged, AddressOf cboFileListWarnings_SelectedIndexChanged
 
         If Not contents Is Nothing Then
-            counter = contents.GetEnumerator
+            Dim counter = contents.GetEnumerator
 
             Me.cboFileListWarnings.BeginUpdate()
 
-            While counter.MoveNext = True
+            While counter.MoveNext()
                 WarningCount = DirectCast(Me.m_FileWarningList.Item(counter.Key), ArrayList).Count
                 Me.cboFileListWarnings.Items.Add(counter.Key)
             End While
@@ -493,15 +491,13 @@ Public Class frmValidationReport
     Private Sub FillErrorOrWarningListView(ByVal objListview As ListView, ByVal itemSummary As Hashtable)
         Dim li As ListViewItem
 
-        Dim counter As IDictionaryEnumerator
-
         If Not itemSummary Is Nothing Then
-            counter = itemSummary.GetEnumerator
+            Dim counter = itemSummary.GetEnumerator
 
             objListview.BeginUpdate()
             objListview.Items.Clear()
 
-            While counter.MoveNext = True
+            While counter.MoveNext()
                 li = New ListViewItem(counter.Value.ToString)
                 li.SubItems.Add(counter.Key.ToString)
                 objListview.Items.Add(li)
@@ -515,22 +511,21 @@ Public Class frmValidationReport
         Dim li As ListViewItem
         Dim entry As Protein_Uploader.IUploadProteins.UploadInfo
         Dim FileName As String
-        Dim counter As IDictionaryEnumerator
 
         If Me.m_FileValidList Is Nothing Then
             Me.m_FileValidList = New Hashtable
         End If
 
-        If Me.m_FileValidList.Count > 0 Then
-            counter = Me.m_FileValidList.GetEnumerator
-        Else
+        If Me.m_FileValidList.Count = 0 Then
             Exit Sub
         End If
+
+        Dim counter = Me.m_FileValidList.GetEnumerator
 
         Me.lvwValidList.BeginUpdate()
         Me.lvwValidList.Items.Clear()
 
-        While counter.MoveNext = True
+        While counter.MoveNext()
             entry = DirectCast(counter.Value, Protein_Uploader.IUploadProteins.UploadInfo)
             FileName = System.IO.Path.GetFileName(counter.Key.ToString)
             li = New ListViewItem(FileName)

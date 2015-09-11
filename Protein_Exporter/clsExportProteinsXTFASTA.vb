@@ -1,5 +1,7 @@
 Option Strict On
 
+Imports System.Collections.Generic
+
 Public Class clsExportProteinsXTFASTA
     Inherits clsExportProteins
 
@@ -21,18 +23,16 @@ Public Class clsExportProteinsXTFASTA
 
         ReDim Preserve buffer(255)
 
-		Dim errorMessage As String = String.Empty
-		If Not PRISM.Files.clsFileTools.ValidateFreeDiskSpace(destinationPath, 150, errorMessage) Then
-			If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
-			Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
-		End If
+        Dim errorMessage As String = String.Empty
+        If Not PRISM.Files.clsFileTools.ValidateFreeDiskSpace(destinationPath, 150, errorMessage) Then
+            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
+            Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
+        End If
 
         Dim bw As System.IO.BinaryWriter = New System.IO.BinaryWriter(IO.File.OpenWrite(destinationPath))
 
         bw.BaseStream.Seek(0, IO.SeekOrigin.Begin)
 
-        Dim e As IEnumerator = Proteins.GetEnumerator
-    
         Dim proteinLength As Integer
 
         Dim tmpSeq As String
@@ -45,24 +45,22 @@ Public Class clsExportProteinsXTFASTA
         Dim counterMax As Integer = Proteins.ProteinCount
         Dim counter As Integer
 
-        Dim proteinArray As New ArrayList
+        Dim proteinArray As New SortedSet(Of String)
 
-        Dim ProteinEnum As IDictionaryEnumerator = Proteins.GetEnumerator
+        Dim proteinEnum = Proteins.GetEnumerator
 
-        While ProteinEnum.MoveNext = True
-            proteinArray.Add(ProteinEnum.Key)
+        While proteinEnum.MoveNext()
+            proteinArray.Add(proteinEnum.Current.Key)
         End While
-
-        proteinArray.Sort()
 
         Dim encoding As New System.Text.ASCIIEncoding
 
         Dim EventTriggerThresh As Integer
-		If counterMax <= 25 Then
-			EventTriggerThresh = 1
-		Else
-			EventTriggerThresh = CInt(counterMax / 25)
-		End If
+        If counterMax <= 25 Then
+            EventTriggerThresh = 1
+        Else
+            EventTriggerThresh = CInt(counterMax / 25)
+        End If
 
         bw.Write(buffer)
 
@@ -127,18 +125,18 @@ Public Class clsExportProteinsXTFASTA
         ReDim Preserve buffer(255)
 
 
-		Dim errorMessage As String = String.Empty
-		If Not PRISM.Files.clsFileTools.ValidateFreeDiskSpace(destinationPath, 150, errorMessage) Then
-			If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
-			Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
-		End If
+        Dim errorMessage As String = String.Empty
+        If Not PRISM.Files.clsFileTools.ValidateFreeDiskSpace(destinationPath, 150, errorMessage) Then
+            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
+            Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
+        End If
 
         Dim bw As System.IO.BinaryWriter = New System.IO.BinaryWriter(IO.File.OpenWrite(destinationPath))
 
         bw.BaseStream.Seek(0, IO.SeekOrigin.Begin)
 
         'Dim e As IEnumerator = Proteins.GetEnumerator
-   
+
         Dim proteinLength As Integer
 
         Dim proteinTable As DataTable
@@ -157,16 +155,6 @@ Public Class clsExportProteinsXTFASTA
         Dim counterMax As Integer ' = ProteinTable.Rows.Count
         Dim counter As Integer
 
-        'Dim proteinArray As New ArrayList
-
-        'Dim ProteinEnum As IDictionaryEnumerator = Proteins.GetEnumerator
-
-        'While ProteinEnum.MoveNext = True
-        '    proteinArray.Add(ProteinEnum.Key)
-        'End While
-
-        'proteinArray.Sort()
-
         For Each proteinTable In ProteinTables.Tables
             Me.OnExportStart("Writing: " + proteinTable.TableName)
             counterMax = proteinTable.Rows.Count
@@ -175,11 +163,11 @@ Public Class clsExportProteinsXTFASTA
             Dim encoding As New System.Text.ASCIIEncoding
 
             Dim EventTriggerThresh As Integer
-			If counterMax <= 25 Then
-				EventTriggerThresh = 1
-			Else
-				EventTriggerThresh = CInt(counterMax / 25)
-			End If
+            If counterMax <= 25 Then
+                EventTriggerThresh = 1
+            Else
+                EventTriggerThresh = CInt(counterMax / 25)
+            End If
 
             bw.Write(buffer)
 
@@ -238,8 +226,8 @@ Public Class clsExportProteinsXTFASTA
         ByRef ProteinTable As DataTable, _
         ByRef destinationPath As String) As String
 
-		' Not implemented for this class
-		Return String.Empty
+        ' Not implemented for this class
+        Return String.Empty
 
     End Function
 

@@ -3,11 +3,11 @@ Option Strict On
 Imports Protein_Exporter.ExportProteinCollectionsIFC
 
 Public MustInherit Class clsExportProteins
-    Implements ExportProteinCollectionsIFC.IExportProteins
+    Implements IExportProteins
 
-    Protected m_ExportComponent As Protein_Exporter.clsGetFASTAFromDMSForward
+    Protected m_ExportComponent As clsGetFASTAFromDMSForward
 
-    Public Sub New(ByRef ExportComponent As Protein_Exporter.clsGetFASTAFromDMSForward)
+    Public Sub New(ByRef ExportComponent As clsGetFASTAFromDMSForward)
         Me.m_ExportComponent = ExportComponent
     End Sub
 

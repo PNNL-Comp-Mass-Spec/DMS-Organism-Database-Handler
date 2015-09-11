@@ -22,28 +22,25 @@ Public Class clsFilePreviewHandler
         End If
 
         Me.m_Proteins = Me.m_Loader.GetProteinEntries(filePath, lineCount)
-
-
+        
         Dim li As ListViewItem
 
-        Dim protein As Protein_Storage.IProteinStorageEntry
-
-        Dim counter As IDictionaryEnumerator = Me.m_Proteins.GetEnumerator
-
+        Dim enumProteins = m_Proteins.GetEnumerator()
         Me.m_frmPreview.lvwPreview.BeginUpdate()
         Me.m_frmPreview.lvwPreview.Items.Clear()
-        While counter.MoveNext = True
-            protein = DirectCast(counter.Value, Protein_Storage.IProteinStorageEntry)
+
+        While enumProteins.MoveNext()
+            Dim protein = enumProteins.Current.Value
             li = New ListViewItem(protein.Reference)
             li.SubItems.Add(protein.Description)
             Me.m_frmPreview.lvwPreview.Items.Add(li)
         End While
+
         Me.m_frmPreview.lvwPreview.EndUpdate()
     End Sub
 
     Private Sub FillPreview(ByVal lineCount As Integer) Handles m_frmPreview.RefreshRequest
         Me.GetProteins(Me.m_currentFilePath, lineCount)
-
     End Sub
 
     Sub ShowPreview(ByVal filePath As String, ByVal horizPos As Integer, ByVal vertPos As Integer, ByVal height As Integer)

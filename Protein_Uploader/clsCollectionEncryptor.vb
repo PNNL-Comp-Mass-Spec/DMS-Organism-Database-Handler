@@ -18,9 +18,7 @@ Friend Class clsCollectionEncryptor
 
     Sub EncryptStorageCollectionSequences(ByRef StorageCollection As Protein_Storage.IProteinStorage)
 
-
-        Dim e As IDictionaryEnumerator = StorageCollection.GetEnumerator
-        Dim ce As Protein_Storage.IProteinStorageEntry
+        Dim e = StorageCollection.GetEnumerator
 
         Me.OnEncryptionStart("Encrypting Sequences")
         Dim counter As Integer = 0
@@ -32,13 +30,13 @@ Friend Class clsCollectionEncryptor
 		Else
 			EventTriggerThresh = CInt(counterMax / 50)
 		End If
+        
+        While e.MoveNext()
+            If counter Mod EventTriggerThresh = 0 Then
+                Me.OnEncryptionProgressUpdate(CDbl(counter / counterMax))
+            End If
 
-
-        While e.MoveNext = True
-			If counter Mod EventTriggerThresh = 0 Then
-				Me.OnEncryptionProgressUpdate(CDbl(counter / counterMax))
-			End If
-            ce = DirectCast(e.Value, Protein_Storage.IProteinStorageEntry)
+            Dim ce = e.Current.Value
             ce.Sequence = Me.m_RijndaelEncryptor.Encrypt(ce.Sequence)
             ce.SHA1Hash = Me.m_RijndaelEncryptor.MakeArbitraryHash(ce.Sequence)
             ce.IsEncrypted = True

@@ -1,11 +1,8 @@
 Option Strict Off
 
 Imports System
-Imports System.Collections
-Imports System.Collections.Specialized
 Imports System.IO
-Imports System.Text
-
+Imports SequenceInfoCalculator
 
 Public Class FASTAReaderNotInitializedException
     Inherits System.ApplicationException
@@ -23,9 +20,9 @@ Public Class FASTAReader
     Private m_initialized As Boolean = False
 
     Private m_LastError As String
-    Private m_DescLineRegEx As System.Text.RegularExpressions.Regex
-    Private m_NoDescLineRegEx As System.Text.RegularExpressions.Regex
-    Private m_DescLineMatcher As System.Text.RegularExpressions.Regex
+    Private ReadOnly m_DescLineRegEx As System.Text.RegularExpressions.Regex
+    Private ReadOnly m_NoDescLineRegEx As System.Text.RegularExpressions.Regex
+    Private ReadOnly m_DescLineMatcher As System.Text.RegularExpressions.Regex
 
     Private m_DefaultNameField As String = "Name"
     Private m_DefaultDescField As String = "Description"
@@ -34,7 +31,6 @@ Public Class FASTAReader
     Private m_MolFormField As String = "Molecular_Formula"
     Private m_MonoMassField As String = "Monoisotopic_Mass"
     Private m_AvgMassField As String = "Average_Mass"
-
 
 #Region " Events "
 
@@ -51,9 +47,6 @@ Public Class FASTAReader
 
     End Sub
 
-    Private Sub InitFASTAReader(FASTAFilePath As String)
-    End Sub
-
     Protected ReadOnly Property LastErrorMessage() As String Implements IReadProteinImportFile.LastErrorMessage
         Get
             Return Me.m_LastError
@@ -65,8 +58,6 @@ Public Class FASTAReader
     End Function
 
     Protected Function LoadFASTAFile(FilePath As String, NumRecordsToLoad As Integer) As Protein_Storage.IProteinStorage Implements IReadProteinImportFile.GetProteinEntries
-        Dim fi As FileInfo
-        Dim s As String
 
         Dim fileLength As Integer
         Dim currPos As Integer = 0
@@ -78,29 +69,26 @@ Public Class FASTAReader
         Dim strSeqTemp As String = String.Empty
         Dim descMatch As System.Text.RegularExpressions.Match
 
-        Dim seqInfo As SequenceInfoCalculator.ICalculateSeqInfo
-        seqInfo = New SequenceInfoCalculator.SequenceInfoCalculator
+        Dim seqInfo As ICalculateSeqInfo = New SequenceInfoCalculator.SequenceInfoCalculator
 
         Dim recordCount As Integer
 
         Me.m_FASTAFilePath = FilePath
-        Dim fileName As String = System.IO.Path.GetFileNameWithoutExtension(FilePath)
 
         Dim lineEndCharCount As Integer = Me.LineEndCharacterCount(FilePath)
 
-        Dim tmpPath As String = System.IO.Path.GetTempFileName
-
         Try
 
-            fi = New FileInfo(m_FASTAFilePath)
+            Dim fi = New FileInfo(m_FASTAFilePath)
             fileLength = fi.Length
-            If (fi.Exists) Then
+            If (fi.Exists And fileLength > 0) Then
 
                 RaiseEvent LoadStart("Reading Source File...") 'Trigger the setup of the pgb
 
-                Using tr As TextReader = New System.IO.StreamReader(New System.IO.FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                Using fileReader = New StreamReader(New FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
 
-                    s = tr.ReadLine.Trim
+                    Dim s = fileReader.ReadLine.Trim
+
                     Do While Not s Is Nothing
                         If Me.m_DescLineMatcher.IsMatch(s) Then
                             'DescriptionLine, new record
@@ -137,11 +125,11 @@ Public Class FASTAReader
                         End If
                         currPos += s.Length + lineEndCharCount
 
-                        If tr.Peek() >= 0 Then
-                            s = tr.ReadLine.Trim
-                        Else
+                        If fileReader.EndOfStream Then
                             Exit Do
                         End If
+
+                        s = fileReader.ReadLine.Trim
                     Loop
 
                     'dump the last record
@@ -152,7 +140,6 @@ Public Class FASTAReader
                      strORFTemp, strDescTemp, strSeqTemp, seqInfo.SequenceLength, _
                      seqInfo.MonoIsotopicMass, seqInfo.AverageMass, _
                      seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount))
-
 
                     RaiseEvent LoadEnd()
 
@@ -171,28 +158,30 @@ Public Class FASTAReader
     End Function
 
     Protected Function LineEndCharacterCount(FilePath As String) As Integer
-        Dim fi As FileInfo
-        Dim tr As TextReader
-        Dim testcode As Integer
-        Dim testcode2 As Integer
-        Dim counter As Long
 
-        fi = New FileInfo(m_FASTAFilePath)
+        Dim fi = New FileInfo(m_FASTAFilePath)
         If (fi.Exists) Then
-            tr = fi.OpenText
-            For counter = 1 To fi.Length
-                testcode = tr.Read()
-                If testcode = 10 Or testcode = 13 Then
-                    testcode2 = tr.Read()
-                    If testcode2 = 10 Or testcode2 = 13 Then
-                        Return 2
-                    Else
-                        Return 1
+            Using fileReader = New StreamReader(New FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                While Not fileReader.EndOfStream
+                    Dim testcode = fileReader.Read()
+                    If testcode = 10 OrElse testcode = 13 Then
+                        If fileReader.EndOfStream Then
+                            Return 1
+                        End If
+
+                        Dim testcode2 = fileReader.Read()
+                        If testcode2 = 10 Or testcode2 = 13 Then
+                            Return 2
+                        Else
+                            Return 1
+                        End If
                     End If
-                End If
-            Next
+                End While
+            End Using
 
         End If
+
+        Return 2
 
     End Function
 End Class
