@@ -176,11 +176,15 @@ Module modMain
 
             Console.WriteLine("Program syntax:")
             Console.WriteLine(IO.Path.GetFileName(Reflection.Assembly.GetExecutingAssembly().Location) & _
-                              " FastaInfoFile.txt [/Preview] [/L]")
+                              " FastaInfoFile.txt [/MaxLength:##] [/Preview] [/L]")
             Console.WriteLine()
             Console.WriteLine("FastaInfoFile.txt is a tab delimited text file listing the FASTA files to import")
             Console.WriteLine("Required columns are: FastaFilePath, OrganismName_or_ID, and AnnotationTypeName_or_ID")
             Console.WriteLine()
+            Console.WriteLine("Use /MaxLength to define the maximum allowable length for protein names")
+            Console.WriteLine("The default is /MaxLength:" & ValidateFastaFile.clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH)
+            Console.WriteLine()
+
             Console.WriteLine("Use /Preview to see the fasta files that would be imported")
             Console.WriteLine("Use /L to log messages to a file; optionally specify the filename using /L:FilePath")
             Console.WriteLine()
