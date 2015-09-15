@@ -259,7 +259,7 @@ Public Class clsPSUploadHandler
                 Console.WriteLine("--------------------------------------------------------------")
                 Continue For
             End If
-            
+
             If Me.m_Validator.FASTAFileHasWarnings(fi.Name) Then
                 ' If any warnings were cached, return them with the OnFASTAFileWarnings event
                 Me.OnFASTAFileWarnings(fi.FullName, Me.m_Validator.RecordedFASTAFileWarnings(fi.Name))
@@ -305,10 +305,6 @@ Public Class clsPSUploadHandler
                         Windows.Forms.MessageBoxIcon.Stop,
                         Windows.Forms.MessageBoxDefaultButton.Button2)
                 Else
-                    mboxText = "The Collection '" & tmpFileName & "' has been declared '" &
-                               collectionState & "' and cannot be removed or altered! " &
-                               "This entry will be skipped."
-                    mboxHeader = "WARNING!"
                     errorText = "Collections in State '" & collectionState & "' cannot be changed or deleted"
                     errorLabel = "Error"
                     dboxResult = Windows.Forms.DialogResult.No
@@ -375,27 +371,26 @@ Public Class clsPSUploadHandler
         Dim XrefID As Integer
 
         'task 2a - Get Protein_Collection_ID or make a new one
-        Dim collectionID As Integer
-        collectionID = Me.m_Upload.GetProteinCollectionID(filepath)
+        Dim collectionID = Me.m_Upload.GetProteinCollectionID(filepath)
 
         Dim collectionState = Me.m_Upload.GetProteinCollectionState(collectionID)
 
-        Dim memberCount = 0
-
-        If collectionID > 0 Then
-            'collection already exists, check if any members already exist
-            memberCount = Me.m_Upload.GetProteinCollectionMemberCount(collectionID)
+        If collectionState <> "Unknown" And
+           collectionState <> "New" And
+           collectionState <> "Provisional" Then
+            Throw New Exception("Protein collections in state " & collectionState & " cannot be updated")
         End If
-
 
         Dim numProteins = selectedProteins.Count
         Dim numResidues = Me.m_Upload.GetTotalResidueCount(fileContents, selectedProteins)
 
         If collectionID = 0 Then
 
+            ' Note that we're storing 0 for NumResidues at this time
+            ' That value will be updated later after all of the proteins have been added
             collectionID = Me.m_Upload.MakeNewProteinCollection(
                               System.IO.Path.GetFileNameWithoutExtension(filepath), description,
-                              collectionType, annotationTypeID, numProteins, numResidues)
+                              collectionType, annotationTypeID, numProteins, 0)
 
             If collectionID = 0 Then
                 ' Error making the new protein collection
@@ -403,8 +398,8 @@ Public Class clsPSUploadHandler
 
         Else
             ' Make sure there are no proteins defined for this protein collection
-            ' In addition, this will update NumProteins and NumResidues to be 0
-            Me.m_Upload.DeleteProteinCollectionMembers(collectionID)
+            ' In addition, this will update NumResidues to be 0
+            Me.m_Upload.DeleteProteinCollectionMembers(collectionID, numProteins)
         End If
 
         'task 2b - Compare file to existing sequences and upload new sequences to T_Proteins
@@ -414,7 +409,7 @@ Public Class clsPSUploadHandler
         Me.m_Upload.UpdateProteinNames(fileContents, selectedProteins, organismID, annotationTypeID)
 
         'task 4 - Add new collection members to T_Protein_Collection_Members
-        Me.m_Upload.UpdateProteinCollectionMembers(collectionID, fileContents, selectedProteins)
+        Me.m_Upload.UpdateProteinCollectionMembers(collectionID, fileContents, selectedProteins, numProteins, numResidues)
 
         Me.OnLoadStart("Associating protein collection with organism using T_Collection_Organism_Xref")
         XrefID = Me.m_Upload.AddCollectionOrganismXref(collectionID, organismID)

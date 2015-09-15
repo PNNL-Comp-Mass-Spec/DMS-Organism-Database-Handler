@@ -15,12 +15,14 @@ Public Interface IAddUpdateEntries
     ''' </summary>
     ''' <param name="ProteinCollectionID"></param>
     ''' <remarks></remarks>
-    Sub DeleteProteinCollectionMembers(ProteinCollectionID As Integer)
+    Sub DeleteProteinCollectionMembers(ProteinCollectionID As Integer, NumProteins As Integer)
 
     Sub UpdateProteinCollectionMembers(
         ProteinCollectionID As Integer,
         proteinCollection As Protein_Storage.IProteinStorage,
-        selectedProteinList As List(Of String))
+        selectedProteinList As List(Of String),
+        numProteinsExpected As Integer,
+        numResiduesExpected As Integer)
 
     Function GetProteinCollectionMemberCount(ProteinCollectionID As Integer) As Integer
 
@@ -288,10 +290,10 @@ Public Class clsAddUpdateEntries
     Protected Sub UpdateProteinCollection(
         ProteinCollectionID As Integer,
         pc As Protein_Storage.IProteinStorage,
-        selectedProteinList As List(Of String)) Implements IAddUpdateEntries.UpdateProteinCollectionMembers
+        selectedProteinList As List(Of String),
+        numProteinsExpected As Integer,
+        numResiduesExpected As Integer) Implements IAddUpdateEntries.UpdateProteinCollectionMembers
 
-        Dim tmpPC As Protein_Storage.IProteinStorageEntry
-        Dim counter As Integer
         Dim counterMax As Integer = selectedProteinList.Count
         Dim s As String
 
@@ -305,15 +307,22 @@ Public Class clsAddUpdateEntries
 
         Me.OnLoadStart("Storing Protein Collection Members")
 
+        Dim numProteinsActual As Integer
+        Dim numResiduesActual As Integer
+
         For Each s In selectedProteinList
-            tmpPC = pc.GetProtein(s)
-            counter += 1
-            If (counter Mod EventTriggerThresh) = 0 Then
-                Me.OnProgressUpdate(CDbl(counter / counterMax))
+            Dim tmpPC As Protein_Storage.IProteinStorageEntry = pc.GetProtein(s)
+            numProteinsActual += 1
+            If (numProteinsActual Mod EventTriggerThresh) = 0 Then
+                Me.OnProgressUpdate(CDbl(numProteinsActual / counterMax))
             End If
+
+            numResiduesActual += tmpPC.Length
 
             tmpPC.Member_ID = Me.AddProteinCollectionMember(tmpPC.Reference_ID, tmpPC.Protein_ID, tmpPC.SortingIndex, ProteinCollectionID)
         Next
+
+        Me.RunSP_UpdateProteinCollectionCounts(numProteinsActual, numResiduesActual, ProteinCollectionID)
 
         Me.OnLoadEnd()
 
@@ -486,8 +495,8 @@ Public Class clsAddUpdateEntries
     ''' </summary>
     ''' <param name="ProteinCollectionID"></param>
     ''' <remarks></remarks>
-    Sub DeleteProteinCollectionMembers(ProteinCollectionID As Integer) Implements IAddUpdateEntries.DeleteProteinCollectionMembers
-        Me.RunSP_DeleteProteinCollectionMembers(ProteinCollectionID)
+    Sub DeleteProteinCollectionMembers(proteinCollectionID As Integer, numProteins As Integer) Implements IAddUpdateEntries.DeleteProteinCollectionMembers
+        Me.RunSP_DeleteProteinCollectionMembers(proteinCollectionID, numProteins)
     End Sub
 
     Protected Function GetProteinCollectionID(FilePath As String) As Integer Implements IAddUpdateEntries.GetProteinCollectionID
@@ -508,10 +517,9 @@ Public Class clsAddUpdateEntries
         Sorting_Index As Integer,
         ProteinCollectionID As Integer) As Integer Implements IAddUpdateEntries.AddProteinCollectionMember
 
-        'Return Me.RunSP_AddUpdateProteinCollectionMember(ReferenceID, ProteinID, ProteinCollectionID)
         Return Me.RunSP_AddProteinCollectionMember(ReferenceID, ProteinID, Sorting_Index, ProteinCollectionID)
     End Function
-
+    
     Protected Function UpdateProteinCollectionMember(
         ReferenceID As Integer,
         ProteinID As Integer,
@@ -851,29 +859,27 @@ Public Class clsAddUpdateEntries
         Return ret
 
     End Function
-
-
+    
     Protected Function RunSP_AddProteinCollectionMember(
-        Reference_ID As Integer, Protein_ID As Integer,
-        SortingIndex As Integer, Protein_Collection_ID As Integer) As Integer
+      Reference_ID As Integer, Protein_ID As Integer,
+      SortingIndex As Integer, Protein_Collection_ID As Integer) As Integer
 
         Return Me.RunSP_AddUpdateProteinCollectionMember(Reference_ID, Protein_ID, SortingIndex, Protein_Collection_ID, "Add")
 
     End Function
 
     Protected Function RunSP_UpdateProteinCollectionMember(
-    Reference_ID As Integer, Protein_ID As Integer,
-    SortingIndex As Integer, Protein_Collection_ID As Integer) As Integer
+      Reference_ID As Integer, Protein_ID As Integer,
+      SortingIndex As Integer, Protein_Collection_ID As Integer) As Integer
 
         Return Me.RunSP_AddUpdateProteinCollectionMember(Reference_ID, Protein_ID, SortingIndex, Protein_Collection_ID, "Update")
 
     End Function
-
-
+    
     Protected Function RunSP_AddUpdateProteinCollectionMember(
-    Reference_ID As Integer, Protein_ID As Integer,
-    SortingIndex As Integer, Protein_Collection_ID As Integer,
-    Mode As String) As Integer
+      Reference_ID As Integer, Protein_ID As Integer,
+      SortingIndex As Integer, Protein_Collection_ID As Integer,
+      Mode As String) As Integer
 
         Dim sp_Save As SqlClient.SqlCommand
 
@@ -1101,9 +1107,10 @@ Public Class clsAddUpdateEntries
     ''' <summary>
     ''' Deletes the proteins for the given protein collection in preparation for re-uploading the proteins
     ''' </summary>
-    ''' <param name="Protein_Collection_ID"></param>
-    ''' <remarks></remarks>
-    Protected Function RunSP_DeleteProteinCollectionMembers(Protein_Collection_ID As Integer) As Integer
+    ''' <param name="proteinCollectionID"></param>
+    ''' <param name="numProteinsForReLoad">The number of proteins that will be uploaded after this delete</param>
+    ''' <remarks>NumResidues in T_Protein_Collections is set to 0</remarks>
+    Protected Function RunSP_DeleteProteinCollectionMembers(proteinCollectionID As Integer, numProteinsForReLoad As Integer) As Integer
 
         Dim sp_Save As SqlClient.SqlCommand
 
@@ -1124,7 +1131,11 @@ Public Class clsAddUpdateEntries
         'Define parameters for the sp's arguments
         myParam = sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int)
         myParam.Direction = ParameterDirection.Input
-        myParam.Value = Protein_Collection_ID
+        myParam.Value = proteinCollectionID
+
+        myParam = sp_Save.Parameters.Add("@NumProteinsForReLoad", SqlDbType.Int)
+        myParam.Direction = ParameterDirection.Input
+        myParam.Value = numProteinsForReLoad
 
         myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
         myParam.Direction = ParameterDirection.Output
@@ -1421,6 +1432,49 @@ Public Class clsAddUpdateEntries
 
         Return ret
 
+    End Function
+
+    Protected Function RunSP_UpdateProteinCollectionCounts(
+      numProteins As Integer,
+      numResidues As Integer,
+      ProteinCollectionID As Integer) As Integer
+
+        Dim sp_Save As SqlClient.SqlCommand
+
+        sp_Save = New SqlClient.SqlCommand("UpdateProteinCollectionCounts", Me.m_SQLAccess.Connection)
+
+        sp_Save.CommandType = CommandType.StoredProcedure
+
+        'Define parameters
+        Dim myParam As SqlClient.SqlParameter
+
+        'Define parameter for sp's return value
+        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
+        myParam.Direction = ParameterDirection.ReturnValue
+
+        'Define parameters for the sp's arguments
+        myParam = sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int)
+        myParam.Direction = ParameterDirection.Input
+        myParam.Value = ProteinCollectionID
+
+        myParam = sp_Save.Parameters.Add("@NumProteins", SqlDbType.Int)
+        myParam.Direction = ParameterDirection.Input
+        myParam.Value = numProteins
+
+        myParam = sp_Save.Parameters.Add("@NumResidues", SqlDbType.Int)
+        myParam.Direction = ParameterDirection.Input
+        myParam.Value = numResidues
+
+        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
+        myParam.Direction = ParameterDirection.Output
+
+        'Execute the sp
+        sp_Save.ExecuteNonQuery()
+
+        'Get return value
+        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+
+        Return ret
     End Function
 
 

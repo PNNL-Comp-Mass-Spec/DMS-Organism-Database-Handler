@@ -2,7 +2,7 @@ Option Strict On
 Imports Protein_Exporter
 
 Module modMain
-	Public Const PROGRAM_DATE As String = "June 24, 2013"
+    Public Const PROGRAM_DATE As String = "September 14, 2015"
 
     Const m_DebugLevel As Integer = 4
     Const FASTA_GEN_TIMEOUT_INTERVAL_MINUTES As Integer = 70
@@ -10,7 +10,7 @@ Module modMain
 
     Private WithEvents m_FastaTools As ExportProteinCollectionsIFC.IGetFASTAFromDMS
 
-    Private Const m_FastaToolsCnStr As String = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
+    Private m_FastaToolsCnStr As String = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
     Private m_message As String
     Private m_FastaFileName As String
     Private WithEvents m_FastaTimer As System.Timers.Timer
@@ -108,6 +108,14 @@ Module modMain
 
                 If mDestFolder.Length = 0 Then
                     mDestFolder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
+                End If
+
+
+                ' Data Source=proteinseqs;Initial Catalog=Protein_Sequences
+                Dim proteinSeqsConnectionString = My.Settings.ProteinSeqsDBConnectStr
+
+                If Not String.IsNullOrWhiteSpace(proteinSeqsConnectionString) Then
+                    m_FastaToolsCnStr = proteinSeqsConnectionString
                 End If
 
                 TestExport(mProteinCollectionList, mCreationOpts, mLegacyFasta, mDestFolder, mLogProteinFileDetails)
@@ -338,7 +346,6 @@ Module modMain
                 Return False
             End If
             m_FastaTools = New clsGetFASTAFromDMS(m_FastaToolsCnStr)
-
         End If
 
         m_FastaTimer = New System.Timers.Timer

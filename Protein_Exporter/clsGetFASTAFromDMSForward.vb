@@ -289,8 +289,10 @@ Public Class clsGetFASTAFromDMSForward
 				currentCollectionPos = sectionEnd + 1
 				currentCollectionCount += collectionTable.Rows.Count
 
-				Dim fractionDoneOverall As Double
-				fractionDoneOverall = (proteinCollectionsExported / ProteinCollectionNameList.Count) + (currentCollectionCount / collectionLength) / ProteinCollectionNameList.Count
+                Dim fractionDoneOverall As Double = 0
+                If collectionLength > 0 Then
+                    fractionDoneOverall = (proteinCollectionsExported / ProteinCollectionNameList.Count) + (currentCollectionCount / collectionLength) / ProteinCollectionNameList.Count
+                End If
 
 				OnExportProgressUpdate(currentCollectionCount & " entries exported, collection " & (proteinCollectionsExported + 1) & " of " & (ProteinCollectionNameList.Count), fractionDoneOverall)
 
@@ -299,9 +301,9 @@ Public Class clsGetFASTAFromDMSForward
 			tmpIDListSB.Append(Format(tmpID, "000000"))
 			tmpIDListSB.Append("+")
 			If currentCollectionCount <> collectionLength Then
-				Throw New Exception("The number of proteins exported for collection '" + ProteinCollectionName + _
-				 "' does not match the value stored in the Protein Collections Table [" + _
-				 currentCollectionCount.ToString + " counted / " + collectionLength.ToString + " expected]")
+                Throw New Exception("The number of proteins exported for collection '" + ProteinCollectionName & _
+                 "' does not match the exected value:" & _
+                 currentCollectionCount & " exported from T_Protein_Collection_Members vs. " & collectionLength & " listed in T_Protein_Collections")
 			End If
 
 			proteinCollectionsExported += 1

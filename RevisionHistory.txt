@@ -1,6 +1,11 @@
 PRISMSeq Uploader Change Log
 
-Version 1.4.5732; September 22, 2015
+Version 1.4.5735; September 14, 2015
+	- FastaFileMaker now reads the database connection string from the .exe.config file
+	- Now showing the target server name in the GUI
+	- Added call to UpdateProteinCollectionCounts after we finish storing the proteins
+
+Version 1.4.5732; September 11, 2015
 	- Made the database connection string configurable using the .exe.config file
 	- Replaced ArrayList and HashTable instances with Lists and Dictionaries
 
