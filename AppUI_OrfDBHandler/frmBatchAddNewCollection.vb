@@ -78,7 +78,6 @@ Public Class frmBatchAddNewCollectionTest
     Friend WithEvents cmdRefreshFiles As System.Windows.Forms.Button
     Friend WithEvents txtMaximumProteinNameLength As System.Windows.Forms.TextBox
     Friend WithEvents lblMaximumProteinNameLength As System.Windows.Forms.Label
-    Friend WithEvents lblTargetServer As System.Windows.Forms.Label
     Friend WithEvents chkValidationAllowDash As System.Windows.Forms.CheckBox
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
@@ -115,7 +114,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.chkValidationAllowAsterisks = New System.Windows.Forms.CheckBox()
         Me.chkValidationAllowDash = New System.Windows.Forms.CheckBox()
         Me.cmdRefreshFiles = New System.Windows.Forms.Button()
-        Me.lblTargetServer = New System.Windows.Forms.Label()
         Me.fraValidationOptions.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -249,7 +247,7 @@ Public Class frmBatchAddNewCollectionTest
         Me.lvwSelectedFiles.HideSelection = False
         Me.lvwSelectedFiles.Location = New System.Drawing.Point(342, 211)
         Me.lvwSelectedFiles.Name = "lvwSelectedFiles"
-        Me.lvwSelectedFiles.Size = New System.Drawing.Size(746, 194)
+        Me.lvwSelectedFiles.Size = New System.Drawing.Size(746, 224)
         Me.lvwSelectedFiles.TabIndex = 8
         Me.lvwSelectedFiles.UseCompatibleStateImageBehavior = False
         Me.lvwSelectedFiles.View = System.Windows.Forms.View.Details
@@ -397,22 +395,12 @@ Public Class frmBatchAddNewCollectionTest
         Me.cmdRefreshFiles.TabIndex = 19
         Me.cmdRefreshFiles.Text = "&Refresh Files"
         '
-        'lblTargetServer
-        '
-        Me.lblTargetServer.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblTargetServer.Location = New System.Drawing.Point(342, 416)
-        Me.lblTargetServer.Name = "lblTargetServer"
-        Me.lblTargetServer.Size = New System.Drawing.Size(300, 19)
-        Me.lblTargetServer.TabIndex = 20
-        Me.lblTargetServer.Text = "Target server: "
-        '
         'frmBatchAddNewCollectionTest
         '
         Me.AcceptButton = Me.cmdUploadChecked
         Me.AutoScaleBaseSize = New System.Drawing.Size(7, 17)
         Me.CancelButton = Me.cmdCancel
         Me.ClientSize = New System.Drawing.Size(1102, 583)
-        Me.Controls.Add(Me.lblTargetServer)
         Me.Controls.Add(Me.cmdRefreshFiles)
         Me.Controls.Add(Me.fraValidationOptions)
         Me.Controls.Add(Me.txtPassphrase)
@@ -595,8 +583,6 @@ Public Class frmBatchAddNewCollectionTest
 
         SystemImageListManager.SetListViewImageList(Me.lvwFolderContents, True, False)
         SystemImageListManager.SetListViewImageList(Me.lvwFolderContents, False, False)
-
-        UpdateServerNameLabel()
 
     End Sub
 
@@ -933,30 +919,6 @@ Public Class frmBatchAddNewCollectionTest
 
 
     End Sub
-
-    Private Sub UpdateServerNameLabel()
-
-        Try
-            If String.IsNullOrWhiteSpace(m_PSConnectionString) Then
-                lblTargetServer.Text = "ERROR determining target server: m_PSConnectionString is empty"
-                Return
-            End If
-
-            Dim reExtractServerName = New Regex("Data Source\s*=\s*([^\s;]+)", RegexOptions.IgnoreCase)
-            Dim reMatch = reExtractServerName.Match(m_PSConnectionString)
-
-            If reMatch.Success Then
-                lblTargetServer.Text = "Target server: " & reMatch.Groups(1).Value
-            Else
-                lblTargetServer.Text = "Target server: UNKNOWN -- name not found in " & m_PSConnectionString
-            End If
-
-        Catch ex As Exception
-            lblTargetServer.Text = "ERROR determining target server: " + ex.Message
-        End Try
-
-    End Sub
-
 
 #Region " Button and Combo Handlers "
 

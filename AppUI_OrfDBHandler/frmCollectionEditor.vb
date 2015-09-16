@@ -1,4 +1,5 @@
 Imports System.Collections.Generic
+Imports System.Text.RegularExpressions
 Imports Protein_Uploader
 
 Public Class frmCollectionEditor
@@ -95,6 +96,7 @@ Public Class frmCollectionEditor
     Friend WithEvents mnuAdminAddSortingIndexes As System.Windows.Forms.MenuItem
     Friend WithEvents lblBatchProgress As System.Windows.Forms.Label
     Friend WithEvents cmdExportToFile As System.Windows.Forms.Button
+    Friend WithEvents lblTargetServer As System.Windows.Forms.Label
     Friend WithEvents cmdSaveDestCollection As System.Windows.Forms.Button
 
 
@@ -162,6 +164,7 @@ Public Class frmCollectionEditor
         Me.mnuAdminAddSortingIndexes = New System.Windows.Forms.MenuItem()
         Me.mnuHelp = New System.Windows.Forms.MenuItem()
         Me.mnuHelpAbout = New System.Windows.Forms.MenuItem()
+        Me.lblTargetServer = New System.Windows.Forms.Label()
         Me.pnlProgBar.SuspendLayout()
         Me.pnlProgBarUpper.SuspendLayout()
         Me.pnlProgBarLower.SuspendLayout()
@@ -237,6 +240,7 @@ Public Class frmCollectionEditor
         '
         'pnlSource
         '
+        Me.pnlSource.Controls.Add(Me.lblTargetServer)
         Me.pnlSource.Controls.Add(Me.cmdDestAdd)
         Me.pnlSource.Controls.Add(Me.cmdDestRemove)
         Me.pnlSource.Controls.Add(Me.cmdDestAddAll)
@@ -322,7 +326,7 @@ Public Class frmCollectionEditor
         Me.gbxSourceCollection.Controls.Add(Me.lblSourceMembers)
         Me.gbxSourceCollection.Location = New System.Drawing.Point(11, 10)
         Me.gbxSourceCollection.Name = "gbxSourceCollection"
-        Me.gbxSourceCollection.Size = New System.Drawing.Size(661, 661)
+        Me.gbxSourceCollection.Size = New System.Drawing.Size(661, 611)
         Me.gbxSourceCollection.TabIndex = 1
         Me.gbxSourceCollection.TabStop = False
         Me.gbxSourceCollection.Text = "Source Collection"
@@ -350,7 +354,7 @@ Public Class frmCollectionEditor
         Me.pbxLiveSearchCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.pbxLiveSearchCancel.BackColor = System.Drawing.SystemColors.ActiveCaptionText
         Me.pbxLiveSearchCancel.Image = CType(resources.GetObject("pbxLiveSearchCancel.Image"), System.Drawing.Image)
-        Me.pbxLiveSearchCancel.Location = New System.Drawing.Point(272, 625)
+        Me.pbxLiveSearchCancel.Location = New System.Drawing.Point(272, 575)
         Me.pbxLiveSearchCancel.Name = "pbxLiveSearchCancel"
         Me.pbxLiveSearchCancel.Size = New System.Drawing.Size(22, 20)
         Me.pbxLiveSearchCancel.TabIndex = 16
@@ -359,7 +363,7 @@ Public Class frmCollectionEditor
         'lblSearchCount
         '
         Me.lblSearchCount.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblSearchCount.Location = New System.Drawing.Point(314, 630)
+        Me.lblSearchCount.Location = New System.Drawing.Point(314, 580)
         Me.lblSearchCount.Name = "lblSearchCount"
         Me.lblSearchCount.Size = New System.Drawing.Size(123, 19)
         Me.lblSearchCount.TabIndex = 15
@@ -378,7 +382,7 @@ Public Class frmCollectionEditor
         'cmdLoadFile
         '
         Me.cmdLoadFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdLoadFile.Location = New System.Drawing.Point(442, 621)
+        Me.cmdLoadFile.Location = New System.Drawing.Point(442, 571)
         Me.cmdLoadFile.Name = "cmdLoadFile"
         Me.cmdLoadFile.Size = New System.Drawing.Size(196, 29)
         Me.cmdLoadFile.TabIndex = 10
@@ -389,7 +393,7 @@ Public Class frmCollectionEditor
         Me.txtLiveSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.txtLiveSearch.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.txtLiveSearch.ForeColor = System.Drawing.SystemColors.InactiveCaption
-        Me.txtLiveSearch.Location = New System.Drawing.Point(53, 627)
+        Me.txtLiveSearch.Location = New System.Drawing.Point(53, 577)
         Me.txtLiveSearch.Name = "txtLiveSearch"
         Me.txtLiveSearch.Size = New System.Drawing.Size(216, 17)
         Me.txtLiveSearch.TabIndex = 8
@@ -437,7 +441,7 @@ Public Class frmCollectionEditor
         '
         Me.pbxLiveSearchBkg.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.pbxLiveSearchBkg.Image = CType(resources.GetObject("pbxLiveSearchBkg.Image"), System.Drawing.Image)
-        Me.pbxLiveSearchBkg.Location = New System.Drawing.Point(22, 620)
+        Me.pbxLiveSearchBkg.Location = New System.Drawing.Point(22, 570)
         Me.pbxLiveSearchBkg.Name = "pbxLiveSearchBkg"
         Me.pbxLiveSearchBkg.Size = New System.Drawing.Size(280, 32)
         Me.pbxLiveSearchBkg.TabIndex = 9
@@ -453,7 +457,7 @@ Public Class frmCollectionEditor
         Me.lvwSource.GridLines = True
         Me.lvwSource.Location = New System.Drawing.Point(20, 158)
         Me.lvwSource.Name = "lvwSource"
-        Me.lvwSource.Size = New System.Drawing.Size(618, 453)
+        Me.lvwSource.Size = New System.Drawing.Size(618, 403)
         Me.lvwSource.TabIndex = 2
         Me.lvwSource.UseCompatibleStateImageBehavior = False
         Me.lvwSource.View = System.Windows.Forms.View.Details
@@ -705,6 +709,15 @@ Public Class frmCollectionEditor
         Me.mnuHelpAbout.Index = 0
         Me.mnuHelpAbout.Text = "&About Protein Collection Editor"
         '
+        'lblTargetServer
+        '
+        Me.lblTargetServer.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.lblTargetServer.Location = New System.Drawing.Point(13, 639)
+        Me.lblTargetServer.Name = "lblTargetServer"
+        Me.lblTargetServer.Size = New System.Drawing.Size(300, 19)
+        Me.lblTargetServer.TabIndex = 21
+        Me.lblTargetServer.Text = "Target server: "
+        '
         'frmCollectionEditor
         '
         Me.AutoScaleBaseSize = New System.Drawing.Size(7, 17)
@@ -742,7 +755,7 @@ Public Class frmCollectionEditor
 
 #End Region
 
-    Protected Const PROGRAM_DATE As String = "September 14, 2015"
+    Protected Const PROGRAM_DATE As String = "September 16, 2015"
 
     Protected m_Organisms As DataTable
     Protected m_ProteinCollections As DataTable
@@ -799,13 +812,14 @@ Public Class frmCollectionEditor
     Private Sub frmCollectionEditor_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         'Get initial info - organism list, full collections list
 
-
         ' Data Source=proteinseqs;Initial Catalog=Protein_Sequences
         Dim connectionString = My.Settings.ProteinSeqsDBConnectStr
 
         If Not String.IsNullOrWhiteSpace(connectionString) Then
             m_PSConnectionString = connectionString
         End If
+
+        UpdateServerNameLabel()
 
         Me.m_ImportHandler = New Protein_Importer.clsImportHandler(m_PSConnectionString)
         'Me.mnuToolsFBatchUpload.Enabled = False
@@ -1109,6 +1123,29 @@ Public Class frmCollectionEditor
         strMessage = "This is version " & Application.ProductVersion & ", " & PROGRAM_DATE
 
         System.Windows.Forms.MessageBox.Show(strMessage, "About Protein Collection Editor", MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+    End Sub
+
+    Private Sub UpdateServerNameLabel()
+
+        Try
+            If String.IsNullOrWhiteSpace(m_PSConnectionString) Then
+                lblTargetServer.Text = "ERROR determining target server: m_PSConnectionString is empty"
+                Return
+            End If
+
+            Dim reExtractServerName = New Regex("Data Source\s*=\s*([^\s;]+)", RegexOptions.IgnoreCase)
+            Dim reMatch = reExtractServerName.Match(m_PSConnectionString)
+
+            If reMatch.Success Then
+                lblTargetServer.Text = "Target server: " & reMatch.Groups(1).Value
+            Else
+                lblTargetServer.Text = "Target server: UNKNOWN -- name not found in " & m_PSConnectionString
+            End If
+
+        Catch ex As Exception
+            lblTargetServer.Text = "ERROR determining target server: " + ex.Message
+        End Try
 
     End Sub
 
