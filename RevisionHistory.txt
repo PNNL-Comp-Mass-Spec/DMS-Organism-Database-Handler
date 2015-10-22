@@ -1,5 +1,8 @@
 PRISMSeq Uploader Change Log
 
+Version 1.4.5773; October 22, 2015
+	- Added checkbox "Allow all symbols in protein names"
+
 Version 1.4.5737; September 16, 2015
 	- Displaying the target server name on the collection editor GUI form instead of the Batch Upload form
 

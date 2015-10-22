@@ -35,7 +35,7 @@ Public Class clsGetFASTAFromDMSForward
 		'Me.m_SHA1Provider = New System.Security.Cryptography.SHA1Managed
 		Me.m_TableGrabber = New TableManipulationBase.clsDBTask(ProteinStorageConnectionString, True)
 		Me.m_AllCollections = Me.GetCollectionNameList()
-		Me.m_OrganismList = Me.GetOrganismList
+        Me.m_OrganismList = Me.GetOrganismList()
 
 		Select Case DatabaseFormatType
 			Case IGetFASTAFromDMS.DatabaseFormatTypes.fasta

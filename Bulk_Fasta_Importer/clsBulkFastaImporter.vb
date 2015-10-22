@@ -81,6 +81,7 @@ Public Class clsBulkFastaImporter
 
     Public Property ProteinSeqsConnectionString As String
 
+    Public Property ValidationAllowAllSymbolsInProteinNames As Boolean
     Public Property ValidationAllowAsterisks As Boolean
     Public Property ValidationAllowDash As Boolean
     Public Property ValidationMaxProteinNameLength As Integer
@@ -89,7 +90,7 @@ Public Class clsBulkFastaImporter
 
 
     Public Sub New()
-        MyBase.mFileDate = "September 11, 2015"
+        MyBase.mFileDate = "October 22, 2015"
         InitializeLocalVariables()
     End Sub
 
@@ -128,6 +129,7 @@ Public Class clsBulkFastaImporter
 
         Me.DMSConnectionString = DMS_CONNECTION_STRING
         Me.ProteinSeqsConnectionString = PROTEINSEQS_CONNECTION_STRING
+        Me.ValidationAllowAllSymbolsInProteinNames = False
         Me.ValidationAllowAsterisks = True
         Me.ValidationAllowDash = True
         Me.ValidationMaxProteinNameLength = ValidateFastaFile.clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
@@ -522,6 +524,7 @@ Public Class clsBulkFastaImporter
 
             m_UploadHandler.InitialSetup()
 
+            m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowAllSymbolsInProteinNames, ValidationAllowAllSymbolsInProteinNames)
             m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues, ValidationAllowAsterisks)
             m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowDashInResidues, ValidationAllowDash)
             m_UploadHandler.MaximumProteinNameLength = ValidationMaxProteinNameLength

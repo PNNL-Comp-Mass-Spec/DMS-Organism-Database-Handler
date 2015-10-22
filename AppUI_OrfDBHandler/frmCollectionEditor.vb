@@ -755,7 +755,7 @@ Public Class frmCollectionEditor
 
 #End Region
 
-    Protected Const PROGRAM_DATE As String = "September 16, 2015"
+    Protected Const PROGRAM_DATE As String = "October 22, 2015"
 
     Protected m_Organisms As DataTable
     Protected m_ProteinCollections As DataTable
@@ -1059,6 +1059,7 @@ Public Class frmCollectionEditor
             Me.pnlProgBar.Visible = True
 
             Try
+                Me.m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowAllSymbolsInProteinNames, frmBatchUpload.ValidationAllowAllSymbolsInProteinNames)
                 Me.m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues, frmBatchUpload.ValidationAllowAsterisks)
                 Me.m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowDashInResidues, frmBatchUpload.ValidationAllowDash)
 
