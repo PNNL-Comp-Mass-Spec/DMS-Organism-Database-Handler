@@ -3,7 +3,7 @@ Public Class frmExtractFromFlatfile
 
 #Region " Windows Form Designer generated code "
 
-    Public Sub New(ByVal AuthorityList As Hashtable, ByVal PSConnectionString As String)
+    Public Sub New(AuthorityList As Hashtable, PSConnectionString As String)
         MyBase.New()
         Me.m_AuthorityList = AuthorityList
         Me.m_PSConnectionString = PSConnectionString
@@ -15,7 +15,7 @@ Public Class frmExtractFromFlatfile
     End Sub
 
     'Form overrides dispose to clean up the component list.
-    Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
+    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
         If disposing Then
             If Not (components Is Nothing) Then
                 components.Dispose()
@@ -218,7 +218,7 @@ Public Class frmExtractFromFlatfile
     Private m_CurrentGroupID As Integer
     Private m_PSConnectionString As String
 
-    Private Sub frmExtractFromFlatfile_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+    Private Sub frmExtractFromFlatfile_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         Me.m_Extract = New clsExtractFromFlatfile(Me.m_AuthorityList, Me.m_PSConnectionString)
         Dim openFrm As New System.Windows.Forms.OpenFileDialog
         Dim r As System.Windows.Forms.DialogResult
@@ -258,7 +258,7 @@ Public Class frmExtractFromFlatfile
 
     End Sub
 
-    Private Sub lvwNewNames_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lvwNewNames.SelectedIndexChanged
+    Private Sub lvwNewNames_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lvwNewNames.SelectedIndexChanged
         Dim lvw As System.Windows.Forms.ListView = DirectCast(sender, System.Windows.Forms.ListView)
         If lvw.SelectedItems.Count > 0 Then
             Me.m_CurrentGroupID = CInt(lvw.SelectedItems(0).Text)
@@ -268,8 +268,8 @@ Public Class frmExtractFromFlatfile
 
     End Sub
 
-    Private Sub chkUseHeader_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkUseHeader.CheckedChanged
-        Dim chk As System.Windows.Forms.CheckBox = _
+    Private Sub chkUseHeader_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkUseHeader.CheckedChanged
+        Dim chk As System.Windows.Forms.CheckBox =
             DirectCast(sender, System.Windows.Forms.CheckBox)
         If chk.CheckState = Windows.Forms.CheckState.Checked Then
             Me.m_UseHeaderInfo = True
@@ -370,9 +370,9 @@ Public Class frmExtractFromFlatfile
 
     End Sub
 
-    Private Sub LoadAuthorityCombobox( _
-        ByVal cbo As System.Windows.Forms.ComboBox, _
-        ByVal authList As Hashtable)
+    Private Sub LoadAuthorityCombobox(
+        cbo As System.Windows.Forms.ComboBox,
+        authList As Hashtable)
 
         Dim a As New ArrayList
         Dim memberEnum = authList.GetEnumerator
@@ -391,7 +391,7 @@ Public Class frmExtractFromFlatfile
         cbo.EndUpdate()
     End Sub
 
-    Private Sub cboNamingAuthority_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboNamingAuthority.SelectedIndexChanged
+    Private Sub cboNamingAuthority_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cboNamingAuthority.SelectedIndexChanged
         Dim cbo As System.Windows.Forms.ComboBox = DirectCast(sender, System.Windows.Forms.ComboBox)
 
         If Me.lvwNewNames.SelectedItems.Count > 0 Then
@@ -403,12 +403,12 @@ Public Class frmExtractFromFlatfile
     End Sub
 
     Private Class AuthorityContainer
-        Private m_AuthName As String
+        Private ReadOnly m_AuthName As String
         Private m_AuthID As Integer
 
-        Sub New( _
-            ByVal AuthorityName As String, _
-            ByVal AuthorityID As Integer)
+        Sub New(
+            AuthorityName As String,
+            AuthorityID As Integer)
 
             Me.m_AuthID = AuthorityID
             Me.m_AuthName = AuthorityName
@@ -432,10 +432,9 @@ Public Class frmExtractFromFlatfile
     Private Class AuthorityContainerComparer
         Implements IComparer
 
-
-        Function Compare(ByVal x As Object, ByVal y As Object) As Integer Implements System.Collections.IComparer.Compare
-            Dim Auth_1 As AuthorityContainer = DirectCast(x, AuthorityContainer)
-            Dim Auth_2 As AuthorityContainer = DirectCast(y, AuthorityContainer)
+        Function Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
+            Dim Auth_1 = DirectCast(x, AuthorityContainer)
+            Dim Auth_2 = DirectCast(y, AuthorityContainer)
 
             Dim Reference_1 As String = Auth_1.AuthorityName
             Dim Reference_2 As String = Auth_2.AuthorityName

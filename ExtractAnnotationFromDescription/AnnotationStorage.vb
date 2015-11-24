@@ -5,7 +5,7 @@ Friend Class AnnotationStorage
     Private m_GroupNameLookup As Dictionary(Of String, Integer)
     Private ReadOnly m_GlobalProteinNameList As New SortedSet(Of String)
 
-    Sub AddAnnotationGroup(ByVal GroupID As Integer, ByVal groupNameToAdd As String)
+    Sub AddAnnotationGroup(GroupID As Integer, groupNameToAdd As String)
 
         If Me.m_GroupNameLookup Is Nothing Then
             Me.m_GroupNameLookup = New Dictionary(Of String, Integer)
@@ -32,9 +32,9 @@ Friend Class AnnotationStorage
     End Sub
 
     Sub AddAnnotation(
-        ByVal groupID As Integer,
-        ByVal PrimaryReferenceName As String,
-        ByVal XRefName As String)
+        groupID As Integer,
+        PrimaryReferenceName As String,
+        XRefName As String)
 
         Dim ag As AnnotationGroup = Me.GetGroup(groupID)
         ag.AddAnnotation(PrimaryReferenceName, XRefName)
@@ -45,14 +45,14 @@ Friend Class AnnotationStorage
     End Sub
 
     Sub AddDelimiter(
-        ByVal groupID As Integer,
-        ByVal newDelimiter As String)
+        groupID As Integer,
+        newDelimiter As String)
 
         Me.GetGroup(groupID).XRefDelimiter = newDelimiter
 
     End Sub
 
-    Sub SetAnnotationGroupStatus(ByVal GroupID As Integer, ByVal NewState As Boolean)
+    Sub SetAnnotationGroupStatus(GroupID As Integer, NewState As Boolean)
         Dim group = Me.m_AnnotationGroups.Item(GroupID)
         group.ImportThisGroup = NewState
         Me.m_AnnotationGroups.Item(GroupID) = group
@@ -60,7 +60,7 @@ Friend Class AnnotationStorage
     End Sub
 
     'Controls the import state of the named annotation group
-    Sub SetAnnotationGroupStatus(ByVal groupNameToUpdate As String, ByVal newStateForGroup As Boolean)
+    Sub SetAnnotationGroupStatus(groupNameToUpdate As String, newStateForGroup As Boolean)
         Dim groupID = Me.m_GroupNameLookup(groupNameToUpdate)
         Me.SetAnnotationGroupStatus(groupID, newStateForGroup)
     End Sub
@@ -75,26 +75,26 @@ Friend Class AnnotationStorage
         End Get
     End Property
 
-    ReadOnly Property Delimiter(ByVal GroupID As Integer) As String
+    ReadOnly Property Delimiter(GroupID As Integer) As String
         Get
             Return Me.GetGroup(GroupID).XRefDelimiter
         End Get
     End Property
 
-    Property AnnotationAuthorityID(ByVal GroupID As Integer) As Integer
+    Property AnnotationAuthorityID(GroupID As Integer) As Integer
         Get
             Return Me.m_AnnotationGroups.Item(GroupID).AnnotationAuthorityID
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             Me.m_AnnotationGroups.Item(GroupID).AnnotationAuthorityID = Value
         End Set
     End Property
 
-    Property GroupName(ByVal GroupID As Integer) As String
+    Property GroupName(GroupID As Integer) As String
         Get
             Return Me.GetGroup(GroupID).GroupName
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             Dim oldName As String
             Dim group As AnnotationGroup = Me.GetGroup(GroupID)
             oldName = group.GroupName
@@ -106,35 +106,35 @@ Friend Class AnnotationStorage
         End Set
     End Property
 
-    'Function GetAnnotationGroup(ByVal GroupName As String) As Hashtable
+    'Function GetAnnotationGroup(GroupName As String) As Hashtable
     '    Dim groupID As Integer
     '    groupID = Me.m_GroupNameLookup(GroupName)
     '    Return Me.GetAnnotationGroupData(groupID)
     'End Function
 
-    'Function GetAnnotationGroupData(ByVal GroupID As Integer) As AnnotationGroup
+    'Function GetAnnotationGroupData(GroupID As Integer) As AnnotationGroup
     '    Return Me.GetGroup(GroupID)
     'End Function
 
     'Returns hashtable containing all the added primary reference names as keys
     'and SortedSets of their corresponding xref names for the specified 
     'Annotation group id
-    Function GetAllRawXRefs(ByVal GroupID As Integer) As Dictionary(Of String, SortedSet(Of String))
+    Function GetAllRawXRefs(GroupID As Integer) As Dictionary(Of String, SortedSet(Of String))
         Return Me.GetGroup(GroupID).GetAllXRefs
     End Function
 
     'Returns a SortedSet containing all the xref names for the given 
     'primary reference name
     Function GetXRefs(
-        ByVal PrimaryReferenceName As String,
-        ByVal GroupID As Integer) As SortedSet(Of String)
+        PrimaryReferenceName As String,
+        GroupID As Integer) As SortedSet(Of String)
 
         Dim group As AnnotationGroup = Me.GetGroup(GroupID)
         Return group.GetXRefs(PrimaryReferenceName)
 
     End Function
 
-    Function GetGroup(ByVal groupid As Integer) As AnnotationGroup
+    Function GetGroup(groupid As Integer) As AnnotationGroup
         Dim group As AnnotationGroup
         group = Me.m_AnnotationGroups(groupid)
         Return group

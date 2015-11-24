@@ -1,8 +1,8 @@
 Friend Interface IProteinCompare
 
-    Function CompareSequences( _
-        ByVal Sequence1 As String, _
-        ByVal Sequence2 As String) As ComparisonResults
+    Function CompareSequences(
+        Sequence1 As String,
+        Sequence2 As String) As ComparisonResults
 
     Enum ComparisonResults
         Protein1MatchesProtein2         'Exact Match between compared sequences

@@ -10,10 +10,10 @@ Public Class frmBatchAddNewCollectionTest
 #Region " Windows Form Designer generated code "
 
     Public Sub New( _
-        ByVal OrganismList As DataTable, _
-        ByVal AnnotationTypeList As DataTable, _
-        ByVal ExistingCollectionsList As DataTable, _
-        ByVal PSConnectionString As String)
+        OrganismList As DataTable, _
+        AnnotationTypeList As DataTable, _
+        ExistingCollectionsList As DataTable, _
+        PSConnectionString As String)
 
         MyBase.New()
 
@@ -32,7 +32,7 @@ Public Class frmBatchAddNewCollectionTest
     End Sub
 
     'Form overrides dispose to clean up the component list.
-    Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
+    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
         If disposing Then
             If Not (components Is Nothing) Then
                 components.Dispose()
@@ -110,12 +110,12 @@ Public Class frmBatchAddNewCollectionTest
         Me.lblPassphrase = New System.Windows.Forms.Label()
         Me.txtPassphrase = New System.Windows.Forms.TextBox()
         Me.fraValidationOptions = New System.Windows.Forms.GroupBox()
+        Me.chkValidationAllowAllSymbolsInProteinNames = New System.Windows.Forms.CheckBox()
         Me.txtMaximumProteinNameLength = New System.Windows.Forms.TextBox()
         Me.lblMaximumProteinNameLength = New System.Windows.Forms.Label()
         Me.chkValidationAllowAsterisks = New System.Windows.Forms.CheckBox()
         Me.chkValidationAllowDash = New System.Windows.Forms.CheckBox()
         Me.cmdRefreshFiles = New System.Windows.Forms.Button()
-        Me.chkValidationAllowAllSymbolsInProteinNames = New System.Windows.Forms.CheckBox()
         Me.fraValidationOptions.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -322,6 +322,7 @@ Public Class frmBatchAddNewCollectionTest
         Me.chkEncryptionEnable.Size = New System.Drawing.Size(174, 23)
         Me.chkEncryptionEnable.TabIndex = 15
         Me.chkEncryptionEnable.Text = "Encrypt Sequences?"
+        Me.chkEncryptionEnable.Visible = False
         '
         'lblPassphrase
         '
@@ -331,6 +332,7 @@ Public Class frmBatchAddNewCollectionTest
         Me.lblPassphrase.Size = New System.Drawing.Size(178, 20)
         Me.lblPassphrase.TabIndex = 13
         Me.lblPassphrase.Text = "Encryption Passphrase"
+        Me.lblPassphrase.Visible = False
         '
         'txtPassphrase
         '
@@ -341,6 +343,7 @@ Public Class frmBatchAddNewCollectionTest
         Me.txtPassphrase.PasswordChar = Global.Microsoft.VisualBasic.ChrW(8226)
         Me.txtPassphrase.Size = New System.Drawing.Size(154, 24)
         Me.txtPassphrase.TabIndex = 14
+        Me.txtPassphrase.Visible = False
         '
         'fraValidationOptions
         '
@@ -356,6 +359,14 @@ Public Class frmBatchAddNewCollectionTest
         Me.fraValidationOptions.TabIndex = 16
         Me.fraValidationOptions.TabStop = False
         Me.fraValidationOptions.Text = "Fasta Validation Options"
+        '
+        'chkValidationAllowAllSymbolsInProteinNames
+        '
+        Me.chkValidationAllowAllSymbolsInProteinNames.Location = New System.Drawing.Point(11, 47)
+        Me.chkValidationAllowAllSymbolsInProteinNames.Name = "chkValidationAllowAllSymbolsInProteinNames"
+        Me.chkValidationAllowAllSymbolsInProteinNames.Size = New System.Drawing.Size(292, 25)
+        Me.chkValidationAllowAllSymbolsInProteinNames.TabIndex = 17
+        Me.chkValidationAllowAllSymbolsInProteinNames.Text = "Allow all symbols in protein names"
         '
         'txtMaximumProteinNameLength
         '
@@ -397,14 +408,6 @@ Public Class frmBatchAddNewCollectionTest
         Me.cmdRefreshFiles.Size = New System.Drawing.Size(182, 26)
         Me.cmdRefreshFiles.TabIndex = 19
         Me.cmdRefreshFiles.Text = "&Refresh Files"
-        '
-        'chkValidationAllowAllSymbolsInProteinNames
-        '
-        Me.chkValidationAllowAllSymbolsInProteinNames.Location = New System.Drawing.Point(11, 47)
-        Me.chkValidationAllowAllSymbolsInProteinNames.Name = "chkValidationAllowAllSymbolsInProteinNames"
-        Me.chkValidationAllowAllSymbolsInProteinNames.Size = New System.Drawing.Size(292, 25)
-        Me.chkValidationAllowAllSymbolsInProteinNames.TabIndex = 17
-        Me.chkValidationAllowAllSymbolsInProteinNames.Text = "Allow all symbols in protein names"
         '
         'frmBatchAddNewCollectionTest
         '
@@ -499,7 +502,7 @@ Public Class frmBatchAddNewCollectionTest
         Get
             Return Me.m_LastUsedDirectory
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             Me.m_LastUsedDirectory = Value
         End Set
     End Property
@@ -512,7 +515,7 @@ Public Class frmBatchAddNewCollectionTest
                 Return String.Empty
             End If
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_LastSelectedOrganism = Value
         End Set
     End Property
@@ -525,7 +528,7 @@ Public Class frmBatchAddNewCollectionTest
                 Return String.Empty
             End If
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_LastSelectedAnnotationType = Value
         End Set
     End Property
@@ -534,7 +537,7 @@ Public Class frmBatchAddNewCollectionTest
         Get
             Return chkValidationAllowAsterisks.Checked
         End Get
-        Set(ByVal Value As Boolean)
+        Set(Value As Boolean)
             chkValidationAllowAsterisks.Checked = Value
         End Set
     End Property
@@ -543,7 +546,7 @@ Public Class frmBatchAddNewCollectionTest
         Get
             Return chkValidationAllowDash.Checked
         End Get
-        Set(ByVal Value As Boolean)
+        Set(Value As Boolean)
             chkValidationAllowDash.Checked = Value
         End Set
     End Property
@@ -552,7 +555,7 @@ Public Class frmBatchAddNewCollectionTest
         Get
             Return chkValidationAllowAllSymbolsInProteinNames.Checked
         End Get
-        Set(ByVal Value As Boolean)
+        Set(Value As Boolean)
             chkValidationAllowAllSymbolsInProteinNames.Checked = Value
         End Set
     End Property
@@ -576,7 +579,7 @@ Public Class frmBatchAddNewCollectionTest
 
 #End Region
 
-    Private Sub frmBatchAddNewCollection_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+    Private Sub frmBatchAddNewCollection_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         Dim di As System.IO.DirectoryInfo
         Me.expUploadFolderSelect.StartUpDirectory = ExpTree.StartDir.Desktop
 
@@ -608,9 +611,9 @@ Public Class frmBatchAddNewCollectionTest
 
     End Sub
 
-    Private Sub AfterNodeSelect( _
-     ByVal pathName As String, _
-     ByVal CSI As CShItem) Handles expUploadFolderSelect.ExpTreeNodeSelected
+    Private Sub AfterNodeSelect(
+     pathName As String,
+     CSI As CShItem) Handles expUploadFolderSelect.ExpTreeNodeSelected
 
         Dim totalItems As Integer
 
@@ -635,7 +638,7 @@ Public Class frmBatchAddNewCollectionTest
 
 #Region " Directory Loading "
 
-    Private Function CollectionsTableToHash(ByVal dt As DataTable) As Hashtable
+    Private Function CollectionsTableToHash(dt As DataTable) As Hashtable
         Dim ht As New Hashtable(dt.Rows.Count)
         Dim dr As DataRow
         Dim foundrows() As DataRow = dt.Select("", "Protein_Collection_ID")
@@ -655,7 +658,7 @@ Public Class frmBatchAddNewCollectionTest
 
     End Function
 
-    Private Sub ScanDirectory(ByVal DirectoryPath As String, ByVal lvw As System.Windows.Forms.ListView)
+    Private Sub ScanDirectory(DirectoryPath As String, lvw As System.Windows.Forms.ListView)
 
         Dim di As New System.IO.DirectoryInfo(DirectoryPath)
         Dim fi As System.IO.FileInfo
@@ -691,7 +694,7 @@ Public Class frmBatchAddNewCollectionTest
 
 #Region " UI Loading Functions "
 
-    Private Sub LoadListView(ByVal lvw As ListView)
+    Private Sub LoadListView(lvw As ListView)
         Dim fi As System.IO.FileInfo
         Dim li As ListViewItem
         Dim tmpName As String
@@ -720,7 +723,7 @@ Public Class frmBatchAddNewCollectionTest
         lvw.EndUpdate()
     End Sub
 
-    Private Sub LoadOrganismPicker(ByVal cbo As ComboBox, ByVal orgList As DataView)
+    Private Sub LoadOrganismPicker(cbo As ComboBox, orgList As DataView)
         RemoveHandler cboOrganismSelect.SelectedIndexChanged, AddressOf cboOrganismSelect_SelectedIndexChanged
         With cbo
             .DataSource = orgList
@@ -731,7 +734,7 @@ Public Class frmBatchAddNewCollectionTest
         AddHandler cboOrganismSelect.SelectedIndexChanged, AddressOf cboOrganismSelect_SelectedIndexChanged
     End Sub
 
-    Private Sub LoadAnnotationTypePicker(ByVal cbo As ComboBox, ByVal authList As DataTable)
+    Private Sub LoadAnnotationTypePicker(cbo As ComboBox, authList As DataTable)
         RemoveHandler cboAnnotationTypePicker.SelectedIndexChanged, AddressOf cboAnnotationTypePicker_SelectedIndexChanged
 
         cbo.BeginUpdate()
@@ -771,7 +774,7 @@ Public Class frmBatchAddNewCollectionTest
 
 #Region " Internal Service Functions "
 
-    Function Numeric2Bytes(ByVal b As Double) As String
+    Function Numeric2Bytes(b As Double) As String
         Dim bSize(8) As String
         Dim i As Integer
 
@@ -790,7 +793,6 @@ Public Class frmBatchAddNewCollectionTest
         For i = UBound(bSize) To 0 Step -1
             If b >= (1024 ^ i) Then
                 Return ThreeNonZeroDigits(b / (1024 ^ i)) & " " & bSize(i)
-                Exit For
             End If
         Next
 
@@ -806,8 +808,7 @@ Public Class frmBatchAddNewCollectionTest
     '        12.3
     '         1.23
     '         0.12
-    Private Function ThreeNonZeroDigits(ByVal value As Double) _
-     As String
+    Private Function ThreeNonZeroDigits(value As Double) As String
         If value >= 100 Then
             ' No digits after the decimal.
             Return Format$(CInt(value))
@@ -914,7 +915,7 @@ Public Class frmBatchAddNewCollectionTest
         Next
     End Sub
 
-    Private Sub SelectComboBoxItemByName(ByRef objComboBox As System.Windows.Forms.ComboBox, ByVal strValue As String, ByVal intDataColumnIndexToCheck As Integer)
+    Private Sub SelectComboBoxItemByName(ByRef objComboBox As System.Windows.Forms.ComboBox, strValue As String, intDataColumnIndexToCheck As Integer)
         ' Look for strValue in a combobox that has a data table attached via the .DataSource property
         ' If the value is found, then the given item in the combobox is selected
 
@@ -944,7 +945,7 @@ Public Class frmBatchAddNewCollectionTest
 
 #Region " Button and Combo Handlers "
 
-    Private Sub cboOrganismSelect_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboOrganismSelect.SelectedIndexChanged
+    Private Sub cboOrganismSelect_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cboOrganismSelect.SelectedIndexChanged
         Dim cbo As ComboBox = DirectCast(sender, ComboBox)
         Dim tmpUpInfo As Protein_Uploader.IUploadProteins.UploadInfo
 
@@ -962,7 +963,7 @@ Public Class frmBatchAddNewCollectionTest
 
     End Sub
 
-    Private Sub cboAnnotationTypePicker_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboAnnotationTypePicker.SelectedIndexChanged
+    Private Sub cboAnnotationTypePicker_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cboAnnotationTypePicker.SelectedIndexChanged
         Dim cbo As ComboBox = DirectCast(sender, ComboBox)
         Dim tmpUpInfo As Protein_Uploader.IUploadProteins.UploadInfo
 
@@ -1021,7 +1022,7 @@ Public Class frmBatchAddNewCollectionTest
 
     End Sub
 
-    Private Sub chkEncryptionEnable_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkEncryptionEnable.CheckedChanged
+    Private Sub chkEncryptionEnable_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkEncryptionEnable.CheckedChanged
         Dim chk As CheckBox = DirectCast(sender, CheckBox)
         Dim encryptSequences As Boolean = False
 
@@ -1056,9 +1057,9 @@ Public Class frmBatchAddNewCollectionTest
 
     Private Sub CheckTransferEnable()
         If Me.chkEncryptionEnable.Checked = True Then
-            If Me.m_SelectedOrganismID > 0 And _
-             Me.m_SelectedAnnotationTypeID > 0 And _
-             Me.lvwFolderContents.SelectedItems.Count > 0 And _
+            If Me.m_SelectedOrganismID > 0 And
+             Me.m_SelectedAnnotationTypeID > 0 And
+             Me.lvwFolderContents.SelectedItems.Count > 0 And
              Me.txtPassphrase.Text.Length > 0 Then
 
                 m_AllowAddFiles = True
@@ -1097,19 +1098,19 @@ Public Class frmBatchAddNewCollectionTest
 
     End Sub
 
-    Private Sub cmdUploadChecked_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUploadChecked.Click
+    Private Sub cmdUploadChecked_Click(sender As System.Object, e As System.EventArgs) Handles cmdUploadChecked.Click
         Me.MakeCheckedFileList()
         Me.m_ReallyClose = True
         Me.DialogResult = DialogResult.OK
         Me.Close()
     End Sub
 
-    Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
+    Private Sub cmdCancel_Click(sender As System.Object, e As System.EventArgs) Handles cmdCancel.Click
         Me.DialogResult = DialogResult.Cancel
         Me.Close()
     End Sub
 
-    Private Sub cmdAddFile_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdAddFile.Click
+    Private Sub cmdAddFile_Click(sender As System.Object, e As System.EventArgs) Handles cmdAddFile.Click
         If Not m_AllowAddFiles Then
             System.Windows.Forms.MessageBox.Show(m_AllowAddFilesMessage, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Else
@@ -1118,12 +1119,12 @@ Public Class frmBatchAddNewCollectionTest
         End If
     End Sub
 
-    Private Sub cmdRemoveFile_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdRemoveFile.Click
+    Private Sub cmdRemoveFile_Click(sender As System.Object, e As System.EventArgs) Handles cmdRemoveFile.Click
         Me.RemoveFileFromSelectedList()
         CheckTransferEnable()
     End Sub
 
-    Private Sub cmdPreviewFile_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPreviewFile.Click
+    Private Sub cmdPreviewFile_Click(sender As System.Object, e As System.EventArgs) Handles cmdPreviewFile.Click
         If Me.m_FilePreviewer Is Nothing Then
             Me.m_FilePreviewer = New clsFilePreviewHandler
         End If
@@ -1137,24 +1138,19 @@ Public Class frmBatchAddNewCollectionTest
 
 #End Region
 
-    Private Sub lvwSelectedFiles_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles lvwSelectedFiles.Click
+    Private Sub lvwSelectedFiles_Click(sender As Object, e As System.EventArgs) Handles lvwSelectedFiles.Click
 
-        Dim selectedAnnotationType As String
         Dim selectedOrganism As String
-
-        Dim encryptSeq As Boolean
 
         Dim li As ListViewItem = Me.lvwSelectedFiles.SelectedItems.Item(0)
 
         selectedOrganism = li.SubItems(1).Text
-        selectedAnnotationType = li.SubItems(2).Text
+        Dim selectedAnnotationType As String = li.SubItems(2).Text
         If li.SubItems(3).Text = "Yes" Then
-            encryptSeq = True
             RemoveHandler chkEncryptionEnable.CheckedChanged, AddressOf chkEncryptionEnable_CheckedChanged
             Me.chkEncryptionEnable.CheckState = CheckState.Checked
             AddHandler chkEncryptionEnable.CheckedChanged, AddressOf chkEncryptionEnable_CheckedChanged
         Else
-            encryptSeq = False
             RemoveHandler chkEncryptionEnable.CheckedChanged, AddressOf chkEncryptionEnable_CheckedChanged
             Me.chkEncryptionEnable.CheckState = CheckState.Unchecked
             AddHandler chkEncryptionEnable.CheckedChanged, AddressOf chkEncryptionEnable_CheckedChanged
@@ -1167,16 +1163,16 @@ Public Class frmBatchAddNewCollectionTest
 
     End Sub
 
-    Private Sub lvwFolderContents_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles lvwFolderContents.Click
+    Private Sub lvwFolderContents_Click(sender As Object, e As System.EventArgs) Handles lvwFolderContents.Click
         Me.lvwSelectedFiles.SelectedItems.Clear()
     End Sub
 
-    Private Sub frmBatchAddNewCollectionTest_Closing(ByVal sender As Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles MyBase.Closing
+    Private Sub frmBatchAddNewCollectionTest_Closing(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles MyBase.Closing
         If Me.lvwSelectedFiles.Items.Count > 0 And Not Me.m_ReallyClose Then
             Dim r As System.Windows.Forms.DialogResult
 
-            r = MessageBox.Show("You have files selected for upload. Really close the form?", _
-             "Files selected for upload", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation)
+            r = MessageBox.Show("You have files selected for upload. Really close the form?",
+                                "Files selected for upload", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation)
             If r = DialogResult.No Then
                 e.Cancel = True
             Else
@@ -1191,11 +1187,11 @@ Public Class frmBatchAddNewCollectionTest
     End Sub
 
 
-    Private Sub lvwFolderContents_MouseUp(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles lvwFolderContents.MouseUp
+    Private Sub lvwFolderContents_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles lvwFolderContents.MouseUp
         Me.CheckTransferEnable()
     End Sub
 
-    Sub OnPreviewFormStatusChange(ByVal Visibility As Boolean) Handles m_FilePreviewer.FormStatus
+    Sub OnPreviewFormStatusChange(Visibility As Boolean) Handles m_FilePreviewer.FormStatus
         If Visibility = True Then
             Me.cmdPreviewFile.Enabled = False
             Me.m_PreviewFormStatus = True
@@ -1205,7 +1201,7 @@ Public Class frmBatchAddNewCollectionTest
         End If
     End Sub
 
-    Private Sub txtPassphrase_Validating(ByVal sender As Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles txtPassphrase.Validating
+    Private Sub txtPassphrase_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtPassphrase.Validating
         Dim txt As TextBox = DirectCast(sender, TextBox)
         Dim li As ListViewItem
 

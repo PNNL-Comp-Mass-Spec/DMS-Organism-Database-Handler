@@ -4,35 +4,35 @@ Imports System.Data.SqlClient
 Imports System.Data.OleDb
 
 Public Interface IGetSQLData
-    Function GetTable(ByVal SelectSQL As String) As DataTable
-    Function GetTable( _
-        ByVal SelectSQL As String, _
-        ByRef SQLDataAdapter As SqlClient.SqlDataAdapter, _
-        ByRef SQLCommandBuilder As SqlClient.SqlCommandBuilder) As DataTable
+    Function GetTable(SelectSQL As String) As DataTable
+    Function GetTable(
+        SelectSQL As String,
+        ByRef SQLDataAdapter As SqlDataAdapter,
+        ByRef SQLCommandBuilder As SqlCommandBuilder) As DataTable
 
-    Function GetTableTemplate(ByVal TableName As String) As DataTable
-    Function GetTableTemplate( _
-        ByVal TableName As String, _
-        ByRef SQLDataAdapter As SqlClient.SqlDataAdapter, _
-        ByRef SQLCommandBuilder As SqlClient.SqlCommandBuilder) As DataTable
-    Function DataTableToHashtable( _
-        ByRef dt As DataTable, _
-        ByVal keyFieldName As String, _
-        ByVal valueFieldName As String, _
-        Optional ByVal filterString As String = "") As Hashtable
-    Function DataTableToComplexHashtable( _
-        ByRef dt As DataTable, _
-        ByVal keyFieldName As String, _
-        ByVal valueFieldName As String, _
-        Optional ByVal filterString As String = "") As Hashtable
+    Function GetTableTemplate(TableName As String) As DataTable
+    Function GetTableTemplate(
+        TableName As String,
+        ByRef SQLDataAdapter As SqlDataAdapter,
+        ByRef SQLCommandBuilder As SqlCommandBuilder) As DataTable
+    Function DataTableToHashtable(
+        ByRef dt As DataTable,
+        keyFieldName As String,
+        valueFieldName As String,
+        Optional filterString As String = "") As Hashtable
+    Function DataTableToComplexHashtable(
+        ByRef dt As DataTable,
+        keyFieldName As String,
+        valueFieldName As String,
+        Optional filterString As String = "") As Hashtable
 
     Sub OpenConnection()
-    Sub OpenConnection(ByVal connString As String)
+    Sub OpenConnection(connString As String)
     Sub CloseConnection()
 
     Property ConnectionString() As String
     ReadOnly Property Connected() As Boolean
-    ReadOnly Property Connection() As SqlClient.SqlConnection
+    ReadOnly Property Connection() As SqlConnection
 
 End Interface
 
@@ -50,16 +50,16 @@ Public Class clsDBTask
 #End Region
 
     ' constructor
-    Public Sub New(ByVal connString As String, Optional ByVal persistConnection As Boolean = False)
+    Public Sub New(connString As String, Optional persistConnection As Boolean = False)
         Me.m_connection_str = connString
         Me.SetupNew(persistConnection)
     End Sub
 
-    Public Sub New(Optional ByVal persistConnection As Boolean = False)
+    Public Sub New(Optional persistConnection As Boolean = False)
         Me.SetupNew(persistConnection)
     End Sub
 
-    Private Sub SetupNew(ByVal persistConnection As Boolean)
+    Private Sub SetupNew(persistConnection As Boolean)
         Me.m_PersistConnection = persistConnection
         If Me.m_PersistConnection Then
             Me.OpenConnection(Me.m_connection_str)
@@ -77,7 +77,7 @@ Public Class clsDBTask
         OpenConnection(Me.m_connection_str)
     End Sub
 
-    Protected Sub OpenConnection(ByVal connString As String) Implements IGetSQLData.OpenConnection
+    Protected Sub OpenConnection(connString As String) Implements IGetSQLData.OpenConnection
         Dim retryCount As Integer = 3
         If m_DBCn Is Nothing Then
             m_DBCn = New SqlConnection(connString)
@@ -124,12 +124,12 @@ Public Class clsDBTask
         Get
             Return Me.m_connection_str
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             Me.m_connection_str = Value
         End Set
     End Property
 
-    Protected ReadOnly Property Connection() As SqlClient.SqlConnection Implements IGetSQLData.Connection
+    Protected ReadOnly Property Connection() As SqlConnection Implements IGetSQLData.Connection
         Get
             If Me.Connected Then
                 Return Me.m_DBCn
@@ -140,28 +140,28 @@ Public Class clsDBTask
         End Get
     End Property
 
-    Protected Function GetTableTemplate( _
-        ByVal tableName As String, _
-        ByRef SQLDataAdapter As SqlClient.SqlDataAdapter, _
-        ByRef SQLCommandBuilder As SqlClient.SqlCommandBuilder) As DataTable Implements IGetSQLData.GetTableTemplate
+    Protected Function GetTableTemplate(
+        tableName As String,
+        ByRef SQLDataAdapter As SqlDataAdapter,
+        ByRef SQLCommandBuilder As SqlCommandBuilder) As DataTable Implements IGetSQLData.GetTableTemplate
 
         Dim sql As String = "SELECT * FROM " & tableName & " WHERE 1=0"
         Return GetTable(sql, SQLDataAdapter, SQLCommandBuilder)
 
     End Function
 
-    Protected Function GetTableTemplate(ByVal tableName As String) As DataTable Implements IGetSQLData.GetTableTemplate
+    Protected Function GetTableTemplate(tableName As String) As DataTable Implements IGetSQLData.GetTableTemplate
         Dim sql As String = "SELECT * FROM " & tableName & " WHERE 1=0"
         Return GetTable(sql)
     End Function
 
-    Protected Function GetTable( _
-        ByVal SelectSQL As String, _
-        ByRef SQLDataAdapter As SqlClient.SqlDataAdapter, _
-        ByRef SQLCommandBuilder As SqlClient.SqlCommandBuilder) As DataTable Implements IGetSQLData.GetTable
+    Protected Function GetTable(
+        SelectSQL As String,
+        ByRef SQLDataAdapter As SqlDataAdapter,
+        ByRef SQLCommandBuilder As SqlCommandBuilder) As DataTable Implements IGetSQLData.GetTable
 
         Dim tmpIDTable As New DataTable
-        Dim GetID_CMD As SqlClient.SqlCommand = New SqlClient.SqlCommand(SelectSQL)
+        Dim GetID_CMD As SqlCommand = New SqlCommand(SelectSQL)
 
         Dim numTries As Integer = 3
 
@@ -172,8 +172,8 @@ Public Class clsDBTask
 
         If Me.Connected = True Then
 
-            SQLDataAdapter = New SqlClient.SqlDataAdapter
-            SQLCommandBuilder = New SqlClient.SqlCommandBuilder(SQLDataAdapter)
+            SQLDataAdapter = New SqlDataAdapter
+            SQLCommandBuilder = New SqlCommandBuilder(SQLDataAdapter)
             SQLDataAdapter.SelectCommand = GetID_CMD
 
             While numTries > 0
@@ -183,7 +183,7 @@ Public Class clsDBTask
                 Catch ex As Exception
                     numTries -= 1
                     If numTries = 0 Then
-						Throw New Exception("could not get records after three tries: " & ex.Message)
+                        Throw New Exception("could not get records after three tries: " & ex.Message)
                     End If
                     System.Threading.Thread.Sleep(3000)
                 End Try
@@ -202,9 +202,9 @@ Public Class clsDBTask
 
     End Function
 
-    Protected Function GetTable(ByVal SelectSQL As String) As DataTable Implements IGetSQLData.GetTable
-		Dim tmpDA As SqlClient.SqlDataAdapter = Nothing
-		Dim tmpCB As SqlClient.SqlCommandBuilder = Nothing
+    Protected Function GetTable(SelectSQL As String) As DataTable Implements IGetSQLData.GetTable
+        Dim tmpDA As SqlDataAdapter = Nothing
+        Dim tmpCB As SqlCommandBuilder = Nothing
 
         Dim tmpTable As DataTable = GetTable(SelectSQL, tmpDA, tmpCB)
         tmpDA.Dispose()
@@ -217,12 +217,12 @@ Public Class clsDBTask
 
     End Function
 
-    Protected Sub CreateRelationship( _
-        ByVal ds As DataSet, _
-        ByVal dt1 As DataTable, _
-        ByVal dt1_keyFieldName As String, _
-        ByVal dt2 As DataTable, _
-        ByVal dt2_keyFieldName As String)
+    Protected Sub CreateRelationship(
+        ds As DataSet,
+        dt1 As DataTable,
+        dt1_keyFieldName As String,
+        dt2 As DataTable,
+        dt2_keyFieldName As String)
 
         Dim dc_dt1_keyField As DataColumn = dt1.Columns(dt1_keyFieldName)
         Dim dc_dt2_keyField As DataColumn = dt2.Columns(dt2_keyFieldName)
@@ -230,9 +230,9 @@ Public Class clsDBTask
 
     End Sub
 
-    Protected Sub SetPrimaryKey( _
-        ByVal keyColumnIndex As Integer, _
-        ByVal dt As DataTable)
+    Protected Sub SetPrimaryKey(
+        keyColumnIndex As Integer,
+        dt As DataTable)
 
         Dim pKey(0) As DataColumn
         pKey(0) = dt.Columns(keyColumnIndex)
@@ -240,11 +240,11 @@ Public Class clsDBTask
 
     End Sub
 
-    Protected Function DataTableToHashTable( _
-    ByRef dt As DataTable, _
-    ByVal keyFieldName As String, _
-    ByVal valueFieldName As String, _
-    Optional ByVal filterString As String = "") As Hashtable Implements IGetSQLData.DataTableToHashtable
+    Protected Function DataTableToHashTable(
+    ByRef dt As DataTable,
+    keyFieldName As String,
+    valueFieldName As String,
+    Optional filterString As String = "") As Hashtable Implements IGetSQLData.DataTableToHashtable
 
         Dim dr As DataRow
         Dim foundRows() As DataRow = dt.Select(filterString)
@@ -271,11 +271,11 @@ Public Class clsDBTask
     End Function
 
 
-    Protected Function DataTableToComplexHashTable( _
-        ByRef dt As DataTable, _
-        ByVal keyFieldName As String, _
-        ByVal valueFieldName As String, _
-        Optional ByVal filterString As String = "") As Hashtable Implements IGetSQLData.DataTableToComplexHashtable
+    Protected Function DataTableToComplexHashTable(
+        ByRef dt As DataTable,
+        keyFieldName As String,
+        valueFieldName As String,
+        Optional filterString As String = "") As Hashtable Implements IGetSQLData.DataTableToComplexHashtable
 
         Dim dr As DataRow
         Dim foundRows() As DataRow = dt.Select(filterString)

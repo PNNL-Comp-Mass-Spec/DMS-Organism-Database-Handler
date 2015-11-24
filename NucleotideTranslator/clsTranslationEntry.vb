@@ -5,12 +5,12 @@ Friend Class clsTranslationEntry
     Protected m_TransEntries As ArrayList
     Protected m_TranslatedAA As String
 
-    Friend Sub New(ByVal NucleotideBase As String, ByVal TranslationEntries As ArrayList)
+    Friend Sub New(NucleotideBase As String, TranslationEntries As ArrayList)
         Me.m_Base = NucleotideBase
         Me.m_TransEntries = TranslationEntries
     End Sub
 
-    Friend Sub New(ByVal NucleotideBase As String, ByVal TranslatedAA As String)
+    Friend Sub New(NucleotideBase As String, TranslatedAA As String)
         MyBase.New()
         Me.m_Base = NucleotideBase
         Me.m_TranslatedAA = TranslatedAA

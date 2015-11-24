@@ -12,11 +12,11 @@ Public Class clsProteinStorageDMS
     Private m_EncryptionFlag As Boolean
     Private m_PassPhrase As String
 
-    Public Sub New(ByVal fastaFileName As String)
+    Public Sub New(fastaFileName As String)
         Me.FileName = fastaFileName
     End Sub
 
-    Public Sub AddProtein(ByVal proteinEntry As IProteinStorageEntry) Implements IProteinStorage.AddProtein
+    Public Sub AddProtein(proteinEntry As IProteinStorageEntry) Implements IProteinStorage.AddProtein
         Dim proteinName As String
         Dim ProteinEntryID As Integer = proteinEntry.Protein_ID
         Dim ProteinEntryName As String = proteinEntry.Reference
@@ -68,7 +68,7 @@ Public Class clsProteinStorageDMS
 
     Protected Property FileName As String Implements IProteinStorage.FileName
 
-    Protected Function GetProtein(ByVal Reference As String) As Protein_Storage.IProteinStorageEntry Implements IProteinStorage.GetProtein
+    Protected Function GetProtein(Reference As String) As Protein_Storage.IProteinStorageEntry Implements IProteinStorage.GetProtein
         If Me.m_Proteins.ContainsKey(Reference) Then
             Return Me.m_Proteins.Item(Reference)
         Else
@@ -122,7 +122,7 @@ Public Class clsProteinStorageDMS
         Get
             Return Me.m_EncryptionFlag
         End Get
-        Set(ByVal Value As Boolean)
+        Set(Value As Boolean)
             Me.m_EncryptionFlag = Value
         End Set
     End Property
@@ -135,7 +135,7 @@ Public Class clsProteinStorageDMS
                 Return Nothing
             End If
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             Me.m_PassPhrase = Value
         End Set
     End Property

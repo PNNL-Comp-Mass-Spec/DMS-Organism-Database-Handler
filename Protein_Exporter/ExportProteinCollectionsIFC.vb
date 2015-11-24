@@ -4,59 +4,60 @@ Namespace ExportProteinCollectionsIFC
 
     Public Interface IExportProteins
 
-        Event ExportStart(ByVal taskTitle As String)
-        Event ExportProgress(ByVal statusMsg As String, ByVal fractionDone As Double)
+        Event ExportStart(taskTitle As String)
+        Event ExportProgress(statusMsg As String, fractionDone As Double)
         Event ExportEnd()
 
-        Function Export( _
-            ByRef Proteins As Protein_Storage.IProteinStorage, _
-            ByRef destinationPath As String, ByVal SelectedProteinList As ArrayList) As String
+        Function Export(
+            Proteins As Protein_Storage.IProteinStorage,
+            ByRef destinationPath As String,
+            SelectedProteinList As ArrayList) As String
 
-        Function Export( _
-            ByRef Proteins As Protein_Storage.IProteinStorage, _
+        Function Export(
+            Proteins As Protein_Storage.IProteinStorage,
             ByRef destinationPath As String) As String
 
-        Function Export( _
-            ByRef ProteinTables As DataSet, _
+        Function Export(
+            ProteinTables As DataSet,
             ByRef destinationPath As String) As String
 
-        Function Export( _
-            ByRef ProteinTable As DataTable, _
+        Function Export(
+            ProteinTable As DataTable,
             ByRef destintationPath As String) As String
 
-        Function GenerateFileAuthenticationHash(ByVal FullFilePath As String) As String
+        Function GenerateFileAuthenticationHash(FullFilePath As String) As String
 
     End Interface
 
     Public Interface IGetFASTAFromDMS
 
         Function GetOrganismList() As Hashtable
-        Function GetCollectionsByOrganism(ByVal OrganismID As Integer) As Hashtable
+        Function GetCollectionsByOrganism(OrganismID As Integer) As Hashtable
         Function GetAllCollections() As Hashtable
 
         Function GetOrganismListTable() As DataTable
-        Function GetCollectionsByOrganismTable(ByVal OrganismID As Integer) As DataTable
+        Function GetCollectionsByOrganismTable(OrganismID As Integer) As DataTable
 
-        Function ExportFASTAFile( _
-            ByVal ProteinCollectionID As Integer, _
-            ByVal ExportPath As String, _
-            ByVal DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes, _
-            ByVal OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes) As String
+        Function ExportFASTAFile(
+            ProteinCollectionID As Integer,
+            ExportPath As String,
+            DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
+            OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes) As String
 
-        Function ExportFASTAFile( _
-            ByVal ProteinCollectionNameList As String, _
-            ByVal CreationOptions As String, _
-            ByVal LegacyFASTAFileName As String, _
-            ByVal ExportPath As String) As String
+        Function ExportFASTAFile(
+            ProteinCollectionNameList As String,
+            CreationOptions As String,
+            LegacyFASTAFileName As String,
+            ExportPath As String) As String
 
-        Function GenerateFileAuthenticationHash(ByVal FullFilePath As String) As String
-        Function GetStoredFileAuthenticationHash(ByVal ProteinCollectionName As String) As String
-        Function GetStoredFileAuthenticationHash(ByVal ProteinCollectionID As Integer) As String
-        Function GetProteinCollectionID(ByVal ProteinCollectionName As String) As Integer
+        Function GenerateFileAuthenticationHash(FullFilePath As String) As String
+        Function GetStoredFileAuthenticationHash(ProteinCollectionName As String) As String
+        Function GetStoredFileAuthenticationHash(ProteinCollectionID As Integer) As String
+        Function GetProteinCollectionID(ProteinCollectionName As String) As Integer
 
-        Event FileGenerationStarted(ByVal taskMsg As String)
-        Event FileGenerationProgress(ByVal statusMsg As String, ByVal fractionDone As Double)
-        Event FileGenerationCompleted(ByVal FullOutputPath As String)
+        Event FileGenerationStarted(taskMsg As String)
+        Event FileGenerationProgress(statusMsg As String, fractionDone As Double)
+        Event FileGenerationCompleted(FullOutputPath As String)
 
         Enum SequenceTypes
             forward = 1

@@ -99,7 +99,7 @@ Public Class clsBulkFastaImporter
 
         Dim strErrorMessage As String
 
-        If MyBase.ErrorCode = clsProcessFilesBaseClass.eProcessFilesErrorCodes.LocalizedError Or _
+        If MyBase.ErrorCode = clsProcessFilesBaseClass.eProcessFilesErrorCodes.LocalizedError Or
            MyBase.ErrorCode = clsProcessFilesBaseClass.eProcessFilesErrorCodes.NoError Then
             Select Case mLocalErrorCode
                 Case eBulkImporterErrorCodes.NoError
@@ -136,7 +136,7 @@ Public Class clsBulkFastaImporter
 
     End Sub
 
-    Protected Function ParseFastaInfoFile(ByVal fastaInfoFilePath As String) As List(Of udtFastaFileInfoType)
+    Protected Function ParseFastaInfoFile(fastaInfoFilePath As String) As List(Of udtFastaFileInfoType)
         Try
             Dim sourceFileList = New List(Of udtFastaFileInfoType)
             Dim sourceFileNames = New SortedSet(Of String)(StringComparer.CurrentCultureIgnoreCase)
@@ -373,14 +373,14 @@ Public Class clsBulkFastaImporter
 
     End Function
 
-    Private Function LookupAnnotationTypeID(ByVal annotationTypeNameOrID As String, <Out> ByRef annotationTypeId As Integer) As Boolean
+    Private Function LookupAnnotationTypeID(annotationTypeNameOrID As String, <Out> ByRef annotationTypeId As Integer) As Boolean
 
         If Not mDatabaseDataLoaded Then
             annotationTypeId = 0
             If Not LoadDatabaseInfo() Then Return False
         End If
 
-        If Integer.TryParse(annotationTypeNameOrID, annotationTypeID) Then
+        If Integer.TryParse(annotationTypeNameOrID, annotationTypeId) Then
             ' Make sure the ID is valid
             If Not mAnnotationTypeInfo.ContainsValue(annotationTypeId) Then
                 ShowWarning("Invalid Annotation Type ID: " & annotationTypeId)
@@ -406,7 +406,7 @@ Public Class clsBulkFastaImporter
 
     End Function
 
-    Private Function LookupOrganismID(ByVal organismNameOrID As String, <Out> ByRef organismId As Integer) As Boolean
+    Private Function LookupOrganismID(organismNameOrID As String, <Out> ByRef organismId As Integer) As Boolean
 
         If Not mDatabaseDataLoaded Then
             organismId = 0
@@ -446,7 +446,7 @@ Public Class clsBulkFastaImporter
     ''' <param name="proteinCollectionID">ID if a match; 0 if no match</param>
     ''' <returns></returns>
     ''' <remarks>True if success (even if the protein collection does not exist); false if a database error</remarks>
-    Private Function LookupProteinCollectionID(ByVal proteinCollectionName As String, <Out> ByRef proteinCollectionID As Integer) As Boolean
+    Private Function LookupProteinCollectionID(proteinCollectionName As String, <Out> ByRef proteinCollectionID As Integer) As Boolean
 
         If Not mDatabaseDataLoaded Then
             proteinCollectionID = 0
@@ -464,7 +464,7 @@ Public Class clsBulkFastaImporter
 
     End Function
 
-    Public Overrides Function ProcessFile(ByVal strInputFilePath As String, ByVal strOutputFolderPath As String, ByVal strParameterFilePath As String, ByVal blnResetErrorCode As Boolean) As Boolean
+    Public Overrides Function ProcessFile(strInputFilePath As String, strOutputFolderPath As String, strParameterFilePath As String, blnResetErrorCode As Boolean) As Boolean
         Try
             Dim sourceFileList As List(Of udtFastaFileInfoType)
 
@@ -482,7 +482,7 @@ Public Class clsBulkFastaImporter
 
     End Function
 
-    Public Function UploadFastaFile(ByVal fastaFilePath As String, ByVal orgID As Integer, ByVal authID As Integer) As Boolean
+    Public Function UploadFastaFile(fastaFilePath As String, orgID As Integer, authID As Integer) As Boolean
         Dim sourceFileList = New List(Of udtFastaFileInfoType)
 
         Dim udtFastaFileInfo = New udtFastaFileInfoType
@@ -497,7 +497,7 @@ Public Class clsBulkFastaImporter
 
     End Function
 
-    Public Function UploadFastaFileList(ByVal sourceFileList As List(Of udtFastaFileInfoType)) As Boolean
+    Public Function UploadFastaFileList(sourceFileList As List(Of udtFastaFileInfoType)) As Boolean
 
         Dim fileInfoList = New List(Of Protein_Uploader.IUploadProteins.UploadInfo)
 
@@ -516,7 +516,7 @@ Public Class clsBulkFastaImporter
 
     End Function
 
-    Public Function UploadFastaFileList(ByVal fileInfoList As List(Of Protein_Uploader.IUploadProteins.UploadInfo)) As Boolean
+    Public Function UploadFastaFileList(fileInfoList As List(Of Protein_Uploader.IUploadProteins.UploadInfo)) As Boolean
 
         Try
             ' Initialize the uploader

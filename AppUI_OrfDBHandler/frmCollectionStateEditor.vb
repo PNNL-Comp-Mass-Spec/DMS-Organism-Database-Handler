@@ -3,7 +3,7 @@ Public Class frmCollectionStateEditor
 
 #Region " Windows Form Designer generated code "
 
-    Public Sub New(ByVal ProteinStorageConnectionString As String)
+    Public Sub New(ProteinStorageConnectionString As String)
         MyBase.New()
 
         'This call is required by the Windows Form Designer.
@@ -14,7 +14,7 @@ Public Class frmCollectionStateEditor
     End Sub
 
     'Form overrides dispose to clean up the component list.
-    Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
+    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
         If disposing Then
             If Not (components Is Nothing) Then
                 components.Dispose()
@@ -203,13 +203,13 @@ Public Class frmCollectionStateEditor
 
 #Region " Live Search Handler "
 
-    Private Sub txtLiveSearch_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtLiveSearch.TextChanged
+    Private Sub txtLiveSearch_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtLiveSearch.TextChanged
         If m_SearchActive Then
             SearchTimer.Start()
         End If
     End Sub
 
-    Private Sub txtLiveSearch_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtLiveSearch.Click
+    Private Sub txtLiveSearch_Click(sender As Object, e As System.EventArgs) Handles txtLiveSearch.Click
         If m_SearchActive Then
         Else
             txtLiveSearch.Text = Nothing
@@ -218,7 +218,7 @@ Public Class frmCollectionStateEditor
         End If
     End Sub
 
-    Private Sub txtLiveSearch_Leave(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtLiveSearch.Leave
+    Private Sub txtLiveSearch_Leave(sender As Object, e As System.EventArgs) Handles txtLiveSearch.Leave
         If txtLiveSearch.Text.Length = 0 Then
             txtLiveSearch.ForeColor = System.Drawing.SystemColors.InactiveCaption
             txtLiveSearch.Text = "Search"
@@ -230,13 +230,13 @@ Public Class frmCollectionStateEditor
 
 #End Region
 
-    Friend Sub TimerHandler(ByVal sender As Object, ByVal e As System.Timers.ElapsedEventArgs) Handles SearchTimer.Elapsed
+    Friend Sub TimerHandler(sender As Object, e As System.Timers.ElapsedEventArgs) Handles SearchTimer.Elapsed
         Me.m_Handler.FillFilteredListView(Me.lvwCollections, Me.txtLiveSearch.Text)
     End Sub
 
 #Region " Form Event Handlers"
 
-    Private Sub frmCollectionStateEditor_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+    Private Sub frmCollectionStateEditor_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         Me.m_Handler = New clsCollectionStatePickerHandler(Me.m_PSConnectionString)
         Me.m_StatesTable = Me.m_Handler.GetStates()
 
@@ -257,12 +257,12 @@ Public Class frmCollectionStateEditor
         Me.m_Handler.FillListView(Me.lvwCollections)
     End Sub
 
-    Private Sub cboStateChanger_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboStateChanger.SelectedIndexChanged
+    Private Sub cboStateChanger_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cboStateChanger.SelectedIndexChanged
         Dim cbo As ComboBox = DirectCast(sender, ComboBox)
         Me.m_SelectedNewStateID = CInt(cbo.SelectedValue)
     End Sub
 
-    Private Sub cmdStateChanger_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdStateChanger.Click
+    Private Sub cmdStateChanger_Click(sender As System.Object, e As System.EventArgs) Handles cmdStateChanger.Click
         Dim al As New ArrayList
         Dim item As ListViewItem
 
@@ -284,7 +284,7 @@ Public Class frmCollectionStateEditor
 
 #End Region
 
-    Private Sub lvwSearchResults_ColumnClick(ByVal sender As Object, ByVal e As System.Windows.Forms.ColumnClickEventArgs) Handles lvwCollections.ColumnClick
+    Private Sub lvwSearchResults_ColumnClick(sender As Object, e As System.Windows.Forms.ColumnClickEventArgs) Handles lvwCollections.ColumnClick
 
         'If selected column is same as previously selected column, then reverse sort order. Otherwise,
         '	sort newly selected column in ascending order
@@ -308,27 +308,26 @@ Class ListViewItemComparer
     ' Implements the manual sorting of items by columns.
     Dim m_SortOrderAsc As Boolean = True
 
-    Private col As Integer
+    Private ReadOnly colIndex As Integer
 
     Public Sub New()
-        col = 0
+        colIndex = 0
     End Sub
 
-    Public Sub New(ByVal column As Integer)
-        col = column
+    Public Sub New(columnIndex As Integer)
+        colIndex = columnIndex
     End Sub
 
-    Public Sub New(ByVal column As Integer, ByVal SortOrderAsc As Boolean)
-        col = column
+    Public Sub New(columnIndex As Integer, SortOrderAsc As Boolean)
+        colIndex = columnIndex
         m_SortOrderAsc = SortOrderAsc
     End Sub
 
-    Public Function Compare(ByVal x As Object, ByVal y As Object) As Integer _
-     Implements IComparer.Compare
+    Public Function Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
 
         Dim TempResult As Integer
 
-        TempResult = [String].Compare(CType(x, ListViewItem).SubItems(col).Text, CType(y, ListViewItem).SubItems(col).Text)
+        TempResult = [String].Compare(CType(x, ListViewItem).SubItems(colIndex).Text, CType(y, ListViewItem).SubItems(colIndex).Text)
         If m_SortOrderAsc Then
             Return TempResult
         Else
@@ -341,7 +340,7 @@ Class ListViewItemComparer
         Get
             Return m_SortOrderAsc
         End Get
-        Set(ByVal Value As Boolean)
+        Set(Value As Boolean)
             m_SortOrderAsc = False
         End Set
     End Property

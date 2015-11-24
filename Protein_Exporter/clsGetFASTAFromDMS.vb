@@ -25,7 +25,7 @@ Public Class clsGetFASTAFromDMS
     Protected WithEvents m_FileTools As PRISM.Files.clsFileTools
     Protected m_LastLockQueueWaitTimeLog As System.DateTime
 
-    Public Sub New(ByVal ProteinStorageConnectionString As String)
+    Public Sub New(ProteinStorageConnectionString As String)
 
         m_PSConnectionString = ProteinStorageConnectionString
         ClassSelector(ProteinStorageConnectionString, ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta, ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward)
@@ -46,9 +46,9 @@ Public Class clsGetFASTAFromDMS
     End Property
 
     Public Sub New(
-     ByVal ProteinStorageConnectionString As String,
-     ByVal DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
-     ByVal OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes)
+     ProteinStorageConnectionString As String,
+     DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
+     OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes)
         Me.m_SHA1Provider = New System.Security.Cryptography.SHA1Managed
         Me.m_PSConnectionString = ProteinStorageConnectionString
 
@@ -61,9 +61,9 @@ Public Class clsGetFASTAFromDMS
     End Sub
 
     Private Sub ClassSelector(
-     ByVal ProteinStorageConnectionString As String,
-     ByVal DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
-     ByVal OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes)
+     ProteinStorageConnectionString As String,
+     DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
+     OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes)
 
         Me.m_DatabaseFormatType = DatabaseFormatType
         Me.m_OutputSequenceType = OutputSequenceType
@@ -101,7 +101,7 @@ Public Class clsGetFASTAFromDMS
 
     End Sub
 
-    Protected Overridable Function GetCollectionTable(ByVal selectionSQL As String) As DataTable
+    Protected Overridable Function GetCollectionTable(selectionSQL As String) As DataTable
         If Me.m_TableGetter Is Nothing Then
             Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString, True)
         End If
@@ -111,10 +111,10 @@ Public Class clsGetFASTAFromDMS
     End Function
 
     Overloads Function ExportFASTAFile(
-     ByVal ProteinCollectionID As Integer,
-     ByVal ExportPath As String,
-     ByVal DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
-     ByVal OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.ExportFASTAFile
+     ProteinCollectionID As Integer,
+     ExportPath As String,
+     DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
+     OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.ExportFASTAFile
 
         Dim proteincollectionname As String = Me.GetProteinCollectionName(ProteinCollectionID)
         Dim al As New ArrayList
@@ -130,10 +130,10 @@ Public Class clsGetFASTAFromDMS
     End Function
 
     Overloads Function ExportFASTAFile(
-     ByVal ProteinCollectionNameList As String,
-     ByVal CreationOptions As String,
-     ByVal LegacyFASTAFileName As String,
-     ByVal ExportPath As String) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.ExportFASTAFile
+     ProteinCollectionNameList As String,
+     CreationOptions As String,
+     LegacyFASTAFileName As String,
+     ExportPath As String) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.ExportFASTAFile
 
         ' Returns the Sha1 hash of the exported file
         ' Returns nothing or "" if an error
@@ -190,11 +190,11 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
-    Protected Function ExportLegacyFastaFile(ByVal LegacyFASTAFileName As String,
-      ByVal ExportPath As String) As String
+    Protected Function ExportLegacyFastaFile(LegacyFASTAFileName As String,
+      ExportPath As String) As String
 
-        Dim legacyStaticFilePath As String = ""
-        Dim finalFileHash As String = ""
+        Dim legacyStaticFilePath = ""
+        Dim finalFileHash = ""
 
         Dim strCollectionListHexHash As String = Me.GenerateHash(LegacyFASTAFileName)
         Dim LockFileHash As String = strCollectionListHexHash
@@ -328,9 +328,9 @@ Public Class clsGetFASTAFromDMS
     End Function
 
     Protected Function ExportLegacyFastaValidateHash(
-     ByVal finalFileFI As FileInfo,
+     finalFileFI As FileInfo,
      ByRef finalFileHash As String,
-     ByVal blnForceRegenerateHash As Boolean) As Boolean
+     blnForceRegenerateHash As Boolean) As Boolean
 
         If String.IsNullOrEmpty(finalFileHash) Then
             finalFileHash = GenerateAndStoreLegacyFileHash(finalFileFI.FullName)
@@ -353,13 +353,13 @@ Public Class clsGetFASTAFromDMS
     End Function
 
     Protected Overloads Function ExportMultipleFASTAFiles(
-     ByVal ProteinCollectionNameList As ArrayList,
-     ByVal CreationOptionsString As String,
-     ByVal ExportPath As String,
-     ByVal AlternateAnnotationTypeID As Integer,
-     ByVal PadWithPrimaryAnnotation As Boolean,
-     ByVal DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
-     ByVal OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes) As String
+     ProteinCollectionNameList As ArrayList,
+     CreationOptionsString As String,
+     ExportPath As String,
+     AlternateAnnotationTypeID As Integer,
+     PadWithPrimaryAnnotation As Boolean,
+     DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
+     OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes) As String
 
         Dim CollectionName As String
 
@@ -549,16 +549,16 @@ Public Class clsGetFASTAFromDMS
     End Function
 
     Protected Function CreateLockStream(
-       ByVal ExportPath As String,
-       ByVal LockFileHash As String,
-       ByVal ProteinCollectionListOrLegacyFastaFileName As String) As FileStream
+       ExportPath As String,
+       LockFileHash As String,
+       ProteinCollectionListOrLegacyFastaFileName As String) As FileStream
 
         ' Creates a new lock file
         ' If an existing file is not found, but a lock file was successfully created, then lockStream will be a valid file stream
 
         Dim lockFi As FileInfo
         Dim startTime As DateTime = DateTime.UtcNow
-        Dim intAttemptCount As Integer = 0
+        Dim intAttemptCount = 0
 
         Dim lockStream As FileStream
 
@@ -668,7 +668,7 @@ Public Class clsGetFASTAFromDMS
 
     End Sub
 
-    Protected Sub DeleteFastaIndexFile(ByVal strFilePath As String)
+    Protected Sub DeleteFastaIndexFile(strFilePath As String)
         Try
             File.Delete(strFilePath)
         Catch ex As Exception
@@ -676,7 +676,7 @@ Public Class clsGetFASTAFromDMS
         End Try
     End Sub
 
-    Protected Sub DeleteLockStream(ByVal ExportPath As String, ByVal LockFileHash As String, ByVal lockStream As FileStream)
+    Protected Sub DeleteLockStream(ExportPath As String, LockFileHash As String, lockStream As FileStream)
 
         If Not lockStream Is Nothing Then
             lockStream.Close()
@@ -692,7 +692,7 @@ Public Class clsGetFASTAFromDMS
 
     End Sub
 
-    Protected Function GenerateAndStoreLegacyFileHash(ByVal strFastaFilePath As String) As String
+    Protected Function GenerateAndStoreLegacyFileHash(strFastaFilePath As String) As String
         Dim FileHash As String = String.Empty
 
         ' The database does not have a valid Authentication_Hash values for this .Fasta file; generate one now
@@ -707,7 +707,7 @@ Public Class clsGetFASTAFromDMS
     End Function
 
     Protected Function LookupLegacyFastaFileDetails(
-       ByVal LegacyFASTAFileName As String,
+       LegacyFASTAFileName As String,
        ByRef LegacyStaticFilePathOutput As String,
        ByRef FileHashOutput As String) As Boolean
 
@@ -735,7 +735,7 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
-    Protected Function GetHashFileValidationInfo(ByVal strFastaFilePath As String, ByVal strSHA1 As String) As FileInfo
+    Protected Function GetHashFileValidationInfo(strFastaFilePath As String, strSHA1 As String) As FileInfo
 
         Dim fiFastaFile As FileInfo
         Dim strHashValidationFileName As String
@@ -747,7 +747,7 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
-    Protected Sub UpdateHashValidationFile(ByVal strFastaFilePath As String, ByVal strSHA1 As String)
+    Protected Sub UpdateHashValidationFile(strFastaFilePath As String, strSHA1 As String)
         Dim fiHashValidationFile As FileInfo
         fiHashValidationFile = GetHashFileValidationInfo(strFastaFilePath, strSHA1)
         UpdateHashValidationFile(fiHashValidationFile)
@@ -775,10 +775,10 @@ Public Class clsGetFASTAFromDMS
     ''' <returns>True if the hash values match, or if blnForceRegenerateHash=True</returns>
     ''' <remarks></remarks>
     Protected Function ValidateMatchingHash(
-     ByVal strFastaFilePath As String,
+     strFastaFilePath As String,
      ByRef strExpectedHash As String,
-     ByVal intRetryHoldoffHours As Integer,
-     ByVal blnForceRegenerateHash As Boolean) As Boolean
+     intRetryHoldoffHours As Integer,
+     blnForceRegenerateHash As Boolean) As Boolean
 
         Dim fiFastaFile As FileInfo
         Dim fiHashValidationFile As FileInfo
@@ -827,11 +827,11 @@ Public Class clsGetFASTAFromDMS
     End Function
 
 #Region "Events and Event Handlers"
-    Public Event FileGenerationCompleted(ByVal FullOutputPath As String) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationCompleted
-    Public Event FileGenerationProgress(ByVal statusMsg As String, ByVal fractionDone As Double) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationProgress
-    Public Event FileGenerationStarted(ByVal taskMsg As String) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationStarted
+    Public Event FileGenerationCompleted(FullOutputPath As String) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationCompleted
+    Public Event FileGenerationProgress(statusMsg As String, fractionDone As Double) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationProgress
+    Public Event FileGenerationStarted(taskMsg As String) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationStarted
 
-    Private Sub OnFileGenerationCompleted(ByVal FullOutputPath As String) Handles m_Getter.FileGenerationCompleted
+    Private Sub OnFileGenerationCompleted(FullOutputPath As String) Handles m_Getter.FileGenerationCompleted
         If Me.m_ArchiveCollectionList Is Nothing Then
             Me.m_ArchiveCollectionList = New ArrayList
         End If
@@ -844,7 +844,7 @@ Public Class clsGetFASTAFromDMS
     ''' </summary>
     ''' <param name="FinalOutputPath"></param>
     ''' <remarks></remarks>
-    Private Sub OnTaskCompletion(ByVal FinalOutputPath As String)
+    Private Sub OnTaskCompletion(FinalOutputPath As String)
         RaiseEvent FileGenerationCompleted(FinalOutputPath)
     End Sub
 
@@ -871,15 +871,15 @@ Public Class clsGetFASTAFromDMS
 #End Region
 
 #Region " Pass-Through Functionality "
-    Private Sub OnFileGenerationStarted(ByVal taskMsg As String) Handles m_Getter.FileGenerationStarted
+    Private Sub OnFileGenerationStarted(taskMsg As String) Handles m_Getter.FileGenerationStarted
         RaiseEvent FileGenerationStarted(taskMsg)
     End Sub
 
-    Private Sub OnFileGenerationProgressUpdate(ByVal statusMsg As String, ByVal fractionDone As Double) Handles m_Getter.FileGenerationProgress
+    Private Sub OnFileGenerationProgressUpdate(statusMsg As String, fractionDone As Double) Handles m_Getter.FileGenerationProgress
         RaiseEvent FileGenerationProgress(statusMsg, fractionDone)
     End Sub
 
-    Function GenerateFileAuthenticationHash(ByVal FullFilePath As String) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GenerateFileAuthenticationHash
+    Function GenerateFileAuthenticationHash(FullFilePath As String) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GenerateFileAuthenticationHash
         Return Me.m_Getter.GetFileHash(FullFilePath)
     End Function
 
@@ -887,11 +887,11 @@ Public Class clsGetFASTAFromDMS
         Return Me.m_Getter.GetCollectionNameList
     End Function
 
-    Function GetCollectionsByOrganism(ByVal OrganismID As Integer) As System.Collections.Hashtable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetCollectionsByOrganism
+    Function GetCollectionsByOrganism(OrganismID As Integer) As System.Collections.Hashtable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetCollectionsByOrganism
         Return Me.m_Getter.GetCollectionsByOrganism(OrganismID)
     End Function
 
-    Function GetCollectionsByOrganismTable(ByVal OrganismID As Integer) As System.Data.DataTable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetCollectionsByOrganismTable
+    Function GetCollectionsByOrganismTable(OrganismID As Integer) As System.Data.DataTable Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetCollectionsByOrganismTable
         Return Me.m_Getter.GetCollectionsByOrganismTable(OrganismID)
     End Function
 
@@ -903,24 +903,24 @@ Public Class clsGetFASTAFromDMS
         Return Me.m_Getter.GetOrganismListTable
     End Function
 
-    Overloads Function GetStoredFileAuthenticationHash(ByVal ProteinCollectionID As Integer) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetStoredFileAuthenticationHash
+    Overloads Function GetStoredFileAuthenticationHash(ProteinCollectionID As Integer) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetStoredFileAuthenticationHash
         Return Me.m_Getter.GetStoredHash(ProteinCollectionID)
     End Function
 
-    Overloads Function GetStoredFileAuthenticationHash(ByVal ProteinCollectionName As String) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetStoredFileAuthenticationHash
+    Overloads Function GetStoredFileAuthenticationHash(ProteinCollectionName As String) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetStoredFileAuthenticationHash
         Return Me.m_Getter.GetStoredHash(ProteinCollectionName)
     End Function
 
-    Function GetProteinCollectionID(ByVal ProteinCollectionName As String) As Integer Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetProteinCollectionID
+    Function GetProteinCollectionID(ProteinCollectionName As String) As Integer Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GetProteinCollectionID
         Return Me.m_Getter.FindIDByName(Path.GetFileNameWithoutExtension(ProteinCollectionName))
     End Function
 
-    Protected Function GetProteinCollectionName(ByVal ProteinCollectionID As Integer) As String
+    Protected Function GetProteinCollectionName(ProteinCollectionID As Integer) As String
         Return Me.m_Getter.FindNameByID(ProteinCollectionID)
     End Function
 #End Region
 
-    Protected Function RunSP_AddLegacyFileUploadRequest(ByVal LegacyFilename As String, ByVal AuthenticationHash As String) As Integer
+    Protected Function RunSP_AddLegacyFileUploadRequest(LegacyFilename As String, AuthenticationHash As String) As Integer
 
         Dim sp_Save As SqlClient.SqlCommand
 
@@ -951,13 +951,13 @@ Public Class clsGetFASTAFromDMS
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 
     End Function
 
-    Protected Function GenerateHash(ByVal SourceText As String) As String
+    Protected Function GenerateHash(SourceText As String) As String
         'Create an encoding object to ensure the encoding standard for the source text
         Dim Ue As New System.Text.ASCIIEncoding
         'Retrieve a byte array based on the source text

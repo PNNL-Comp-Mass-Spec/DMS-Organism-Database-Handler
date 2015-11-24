@@ -14,7 +14,7 @@ Public Class frmFilePreview
     End Sub
 
     'Form overrides dispose to clean up the component list.
-    Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
+    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
         If disposing Then
             If Not (components Is Nothing) Then
                 components.Dispose()
@@ -125,14 +125,14 @@ Public Class frmFilePreview
 
 #End Region
 
-    Event RefreshRequest(ByVal lineCount As Integer)
+    Event RefreshRequest(lineCount As Integer)
     Shadows Event FormClosing()
 
     Private validationRegex As System.Text.RegularExpressions.Regex
     Private m_currentLineCount As Integer = 100
 
     WriteOnly Property WindowName() As String
-        Set(ByVal Value As String)
+        Set(Value As String)
             Me.Text = Value
         End Set
     End Property
@@ -143,14 +143,14 @@ Public Class frmFilePreview
         End Get
     End Property
 
-    Private Sub cmdRefresh_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdRefresh.Click
+    Private Sub cmdRefresh_Click(sender As System.Object, e As System.EventArgs) Handles cmdRefresh.Click
         RaiseEvent RefreshRequest(Me.m_currentLineCount)
         If Me.cmdRefresh.Enabled = True Then
             Me.cmdRefresh.Enabled = False
         End If
     End Sub
 
-    Private Sub txtLineCount_Validating(ByVal sender As Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles txtLineCount.Validating
+    Private Sub txtLineCount_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtLineCount.Validating
         Dim value As Integer
         Dim m As System.Text.RegularExpressions.Match
         Dim countText As String = Me.txtLineCount.Text
@@ -170,12 +170,12 @@ Public Class frmFilePreview
 
     End Sub
 
-    Private Sub frmFilePreview_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+    Private Sub frmFilePreview_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         Me.txtLineCount.Text = Me.m_currentLineCount.ToString
         RaiseEvent RefreshRequest(Me.m_currentLineCount)
     End Sub
 
-    Private Sub txtLineCount_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtLineCount.TextChanged
+    Private Sub txtLineCount_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtLineCount.TextChanged
         Dim countText As String = Me.txtLineCount.Text
         If validationRegex.IsMatch(countText) Then
             Me.cmdRefresh.Enabled = True
@@ -184,7 +184,7 @@ Public Class frmFilePreview
         End If
     End Sub
 
-    Private Sub frmFilePreview_Closed(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Closed
+    Private Sub frmFilePreview_Closed(sender As Object, e As System.EventArgs) Handles MyBase.Closed
         RaiseEvent FormClosing()
     End Sub
 End Class

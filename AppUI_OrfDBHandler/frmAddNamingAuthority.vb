@@ -14,7 +14,7 @@ Public Class frmAddNamingAuthority
     End Sub
 
     'Form overrides dispose to clean up the component list.
-    Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
+    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
         If disposing Then
             If Not (components Is Nothing) Then
                 components.Dispose()
@@ -162,7 +162,7 @@ Public Class frmAddNamingAuthority
         Get
             Return Me.m_ShortName
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             Me.m_ShortName = Value
         End Set
     End Property
@@ -171,7 +171,7 @@ Public Class frmAddNamingAuthority
         Get
             Return Me.m_FullName
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             Me.m_FullName = Value
         End Set
     End Property
@@ -180,14 +180,14 @@ Public Class frmAddNamingAuthority
         Get
             Return Me.m_WebAddress
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             Me.m_WebAddress = Value
         End Set
     End Property
 
 #End Region
 
-    Private Sub frmAddNamingAuthority_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+    Private Sub frmAddNamingAuthority_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         If Not Me.m_ShortName Is Nothing Then
             Me.txtAuthName.Text = Me.m_ShortName
         End If
@@ -202,7 +202,7 @@ Public Class frmAddNamingAuthority
 
     End Sub
 
-    Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
+    Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
         Me.m_ShortName = Me.txtAuthName.Text
         Me.m_FullName = Me.txtAuthFullName.Text
         Me.m_WebAddress = Me.txtAuthWeb.Text
@@ -211,14 +211,14 @@ Public Class frmAddNamingAuthority
         Me.Close()
     End Sub
 
-    Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
+    Private Sub cmdCancel_Click(sender As System.Object, e As System.EventArgs) Handles cmdCancel.Click
         Me.DialogResult = DialogResult.Cancel
         Me.Close()
     End Sub
 
 
 
-    Function ValidateWebAddressFormat(ByVal rawAddress As String) As String
+    Function ValidateWebAddressFormat(rawAddress As String) As String
         Dim m As System.Text.RegularExpressions.Match
         Dim r1 As New System.Text.RegularExpressions.Regex("(?:([^:/?#]+):)?(?://([^/?#]*))?([^?#]*)(?:\?([^#]*))?")  'Match with specific page noted
         Dim newaddress As String
@@ -248,7 +248,7 @@ Public Class frmAddNamingAuthority
     End Function
 
 
-    Private Sub txtAuthWeb_Validating(ByVal sender As Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles txtAuthWeb.Validating
+    Private Sub txtAuthWeb_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtAuthWeb.Validating
         Dim txt As TextBox = DirectCast(sender, TextBox)
         Dim tmpAddress As String = Me.ValidateWebAddressFormat(txt.Text)
         txt.Text = tmpAddress

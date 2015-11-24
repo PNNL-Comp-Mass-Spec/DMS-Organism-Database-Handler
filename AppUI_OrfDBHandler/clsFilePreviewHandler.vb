@@ -5,7 +5,7 @@ Public Class clsFilePreviewHandler
     Private m_currentFilePath As String
     Private WithEvents m_frmPreview As frmFilePreview
 
-    Event FormStatus(ByVal visible As Boolean)
+    Event FormStatus(visible As Boolean)
 
     Sub New()
 
@@ -13,16 +13,16 @@ Public Class clsFilePreviewHandler
 
     End Sub
 
-    Private Sub GetProteins( _
-        ByVal filePath As String, _
-        ByVal lineCount As Integer)
+    Private Sub GetProteins(
+        filePath As String,
+        lineCount As Integer)
 
         If Me.m_Loader Is Nothing Then
             Me.m_Loader = New Protein_Importer.FASTAReader
         End If
 
         Me.m_Proteins = Me.m_Loader.GetProteinEntries(filePath, lineCount)
-        
+
         Dim li As ListViewItem
 
         Dim enumProteins = m_Proteins.GetEnumerator()
@@ -39,11 +39,11 @@ Public Class clsFilePreviewHandler
         Me.m_frmPreview.lvwPreview.EndUpdate()
     End Sub
 
-    Private Sub FillPreview(ByVal lineCount As Integer) Handles m_frmPreview.RefreshRequest
+    Private Sub FillPreview(lineCount As Integer) Handles m_frmPreview.RefreshRequest
         Me.GetProteins(Me.m_currentFilePath, lineCount)
     End Sub
 
-    Sub ShowPreview(ByVal filePath As String, ByVal horizPos As Integer, ByVal vertPos As Integer, ByVal height As Integer)
+    Sub ShowPreview(filePath As String, horizPos As Integer, vertPos As Integer, height As Integer)
         Me.m_currentFilePath = filePath
         If Me.m_frmPreview Is Nothing Then
             Me.m_frmPreview = New frmFilePreview

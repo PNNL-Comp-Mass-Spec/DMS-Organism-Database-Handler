@@ -48,13 +48,13 @@ Public Class clsAddAnnotationType
     End Property
 
     WriteOnly Property FormLocation() As System.Drawing.Point
-        Set(ByVal Value As System.Drawing.Point)
+        Set(Value As System.Drawing.Point)
             Me.m_FormLocation = Value
         End Set
     End Property
 
 
-    Sub New(ByVal PSConnectionString As String)
+    Sub New(PSConnectionString As String)
         Me.m_ConnectionString = PSConnectionString
 
         Me.m_AuthAdd = New clsAddNamingAuthority(Me.m_ConnectionString)
@@ -62,7 +62,7 @@ Public Class clsAddAnnotationType
 
     End Sub
 
-    Private Function GetDisplayName(ByVal AuthorityID As Integer, ByVal typeName As String) As String
+    Private Function GetDisplayName(AuthorityID As Integer, typeName As String) As String
         Dim authName As String
         Dim foundrows As DataRow() = Me.m_Authorities.Select("ID = " & AuthorityID)
 
@@ -99,13 +99,14 @@ Public Class clsAddAnnotationType
             Me.m_Example = frmAnn.Example
             Me.m_AuthID = frmAnn.AuthorityID
 
-            annTypeID = Me.m_SPRunner.AddAnnotationType( _
+            annTypeID = Me.m_SPRunner.AddAnnotationType(
                  Me.m_TypeName, Me.m_Description, Me.m_Example, Me.m_AuthID)
 
             If annTypeID < 0 Then
                 authNames = Me.m_Authorities.Select("Authority_ID = " & Me.m_AuthID.ToString)
                 authname = authNames(0).Item("Name").ToString
-                errorResult = System.Windows.Forms.MessageBox.Show("An entry called '" + Me.m_TypeName + "' for '" & authName & "' already exists in the Annotation Types table", _
+                errorResult = System.Windows.Forms.MessageBox.Show(
+                    "An entry called '" + Me.m_TypeName + "' for '" & authName & "' already exists in the Annotation Types table",
                     "Entry already exists!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2)
                 Me.m_EntryExists = True
                 annTypeID = -annTypeID

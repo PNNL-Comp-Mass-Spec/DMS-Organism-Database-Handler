@@ -167,90 +167,55 @@ Public Class GeneOntologyListOBO
     End Sub
 
     Private Sub SetupRegexes()
-        Me.r_entryHeader = New Regex( _
-            "^\[Term\]$", _
-            RegexOptions.IgnoreCase _
-            Or RegexOptions.CultureInvariant _
-            Or RegexOptions.IgnorePatternWhitespace _
-            Or RegexOptions.Compiled _
+
+        Dim reOptions = RegexOptions.IgnoreCase Or RegexOptions.CultureInvariant Or RegexOptions.IgnorePatternWhitespace Or RegexOptions.Compiled
+
+        Me.r_entryHeader = New Regex(
+            "^\[Term\]$",
+            reOptions)
+        Me.r_IDLine = New Regex(
+            "^(?<tag>id):\s+(?<value>.+)$",
+            reOptions
             )
-        Me.r_IDLine = New Regex( _
-            "^(?<tag>id):\s+(?<value>.+)$", _
-            RegexOptions.IgnoreCase _
-            Or RegexOptions.CultureInvariant _
-            Or RegexOptions.IgnorePatternWhitespace _
-            Or RegexOptions.Compiled _
+        Me.r_NameLine = New Regex(
+            "^(?<tag>name):\s+(?<value>.+)$",
+            reOptions
             )
-        Me.r_NameLine = New Regex( _
-            "^(?<tag>name):\s+(?<value>.+)$", _
-            RegexOptions.IgnoreCase _
-            Or RegexOptions.CultureInvariant _
-            Or RegexOptions.IgnorePatternWhitespace _
-            Or RegexOptions.Compiled _
+        Me.r_NameSpaceLine = New Regex(
+            "^(?<tag>namespace):\s+(?<value>.+)$",
+            reOptions
             )
-        Me.r_NameSpaceLine = New Regex( _
-            "^(?<tag>namespace):\s+(?<value>.+)$", _
-            RegexOptions.IgnoreCase _
-            Or RegexOptions.CultureInvariant _
-            Or RegexOptions.IgnorePatternWhitespace _
-            Or RegexOptions.Compiled _
+        Me.r_DefinitionLine = New Regex(
+            "^(?<tag>def):\s+\""+(?<value>.*)\""\s*\[*(?<xref>.*)\]*\s*",
+            reOptions
             )
-        Me.r_DefinitionLine = New Regex( _
-            "^(?<tag>def):\s+\""+(?<value>.*)\""\s*\[*(?<xref>.*)\]*\s*", _
-            RegexOptions.IgnoreCase _
-            Or RegexOptions.CultureInvariant _
-            Or RegexOptions.IgnorePatternWhitespace _
-            Or RegexOptions.Compiled _
+        Me.r_CommentLine = New Regex(
+            "^(?<tag>comment):\s+(?<value>.+)$",
+           reOptions
             )
-        Me.r_CommentLine = New Regex( _
-            "^(?<tag>comment):\s+(?<value>.+)$", _
-            RegexOptions.IgnoreCase _
-            Or RegexOptions.CultureInvariant _
-            Or RegexOptions.IgnorePatternWhitespace _
-            Or RegexOptions.Compiled _
+        Me.r_IsObsoleteLine = New Regex(
+            "^(?<tag>is_obsolete):\s+(?<value>true|false)$",
+            reOptions
             )
-        Me.r_IsObsoleteLine = New Regex( _
-            "^(?<tag>is_obsolete):\s+(?<value>true|false)$", _
-            RegexOptions.IgnoreCase _
-            Or RegexOptions.CultureInvariant _
-            Or RegexOptions.IgnorePatternWhitespace _
-            Or RegexOptions.Compiled _
+        Me.r_ExactSynonymLine = New Regex(
+            "^(?<tag>exact_synonym):\s+\""+(?<value>.*)\""\s*\[(?<xref>.*)\]S*$",
+            reOptions
             )
-        Me.r_ExactSynonymLine = New Regex( _
-            "^(?<tag>exact_synonym):\s+\""+(?<value>.*)\""\s*\[(?<xref>.*" _
-            + ")\]S*$", _
-            RegexOptions.IgnoreCase _
-            Or RegexOptions.CultureInvariant _
-            Or RegexOptions.IgnorePatternWhitespace _
-            Or RegexOptions.Compiled _
+        Me.r_IsALine = New Regex(
+            "^(?<tag>is_a):\s+(?<value>\S+)\s*\!.*$",
+            reOptions
             )
-        Me.r_IsALine = New Regex( _
-            "^(?<tag>is_a):\s+(?<value>\S+)\s*\!.*$", _
-            RegexOptions.IgnoreCase _
-            Or RegexOptions.CultureInvariant _
-            Or RegexOptions.IgnorePatternWhitespace _
-            Or RegexOptions.Compiled _
+        Me.r_RelationshipLine = New Regex(
+            "^(?<tag>relationship):\s+part_of\s+(?<value>\S+)\s*\!.*$",
+            reOptions
             )
-        Me.r_RelationshipLine = New Regex( _
-            "^(?<tag>relationship):\s+part_of\s+(?<value>\S+)\s*\!.*$", _
-            RegexOptions.IgnoreCase _
-            Or RegexOptions.CultureInvariant _
-            Or RegexOptions.IgnorePatternWhitespace _
-            Or RegexOptions.Compiled _
+        Me.r_XRefAnalogLine = New Regex(
+            "^(?<tag>xref_analog):\s+(?<value>.+)$",
+            reOptions
             )
-        Me.r_XRefAnalogLine = New Regex( _
-            "^(?<tag>xref_analog):\s+(?<value>.+)$", _
-            RegexOptions.IgnoreCase _
-            Or RegexOptions.CultureInvariant _
-            Or RegexOptions.IgnorePatternWhitespace _
-            Or RegexOptions.Compiled _
-            )
-        Me.r_SubsetLine = New Regex( _
-            "^(?<tag>subset):\s+(?<value>.+)$", _
-            RegexOptions.IgnoreCase _
-            Or RegexOptions.CultureInvariant _
-            Or RegexOptions.IgnorePatternWhitespace _
-            Or RegexOptions.Compiled _
+        Me.r_SubsetLine = New Regex(
+            "^(?<tag>subset):\s+(?<value>.+)$",
+            reOptions
             )
     End Sub
 

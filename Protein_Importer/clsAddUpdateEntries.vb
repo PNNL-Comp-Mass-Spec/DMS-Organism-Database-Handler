@@ -5,7 +5,7 @@ Public Interface IAddUpdateEntries
     Sub Setup()
 
     Sub CompareProteinID(
-        ByRef proteinCollection As Protein_Storage.IProteinStorage,
+        proteinCollection As Protein_Storage.IProteinStorage,
         selectedProteinList As List(Of String))
 
     Function GetProteinCollectionID(FilePath As String) As Integer
@@ -81,6 +81,7 @@ Public Interface IAddUpdateEntries
     Function MakeNewProteinCollection(
         FileName As String,
         Description As String,
+        collectionSource As String,
         CollectionType As CollectionTypes,
         AnnotationTypeID As Integer,
         NumProteins As Integer,
@@ -90,7 +91,8 @@ Public Interface IAddUpdateEntries
         ProteinCollectionID As Integer,
         PassPhrase As String) As Integer
 
-    Function GetTotalResidueCount(ByRef proteinCollection As Protein_Storage.IProteinStorage,
+    Function GetTotalResidueCount(
+        proteinCollection As Protein_Storage.IProteinStorage,
         selectedProteinList As List(Of String)) As Integer
 
     Function UpdateProteinCollectionState(
@@ -217,7 +219,7 @@ Public Class clsAddUpdateEntries
     ''' <param name="selectedProteinList"></param>
     ''' <remarks></remarks>
     Protected Sub CompareProteinID(
-        ByRef pc As Protein_Storage.IProteinStorage,
+        pc As Protein_Storage.IProteinStorage,
         selectedProteinList As List(Of String)) Implements IAddUpdateEntries.CompareProteinID
 
         Dim tmpPC As Protein_Storage.IProteinStorageEntry
@@ -328,8 +330,9 @@ Public Class clsAddUpdateEntries
 
     End Sub
 
-    Protected Function GetTotalResidueCount(ByRef proteinCollection As Protein_Storage.IProteinStorage,
-    selectedProteinList As List(Of String)) As Integer Implements IAddUpdateEntries.GetTotalResidueCount
+    Protected Function GetTotalResidueCount(
+      proteinCollection As Protein_Storage.IProteinStorage,
+      selectedProteinList As List(Of String)) As Integer Implements IAddUpdateEntries.GetTotalResidueCount
         Dim s As String
         Dim totalLength As Integer
         Dim tmpPC As Protein_Storage.IProteinStorageEntry
@@ -420,11 +423,11 @@ Public Class clsAddUpdateEntries
         Return tmpAnnTypeID
 
     End Function
-
-
+    
     Protected Function MakeNewProteinCollection(
         FileName As String,
         Description As String,
+        collectionSource As String,
         CollectionType As IAddUpdateEntries.CollectionTypes,
         AnnotationTypeID As Integer,
         NumProteins As Integer,
@@ -433,7 +436,7 @@ Public Class clsAddUpdateEntries
         Dim tmpProteinCollectionID As Integer
 
         tmpProteinCollectionID = Me.RunSP_AddUpdateProteinCollection(
-            FileName, Description, CollectionType, IAddUpdateEntries.CollectionStates.NewEntry,
+            FileName, Description, collectionSource, CollectionType, IAddUpdateEntries.CollectionStates.NewEntry,
             AnnotationTypeID, NumProteins, NumResidues, IAddUpdateEntries.SPModes.add)
 
         Return tmpProteinCollectionID
@@ -775,6 +778,7 @@ Public Class clsAddUpdateEntries
     Protected Function RunSP_AddUpdateProteinCollection(
         FileName As String,
         Description As String,
+        collectionSource As String,
         collectionType As IAddUpdateEntries.CollectionTypes,
         collectionState As IAddUpdateEntries.CollectionStates,
         annotationTypeID As Integer,
@@ -803,6 +807,10 @@ Public Class clsAddUpdateEntries
         myParam = sp_Save.Parameters.Add("@Description", SqlDbType.VarChar, 900)
         myParam.Direction = ParameterDirection.Input
         myParam.Value = Description
+
+        myParam = sp_Save.Parameters.Add("@collectionSource", SqlDbType.VarChar, 900)
+        myParam.Direction = ParameterDirection.Input
+        myParam.Value = collectionSource
 
         myParam = sp_Save.Parameters.Add("@collection_type", SqlDbType.Int)
         myParam.Direction = ParameterDirection.Input
@@ -859,7 +867,7 @@ Public Class clsAddUpdateEntries
         Return ret
 
     End Function
-    
+
     Protected Function RunSP_AddProteinCollectionMember(
       Reference_ID As Integer, Protein_ID As Integer,
       SortingIndex As Integer, Protein_Collection_ID As Integer) As Integer
@@ -875,7 +883,7 @@ Public Class clsAddUpdateEntries
         Return Me.RunSP_AddUpdateProteinCollectionMember(Reference_ID, Protein_ID, SortingIndex, Protein_Collection_ID, "Update")
 
     End Function
-    
+
     Protected Function RunSP_AddUpdateProteinCollectionMember(
       Reference_ID As Integer, Protein_ID As Integer,
       SortingIndex As Integer, Protein_Collection_ID As Integer,

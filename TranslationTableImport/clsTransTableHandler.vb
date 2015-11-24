@@ -1,5 +1,5 @@
 Public Interface ITransTableImport
-    Function GetAllTranslationTableEntries(ByVal ASN1_FilePath As String) As DataTable
+    Function GetAllTranslationTableEntries(ASN1_FilePath As String) As DataTable
 
 End Interface
 
@@ -36,18 +36,18 @@ Public Class clsTransTableHandler
     Const EntriesTableName As String = "T_DNA_Translation_Table_Members"
     Const IDTableName As String = "T_DNA_Translation_Tables"
 
-    Public Sub New(ByVal PIS_ConnectionString As String)
+    Public Sub New(PIS_ConnectionString As String)
         Me.m_ConnectionString = PIS_ConnectionString
     End Sub
 
-    Friend Function GetAllTranslationTableEntries(ByVal FilePath As String) As DataTable Implements ITransTableImport.GetAllTranslationTableEntries
-		Me.ScanFileForEntries(FilePath)
+    Friend Function GetAllTranslationTableEntries(FilePath As String) As DataTable Implements ITransTableImport.GetAllTranslationTableEntries
+        Me.ScanFileForEntries(FilePath)
 
-		' Not implemented
-		Return New DataTable()
+        ' Not implemented
+        Return New DataTable()
     End Function
 
-    Private Sub ScanFileForEntries(ByVal filePath As String)
+    Private Sub ScanFileForEntries(filePath As String)
         'Look through a given ASN.1 file and scan for translation table entries
         Dim fi As System.IO.FileInfo
         Dim tr As System.IO.TextReader
@@ -133,7 +133,7 @@ Public Class clsTransTableHandler
     End Sub
 
 
-    Private Sub ProcessTranslationEntry(ByVal rawEntryCollection As System.Collections.Specialized.StringCollection)
+    Private Sub ProcessTranslationEntry(rawEntryCollection As System.Collections.Specialized.StringCollection)
         Dim id As Integer
         Dim AAList As String = String.Empty
         Dim StartList As String = String.Empty
@@ -201,7 +201,7 @@ Public Class clsTransTableHandler
 
     End Sub
 
-    Private Function ProcessBaseString(ByVal rawBaseString As String) As String
+    Private Function ProcessBaseString(rawBaseString As String) As String
         Dim tmpString As String
         tmpString = rawBaseString.TrimStart
 
@@ -210,23 +210,22 @@ Public Class clsTransTableHandler
         Return tmpString
 
     End Function
-
-
-    Private Function SplitCodonEntries( _
-        ByVal AAString As String, _
-        ByVal StartString As String, _
-        ByVal Base1List As String, _
-        ByVal Base2List As String, _
-        ByVal Base3List As String, _
-        ByVal NameList As System.Collections.Specialized.StringCollection, _
-        ByVal ID As Integer) As Boolean
+    
+    Private Function SplitCodonEntries(
+        AAString As String,
+        StartString As String,
+        Base1List As String,
+        Base2List As String,
+        Base3List As String,
+        NameList As System.Collections.Specialized.StringCollection,
+        ID As Integer) As Boolean
 
         'Check for length consistency
         Dim baseLength As Integer = AAString.Length
 
-        If baseLength <> StartString.Length Or _
-            baseLength <> Base1List.Length Or _
-            baseLength <> Base2List.Length Or _
+        If baseLength <> StartString.Length Or
+            baseLength <> Base1List.Length Or
+            baseLength <> Base2List.Length Or
             baseLength <> Base3List.Length Then
             Return False
         End If

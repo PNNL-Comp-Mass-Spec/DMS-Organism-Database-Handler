@@ -387,7 +387,7 @@ Public Class clsImportHandler
 
     End Function
 
-    Protected Function LoadProteinInfo(ByVal proteinCollectionMembers() As DataRow) As Protein_Storage.IProteinStorage
+    Protected Function LoadProteinInfo(proteinCollectionMembers() As DataRow) As Protein_Storage.IProteinStorage
         Dim tmpPS = New Protein_Storage.clsProteinStorageDMS("")
         Dim proteinCount As Integer
         Dim triggerCount As Integer
@@ -402,7 +402,7 @@ Public Class clsImportHandler
         Else
             triggerCount = 1
         End If
-        
+
         For Each dr As DataRow In proteinCollectionMembers
             Dim ce = New Protein_Storage.clsProteinStorageEntry(
                 dr.Item("Name").ToString,

@@ -6,16 +6,16 @@ Public Class clsGetFASTAFromDMSScrambled
     Private m_RndNumGen As Random
     Private m_RandomSeed As Integer
 
-    Public Sub New( _
-        ByVal ProteinStorageConnectionString As String, _
-        ByVal DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes)
+    Public Sub New(
+        ProteinStorageConnectionString As String,
+        DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes)
 
         MyBase.New(ProteinStorageConnectionString, DatabaseFormatType)
         'Me.m_Naming_Suffix = "_scrambled_seed_" + RandomSeed.ToString
         'Me.m_RndNumGen = New Random(RandomSeed)
     End Sub
 
-    Overrides Function SequenceExtender(ByVal originalSequence As String, ByVal collectionCount As Integer) As String
+    Overrides Function SequenceExtender(originalSequence As String, collectionCount As Integer) As String
 
         Dim sb As New System.Text.StringBuilder(originalSequence.Length)
         Dim sequence As String = originalSequence
@@ -34,11 +34,11 @@ Public Class clsGetFASTAFromDMSScrambled
 
         'While al.Count > 0
         '    index = DirectCast(al.Item(Me.m_RndNumGen.Next(0, al.Count - 1)), Int32)
-        '    Debug.WriteLine( _
-        '        "count = " + al.Count.ToString + _
-        '        "; maxRnd = " + (al.Count - 1).ToString + _
-        '        "; index = " + index.ToString + _
-        '        "; al.item = " + al.Item(index).ToString + _
+        '    Debug.WriteLine(
+        '        "count = " + al.Count.ToString +
+        '        "; maxRnd = " + (al.Count - 1).ToString +
+        '        "; index = " + index.ToString +
+        '        "; al.item = " + al.Item(index).ToString +
         '        "; residue = " + origArray(DirectCast(al.Item(index), Int32)))
         '    sb.Append(origArray(DirectCast(al.Item(index), Int32)))
 
@@ -75,7 +75,7 @@ Public Class clsGetFASTAFromDMSScrambled
     End Function
 
 
-    Overrides Function ReferenceExtender(ByVal originalReference As String) As String
+    Overrides Function ReferenceExtender(originalReference As String) As String
         Return "Scrambled_" + originalReference
     End Function
 End Class

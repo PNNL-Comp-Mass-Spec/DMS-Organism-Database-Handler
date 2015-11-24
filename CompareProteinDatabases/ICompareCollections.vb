@@ -1,9 +1,9 @@
 Public Interface ICompareCollections
 
-    Function CompareCollections( _
-        ByRef Collection1 As Protein_Storage.clsProteinStorage, _
-        ByRef Collection2 As Protein_Storage.clsProteinStorage, _
-        ByVal ComparisonType As CompTypes) As DataTable
+    Function CompareCollections(
+        ByRef Collection1 As Protein_Storage.clsProteinStorage,
+        ByRef Collection2 As Protein_Storage.clsProteinStorage,
+        ComparisonType As CompTypes) As DataTable
 
     Enum CompTypes
         ExactStringMatch

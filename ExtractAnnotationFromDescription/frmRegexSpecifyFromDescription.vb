@@ -14,7 +14,7 @@ Public Class frmRegexSpecifyFromDescription
     End Sub
 
     'Form overrides dispose to clean up the component list.
-    Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
+    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
         If disposing Then
             If Not (components Is Nothing) Then
                 components.Dispose()
@@ -339,23 +339,23 @@ Public Class frmRegexSpecifyFromDescription
         Description
     End Enum
 
-    Private Sub frmRegexSpecify_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+    Private Sub frmRegexSpecify_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
 
     End Sub
 
-    Private Sub lblNewNames_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lblNewNames.Click
+    Private Sub lblNewNames_Click(sender As System.Object, e As System.EventArgs) Handles lblNewNames.Click
 
     End Sub
 
-    Private Sub lbxNewNames_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lvwNewNames.SelectedIndexChanged
+    Private Sub lbxNewNames_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lvwNewNames.SelectedIndexChanged
 
     End Sub
 
-    Private Sub cmdMatch_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMatch.Click
+    Private Sub cmdMatch_Click(sender As System.Object, e As System.EventArgs) Handles cmdMatch.Click
 
     End Sub
 
-    Private Sub rdbSourceSelect_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles rdbNameSelect.CheckedChanged, rdbDescriptionSelect.CheckedChanged
+    Private Sub rdbSourceSelect_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles rdbNameSelect.CheckedChanged, rdbDescriptionSelect.CheckedChanged
 		Dim rdb As System.Windows.Forms.RadioButton = CType(sender, System.Windows.Forms.RadioButton)
 
 		If rdb.Checked = True Then

@@ -7,43 +7,43 @@ Public Class clsGetFASTAFromDMSDecoy
     'Private m_FwdGenerator As clsGetFASTAFromDMSForward
     Protected m_RevGenerator As clsGetFASTAFromDMSReversed
 
-    Public Sub New( _
-        ByVal ProteinStorageConnectionString As String, _
-        ByVal DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes)
+    Public Sub New(
+        ProteinStorageConnectionString As String,
+        DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes)
 
         MyBase.New(ProteinStorageConnectionString, DatabaseFormatType)
-        Me.m_RevGenerator = New clsGetFASTAFromDMSReversed( _
+        Me.m_RevGenerator = New clsGetFASTAFromDMSReversed(
             ProteinStorageConnectionString, DatabaseFormatType)
         'Me.m_Naming_Suffix = "_reversed"
     End Sub
 
-    Overloads Overrides Function ExportFASTAFile( _
-        ByVal ProteinCollectionNameList As ArrayList, _
-        ByVal ExportPath As String, _
-        ByVal AlternateAuthorityID As Integer, _
-        ByVal PadWithPrimaryAnnotation As Boolean) As String
+    Overloads Overrides Function ExportFASTAFile(
+        ProteinCollectionNameList As ArrayList,
+        ExportPath As String,
+        AlternateAuthorityID As Integer,
+        PadWithPrimaryAnnotation As Boolean) As String
 
         Dim fwdFilePath As String
         Dim revFilePath As String
 
         Dim fwdHash As String
-        fwdHash = MyBase.ExportFASTAFile(ProteinCollectionNameList, _
+        fwdHash = MyBase.ExportFASTAFile(ProteinCollectionNameList,
             ExportPath, AlternateAuthorityID, PadWithPrimaryAnnotation)
 
         fwdFilePath = Me.FullOutputPath
 
         Dim revHash As String
 
-        revHash = Me.m_RevGenerator.ExportFASTAFile(ProteinCollectionNameList, _
+        revHash = Me.m_RevGenerator.ExportFASTAFile(ProteinCollectionNameList,
             ExportPath, AlternateAuthorityID, PadWithPrimaryAnnotation)
 
         revFilePath = Me.m_RevGenerator.FullOutputPath
 
-        Dim fwdFI As System.IO.FileInfo = New System.IO.FileInfo(fwdFilePath)
+        Dim fwdFI = New System.IO.FileInfo(fwdFilePath)
 
         Dim appendWriter As System.IO.TextWriter = fwdFI.AppendText
 
-        Dim revFI As System.IO.FileInfo = New System.IO.FileInfo(revFilePath)
+        Dim revFI = New System.IO.FileInfo(revFilePath)
 
         Dim revReader As System.IO.TextReader = revFI.OpenText
 

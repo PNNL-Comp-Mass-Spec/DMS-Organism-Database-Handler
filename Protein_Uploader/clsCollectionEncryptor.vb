@@ -2,11 +2,11 @@ Friend Class clsCollectionEncryptor
 
     Protected m_RijndaelEncryptor As Protein_Exporter.clsRijndaelEncryptionHandler
     Shared m_TableGrabber As TableManipulationBase.IGetSQLData
-    Event EncryptionStart(ByVal taskMsg As String)
-    Event EncryptionProgress(ByVal statusMsg As String, ByVal fractionDone As Double)
+    Event EncryptionStart(taskMsg As String)
+    Event EncryptionProgress(statusMsg As String, fractionDone As Double)
     Event EncryptionComplete()
 
-    Sub New(ByVal PassPhrase As String, ByVal PSConnectionString As String)
+    Sub New(PassPhrase As String, PSConnectionString As String)
 
         Me.m_RijndaelEncryptor = New Protein_Exporter.clsRijndaelEncryptionHandler(PassPhrase)
 
@@ -21,16 +21,16 @@ Friend Class clsCollectionEncryptor
         Dim e = StorageCollection.GetEnumerator
 
         Me.OnEncryptionStart("Encrypting Sequences")
-        Dim counter As Integer = 0
+        Dim counter = 0
         Dim counterMax As Integer = StorageCollection.ProteinCount
-		Dim EventTriggerThresh As Integer
+        Dim EventTriggerThresh As Integer
 
-		If counterMax <= 50 Then
-			EventTriggerThresh = 1
-		Else
-			EventTriggerThresh = CInt(counterMax / 50)
-		End If
-        
+        If counterMax <= 50 Then
+            EventTriggerThresh = 1
+        Else
+            EventTriggerThresh = CInt(counterMax / 50)
+        End If
+
         While e.MoveNext()
             If counter Mod EventTriggerThresh = 0 Then
                 Me.OnEncryptionProgressUpdate(CDbl(counter / counterMax))
@@ -49,11 +49,11 @@ Friend Class clsCollectionEncryptor
 
     End Sub
 
-    Private Sub OnEncryptionStart(ByVal taskMsg As String)
+    Private Sub OnEncryptionStart(taskMsg As String)
         RaiseEvent EncryptionStart(taskMsg)
     End Sub
 
-    Private Sub OnEncryptionProgressUpdate(ByVal fractionDone As Double)
+    Private Sub OnEncryptionProgressUpdate(fractionDone As Double)
         RaiseEvent EncryptionProgress("", fractionDone)
     End Sub
 

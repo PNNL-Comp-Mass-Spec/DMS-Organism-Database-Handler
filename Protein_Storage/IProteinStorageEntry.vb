@@ -24,8 +24,8 @@ Public Interface IProteinStorageEntry
     Property IsEncrypted() As Boolean
     Property SortingIndex() As Integer
 
-    Sub AddXRef(ByVal newReference As String)
-    Sub SetReferenceName(ByVal NewName As String)
+    Sub AddXRef(newReference As String)
+    Sub SetReferenceName(NewName As String)
 
 
 End Interface

@@ -62,30 +62,30 @@ Public Class clsRijndaelEncryptionHandler
     Private m_saltValueBytes As Byte()
     Private m_initVectorBytes As Byte()
 
-    Sub New(ByVal passPhrase As String)
+    Sub New(passPhrase As String)
         Me.m_passPhrase = passPhrase
 
         ' Convert strings into byte arrays.
         ' Let us assume that strings only contain ASCII codes.
         ' If strings include Unicode characters, use Unicode, UTF7, or UTF8 
         ' encoding.
-		Me.m_initVectorBytes = Encoding.ASCII.GetBytes(INIT_VECTOR)
+        Me.m_initVectorBytes = Encoding.ASCII.GetBytes(INIT_VECTOR)
 
-		Me.m_saltValueBytes = Encoding.ASCII.GetBytes(SALT_VALUE)
+        Me.m_saltValueBytes = Encoding.ASCII.GetBytes(SALT_VALUE)
 
         ' First, we must create a password, from which the key will be derived.
         ' This password will be generated from the specified passphrase and 
         ' salt value. The password will be created using the specified hash 
         ' algorithm. Password creation can be done in several iterations.
-		Me.m_Password = New Rfc2898DeriveBytes(passPhrase, Me.m_saltValueBytes, NUM_PW_ITERATIONS)
-		'Old: Me.m_Password = New PasswordDeriveBytes(passPhrase, Me.m_saltValueBytes, HASH_ALGORITHM, NUM_PW_ITERATIONS)
+        Me.m_Password = New Rfc2898DeriveBytes(passPhrase, Me.m_saltValueBytes, NUM_PW_ITERATIONS)
+        'Old: Me.m_Password = New PasswordDeriveBytes(passPhrase, Me.m_saltValueBytes, HASH_ALGORITHM, NUM_PW_ITERATIONS)
 
         ' Use the password to generate pseudo-random bytes for the encryption
         ' key. Specify the size of the key in bytes (instead of bits).
-		Me.m_KeyBytes = Me.m_Password.GetBytes(CInt(KEY_SIZE / 8))
-		'Old: Me.m_KeyBytes = Me.m_Password.GetBytes(CInt(KEY_SIZE / 8))
+        Me.m_KeyBytes = Me.m_Password.GetBytes(CInt(KEY_SIZE / 8))
+        'Old: Me.m_KeyBytes = Me.m_Password.GetBytes(CInt(KEY_SIZE / 8))
 
-		' Create uninitialized Rijndael encryption object.
+        ' Create uninitialized Rijndael encryption object.
         Me.m_SymmetricKey = New RijndaelManaged
 
         ' It is reasonable to set encryption mode to Cipher Block Chaining
@@ -101,12 +101,12 @@ Public Class clsRijndaelEncryptionHandler
 
     End Sub
 
-	' Not implemented
-	'Public Function GetHashedPassword() As String
-	'    'return me.m_SymmetricKey.
-	'End Function
+    ' Not implemented
+    'Public Function GetHashedPassword() As String
+    '    'return me.m_SymmetricKey.
+    'End Function
 
-    Public Function Encrypt(ByVal plainText As String) As String
+    Public Function Encrypt(plainText As String) As String
 
         ' Convert our plaintext into a byte array.
         ' Let us assume that plaintext contains UTF8-encoded characters.
@@ -119,8 +119,8 @@ Public Class clsRijndaelEncryptionHandler
 
         ' Define cryptographic stream (always use Write mode for encryption).
         Dim cryptoStream As CryptoStream
-        cryptoStream = New CryptoStream(memoryStream, _
-                                        Me.m_Encryptor, _
+        cryptoStream = New CryptoStream(memoryStream,
+                                        Me.m_Encryptor,
                                         CryptoStreamMode.Write)
         ' Start encrypting.
         cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length)
@@ -144,7 +144,7 @@ Public Class clsRijndaelEncryptionHandler
         Return cipherText
     End Function
 
-    Public Function MakeArbitraryHash(ByVal Sourcetext As String) As String
+    Public Function MakeArbitraryHash(Sourcetext As String) As String
         If Me.m_Hashgen Is Nothing Then
             Me.m_Hashgen = New SHA1Managed
         End If
@@ -204,7 +204,7 @@ Public Class clsRijndaelEncryptionHandler
     ' ciphertext.
     ' </remarks>
 
-    Public Function Decrypt(ByVal cipherText As String) As String
+    Public Function Decrypt(cipherText As String) As String
 
         ' Convert strings defining encryption key characteristics into byte
         ' arrays. Let us assume that strings only contain ASCII codes.
@@ -226,8 +226,8 @@ Public Class clsRijndaelEncryptionHandler
 
         ' Define memory stream which will be used to hold encrypted data.
         Dim cryptoStream As CryptoStream
-        cryptoStream = New CryptoStream(memoryStream, _
-                                        Me.m_Decryptor, _
+        cryptoStream = New CryptoStream(memoryStream,
+                                        Me.m_Decryptor,
                                         CryptoStreamMode.Read)
 
         ' Since at this point we don't know what the size of decrypted data
@@ -238,8 +238,8 @@ Public Class clsRijndaelEncryptionHandler
 
         ' Start decrypting.
         Dim decryptedByteCount As Integer
-        decryptedByteCount = cryptoStream.Read(plainTextBytes, _
-                                               0, _
+        decryptedByteCount = cryptoStream.Read(plainTextBytes,
+                                               0,
                                                plainTextBytes.Length)
 
         ' Close both streams.
@@ -249,8 +249,8 @@ Public Class clsRijndaelEncryptionHandler
         ' Convert decrypted data into a string. 
         ' Let us assume that the original plaintext string was UTF8-encoded.
         Dim plainText As String
-        plainText = Encoding.UTF8.GetString(plainTextBytes, _
-                                            0, _
+        plainText = Encoding.UTF8.GetString(plainTextBytes,
+                                            0,
                                             decryptedByteCount)
 
         ' Return decrypted string.
@@ -261,9 +261,9 @@ Public Class clsRijndaelEncryptionHandler
 
         Private Shared hexDigits As Char() = {"0"c, "1"c, "2"c, "3"c, "4"c, "5"c, "6"c, "7"c, "8"c, "9"c, "A"c, "B"c, "C"c, "D"c, "E"c, "F"c}
 
-        Public Shared Function ToHexString(ByVal bytes() As Byte) As String
+        Public Shared Function ToHexString(bytes() As Byte) As String
 
-            Dim hexStr As String = ""
+            Dim hexStr = ""
             Dim i As Integer
 
             Dim sb As New System.Text.StringBuilder

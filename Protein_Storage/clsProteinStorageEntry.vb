@@ -4,15 +4,15 @@ Public Class clsProteinStorageEntry
     Implements IProteinStorageEntry
 
     Public Sub New(
-        ByVal Reference As String,
-        ByVal Description As String,
-        ByVal Sequence As String,
-        ByVal Length As Integer,
-        ByVal MonoisotopicMass As Double,
-        ByVal AverageMass As Double,
-        ByVal MolecularFormula As String,
-        ByVal AuthenticationHash As String,
-        ByVal SortingIndex As Integer)
+        Reference As String,
+        Description As String,
+        Sequence As String,
+        Length As Integer,
+        MonoisotopicMass As Double,
+        AverageMass As Double,
+        MolecularFormula As String,
+        AuthenticationHash As String,
+        SortingIndex As Integer)
 
         If String.IsNullOrWhiteSpace(Reference) Then
             Throw New Exception("Reference name cannot be empty")
@@ -61,7 +61,7 @@ Public Class clsProteinStorageEntry
         Get
             Return Me.m_AlternateReference
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             If Value.Length > 0 Then
                 Me.m_AlternateReference = Value
             Else
@@ -86,7 +86,7 @@ Public Class clsProteinStorageEntry
         Get
             Return Me.m_Sequence
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             Me.m_Sequence = Value
         End Set
     End Property
@@ -95,7 +95,7 @@ Public Class clsProteinStorageEntry
         Get
             Return Me.m_IsEncrypted
         End Get
-        Set(ByVal Value As Boolean)
+        Set(Value As Boolean)
             Me.m_IsEncrypted = Value
         End Set
     End Property
@@ -128,7 +128,7 @@ Public Class clsProteinStorageEntry
         Get
             Return Me.m_AuthHash
         End Get
-        Set(ByVal value As String)
+        Set(value As String)
             Me.m_AuthHash = value
         End Set
     End Property
@@ -137,7 +137,7 @@ Public Class clsProteinStorageEntry
         Get
             Return Me.m_Protein_ID
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             Me.m_Protein_ID = Value
         End Set
     End Property
@@ -146,7 +146,7 @@ Public Class clsProteinStorageEntry
         Get
             Return Me.m_Reference_ID
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             Me.m_Reference_ID = Value
         End Set
     End Property
@@ -155,7 +155,7 @@ Public Class clsProteinStorageEntry
         Get
             Return Me.m_Member_ID
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             Me.m_Member_ID = Value
         End Set
     End Property
@@ -164,7 +164,7 @@ Public Class clsProteinStorageEntry
         Get
             Return Me.m_Authority_ID
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             Me.m_Authority_ID = Value
         End Set
     End Property
@@ -173,7 +173,7 @@ Public Class clsProteinStorageEntry
         Get
             Return Me.m_SortCount
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             Me.m_SortCount = Value
         End Set
     End Property
@@ -184,14 +184,14 @@ Public Class clsProteinStorageEntry
         End Get
     End Property
 
-    Protected Sub AddXRef(ByVal newReference As String) Implements IProteinStorageEntry.AddXRef
+    Protected Sub AddXRef(newReference As String) Implements IProteinStorageEntry.AddXRef
         If Me.m_XRefList Is Nothing Then
             Me.m_XRefList = New List(Of String)
         End If
         Me.m_XRefList.Add(newReference)
     End Sub
 
-    Protected Sub ChangeReferenceName(ByVal newName As String) Implements IProteinStorageEntry.SetReferenceName
+    Protected Sub ChangeReferenceName(newName As String) Implements IProteinStorageEntry.SetReferenceName
         If String.IsNullOrWhiteSpace(newName) Then
             Throw New Exception("New protein name cannot be empty")
         End If

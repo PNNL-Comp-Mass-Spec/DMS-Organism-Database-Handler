@@ -12,9 +12,9 @@ Public Class frmBatchUploadFromFileList
 #Region " Windows Form Designer generated code "
 
     Public Sub New( _
-        ByVal AuthorityList As DataTable, _
-        ByVal AnnotationTypeList As DataTable, _
-        ByVal OrganismList As DataTable)
+        AuthorityList As DataTable, _
+        AnnotationTypeList As DataTable, _
+        OrganismList As DataTable)
 
         MyBase.New()
         Me.m_AnnotationTypeList = AnnotationTypeList
@@ -28,7 +28,7 @@ Public Class frmBatchUploadFromFileList
     End Sub
 
     'Form overrides dispose to clean up the component list.
-    Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
+    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
         If disposing Then
             If Not (components Is Nothing) Then
                 components.Dispose()
@@ -208,7 +208,7 @@ Public Class frmBatchUploadFromFileList
 
 #End Region
 
-    Private Sub frmBatchUploadFromFileList_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+    Private Sub frmBatchUploadFromFileList_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         Me.PopulateDropDowns()
         If Not Me.m_FileCollection Is Nothing Then
             'Me.LoadFileNamingAuthorities()
@@ -216,7 +216,7 @@ Public Class frmBatchUploadFromFileList
         End If
     End Sub
 
-    Private Sub frmBatchUploadFromFileList_Closing(ByVal sender As Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles MyBase.Closing
+    Private Sub frmBatchUploadFromFileList_Closing(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles MyBase.Closing
         Me.SaveFileNamingAuthorities()
 
     End Sub
@@ -225,7 +225,7 @@ Public Class frmBatchUploadFromFileList
         Get
             Return Me.m_FileCollection
         End Get
-        Set(ByVal Value As Hashtable)
+        Set(Value As Hashtable)
             Me.m_FileCollection = Value
         End Set
     End Property
@@ -415,8 +415,8 @@ Public Class frmBatchUploadFromFileList
         Dim li As System.Windows.Forms.ListViewItem
 
         For Each li In Me.lvwFiles.CheckedItems
-            Me.m_SelectedFilesCollection.Add( _
-                li.Text, _
+            Me.m_SelectedFilesCollection.Add(
+                li.Text,
                 DirectCast(Me.m_FileCollection.Item(li.Text), clsBatchUploadFromFileList.FileListInfo))
         Next
 
@@ -424,7 +424,7 @@ Public Class frmBatchUploadFromFileList
 
     End Function
 
-    Private Sub cmdUploadFiles_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUploadFiles.Click
+    Private Sub cmdUploadFiles_Click(sender As System.Object, e As System.EventArgs) Handles cmdUploadFiles.Click
 
         Dim selectedCount As Integer = Me.BuildSelectedFilesList()
         If selectedCount > 0 Then
@@ -432,21 +432,21 @@ Public Class frmBatchUploadFromFileList
         End If
     End Sub
 
-    Private Sub cmdCheckAll_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCheckAll.Click
+    Private Sub cmdCheckAll_Click(sender As System.Object, e As System.EventArgs) Handles cmdCheckAll.Click
         Dim li As System.Windows.Forms.ListViewItem
         For Each li In Me.lvwFiles.Items
             li.Checked = True
         Next
     End Sub
 
-    Private Sub cmdUncheckAll_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUncheckAll.Click
+    Private Sub cmdUncheckAll_Click(sender As System.Object, e As System.EventArgs) Handles cmdUncheckAll.Click
         Dim li As System.Windows.Forms.ListViewItem
         For Each li In Me.lvwFiles.Items
             li.Checked = False
         Next
     End Sub
 
-    Private Sub cboOrganismPicker_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboOrganismPicker.SelectedIndexChanged
+    Private Sub cboOrganismPicker_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cboOrganismPicker.SelectedIndexChanged
         Dim cbo As System.Windows.Forms.ComboBox = DirectCast(sender, System.Windows.Forms.ComboBox)
         Dim li As System.Windows.Forms.ListViewItem
         Dim fli As clsBatchUploadFromFileList.FileListInfo
@@ -454,7 +454,7 @@ Public Class frmBatchUploadFromFileList
         If Me.lvwFiles.SelectedItems.Count > 0 Then
             For Each li In Me.lvwFiles.SelectedItems
                 li.SubItems(2).Text = cbo.Text
-                fli = DirectCast(Me.m_FileCollection.Item(li.Text), _
+                fli = DirectCast(Me.m_FileCollection.Item(li.Text), 
                     clsBatchUploadFromFileList.FileListInfo)
                 fli.NamingAuthorityID = CInt(cbo.SelectedValue)
                 Me.m_FileCollection.Item(li.Text) = fli
@@ -462,7 +462,7 @@ Public Class frmBatchUploadFromFileList
         End If
     End Sub
 
-    Private Sub cboAnnotationType_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboAnnotationType.SelectedIndexChanged
+    Private Sub cboAnnotationType_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cboAnnotationType.SelectedIndexChanged
         Dim cbo As System.Windows.Forms.ComboBox = DirectCast(sender, System.Windows.Forms.ComboBox)
         Dim li As System.Windows.Forms.ListViewItem
         Dim fli As clsBatchUploadFromFileList.FileListInfo
@@ -470,7 +470,7 @@ Public Class frmBatchUploadFromFileList
         If Me.lvwFiles.SelectedItems.Count > 0 Then
             For Each li In Me.lvwFiles.SelectedItems
                 li.SubItems(3).Text = cbo.Text
-                fli = DirectCast(Me.m_FileCollection.Item(li.Text), _
+                fli = DirectCast(Me.m_FileCollection.Item(li.Text), 
                     clsBatchUploadFromFileList.FileListInfo)
                 fli.AnnotationTypeID = CInt(cbo.SelectedValue)
                 Me.m_FileCollection.Item(li.Text) = fli
@@ -478,7 +478,7 @@ Public Class frmBatchUploadFromFileList
         End If
     End Sub
 
-    Private Sub lvwFiles_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lvwFiles.SelectedIndexChanged
+    Private Sub lvwFiles_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lvwFiles.SelectedIndexChanged
         Dim fli As clsBatchUploadFromFileList.FileListInfo
         Dim li As System.Windows.Forms.ListViewItem
 

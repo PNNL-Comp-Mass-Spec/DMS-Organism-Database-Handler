@@ -10,7 +10,7 @@ Public Class clsArchiveToFile
     Protected ReadOnly m_BaseArchivePath As String
     Protected ReadOnly m_SHA1Provider As System.Security.Cryptography.SHA1Managed
 
-    Sub New(ByVal PSConnectionString As String, ByRef ExporterModule As clsGetFASTAFromDMS)
+    Sub New(PSConnectionString As String, ByRef ExporterModule As clsGetFASTAFromDMS)
 
         MyBase.New(PSConnectionString, ExporterModule)
 
@@ -26,13 +26,13 @@ Public Class clsArchiveToFile
     End Sub
 
     Protected Overrides Function DispositionFile(
-     ByVal ProteinCollectionID As Integer,
-     ByVal SourceFilePath As String,
-     ByVal CreationOptionsString As String,
-     ByVal SourceAuthenticationHash As String,
-     ByVal OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes,
-     ByVal ArchivedFileType As IArchiveOutputFiles.CollectionTypes,
-     ByVal ProteinCollectionsList As String) As Integer
+     ProteinCollectionID As Integer,
+     SourceFilePath As String,
+     CreationOptionsString As String,
+     SourceAuthenticationHash As String,
+     OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes,
+     ArchivedFileType As IArchiveOutputFiles.CollectionTypes,
+     ProteinCollectionsList As String) As Integer
 
         Dim CollectionListHexHash As String
         Dim CollectionListHexHashInDB As String
@@ -41,11 +41,11 @@ Public Class clsArchiveToFile
 
         Me.CheckTableGetterStatus()
 
-        Dim ArchivedFileEntryID As Integer = 0
+        Dim ArchivedFileEntryID = 0
 
 
         Dim archivePath As String
-        Dim fi As FileInfo = New FileInfo(SourceFilePath)
+        Dim fi = New FileInfo(SourceFilePath)
         Dim destFI As FileInfo
         Dim di As DirectoryInfo
 
@@ -118,7 +118,7 @@ Public Class clsArchiveToFile
 
     End Function
 
-    Protected Function GenerateHash(ByVal SourceText As String) As String
+    Protected Function GenerateHash(SourceText As String) As String
         'Create an encoding object to ensure the encoding standard for the source text
         Dim Ue As New System.Text.ASCIIEncoding
         'Retrieve a byte array based on the source text
@@ -133,12 +133,12 @@ Public Class clsArchiveToFile
     End Function
 
     Protected Function GenerateArchivePath(
-     ByVal SourceFilePath As String,
-     ByVal ProteinCollectionID As Integer,
-     ByVal FileDate As DateTime,
-     ByVal Authentication_Hash As String,
-     ByVal ArchivedFileType As IArchiveOutputFiles.CollectionTypes,
-     ByVal OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes) As String
+     SourceFilePath As String,
+     ProteinCollectionID As Integer,
+     FileDate As DateTime,
+     Authentication_Hash As String,
+     ArchivedFileType As IArchiveOutputFiles.CollectionTypes,
+     OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes) As String
 
         Dim pathString As String
         pathString = Path.Combine(m_BaseArchivePath, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
@@ -151,10 +151,10 @@ Public Class clsArchiveToFile
 
 
     Protected Function RunSP_UpdateFileArchiveEntryCollectionList(
-     ByVal ArchivedFileEntryID As Integer,
-     ByVal ProteinCollectionsList As String,
-     ByVal CollectionListHash As String,
-     ByVal CollectionListHexHash As String) As Integer
+     ArchivedFileEntryID As Integer,
+     ProteinCollectionsList As String,
+     CollectionListHash As String,
+     CollectionListHexHash As String) As Integer
 
         Dim sp_Save As SqlClient.SqlCommand
 
@@ -196,23 +196,23 @@ Public Class clsArchiveToFile
 
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 
     End Function
 
     Protected Function RunSP_AddOutputFileArchiveEntry(
-     ByVal ProteinCollectionID As Integer,
-     ByVal CreationOptionsString As String,
-     ByVal Authentication_Hash As String,
-     ByVal FileModificationDate As DateTime,
-     ByVal OutputFileSize As Int64,
-     ByVal ProteinCount As Integer,
-     ByVal ArchivedFileFullPath As String,
-     ByVal ArchivedFileType As String,
-     ByVal ProteinCollectionsList As String,
-     ByVal CollectionListHexHash As String) As Integer
+     ProteinCollectionID As Integer,
+     CreationOptionsString As String,
+     Authentication_Hash As String,
+     FileModificationDate As DateTime,
+     OutputFileSize As Int64,
+     ProteinCount As Integer,
+     ArchivedFileFullPath As String,
+     ArchivedFileType As String,
+     ProteinCollectionsList As String,
+     CollectionListHexHash As String) As Integer
 
 
 
@@ -284,7 +284,7 @@ Public Class clsArchiveToFile
         Me.m_Archived_File_Name = ArchivedFileFullPath
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 

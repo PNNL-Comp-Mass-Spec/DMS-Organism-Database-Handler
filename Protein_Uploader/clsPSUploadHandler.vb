@@ -11,31 +11,32 @@ Public Interface IUploadProteins
     End Enum
 
     Function UploadCollection(
-        ByRef fileContents As Protein_Storage.IProteinStorage,
-        ByVal selectedProteins As List(Of String),
-        ByVal CollectionName As String,
-        ByVal description As String,
-        ByVal collectionType As Protein_Importer.IAddUpdateEntries.CollectionTypes,
-        ByVal organismID As Integer,
-        ByVal annotationTypeID As Integer) As Integer
+        fileContents As Protein_Storage.IProteinStorage,
+        selectedProteins As List(Of String),
+        CollectionName As String,
+        description As String,
+        collectionSource As String,
+        collectionType As Protein_Importer.IAddUpdateEntries.CollectionTypes,
+        organismID As Integer,
+        annotationTypeID As Integer) As Integer
 
     Function UploadCollection(
-        ByRef fileContents As Protein_Storage.IProteinStorage,
-        ByVal filepath As String,
-        ByVal organismID As Integer,
-        ByVal annotationTypeID As Integer) As Integer
+        fileContents As Protein_Storage.IProteinStorage,
+        filepath As String,
+        organismID As Integer,
+        annotationTypeID As Integer) As Integer
 
-    Sub BatchUpload(ByVal fileInfoList As IEnumerable(Of UploadInfo))
+    Sub BatchUpload(fileInfoList As IEnumerable(Of UploadInfo))
 
     Sub InitialSetup()
     Sub ResetErrorList()
 
-    Sub SetValidationOptions(ByVal eValidationOptionName As eValidationOptionConstants, ByVal blnEnabled As Boolean)
+    Sub SetValidationOptions(eValidationOptionName As eValidationOptionConstants, blnEnabled As Boolean)
 
     Property MaximumProteinNameLength As Integer
 
     Structure UploadInfo
-        Public Sub New(ByVal FileInformation As System.IO.FileInfo, ByVal OrgID As Integer, ByVal AnnotTypeID As Integer)
+        Public Sub New(FileInformation As System.IO.FileInfo, OrgID As Integer, AnnotTypeID As Integer)
             Me.FileInformation = FileInformation
             Me.OrganismID = OrgID
             Me.AnnotationTypeID = AnnotTypeID
@@ -54,16 +55,16 @@ Public Interface IUploadProteins
     End Structure
 
 
-    Event LoadStart(ByVal taskTitle As String)
-    Event LoadProgress(ByVal fractionDone As Double)
+    Event LoadStart(taskTitle As String)
+    Event LoadProgress(fractionDone As Double)
     Event LoadEnd()
-    Event BatchProgress(ByVal status As String)
-    Event ValidationProgress(ByVal taskTitle As String, ByVal fractionDone As Double)
-    Event ValidFASTAFileLoaded(ByVal FASTAFilePath As String, ByVal UploadData As UploadInfo)
-    Event InvalidFASTAFile(ByVal FASTAFilePath As String, ByVal errorCollection As ArrayList)
-    Event FASTAFileWarnings(ByVal FASTAFilePath As String, ByVal warningCollection As ArrayList)
-    Event FASTAValidationComplete(ByVal FASTAFilePath As String, ByVal UploadInfo As IUploadProteins.UploadInfo)
-    Event WroteLineEndNormalizedFASTA(ByVal newFilePath As String)
+    Event BatchProgress(status As String)
+    Event ValidationProgress(taskTitle As String, fractionDone As Double)
+    Event ValidFASTAFileLoaded(FASTAFilePath As String, UploadData As UploadInfo)
+    Event InvalidFASTAFile(FASTAFilePath As String, errorCollection As ArrayList)
+    Event FASTAFileWarnings(FASTAFilePath As String, warningCollection As ArrayList)
+    Event FASTAValidationComplete(FASTAFilePath As String, UploadInfo As IUploadProteins.UploadInfo)
+    Event WroteLineEndNormalizedFASTA(newFilePath As String)
 End Interface
 
 
@@ -83,16 +84,16 @@ Public Class clsPSUploadHandler
     Protected WithEvents m_Archiver As Protein_Exporter.IArchiveOutputFiles
 
 
-    Protected Event LoadStart(ByVal taskTitle As String) Implements IUploadProteins.LoadStart
-    Protected Event LoadProgress(ByVal fractionDone As Double) Implements IUploadProteins.LoadProgress
+    Protected Event LoadStart(taskTitle As String) Implements IUploadProteins.LoadStart
+    Protected Event LoadProgress(fractionDone As Double) Implements IUploadProteins.LoadProgress
     Protected Event LoadEnd() Implements IUploadProteins.LoadEnd
-    Protected Event BatchProgress(ByVal status As String) Implements IUploadProteins.BatchProgress
-    Protected Event ValidationProgress(ByVal taskTitle As String, ByVal fractionDone As Double) Implements IUploadProteins.ValidationProgress
-    Protected Event ValidFASTAFileLoaded(ByVal FASTAFilePath As String, ByVal UploadData As IUploadProteins.UploadInfo) Implements IUploadProteins.ValidFASTAFileLoaded
-    Protected Event InvalidFASTAFile(ByVal FASTAFilePath As String, ByVal errorCollection As ArrayList) Implements IUploadProteins.InvalidFASTAFile
-    Protected Event FASTAFileWarnings(ByVal FASTAFilePath As String, ByVal warningCollection As ArrayList) Implements IUploadProteins.FASTAFileWarnings
-    Protected Event FASTAValidationComplete(ByVal FASTAFilePath As String, ByVal UploadInfo As IUploadProteins.UploadInfo) Implements IUploadProteins.FASTAValidationComplete
-    Protected Event WroteLineEndNormalizedFASTA(ByVal newFilePath As String) Implements IUploadProteins.WroteLineEndNormalizedFASTA
+    Protected Event BatchProgress(status As String) Implements IUploadProteins.BatchProgress
+    Protected Event ValidationProgress(taskTitle As String, fractionDone As Double) Implements IUploadProteins.ValidationProgress
+    Protected Event ValidFASTAFileLoaded(FASTAFilePath As String, UploadData As IUploadProteins.UploadInfo) Implements IUploadProteins.ValidFASTAFileLoaded
+    Protected Event InvalidFASTAFile(FASTAFilePath As String, errorCollection As ArrayList) Implements IUploadProteins.InvalidFASTAFile
+    Protected Event FASTAFileWarnings(FASTAFilePath As String, warningCollection As ArrayList) Implements IUploadProteins.FASTAFileWarnings
+    Protected Event FASTAValidationComplete(FASTAFilePath As String, UploadInfo As IUploadProteins.UploadInfo) Implements IUploadProteins.FASTAValidationComplete
+    Protected Event WroteLineEndNormalizedFASTA(newFilePath As String) Implements IUploadProteins.WroteLineEndNormalizedFASTA
 
 
     Protected m_ExportedProteinCount As Integer
@@ -118,11 +119,11 @@ Public Class clsPSUploadHandler
         Me.m_Validator.ClearErrorList()
     End Sub
 
-    Private Sub OnLoadStart(ByVal taskTitle As String)
+    Private Sub OnLoadStart(taskTitle As String)
         RaiseEvent LoadStart(taskTitle)
     End Sub
 
-    Private Sub OnProgressUpdate(ByVal fractionDone As Double)
+    Private Sub OnProgressUpdate(fractionDone As Double)
         RaiseEvent LoadProgress(fractionDone)
     End Sub
 
@@ -130,19 +131,19 @@ Public Class clsPSUploadHandler
         RaiseEvent LoadEnd()
     End Sub
 
-    Private Sub OnBatchProgressUpdate(ByVal status As String)
+    Private Sub OnBatchProgressUpdate(status As String)
         RaiseEvent BatchProgress(status)
     End Sub
 
-    Private Sub OnFileValidationComplete(ByVal FASTAFilePath As String, ByVal UploadInfo As IUploadProteins.UploadInfo)
+    Private Sub OnFileValidationComplete(FASTAFilePath As String, UploadInfo As IUploadProteins.UploadInfo)
         RaiseEvent FASTAValidationComplete(FASTAFilePath, UploadInfo)
     End Sub
 
-    Private Sub LoadStartHandler(ByVal taskTitle As String) Handles m_Upload.LoadStart, m_Importer.LoadStart
+    Private Sub LoadStartHandler(taskTitle As String) Handles m_Upload.LoadStart, m_Importer.LoadStart
         Me.OnLoadStart(taskTitle)
     End Sub
 
-    Private Sub LoadProgressHandler(ByVal fractionDone As Double) Handles m_Upload.LoadProgress, m_Importer.LoadProgress
+    Private Sub LoadProgressHandler(fractionDone As Double) Handles m_Upload.LoadProgress, m_Importer.LoadProgress
         Me.OnProgressUpdate(fractionDone)
     End Sub
 
@@ -150,33 +151,33 @@ Public Class clsPSUploadHandler
         Me.OnLoadEnd()
     End Sub
 
-    Private Sub Task_LoadProgress(ByVal taskDescription As String, ByVal percentComplete As Single) Handles m_Validator.ProgressChanged
+    Private Sub Task_LoadProgress(taskDescription As String, percentComplete As Single) Handles m_Validator.ProgressChanged
         RaiseEvent ValidationProgress(taskDescription, CDbl(percentComplete / 100))
     End Sub
 
-    'Private Sub Encryption_Progress(ByVal taskMsg As String, ByVal fractionDone As Double)
+    'Private Sub Encryption_Progress(taskMsg As String, fractionDone As Double)
     '    RaiseEvent LoadStart()
     'End Sub
 
-    Private Sub OnNormalizedFASTAGeneration(ByVal newFASTAFilePath As String) Handles m_Validator.WroteLineEndNormalizedFASTA
+    Private Sub OnNormalizedFASTAGeneration(newFASTAFilePath As String) Handles m_Validator.WroteLineEndNormalizedFASTA
         Me.m_NormalizedFASTAFilePath = newFASTAFilePath
         RaiseEvent WroteLineEndNormalizedFASTA(newFASTAFilePath)
     End Sub
 
-    Private Sub OnFASTAFileWarnings(ByVal FASTAFilePath As String, ByVal warningCollection As ArrayList)
+    Private Sub OnFASTAFileWarnings(FASTAFilePath As String, warningCollection As ArrayList)
         RaiseEvent FASTAFileWarnings(FASTAFilePath, warningCollection)
     End Sub
 
-    Private Sub OnInvalidFASTAFile(ByVal FASTAFilePath As String, ByVal errorCollection As ArrayList)
+    Private Sub OnInvalidFASTAFile(FASTAFilePath As String, errorCollection As ArrayList)
         RaiseEvent InvalidFASTAFile(FASTAFilePath, errorCollection)
     End Sub
 
-    Private Sub OnValidFASTAFileUpload(ByVal FASTAFilePath As String, ByVal UploadData As IUploadProteins.UploadInfo)
+    Private Sub OnValidFASTAFileUpload(FASTAFilePath As String, UploadData As IUploadProteins.UploadInfo)
         RaiseEvent ValidFASTAFileLoaded(FASTAFilePath, UploadData)
     End Sub
 
 
-    Public Sub New(ByVal PISConnectionString As String)
+    Public Sub New(PISConnectionString As String)
         Me.m_PISConnectionString = PISConnectionString
 
         ' Reserve space for tracking up to 10 validation updates (expand later if needed)
@@ -198,7 +199,7 @@ Public Class clsPSUploadHandler
 
     'fileInfoList hash -> key = 
     Protected Sub ProteinBatchLoadCoordinator(
-        ByVal fileInfoList As IEnumerable(Of IUploadProteins.UploadInfo)) Implements IUploadProteins.BatchUpload
+        fileInfoList As IEnumerable(Of IUploadProteins.UploadInfo)) Implements IUploadProteins.BatchUpload
 
         SetupImporterClass()
 
@@ -367,13 +368,14 @@ Public Class clsPSUploadHandler
     End Sub
 
     Protected Function CollectionUploadCoordinator(
-        ByRef fileContents As Protein_Storage.IProteinStorage,
-        ByVal selectedProteins As List(Of String),
-        ByVal filepath As String,
-        ByVal description As String,
-        ByVal collectionType As Protein_Importer.IAddUpdateEntries.CollectionTypes,
-        ByVal organismID As Integer,
-        ByVal annotationTypeID As Integer) As Integer Implements IUploadProteins.UploadCollection
+        fileContents As Protein_Storage.IProteinStorage,
+        selectedProteins As List(Of String),
+        filepath As String,
+        description As String,
+        collectionSource As String,
+        collectionType As Protein_Importer.IAddUpdateEntries.CollectionTypes,
+        organismID As Integer,
+        annotationTypeID As Integer) As Integer Implements IUploadProteins.UploadCollection
 
         Dim XrefID As Integer
 
@@ -397,7 +399,7 @@ Public Class clsPSUploadHandler
             ' That value will be updated later after all of the proteins have been added
             collectionID = Me.m_Upload.MakeNewProteinCollection(
                               System.IO.Path.GetFileNameWithoutExtension(filepath), description,
-                              collectionType, annotationTypeID, numProteins, 0)
+                              collectionSource, collectionType, annotationTypeID, numProteins, 0)
 
             If collectionID = 0 Then
                 ' Error making the new protein collection
@@ -435,14 +437,6 @@ Public Class clsPSUploadHandler
             Me.OnLoadEnd()
         End If
 
-
-        'fileContents = Me.m_Importer.LoadCollectionMembersByID(collectionID
-
-        'Dim tmpFileName As String =
-        '    System.IO.Path.Combine(
-        '        System.IO.Path.GetTempPath,
-        '        System.IO.Path.GetFileName(filepath))
-
         Dim tmpFileName As String = System.IO.Path.GetTempPath
 
         'Dim tmpFi As System.IO.FileInfo = New System.IO.FileInfo(tmpFileName)
@@ -461,10 +455,10 @@ Public Class clsPSUploadHandler
     End Function
 
     Protected Function CollectionBatchUploadCoordinator(
-        ByRef fileContents As Protein_Storage.IProteinStorage,
-        ByVal filepath As String,
-        ByVal organismID As Integer,
-        ByVal annotationTypeID As Integer) As Integer Implements IUploadProteins.UploadCollection
+        fileContents As Protein_Storage.IProteinStorage,
+        filepath As String,
+        organismID As Integer,
+        annotationTypeID As Integer) As Integer Implements IUploadProteins.UploadCollection
 
         Dim selectedList As New List(Of String)
 
@@ -476,12 +470,16 @@ Public Class clsPSUploadHandler
 
         selectedList.Sort()
 
-        Return Me.CollectionUploadCoordinator(fileContents, selectedList, filepath, "",
-        Protein_Importer.IAddUpdateEntries.CollectionTypes.prot_original_source, organismID, annotationTypeID)
+        Const description = ""
+        Const source = ""
+
+        Return Me.CollectionUploadCoordinator(
+            fileContents, selectedList, filepath, description, source,
+            Protein_Importer.IAddUpdateEntries.CollectionTypes.prot_original_source, organismID, annotationTypeID)
 
     End Function
 
-    Public Sub SetValidationOptions(ByVal eValidationOptionName As IUploadProteins.eValidationOptionConstants, ByVal blnEnabled As Boolean) Implements IUploadProteins.SetValidationOptions
+    Public Sub SetValidationOptions(eValidationOptionName As IUploadProteins.eValidationOptionConstants, blnEnabled As Boolean) Implements IUploadProteins.SetValidationOptions
         mValidationOptions(eValidationOptionName) = blnEnabled
     End Sub
 

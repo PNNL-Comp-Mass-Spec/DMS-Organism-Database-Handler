@@ -4,7 +4,7 @@ Friend Class AnnotationGroup
     Private m_AnnotationData As Dictionary(Of String, SortedSet(Of String))       'key=PrimaryReferenceName, value=SortedSet of xrefs
     Private m_Delimiter As String
 
-    Sub New(ByVal GroupName As String)
+    Sub New(GroupName As String)
         Me.GroupName = GroupName
     End Sub
 
@@ -16,14 +16,14 @@ Friend Class AnnotationGroup
         Get
             Return Me.m_Delimiter
         End Get
-        Set(ByVal value As String)
+        Set(value As String)
             Me.m_Delimiter = value
         End Set
     End Property
-    
+
     Public Property ImportThisGroup As Boolean
 
-    Sub AddAnnotation(ByVal PrimaryReferenceName As String, ByVal XRefName As String)
+    Sub AddAnnotation(PrimaryReferenceName As String, XRefName As String)
 
         Dim xrefList As SortedSet(Of String)
 
@@ -57,7 +57,7 @@ Friend Class AnnotationGroup
         Return annotationKeys
     End Function
 
-    Function GetXRefs(ByVal PrimaryReferenceName As String) As SortedSet(Of String)
+    Function GetXRefs(PrimaryReferenceName As String) As SortedSet(Of String)
         Dim xrefList = Me.m_AnnotationData.Item(PrimaryReferenceName)
 
         If Me.m_Delimiter.Length > 0 Then

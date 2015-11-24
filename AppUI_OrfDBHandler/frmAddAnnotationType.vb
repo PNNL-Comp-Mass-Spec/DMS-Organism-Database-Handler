@@ -14,7 +14,7 @@ Public Class frmAddAnnotationType
     End Sub
 
     'Form overrides dispose to clean up the component list.
-    Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
+    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
         If disposing Then
             If Not (components Is Nothing) Then
                 components.Dispose()
@@ -189,7 +189,7 @@ Public Class frmAddAnnotationType
         Get
             Return Me.m_TypeName
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             Me.m_TypeName = Value
         End Set
     End Property
@@ -198,7 +198,7 @@ Public Class frmAddAnnotationType
         Get
             Return Me.m_Description
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             Me.m_Description = Value
         End Set
     End Property
@@ -207,7 +207,7 @@ Public Class frmAddAnnotationType
         Get
             Return Me.m_Example
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             Me.m_Example = Value
         End Set
     End Property
@@ -216,26 +216,26 @@ Public Class frmAddAnnotationType
         Get
             Return Me.m_AuthID
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             Me.m_AuthID = Value
         End Set
     End Property
 
     WriteOnly Property ConnectionString() As String
-        Set(ByVal Value As String)
+        Set(Value As String)
             Me.m_PSConnectionString = Value
         End Set
     End Property
 
     WriteOnly Property AuthorityTable() As DataTable
-        Set(ByVal Value As DataTable)
+        Set(Value As DataTable)
             Me.m_AuthoritiesTable = Value
         End Set
     End Property
 
 #End Region
 
-    Private Sub frmAddAnnotationType_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+    Private Sub frmAddAnnotationType_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         If Not Me.m_TypeName Is Nothing Then
             Me.txtAnnTypeName.Text = Me.m_TypeName
         End If
@@ -294,7 +294,7 @@ Public Class frmAddAnnotationType
         AddHandler cboAuthorityName.SelectedIndexChanged, AddressOf cboAuthorityName_SelectedIndexChanged
     End Sub
 
-    Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
+    Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
         Me.m_TypeName = Me.txtAnnTypeName.Text
         Me.m_Description = Me.txtDescription.Text
         Me.m_Example = Me.txtTypeExample.Text
@@ -304,18 +304,18 @@ Public Class frmAddAnnotationType
         Me.Close()
     End Sub
 
-    Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
+    Private Sub cmdCancel_Click(sender As System.Object, e As System.EventArgs) Handles cmdCancel.Click
         Me.DialogResult = DialogResult.Cancel
         Me.Close()
     End Sub
 
-    'Private Sub txtAuthWeb_Validating(ByVal sender As System.Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles txtTypeExample.Validating
+    'Private Sub txtAuthWeb_Validating(sender As System.Object, e As System.ComponentModel.CancelEventArgs) Handles txtTypeExample.Validating
     '    Dim txt As TextBox = DirectCast(sender, TextBox)
     '    Dim tmpAddress As String = Me.ValidateWebAddressFormat(txt.Text)
     '    txt.Text = tmpAddress
     'End Sub
 
-    Private Sub cboAuthorityName_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboAuthorityName.SelectedIndexChanged
+    Private Sub cboAuthorityName_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cboAuthorityName.SelectedIndexChanged
         Dim cbo As ComboBox = DirectCast(sender, ComboBox)
 
 
@@ -362,7 +362,7 @@ Public Class frmAddAnnotationType
         '    Dim li As ListViewItem
         '    For Each li In Me.lvwSelectedFiles.SelectedItems
         '        tmpUpInfo = DirectCast(Me.m_SelectedFileList.Item(li.SubItems(3).Text), Protein_Uploader.IUploadProteins.UploadInfo)
-        '        Me.m_SelectedFileList.Item(li.SubItems(3).Text) = _
+        '        Me.m_SelectedFileList.Item(li.SubItems(3).Text) =
         '            New Protein_Uploader.IUploadProteins.UploadInfo(tmpUpInfo.FileInformation, Me.m_SelectedOrganismID, tmpUpInfo.AuthorityID)
         '        li.SubItems(2).Text = cbo.Text
         '    Next

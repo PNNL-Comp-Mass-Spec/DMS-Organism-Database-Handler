@@ -15,7 +15,7 @@ Public Class frmValidationReport
     End Sub
 
     'Form overrides dispose to clean up the component list.
-    Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
+    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
         If disposing Then
             If Not (components Is Nothing) Then
                 components.Dispose()
@@ -319,7 +319,7 @@ Public Class frmValidationReport
     Private m_Organisms As DataTable
     Private m_ErrorListLoaded As Boolean
 
-    Private Sub frmValidationReport_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+    Private Sub frmValidationReport_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         Me.FillValidListView()
         Me.BindFileListToErrorComboBox(Me.m_FileErrorList)
         Me.BindFileListToWarningComboBox(Me.m_FileWarningList)
@@ -338,7 +338,7 @@ Public Class frmValidationReport
 
     End Sub
 
-    Private Sub cmdExportErrorDetails_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdExportErrorDetails.Click
+    Private Sub cmdExportErrorDetails_Click(sender As System.Object, e As System.EventArgs) Handles cmdExportErrorDetails.Click
         If Me.m_ErrorCollection Is Nothing OrElse Me.m_ErrorCollection.Count = 0 Then
             System.Windows.Forms.MessageBox.Show("Error list is empty; nothing to export", "Nothing to do", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Else
@@ -346,7 +346,7 @@ Public Class frmValidationReport
         End If
     End Sub
 
-    Private Sub cmdExportWarningDetails_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdExportWarningDetails.Click
+    Private Sub cmdExportWarningDetails_Click(sender As System.Object, e As System.EventArgs) Handles cmdExportWarningDetails.Click
         If Me.m_WarningCollection Is Nothing OrElse Me.m_WarningCollection.Count = 0 Then
             System.Windows.Forms.MessageBox.Show("Warning list is empty; nothing to export", "Nothing to do", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Else
@@ -355,7 +355,7 @@ Public Class frmValidationReport
 
     End Sub
 
-    Private Sub cboFileListErrors_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboFileListErrors.SelectedIndexChanged
+    Private Sub cboFileListErrors_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cboFileListErrors.SelectedIndexChanged
         Me.lvwErrorList.Items.Clear()
         If Not Me.m_FileErrorList Is Nothing AndAlso Me.m_FileErrorList.Count > 0 Then
             Me.m_ErrorCollection = DirectCast(Me.m_FileErrorList.Item(Me.cboFileListErrors.Text), ArrayList)
@@ -368,7 +368,7 @@ Public Class frmValidationReport
         End If
     End Sub
 
-    Private Sub cboFileListWarnings_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboFileListWarnings.SelectedIndexChanged
+    Private Sub cboFileListWarnings_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cboFileListWarnings.SelectedIndexChanged
         Me.lvwWarningList.Items.Clear()
         If Not Me.m_FileWarningList Is Nothing AndAlso Me.m_FileWarningList.Count > 0 Then
             Me.m_WarningCollection = DirectCast(Me.m_FileWarningList.Item(Me.cboFileListWarnings.Text), ArrayList)
@@ -382,42 +382,42 @@ Public Class frmValidationReport
     End Sub
 
     Friend WriteOnly Property ErrorSummaryList() As Hashtable
-        Set(ByVal Value As Hashtable)
+        Set(Value As Hashtable)
             Me.m_SummarizedFileErrors = Value
         End Set
     End Property
 
     Friend WriteOnly Property WarningSummaryList() As Hashtable
-        Set(ByVal Value As Hashtable)
+        Set(Value As Hashtable)
             Me.m_SummarizedFileWarnings = Value
         End Set
     End Property
 
     Friend WriteOnly Property FileErrorList() As Hashtable
-        Set(ByVal Value As Hashtable)
+        Set(Value As Hashtable)
             Me.m_FileErrorList = Value
         End Set
     End Property
 
     Friend WriteOnly Property FileWarningList() As Hashtable
-        Set(ByVal Value As Hashtable)
+        Set(Value As Hashtable)
             Me.m_FileWarningList = Value
         End Set
     End Property
 
     Friend WriteOnly Property FileValidList() As Hashtable
-        Set(ByVal Value As Hashtable)
+        Set(Value As Hashtable)
             Me.m_FileValidList = Value
         End Set
     End Property
 
     Friend WriteOnly Property OrganismList() As DataTable
-        Set(ByVal Value As DataTable)
+        Set(Value As DataTable)
             Me.m_Organisms = Value
         End Set
     End Property
 
-    Private Function GetOrganismName(ByVal organismID As Integer) As String
+    Private Function GetOrganismName(organismID As Integer) As String
         Dim foundrows() As DataRow
 
         foundrows = Me.m_Organisms.Select("ID = " & organismID.ToString)
@@ -426,7 +426,7 @@ Public Class frmValidationReport
 
     End Function
 
-    Private Sub BindFileListToErrorComboBox(ByVal contents As Hashtable)
+    Private Sub BindFileListToErrorComboBox(contents As Hashtable)
 
         Dim errorCount As Integer
         RemoveHandler cboFileListErrors.SelectedIndexChanged, AddressOf cboFileListErrors_SelectedIndexChanged
@@ -453,7 +453,7 @@ Public Class frmValidationReport
 
     End Sub
 
-    Private Sub BindFileListToWarningComboBox(ByVal contents As Hashtable)
+    Private Sub BindFileListToWarningComboBox(contents As Hashtable)
 
         Dim WarningCount As Integer
         RemoveHandler cboFileListWarnings.SelectedIndexChanged, AddressOf cboFileListWarnings_SelectedIndexChanged
@@ -480,15 +480,15 @@ Public Class frmValidationReport
 
     End Sub
 
-    Private Sub FillErrorListView(ByVal errorSummary As Hashtable)
+    Private Sub FillErrorListView(errorSummary As Hashtable)
         FillErrorOrWarningListView(Me.lvwErrorList, errorSummary)
     End Sub
 
-    Private Sub FillWarningListView(ByVal warningSummary As Hashtable)
+    Private Sub FillWarningListView(warningSummary As Hashtable)
         FillErrorOrWarningListView(Me.lvwWarningList, warningSummary)
     End Sub
 
-    Private Sub FillErrorOrWarningListView(ByVal objListview As ListView, ByVal itemSummary As Hashtable)
+    Private Sub FillErrorOrWarningListView(objListview As ListView, itemSummary As Hashtable)
         Dim li As ListViewItem
 
         If Not itemSummary Is Nothing Then
@@ -539,14 +539,14 @@ Public Class frmValidationReport
 
     End Sub
 
-    Private Sub DumpDetailedErrorOrWarningList(ByVal errorList As ArrayList, ByVal FASTAFileName As String, ByVal strMessageType As String)
+    Private Sub DumpDetailedErrorOrWarningList(errorList As ArrayList, FASTAFileName As String, strMessageType As String)
 
         Dim SaveDialog As New SaveFileDialog
 
         Dim SelectedSavePath As String
-        
+
         Dim errorDetail As ValidateFastaFile.ICustomValidation.udtErrorInfoExtended
-        
+
         Dim intErrorCount As Integer = 0
 
         If strMessageType Is Nothing OrElse strMessageType.Length = 0 Then
@@ -571,17 +571,17 @@ Public Class frmValidationReport
 
         Dim sw As System.IO.StreamWriter = New System.IO.StreamWriter(SelectedSavePath)
 
-        sw.WriteLine("Protein Name" & ControlChars.Tab & _
-                     "Line Number" & ControlChars.Tab & _
-                     "Message Type" & ControlChars.Tab & _
+        sw.WriteLine("Protein Name" & ControlChars.Tab &
+                     "Line Number" & ControlChars.Tab &
+                     "Message Type" & ControlChars.Tab &
                      "Message")
 
         If Not errorList Is Nothing AndAlso errorList.Count > 0 Then
             For Each errorDetail In errorList
-                sw.WriteLine( _
-                    errorDetail.ProteinName & ControlChars.Tab & _
-                    errorDetail.LineNumber & ControlChars.Tab & _
-                    errorDetail.Type & ControlChars.Tab & _
+                sw.WriteLine(
+                    errorDetail.ProteinName & ControlChars.Tab &
+                    errorDetail.LineNumber & ControlChars.Tab &
+                    errorDetail.Type & ControlChars.Tab &
                     errorDetail.MessageText)
 
                 intErrorCount += 1
@@ -600,7 +600,7 @@ Public Class frmValidationReport
     End Sub
 
     Structure HashToArraylistForCombo
-        Sub New(ByVal Key As String, ByVal Value As ArrayList)
+        Sub New(Key As String, Value As ArrayList)
             Me.Key = Key.ToString & " (" & Value.Count & " Errors)"
             Me.Value = Value
         End Sub

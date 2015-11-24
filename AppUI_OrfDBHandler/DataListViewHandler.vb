@@ -1,9 +1,9 @@
 Public Class DataListViewHandler
 
-    Public Event LoadStart(ByVal taskTitle As String)
-    Public Event LoadProgress(ByVal fractionDone As Double)
+    Public Event LoadStart(taskTitle As String)
+    Public Event LoadProgress(fractionDone As Double)
     Public Event LoadEnd()
-    Public Event NumberLoadedStatus(ByVal FilteredCount As Integer, ByVal TotalCount As Integer)
+    Public Event NumberLoadedStatus(FilteredCount As Integer, TotalCount As Integer)
 
 
     Public Sub New(ByRef ListViewToFill As ListView)
@@ -12,18 +12,18 @@ Public Class DataListViewHandler
 
     Private m_LVW As ListView
 
-    Public Sub Load(ByVal ListTable As DataTable)
+    Public Sub Load(ListTable As DataTable)
         Me.FillListView(Me.m_LVW, ListTable)
     End Sub
 
-    Public Sub Load(ByVal ListTable As DataTable, ByVal QuickFilterCriteria As String)
+    Public Sub Load(ListTable As DataTable, QuickFilterCriteria As String)
         Me.FillFilteredListView(Me.m_LVW, ListTable, QuickFilterCriteria)
     End Sub
 
-    Private Sub SetupPickerListView( _
-        ByRef lvw As ListView, _
-        ByVal dt As DataTable, _
-        Optional ByVal filterCriteria As String = "")
+    Private Sub SetupPickerListView(
+        ByRef lvw As ListView,
+        dt As DataTable,
+        Optional filterCriteria As String = "")
 
         Dim itemRow As DataRow
         Dim itemRows() As DataRow
@@ -33,7 +33,7 @@ Public Class DataListViewHandler
         Dim counter As Integer
 
         If Len(filterCriteria) <> 0 Then
-            filterString = "[Name] LIKE '%" & filterCriteria & "%' " & _
+            filterString = "[Name] LIKE '%" & filterCriteria & "%' " &
                 "OR [Description] LIKE '%" & filterCriteria & "%'"
         End If
 
@@ -67,18 +67,18 @@ Public Class DataListViewHandler
         lvw.EndUpdate()
     End Sub
 
-    Protected Sub FillListView( _
-        ByRef ListViewToFill As ListView, _
-        ByVal ListData As DataTable)
+    Protected Sub FillListView(
+        ByRef ListViewToFill As ListView,
+        ListData As DataTable)
 
         ListViewToFill.Items.Clear()
         SetupPickerListView(ListViewToFill, ListData)
     End Sub
 
-    Protected Sub FillFilteredListView( _
-        ByRef ListViewToFill As ListView, _
-        ByVal ListData As DataTable, _
-        ByVal FilterString As String)
+    Protected Sub FillFilteredListView(
+        ByRef ListViewToFill As ListView,
+        ListData As DataTable,
+        FilterString As String)
 
         ListViewToFill.Items.Clear()
         SetupPickerListView(ListViewToFill, ListData, FilterString)

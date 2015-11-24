@@ -5,7 +5,7 @@
 
 Module modMain
 
-    Public Const PROGRAM_DATE As String = "October 22, 2015"
+    Public Const PROGRAM_DATE As String = "November 24, 2015"
 
     Private mInputFilePath As String
     Private mPreviewMode As Boolean
@@ -41,9 +41,9 @@ Module modMain
                 If SetOptionsUsingCommandLineParameters(objParseCommandLine) Then blnProceed = True
             End If
 
-            If Not blnProceed OrElse _
-               objParseCommandLine.NeedToShowHelp OrElse _
-               objParseCommandLine.ParameterCount + objParseCommandLine.NonSwitchParameterCount = 0 OrElse _
+            If Not blnProceed OrElse
+               objParseCommandLine.NeedToShowHelp OrElse
+               objParseCommandLine.ParameterCount + objParseCommandLine.NonSwitchParameterCount = 0 OrElse
                mInputFilePath.Length = 0 Then
                 ShowProgramHelp()
                 intReturnCode = -1
@@ -64,7 +64,7 @@ Module modMain
                 If Not String.IsNullOrWhiteSpace(dmsConnectionString) Then
                     mBulkImporter.DMSConnectionString = dmsConnectionString
                 End If
-                
+
 
                 mBulkImporter.ShowMessages = True
                 mBulkImporter.LogMessagesToFile = mLogMessagesToFile
@@ -94,7 +94,7 @@ Module modMain
 
     End Function
 
-    Private Sub DisplayProgressPercent(ByVal intPercentComplete As Integer, ByVal blnAddCarriageReturn As Boolean)
+    Private Sub DisplayProgressPercent(intPercentComplete As Integer, blnAddCarriageReturn As Boolean)
         If blnAddCarriageReturn Then
             Console.WriteLine()
         End If
@@ -109,7 +109,7 @@ Module modMain
         Return System.Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString & " (" & PROGRAM_DATE & ")"
     End Function
 
-    Private Function SetOptionsUsingCommandLineParameters(ByVal objParseCommandLine As clsParseCommandLine) As Boolean
+    Private Function SetOptionsUsingCommandLineParameters(objParseCommandLine As clsParseCommandLine) As Boolean
         ' Returns True if no problems; otherwise, returns false
 
         Dim strValue As String = String.Empty
@@ -156,7 +156,7 @@ Module modMain
 
     End Function
 
-    Private Sub ShowErrorMessage(ByVal strMessage As String)
+    Private Sub ShowErrorMessage(strMessage As String)
         Dim strSeparator As String = "------------------------------------------------------------------------------"
 
         Console.WriteLine()
@@ -175,7 +175,7 @@ Module modMain
             Console.WriteLine()
 
             Console.WriteLine("Program syntax:")
-            Console.WriteLine(IO.Path.GetFileName(Reflection.Assembly.GetExecutingAssembly().Location) & _
+            Console.WriteLine(IO.Path.GetFileName(Reflection.Assembly.GetExecutingAssembly().Location) &
                               " FastaInfoFile.txt [/MaxLength:##] [/Preview] [/L]")
             Console.WriteLine()
             Console.WriteLine("FastaInfoFile.txt is a tab delimited text file listing the FASTA files to import")
@@ -206,7 +206,7 @@ Module modMain
 
     End Sub
 
-    Private Sub mBulkImporter_ProgressChanged(ByVal taskDescription As String, ByVal percentComplete As Single) Handles mBulkImporter.ProgressChanged
+    Private Sub mBulkImporter_ProgressChanged(taskDescription As String, percentComplete As Single) Handles mBulkImporter.ProgressChanged
         Const PERCENT_REPORT_INTERVAL As Integer = 25
         Const PROGRESS_DOT_INTERVAL_MSEC As Integer = 250
 

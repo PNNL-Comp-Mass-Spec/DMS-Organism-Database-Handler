@@ -43,13 +43,13 @@ Public Class clsAddNamingAuthority
     End Property
 
     WriteOnly Property FormLocation() As System.Drawing.Point
-        Set(ByVal Value As System.Drawing.Point)
+        Set(Value As System.Drawing.Point)
             Me.m_FormLocation = Value
         End Set
     End Property
 
 
-    Sub New(ByVal PSConnectionString As String)
+    Sub New(PSConnectionString As String)
         Me.m_ConnectionString = PSConnectionString
         Me.m_AuthorityTable = Me.GetAuthoritiesList()
     End Sub
@@ -74,11 +74,11 @@ Public Class clsAddNamingAuthority
             Me.m_fullName = frmAuth.FullName
             Me.m_webAddress = frmAuth.WebAddress
 
-            authID = Me.m_SPRunner.AddNamingAuthority( _
-                 Me.m_shortName, Me.m_fullName, Me.m_webAddress)
+            authID = Me.m_SPRunner.AddNamingAuthority(Me.m_shortName, Me.m_fullName, Me.m_webAddress)
             If authID < 0 Then
 
-                errorResult = System.Windows.Forms.MessageBox.Show("An entry for '" + Me.m_shortName + "' already exists in the Authorities table", _
+                errorResult = System.Windows.Forms.MessageBox.Show(
+                    "An entry for '" + Me.m_shortName + "' already exists in the Authorities table",
                     "Entry already exists!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2)
                 Me.m_EntryExists = True
                 authID = -authID

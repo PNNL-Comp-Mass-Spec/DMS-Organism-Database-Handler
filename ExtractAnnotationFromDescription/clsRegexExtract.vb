@@ -5,9 +5,9 @@ Public Class clsRegexExtract
     Protected m_Importer As Protein_Importer.IImportProteins
     Protected m_Proteins As Protein_Storage.IProteinStorage
 
-    Sub New( _
-        ByVal ConnectionString As String, _
-        ByVal CollectionID As Integer)
+    Sub New(
+        ConnectionString As String,
+        CollectionID As Integer)
 
         m_DatabaseHelper = New TableManipulationBase.clsDBTask(ConnectionString)
         m_Importer = New Protein_Importer.clsImportHandler(ConnectionString)

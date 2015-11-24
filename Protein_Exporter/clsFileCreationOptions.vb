@@ -10,7 +10,7 @@ Friend Class clsFileCreationOptions
     'Private m_ValuesTable As DataTable
 
 
-    Sub New(ByVal PSConnectionString As String)
+    Sub New(PSConnectionString As String)
         Me.m_PSConnectionString = PSConnectionString
         Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString, True)
     End Sub
@@ -27,7 +27,7 @@ Friend Class clsFileCreationOptions
         End Get
     End Property
     'Options string looks like... "seq_direction=forward;filetype=fasta"
-    Function ExtractOptions(ByVal optionsString As String) As String
+    Function ExtractOptions(optionsString As String) As String
         Dim keywordTableSQL As String
         'Dim valuesTableSQL As String
         Dim creationValuesSQL As String
@@ -64,9 +64,9 @@ Friend Class clsFileCreationOptions
             Me.m_CreationValuesTable = Me.m_TableGetter.GetTable(creationValuesSQL)
         End If
 
-        'optionsStringParser = New System.Text.RegularExpressions.Regex( _
+        'optionsStringParser = New System.Text.RegularExpressions.Regex(
         '    "(?<keyword>\S+)\s*=\s*(?<value>\S+),*?")
-        optionsStringParser = New System.Text.RegularExpressions.Regex( _
+        optionsStringParser = New System.Text.RegularExpressions.Regex(
             "(?<keyword>[^,\s]*)\s*=\s*(?<value>[^,\s]+)")
 
         mCollection = optionsStringParser.Matches(optionsString)
@@ -133,11 +133,11 @@ Friend Class clsFileCreationOptions
                     '    Case "scrambled"
                     '        Me.m_SeqDirection = ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.scrambled
                     'End Select
-                    Me.m_SeqDirection = DirectCast([Enum].Parse(GetType(ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes), tmpValue), _
+                    Me.m_SeqDirection = DirectCast([Enum].Parse(GetType(ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes), tmpValue), 
                      ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes)
                 Case "filetype"
 
-                    Me.m_FileType = DirectCast([Enum].Parse(GetType(ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes), tmpValue), _
+                    Me.m_FileType = DirectCast([Enum].Parse(GetType(ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes), tmpValue), 
                      ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes)
 
                     'Select Case tmpValue
@@ -160,15 +160,15 @@ Friend Class clsFileCreationOptions
 
     End Function
 
-    Function MakeCreationOptionsString( _
-        ByVal SequenceDirection As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes, _
-        ByVal DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes) As String
+    Function MakeCreationOptionsString(
+        seqDirection As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes,
+        DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes) As String
 
         Dim creationOptionsSB As New System.Text.StringBuilder
 
         With creationOptionsSB
             .Append("seq_direction=")
-            .Append(SequenceDirection.ToString)
+            .Append(seqDirection.ToString)
             .Append(",")
             .Append("filetype=")
             .Append(DatabaseFormatType.ToString)

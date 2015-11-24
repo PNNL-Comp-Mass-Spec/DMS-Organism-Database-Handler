@@ -9,12 +9,12 @@ Public Class clsProteinStorage
     Private m_ProteinNames As SortedSet(Of String)
     Private m_PassPhrase As String
 
-    Public Sub New(ByVal fastaFileName As String)
+    Public Sub New(fastaFileName As String)
         Me.FileName = fastaFileName
         m_Proteins = New Dictionary(Of String, IProteinStorageEntry)
     End Sub
 
-    Protected Sub AddProtein(ByVal proteinEntry As IProteinStorageEntry) Implements IProteinStorage.AddProtein
+    Protected Sub AddProtein(proteinEntry As IProteinStorageEntry) Implements IProteinStorage.AddProtein
         If Me.m_ProteinNames Is Nothing Then
             Me.m_ProteinNames = New SortedSet(Of String)
         End If
@@ -32,7 +32,7 @@ Public Class clsProteinStorage
 
     Protected Property FileName As String Implements IProteinStorage.FileName
 
-    Protected Function GetProtein(ByVal Reference As String) As Protein_Storage.IProteinStorageEntry Implements IProteinStorage.GetProtein
+    Protected Function GetProtein(Reference As String) As Protein_Storage.IProteinStorageEntry Implements IProteinStorage.GetProtein
 
         Dim proteinEntry As IProteinStorageEntry = Nothing
 
@@ -75,7 +75,7 @@ Public Class clsProteinStorage
                 Return Nothing
             End If
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             Me.m_PassPhrase = Value
         End Set
     End Property

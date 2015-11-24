@@ -2,7 +2,7 @@ Option Strict On
 Imports Protein_Exporter
 
 Module modMain
-    Public Const PROGRAM_DATE As String = "September 14, 2015"
+    Public Const PROGRAM_DATE As String = "November 24, 2015"
 
     Const m_DebugLevel As Integer = 4
     Const FASTA_GEN_TIMEOUT_INTERVAL_MINUTES As Integer = 70
@@ -27,27 +27,27 @@ Module modMain
     Private mLogProteinFileDetails As Boolean
 
 #Region "Event handlers"
-    Private Sub m_FastaTools_FileGenerationStarted(ByVal taskMsg As String) Handles m_FastaTools.FileGenerationStarted
+    Private Sub m_FastaTools_FileGenerationStarted(taskMsg As String) Handles m_FastaTools.FileGenerationStarted
 
         m_GenerationStarted = True
 
     End Sub
 
-    Private Sub m_FastaTools_FileGenerationCompleted(ByVal FullOutputPath As String) Handles m_FastaTools.FileGenerationCompleted
+    Private Sub m_FastaTools_FileGenerationCompleted(FullOutputPath As String) Handles m_FastaTools.FileGenerationCompleted
 
         m_FastaFileName = System.IO.Path.GetFileName(FullOutputPath)  'Get the name of the fasta file that was generated
         m_GenerationComplete = True     'Set the completion flag
 
     End Sub
 
-    Private Sub m_FastaTools_FileGenerationProgress(ByVal statusMsg As String, ByVal fractionDone As Double) Handles m_FastaTools.FileGenerationProgress
+    Private Sub m_FastaTools_FileGenerationProgress(statusMsg As String, fractionDone As Double) Handles m_FastaTools.FileGenerationProgress
         Const MINIMUM_LOG_INTERVAL_SEC As Integer = 15
         Static dtLastLogTime As DateTime
         Static dblFractionDoneSaved As Double = -1
 
         If m_DebugLevel >= 3 Then
             ' Limit the logging to once every MINIMUM_LOG_INTERVAL_SEC seconds
-            If System.DateTime.UtcNow.Subtract(dtLastLogTime).TotalSeconds >= MINIMUM_LOG_INTERVAL_SEC OrElse _
+            If System.DateTime.UtcNow.Subtract(dtLastLogTime).TotalSeconds >= MINIMUM_LOG_INTERVAL_SEC OrElse
                fractionDone - dblFractionDoneSaved >= 0.25 Then
                 dtLastLogTime = System.DateTime.UtcNow
                 dblFractionDoneSaved = fractionDone
@@ -56,7 +56,7 @@ Module modMain
         End If
     End Sub
 
-    Private Sub m_FastaTimer_Elapsed(ByVal sender As Object, ByVal e As System.Timers.ElapsedEventArgs) Handles m_FastaTimer.Elapsed
+    Private Sub m_FastaTimer_Elapsed(sender As Object, e As System.Timers.ElapsedEventArgs) Handles m_FastaTimer.Elapsed
 
         If System.DateTime.UtcNow.Subtract(m_FastaGenStartTime).TotalMinutes >= FASTA_GEN_TIMEOUT_INTERVAL_MINUTES Then
             m_FastaGenTimeOut = True        'Set the timeout flag so an error will be reported
@@ -84,9 +84,9 @@ Module modMain
                 If SetOptionsUsingCommandLineParameters(objParseCommandLine) Then blnProceed = True
             End If
 
-            If Not blnProceed OrElse _
-               objParseCommandLine.NeedToShowHelp OrElse _
-               objParseCommandLine.ParameterCount + objParseCommandLine.NonSwitchParameterCount = 0 OrElse _
+            If Not blnProceed OrElse
+               objParseCommandLine.NeedToShowHelp OrElse
+               objParseCommandLine.ParameterCount + objParseCommandLine.NonSwitchParameterCount = 0 OrElse
                (mProteinCollectionList.Length = 0 AndAlso mLegacyFasta.Length = 0) Then
                 ShowProgramHelp()
             Else
@@ -130,11 +130,11 @@ Module modMain
 
     End Sub
 
-	Private Function GetAppVersion(ByVal strProgramDate As String) As String
-		Return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() & " (" & strProgramDate & ")"
-	End Function
+    Private Function GetAppVersion(strProgramDate As String) As String
+        Return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() & " (" & strProgramDate & ")"
+    End Function
 
-    Private Function GetHumanReadableTimeInterval(ByVal dtInterval As System.TimeSpan) As String
+    Private Function GetHumanReadableTimeInterval(dtInterval As System.TimeSpan) As String
 
         If dtInterval.TotalDays >= 1 Then
             ' Report Days
@@ -152,13 +152,13 @@ Module modMain
 
     End Function
 
-    Private Sub LogProteinFileDetails(ByVal CollectionList As String, _
-                                      ByVal CreationOpts As String, _
-                                      ByVal LegacyFasta As String, _
-                                      ByVal HashString As String, _
-                                      ByVal DestFolder As String, _
-                                      ByVal FastaFileName As String, _
-                                      ByVal LogFolderPath As String)
+    Private Sub LogProteinFileDetails(CollectionList As String,
+                                      CreationOpts As String,
+                                      LegacyFasta As String,
+                                      HashString As String,
+                                      DestFolder As String,
+                                      FastaFileName As String,
+                                      LogFolderPath As String)
 
 
         ' Appends a new entry to the log file
@@ -185,16 +185,16 @@ Module modMain
             swOutFile = New System.IO.StreamWriter(New System.IO.FileStream(strLogFilePath, IO.FileMode.Append, IO.FileAccess.Write, IO.FileShare.Read))
 
             If blnWriteHeader Then
-                swOutFile.WriteLine("Date" & ControlChars.Tab & _
-                                    "Time" & ControlChars.Tab & _
-                                    "Protein_Collection_List" & ControlChars.Tab & _
-                                    "Creation_Options" & ControlChars.Tab & _
-                                    "Legacy_Fasta_Name" & ControlChars.Tab & _
-                                    "Hash_String" & ControlChars.Tab & _
-                                    "Fasta_File_Name" & ControlChars.Tab & _
-                                    "Fasta_File_Last_Modified" & ControlChars.Tab & _
-                                    "Fasta_File_Created" & ControlChars.Tab & _
-                                    "Fasta_File_Size_Bytes" & ControlChars.Tab & _
+                swOutFile.WriteLine("Date" & ControlChars.Tab &
+                                    "Time" & ControlChars.Tab &
+                                    "Protein_Collection_List" & ControlChars.Tab &
+                                    "Creation_Options" & ControlChars.Tab &
+                                    "Legacy_Fasta_Name" & ControlChars.Tab &
+                                    "Hash_String" & ControlChars.Tab &
+                                    "Fasta_File_Name" & ControlChars.Tab &
+                                    "Fasta_File_Last_Modified" & ControlChars.Tab &
+                                    "Fasta_File_Created" & ControlChars.Tab &
+                                    "Fasta_File_Size_Bytes" & ControlChars.Tab &
                                     "Fasta_File_Age_vs_PresentTime")
             End If
 
@@ -206,16 +206,16 @@ Module modMain
             End If
 
 
-            swOutFile.WriteLine(System.DateTime.Now.ToString("yyyy-MM-dd") & ControlChars.Tab & _
-                                System.DateTime.Now.ToString("hh:mm:ss tt") & ControlChars.Tab & _
-                                CollectionList & ControlChars.Tab & _
-                                CreationOpts & ControlChars.Tab & _
-                                LegacyFasta & ControlChars.Tab & _
-                                HashString & ControlChars.Tab & _
-                                FastaFileName & ControlChars.Tab & _
-                                fiFastaFile.LastWriteTime.ToString() & ControlChars.Tab & _
-                                fiFastaFile.CreationTime.ToString() & ControlChars.Tab & _
-                                fiFastaFile.Length & ControlChars.Tab & _
+            swOutFile.WriteLine(System.DateTime.Now.ToString("yyyy-MM-dd") & ControlChars.Tab &
+                                System.DateTime.Now.ToString("hh:mm:ss tt") & ControlChars.Tab &
+                                CollectionList & ControlChars.Tab &
+                                CreationOpts & ControlChars.Tab &
+                                LegacyFasta & ControlChars.Tab &
+                                HashString & ControlChars.Tab &
+                                FastaFileName & ControlChars.Tab &
+                                fiFastaFile.LastWriteTime.ToString() & ControlChars.Tab &
+                                fiFastaFile.CreationTime.ToString() & ControlChars.Tab &
+                                fiFastaFile.Length & ControlChars.Tab &
                                 GetHumanReadableTimeInterval(System.DateTime.UtcNow.Subtract(fiFastaFile.LastWriteTimeUtc)))
 
             If Not swOutFile Is Nothing Then
@@ -228,7 +228,7 @@ Module modMain
 
     End Sub
 
-    Private Function SetOptionsUsingCommandLineParameters(ByVal objParseCommandLine As clsParseCommandLine) As Boolean
+    Private Function SetOptionsUsingCommandLineParameters(objParseCommandLine As clsParseCommandLine) As Boolean
         ' Returns True if no problems; otherwise, returns false
 
         Dim strValue As String = String.Empty
@@ -257,7 +257,7 @@ Module modMain
                             ' User specified a non-switch parameter
                             ' Assume it is a protein collection list
                             mProteinCollectionList = .RetrieveNonSwitchParameter(0)
-                            If mProteinCollectionList.ToLower.EndsWith(".fasta") OrElse _
+                            If mProteinCollectionList.ToLower.EndsWith(".fasta") OrElse
                                mProteinCollectionList.ToLower.EndsWith(".fasta""") Then
                                 ' User specified a .fasta file
                                 mLegacyFasta = String.Copy(mProteinCollectionList)
@@ -285,10 +285,10 @@ Module modMain
             Console.WriteLine("Alternatively, you can specify a legacy .Fasta file name to retrieve")
             Console.WriteLine()
             Console.WriteLine("Program syntax:")
-            Console.WriteLine("  " & System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location) & _
+            Console.WriteLine("  " & System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location) &
                                         " /P:ProteinCollectionList [/C:ProteinCollectionCreationOptions] [/O:OutputFolder] [/D]")
             Console.WriteLine("   or   ")
-            Console.WriteLine("  " & System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location) & _
+            Console.WriteLine("  " & System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location) &
                                         " /L:LegacyFastaFileName [/O:OutputFolder] [/D]")
             Console.WriteLine()
             Console.WriteLine("To export one or more protein collections, specify the protein collection names as a comma separated list after the /P switch.")
@@ -300,25 +300,25 @@ Module modMain
             Console.WriteLine("Optionally use /D to log the details of the protein collections, options, and resultant file to a log file.")
             Console.WriteLine()
 
-			Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2009")
-			Console.WriteLine("Version: " & GetAppVersion(PROGRAM_DATE))
+            Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2009")
+            Console.WriteLine("Version: " & GetAppVersion(PROGRAM_DATE))
             Console.WriteLine()
 
             Console.WriteLine("E-mail: matthew.monroe@pnl.gov or matt@alchemistmatt.com")
             Console.WriteLine("Website: http://ncrr.pnl.gov/ or http://www.sysbio.org/resources/staff/")
             Console.WriteLine()
 
-            Console.WriteLine("Licensed under the Apache License, Version 2.0; you may not use this file except in compliance with the License.  " & _
+            Console.WriteLine("Licensed under the Apache License, Version 2.0; you may not use this file except in compliance with the License.  " &
                               "You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0")
             Console.WriteLine()
 
-            Console.WriteLine("Notice: This computer software was prepared by Battelle Memorial Institute, " & _
-                              "hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the " & _
-                              "Department of Energy (DOE).  All rights in the computer software are reserved " & _
-                              "by DOE on behalf of the United States Government and the Contractor as " & _
-                              "provided in the Contract.  NEITHER THE GOVERNMENT NOR THE CONTRACTOR MAKES ANY " & _
-                              "WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY LIABILITY FOR THE USE OF THIS " & _
-                              "SOFTWARE.  This notice including this sentence must appear on any copies of " & _
+            Console.WriteLine("Notice: This computer software was prepared by Battelle Memorial Institute, " &
+                              "hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the " &
+                              "Department of Energy (DOE).  All rights in the computer software are reserved " &
+                              "by DOE on behalf of the United States Government and the Contractor as " &
+                              "provided in the Contract.  NEITHER THE GOVERNMENT NOR THE CONTRACTOR MAKES ANY " &
+                              "WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY LIABILITY FOR THE USE OF THIS " &
+                              "SOFTWARE.  This notice including this sentence must appear on any copies of " &
                               "this computer software.")
 
             ' Delay for 750 msec in case the user double clicked this file from within Windows Explorer (or started the program via a shortcut)
@@ -330,11 +330,11 @@ Module modMain
 
     End Sub
 
-    Public Function TestExport(ByVal CollectionList As String, _
-                               ByVal CreationOpts As String, _
-                               ByVal LegacyFasta As String, _
-                               ByVal DestFolder As String, _
-                               ByVal blnLogProteinFileDetails As Boolean) As Boolean
+    Public Function TestExport(CollectionList As String,
+                               CreationOpts As String,
+                               LegacyFasta As String,
+                               DestFolder As String,
+                               blnLogProteinFileDetails As Boolean) As Boolean
 
         Dim HashString As String
 
@@ -361,7 +361,7 @@ Module modMain
             m_FastaTimer.Start()
             HashString = m_FastaTools.ExportFASTAFile(CollectionList, CreationOpts, LegacyFasta, DestFolder)
         Catch Ex As Exception
-            Console.WriteLine("clsAnalysisResources.CreateFastaFile(), Exception generating OrgDb file: " & Ex.Message & _
+            Console.WriteLine("clsAnalysisResources.CreateFastaFile(), Exception generating OrgDb file: " & Ex.Message &
             "; " & GetExceptionStackTrace(Ex))
             Return False
         End Try
@@ -398,7 +398,7 @@ Module modMain
     ''' <param name="objException"></param>
     ''' <returns>String similar to "Stack trace: clsCodeTest.Test->clsCodeTest.TestException->clsCodeTest.InnerTestException in clsCodeTest.vb:line 86"</returns>
     ''' <remarks></remarks>
-    Public Function GetExceptionStackTrace(ByVal objException As System.Exception) As String
+    Public Function GetExceptionStackTrace(objException As System.Exception) As String
         Const REGEX_FUNCTION_NAME As String = "at ([^(]+)\("
         Const REGEX_FILE_NAME As String = "in .+\\(.+)"
 

@@ -20,7 +20,7 @@ Public Class CRC32
         Dim count As Integer = stream.Read(buffer, 0, readSize)
         Dim i As Integer
         Dim iLookup As Integer
-        Dim tot As Integer = 0
+        Dim tot = 0
         Do While (count > 0)
             For i = 0 To count - 1
                 iLookup = (crc32Result And &HFF) Xor buffer(i)
@@ -38,7 +38,7 @@ Public Class CRC32
 
         ' This is the official polynomial used by CRC32 in PKZip.
         ' Often the polynomial is shown reversed (04C11DB7).
-        Dim dwPolynomial As Integer = &HEDB88320
+        Dim dwPolynomial = &HEDB88320
         Dim i As Integer, j As Integer
 
         ReDim crc32Table(256)

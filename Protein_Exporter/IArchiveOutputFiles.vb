@@ -11,33 +11,33 @@ Public Interface IArchiveOutputFiles
     ReadOnly Property Archived_File_Name() As String
 
     Event ArchiveStart()
-    Event SubTaskStart(ByVal TaskDescription As String)
-    Event SubTaskProgressUpdate(ByVal fractionDone As Double)
-    Event OverallProgressUpdate(ByVal fractionDone As Double)
-    Event ArchiveComplete(ByVal ArchivePath As String)
+    Event SubTaskStart(TaskDescription As String)
+    Event SubTaskProgressUpdate(fractionDone As Double)
+    Event OverallProgressUpdate(fractionDone As Double)
+    Event ArchiveComplete(ArchivePath As String)
 
-    Function ArchiveCollection( _
-        ByVal ProteinCollectionID As Integer, _
-        ByVal ProteinCollectionType As CollectionTypes, _
-        ByVal OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes, _
-        ByVal DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes, _
-        ByVal SourceFilePath As String, _
-        ByVal CreationOptionsString As String, _
-        ByVal Authentication_Hash As String, _
-        ByVal ProteinCollectionList As String) As Integer
-    
-    Function ArchiveCollection( _
-        ByVal ProteinCollectionName As String, _
-        ByVal ProteinCollectionType As CollectionTypes, _
-        ByVal OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes, _
-        ByVal DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes, _
-        ByVal SourceFilePath As String, _
-        ByVal CreationOptionsString As String, _
-        ByVal Authentication_Hash As String, _
-        ByVal ProteinCollectionList As String) As Integer
+    Function ArchiveCollection(
+        ProteinCollectionID As Integer,
+        ProteinCollectionType As CollectionTypes,
+        OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes,
+        DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
+        SourceFilePath As String,
+        CreationOptionsString As String,
+        Authentication_Hash As String,
+        ProteinCollectionList As String) As Integer
 
-    Sub AddArchiveCollectionXRef( _
-        ByVal ProteinCollectionID As Integer, _
-        ByVal Archived_File_ID As Integer)
+    Function ArchiveCollection(
+        ProteinCollectionName As String,
+        ProteinCollectionType As CollectionTypes,
+        OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes,
+        DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
+        SourceFilePath As String,
+        CreationOptionsString As String,
+        Authentication_Hash As String,
+        ProteinCollectionList As String) As Integer
+
+    Sub AddArchiveCollectionXRef(
+        ProteinCollectionID As Integer,
+        Archived_File_ID As Integer)
 
 End Interface

@@ -1,8 +1,8 @@
 Option Strict On
 
 Public Interface ICalculateSeqInfo
-    Sub CalculateSequenceInfo(ByVal Sequence As String)
-    Function GenerateSequenceHash(ByVal Sequence As String) As String
+    Sub CalculateSequenceInfo(Sequence As String)
+    Function GenerateSequenceHash(Sequence As String) As String
 
     ReadOnly Property MonoIsotopicMass() As Double
     ReadOnly Property AverageMass() As Double
@@ -74,7 +74,7 @@ Public Class SequenceInfoCalculator
 #End Region
 
 
-    Protected Sub CalculateSequenceInfo(ByVal Sequence As String) Implements ICalculateSeqInfo.CalculateSequenceInfo
+    Protected Sub CalculateSequenceInfo(Sequence As String) Implements ICalculateSeqInfo.CalculateSequenceInfo
         Dim tmpSeqInfo As SequenceInfo
         tmpSeqInfo = SequenceInfo(Sequence)
         Me.m_MonoIsotopicMass = tmpSeqInfo.MonoisotopicMass
@@ -85,7 +85,7 @@ Public Class SequenceInfoCalculator
 
     End Sub
 
-    Protected Function SequenceInfo(ByVal sequence As String, Optional ByVal description As String = "") As SequenceInfo
+    Protected Function SequenceInfo(sequence As String, Optional description As String = "") As SequenceInfo
         Dim aminoAcids As Char() = sequence.ToCharArray()
         Dim i As Integer = 0
         Dim result As SequenceInfo = New SequenceInfo("", description, 0, 0, 0, 0, 0, 0.0, 0.0)
@@ -111,7 +111,7 @@ Public Class SequenceInfoCalculator
         Return result
     End Function
 
-    Protected Function GenerateHash(ByVal SourceText As String) As String Implements ICalculateSeqInfo.GenerateSequenceHash
+    Protected Function GenerateHash(SourceText As String) As String Implements ICalculateSeqInfo.GenerateSequenceHash
         'Create an encoding object to ensure the encoding standard for the source text
         Dim Ue As New System.Text.ASCIIEncoding
         'Retrieve a byte array based on the source text
@@ -162,16 +162,16 @@ Public Class SequenceInfoCalculator
 
     End Sub
 
-    Private Sub AddAminoAcid(ByVal aa As AminoAcidInfo)
+    Private Sub AddAminoAcid(aa As AminoAcidInfo)
         m_AminoAcids.Add(aa.Symbol, aa)
     End Sub
 
     Private Class AminoAcidInfo
         Inherits SequenceInfo
 
-        Public Sub New(ByVal seq As String, ByVal name As String, _
-                    ByVal C_Count As Integer, ByVal H_Count As Integer, ByVal N_Count As Integer, ByVal O_Count As Integer, ByVal S_Count As Integer, _
-                    ByVal average As Double, ByVal monoisotopic As Double)
+        Public Sub New(seq As String, name As String,
+                    C_Count As Integer, H_Count As Integer, N_Count As Integer, O_Count As Integer, S_Count As Integer,
+                    average As Double, monoisotopic As Double)
             MyBase.New(seq, name, C_Count, H_Count, N_Count, O_Count, S_Count, average, monoisotopic)
             If (seq.Length) <> 1 Then
                 Throw New ApplicationException("'" & seq & "' is not a valid amino acid.  Must be only one character long.")
@@ -195,7 +195,7 @@ Public Class SequenceInfoCalculator
 
         Private Shared hexDigits As Char() = {"0"c, "1"c, "2"c, "3"c, "4"c, "5"c, "6"c, "7"c, "8"c, "9"c, "A"c, "B"c, "C"c, "D"c, "E"c, "F"c}
 
-        Public Shared Function ToHexString(ByVal bytes() As Byte) As String
+        Public Shared Function ToHexString(bytes() As Byte) As String
 
             Dim hexStr As String = ""
             Dim i As Integer
@@ -224,7 +224,7 @@ End Class
 Public Class SequenceInfo
     Private m_invalidated As Boolean = False
     Private m_sequence As String
-    Private m_name As String
+    Private ReadOnly m_name As String
     Private m_C_Count As Integer
     Private m_H_Count As Integer
     Private m_N_Count As Integer
@@ -235,9 +235,9 @@ Public Class SequenceInfo
 
     Shared ResidueCheck As System.Text.RegularExpressions.Regex
 
-    Public Sub New(ByVal seq As String, ByVal name As String, _
-                    ByVal C_Count As Integer, ByVal H_Count As Integer, ByVal N_Count As Integer, ByVal O_Count As Integer, ByVal S_Count As Integer, _
-                    ByVal average As Double, ByVal monoisotopic As Double)
+    Public Sub New(seq As String, name As String,
+                    C_Count As Integer, H_Count As Integer, N_Count As Integer, O_Count As Integer, S_Count As Integer,
+                    average As Double, monoisotopic As Double)
         m_sequence = seq
         m_name = name
         m_C_Count = C_Count
@@ -334,7 +334,7 @@ Public Class SequenceInfo
         Return mf
     End Function
 
-    Public Sub AddSequenceInfo(ByVal info As SequenceInfo)
+    Public Sub AddSequenceInfo(info As SequenceInfo)
 
         If Me.m_sequence.Length = 0 Then
             Me.m_H_Count = 2

@@ -16,7 +16,7 @@ Friend Class clsExtractFromFlatfile
     Private m_MaxProteinNameLength As Integer = 32
 
     'AuthorityLookupHash key = AuthorityID, value = AuthorityName
-    Sub New(ByVal AuthorityList As Hashtable, ByVal PSConnectionString As String)
+    Sub New(AuthorityList As Hashtable, PSConnectionString As String)
         Me.m_Authorities = AuthorityList
         Me.m_PSConnectionString = PSConnectionString
     End Sub
@@ -39,10 +39,10 @@ Friend Class clsExtractFromFlatfile
         End Get
     End Property
 
-    Private Sub ExtractGroupsFromLine( _
-         ByVal entryLine As String, _
-        ByVal delimiter As String, _
-        ByVal useContentsAsColumnNames As Boolean)
+    Private Sub ExtractGroupsFromLine(
+      entryLine As String,
+      delimiter As String,
+      useContentsAsColumnNames As Boolean)
 
         Dim lineHash As Hashtable
         Dim columnNumber As Integer
@@ -75,9 +75,9 @@ Friend Class clsExtractFromFlatfile
 
     End Sub
 
-    Private Function StringToHash( _
-        ByVal entryLine As String, _
-        ByVal delimiter As String) As Hashtable
+    Private Function StringToHash(
+        entryLine As String,
+        delimiter As String) As Hashtable
 
         Dim lineEntries() As String
         Dim lineEntry As String
@@ -101,8 +101,8 @@ Friend Class clsExtractFromFlatfile
     End Function
 
     Function HashToListViewItem(
-        ByVal lineHash As Hashtable,
-        ByVal lineCount As Integer) As System.Windows.Forms.ListViewItem
+        lineHash As Hashtable,
+        lineCount As Integer) As System.Windows.Forms.ListViewItem
 
         Dim lvItem As System.Windows.Forms.ListViewItem
         Dim columnCount As Integer = lineHash.Count
@@ -133,19 +133,19 @@ Friend Class clsExtractFromFlatfile
 
     End Function
 
-    Function LoadGroups( _
-        ByVal delimiter As String, _
-        ByVal UseHeaderLineInfo As Boolean) As Integer
+    Function LoadGroups(
+        delimiter As String,
+        UseHeaderLineInfo As Boolean) As Integer
 
         Me.ExtractGroupsFromLine(Me.m_firstLine, delimiter, UseHeaderLineInfo)
 
     End Function
 
     'Returns number of lines loaded
-    Function LoadFile( _
-        ByVal filePath As String, _
-        ByVal delimiter As String, _
-        ByVal UseHeaderLineInfo As Boolean) As Integer
+    Function LoadFile(
+        filePath As String,
+        delimiter As String,
+        UseHeaderLineInfo As Boolean) As Integer
 
         Dim fi As New System.IO.FileInfo(filePath)
         Dim tr As TextReader = fi.OpenText
@@ -175,9 +175,9 @@ Friend Class clsExtractFromFlatfile
 
     'PrimaryReferenceNameColumnID is the number of the column with the name to use as primary
     'AuthorityHash is a hashtable with columnID (number), and authorityID for that column
-    Sub ParseLoadedFile( _
-        ByVal PrimaryReferenceNameColumnID As Integer, _
-        ByVal AuthorityHash As Hashtable)
+    Sub ParseLoadedFile(
+        PrimaryReferenceNameColumnID As Integer,
+        AuthorityHash As Hashtable)
 
 
         'Me.m_AnnotationStorage = New AnnotationStorage
@@ -187,8 +187,8 @@ Friend Class clsExtractFromFlatfile
         Dim primaryRef As String
 
         'For columnNumber = 1 To Me.m_ColumnNameLookup.Count
-        '    Me.m_AnnotationStorage.AddAnnotationGroup( _
-        '        columnNumber, _
+        '    Me.m_AnnotationStorage.AddAnnotationGroup(
+        '        columnNumber,
         '        Me.m_ColumnNameLookup(columnNumber.ToString).ToString)
         'Next
 
@@ -198,22 +198,22 @@ Friend Class clsExtractFromFlatfile
             primaryRef = lineHash(PrimaryReferenceNameColumnID).ToString
 
             For columnNumber = 1 To lineHash.Count
-                If Not columnNumber.Equals(PrimaryReferenceNameColumnID) And _
+                If Not columnNumber.Equals(PrimaryReferenceNameColumnID) And
                     Not lineHash.Item(columnNumber).Equals("---") Then
-                    Me.m_AnnotationStorage.AddAnnotation( _
-                        columnNumber, primaryRef, _
+                    Me.m_AnnotationStorage.AddAnnotation(
+                        columnNumber, primaryRef,
                         lineHash.Item(columnNumber).ToString)
                 End If
             Next
         Next
     End Sub
 
-    Function LookupAuthorityName(ByVal AuthorityID As Integer) As String
+    Function LookupAuthorityName(AuthorityID As Integer) As String
         Return Me.m_Authorities.Item(AuthorityID.ToString).ToString
     End Function
 
-    Function GetListViewItemForGroup( _
-        ByVal GroupID As Integer) As System.Windows.Forms.ListViewItem
+    Function GetListViewItemForGroup(
+        GroupID As Integer) As System.Windows.Forms.ListViewItem
 
         Dim li As New System.Windows.Forms.ListViewItem(GroupID.ToString)
         With li.SubItems
@@ -233,13 +233,13 @@ Friend Class clsExtractFromFlatfile
         Return li
     End Function
 
-    Sub ChangeAuthorityIDforGroup(ByVal GroupID As Integer, ByVal AuthorityID As Integer)
+    Sub ChangeAuthorityIDforGroup(GroupID As Integer, AuthorityID As Integer)
 
         Me.m_AnnotationStorage.AnnotationAuthorityID(GroupID) = AuthorityID
 
     End Sub
 
-    Sub UploadNewNames(ByVal PrimaryReferenceNameColumnID As Integer)
+    Sub UploadNewNames(PrimaryReferenceNameColumnID As Integer)
         Me.ParseLoadedFile(PrimaryReferenceNameColumnID, Me.m_Authorities)
         If Me.m_Uploader Is Nothing Then
             Me.m_Uploader = New Protein_Importer.clsAddUpdateEntries(Me.m_PSConnectionString)
@@ -268,7 +268,7 @@ Friend Class clsExtractFromFlatfile
         
     End Sub
 
-    Private Function GetProteinIDsForPrimaryReferences(ByVal PrimaryReferences As SortedSet(Of String)) As Dictionary(Of String, Integer)
+    Private Function GetProteinIDsForPrimaryReferences(PrimaryReferences As SortedSet(Of String)) As Dictionary(Of String, Integer)
         Dim name As String
         Dim ht As New Dictionary(Of String, Integer)(PrimaryReferences.Count)
         Dim id As Integer

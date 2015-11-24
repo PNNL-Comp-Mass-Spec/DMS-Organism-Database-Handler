@@ -14,7 +14,7 @@ Public Class frmTestingInterface
     End Sub
 
     'Form overrides dispose to clean up the component list.
-    Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
+    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
         If disposing Then
             If Not (components Is Nothing) Then
                 components.Dispose()
@@ -88,7 +88,7 @@ Public Class frmTestingInterface
         Me.txtTransFilePath.Name = "txtTransFilePath"
         Me.txtTransFilePath.Size = New System.Drawing.Size(590, 20)
         Me.txtTransFilePath.TabIndex = 0
-        Me.txtTransFilePath.Text = "C:\Documents and Settings\d3k857\My Documents\Visual Studio Projects\Organism Dat" & _
+        Me.txtTransFilePath.Text = "C:\Documents and Settings\d3k857\My Documents\Visual Studio Projects\Organism Dat" &
         "abase Handler\Aux_Files\gc.ptr"
         '
         'cmdLoadTT
@@ -328,7 +328,7 @@ Public Class frmTestingInterface
 
     'Private exporter As ExportCollectionsFromDMS.IExportCollectionsFromDMS
 
-    Private Sub frmTestingInterface_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+    Private Sub frmTestingInterface_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         importer = New Protein_Importer.clsImportHandler(Me.txtConnString.Text)
         collectionList = importer.LoadProteinCollections()
         With Me.cboCollectionsList
@@ -339,13 +339,13 @@ Public Class frmTestingInterface
 
     End Sub
 
-    Private Sub cmdLoadTT_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdLoadTT.Click
+    Private Sub cmdLoadTT_Click(sender As System.Object, e As System.EventArgs) Handles cmdLoadTT.Click
         Dim transhandler As TranslationTableImport.ITransTableImport
         transhandler = New TranslationTableImport.clsTransTableHandler(Me.txtConnString.Text)
         transhandler.GetAllTranslationTableEntries(Me.txtTransFilePath.Text)
     End Sub
 
-    Private Sub cmdLoadFF_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdLoadFF.Click
+    Private Sub cmdLoadFF_Click(sender As System.Object, e As System.EventArgs) Handles cmdLoadFF.Click
         Dim importHandler As Protein_Importer.IImportProteins = New Protein_Importer.clsImportHandler(Me.txtConnString.Text)
 
         'importHandler.LoadProteins(Me.txtFASTAFilePath.Text, "", Protein_Importer.IImportProteins.ProteinImportFileTypes.FASTA, 4, 1)
@@ -377,7 +377,7 @@ Public Class frmTestingInterface
 
     End Sub
 
-    Private Sub cmdBrowseTT_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdBrowseTT.Click, cmdBrowseFF.Click
+    Private Sub cmdBrowseTT_Click(sender As System.Object, e As System.EventArgs) Handles cmdBrowseTT.Click, cmdBrowseFF.Click
         Dim newFilePath As String
         Dim OpenDialog As New OpenFileDialog
 
@@ -405,20 +405,20 @@ Public Class frmTestingInterface
         End If
     End Sub
 
-    Private Sub Button2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button2.Click
-        Dim trans As NucleotideTranslator.ITranslateNucleotides = _
+    Private Sub Button2_Click(sender As System.Object, e As System.EventArgs) Handles Button2.Click
+        Dim trans As NucleotideTranslator.ITranslateNucleotides =
             New NucleotideTranslator.clsTranslateNucleotides(Me.txtConnString.Text)
 
         trans.LoadMatrix(1)
     End Sub
 
-    Private Sub cmdExportFASTA_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdExportFASTA.Click
+    Private Sub cmdExportFASTA_Click(sender As System.Object, e As System.EventArgs) Handles cmdExportFASTA.Click
         Dim sd As New FolderBrowserDialog
 
         Dim filePath As String
         Dim r As DialogResult
         Dim fingerprint As String
-     
+
         'Dim exporter As Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS
         'Dim tmpNameList As New ArrayList
 
@@ -436,14 +436,14 @@ Public Class frmTestingInterface
 
             'tmpNameList.Add(Me.cboCollectionsList.Text.ToString)
             'exporter = New Protein_Exporter.clsGetFASTAFromDMS(Me.txtConnString.Text, Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.FASTA, Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward_sequence)
-            'exporter = New Protein_Exporter.clsGetFASTAFromDMS( _
-            '    Me.txtConnString.Text, _
-            '    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.FASTA, _
+            'exporter = New Protein_Exporter.clsGetFASTAFromDMS(
+            '    Me.txtConnString.Text,
+            '    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.FASTA,
             '    Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)) + "_scrambled.fasta")
 
-            'Me.m_Exporter = New Protein_Exporter.clsGetFASTAFromDMS( _
-            '    Me.txtConnString.Text, _
-            '    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta, _
+            'Me.m_Exporter = New Protein_Exporter.clsGetFASTAFromDMS(
+            '    Me.txtConnString.Text,
+            '    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
             '    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward)
             Me.m_Exporter = New Protein_Exporter.clsGetFASTAFromDMS(Me.txtConnString.Text)
 
@@ -497,23 +497,23 @@ Public Class frmTestingInterface
 
     End Sub
 
-    Private Function GetCollectionName(ByVal ProteinCollectionID As Integer) As String
+    Private Function GetCollectionName(ProteinCollectionID As Integer) As String
         Dim foundRows() As DataRow
         foundRows = Me.collectionList.Select("Protein_Collection_ID = " & ProteinCollectionID.ToString)
         Return foundRows(0).Item("FileName").ToString
     End Function
 
-    Private Sub cmdBatchLoadDMS_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        Dim fileBatcher As Protein_Uploader.clsBatchUploadFromFileList = _
+    Private Sub cmdBatchLoadDMS_Click(sender As System.Object, e As System.EventArgs)
+        Dim fileBatcher As Protein_Uploader.clsBatchUploadFromFileList =
             New Protein_Uploader.clsBatchUploadFromFileList(Me.txtConnString.Text)
         fileBatcher.UploadBatch()
     End Sub
 
-    Private Sub cmdBatchLoadDMS_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdBatchLoadDMS.Click
+    Private Sub cmdBatchLoadDMS_Click_1(sender As System.Object, e As System.EventArgs) Handles cmdBatchLoadDMS.Click
 
     End Sub
 
-    Private Sub cmdUpdateArchiveTables_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUpdateArchiveTables.Click
+    Private Sub cmdUpdateArchiveTables_Click(sender As System.Object, e As System.EventArgs) Handles cmdUpdateArchiveTables.Click
         Dim f As FolderBrowserDialog = New FolderBrowserDialog
 
         If Me.m_Syncer Is Nothing Then
@@ -542,7 +542,7 @@ Public Class frmTestingInterface
 
     End Sub
 
-    Private Sub StartTask(ByVal StatusMsg As String) Handles m_Syncer.SyncStart, m_Exporter.FileGenerationStarted
+    Private Sub StartTask(StatusMsg As String) Handles m_Syncer.SyncStart, m_Exporter.FileGenerationStarted
         Me.pgbAdminConsole.Visible = True
         Me.lblProgress.Visible = True
 
@@ -554,7 +554,7 @@ Public Class frmTestingInterface
 
     End Sub
 
-    Private Sub UpdateProgress(ByVal StatusMsg As String, ByVal fractionDone As Double) Handles m_Syncer.SyncProgress, m_Exporter.FileGenerationProgress
+    Private Sub UpdateProgress(StatusMsg As String, fractionDone As Double) Handles m_Syncer.SyncProgress, m_Exporter.FileGenerationProgress
         Me.m_ProgressMessage = StatusMsg
         Dim percentComplete As Integer = CInt(fractionDone * 100)
         If fractionDone > 0 Then
@@ -572,11 +572,11 @@ Public Class frmTestingInterface
         Me.lblProgress.Visible = False
     End Sub
 
-    Private Sub CompletedTask(ByVal fullOutputPath As String) Handles m_Exporter.FileGenerationCompleted
+    Private Sub CompletedTask(fullOutputPath As String) Handles m_Exporter.FileGenerationCompleted
         Me.pgbAdminConsole.Visible = False
-        Me.lblProgress.Text = _
-            "Wrote " + _
-            System.IO.Path.GetFileName(fullOutputPath) + _
+        Me.lblProgress.Text =
+            "Wrote " +
+            System.IO.Path.GetFileName(fullOutputPath) +
             " to " + System.IO.Path.GetDirectoryName(fullOutputPath)
         Me.lblProgress.Visible = True
         Me.m_FullOutputPath = fullOutputPath

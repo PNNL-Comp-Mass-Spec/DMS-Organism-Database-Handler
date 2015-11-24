@@ -1,7 +1,7 @@
 Public Interface ITranslateNucleotides
 
-    Function LoadMatrix(ByVal TranslationTableID As Integer) As ArrayList
-    Function LoadNucleotidePositionsFromFile(ByVal filePath As String) As Integer
+    Function LoadMatrix(TranslationTableID As Integer) As ArrayList
+    Function LoadNucleotidePositionsFromFile(filePath As String) As Integer
 
 End Interface
 
@@ -16,21 +16,21 @@ Public Class clsTranslateNucleotides
 
 
 
-    Public Sub New(ByVal DMSConnectionString As String)
+    Public Sub New(DMSConnectionString As String)
         Me.m_GetSQLData = New TableManipulationBase.clsDBTask(DMSConnectionString)
 
 
     End Sub
 
-    Protected Function LoadTransMatrix(ByVal TranslationTableID As Integer) As ArrayList Implements ITranslateNucleotides.LoadMatrix
+    Protected Function LoadTransMatrix(TranslationTableID As Integer) As ArrayList Implements ITranslateNucleotides.LoadMatrix
 
         Dim BaseArray() As Char = "ATGC".ToCharArray
         Dim base_1 As Char
         Dim base_2 As Char
         Dim base_3 As Char
 
-        Dim selectSQL As String = _
-            "SELECT * FROM " & Me.m_TransTableMembersName & _
+        Dim selectSQL As String =
+            "SELECT * FROM " & Me.m_TransTableMembersName &
             " WHERE DNA_Translation_Table_ID = " & TranslationTableID
 
         Dim members As DataTable = Me.m_GetSQLData.GetTable(selectSQL)
@@ -47,8 +47,8 @@ Public Class clsTranslateNucleotides
             For Each base_2 In BaseArray
 
                 For Each base_3 In BaseArray
-                    tertSelect = "Base_1 = '" & base_1.ToString & _
-                        "' AND Base_2 = '" & base_2.ToString & _
+                    tertSelect = "Base_1 = '" & base_1.ToString &
+                        "' AND Base_2 = '" & base_2.ToString &
                         "' AND Base_3 = '" & base_3.ToString & "'"
                     TertiaryRows = members.Select(tertSelect)
 
@@ -67,7 +67,7 @@ Public Class clsTranslateNucleotides
         Return PrimaryList
     End Function
 
-    Protected Function LoadNucPositions(ByVal filePath As String) As Integer Implements ITranslateNucleotides.LoadNucleotidePositionsFromFile
+    Protected Function LoadNucPositions(filePath As String) As Integer Implements ITranslateNucleotides.LoadNucleotidePositionsFromFile
 
     End Function
 

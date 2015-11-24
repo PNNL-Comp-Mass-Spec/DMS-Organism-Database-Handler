@@ -12,9 +12,9 @@ Public Class clsExportProteinsXTFASTA
     Const HEADER_STRING As String = "xbang-pro-fasta-format"
 
 
-    Protected Overloads Overrides Function Export( _
-        ByRef Proteins As Protein_Storage.IProteinStorage, _
-        ByRef destinationPath As String) As String
+    Protected Overloads Overrides Function Export(
+      Proteins As Protein_Storage.IProteinStorage,
+      ByRef destinationPath As String) As String
 
 
         Dim buffer(HEADER_STRING.Length) As Byte
@@ -29,7 +29,7 @@ Public Class clsExportProteinsXTFASTA
             Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
         End If
 
-        Dim bw As System.IO.BinaryWriter = New System.IO.BinaryWriter(IO.File.OpenWrite(destinationPath))
+        Dim bw = New System.IO.BinaryWriter(IO.File.OpenWrite(destinationPath))
 
         bw.BaseStream.Seek(0, IO.SeekOrigin.Begin)
 
@@ -113,9 +113,9 @@ Public Class clsExportProteinsXTFASTA
 
     End Function
 
-    Protected Overloads Overrides Function Export( _
-    ByRef ProteinTables As DataSet, _
-    ByRef destinationPath As String) As String
+    Protected Overloads Overrides Function Export(
+      ProteinTables As DataSet,
+      ByRef destinationPath As String) As String
 
 
         Dim buffer(HEADER_STRING.Length) As Byte
@@ -131,7 +131,7 @@ Public Class clsExportProteinsXTFASTA
             Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
         End If
 
-        Dim bw As System.IO.BinaryWriter = New System.IO.BinaryWriter(IO.File.OpenWrite(destinationPath))
+        Dim bw = New System.IO.BinaryWriter(IO.File.OpenWrite(destinationPath))
 
         bw.BaseStream.Seek(0, IO.SeekOrigin.Begin)
 
@@ -222,18 +222,18 @@ Public Class clsExportProteinsXTFASTA
 
     End Function
 
-    Protected Overloads Overrides Function Export( _
-        ByRef ProteinTable As DataTable, _
-        ByRef destinationPath As String) As String
+    Protected Overloads Overrides Function Export(
+      ProteinTable As DataTable,
+      ByRef destinationPath As String) As String
 
         ' Not implemented for this class
         Return String.Empty
 
     End Function
 
-    Friend Function ConvIntegertoByteArray(ByVal n As Long, ByVal lg As Integer) As Byte()
+    Friend Function ConvIntegertoByteArray(n As Long, lg As Integer) As Byte()
         'converts an integer to a byte array of length lg
-        Dim m() As Byte = New Byte(lg - 1) {}
+        Dim m = New Byte(lg - 1) {}
         Dim i, k As Integer
         Dim h As String
         h = Hex(n).PadLeft(16, "0"c)
@@ -245,7 +245,7 @@ Public Class clsExportProteinsXTFASTA
         Return m
     End Function
 
-    Public Function ConvByteArraytoInteger(ByVal b As Byte(), Optional ByVal ln As Integer = 0, Optional ByVal sidx As Integer = 0) As Long
+    Public Function ConvByteArraytoInteger(b As Byte(), Optional ln As Integer = 0, Optional sidx As Integer = 0) As Long
         Dim i As Integer
         Dim j, k As Long
         If ln = 0 Then ln = UBound(b) + 1
