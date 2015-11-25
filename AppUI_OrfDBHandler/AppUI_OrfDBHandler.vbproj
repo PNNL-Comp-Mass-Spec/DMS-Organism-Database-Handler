@@ -230,6 +230,12 @@
     <Compile Include="frmFilePreview.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmNewCollectionMetadataEditor.Designer.vb">
+      <DependentUpon>frmNewCollectionMetadataEditor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmNewCollectionMetadataEditor.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmTestingInterface.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -262,6 +268,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmFilePreview.resx">
       <DependentUpon>frmFilePreview.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmNewCollectionMetadataEditor.resx">
+      <DependentUpon>frmNewCollectionMetadataEditor.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmTestingInterface.resx">
       <DependentUpon>frmTestingInterface.vb</DependentUpon>

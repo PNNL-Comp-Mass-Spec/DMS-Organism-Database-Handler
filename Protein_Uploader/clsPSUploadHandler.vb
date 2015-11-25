@@ -24,7 +24,9 @@ Public Interface IUploadProteins
         fileContents As Protein_Storage.IProteinStorage,
         filepath As String,
         organismID As Integer,
-        annotationTypeID As Integer) As Integer
+        annotationTypeID As Integer,
+        description As String,
+        source As String) As Integer
 
     Sub BatchUpload(fileInfoList As IEnumerable(Of UploadInfo))
 
@@ -40,21 +42,28 @@ Public Interface IUploadProteins
             Me.FileInformation = FileInformation
             Me.OrganismID = OrgID
             Me.AnnotationTypeID = AnnotTypeID
-            Me.EncryptionPassphrase = ""
+            Me.EncryptionPassphrase = String.Empty
+            Description = String.Empty
+            Source = String.Empty
         End Sub
         Public FileInformation As System.IO.FileInfo
         Public OriginalFileInformation As System.IO.FileInfo
         Public OrganismID As Integer
+        Public Description As String
+        Public Source As String
         Public AnnotationTypeID As Integer
         Public ProteinCount As Integer
         Public ErrorList As List(Of String)
         Public SummarizedErrors As Hashtable
         Public ExportedProteinCount As Integer
+
+        ' <Obsolete("No longer supported")>
         Public EncryptSequences As Boolean
+
+        ' <Obsolete("No longer supported")>
         Public EncryptionPassphrase As String
     End Structure
-
-
+    
     Event LoadStart(taskTitle As String)
     Event LoadProgress(fractionDone As Double)
     Event LoadEnd()
@@ -342,7 +351,7 @@ Public Class clsPSUploadHandler
                         Me.OnInvalidFASTAFile(upInfo.FileInformation.FullName, errorCollection)
                     Else
 
-                        If upInfo.EncryptSequences And upInfo.EncryptionPassphrase.Length > 0 Then
+                        If upInfo.EncryptSequences AndAlso Not String.IsNullOrEmpty(upInfo.EncryptionPassphrase) Then
                             Me.m_Encryptor = New clsCollectionEncryptor(upInfo.EncryptionPassphrase, Me.m_PISConnectionString)
                             Me.m_Encryptor.EncryptStorageCollectionSequences(tmpPS)
                             tmpPS.EncryptSequences = True
@@ -350,7 +359,7 @@ Public Class clsPSUploadHandler
                         End If
 
                         upInfo.ProteinCount = tmpPS.ProteinCount
-                        Me.CollectionBatchUploadCoordinator(tmpPS, tmpFileName, upInfo.OrganismID, upInfo.AnnotationTypeID)
+                        Me.CollectionBatchUploadCoordinator(tmpPS, tmpFileName, upInfo.OrganismID, upInfo.AnnotationTypeID, upInfo.Description, upInfo.Source)
                         'upInfo.ExportedProteinCount = Me.m_Export.ExportedProteinCount
                         Me.OnValidFASTAFileUpload(upInfo.FileInformation.FullName, upInfo)
                         tmpPS.ClearProteinEntries()
@@ -458,7 +467,9 @@ Public Class clsPSUploadHandler
         fileContents As Protein_Storage.IProteinStorage,
         filepath As String,
         organismID As Integer,
-        annotationTypeID As Integer) As Integer Implements IUploadProteins.UploadCollection
+        annotationTypeID As Integer,
+        description As String,
+        source As String) As Integer Implements IUploadProteins.UploadCollection
 
         Dim selectedList As New List(Of String)
 
@@ -469,9 +480,6 @@ Public Class clsPSUploadHandler
         End While
 
         selectedList.Sort()
-
-        Const description = ""
-        Const source = ""
 
         Return Me.CollectionUploadCoordinator(
             fileContents, selectedList, filepath, description, source,

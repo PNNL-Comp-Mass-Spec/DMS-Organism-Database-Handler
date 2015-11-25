@@ -1,7 +1,7 @@
 Imports ExpTreeLib
-Imports ExpTreeLib.CShItem
 Imports System.Collections.Generic
-Imports System.Text.RegularExpressions
+Imports System.Drawing.Imaging
+Imports System.Linq
 Imports Protein_Uploader
 
 Public Class frmBatchAddNewCollectionTest
@@ -70,7 +70,6 @@ Public Class frmBatchAddNewCollectionTest
     Friend WithEvents colAnnType As System.Windows.Forms.ColumnHeader
     Friend WithEvents cmdPreviewFile As System.Windows.Forms.Button
     Friend WithEvents chkEncryptionEnable As System.Windows.Forms.CheckBox
-    Friend WithEvents colEncrypt As System.Windows.Forms.ColumnHeader
     Friend WithEvents lblPassphrase As System.Windows.Forms.Label
     Friend WithEvents txtPassphrase As System.Windows.Forms.TextBox
     Friend WithEvents fraValidationOptions As System.Windows.Forms.GroupBox
@@ -79,6 +78,9 @@ Public Class frmBatchAddNewCollectionTest
     Friend WithEvents txtMaximumProteinNameLength As System.Windows.Forms.TextBox
     Friend WithEvents lblMaximumProteinNameLength As System.Windows.Forms.Label
     Friend WithEvents chkValidationAllowAllSymbolsInProteinNames As System.Windows.Forms.CheckBox
+    Friend WithEvents colDescription As System.Windows.Forms.ColumnHeader
+    Friend WithEvents colSource As System.Windows.Forms.ColumnHeader
+    Friend WithEvents cmdUpdateDescription As System.Windows.Forms.Button
     Friend WithEvents chkValidationAllowDash As System.Windows.Forms.CheckBox
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
@@ -100,8 +102,9 @@ Public Class frmBatchAddNewCollectionTest
         Me.lvwSelectedFiles = New System.Windows.Forms.ListView()
         Me.colUpFileName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.colSelOrganism = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colDescription = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colSource = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.colAnnType = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.colEncrypt = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.lblSelectedFiles = New System.Windows.Forms.Label()
         Me.cmdAddFile = New UIControls.ImageButton()
         Me.cmdRemoveFile = New UIControls.ImageButton()
@@ -116,6 +119,7 @@ Public Class frmBatchAddNewCollectionTest
         Me.chkValidationAllowAsterisks = New System.Windows.Forms.CheckBox()
         Me.chkValidationAllowDash = New System.Windows.Forms.CheckBox()
         Me.cmdRefreshFiles = New System.Windows.Forms.Button()
+        Me.cmdUpdateDescription = New System.Windows.Forms.Button()
         Me.fraValidationOptions.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -125,7 +129,7 @@ Public Class frmBatchAddNewCollectionTest
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.expUploadFolderSelect.Location = New System.Drawing.Point(14, 32)
         Me.expUploadFolderSelect.Name = "expUploadFolderSelect"
-        Me.expUploadFolderSelect.Size = New System.Drawing.Size(308, 431)
+        Me.expUploadFolderSelect.Size = New System.Drawing.Size(308, 502)
         Me.expUploadFolderSelect.TabIndex = 1
         '
         'cboOrganismSelect
@@ -133,10 +137,10 @@ Public Class frmBatchAddNewCollectionTest
         Me.cboOrganismSelect.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboOrganismSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboOrganismSelect.Location = New System.Drawing.Point(8, 491)
+        Me.cboOrganismSelect.Location = New System.Drawing.Point(8, 562)
         Me.cboOrganismSelect.Name = "cboOrganismSelect"
-        Me.cboOrganismSelect.Size = New System.Drawing.Size(512, 25)
-        Me.cboOrganismSelect.TabIndex = 10
+        Me.cboOrganismSelect.Size = New System.Drawing.Size(585, 25)
+        Me.cboOrganismSelect.TabIndex = 11
         '
         'lblBatchUploadTree
         '
@@ -149,11 +153,11 @@ Public Class frmBatchAddNewCollectionTest
         'lblOrganismSelect
         '
         Me.lblOrganismSelect.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblOrganismSelect.Location = New System.Drawing.Point(8, 471)
+        Me.lblOrganismSelect.Location = New System.Drawing.Point(8, 542)
         Me.lblOrganismSelect.Name = "lblOrganismSelect"
         Me.lblOrganismSelect.Size = New System.Drawing.Size(261, 20)
-        Me.lblOrganismSelect.TabIndex = 9
-        Me.lblOrganismSelect.Text = "Select Destination Organism"
+        Me.lblOrganismSelect.TabIndex = 10
+        Me.lblOrganismSelect.Text = "Select Destination &Organism"
         '
         'lblFolderContents
         '
@@ -161,7 +165,7 @@ Public Class frmBatchAddNewCollectionTest
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblFolderContents.Location = New System.Drawing.Point(342, 12)
         Me.lblFolderContents.Name = "lblFolderContents"
-        Me.lblFolderContents.Size = New System.Drawing.Size(738, 20)
+        Me.lblFolderContents.Size = New System.Drawing.Size(811, 20)
         Me.lblFolderContents.TabIndex = 2
         Me.lblFolderContents.Text = "Selected Folder Contents"
         '
@@ -169,20 +173,20 @@ Public Class frmBatchAddNewCollectionTest
         '
         Me.cmdCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cmdCancel.Location = New System.Drawing.Point(996, 566)
+        Me.cmdCancel.Location = New System.Drawing.Point(1077, 628)
         Me.cmdCancel.Name = "cmdCancel"
-        Me.cmdCancel.Size = New System.Drawing.Size(84, 27)
-        Me.cmdCancel.TabIndex = 18
+        Me.cmdCancel.Size = New System.Drawing.Size(84, 36)
+        Me.cmdCancel.TabIndex = 20
         Me.cmdCancel.Text = "Cancel"
         '
         'cmdUploadChecked
         '
         Me.cmdUploadChecked.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdUploadChecked.Location = New System.Drawing.Point(814, 566)
+        Me.cmdUploadChecked.Location = New System.Drawing.Point(894, 628)
         Me.cmdUploadChecked.Name = "cmdUploadChecked"
-        Me.cmdUploadChecked.Size = New System.Drawing.Size(168, 27)
-        Me.cmdUploadChecked.TabIndex = 17
-        Me.cmdUploadChecked.Text = "&Upload Selected List"
+        Me.cmdUploadChecked.Size = New System.Drawing.Size(168, 36)
+        Me.cmdUploadChecked.TabIndex = 19
+        Me.cmdUploadChecked.Text = "&Upload New FASTAs"
         '
         'lvwFolderContents
         '
@@ -195,7 +199,7 @@ Public Class frmBatchAddNewCollectionTest
         Me.lvwFolderContents.HideSelection = False
         Me.lvwFolderContents.Location = New System.Drawing.Point(342, 32)
         Me.lvwFolderContents.Name = "lvwFolderContents"
-        Me.lvwFolderContents.Size = New System.Drawing.Size(746, 122)
+        Me.lvwFolderContents.Size = New System.Drawing.Size(819, 193)
         Me.lvwFolderContents.Sorting = System.Windows.Forms.SortOrder.Ascending
         Me.lvwFolderContents.TabIndex = 3
         Me.lvwFolderContents.UseCompatibleStateImageBehavior = False
@@ -204,12 +208,12 @@ Public Class frmBatchAddNewCollectionTest
         'colFileName
         '
         Me.colFileName.Text = "Name"
-        Me.colFileName.Width = 335
+        Me.colFileName.Width = 450
         '
         'colFileModDate
         '
         Me.colFileModDate.Text = "Date Modified"
-        Me.colFileModDate.Width = 121
+        Me.colFileModDate.Width = 140
         '
         'colFileSize
         '
@@ -218,39 +222,39 @@ Public Class frmBatchAddNewCollectionTest
         '
         'colCollectionExists
         '
-        Me.colCollectionExists.Text = "Uploaded?"
-        Me.colCollectionExists.Width = 63
+        Me.colCollectionExists.Text = "Existing Collection?"
+        Me.colCollectionExists.Width = 150
         '
         'cboAnnotationTypePicker
         '
         Me.cboAnnotationTypePicker.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboAnnotationTypePicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboAnnotationTypePicker.Location = New System.Drawing.Point(544, 491)
+        Me.cboAnnotationTypePicker.Location = New System.Drawing.Point(617, 562)
         Me.cboAnnotationTypePicker.Name = "cboAnnotationTypePicker"
         Me.cboAnnotationTypePicker.Size = New System.Drawing.Size(364, 25)
-        Me.cboAnnotationTypePicker.TabIndex = 12
+        Me.cboAnnotationTypePicker.TabIndex = 13
         '
         'lblAnnAuth
         '
         Me.lblAnnAuth.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblAnnAuth.Location = New System.Drawing.Point(544, 471)
+        Me.lblAnnAuth.Location = New System.Drawing.Point(617, 542)
         Me.lblAnnAuth.Name = "lblAnnAuth"
         Me.lblAnnAuth.Size = New System.Drawing.Size(285, 20)
-        Me.lblAnnAuth.TabIndex = 11
-        Me.lblAnnAuth.Text = "Select Annotation Type"
+        Me.lblAnnAuth.TabIndex = 12
+        Me.lblAnnAuth.Text = "Select Annotation &Type"
         '
         'lvwSelectedFiles
         '
         Me.lvwSelectedFiles.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lvwSelectedFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colUpFileName, Me.colSelOrganism, Me.colAnnType, Me.colEncrypt})
+        Me.lvwSelectedFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colUpFileName, Me.colSelOrganism, Me.colDescription, Me.colSource, Me.colAnnType})
         Me.lvwSelectedFiles.FullRowSelect = True
         Me.lvwSelectedFiles.GridLines = True
         Me.lvwSelectedFiles.HideSelection = False
-        Me.lvwSelectedFiles.Location = New System.Drawing.Point(342, 239)
+        Me.lvwSelectedFiles.Location = New System.Drawing.Point(342, 310)
         Me.lvwSelectedFiles.Name = "lvwSelectedFiles"
-        Me.lvwSelectedFiles.Size = New System.Drawing.Size(746, 224)
-        Me.lvwSelectedFiles.TabIndex = 8
+        Me.lvwSelectedFiles.Size = New System.Drawing.Size(819, 224)
+        Me.lvwSelectedFiles.TabIndex = 9
         Me.lvwSelectedFiles.UseCompatibleStateImageBehavior = False
         Me.lvwSelectedFiles.View = System.Windows.Forms.View.Details
         '
@@ -264,22 +268,28 @@ Public Class frmBatchAddNewCollectionTest
         Me.colSelOrganism.Text = "Selected Organism"
         Me.colSelOrganism.Width = 141
         '
+        'colDescription
+        '
+        Me.colDescription.Text = "Description"
+        Me.colDescription.Width = 150
+        '
+        'colSource
+        '
+        Me.colSource.Text = "Source (person, URL, FTP)"
+        Me.colSource.Width = 150
+        '
         'colAnnType
         '
         Me.colAnnType.Text = "Annotation Type"
         Me.colAnnType.Width = 105
         '
-        'colEncrypt
-        '
-        Me.colEncrypt.Text = "Encrypt?"
-        '
         'lblSelectedFiles
         '
         Me.lblSelectedFiles.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblSelectedFiles.Location = New System.Drawing.Point(342, 208)
+        Me.lblSelectedFiles.Location = New System.Drawing.Point(342, 279)
         Me.lblSelectedFiles.Name = "lblSelectedFiles"
         Me.lblSelectedFiles.Size = New System.Drawing.Size(868, 19)
-        Me.lblSelectedFiles.TabIndex = 4
+        Me.lblSelectedFiles.TabIndex = 8
         Me.lblSelectedFiles.Text = "FASTA Files Selected for Upload"
         '
         'cmdAddFile
@@ -287,10 +297,10 @@ Public Class frmBatchAddNewCollectionTest
         Me.cmdAddFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdAddFile.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.cmdAddFile.GenerateDisabledImage = True
-        Me.cmdAddFile.Location = New System.Drawing.Point(584, 176)
+        Me.cmdAddFile.Location = New System.Drawing.Point(657, 247)
         Me.cmdAddFile.Name = "cmdAddFile"
         Me.cmdAddFile.Size = New System.Drawing.Size(48, 44)
-        Me.cmdAddFile.TabIndex = 5
+        Me.cmdAddFile.TabIndex = 6
         Me.cmdAddFile.ThemedImage = CType(resources.GetObject("cmdAddFile.ThemedImage"), System.Drawing.Bitmap)
         '
         'cmdRemoveFile
@@ -298,51 +308,51 @@ Public Class frmBatchAddNewCollectionTest
         Me.cmdRemoveFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdRemoveFile.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.cmdRemoveFile.GenerateDisabledImage = True
-        Me.cmdRemoveFile.Location = New System.Drawing.Point(654, 176)
+        Me.cmdRemoveFile.Location = New System.Drawing.Point(727, 247)
         Me.cmdRemoveFile.Name = "cmdRemoveFile"
         Me.cmdRemoveFile.Size = New System.Drawing.Size(48, 44)
-        Me.cmdRemoveFile.TabIndex = 6
+        Me.cmdRemoveFile.TabIndex = 7
         Me.cmdRemoveFile.ThemedImage = CType(resources.GetObject("cmdRemoveFile.ThemedImage"), System.Drawing.Bitmap)
         '
         'cmdPreviewFile
         '
         Me.cmdPreviewFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdPreviewFile.Enabled = False
-        Me.cmdPreviewFile.Location = New System.Drawing.Point(906, 201)
+        Me.cmdPreviewFile.Location = New System.Drawing.Point(979, 272)
         Me.cmdPreviewFile.Name = "cmdPreviewFile"
-        Me.cmdPreviewFile.Size = New System.Drawing.Size(182, 26)
-        Me.cmdPreviewFile.TabIndex = 7
+        Me.cmdPreviewFile.Size = New System.Drawing.Size(182, 30)
+        Me.cmdPreviewFile.TabIndex = 5
         Me.cmdPreviewFile.Text = "&Preview Selected File"
         '
         'chkEncryptionEnable
         '
-        Me.chkEncryptionEnable.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.chkEncryptionEnable.Location = New System.Drawing.Point(926, 468)
+        Me.chkEncryptionEnable.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.chkEncryptionEnable.Location = New System.Drawing.Point(707, 603)
         Me.chkEncryptionEnable.Name = "chkEncryptionEnable"
         Me.chkEncryptionEnable.Size = New System.Drawing.Size(174, 23)
-        Me.chkEncryptionEnable.TabIndex = 15
+        Me.chkEncryptionEnable.TabIndex = 16
         Me.chkEncryptionEnable.Text = "Encrypt Sequences?"
         Me.chkEncryptionEnable.Visible = False
         '
         'lblPassphrase
         '
-        Me.lblPassphrase.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblPassphrase.Location = New System.Drawing.Point(922, 493)
+        Me.lblPassphrase.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.lblPassphrase.Location = New System.Drawing.Point(703, 628)
         Me.lblPassphrase.Name = "lblPassphrase"
         Me.lblPassphrase.Size = New System.Drawing.Size(178, 20)
-        Me.lblPassphrase.TabIndex = 13
+        Me.lblPassphrase.TabIndex = 17
         Me.lblPassphrase.Text = "Encryption Passphrase"
         Me.lblPassphrase.Visible = False
         '
         'txtPassphrase
         '
-        Me.txtPassphrase.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtPassphrase.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.txtPassphrase.Enabled = False
-        Me.txtPassphrase.Location = New System.Drawing.Point(926, 513)
+        Me.txtPassphrase.Location = New System.Drawing.Point(707, 648)
         Me.txtPassphrase.Name = "txtPassphrase"
         Me.txtPassphrase.PasswordChar = Global.Microsoft.VisualBasic.ChrW(8226)
         Me.txtPassphrase.Size = New System.Drawing.Size(154, 24)
-        Me.txtPassphrase.TabIndex = 14
+        Me.txtPassphrase.TabIndex = 18
         Me.txtPassphrase.Visible = False
         '
         'fraValidationOptions
@@ -353,10 +363,10 @@ Public Class frmBatchAddNewCollectionTest
         Me.fraValidationOptions.Controls.Add(Me.lblMaximumProteinNameLength)
         Me.fraValidationOptions.Controls.Add(Me.chkValidationAllowAsterisks)
         Me.fraValidationOptions.Controls.Add(Me.chkValidationAllowDash)
-        Me.fraValidationOptions.Location = New System.Drawing.Point(6, 526)
+        Me.fraValidationOptions.Location = New System.Drawing.Point(6, 597)
         Me.fraValidationOptions.Name = "fraValidationOptions"
         Me.fraValidationOptions.Size = New System.Drawing.Size(687, 75)
-        Me.fraValidationOptions.TabIndex = 16
+        Me.fraValidationOptions.TabIndex = 15
         Me.fraValidationOptions.TabStop = False
         Me.fraValidationOptions.Text = "Fasta Validation Options"
         '
@@ -365,7 +375,7 @@ Public Class frmBatchAddNewCollectionTest
         Me.chkValidationAllowAllSymbolsInProteinNames.Location = New System.Drawing.Point(11, 47)
         Me.chkValidationAllowAllSymbolsInProteinNames.Name = "chkValidationAllowAllSymbolsInProteinNames"
         Me.chkValidationAllowAllSymbolsInProteinNames.Size = New System.Drawing.Size(292, 25)
-        Me.chkValidationAllowAllSymbolsInProteinNames.TabIndex = 17
+        Me.chkValidationAllowAllSymbolsInProteinNames.TabIndex = 1
         Me.chkValidationAllowAllSymbolsInProteinNames.Text = "Allow all symbols in protein names"
         '
         'txtMaximumProteinNameLength
@@ -373,7 +383,7 @@ Public Class frmBatchAddNewCollectionTest
         Me.txtMaximumProteinNameLength.Location = New System.Drawing.Point(570, 21)
         Me.txtMaximumProteinNameLength.Name = "txtMaximumProteinNameLength"
         Me.txtMaximumProteinNameLength.Size = New System.Drawing.Size(84, 24)
-        Me.txtMaximumProteinNameLength.TabIndex = 16
+        Me.txtMaximumProteinNameLength.TabIndex = 4
         Me.txtMaximumProteinNameLength.Text = "34"
         '
         'lblMaximumProteinNameLength
@@ -381,7 +391,7 @@ Public Class frmBatchAddNewCollectionTest
         Me.lblMaximumProteinNameLength.Location = New System.Drawing.Point(454, 16)
         Me.lblMaximumProteinNameLength.Name = "lblMaximumProteinNameLength"
         Me.lblMaximumProteinNameLength.Size = New System.Drawing.Size(128, 34)
-        Me.lblMaximumProteinNameLength.TabIndex = 15
+        Me.lblMaximumProteinNameLength.TabIndex = 3
         Me.lblMaximumProteinNameLength.Text = "Max Protein Name Length"
         '
         'chkValidationAllowAsterisks
@@ -389,7 +399,7 @@ Public Class frmBatchAddNewCollectionTest
         Me.chkValidationAllowAsterisks.Location = New System.Drawing.Point(11, 19)
         Me.chkValidationAllowAsterisks.Name = "chkValidationAllowAsterisks"
         Me.chkValidationAllowAsterisks.Size = New System.Drawing.Size(219, 25)
-        Me.chkValidationAllowAsterisks.TabIndex = 2
+        Me.chkValidationAllowAsterisks.TabIndex = 0
         Me.chkValidationAllowAsterisks.Text = "Allow asterisks in residues"
         '
         'chkValidationAllowDash
@@ -397,24 +407,36 @@ Public Class frmBatchAddNewCollectionTest
         Me.chkValidationAllowDash.Location = New System.Drawing.Point(241, 19)
         Me.chkValidationAllowDash.Name = "chkValidationAllowDash"
         Me.chkValidationAllowDash.Size = New System.Drawing.Size(218, 25)
-        Me.chkValidationAllowDash.TabIndex = 3
+        Me.chkValidationAllowDash.TabIndex = 2
         Me.chkValidationAllowDash.Text = "Allow dash in residues"
         '
         'cmdRefreshFiles
         '
         Me.cmdRefreshFiles.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdRefreshFiles.Location = New System.Drawing.Point(906, 162)
+        Me.cmdRefreshFiles.Location = New System.Drawing.Point(979, 233)
         Me.cmdRefreshFiles.Name = "cmdRefreshFiles"
-        Me.cmdRefreshFiles.Size = New System.Drawing.Size(182, 26)
-        Me.cmdRefreshFiles.TabIndex = 19
+        Me.cmdRefreshFiles.Size = New System.Drawing.Size(182, 30)
+        Me.cmdRefreshFiles.TabIndex = 4
         Me.cmdRefreshFiles.Text = "&Refresh Files"
+        '
+        'cmdUpdateDescription
+        '
+        Me.cmdUpdateDescription.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdUpdateDescription.Location = New System.Drawing.Point(1044, 549)
+        Me.cmdUpdateDescription.Name = "cmdUpdateDescription"
+        Me.cmdUpdateDescription.Size = New System.Drawing.Size(117, 49)
+        Me.cmdUpdateDescription.TabIndex = 14
+        Me.cmdUpdateDescription.Text = "Update &Description"
         '
         'frmBatchAddNewCollectionTest
         '
         Me.AcceptButton = Me.cmdUploadChecked
         Me.AutoScaleBaseSize = New System.Drawing.Size(7, 17)
         Me.CancelButton = Me.cmdCancel
-        Me.ClientSize = New System.Drawing.Size(1102, 611)
+        Me.ClientSize = New System.Drawing.Size(1175, 682)
+        Me.Controls.Add(Me.cmdCancel)
+        Me.Controls.Add(Me.cmdUploadChecked)
+        Me.Controls.Add(Me.cmdUpdateDescription)
         Me.Controls.Add(Me.cmdRefreshFiles)
         Me.Controls.Add(Me.fraValidationOptions)
         Me.Controls.Add(Me.txtPassphrase)
@@ -425,13 +447,11 @@ Public Class frmBatchAddNewCollectionTest
         Me.Controls.Add(Me.cmdAddFile)
         Me.Controls.Add(Me.lvwSelectedFiles)
         Me.Controls.Add(Me.lvwFolderContents)
-        Me.Controls.Add(Me.cmdCancel)
         Me.Controls.Add(Me.lblOrganismSelect)
         Me.Controls.Add(Me.cboOrganismSelect)
         Me.Controls.Add(Me.expUploadFolderSelect)
         Me.Controls.Add(Me.lblBatchUploadTree)
         Me.Controls.Add(Me.lblFolderContents)
-        Me.Controls.Add(Me.cmdUploadChecked)
         Me.Controls.Add(Me.cboAnnotationTypePicker)
         Me.Controls.Add(Me.lblAnnAuth)
         Me.Controls.Add(Me.lblSelectedFiles)
@@ -447,10 +467,34 @@ Public Class frmBatchAddNewCollectionTest
     End Sub
 
 #End Region
-    Private m_CurrentDirectory As String
+
+#Region "Constants, enums, and member variables"
+
+    Private Enum eFolderContentsColumn
+        FileName = 0
+        LastModified = 1
+        FileSize = 2
+        ExistingCollection = 3
+        FilePath = 4
+    End Enum
+
+    Private Enum eSelectedFileColumn
+        ProteinCollectionName = 0
+        Organism = 1
+        Description = 2
+        Source = 3
+        AnnotationType = 4
+        FilePath = 5
+    End Enum
+
+    Private Structure udtProteinCollectionMetadata
+        Public Description As String
+        Public Source As String
+    End Structure
+
     Private m_LastUsedDirectory As String
-    Private m_LastSelectedOrganism As String = ""
-    Private m_LastSelectedAnnotationType As String = ""
+    Private m_LastSelectedOrganism As String = String.Empty
+    Private m_LastSelectedAnnotationType As String = String.Empty
     Private m_FileList As Hashtable
     Private m_CheckedFileList As List(Of IUploadProteins.UploadInfo)
 
@@ -472,45 +516,53 @@ Public Class frmBatchAddNewCollectionTest
     Private WithEvents m_FilePreviewer As clsFilePreviewHandler
     Private m_PreviewFormStatus As Boolean
 
-    Private m_PassphraseList As Hashtable
-    Private m_CachedPassphrase As String
+    ' Private m_PassphraseList As Hashtable
+    ' Private m_CachedPassphrase As String
 
     Const ADD_FILES_MESSAGE As String = "You must first select an organism and annotation type, and then select one or more protein collections."
     Private m_AllowAddFiles As Boolean
     Private m_AllowAddFilesMessage As String = ADD_FILES_MESSAGE
 
+    ' Tracks the index of the last column clicked in lvwSelectedFiles
+    Private mSortColumnSelectedItems As Integer = -1
+
+    ' Tracks the index of the last column clicked in lvwFolderContents
+    Private mSortColumnFolderContents As Integer = -1
+
+#End Region
+
 #Region " Properties "
     ReadOnly Property FileList() As List(Of IUploadProteins.UploadInfo)
         Get
-            Return Me.m_CheckedFileList
+            Return m_CheckedFileList
         End Get
     End Property
 
     ReadOnly Property SelectedOrganismID() As Integer
         Get
-            Return Me.m_SelectedOrganismID
+            Return m_SelectedOrganismID
         End Get
     End Property
 
     ReadOnly Property SelectedAnnotationTypeID() As Integer
         Get
-            Return Me.m_SelectedAnnotationTypeID
+            Return m_SelectedAnnotationTypeID
         End Get
     End Property
 
     Property CurrentDirectory() As String
         Get
-            Return Me.m_LastUsedDirectory
+            Return m_LastUsedDirectory
         End Get
         Set(Value As String)
-            Me.m_LastUsedDirectory = Value
+            m_LastUsedDirectory = Value
         End Set
     End Property
 
     Property SelectedOrganismName() As String
         Get
-            If Me.cboOrganismSelect.Items.Count > 0 Then
-                Return Me.cboOrganismSelect.Text
+            If cboOrganismSelect.Items.Count > 0 Then
+                Return cboOrganismSelect.Text
             Else
                 Return String.Empty
             End If
@@ -522,8 +574,8 @@ Public Class frmBatchAddNewCollectionTest
 
     Property SelectedAnnotationType() As String
         Get
-            If Me.cboAnnotationTypePicker.Items.Count > 0 Then
-                Return Me.cboAnnotationTypePicker.Text
+            If cboAnnotationTypePicker.Items.Count > 0 Then
+                Return cboAnnotationTypePicker.Text
             Else
                 Return String.Empty
             End If
@@ -581,58 +633,33 @@ Public Class frmBatchAddNewCollectionTest
 
     Private Sub frmBatchAddNewCollection_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         Dim di As System.IO.DirectoryInfo
-        Me.expUploadFolderSelect.StartUpDirectory = ExpTree.StartDir.Desktop
+        expUploadFolderSelect.StartUpDirectory = ExpTree.StartDir.Desktop
 
-        If Not String.IsNullOrEmpty(Me.m_LastUsedDirectory) Then
-            di = New System.IO.DirectoryInfo(Me.m_LastUsedDirectory)
+        m_CollectionsList = CollectionsTableToHash(m_CollectionsTable)
+
+        If Not String.IsNullOrEmpty(m_LastUsedDirectory) Then
+            di = New System.IO.DirectoryInfo(m_LastUsedDirectory)
             If di.Exists Then
-                Me.expUploadFolderSelect.ExpandANode(Me.m_LastUsedDirectory)
+                expUploadFolderSelect.ExpandANode(m_LastUsedDirectory)
             End If
         End If
 
-        If Me.m_FileList Is Nothing Then
-            Me.m_FileList = New Hashtable
+        If m_FileList Is Nothing Then
+            m_FileList = New Hashtable
         End If
 
-        Me.m_CheckedFileList = New List(Of IUploadProteins.UploadInfo)
-        Me.LoadOrganismPicker(Me.cboOrganismSelect, Me.m_OrganismListSorted)
-        Me.LoadAnnotationTypePicker(Me.cboAnnotationTypePicker, Me.m_AnnotationTypeList)
-        Me.cmdUploadChecked.Enabled = False
-        Me.cmdAddFile.Enabled = True
-        Me.cmdRemoveFile.Enabled = False
-
-        Me.m_CollectionsList = Me.CollectionsTableToHash(Me.m_CollectionsTable)
+        m_CheckedFileList = New List(Of IUploadProteins.UploadInfo)
+        LoadOrganismPicker(cboOrganismSelect, m_OrganismListSorted)
+        LoadAnnotationTypePicker(cboAnnotationTypePicker, m_AnnotationTypeList)
+        cmdUploadChecked.Enabled = False
+        cmdAddFile.Enabled = True
+        cmdRemoveFile.Enabled = False
 
         SelectComboBoxItemByName(cboOrganismSelect, m_LastSelectedOrganism, 2)
         SelectComboBoxItemByName(cboAnnotationTypePicker, m_LastSelectedAnnotationType, 1)
 
-        SystemImageListManager.SetListViewImageList(Me.lvwFolderContents, True, False)
-        SystemImageListManager.SetListViewImageList(Me.lvwFolderContents, False, False)
-
-    End Sub
-
-    Private Sub AfterNodeSelect(
-     pathName As String,
-     CSI As CShItem) Handles expUploadFolderSelect.ExpTreeNodeSelected
-
-        Dim totalItems As Integer
-
-        Dim dirList = CSI.GetDirectories
-
-        totalItems = dirList.Count
-        Me.m_LastUsedDirectory = pathName
-
-        If totalItems > 0 Then
-            dirList.Sort()
-        End If
-
-        If pathName <> CShItem.strMyComputer And pathName <> CShItem.strSystemFolder And pathName <> "Desktop" Then
-            Me.ScanDirectory(pathName, Me.lvwFolderContents)
-            Me.lblFolderContents.Text = "Results Files In: '" & pathName & "'"
-        Else
-            Me.lblFolderContents.Text = "Results Files In..."
-        End If
-
+        SystemImageListManager.SetListViewImageList(lvwFolderContents, True, False)
+        SystemImageListManager.SetListViewImageList(lvwFolderContents, False, False)
 
     End Sub
 
@@ -672,10 +699,10 @@ Public Class frmBatchAddNewCollectionTest
             Exit Sub
         End If
 
-        If Not Me.m_FileList Is Nothing Then
-            Me.m_FileList.Clear()
+        If Not m_FileList Is Nothing Then
+            m_FileList.Clear()
         Else
-            Me.m_FileList = New Hashtable
+            m_FileList = New Hashtable
         End If
 
         For Each fi In foundFASTAFiles
@@ -683,17 +710,23 @@ Public Class frmBatchAddNewCollectionTest
 
             Select Case tmpParsedType
                 Case ".fasta", ".fst", ".fa", ".pep"
-                    Me.m_FileList.Add(fi.FullName, fi)
+                    m_FileList.Add(fi.FullName, fi)
             End Select
         Next
 
-        Me.LoadListView(Me.lvwFolderContents)
+        LoadListView(lvwFolderContents)
 
     End Sub
+
 #End Region
 
 #Region " UI Loading Functions "
 
+    ''' <summary>
+    ''' Populate the top Listview with fasta files in the selected folder
+    ''' </summary>
+    ''' <param name="lvw"></param>
+    ''' <remarks></remarks>
     Private Sub LoadListView(lvw As ListView)
         Dim fi As System.IO.FileInfo
         Dim li As ListViewItem
@@ -702,22 +735,36 @@ Public Class frmBatchAddNewCollectionTest
 
         lvw.Items.Clear()
 
-        If Me.m_CollectionsList Is Nothing Then
-            Me.m_CollectionsList = New Hashtable
+        If m_CollectionsList Is Nothing Then
+            m_CollectionsList = New Hashtable
         End If
 
-        For Each fi In Me.m_FileList.Values
+        For Each fi In m_FileList.Values
+
+            ' Protein Collection Name
             tmpName = System.IO.Path.GetFileNameWithoutExtension(fi.Name)
+
             li = New ListViewItem
+
+            ' Fasta file name
             li.Text = fi.Name
+
+            ' Last Write Time
             li.SubItems.Add(Format(fi.LastWriteTime, "g"))
+
+            ' File Size
             li.SubItems.Add(Numeric2Bytes(CDbl(fi.Length)))
-            If Me.m_CollectionsList.ContainsValue(tmpName) Then
+
+            ' Whether or not the fasta file is already a protein collection
+            If m_CollectionsList.ContainsValue(tmpName) Then
                 li.SubItems.Add("Yes")
             Else
                 li.SubItems.Add("No")
             End If
+
+            ' Full file path
             li.SubItems.Add(fi.FullName)
+
             lvw.Items.Add(li)
         Next
         lvw.EndUpdate()
@@ -788,11 +835,9 @@ Public Class frmBatchAddNewCollectionTest
         bSize(7) = "ZB" 'Zettabytes
         bSize(8) = "YB" 'Yottabytes
 
-        'b = CDbl(b) ' Make sure var is a Double (not just
-        ' variant)
         For i = UBound(bSize) To 0 Step -1
             If b >= (1024 ^ i) Then
-                Return ThreeNonZeroDigits(b / (1024 ^ i)) & " " & bSize(i)
+                Return FormatDecimal(b / (1024 ^ i)) & " " & bSize(i)
             End If
         Next
 
@@ -800,56 +845,34 @@ Public Class frmBatchAddNewCollectionTest
 
     End Function
 
-    ' Return the value formatted to include at most three
-    ' non-zero digits and at most two digits after the
-    ' decimal point. Examples:
-    '         1
-    '       123
-    '        12.3
-    '         1.23
-    '         0.12
-    Private Function ThreeNonZeroDigits(value As Double) As String
+    ''' <summary>
+    ''' Return the value formatted to include one or two digits after the decimal point
+    ''' </summary>
+    ''' <param name="value"></param>
+    ''' <returns></returns>
+    ''' <remarks>
+    ''' Examples:
+    '''      1
+    '''    123
+    '''     12.3
+    '''      2.4
+    '''      1.2
+    '''      0.12
+    ''' </remarks>
+    Private Function FormatDecimal(value As Double) As String
         If value >= 100 Then
-            ' No digits after the decimal.
+            ' No digits after the decimal
             Return Format$(CInt(value))
-        ElseIf value >= 10 Then
-            ' One digit after the decimal.
+        ElseIf value >= 1 Then
+            ' One digit after the decimal
             Return Format$(value, "0.0")
         Else
-            ' Two digits after the decimal.
+            ' Two digits after the decimal
             Return Format$(value, "0.00")
         End If
     End Function
 
 #End Region
-
-    Private Sub MakeCheckedFileList()
-
-        Dim li As ListViewItem
-
-        Dim tmpNameList As New SortedSet(Of String)
-
-        For Each li In Me.lvwSelectedFiles.Items
-            Dim currentFilePath = li.SubItems(4).Text
-
-            If Not tmpNameList.Contains(currentFilePath) Then
-                tmpNameList.Add(currentFilePath)
-            End If
-
-        Next
-
-        Dim counter = Me.m_SelectedFileList.GetEnumerator
-
-        While counter.MoveNext()
-            Dim upInfo = counter.Current.Value
-            Dim fi = upInfo.FileInformation
-
-            If tmpNameList.Contains(fi.FullName) Then
-                Me.m_CheckedFileList.Add(upInfo)
-            End If
-        End While
-
-    End Sub
 
     Private Sub AddFileToSelectedList()
 
@@ -859,43 +882,56 @@ Public Class frmBatchAddNewCollectionTest
         Dim upInfo As Protein_Uploader.IUploadProteins.UploadInfo
 
         Try
-            If Me.m_SelectedFileList Is Nothing Then
-                Me.m_SelectedFileList = New Dictionary(Of String, IUploadProteins.UploadInfo)(StringComparer.CurrentCultureIgnoreCase)
+            If m_SelectedFileList Is Nothing Then
+                m_SelectedFileList = New Dictionary(Of String, IUploadProteins.UploadInfo)(StringComparer.CurrentCultureIgnoreCase)
             End If
 
-            For Each li In Me.lvwFolderContents.SelectedItems
+            For Each li In lvwFolderContents.SelectedItems
                 upInfo = New Protein_Uploader.IUploadProteins.UploadInfo
 
-                upInfo.FileInformation = DirectCast(Me.m_FileList.Item(li.SubItems(4).Text), System.IO.FileInfo)
-                upInfo.OrganismID = DirectCast(Me.cboOrganismSelect.SelectedValue, Int32)
-                upInfo.AnnotationTypeID = DirectCast(Me.cboAnnotationTypePicker.SelectedValue, Int32)
+                Dim fastaFilePath = GetFolderContentsColumn(li, eFolderContentsColumn.FilePath)
+                upInfo.FileInformation = DirectCast(m_FileList.Item(fastaFilePath), System.IO.FileInfo)
+
+                upInfo.OrganismID = DirectCast(cboOrganismSelect.SelectedValue, Int32)
+                upInfo.AnnotationTypeID = DirectCast(cboAnnotationTypePicker.SelectedValue, Int32)
+
+                upInfo.Description = String.Empty
+                upInfo.Source = String.Empty
+
+                ' Encryption is disabled
                 upInfo.EncryptSequences = False
-                upInfo.EncryptionPassphrase = ""
-                If Me.m_SelectedFileList.ContainsKey(upInfo.FileInformation.FullName) Then
-                    Me.m_SelectedFileList.Remove(upInfo.FileInformation.FullName)
-                    For Each si In Me.lvwSelectedFiles.Items
+                upInfo.EncryptionPassphrase = String.Empty
+
+                If m_SelectedFileList.ContainsKey(upInfo.FileInformation.FullName) Then
+                    m_SelectedFileList.Remove(upInfo.FileInformation.FullName)
+                    For Each si In lvwSelectedFiles.Items
                         If si.Text = System.IO.Path.GetFileNameWithoutExtension(upInfo.FileInformation.Name) Then
-                            Me.lvwSelectedFiles.Items.Remove(si)
+                            lvwSelectedFiles.Items.Remove(si)
                         End If
                     Next
                 End If
 
                 newLi = New ListViewItem(System.IO.Path.GetFileNameWithoutExtension(upInfo.FileInformation.Name))
                 With newLi
-                    .SubItems.Add(Me.cboOrganismSelect.Text)
-                    .SubItems.Add(Me.cboAnnotationTypePicker.Text)
-                    If Me.chkEncryptionEnable.Checked Then
-                        .SubItems.Add("Yes")
-                        .Tag = Me.txtPassphrase.Text
-                        upInfo.EncryptSequences = True
-                        upInfo.EncryptionPassphrase = newLi.Tag.ToString
-                    Else
-                        .SubItems.Add("No")
-                    End If
+                    ' Organism (Column 1)
+                    .SubItems.Add(cboOrganismSelect.Text)
+
+                    ' Description (Column 2)
+                    .SubItems.Add(String.Empty)
+
+                    ' Source (Column 3)
+                    .SubItems.Add(String.Empty)
+
+                    ' Annotation Type (Column 4)
+                    .SubItems.Add(cboAnnotationTypePicker.Text)
+
+                    ' Full Path (ColIndex 5)
                     .SubItems.Add(upInfo.FileInformation.FullName)
+
                 End With
-                Me.lvwSelectedFiles.Items.Add(newLi)
-                Me.m_SelectedFileList.Add(upInfo.FileInformation.FullName, upInfo)
+
+                lvwSelectedFiles.Items.Add(newLi)
+                m_SelectedFileList.Add(upInfo.FileInformation.FullName, upInfo)
             Next
         Catch ex As Exception
             System.Windows.Forms.MessageBox.Show("Error in AddFileToSelectedList: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -904,14 +940,135 @@ Public Class frmBatchAddNewCollectionTest
 
     End Sub
 
-    Private Sub RemoveFileFromSelectedList()
-        Dim li As ListViewItem
+    Private Sub AddUpdateDictionaryItem(itemList As Dictionary(Of String, Integer), newItem As String)
 
-        For Each li In Me.lvwSelectedFiles.SelectedItems
-            Me.lvwSelectedFiles.Items.Remove(li)
-            If Me.m_SelectedFileList.ContainsKey(li.SubItems(3).ToString) Then
-                Me.m_SelectedFileList.Remove(li.SubItems(3).ToString)
+        Dim itemCount As Integer
+        If itemList.TryGetValue(newItem, itemCount) Then
+            itemList(newItem) = itemCount + 1
+        Else
+            itemList.Add(newItem, 1)
+        End If
+
+    End Sub
+
+    Private Sub AfterNodeSelect(
+     pathName As String,
+     CSI As CShItem) Handles expUploadFolderSelect.ExpTreeNodeSelected
+
+        Dim totalItems As Integer
+
+        Dim dirList = CSI.GetDirectories
+
+        totalItems = dirList.Count
+        m_LastUsedDirectory = pathName
+
+        If totalItems > 0 Then
+            dirList.Sort()
+        End If
+
+        If pathName <> CShItem.strMyComputer And pathName <> CShItem.strSystemFolder And pathName <> "Desktop" Then
+            ScanDirectory(pathName, lvwFolderContents)
+            lblFolderContents.Text = "Results Files In: '" & pathName & "'"
+        Else
+            lblFolderContents.Text = "Results Files In ..."
+        End If
+
+
+    End Sub
+
+    Private Function GetFolderContentsColumn(li As ListViewItem, eColumn As eFolderContentsColumn) As String
+        Dim value = li.SubItems(eColumn).Text
+        Return value
+    End Function
+
+    ''' <summary>
+    ''' 
+    ''' </summary>
+    ''' <param name="li"></param>
+    ''' <param name="eColumn"></param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Private Function GetSelectedFileColumn(li As ListViewItem, eColumn As eSelectedFileColumn) As String
+        Dim value = li.SubItems(eColumn).Text
+        Return value
+    End Function
+
+    ''' <summary>
+    ''' Populates m_CheckedFileList
+    ''' </summary>
+    ''' <returns>True if success, false if no protein collections are selected or if one or more is missing a description and/or source</returns>
+    ''' <remarks></remarks>
+    Private Function MakeCheckedFileList() As Boolean
+
+        Dim tmpNameList As New Dictionary(Of String, udtProteinCollectionMetadata)
+
+        For Each li As ListViewItem In lvwSelectedFiles.Items
+            Dim fastaFilePath = GetSelectedFileColumn(li, eSelectedFileColumn.FilePath)
+
+            If Not tmpNameList.ContainsKey(fastaFilePath) Then
+                Dim udtMetadata = New udtProteinCollectionMetadata()
+                udtMetadata.Description = GetSelectedFileColumn(li, eSelectedFileColumn.Description)
+                udtMetadata.Source = GetSelectedFileColumn(li, eSelectedFileColumn.Source)
+                tmpNameList.Add(fastaFilePath, udtMetadata)
             End If
+
+        Next
+
+        For Each item In m_SelectedFileList
+            Dim upInfo = item.Value
+            Dim fi = upInfo.FileInformation
+
+            Dim udtMetadata As udtProteinCollectionMetadata = Nothing
+            If tmpNameList.TryGetValue(fi.FullName, udtMetadata) Then
+
+                upInfo.Description = udtMetadata.Description
+                upInfo.Source = udtMetadata.Source
+
+                If String.IsNullOrWhiteSpace(upInfo.Description) AndAlso String.IsNullOrWhiteSpace(upInfo.Source) Then
+                    MessageBox.Show("Each new protein collection must have a description and/or source defined", "Missing Information", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    Return False
+                End If
+
+                m_CheckedFileList.Add(upInfo)
+            End If
+        Next
+
+        If m_CheckedFileList.Count = 0 Then
+            MessageBox.Show("No fasta files are selected", "Nothing to Do", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Return False
+        End If
+
+        Return True
+
+    End Function
+
+    Private Function MostCommonItem(itemList As Dictionary(Of String, Integer)) As String
+
+        If itemList.Count = 0 Then
+            Return String.Empty
+        End If
+
+        Dim query = (From item In itemList Order By item.Key Descending Select item)
+
+        Return query.First.Key
+
+    End Function
+
+    Private Sub RemoveFileFromSelectedList()
+
+        For Each li As ListViewItem In lvwSelectedFiles.SelectedItems
+            lvwSelectedFiles.Items.Remove(li)
+
+            Dim filePath = GetSelectedFileColumn(li, eSelectedFileColumn.FilePath)
+            If m_SelectedFileList.ContainsKey(filePath) Then
+                m_SelectedFileList.Remove(filePath)
+            End If
+        Next
+    End Sub
+
+    Private Sub SelectAllRows(lv As ListView)
+        For Each li As ListViewItem In lv.Items
+            li.Selected = True
         Next
     End Sub
 
@@ -940,24 +1097,122 @@ Public Class frmBatchAddNewCollectionTest
             ' Ignore errors here
         End Try
 
+    End Sub
+
+    Private Sub SortListView(lv As ListView, lastClickedColIndex As Integer, colIndex As Integer, isDateColumn As Boolean)
+
+        ' Determine whether the column is the same as the last column clicked.
+        If colIndex <> lastClickedColIndex Then
+            If isDateColumn Then
+                ' Sort date columns descending by default
+                lv.Sorting = SortOrder.Descending
+            Else
+                ' Sort text columns ascending by default
+                lv.Sorting = SortOrder.Ascending
+            End If
+        Else
+            ' Determine what the last sort order was and change it
+            If lv.Sorting = SortOrder.Ascending Then
+                lv.Sorting = SortOrder.Descending
+            Else
+                lv.Sorting = SortOrder.Ascending
+            End If
+        End If
+
+        ' Set the ListViewItemSorter property to a new ListViewItemComparer object
+        lv.ListViewItemSorter = New ListViewItemComparer(colIndex, lv.Sorting, isDateColumn)
+
+        ' Call the sort method to manually sort
+        lv.Sort()
+
 
     End Sub
 
-#Region " Button and Combo Handlers "
+    ''' <summary>
+    ''' Remove leading and trailing whitespace.
+    ''' Replace tabs and carriage returns with semicolons
+    ''' </summary>
+    ''' <param name="value"></param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Private Function StripWhiteSpace(value As String) As String
+
+        Dim updatedValue = value.Trim().Replace(ControlChars.Tab, "; ").Replace(ControlChars.NewLine, "; ").Replace(ControlChars.Cr, "; ").Replace(ControlChars.Lf, "; ")
+
+        Return updatedValue
+
+    End Function
+
+    Private Sub UpdateProteinCollectionMetadata()
+        Dim descriptionList = New Dictionary(Of String, Integer)
+        Dim sourceList = New Dictionary(Of String, Integer)
+
+        Dim itemsToUpdate = New List(Of ListViewItem)
+
+        If lvwSelectedFiles.SelectedItems.Count > 0 Then
+            For Each li As ListViewItem In lvwSelectedFiles.SelectedItems
+
+                Dim descriptionCurrent = GetSelectedFileColumn(li, eSelectedFileColumn.Description)
+                Dim sourceCurrent = GetSelectedFileColumn(li, eSelectedFileColumn.Source)
+
+                If Not String.IsNullOrWhiteSpace(descriptionCurrent) Then
+                    AddUpdateDictionaryItem(descriptionList, descriptionCurrent)
+                End If
+
+                If Not String.IsNullOrWhiteSpace(sourceCurrent) Then
+                    AddUpdateDictionaryItem(sourceList, sourceCurrent)
+                End If
+
+                itemsToUpdate.Add(li)
+            Next
+        Else
+            For Each li As ListViewItem In lvwSelectedFiles.Items
+                itemsToUpdate.Add(li)
+            Next
+        End If
+
+
+        ' Show a window with the most commonly used description and source
+
+        Dim oMetadataWindow = New frmNewCollectionMetadataEditor()
+
+        oMetadataWindow.Description = MostCommonItem(descriptionList)
+        oMetadataWindow.Source = MostCommonItem(sourceList)
+
+        Dim eDialogResult = oMetadataWindow.ShowDialog()
+
+        If eDialogResult = DialogResult.OK Then
+            Dim updatedDescription = StripWhiteSpace(oMetadataWindow.Description)
+            Dim updatedSource = StripWhiteSpace(oMetadataWindow.Source)
+
+            For Each li In itemsToUpdate
+                li.SubItems(eSelectedFileColumn.Description).Text = updatedDescription
+                li.SubItems(eSelectedFileColumn.Source).Text = updatedSource
+            Next
+        End If
+
+    End Sub
+
+#Region "Button and Combo Handlers"
 
     Private Sub cboOrganismSelect_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cboOrganismSelect.SelectedIndexChanged
         Dim cbo As ComboBox = DirectCast(sender, ComboBox)
-        Dim tmpUpInfo As Protein_Uploader.IUploadProteins.UploadInfo
 
-        Me.m_SelectedOrganismID = DirectCast(cbo.SelectedValue, Int32)
+        m_SelectedOrganismID = DirectCast(cbo.SelectedValue, Int32)
         CheckTransferEnable()
-        If Me.lvwSelectedFiles.SelectedItems.Count > 0 Then
-            Dim li As ListViewItem
-            For Each li In Me.lvwSelectedFiles.SelectedItems
-                tmpUpInfo = Me.m_SelectedFileList.Item(li.SubItems(4).Text)
-                tmpUpInfo.OrganismID = Me.m_SelectedOrganismID
-                Me.m_SelectedFileList.Item(li.SubItems(4).Text) = tmpUpInfo
-                li.SubItems(1).Text = cbo.Text
+        If lvwSelectedFiles.SelectedItems.Count > 0 Then
+
+            For Each li As ListViewItem In lvwSelectedFiles.SelectedItems
+                Dim fastaFilePath = GetSelectedFileColumn(li, eSelectedFileColumn.FilePath)
+
+                ' Update organism in m_SelectedFileList
+                Dim tmpUpInfo = m_SelectedFileList.Item(fastaFilePath)
+                tmpUpInfo.OrganismID = m_SelectedOrganismID
+
+                m_SelectedFileList.Item(fastaFilePath) = tmpUpInfo
+
+                ' Update organism in lvwSelectedFiles
+                li.SubItems(eSelectedFileColumn.Organism).Text = cbo.Text
             Next
         End If
 
@@ -967,28 +1222,28 @@ Public Class frmBatchAddNewCollectionTest
         Dim cbo As ComboBox = DirectCast(sender, ComboBox)
         Dim tmpUpInfo As Protein_Uploader.IUploadProteins.UploadInfo
 
-        If Me.cboAnnotationTypePicker.SelectedValue.GetType Is System.Type.GetType("System.Int32") Then
-            Me.m_SelectedAnnotationTypeID = CInt(Me.cboAnnotationTypePicker.SelectedValue)
+        If cboAnnotationTypePicker.SelectedValue.GetType Is System.Type.GetType("System.Int32") Then
+            m_SelectedAnnotationTypeID = CInt(cboAnnotationTypePicker.SelectedValue)
         Else
-            'Me.m_SelectedAuthorityID = 0
+            'm_SelectedAuthorityID = 0
         End If
 
         CheckTransferEnable()
 
         Dim tmpAnnTypeID As Integer
 
-        If Me.m_SelectedAnnotationTypeID = -2 Then
-            'Bring up addition dialog
-            Dim AnnTypeAdd As New clsAddAnnotationType(Me.m_PSConnectionString)
-            AnnTypeAdd.FormLocation = New System.Drawing.Point(Me.Left + Me.Width + 10, Me.Top)
+        If m_SelectedAnnotationTypeID = -2 Then
+            'Bring up an additional dialog
+            Dim AnnTypeAdd As New clsAddAnnotationType(m_PSConnectionString)
+            AnnTypeAdd.FormLocation = New System.Drawing.Point(Left + Width + 10, Top)
             tmpAnnTypeID = AnnTypeAdd.AddAnnotationType
-            'Dim AuthAdd As New clsAddNamingAuthority(Me.m_PSConnectionString)
+            'Dim AuthAdd As New clsAddNamingAuthority(m_PSConnectionString)
             'tmpAuthID = AuthAdd.AddNamingAuthority
 
             If Not AnnTypeAdd.EntryExists And tmpAnnTypeID > 0 Then
 
                 Dim dr As DataRow
-                dr = Me.m_AnnotationTypeList.NewRow
+                dr = m_AnnotationTypeList.NewRow
 
                 With dr
                     .Item("ID") = tmpAnnTypeID
@@ -996,27 +1251,32 @@ Public Class frmBatchAddNewCollectionTest
                     .Item("Details") = AnnTypeAdd.Description
                 End With
 
-                Me.m_AnnotationTypeList.Rows.Add(dr)
-                Me.m_AnnotationTypeList.AcceptChanges()
-                Me.LoadAnnotationTypePicker(Me.cboAnnotationTypePicker, Me.m_AnnotationTypeList)
-                Me.m_SelectedAnnotationTypeID = tmpAnnTypeID
+                m_AnnotationTypeList.Rows.Add(dr)
+                m_AnnotationTypeList.AcceptChanges()
+                LoadAnnotationTypePicker(cboAnnotationTypePicker, m_AnnotationTypeList)
+                m_SelectedAnnotationTypeID = tmpAnnTypeID
 
-                Me.cboAnnotationTypePicker.SelectedValue = tmpAnnTypeID
+                cboAnnotationTypePicker.SelectedValue = tmpAnnTypeID
             End If
-            AnnTypeAdd = Nothing
 
         End If
 
-
-        If Me.lvwSelectedFiles.SelectedItems.Count > 0 Then
+        If lvwSelectedFiles.SelectedItems.Count > 0 Then
             Dim li As ListViewItem
-            For Each li In Me.lvwSelectedFiles.SelectedItems
-                tmpUpInfo = Me.m_SelectedFileList.Item(li.SubItems(4).Text)
+            For Each li In lvwSelectedFiles.SelectedItems
 
-                Me.m_SelectedFileList.Item(li.SubItems(4).Text) =
-                    New Protein_Uploader.IUploadProteins.UploadInfo(tmpUpInfo.FileInformation, Me.m_SelectedOrganismID, Me.m_SelectedAnnotationTypeID) 'tmpUpInfo.AuthorityID)
+                ' Update annotation type in m_SelectedFileList
+                Dim fastaFilePath = GetSelectedFileColumn(li, eSelectedFileColumn.FilePath)
+                tmpUpInfo = m_SelectedFileList.Item(fastaFilePath)
 
-                li.SubItems(2).Text = cbo.Text
+                m_SelectedFileList.Item(fastaFilePath) =
+                    New Protein_Uploader.IUploadProteins.UploadInfo(
+                        tmpUpInfo.FileInformation,
+                        m_SelectedOrganismID,
+                        m_SelectedAnnotationTypeID)
+
+                ' Update annotation type in lvwSelectedFiles
+                li.SubItems(eSelectedFileColumn.AnnotationType).Text = cbo.Text
             Next
         End If
 
@@ -1027,40 +1287,40 @@ Public Class frmBatchAddNewCollectionTest
         Dim encryptSequences As Boolean = False
 
         If chk.CheckState = CheckState.Checked Then
-            Me.txtPassphrase.Enabled = True
+            txtPassphrase.Enabled = True
         Else
-            Me.txtPassphrase.Enabled = False
+            txtPassphrase.Enabled = False
         End If
 
-        Me.CheckTransferEnable()
+        CheckTransferEnable()
 
         'Dim tmpUpInfo As Protein_Uploader.IUploadProteins.UploadInfo
-        'If Me.lvwSelectedFiles.SelectedItems.Count > 0 Then
+        'If lvwSelectedFiles.SelectedItems.Count > 0 Then
         '    Dim li As ListViewItem
-        '    For Each li In Me.lvwSelectedFiles.SelectedItems
-        '        tmpUpInfo = DirectCast(Me.m_SelectedFileList.Item(li.SubItems(4).Text), Protein_Uploader.IUploadProteins.UploadInfo)
+        '    For Each li In lvwSelectedFiles.SelectedItems
+        '        Dim fastaFilePath = li.SubItems(eSelectedFileColumn.FilePath).Text
+        '        tmpUpInfo = DirectCast(m_SelectedFileList.Item(fastaFilePath), Protein_Uploader.IUploadProteins.UploadInfo)
         '        If encryptSequences Then
         '            tmpUpInfo.EncryptSequences = True
         '            tmpUpInfo.EncryptionPassphrase = passPhraseForm.Passphrase
-        '            li.SubItems(3).Text = "Yes"
+        '            li.SubItems(eSelectedFileColumn.Encrypt).Text = "Yes"
         '        Else
         '            tmpUpInfo.EncryptSequences = False
         '            tmpUpInfo.EncryptionPassphrase = Nothing
-        '            li.SubItems(3).Text = "No"
+        '            li.SubItems(eSelectedFileColumn.Encrypt).Text = "No"
         '        End If
-        '        Me.m_SelectedFileList.Item(li.SubItems(4).Text) = tmpUpInfo
+        '        m_SelectedFileList.Item(fastaFilePath) = tmpUpInfo
         '    Next
         'End If
 
     End Sub
 
-
     Private Sub CheckTransferEnable()
-        If Me.chkEncryptionEnable.Checked = True Then
-            If Me.m_SelectedOrganismID > 0 And
-             Me.m_SelectedAnnotationTypeID > 0 And
-             Me.lvwFolderContents.SelectedItems.Count > 0 And
-             Me.txtPassphrase.Text.Length > 0 Then
+        If chkEncryptionEnable.Checked = True Then
+            If m_SelectedOrganismID > 0 And
+             m_SelectedAnnotationTypeID > 0 And
+             lvwFolderContents.SelectedItems.Count > 0 And
+             txtPassphrase.Text.Length > 0 Then
 
                 m_AllowAddFiles = True
                 m_AllowAddFilesMessage = ""
@@ -1069,7 +1329,7 @@ Public Class frmBatchAddNewCollectionTest
                 m_AllowAddFilesMessage = ADD_FILES_MESSAGE & "  You also must define a passphrase for encryption."
             End If
         Else
-            If Me.m_SelectedOrganismID > 0 And Me.m_SelectedAnnotationTypeID > 0 And Me.lvwFolderContents.SelectedItems.Count > 0 Then
+            If m_SelectedOrganismID > 0 And m_SelectedAnnotationTypeID > 0 And lvwFolderContents.SelectedItems.Count > 0 Then
                 m_AllowAddFiles = True
                 m_AllowAddFilesMessage = ""
             Else
@@ -1078,97 +1338,119 @@ Public Class frmBatchAddNewCollectionTest
             End If
         End If
 
-        If Me.lvwSelectedFiles.Items.Count > 0 Then
-            Me.cmdRemoveFile.Enabled = True
+        If lvwSelectedFiles.Items.Count > 0 Then
+            cmdRemoveFile.Enabled = True
         Else
-            Me.cmdRemoveFile.Enabled = False
+            cmdRemoveFile.Enabled = False
         End If
 
-        If Me.lvwSelectedFiles.Items.Count > 0 Then
-            Me.cmdUploadChecked.Enabled = True
+        If lvwSelectedFiles.Items.Count > 0 Then
+            cmdUploadChecked.Enabled = True
         Else
-            Me.cmdUploadChecked.Enabled = False
+            cmdUploadChecked.Enabled = False
         End If
 
-        If Me.lvwFolderContents.SelectedItems.Count > 0 Then
-            Me.cmdPreviewFile.Enabled = True
+        If lvwFolderContents.SelectedItems.Count > 0 Then
+            cmdPreviewFile.Enabled = True
         Else
-            Me.cmdPreviewFile.Enabled = False
+            cmdPreviewFile.Enabled = False
         End If
 
     End Sub
 
     Private Sub cmdUploadChecked_Click(sender As System.Object, e As System.EventArgs) Handles cmdUploadChecked.Click
-        Me.MakeCheckedFileList()
-        Me.m_ReallyClose = True
-        Me.DialogResult = DialogResult.OK
-        Me.Close()
+        Dim validInfo = MakeCheckedFileList()
+        If Not validInfo Then Return
+
+        m_ReallyClose = True
+        DialogResult = DialogResult.OK
+        Close()
     End Sub
 
     Private Sub cmdCancel_Click(sender As System.Object, e As System.EventArgs) Handles cmdCancel.Click
-        Me.DialogResult = DialogResult.Cancel
-        Me.Close()
+        DialogResult = DialogResult.Cancel
+        Close()
     End Sub
 
     Private Sub cmdAddFile_Click(sender As System.Object, e As System.EventArgs) Handles cmdAddFile.Click
         If Not m_AllowAddFiles Then
             System.Windows.Forms.MessageBox.Show(m_AllowAddFilesMessage, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Else
-            Me.AddFileToSelectedList()
+            AddFileToSelectedList()
             CheckTransferEnable()
         End If
     End Sub
 
     Private Sub cmdRemoveFile_Click(sender As System.Object, e As System.EventArgs) Handles cmdRemoveFile.Click
-        Me.RemoveFileFromSelectedList()
+        RemoveFileFromSelectedList()
         CheckTransferEnable()
     End Sub
 
     Private Sub cmdPreviewFile_Click(sender As System.Object, e As System.EventArgs) Handles cmdPreviewFile.Click
-        If Me.m_FilePreviewer Is Nothing Then
-            Me.m_FilePreviewer = New clsFilePreviewHandler
+        If m_FilePreviewer Is Nothing Then
+            m_FilePreviewer = New clsFilePreviewHandler
         End If
 
-        Dim fullName As String = Me.lvwFolderContents.SelectedItems(0).SubItems(4).Text
+        If lvwFolderContents.SelectedItems.Count = 0 Then
+            Windows.Forms.MessageBox.Show("Please select a file to preview", "Nothing to do", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Return
+        End If
 
+        Dim li = lvwFolderContents.SelectedItems(0)
+        Dim fullName As String = GetFolderContentsColumn(li, eFolderContentsColumn.FilePath)
 
-        Me.m_FilePreviewer.ShowPreview(fullName, Me.Left + Me.Width + 10, Me.Top, Me.Height)
+        m_FilePreviewer.ShowPreview(fullName, Left + Width + 10, Top, Height)
 
+    End Sub
+
+    Private Sub cmdRefreshFiles_Click(sender As System.Object, e As System.EventArgs) Handles cmdRefreshFiles.Click
+        Try
+            expUploadFolderSelect.RefreshTree()
+        Catch ex As Exception
+            System.Windows.Forms.MessageBox.Show("Error refreshing folders and files: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+
+    End Sub
+
+    Private Sub cmdUpdateDescription_Click(sender As Object, e As EventArgs) Handles cmdUpdateDescription.Click
+        UpdateProteinCollectionMetadata()
     End Sub
 
 #End Region
 
     Private Sub lvwSelectedFiles_Click(sender As Object, e As System.EventArgs) Handles lvwSelectedFiles.Click
 
-        Dim selectedOrganism As String
+        If lvwSelectedFiles.SelectedItems.Count = 0 Then Return
 
-        Dim li As ListViewItem = Me.lvwSelectedFiles.SelectedItems.Item(0)
+        Dim li As ListViewItem = lvwSelectedFiles.SelectedItems.Item(0)
 
-        selectedOrganism = li.SubItems(1).Text
-        Dim selectedAnnotationType As String = li.SubItems(2).Text
-        If li.SubItems(3).Text = "Yes" Then
-            RemoveHandler chkEncryptionEnable.CheckedChanged, AddressOf chkEncryptionEnable_CheckedChanged
-            Me.chkEncryptionEnable.CheckState = CheckState.Checked
-            AddHandler chkEncryptionEnable.CheckedChanged, AddressOf chkEncryptionEnable_CheckedChanged
-        Else
-            RemoveHandler chkEncryptionEnable.CheckedChanged, AddressOf chkEncryptionEnable_CheckedChanged
-            Me.chkEncryptionEnable.CheckState = CheckState.Unchecked
-            AddHandler chkEncryptionEnable.CheckedChanged, AddressOf chkEncryptionEnable_CheckedChanged
-        End If
+        Dim selectedOrganism = GetSelectedFileColumn(li, eSelectedFileColumn.Organism)
 
-        Me.cboAnnotationTypePicker.Text = selectedAnnotationType
-        Me.cboOrganismSelect.Text = selectedOrganism
+        'If li.SubItems(eSelectedFileColumn.Encrypt).Text = "Yes" Then
+        '    RemoveHandler chkEncryptionEnable.CheckedChanged, AddressOf chkEncryptionEnable_CheckedChanged
+        '    chkEncryptionEnable.CheckState = CheckState.Checked
+        '    AddHandler chkEncryptionEnable.CheckedChanged, AddressOf chkEncryptionEnable_CheckedChanged
+        'Else
+        '    RemoveHandler chkEncryptionEnable.CheckedChanged, AddressOf chkEncryptionEnable_CheckedChanged
+        '    chkEncryptionEnable.CheckState = CheckState.Unchecked
+        '    AddHandler chkEncryptionEnable.CheckedChanged, AddressOf chkEncryptionEnable_CheckedChanged
+        'End If
+
+        Dim selFileAnnotationType As String = GetSelectedFileColumn(li, eSelectedFileColumn.AnnotationType)
+
+        cboAnnotationTypePicker.Text = selFileAnnotationType
+        cboOrganismSelect.Text = selectedOrganism
 
         CheckTransferEnable()
 
     End Sub
 
     Private Sub lvwFolderContents_Click(sender As Object, e As System.EventArgs) Handles lvwFolderContents.Click
-        Me.lvwSelectedFiles.SelectedItems.Clear()
+        lvwSelectedFiles.SelectedItems.Clear()
     End Sub
 
     Private Sub frmBatchAddNewCollectionTest_Closing(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles MyBase.Closing
-        If Me.lvwSelectedFiles.Items.Count > 0 And Not Me.m_ReallyClose Then
+        If lvwSelectedFiles.Items.Count > 0 And Not m_ReallyClose Then
             Dim r As System.Windows.Forms.DialogResult
 
             r = MessageBox.Show("You have files selected for upload. Really close the form?",
@@ -1180,55 +1462,45 @@ Public Class frmBatchAddNewCollectionTest
             End If
 
         End If
-        If Not Me.m_FilePreviewer Is Nothing And Me.m_PreviewFormStatus = True Then
-            Me.m_FilePreviewer.CloseForm()
-            Me.m_FilePreviewer = Nothing
+        If Not m_FilePreviewer Is Nothing And m_PreviewFormStatus = True Then
+            m_FilePreviewer.CloseForm()
+            m_FilePreviewer = Nothing
         End If
     End Sub
 
-
     Private Sub lvwFolderContents_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles lvwFolderContents.MouseUp
-        Me.CheckTransferEnable()
+        CheckTransferEnable()
     End Sub
 
     Sub OnPreviewFormStatusChange(Visibility As Boolean) Handles m_FilePreviewer.FormStatus
         If Visibility = True Then
-            Me.cmdPreviewFile.Enabled = False
-            Me.m_PreviewFormStatus = True
+            cmdPreviewFile.Enabled = False
+            m_PreviewFormStatus = True
         Else
-            Me.cmdPreviewFile.Enabled = True
-            Me.m_PreviewFormStatus = False
+            cmdPreviewFile.Enabled = True
+            m_PreviewFormStatus = False
         End If
     End Sub
 
-    Private Sub txtPassphrase_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtPassphrase.Validating
-        Dim txt As TextBox = DirectCast(sender, TextBox)
-        Dim li As ListViewItem
+    'Private Sub txtPassphrase_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtPassphrase.Validating
+    '    Dim txt As TextBox = DirectCast(sender, TextBox)
+    '    Dim li As ListViewItem
 
-        If txt.Text.Length > 0 Then
-            If Me.lvwSelectedFiles.SelectedItems.Count = 0 Then
-                Me.m_CachedPassphrase = txt.Text
-            ElseIf Me.lvwSelectedFiles.SelectedItems.Count > 0 Then
-                For Each li In Me.lvwSelectedFiles.Items
-                    li.Tag = txt.Text
-                    li.SubItems(3).Text = "Yes"
-                Next
-            End If
-            Me.CheckTransferEnable()
-        Else
-            Me.CheckTransferEnable()
-            Exit Sub
-        End If
-    End Sub
-
-    Private Sub cmdRefreshFiles_Click(sender As System.Object, e As System.EventArgs) Handles cmdRefreshFiles.Click
-        Try
-            Me.expUploadFolderSelect.RefreshTree()
-        Catch ex As Exception
-            System.Windows.Forms.MessageBox.Show("Error refreshing folders and files: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-        End Try
-
-    End Sub
+    '    If txt.Text.Length > 0 Then
+    '        If lvwSelectedFiles.SelectedItems.Count = 0 Then
+    '            m_CachedPassphrase = txt.Text
+    '        ElseIf lvwSelectedFiles.SelectedItems.Count > 0 Then
+    '            For Each li In lvwSelectedFiles.Items
+    '                li.Tag = txt.Text
+    '                li.SubItems(eSelectedFileColumn.Encrypt).Text = "Yes"
+    '            Next
+    '        End If
+    '        CheckTransferEnable()
+    '    Else
+    '        CheckTransferEnable()
+    '        Exit Sub
+    '    End If
+    'End Sub
 
     Private Sub txtMaximumProteinNameLength_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtMaximumProteinNameLength.Validating
         If txtMaximumProteinNameLength.TextLength = 0 Then
@@ -1245,5 +1517,91 @@ Public Class frmBatchAddNewCollectionTest
         End If
 
     End Sub
+
+    Private Sub lvwSelectedFiles_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles lvwSelectedFiles.ColumnClick
+        SortListView(lvwSelectedFiles, mSortColumnSelectedItems, e.Column, isDateColumn:=False)
+        mSortColumnSelectedItems = e.Column
+    End Sub
+
+    Private Sub lvwSelectedFiles_DoubleClick(sender As Object, e As EventArgs) Handles lvwSelectedFiles.DoubleClick
+        UpdateProteinCollectionMetadata()
+    End Sub
+
+    Private Sub lvwSelectedFiles_KeyDown(sender As Object, e As KeyEventArgs) Handles lvwSelectedFiles.KeyDown
+
+        If e.Control AndAlso e.KeyCode = Keys.A Then
+            ' Select all rows
+            SelectAllRows(lvwSelectedFiles)
+        End If
+
+    End Sub
+
+    Private Sub lvwFolderContents_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles lvwFolderContents.ColumnClick
+        Dim isDateColumn = (e.Column = eFolderContentsColumn.LastModified)
+        SortListView(lvwFolderContents, mSortColumnFolderContents, e.Column, isDateColumn)
+        mSortColumnFolderContents = e.Column
+    End Sub
+
+    Private Sub lvwFolderContents_KeyDown(sender As Object, e As KeyEventArgs) Handles lvwFolderContents.KeyDown
+
+        If e.Control AndAlso e.KeyCode = Keys.A Then
+            ' Select all rows
+            SelectAllRows(lvwFolderContents)
+        End If
+
+    End Sub
+
+    Private Class ListViewItemComparer
+        Implements IComparer
+
+        Private ReadOnly mSortingDates As Boolean
+        Private ReadOnly mColIndex As Integer
+        Private ReadOnly mSortOrder As SortOrder
+
+        Public Sub New(Optional sortingDates As Boolean = False)
+            mSortingDates = sortingDates
+            mColIndex = 0
+            mSortOrder = SortOrder.Ascending
+        End Sub
+
+        Public Sub New(column As Integer, order As SortOrder, Optional sortingDates As Boolean = False)
+            mSortingDates = sortingDates
+            mColIndex = column
+            mSortOrder = order
+        End Sub
+
+        Public Function Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
+            Dim returnVal As Integer
+            Dim compared = False
+
+            If mSortingDates Then
+                Try
+                    ' Parse the two objects passed as a parameter as a DateTi
+                    Dim dateA As DateTime = DateTime.Parse(CType(x, ListViewItem).SubItems(mColIndex).Text)
+                    Dim dateB As DateTime = DateTime.Parse(CType(y, ListViewItem).SubItems(mColIndex).Text)
+
+                    ' Compare the two dates.
+                    returnVal = DateTime.Compare(dateA, dateB)
+                    compared = True
+                Catch
+                    ' Sort as strings
+                End Try
+            End If
+
+            If Not compared Then
+                ' Compare the two items as a string.
+                returnVal = String.Compare(CType(x, ListViewItem).SubItems(mColIndex).Text,
+                                           CType(y, ListViewItem).SubItems(mColIndex).Text)
+            End If
+
+            If mSortOrder = SortOrder.Descending Then
+                Return returnVal * -1
+            Else
+                Return returnVal
+            End If
+
+        End Function
+
+    End Class
 
 End Class

@@ -300,49 +300,50 @@ Public Class frmCollectionStateEditor
         'Perform sort
         Me.lvwCollections.ListViewItemSorter = New ListViewItemComparer(e.Column, m_SortOrderAsc)
     End Sub
-End Class
+    
+    Private Class ListViewItemComparer
+        Implements IComparer
 
-Class ListViewItemComparer
-    Implements IComparer
+        ' Implements the manual sorting of items by columns.
+        Dim m_SortOrderAsc As Boolean = True
 
-    ' Implements the manual sorting of items by columns.
-    Dim m_SortOrderAsc As Boolean = True
+        Private ReadOnly colIndex As Integer
 
-    Private ReadOnly colIndex As Integer
+        Public Sub New()
+            colIndex = 0
+        End Sub
 
-    Public Sub New()
-        colIndex = 0
-    End Sub
+        Public Sub New(columnIndex As Integer)
+            colIndex = columnIndex
+        End Sub
 
-    Public Sub New(columnIndex As Integer)
-        colIndex = columnIndex
-    End Sub
+        Public Sub New(columnIndex As Integer, SortOrderAsc As Boolean)
+            colIndex = columnIndex
+            m_SortOrderAsc = SortOrderAsc
+        End Sub
 
-    Public Sub New(columnIndex As Integer, SortOrderAsc As Boolean)
-        colIndex = columnIndex
-        m_SortOrderAsc = SortOrderAsc
-    End Sub
+        Public Function Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
 
-    Public Function Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
+            Dim TempResult As Integer
 
-        Dim TempResult As Integer
+            TempResult = [String].Compare(CType(x, ListViewItem).SubItems(colIndex).Text, CType(y, ListViewItem).SubItems(colIndex).Text)
+            If m_SortOrderAsc Then
+                Return TempResult
+            Else
+                Return -TempResult
+            End If
 
-        TempResult = [String].Compare(CType(x, ListViewItem).SubItems(colIndex).Text, CType(y, ListViewItem).SubItems(colIndex).Text)
-        If m_SortOrderAsc Then
-            Return TempResult
-        Else
-            Return -TempResult
-        End If
+        End Function
 
-    End Function
+        Public Property SortOrder() As Boolean
+            Get
+                Return m_SortOrderAsc
+            End Get
+            Set(Value As Boolean)
+                m_SortOrderAsc = False
+            End Set
+        End Property
 
-    Public Property SortOrder() As Boolean
-        Get
-            Return m_SortOrderAsc
-        End Get
-        Set(Value As Boolean)
-            m_SortOrderAsc = False
-        End Set
-    End Property
+    End Class
 
 End Class
