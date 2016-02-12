@@ -100,6 +100,10 @@
       <Name>ExpTreeLib</Name>
       <HintPath>..\Shared Libraries\ExpTreeLib.dll</HintPath>
     </Reference>
+    <Reference Include="FlexibleFileSortUtility, Version=1.0.5610.27179, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Shared Libraries\FlexibleFileSortUtility.dll</HintPath>
+    </Reference>
     <Reference Include="PRISM, Version=2.2.4839.25226, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Shared Libraries\PRISM.dll</HintPath>

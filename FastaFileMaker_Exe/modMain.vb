@@ -13,12 +13,11 @@ Module modMain
     Private m_FastaToolsCnStr As String = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
     Private m_message As String
     Private m_FastaFileName As String
-    Private WithEvents m_FastaTimer As System.Timers.Timer
+    Private WithEvents m_FastaTimer As Timers.Timer
     Private m_FastaGenTimeOut As Boolean
     Private m_GenerationComplete As Boolean = False
-    Private m_GenerationStarted As Boolean = False
 
-    Private m_FastaGenStartTime As DateTime = System.DateTime.UtcNow
+    Private m_FastaGenStartTime As DateTime = DateTime.UtcNow
 
     Private mProteinCollectionList As String
     Private mCreationOpts As String
@@ -28,37 +27,34 @@ Module modMain
 
 #Region "Event handlers"
     Private Sub m_FastaTools_FileGenerationStarted(taskMsg As String) Handles m_FastaTools.FileGenerationStarted
-
-        m_GenerationStarted = True
-
     End Sub
 
     Private Sub m_FastaTools_FileGenerationCompleted(FullOutputPath As String) Handles m_FastaTools.FileGenerationCompleted
 
-        m_FastaFileName = System.IO.Path.GetFileName(FullOutputPath)  'Get the name of the fasta file that was generated
+        m_FastaFileName = IO.Path.GetFileName(FullOutputPath)  'Get the name of the fasta file that was generated
         m_GenerationComplete = True     'Set the completion flag
 
     End Sub
 
     Private Sub m_FastaTools_FileGenerationProgress(statusMsg As String, fractionDone As Double) Handles m_FastaTools.FileGenerationProgress
-        Const MINIMUM_LOG_INTERVAL_SEC As Integer = 15
+        Const MINIMUM_LOG_INTERVAL_SEC = 15
         Static dtLastLogTime As DateTime
         Static dblFractionDoneSaved As Double = -1
 
         If m_DebugLevel >= 3 Then
             ' Limit the logging to once every MINIMUM_LOG_INTERVAL_SEC seconds
-            If System.DateTime.UtcNow.Subtract(dtLastLogTime).TotalSeconds >= MINIMUM_LOG_INTERVAL_SEC OrElse
+            If DateTime.UtcNow.Subtract(dtLastLogTime).TotalSeconds >= MINIMUM_LOG_INTERVAL_SEC OrElse
                fractionDone - dblFractionDoneSaved >= 0.25 Then
-                dtLastLogTime = System.DateTime.UtcNow
+                dtLastLogTime = DateTime.UtcNow
                 dblFractionDoneSaved = fractionDone
                 Console.WriteLine("Generating Fasta file, " & (fractionDone * 100).ToString("0.0") & "% complete, " & statusMsg)
             End If
         End If
     End Sub
 
-    Private Sub m_FastaTimer_Elapsed(sender As Object, e As System.Timers.ElapsedEventArgs) Handles m_FastaTimer.Elapsed
+    Private Sub m_FastaTimer_Elapsed(sender As Object, e As Timers.ElapsedEventArgs) Handles m_FastaTimer.Elapsed
 
-        If System.DateTime.UtcNow.Subtract(m_FastaGenStartTime).TotalMinutes >= FASTA_GEN_TIMEOUT_INTERVAL_MINUTES Then
+        If DateTime.UtcNow.Subtract(m_FastaGenStartTime).TotalMinutes >= FASTA_GEN_TIMEOUT_INTERVAL_MINUTES Then
             m_FastaGenTimeOut = True        'Set the timeout flag so an error will be reported
             m_GenerationComplete = True     'Set the completion flag so the fasta generation wait loop will exit
         End If
@@ -107,7 +103,7 @@ Module modMain
                 End If
 
                 If mDestFolder.Length = 0 Then
-                    mDestFolder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
+                    mDestFolder = IO.Path.GetDirectoryName(Reflection.Assembly.GetExecutingAssembly().Location)
                 End If
 
 
@@ -131,10 +127,10 @@ Module modMain
     End Sub
 
     Private Function GetAppVersion(strProgramDate As String) As String
-        Return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() & " (" & strProgramDate & ")"
+        Return Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() & " (" & strProgramDate & ")"
     End Function
 
-    Private Function GetHumanReadableTimeInterval(dtInterval As System.TimeSpan) As String
+    Private Function GetHumanReadableTimeInterval(dtInterval As TimeSpan) As String
 
         If dtInterval.TotalDays >= 1 Then
             ' Report Days
@@ -162,27 +158,27 @@ Module modMain
 
 
         ' Appends a new entry to the log file
-        Dim swOutFile As System.IO.StreamWriter
+        Dim swOutFile As IO.StreamWriter
 
         Dim strLogFileName As String
         Dim strLogFilePath As String
-        Dim blnWriteHeader As Boolean = False
+        Dim blnWriteHeader = False
 
         Try
             ' Create a new log file each day
-            strLogFileName = "FastaFileMakerLog_" & System.DateTime.Now.ToString("yyyy-MM-dd") & ".txt"
+            strLogFileName = "FastaFileMakerLog_" & DateTime.Now.ToString("yyyy-MM-dd") & ".txt"
 
             If Not LogFolderPath Is Nothing AndAlso LogFolderPath.Length > 0 Then
-                strLogFilePath = System.IO.Path.Combine(LogFolderPath, strLogFileName)
+                strLogFilePath = IO.Path.Combine(LogFolderPath, strLogFileName)
             Else
                 strLogFilePath = String.Copy(strLogFileName)
             End If
 
-            If Not System.IO.File.Exists(strLogFilePath) Then
+            If Not IO.File.Exists(strLogFilePath) Then
                 blnWriteHeader = True
             End If
 
-            swOutFile = New System.IO.StreamWriter(New System.IO.FileStream(strLogFilePath, IO.FileMode.Append, IO.FileAccess.Write, IO.FileShare.Read))
+            swOutFile = New IO.StreamWriter(New IO.FileStream(strLogFilePath, IO.FileMode.Append, IO.FileAccess.Write, IO.FileShare.Read))
 
             If blnWriteHeader Then
                 swOutFile.WriteLine("Date" & ControlChars.Tab &
@@ -198,16 +194,16 @@ Module modMain
                                     "Fasta_File_Age_vs_PresentTime")
             End If
 
-            Dim fiFastaFile As System.IO.FileInfo
+            Dim fiFastaFile As IO.FileInfo
             If Not DestFolder Is Nothing AndAlso DestFolder.Length > 0 Then
-                fiFastaFile = New System.IO.FileInfo(System.IO.Path.Combine(DestFolder, FastaFileName))
+                fiFastaFile = New IO.FileInfo(IO.Path.Combine(DestFolder, FastaFileName))
             Else
-                fiFastaFile = New System.IO.FileInfo(FastaFileName)
+                fiFastaFile = New IO.FileInfo(FastaFileName)
             End If
 
 
-            swOutFile.WriteLine(System.DateTime.Now.ToString("yyyy-MM-dd") & ControlChars.Tab &
-                                System.DateTime.Now.ToString("hh:mm:ss tt") & ControlChars.Tab &
+            swOutFile.WriteLine(DateTime.Now.ToString("yyyy-MM-dd") & ControlChars.Tab &
+                                DateTime.Now.ToString("hh:mm:ss tt") & ControlChars.Tab &
                                 CollectionList & ControlChars.Tab &
                                 CreationOpts & ControlChars.Tab &
                                 LegacyFasta & ControlChars.Tab &
@@ -216,7 +212,7 @@ Module modMain
                                 fiFastaFile.LastWriteTime.ToString() & ControlChars.Tab &
                                 fiFastaFile.CreationTime.ToString() & ControlChars.Tab &
                                 fiFastaFile.Length & ControlChars.Tab &
-                                GetHumanReadableTimeInterval(System.DateTime.UtcNow.Subtract(fiFastaFile.LastWriteTimeUtc)))
+                                GetHumanReadableTimeInterval(DateTime.UtcNow.Subtract(fiFastaFile.LastWriteTimeUtc)))
 
             If Not swOutFile Is Nothing Then
                 swOutFile.Close()
@@ -232,7 +228,7 @@ Module modMain
         ' Returns True if no problems; otherwise, returns false
 
         Dim strValue As String = String.Empty
-        Dim strValidParameters() As String = New String() {"P", "C", "L", "O", "D"}
+        Dim strValidParameters = New String() {"P", "C", "L", "O", "D"}
 
         Try
             ' Make sure no invalid parameters are present
@@ -273,6 +269,7 @@ Module modMain
 
         Catch ex As Exception
             Console.WriteLine("Error parsing the command line parameters: " & ControlChars.NewLine & ex.Message)
+            Return False
         End Try
 
     End Function
@@ -285,10 +282,10 @@ Module modMain
             Console.WriteLine("Alternatively, you can specify a legacy .Fasta file name to retrieve")
             Console.WriteLine()
             Console.WriteLine("Program syntax:")
-            Console.WriteLine("  " & System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location) &
+            Console.WriteLine("  " & IO.Path.GetFileName(Reflection.Assembly.GetExecutingAssembly().Location) &
                                         " /P:ProteinCollectionList [/C:ProteinCollectionCreationOptions] [/O:OutputFolder] [/D]")
             Console.WriteLine("   or   ")
-            Console.WriteLine("  " & System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location) &
+            Console.WriteLine("  " & IO.Path.GetFileName(Reflection.Assembly.GetExecutingAssembly().Location) &
                                         " /L:LegacyFastaFileName [/O:OutputFolder] [/D]")
             Console.WriteLine()
             Console.WriteLine("To export one or more protein collections, specify the protein collection names as a comma separated list after the /P switch.")
@@ -322,7 +319,7 @@ Module modMain
                               "this computer software.")
 
             ' Delay for 750 msec in case the user double clicked this file from within Windows Explorer (or started the program via a shortcut)
-            System.Threading.Thread.Sleep(750)
+            Threading.Thread.Sleep(750)
 
         Catch ex As Exception
             Console.WriteLine("Error displaying the program syntax: " & ex.Message)
@@ -348,7 +345,7 @@ Module modMain
             m_FastaTools = New clsGetFASTAFromDMS(m_FastaToolsCnStr)
         End If
 
-        m_FastaTimer = New System.Timers.Timer
+        m_FastaTimer = New Timers.Timer
         m_FastaTimer.Interval = 5000
         m_FastaTimer.AutoReset = True
 
@@ -356,7 +353,7 @@ Module modMain
         '   Since it does not spawn a new thread, the while loop after this Try block won't actually get reached while m_FastaTools.ExportFASTAFile is running
         '   Furthermore, even if m_FastaTimer_Elapsed sets m_FastaGenTimeOut to True, this won't do any good since m_FastaTools.ExportFASTAFile will still be running
         m_FastaGenTimeOut = False
-        m_FastaGenStartTime = System.DateTime.UtcNow
+        m_FastaGenStartTime = DateTime.UtcNow
         Try
             m_FastaTimer.Start()
             HashString = m_FastaTools.ExportFASTAFile(CollectionList, CreationOpts, LegacyFasta, DestFolder)
@@ -368,8 +365,8 @@ Module modMain
 
         'Wait for fasta creation to finish
         While Not m_GenerationComplete
-            System.Threading.Thread.Sleep(2000)
-            If System.DateTime.UtcNow.Subtract(m_FastaGenStartTime).TotalMinutes >= FASTA_GEN_TIMEOUT_INTERVAL_MINUTES Then
+            Threading.Thread.Sleep(2000)
+            If DateTime.UtcNow.Subtract(m_FastaGenStartTime).TotalMinutes >= FASTA_GEN_TIMEOUT_INTERVAL_MINUTES Then
                 m_FastaGenTimeOut = True
                 Exit While
             End If
@@ -398,31 +395,30 @@ Module modMain
     ''' <param name="objException"></param>
     ''' <returns>String similar to "Stack trace: clsCodeTest.Test->clsCodeTest.TestException->clsCodeTest.InnerTestException in clsCodeTest.vb:line 86"</returns>
     ''' <remarks></remarks>
-    Public Function GetExceptionStackTrace(objException As System.Exception) As String
-        Const REGEX_FUNCTION_NAME As String = "at ([^(]+)\("
-        Const REGEX_FILE_NAME As String = "in .+\\(.+)"
+    Public Function GetExceptionStackTrace(objException As Exception) As String
+        Const REGEX_FUNCTION_NAME = "at ([^(]+)\("
+        Const REGEX_FILE_NAME = "in .+\\(.+)"
 
-        Dim trTextReader As System.IO.StringReader
+        Dim trTextReader As IO.StringReader
         Dim intIndex As Integer
 
-        Dim intFunctionCount As Integer = 0
         Dim strFunctions() As String
 
         Dim strCurrentFunction As String
         Dim strFinalFile As String = String.Empty
 
-        Dim strLine As String = String.Empty
-        Dim strStackTrace As String = String.Empty
+        Dim strLine As String
+        Dim strStackTrace As String
 
-        Dim reFunctionName As New System.Text.RegularExpressions.Regex(REGEX_FUNCTION_NAME, System.Text.RegularExpressions.RegexOptions.Compiled Or System.Text.RegularExpressions.RegexOptions.IgnoreCase)
-        Dim reFileName As New System.Text.RegularExpressions.Regex(REGEX_FILE_NAME, System.Text.RegularExpressions.RegexOptions.Compiled Or System.Text.RegularExpressions.RegexOptions.IgnoreCase)
-        Dim objMatch As System.Text.RegularExpressions.Match
+        Dim reFunctionName As New Text.RegularExpressions.Regex(REGEX_FUNCTION_NAME, Text.RegularExpressions.RegexOptions.Compiled Or Text.RegularExpressions.RegexOptions.IgnoreCase)
+        Dim reFileName As New Text.RegularExpressions.Regex(REGEX_FILE_NAME, Text.RegularExpressions.RegexOptions.Compiled Or Text.RegularExpressions.RegexOptions.IgnoreCase)
+        Dim objMatch As Text.RegularExpressions.Match
 
         ' Process each line in objException.StackTrace
         ' Populate strFunctions() with the function name of each line
-        trTextReader = New System.IO.StringReader(objException.StackTrace)
+        trTextReader = New IO.StringReader(objException.StackTrace)
 
-        intFunctionCount = 0
+        Dim intFunctionCount = 0
         ReDim strFunctions(9)
 
         Do While trTextReader.Peek >= 0
@@ -436,10 +432,10 @@ Module modMain
                     strCurrentFunction = objMatch.Groups(1).Value
                 Else
                     ' Look for the word " in "
-                    intIndex = strLine.ToLower.IndexOf(" in ")
+                    intIndex = strLine.ToLower.IndexOf(" in ", StringComparison.Ordinal)
                     If intIndex = 0 Then
                         ' " in" not found; look for the first space after startIndex 4
-                        intIndex = strLine.IndexOf(" ", 4)
+                        intIndex = strLine.IndexOf(" ", 4, StringComparison.Ordinal)
                     End If
                     If intIndex = 0 Then
                         ' Space not found; use the entire string

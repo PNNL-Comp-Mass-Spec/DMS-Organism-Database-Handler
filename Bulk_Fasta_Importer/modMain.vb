@@ -5,7 +5,7 @@
 
 Module modMain
 
-    Public Const PROGRAM_DATE As String = "November 24, 2015"
+    Public Const PROGRAM_DATE As String = "February 12, 2016"
 
     Private mInputFilePath As String
     Private mPreviewMode As Boolean
