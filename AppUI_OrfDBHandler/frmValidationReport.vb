@@ -1,5 +1,9 @@
+Imports System.IO
+Imports Protein_Uploader
+Imports ValidateFastaFile
+
 Public Class frmValidationReport
-    Inherits System.Windows.Forms.Form
+    Inherits Form
 
 #Region " Windows Form Designer generated code "
 
@@ -30,51 +34,51 @@ Public Class frmValidationReport
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    Friend WithEvents colErrorDescription As System.Windows.Forms.ColumnHeader
-    Friend WithEvents lvwErrorList As System.Windows.Forms.ListView
-    Friend WithEvents lblErrorList As System.Windows.Forms.Label
-    Friend WithEvents cmdClose As System.Windows.Forms.Button
-    Friend WithEvents gbxValidFileList As System.Windows.Forms.GroupBox
-    Friend WithEvents gbxInvalidFileList As System.Windows.Forms.GroupBox
-    Friend WithEvents lvwValidList As System.Windows.Forms.ListView
-    Friend WithEvents colFileName As System.Windows.Forms.ColumnHeader
-    Friend WithEvents colOrganism As System.Windows.Forms.ColumnHeader
-    Friend WithEvents colCount As System.Windows.Forms.ColumnHeader
-    Friend WithEvents pgbListViewLoad As System.Windows.Forms.ProgressBar
-    Friend WithEvents colNumOccurences As System.Windows.Forms.ColumnHeader
-    Friend WithEvents cmdExportErrorDetails As System.Windows.Forms.Button
-    Friend WithEvents colActualCount As System.Windows.Forms.ColumnHeader
-    Friend WithEvents fraFastaFileWarnings As System.Windows.Forms.GroupBox
-    Friend WithEvents lvwWarningList As System.Windows.Forms.ListView
-    Friend WithEvents cmdExportWarningDetails As System.Windows.Forms.Button
-    Friend WithEvents cboFileListWarnings As System.Windows.Forms.ComboBox
-    Friend WithEvents lblWarning As System.Windows.Forms.Label
-    Friend WithEvents ColumnHeader1 As System.Windows.Forms.ColumnHeader
-    Friend WithEvents ColumnHeader2 As System.Windows.Forms.ColumnHeader
-    Friend WithEvents cboFileListErrors As System.Windows.Forms.ComboBox
+    Friend WithEvents colErrorDescription As ColumnHeader
+    Friend WithEvents lvwErrorList As ListView
+    Friend WithEvents lblErrorList As Label
+    Friend WithEvents cmdClose As Button
+    Friend WithEvents gbxValidFileList As GroupBox
+    Friend WithEvents gbxInvalidFileList As GroupBox
+    Friend WithEvents lvwValidList As ListView
+    Friend WithEvents colFileName As ColumnHeader
+    Friend WithEvents colOrganism As ColumnHeader
+    Friend WithEvents colCount As ColumnHeader
+    Friend WithEvents pgbListViewLoad As ProgressBar
+    Friend WithEvents colNumOccurences As ColumnHeader
+    Friend WithEvents cmdExportErrorDetails As Button
+    Friend WithEvents colActualCount As ColumnHeader
+    Friend WithEvents fraFastaFileWarnings As GroupBox
+    Friend WithEvents lvwWarningList As ListView
+    Friend WithEvents cmdExportWarningDetails As Button
+    Friend WithEvents cboFileListWarnings As ComboBox
+    Friend WithEvents lblWarning As Label
+    Friend WithEvents ColumnHeader1 As ColumnHeader
+    Friend WithEvents ColumnHeader2 As ColumnHeader
+    Friend WithEvents cboFileListErrors As ComboBox
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.cboFileListErrors = New System.Windows.Forms.ComboBox
-        Me.cmdExportErrorDetails = New System.Windows.Forms.Button
-        Me.lblErrorList = New System.Windows.Forms.Label
-        Me.cmdClose = New System.Windows.Forms.Button
-        Me.lvwErrorList = New System.Windows.Forms.ListView
-        Me.colNumOccurences = New System.Windows.Forms.ColumnHeader
-        Me.colErrorDescription = New System.Windows.Forms.ColumnHeader
-        Me.gbxValidFileList = New System.Windows.Forms.GroupBox
-        Me.lvwValidList = New System.Windows.Forms.ListView
-        Me.colFileName = New System.Windows.Forms.ColumnHeader
-        Me.colOrganism = New System.Windows.Forms.ColumnHeader
-        Me.colCount = New System.Windows.Forms.ColumnHeader
-        Me.colActualCount = New System.Windows.Forms.ColumnHeader
-        Me.gbxInvalidFileList = New System.Windows.Forms.GroupBox
-        Me.pgbListViewLoad = New System.Windows.Forms.ProgressBar
-        Me.fraFastaFileWarnings = New System.Windows.Forms.GroupBox
-        Me.lvwWarningList = New System.Windows.Forms.ListView
-        Me.ColumnHeader1 = New System.Windows.Forms.ColumnHeader
-        Me.ColumnHeader2 = New System.Windows.Forms.ColumnHeader
-        Me.cmdExportWarningDetails = New System.Windows.Forms.Button
-        Me.cboFileListWarnings = New System.Windows.Forms.ComboBox
-        Me.lblWarning = New System.Windows.Forms.Label
+        Me.cboFileListErrors = New ComboBox
+        Me.cmdExportErrorDetails = New Button
+        Me.lblErrorList = New Label
+        Me.cmdClose = New Button
+        Me.lvwErrorList = New ListView
+        Me.colNumOccurences = New ColumnHeader
+        Me.colErrorDescription = New ColumnHeader
+        Me.gbxValidFileList = New GroupBox
+        Me.lvwValidList = New ListView
+        Me.colFileName = New ColumnHeader
+        Me.colOrganism = New ColumnHeader
+        Me.colCount = New ColumnHeader
+        Me.colActualCount = New ColumnHeader
+        Me.gbxInvalidFileList = New GroupBox
+        Me.pgbListViewLoad = New ProgressBar
+        Me.fraFastaFileWarnings = New GroupBox
+        Me.lvwWarningList = New ListView
+        Me.ColumnHeader1 = New ColumnHeader
+        Me.ColumnHeader2 = New ColumnHeader
+        Me.cmdExportWarningDetails = New Button
+        Me.cboFileListWarnings = New ComboBox
+        Me.lblWarning = New Label
         Me.gbxValidFileList.SuspendLayout()
         Me.gbxInvalidFileList.SuspendLayout()
         Me.fraFastaFileWarnings.SuspendLayout()
@@ -122,7 +126,7 @@ Public Class frmValidationReport
         Me.lvwErrorList.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lvwErrorList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colNumOccurences, Me.colErrorDescription})
+        Me.lvwErrorList.Columns.AddRange(New ColumnHeader() {Me.colNumOccurences, Me.colErrorDescription})
         Me.lvwErrorList.FullRowSelect = True
         Me.lvwErrorList.GridLines = True
         Me.lvwErrorList.Location = New System.Drawing.Point(12, 76)
@@ -160,7 +164,7 @@ Public Class frmValidationReport
         Me.lvwValidList.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lvwValidList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colFileName, Me.colOrganism, Me.colCount, Me.colActualCount})
+        Me.lvwValidList.Columns.AddRange(New ColumnHeader() {Me.colFileName, Me.colOrganism, Me.colCount, Me.colActualCount})
         Me.lvwValidList.FullRowSelect = True
         Me.lvwValidList.GridLines = True
         Me.lvwValidList.Location = New System.Drawing.Point(12, 30)
@@ -236,7 +240,7 @@ Public Class frmValidationReport
         Me.lvwWarningList.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lvwWarningList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2})
+        Me.lvwWarningList.Columns.AddRange(New ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2})
         Me.lvwWarningList.FullRowSelect = True
         Me.lvwWarningList.GridLines = True
         Me.lvwWarningList.Location = New System.Drawing.Point(12, 77)
@@ -319,7 +323,7 @@ Public Class frmValidationReport
     Private m_Organisms As DataTable
     Private m_ErrorListLoaded As Boolean
 
-    Private Sub frmValidationReport_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+    Private Sub frmValidationReport_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Me.FillValidListView()
         Me.BindFileListToErrorComboBox(Me.m_FileErrorList)
         Me.BindFileListToWarningComboBox(Me.m_FileWarningList)
@@ -338,45 +342,43 @@ Public Class frmValidationReport
 
     End Sub
 
-    Private Sub cmdExportErrorDetails_Click(sender As System.Object, e As System.EventArgs) Handles cmdExportErrorDetails.Click
+    Private Sub cmdExportErrorDetails_Click(sender As Object, e As EventArgs) Handles cmdExportErrorDetails.Click
         If Me.m_ErrorCollection Is Nothing OrElse Me.m_ErrorCollection.Count = 0 Then
-            System.Windows.Forms.MessageBox.Show("Error list is empty; nothing to export", "Nothing to do", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Error list is empty; nothing to export", "Nothing to do", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Else
             Me.DumpDetailedErrorOrWarningList(Me.m_ErrorCollection, Me.cboFileListErrors.Text, "Error")
         End If
     End Sub
 
-    Private Sub cmdExportWarningDetails_Click(sender As System.Object, e As System.EventArgs) Handles cmdExportWarningDetails.Click
+    Private Sub cmdExportWarningDetails_Click(sender As Object, e As EventArgs) Handles cmdExportWarningDetails.Click
         If Me.m_WarningCollection Is Nothing OrElse Me.m_WarningCollection.Count = 0 Then
-            System.Windows.Forms.MessageBox.Show("Warning list is empty; nothing to export", "Nothing to do", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Warning list is empty; nothing to export", "Nothing to do", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Else
             Me.DumpDetailedErrorOrWarningList(Me.m_WarningCollection, Me.cboFileListWarnings.Text, "Warning")
         End If
 
     End Sub
 
-    Private Sub cboFileListErrors_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cboFileListErrors.SelectedIndexChanged
+    Private Sub cboFileListErrors_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboFileListErrors.SelectedIndexChanged
         Me.lvwErrorList.Items.Clear()
         If Not Me.m_FileErrorList Is Nothing AndAlso Me.m_FileErrorList.Count > 0 Then
             Me.m_ErrorCollection = DirectCast(Me.m_FileErrorList.Item(Me.cboFileListErrors.Text), ArrayList)
         End If
 
         If Not m_SummarizedFileErrors Is Nothing AndAlso m_SummarizedFileErrors.Count > 0 Then
-            Dim errorSummary As New Hashtable
-            errorSummary = DirectCast(Me.m_SummarizedFileErrors.Item(Me.cboFileListErrors.Text), Hashtable)
+            Dim errorSummary = DirectCast(Me.m_SummarizedFileErrors.Item(Me.cboFileListErrors.Text), Hashtable)
             Me.FillErrorListView(errorSummary)
         End If
     End Sub
 
-    Private Sub cboFileListWarnings_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cboFileListWarnings.SelectedIndexChanged
+    Private Sub cboFileListWarnings_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboFileListWarnings.SelectedIndexChanged
         Me.lvwWarningList.Items.Clear()
         If Not Me.m_FileWarningList Is Nothing AndAlso Me.m_FileWarningList.Count > 0 Then
             Me.m_WarningCollection = DirectCast(Me.m_FileWarningList.Item(Me.cboFileListWarnings.Text), ArrayList)
         End If
 
         If Not m_SummarizedFileWarnings Is Nothing AndAlso m_SummarizedFileWarnings.Count > 0 Then
-            Dim WarningSummary As New Hashtable
-            WarningSummary = DirectCast(Me.m_SummarizedFileWarnings.Item(Me.cboFileListWarnings.Text), Hashtable)
+            Dim WarningSummary = DirectCast(Me.m_SummarizedFileWarnings.Item(Me.cboFileListWarnings.Text), Hashtable)
             Me.FillWarningListView(WarningSummary)
         End If
     End Sub
@@ -509,7 +511,7 @@ Public Class frmValidationReport
 
     Private Sub FillValidListView()
         Dim li As ListViewItem
-        Dim entry As Protein_Uploader.IUploadProteins.UploadInfo
+        Dim entry As IUploadProteins.UploadInfo
         Dim FileName As String
 
         If Me.m_FileValidList Is Nothing Then
@@ -526,8 +528,8 @@ Public Class frmValidationReport
         Me.lvwValidList.Items.Clear()
 
         While counter.MoveNext()
-            entry = DirectCast(counter.Value, Protein_Uploader.IUploadProteins.UploadInfo)
-            FileName = System.IO.Path.GetFileName(counter.Key.ToString)
+            entry = DirectCast(counter.Value, IUploadProteins.UploadInfo)
+            FileName = Path.GetFileName(counter.Key.ToString)
             li = New ListViewItem(FileName)
             li.SubItems.Add(Me.GetOrganismName(entry.OrganismID))
             li.SubItems.Add(entry.ProteinCount.ToString)
@@ -545,9 +547,9 @@ Public Class frmValidationReport
 
         Dim SelectedSavePath As String
 
-        Dim errorDetail As ValidateFastaFile.ICustomValidation.udtErrorInfoExtended
+        Dim errorDetail As ICustomValidation.udtErrorInfoExtended
 
-        Dim intErrorCount As Integer = 0
+        Dim intErrorCount = 0
 
         If strMessageType Is Nothing OrElse strMessageType.Length = 0 Then
             strMessageType = "Error"
@@ -560,7 +562,7 @@ Public Class frmValidationReport
             .FilterIndex = 1
             .RestoreDirectory = True
             .OverwritePrompt = True
-            .FileName = System.IO.Path.GetFileNameWithoutExtension(FASTAFileName) & "_" & strMessageType
+            .FileName = Path.GetFileNameWithoutExtension(FASTAFileName) & "_" & strMessageType
         End With
 
         If SaveDialog.ShowDialog = DialogResult.OK Then
@@ -569,43 +571,32 @@ Public Class frmValidationReport
             Exit Sub
         End If
 
-        Dim sw As System.IO.StreamWriter = New System.IO.StreamWriter(SelectedSavePath)
+        Using sw = New StreamWriter(New FileStream(SelectedSavePath, FileMode.Create, FileAccess.Write, FileShare.Read))
 
-        sw.WriteLine("Protein Name" & ControlChars.Tab &
+
+            sw.WriteLine("Protein Name" & ControlChars.Tab &
                      "Line Number" & ControlChars.Tab &
                      "Message Type" & ControlChars.Tab &
                      "Message")
 
-        If Not errorList Is Nothing AndAlso errorList.Count > 0 Then
-            For Each errorDetail In errorList
-                sw.WriteLine(
-                    errorDetail.ProteinName & ControlChars.Tab &
-                    errorDetail.LineNumber & ControlChars.Tab &
-                    errorDetail.Type & ControlChars.Tab &
-                    errorDetail.MessageText)
+            If Not errorList Is Nothing AndAlso errorList.Count > 0 Then
+                For Each errorDetail In errorList
+                    sw.WriteLine(
+                        errorDetail.ProteinName & ControlChars.Tab &
+                        errorDetail.LineNumber & ControlChars.Tab &
+                        errorDetail.Type & ControlChars.Tab &
+                        errorDetail.MessageText)
 
-                intErrorCount += 1
-            Next
-        End If
+                    intErrorCount += 1
+                Next
+            End If
 
-        sw.WriteLine("")
+            sw.WriteLine("")
 
-        sw.Flush()
-        sw.Close()
-
-        sw = Nothing
+        End Using
 
         MessageBox.Show("Wrote " & intErrorCount.ToString & " " & strMessageType & "s to " & SaveDialog.FileName, "Detailed " & strMessageType & " List", MessageBoxButtons.OK)
 
     End Sub
-
-    Structure HashToArraylistForCombo
-        Sub New(Key As String, Value As ArrayList)
-            Me.Key = Key.ToString & " (" & Value.Count & " Errors)"
-            Me.Value = Value
-        End Sub
-        Public Key As String
-        Public Value As ArrayList
-    End Structure
 
 End Class

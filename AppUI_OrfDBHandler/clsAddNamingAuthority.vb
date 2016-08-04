@@ -1,16 +1,17 @@
+Imports Protein_Importer
+
 Public Class clsAddNamingAuthority
 
-    Protected m_ConnectionString As String
-    Protected m_SPRunner As Protein_Importer.IAddUpdateEntries
+    Protected ReadOnly m_ConnectionString As String
+    Protected m_SPRunner As IAddUpdateEntries
 
     Protected m_shortName As String
     Protected m_fullName As String
     Protected m_webAddress As String
     Protected m_EntryExists As Boolean = False
-    'Protected m_TableAccess As TableManipulationBase.IGetSQLData
-    Protected m_Importer As Protein_Importer.IImportProteins
-    Protected m_AuthorityTable As DataTable
-    Protected m_FormLocation As System.Drawing.Point
+    Protected m_Importer As IImportProteins
+    Protected ReadOnly m_AuthorityTable As DataTable
+    Protected m_FormLocation As Point
 
     ReadOnly Property ShortName() As String
         Get
@@ -42,8 +43,8 @@ Public Class clsAddNamingAuthority
         End Get
     End Property
 
-    WriteOnly Property FormLocation() As System.Drawing.Point
-        Set(Value As System.Drawing.Point)
+    WriteOnly Property FormLocation() As Point
+        Set(Value As Point)
             Me.m_FormLocation = Value
         End Set
     End Property
@@ -61,10 +62,8 @@ Public Class clsAddNamingAuthority
         frmAuth.DesktopLocation = Me.m_FormLocation
         Dim authID As Integer
         If Me.m_SPRunner Is Nothing Then
-            Me.m_SPRunner = New Protein_Importer.clsAddUpdateEntries(Me.m_ConnectionString)
+            Me.m_SPRunner = New clsAddUpdateEntries(Me.m_ConnectionString)
         End If
-
-        Dim errorResult As DialogResult
 
         Dim r As DialogResult = frmAuth.ShowDialog
 
@@ -77,7 +76,7 @@ Public Class clsAddNamingAuthority
             authID = Me.m_SPRunner.AddNamingAuthority(Me.m_shortName, Me.m_fullName, Me.m_webAddress)
             If authID < 0 Then
 
-                errorResult = System.Windows.Forms.MessageBox.Show(
+                MessageBox.Show(
                     "An entry for '" + Me.m_shortName + "' already exists in the Authorities table",
                     "Entry already exists!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2)
                 Me.m_EntryExists = True
@@ -89,7 +88,6 @@ Public Class clsAddNamingAuthority
             authID = -1
         End If
 
-        frmAuth = Nothing
         Me.m_SPRunner = Nothing
 
         Return authID
@@ -98,7 +96,7 @@ Public Class clsAddNamingAuthority
 
     Private Function GetAuthoritiesList() As DataTable
         If Me.m_Importer Is Nothing Then
-            Me.m_Importer = New Protein_Importer.clsImportHandler(Me.m_ConnectionString)
+            Me.m_Importer = New clsImportHandler(Me.m_ConnectionString)
         End If
 
         Dim tmpAuthTable As DataTable

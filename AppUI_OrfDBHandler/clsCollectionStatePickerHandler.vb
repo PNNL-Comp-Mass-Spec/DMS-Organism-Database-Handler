@@ -1,17 +1,15 @@
-Public Class clsCollectionStatePickerHandler
+Imports Protein_Importer
+Imports TableManipulationBase
 
-    Private m_tmpIDTable As DataTable
+Public Class clsCollectionStatePickerHandler
     Private m_forceReload As Boolean = False
     Private m_ListViewData As DataTable
-    Private m_PSConnString As String
-    Private m_GetTables As TableManipulationBase.IGetSQLData
-    Private m_SPAccess As Protein_Importer.IAddUpdateEntries
-    Private m_CurrentFilterString As String
+    Private ReadOnly m_GetTables As IGetSQLData
+    Private ReadOnly m_SPAccess As IAddUpdateEntries
 
     Public Sub New(PSConnectionString As String)
-        Me.m_PSConnString = PSConnectionString
-        Me.m_GetTables = New TableManipulationBase.clsDBTask(PSConnectionString)
-        Me.m_SPAccess = New Protein_Importer.clsAddUpdateEntries(PSConnectionString)
+        Me.m_GetTables = New clsDBTask(PSConnectionString)
+        Me.m_SPAccess = New clsAddUpdateEntries(PSConnectionString)
         Me.m_forceReload = True
     End Sub
 
@@ -21,33 +19,20 @@ Public Class clsCollectionStatePickerHandler
         End Set
     End Property
 
-    Sub ChangeSelectedCollectionStates(
-        newStateID As Integer,
-        selectedCollectionIDList As ArrayList)
+    Sub ChangeSelectedCollectionStates(newStateID As Integer, selectedCollectionIDList As ArrayList)
 
         Dim ID As Integer
 
         For Each ID In selectedCollectionIDList
             Me.m_SPAccess.UpdateProteinCollectionState(ID, newStateID)
         Next
-
     End Sub
 
-
-    Private Sub SetupPickerListView(lvw As ListView, dt As DataTable)
-        Me.SetupPickerListView(lvw, dt, "")
-    End Sub
-
-    Private Sub SetupPickerListView(
-        lvw As ListView,
-        dt As DataTable,
-        filterCriteria As String)
+    Private Sub SetupPickerListView(lvw As ListView, dt As DataTable, filterCriteria As String)
 
         Dim tmpCreated As Date
         Dim tmpMod As Date
 
-
-        Me.m_CurrentFilterString = filterCriteria
 
         filterCriteria = filterCriteria.Trim(" "c)
 
@@ -60,9 +45,7 @@ Public Class clsCollectionStatePickerHandler
 
         If criteriaCollection.Length > 0 And filterCriteria.Length > 0 Then
             For Each filterElement In criteriaCollection
-                filterString +=
-                    "[Name] LIKE '%" & filterElement &
-                    "%' OR [State] LIKE '%" & filterElement & "%' OR "
+                filterString += "[Name] LIKE '%" & filterElement & "%' OR [State] LIKE '%" & filterElement & "%' OR "
             Next
             'Trim off final " OR "
             filterString = Left(filterString, filterString.Length - 4)
@@ -80,8 +63,8 @@ Public Class clsCollectionStatePickerHandler
             item = New ListViewItem
             item.Text = cRow.Item("Name").ToString
             item.Tag = cRow.Item("ID")
-            item.SubItems.Add(Format(tmpCreated, "MM/dd/yyyy"))
-            item.SubItems.Add(Format(tmpMod, "MM/dd/yyyy"))
+            item.SubItems.Add(Format(tmpCreated, "yyyy-MM-dd"))
+            item.SubItems.Add(Format(tmpMod, "yyyy-MM-dd"))
             item.SubItems.Add(cRow.Item("State").ToString)
             lvw.Items.Add(item)
         Next
@@ -102,18 +85,15 @@ Public Class clsCollectionStatePickerHandler
     End Sub
 
     Function GetCollectionTable() As DataTable
-        Dim SQL As String = "SELECT * FROM V_Collection_State_Picker ORDER BY [Name]"
+        Dim SQL = "SELECT * FROM V_Collection_State_Picker ORDER BY [Name]"
         Dim cTable As DataTable = Me.m_GetTables.GetTable(SQL)
         Return cTable
     End Function
 
     Function GetStates() As DataTable
-        Dim SQL As String = "SELECT State, Collection_State_ID as ID " &
-            "FROM T_Protein_Collection_States ORDER BY Collection_State_ID"
+        Dim SQL As String = "SELECT State, Collection_State_ID as ID " & "FROM T_Protein_Collection_States ORDER BY Collection_State_ID"
         Dim sTable As DataTable = Me.m_GetTables.GetTable(SQL)
 
         Return sTable
     End Function
-
-
 End Class

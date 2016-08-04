@@ -1,9 +1,13 @@
-Imports System.Collections.Generic
+Imports System.IO
 Imports System.Text.RegularExpressions
+Imports System.Timers
+Imports ExtractAnnotationFromDescription
+Imports Protein_Importer
 Imports Protein_Uploader
+Imports ValidateFastaFile
 
 Public Class frmCollectionEditor
-    Inherits System.Windows.Forms.Form
+    Inherits Form
 
 #Region " Windows Form Designer generated code "
 
@@ -36,135 +40,135 @@ Public Class frmCollectionEditor
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    Friend WithEvents pnlProgBar As System.Windows.Forms.Panel
-    Friend WithEvents gbxSourceCollection As System.Windows.Forms.GroupBox
-    Friend WithEvents cboAnnotationTypePicker As System.Windows.Forms.ComboBox
-    Friend WithEvents lblAnnotationTypeFilter As System.Windows.Forms.Label
-    Friend WithEvents pbxLiveSearchCancel As System.Windows.Forms.PictureBox
-    Friend WithEvents lblSearchCount As System.Windows.Forms.Label
-    Friend WithEvents cmdLoadProteins As System.Windows.Forms.Button
-    Friend WithEvents cmdLoadFile As System.Windows.Forms.Button
-    Friend WithEvents txtLiveSearch As System.Windows.Forms.TextBox
-    Friend WithEvents cboCollectionPicker As System.Windows.Forms.ComboBox
-    Friend WithEvents cboOrganismFilter As System.Windows.Forms.ComboBox
-    Friend WithEvents lblOrganismFilter As System.Windows.Forms.Label
-    Friend WithEvents lblCollectionPicker As System.Windows.Forms.Label
-    Friend WithEvents pbxLiveSearchBkg As System.Windows.Forms.PictureBox
-    Friend WithEvents lvwSource As System.Windows.Forms.ListView
-    Friend WithEvents lblSourceMembers As System.Windows.Forms.Label
-    Friend WithEvents colSrcName As System.Windows.Forms.ColumnHeader
-    Friend WithEvents colSrcDesc As System.Windows.Forms.ColumnHeader
+    Friend WithEvents pnlProgBar As Panel
+    Friend WithEvents gbxSourceCollection As GroupBox
+    Friend WithEvents cboAnnotationTypePicker As ComboBox
+    Friend WithEvents lblAnnotationTypeFilter As Label
+    Friend WithEvents pbxLiveSearchCancel As PictureBox
+    Friend WithEvents lblSearchCount As Label
+    Friend WithEvents cmdLoadProteins As Button
+    Friend WithEvents cmdLoadFile As Button
+    Friend WithEvents txtLiveSearch As TextBox
+    Friend WithEvents cboCollectionPicker As ComboBox
+    Friend WithEvents cboOrganismFilter As ComboBox
+    Friend WithEvents lblOrganismFilter As Label
+    Friend WithEvents lblCollectionPicker As Label
+    Friend WithEvents pbxLiveSearchBkg As PictureBox
+    Friend WithEvents lvwSource As ListView
+    Friend WithEvents lblSourceMembers As Label
+    Friend WithEvents colSrcName As ColumnHeader
+    Friend WithEvents colSrcDesc As ColumnHeader
     Friend WithEvents cmdDestAdd As UIControls.ImageButton
     Friend WithEvents cmdDestRemove As UIControls.ImageButton
     Friend WithEvents cmdDestAddAll As UIControls.ImageButton
     Friend WithEvents cmdDestRemoveAll As UIControls.ImageButton
-    Friend WithEvents gbxDestinationCollection As System.Windows.Forms.GroupBox
-    Friend WithEvents lblCurrProteinCount As System.Windows.Forms.Label
-    Friend WithEvents lvwDestination As System.Windows.Forms.ListView
-    Friend WithEvents colName As System.Windows.Forms.ColumnHeader
-    Friend WithEvents pnlProgBarLower As System.Windows.Forms.Panel
-    Friend WithEvents pgbMain As System.Windows.Forms.ProgressBar
-    Friend WithEvents pnlSource As System.Windows.Forms.Panel
-    Friend WithEvents SourceDestSplit As System.Windows.Forms.Splitter
-    Friend WithEvents pnlDest As System.Windows.Forms.Panel
-    Friend WithEvents pnlProgBarUpper As System.Windows.Forms.Panel
-    Friend WithEvents lblCurrentTask As System.Windows.Forms.Label
-    Friend WithEvents mnuMainGUI As System.Windows.Forms.MainMenu
-    Friend WithEvents mnuFile As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuHelp As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuTools As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuAdmin As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuFileExit As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuToolsNucToProt As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuToolsConvert As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuToolsConvertF2A As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuToolsConvertA2F As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuToolsFCheckup As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuToolsOptions As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuToolsCollectionEdit As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuToolsCompareDBs As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuToolsExtractFromFile As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuHelpAbout As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuAdminNameHashRefresh As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuToolsSep1 As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuAdminBatchUploadFiles As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuAdminUpdateSHA As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuAdminUpdateCollectionsArchive As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuAdminUpdateZeroedMasses As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuAdminTestingInterface As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuAdminFixArchivePaths As System.Windows.Forms.MenuItem
-    Friend WithEvents mnuAdminAddSortingIndexes As System.Windows.Forms.MenuItem
-    Friend WithEvents lblBatchProgress As System.Windows.Forms.Label
-    Friend WithEvents cmdExportToFile As System.Windows.Forms.Button
-    Friend WithEvents lblTargetServer As System.Windows.Forms.Label
-    Friend WithEvents cmdSaveDestCollection As System.Windows.Forms.Button
+    Friend WithEvents gbxDestinationCollection As GroupBox
+    Friend WithEvents lblCurrProteinCount As Label
+    Friend WithEvents lvwDestination As ListView
+    Friend WithEvents colName As ColumnHeader
+    Friend WithEvents pnlProgBarLower As Panel
+    Friend WithEvents pgbMain As ProgressBar
+    Friend WithEvents pnlSource As Panel
+    Friend WithEvents SourceDestSplit As Splitter
+    Friend WithEvents pnlDest As Panel
+    Friend WithEvents pnlProgBarUpper As Panel
+    Friend WithEvents lblCurrentTask As Label
+    Friend WithEvents mnuMainGUI As MainMenu
+    Friend WithEvents mnuFile As MenuItem
+    Friend WithEvents mnuHelp As MenuItem
+    Friend WithEvents mnuTools As MenuItem
+    Friend WithEvents mnuAdmin As MenuItem
+    Friend WithEvents mnuFileExit As MenuItem
+    Friend WithEvents mnuToolsNucToProt As MenuItem
+    Friend WithEvents mnuToolsConvert As MenuItem
+    Friend WithEvents mnuToolsConvertF2A As MenuItem
+    Friend WithEvents mnuToolsConvertA2F As MenuItem
+    Friend WithEvents mnuToolsFCheckup As MenuItem
+    Friend WithEvents mnuToolsOptions As MenuItem
+    Friend WithEvents mnuToolsCollectionEdit As MenuItem
+    Friend WithEvents mnuToolsCompareDBs As MenuItem
+    Friend WithEvents mnuToolsExtractFromFile As MenuItem
+    Friend WithEvents mnuHelpAbout As MenuItem
+    Friend WithEvents mnuAdminNameHashRefresh As MenuItem
+    Friend WithEvents mnuToolsSep1 As MenuItem
+    Friend WithEvents mnuAdminBatchUploadFiles As MenuItem
+    Friend WithEvents mnuAdminUpdateSHA As MenuItem
+    Friend WithEvents mnuAdminUpdateCollectionsArchive As MenuItem
+    Friend WithEvents mnuAdminUpdateZeroedMasses As MenuItem
+    Friend WithEvents mnuAdminTestingInterface As MenuItem
+    Friend WithEvents mnuAdminFixArchivePaths As MenuItem
+    Friend WithEvents mnuAdminAddSortingIndexes As MenuItem
+    Friend WithEvents lblBatchProgress As Label
+    Friend WithEvents cmdExportToFile As Button
+    Friend WithEvents lblTargetServer As Label
+    Friend WithEvents cmdSaveDestCollection As Button
 
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmCollectionEditor))
-        Me.pnlProgBar = New System.Windows.Forms.Panel()
-        Me.pnlProgBarUpper = New System.Windows.Forms.Panel()
-        Me.lblBatchProgress = New System.Windows.Forms.Label()
-        Me.lblCurrentTask = New System.Windows.Forms.Label()
-        Me.pnlProgBarLower = New System.Windows.Forms.Panel()
-        Me.pgbMain = New System.Windows.Forms.ProgressBar()
-        Me.pnlSource = New System.Windows.Forms.Panel()
-        Me.lblTargetServer = New System.Windows.Forms.Label()
+        Me.pnlProgBar = New Panel()
+        Me.pnlProgBarUpper = New Panel()
+        Me.lblBatchProgress = New Label()
+        Me.lblCurrentTask = New Label()
+        Me.pnlProgBarLower = New Panel()
+        Me.pgbMain = New ProgressBar()
+        Me.pnlSource = New Panel()
+        Me.lblTargetServer = New Label()
         Me.cmdDestAdd = New UIControls.ImageButton()
         Me.cmdDestRemove = New UIControls.ImageButton()
         Me.cmdDestAddAll = New UIControls.ImageButton()
         Me.cmdDestRemoveAll = New UIControls.ImageButton()
-        Me.gbxSourceCollection = New System.Windows.Forms.GroupBox()
-        Me.cboAnnotationTypePicker = New System.Windows.Forms.ComboBox()
-        Me.lblAnnotationTypeFilter = New System.Windows.Forms.Label()
-        Me.pbxLiveSearchCancel = New System.Windows.Forms.PictureBox()
-        Me.lblSearchCount = New System.Windows.Forms.Label()
-        Me.cmdLoadProteins = New System.Windows.Forms.Button()
-        Me.cmdLoadFile = New System.Windows.Forms.Button()
-        Me.txtLiveSearch = New System.Windows.Forms.TextBox()
-        Me.cboCollectionPicker = New System.Windows.Forms.ComboBox()
-        Me.cboOrganismFilter = New System.Windows.Forms.ComboBox()
-        Me.lblOrganismFilter = New System.Windows.Forms.Label()
-        Me.lblCollectionPicker = New System.Windows.Forms.Label()
-        Me.pbxLiveSearchBkg = New System.Windows.Forms.PictureBox()
-        Me.lvwSource = New System.Windows.Forms.ListView()
-        Me.colSrcName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.colSrcDesc = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.lblSourceMembers = New System.Windows.Forms.Label()
-        Me.SourceDestSplit = New System.Windows.Forms.Splitter()
-        Me.pnlDest = New System.Windows.Forms.Panel()
-        Me.gbxDestinationCollection = New System.Windows.Forms.GroupBox()
-        Me.cmdSaveDestCollection = New System.Windows.Forms.Button()
-        Me.cmdExportToFile = New System.Windows.Forms.Button()
-        Me.lblCurrProteinCount = New System.Windows.Forms.Label()
-        Me.lvwDestination = New System.Windows.Forms.ListView()
-        Me.colName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.mnuMainGUI = New System.Windows.Forms.MainMenu(Me.components)
-        Me.mnuFile = New System.Windows.Forms.MenuItem()
-        Me.mnuFileExit = New System.Windows.Forms.MenuItem()
-        Me.mnuTools = New System.Windows.Forms.MenuItem()
-        Me.mnuToolsCollectionEdit = New System.Windows.Forms.MenuItem()
-        Me.mnuToolsNucToProt = New System.Windows.Forms.MenuItem()
-        Me.mnuToolsConvert = New System.Windows.Forms.MenuItem()
-        Me.mnuToolsConvertF2A = New System.Windows.Forms.MenuItem()
-        Me.mnuToolsConvertA2F = New System.Windows.Forms.MenuItem()
-        Me.mnuToolsFCheckup = New System.Windows.Forms.MenuItem()
-        Me.mnuToolsCompareDBs = New System.Windows.Forms.MenuItem()
-        Me.mnuToolsExtractFromFile = New System.Windows.Forms.MenuItem()
-        Me.mnuToolsSep1 = New System.Windows.Forms.MenuItem()
-        Me.mnuToolsOptions = New System.Windows.Forms.MenuItem()
-        Me.mnuAdmin = New System.Windows.Forms.MenuItem()
-        Me.mnuAdminBatchUploadFiles = New System.Windows.Forms.MenuItem()
-        Me.mnuAdminNameHashRefresh = New System.Windows.Forms.MenuItem()
-        Me.mnuAdminUpdateSHA = New System.Windows.Forms.MenuItem()
-        Me.mnuAdminUpdateCollectionsArchive = New System.Windows.Forms.MenuItem()
-        Me.mnuAdminUpdateZeroedMasses = New System.Windows.Forms.MenuItem()
-        Me.mnuAdminTestingInterface = New System.Windows.Forms.MenuItem()
-        Me.mnuAdminFixArchivePaths = New System.Windows.Forms.MenuItem()
-        Me.mnuAdminAddSortingIndexes = New System.Windows.Forms.MenuItem()
-        Me.mnuHelp = New System.Windows.Forms.MenuItem()
-        Me.mnuHelpAbout = New System.Windows.Forms.MenuItem()
+        Me.gbxSourceCollection = New GroupBox()
+        Me.cboAnnotationTypePicker = New ComboBox()
+        Me.lblAnnotationTypeFilter = New Label()
+        Me.pbxLiveSearchCancel = New PictureBox()
+        Me.lblSearchCount = New Label()
+        Me.cmdLoadProteins = New Button()
+        Me.cmdLoadFile = New Button()
+        Me.txtLiveSearch = New TextBox()
+        Me.cboCollectionPicker = New ComboBox()
+        Me.cboOrganismFilter = New ComboBox()
+        Me.lblOrganismFilter = New Label()
+        Me.lblCollectionPicker = New Label()
+        Me.pbxLiveSearchBkg = New PictureBox()
+        Me.lvwSource = New ListView()
+        Me.colSrcName = CType(New ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colSrcDesc = CType(New ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.lblSourceMembers = New Label()
+        Me.SourceDestSplit = New Splitter()
+        Me.pnlDest = New Panel()
+        Me.gbxDestinationCollection = New GroupBox()
+        Me.cmdSaveDestCollection = New Button()
+        Me.cmdExportToFile = New Button()
+        Me.lblCurrProteinCount = New Label()
+        Me.lvwDestination = New ListView()
+        Me.colName = CType(New ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.mnuMainGUI = New MainMenu(Me.components)
+        Me.mnuFile = New MenuItem()
+        Me.mnuFileExit = New MenuItem()
+        Me.mnuTools = New MenuItem()
+        Me.mnuToolsCollectionEdit = New MenuItem()
+        Me.mnuToolsNucToProt = New MenuItem()
+        Me.mnuToolsConvert = New MenuItem()
+        Me.mnuToolsConvertF2A = New MenuItem()
+        Me.mnuToolsConvertA2F = New MenuItem()
+        Me.mnuToolsFCheckup = New MenuItem()
+        Me.mnuToolsCompareDBs = New MenuItem()
+        Me.mnuToolsExtractFromFile = New MenuItem()
+        Me.mnuToolsSep1 = New MenuItem()
+        Me.mnuToolsOptions = New MenuItem()
+        Me.mnuAdmin = New MenuItem()
+        Me.mnuAdminBatchUploadFiles = New MenuItem()
+        Me.mnuAdminNameHashRefresh = New MenuItem()
+        Me.mnuAdminUpdateSHA = New MenuItem()
+        Me.mnuAdminUpdateCollectionsArchive = New MenuItem()
+        Me.mnuAdminUpdateZeroedMasses = New MenuItem()
+        Me.mnuAdminTestingInterface = New MenuItem()
+        Me.mnuAdminFixArchivePaths = New MenuItem()
+        Me.mnuAdminAddSortingIndexes = New MenuItem()
+        Me.mnuHelp = New MenuItem()
+        Me.mnuHelpAbout = New MenuItem()
         Me.pnlProgBar.SuspendLayout()
         Me.pnlProgBarUpper.SuspendLayout()
         Me.pnlProgBarLower.SuspendLayout()
@@ -194,7 +198,7 @@ Public Class frmCollectionEditor
         Me.pnlProgBarUpper.Dock = System.Windows.Forms.DockStyle.Fill
         Me.pnlProgBarUpper.Location = New System.Drawing.Point(0, 0)
         Me.pnlProgBarUpper.Name = "pnlProgBarUpper"
-        Me.pnlProgBarUpper.Padding = New System.Windows.Forms.Padding(6)
+        Me.pnlProgBarUpper.Padding = New Padding(6)
         Me.pnlProgBarUpper.Size = New System.Drawing.Size(1130, 51)
         Me.pnlProgBarUpper.TabIndex = 2
         '
@@ -225,7 +229,7 @@ Public Class frmCollectionEditor
         Me.pnlProgBarLower.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.pnlProgBarLower.Location = New System.Drawing.Point(0, 51)
         Me.pnlProgBarLower.Name = "pnlProgBarLower"
-        Me.pnlProgBarLower.Padding = New System.Windows.Forms.Padding(6)
+        Me.pnlProgBarLower.Padding = New Padding(6)
         Me.pnlProgBarLower.Size = New System.Drawing.Size(1130, 41)
         Me.pnlProgBarLower.TabIndex = 0
         '
@@ -249,7 +253,7 @@ Public Class frmCollectionEditor
         Me.pnlSource.Dock = System.Windows.Forms.DockStyle.Left
         Me.pnlSource.Location = New System.Drawing.Point(0, 0)
         Me.pnlSource.Name = "pnlSource"
-        Me.pnlSource.Padding = New System.Windows.Forms.Padding(8, 8, 8, 10)
+        Me.pnlSource.Padding = New Padding(8, 8, 8, 10)
         Me.pnlSource.Size = New System.Drawing.Size(762, 432)
         Me.pnlSource.TabIndex = 0
         '
@@ -461,7 +465,7 @@ Public Class frmCollectionEditor
         Me.lvwSource.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lvwSource.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colSrcName, Me.colSrcDesc})
+        Me.lvwSource.Columns.AddRange(New ColumnHeader() {Me.colSrcName, Me.colSrcDesc})
         Me.lvwSource.FullRowSelect = True
         Me.lvwSource.GridLines = True
         Me.lvwSource.Location = New System.Drawing.Point(20, 158)
@@ -506,7 +510,7 @@ Public Class frmCollectionEditor
         Me.pnlDest.Dock = System.Windows.Forms.DockStyle.Fill
         Me.pnlDest.Location = New System.Drawing.Point(766, 0)
         Me.pnlDest.Name = "pnlDest"
-        Me.pnlDest.Padding = New System.Windows.Forms.Padding(8, 8, 8, 10)
+        Me.pnlDest.Padding = New Padding(8, 8, 8, 10)
         Me.pnlDest.Size = New System.Drawing.Size(364, 432)
         Me.pnlDest.TabIndex = 1
         '
@@ -559,7 +563,7 @@ Public Class frmCollectionEditor
         Me.lvwDestination.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lvwDestination.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colName})
+        Me.lvwDestination.Columns.AddRange(New ColumnHeader() {Me.colName})
         Me.lvwDestination.FullRowSelect = True
         Me.lvwDestination.GridLines = True
         Me.lvwDestination.Location = New System.Drawing.Point(20, 64)
@@ -576,12 +580,12 @@ Public Class frmCollectionEditor
         '
         'mnuMainGUI
         '
-        Me.mnuMainGUI.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuFile, Me.mnuTools, Me.mnuAdmin, Me.mnuHelp})
+        Me.mnuMainGUI.MenuItems.AddRange(New MenuItem() {Me.mnuFile, Me.mnuTools, Me.mnuAdmin, Me.mnuHelp})
         '
         'mnuFile
         '
         Me.mnuFile.Index = 0
-        Me.mnuFile.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuFileExit})
+        Me.mnuFile.MenuItems.AddRange(New MenuItem() {Me.mnuFileExit})
         Me.mnuFile.Text = "&File"
         '
         'mnuFileExit
@@ -592,7 +596,7 @@ Public Class frmCollectionEditor
         'mnuTools
         '
         Me.mnuTools.Index = 1
-        Me.mnuTools.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuToolsCollectionEdit, Me.mnuToolsNucToProt, Me.mnuToolsConvert, Me.mnuToolsFCheckup, Me.mnuToolsCompareDBs, Me.mnuToolsExtractFromFile, Me.mnuToolsSep1, Me.mnuToolsOptions})
+        Me.mnuTools.MenuItems.AddRange(New MenuItem() {Me.mnuToolsCollectionEdit, Me.mnuToolsNucToProt, Me.mnuToolsConvert, Me.mnuToolsFCheckup, Me.mnuToolsCompareDBs, Me.mnuToolsExtractFromFile, Me.mnuToolsSep1, Me.mnuToolsOptions})
         Me.mnuTools.Text = "&Tools"
         '
         'mnuToolsCollectionEdit
@@ -609,7 +613,7 @@ Public Class frmCollectionEditor
         'mnuToolsConvert
         '
         Me.mnuToolsConvert.Index = 2
-        Me.mnuToolsConvert.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuToolsConvertF2A, Me.mnuToolsConvertA2F})
+        Me.mnuToolsConvert.MenuItems.AddRange(New MenuItem() {Me.mnuToolsConvertF2A, Me.mnuToolsConvertA2F})
         Me.mnuToolsConvert.Text = "Convert Database Format..."
         Me.mnuToolsConvert.Visible = False
         '
@@ -655,7 +659,7 @@ Public Class frmCollectionEditor
         'mnuAdmin
         '
         Me.mnuAdmin.Index = 2
-        Me.mnuAdmin.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuAdminBatchUploadFiles, Me.mnuAdminNameHashRefresh, Me.mnuAdminUpdateSHA, Me.mnuAdminUpdateCollectionsArchive, Me.mnuAdminUpdateZeroedMasses, Me.mnuAdminTestingInterface, Me.mnuAdminFixArchivePaths, Me.mnuAdminAddSortingIndexes})
+        Me.mnuAdmin.MenuItems.AddRange(New MenuItem() {Me.mnuAdminBatchUploadFiles, Me.mnuAdminNameHashRefresh, Me.mnuAdminUpdateSHA, Me.mnuAdminUpdateCollectionsArchive, Me.mnuAdminUpdateZeroedMasses, Me.mnuAdminTestingInterface, Me.mnuAdminFixArchivePaths, Me.mnuAdminAddSortingIndexes})
         Me.mnuAdmin.Text = "Admin"
         '
         'mnuAdminBatchUploadFiles
@@ -710,7 +714,7 @@ Public Class frmCollectionEditor
         'mnuHelp
         '
         Me.mnuHelp.Index = 3
-        Me.mnuHelp.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuHelpAbout})
+        Me.mnuHelp.MenuItems.AddRange(New MenuItem() {Me.mnuHelpAbout})
         Me.mnuHelp.Text = "&Help"
         '
         'mnuHelpAbout
@@ -755,12 +759,11 @@ Public Class frmCollectionEditor
 
 #End Region
 
-    Protected Const PROGRAM_DATE As String = "March 25, 2016"
+    Protected Const PROGRAM_DATE As String = "August 4, 2016"
 
     Protected m_Organisms As DataTable
     Protected m_ProteinCollections As DataTable
     Protected m_ProteinCollectionNames As DataTable
-    Protected m_SelectedOrgCollections As DataTable
     Protected m_AnnotationTypes As DataTable
     Protected m_CollectionMembers As DataTable
     Protected m_SelectedOrganismID As Integer
@@ -774,21 +777,17 @@ Public Class frmCollectionEditor
     Protected m_LastSelectedAnnotationType As String = ""
     Protected m_LastValueForAllowAsterisks As Boolean = False
     Protected m_LastValueForAllowDash As Boolean = False
-    Protected m_LastValueForMaxProteinNameLength As Integer = ValidateFastaFile.clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
+    Protected m_LastValueForMaxProteinNameLength As Integer = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
 
-    Protected WithEvents m_ImportHandler As Protein_Importer.IImportProteins
-    Protected WithEvents m_UploadHandler As Protein_Uploader.IUploadProteins
+    Protected WithEvents m_ImportHandler As IImportProteins
+    Protected WithEvents m_UploadHandler As IUploadProteins
     Protected WithEvents m_SourceListViewHandler As DataListViewHandler
-    Protected WithEvents m_ProteinExporter As Protein_Exporter.ExportProteinCollectionsIFC.IExportProteins
     'Protected WithEvents m_Validator As ValidateFastaFile.ICustomValidation
-    Protected WithEvents m_fileBatcher As Protein_Uploader.clsBatchUploadFromFileList
-
-    Protected CollectionLoadThread As System.Threading.Thread
+    Protected WithEvents m_fileBatcher As clsBatchUploadFromFileList
 
     Protected m_LocalFileLoaded As Boolean
 
     Private m_SearchActive As Boolean = False
-    Private m_LoadMembers As Boolean = False
 
     Private m_BatchLoadTotalCount As Integer
     Private m_BatchLoadCurrentCount As Integer
@@ -806,10 +805,10 @@ Public Class frmCollectionEditor
     Protected m_EncryptSequences As Boolean = False
 
 
-    Friend WithEvents SearchTimer As New System.Timers.Timer(2000)
-    Friend WithEvents MemberLoadTimer As New System.Timers.Timer(2000)
+    Friend WithEvents SearchTimer As New Timer(2000)
+    Friend WithEvents MemberLoadTimer As New Timer(2000)
 
-    Private Sub frmCollectionEditor_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+    Private Sub frmCollectionEditor_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         'Get initial info - organism list, full collections list
 
         ' Data Source=proteinseqs;Initial Catalog=Protein_Sequences
@@ -821,7 +820,7 @@ Public Class frmCollectionEditor
 
         UpdateServerNameLabel()
 
-        m_ImportHandler = New Protein_Importer.clsImportHandler(m_PSConnectionString)
+        m_ImportHandler = New clsImportHandler(m_PSConnectionString)
         'mnuToolsFBatchUpload.Enabled = False
 
         lblBatchProgress.Text = "Fetching Organism and Collection Lists..."
@@ -1049,25 +1048,25 @@ Public Class frmCollectionEditor
         m_BatchLoadTotalCount = tmpSelectedFileList.Count
 
         If m_EncryptSequences Then
-            m_UploadHandler = New Protein_Uploader.clsPSUploadHandler(m_PSConnectionString)
+            m_UploadHandler = New clsPSUploadHandler(m_PSConnectionString)
         Else
-            m_UploadHandler = New Protein_Uploader.clsPSUploadHandler(m_PSConnectionString)
+            m_UploadHandler = New clsPSUploadHandler(m_PSConnectionString)
         End If
         m_UploadHandler.InitialSetup()
 
         pnlProgBar.Visible = True
 
         Try
-            m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowAllSymbolsInProteinNames, frmBatchUpload.ValidationAllowAllSymbolsInProteinNames)
-            m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues, frmBatchUpload.ValidationAllowAsterisks)
-            m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowDashInResidues, frmBatchUpload.ValidationAllowDash)
+            m_UploadHandler.SetValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAllSymbolsInProteinNames, frmBatchUpload.ValidationAllowAllSymbolsInProteinNames)
+            m_UploadHandler.SetValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues, frmBatchUpload.ValidationAllowAsterisks)
+            m_UploadHandler.SetValidationOptions(IUploadProteins.eValidationOptionConstants.AllowDashInResidues, frmBatchUpload.ValidationAllowDash)
 
             m_UploadHandler.MaximumProteinNameLength = frmBatchUpload.ValidationMaxProteinNameLength
 
             m_UploadHandler.BatchUpload(tmpSelectedFileList)
 
         Catch ex As Exception
-            System.Windows.Forms.MessageBox.Show("Error uploading collection: " & ex.Message, "Error")
+            MessageBox.Show("Error uploading collection: " & ex.Message, "Error")
         End Try
 
         pnlProgBar.Visible = False
@@ -1083,7 +1082,7 @@ Public Class frmCollectionEditor
         errorDisplay.ShowDialog()
 
         lblBatchProgress.Text = "Updating Protein Collections List..."
-        System.Windows.Forms.Application.DoEvents()
+        Application.DoEvents()
 
         TriggerCollectionTableUpdate(True)
 
@@ -1121,7 +1120,7 @@ Public Class frmCollectionEditor
 
         strMessage = "This is version " & Application.ProductVersion & ", " & PROGRAM_DATE
 
-        System.Windows.Forms.MessageBox.Show(strMessage, "About Protein Collection Editor", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show(strMessage, "About Protein Collection Editor", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
     End Sub
 
@@ -1150,13 +1149,11 @@ Public Class frmCollectionEditor
 
 #Region " Combobox handlers "
 
-    Private Sub cboOrganismList_SelectedIndexChanged(sender As System.Object, e As System.EventArgs)
+    Private Sub cboOrganismList_SelectedIndexChanged(sender As Object, e As EventArgs)
         If CInt(cboOrganismFilter.SelectedValue) <> 0 Then
             m_ProteinCollections.DefaultView.RowFilter = "[Organism_ID] = " & cboOrganismFilter.SelectedValue.ToString
-            m_LoadMembers = True
         Else
             m_ProteinCollections.DefaultView.RowFilter = ""
-            m_LoadMembers = False
         End If
 
         m_SelectedOrganismID = CInt(cboOrganismFilter.SelectedValue)
@@ -1169,7 +1166,7 @@ Public Class frmCollectionEditor
         End If
     End Sub
 
-    Private Sub cboCollectionPicker_SelectedIndexChanged(sender As System.Object, e As System.EventArgs)
+    Private Sub cboCollectionPicker_SelectedIndexChanged(sender As Object, e As EventArgs)
         lvwSource.Items.Clear()
         m_ImportHandler.ClearProteinCollection()
         m_SelectedCollectionID = CInt(cboCollectionPicker.SelectedValue)
@@ -1187,13 +1184,13 @@ Public Class frmCollectionEditor
         BindAnnotationTypeListToControl(m_AnnotationTypes)
     End Sub
 
-    Private Sub cboAnnotationTypePicker_SelectedIndexChanged(sender As System.Object, e As System.EventArgs)
+    Private Sub cboAnnotationTypePicker_SelectedIndexChanged(sender As Object, e As EventArgs)
         If lvwSource.Items.Count > 0 Then
             lvwSource.Items.Clear()
             m_ImportHandler.ClearProteinCollection()
         End If
 
-        If cboAnnotationTypePicker.SelectedValue.GetType Is System.Type.GetType("System.Int32") Then
+        If cboAnnotationTypePicker.SelectedValue.GetType Is Type.GetType("System.Int32") Then
             m_SelectedAnnotationTypeID = CInt(cboAnnotationTypePicker.SelectedValue)
         Else
             'm_SelectedAuthorityID = 0
@@ -1216,7 +1213,7 @@ Public Class frmCollectionEditor
 
 #Region " Action Button Handlers "
 
-    Private Sub cmdLoadProteins_Click(sender As Object, e As System.EventArgs) Handles cmdLoadProteins.Click
+    Private Sub cmdLoadProteins_Click(sender As Object, e As EventArgs) Handles cmdLoadProteins.Click
         ImportStartHandler("Retrieving Protein Entries..")
         Dim foundRows() As DataRow =
             m_ProteinCollections.Select("Protein_Collection_ID = " & cboCollectionPicker.SelectedValue.ToString)
@@ -1230,13 +1227,13 @@ Public Class frmCollectionEditor
 
     End Sub
 
-    Private Sub cmdLoadFile_Click(sender As System.Object, e As System.EventArgs) Handles cmdLoadFile.Click
+    Private Sub cmdLoadFile_Click(sender As Object, e As EventArgs) Handles cmdLoadFile.Click
 
         BatchLoadController()
 
     End Sub
 
-    Private Sub cmdSaveDestCollection_Click(sender As System.Object, e As System.EventArgs) Handles cmdSaveDestCollection.Click
+    Private Sub cmdSaveDestCollection_Click(sender As Object, e As EventArgs) Handles cmdSaveDestCollection.Click
         Dim resultReturn As DialogResult
 
         Dim frmAddCollection As New frmAddNewCollection
@@ -1247,7 +1244,7 @@ Public Class frmCollectionEditor
         If lvwDestination.Items.Count > 0 Then
 
             With frmAddCollection
-                .CollectionName = System.IO.Path.GetFileNameWithoutExtension(m_SelectedFilePath)
+                .CollectionName = Path.GetFileNameWithoutExtension(m_SelectedFilePath)
                 .IsLocalFile = m_LocalFileLoaded
                 .AnnotationTypes = m_AnnotationTypes
                 .OrganismList = m_Organisms
@@ -1267,7 +1264,7 @@ Public Class frmCollectionEditor
                 tmpSelectedProteinList = ScanDestinationCollectionWindow(lvwDestination)
 
                 If m_UploadHandler Is Nothing Then
-                    m_UploadHandler = New Protein_Uploader.clsPSUploadHandler(m_PSConnectionString)
+                    m_UploadHandler = New clsPSUploadHandler(m_PSConnectionString)
                     m_UploadHandler.InitialSetup()
                 End If
 
@@ -1275,7 +1272,7 @@ Public Class frmCollectionEditor
                     tmpSelectedProteinList, frmAddCollection.CollectionName,
                     frmAddCollection.CollectionDescription,
                     frmAddCollection.CollectionSource,
-                    Protein_Importer.IAddUpdateEntries.CollectionTypes.prot_original_source,
+                    IAddUpdateEntries.CollectionTypes.prot_original_source,
                     tmpOrganismID, tmpAnnotationTypeID)
 
                 RefreshCollectionList()
@@ -1349,7 +1346,7 @@ Public Class frmCollectionEditor
 
 #Region " LiveSearch Handlers "
 
-    Private Sub txtLiveSearch_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtLiveSearch.TextChanged
+    Private Sub txtLiveSearch_TextChanged(sender As Object, e As EventArgs) Handles txtLiveSearch.TextChanged
 
         If txtLiveSearch.Text.Length > 0 And txtLiveSearch.ForeColor.ToString <> "Color [InactiveCaption]" Then
             SearchTimer.Start()
@@ -1364,12 +1361,12 @@ Public Class frmCollectionEditor
 
     End Sub
 
-    Private Sub txtLiveSearch_Click(sender As Object, e As System.EventArgs) Handles txtLiveSearch.Click
+    Private Sub txtLiveSearch_Click(sender As Object, e As EventArgs) Handles txtLiveSearch.Click
         If m_SearchActive Then
         Else
             RemoveHandler txtLiveSearch.TextChanged, AddressOf txtLiveSearch_TextChanged
             txtLiveSearch.Text = Nothing
-            txtLiveSearch.ForeColor = System.Drawing.SystemColors.ControlText
+            txtLiveSearch.ForeColor = SystemColors.ControlText
             m_SearchActive = True
             pbxLiveSearchCancel.Visible = True
             AddHandler txtLiveSearch.TextChanged, AddressOf txtLiveSearch_TextChanged
@@ -1377,9 +1374,9 @@ Public Class frmCollectionEditor
         End If
     End Sub
 
-    Private Sub txtLiveSearch_Leave(sender As Object, e As System.EventArgs) Handles txtLiveSearch.Leave
+    Private Sub txtLiveSearch_Leave(sender As Object, e As EventArgs) Handles txtLiveSearch.Leave
         If txtLiveSearch.Text.Length = 0 Then
-            txtLiveSearch.ForeColor = System.Drawing.SystemColors.InactiveCaption
+            txtLiveSearch.ForeColor = SystemColors.InactiveCaption
             txtLiveSearch.Text = "Search"
             m_SearchActive = False
             SearchTimer.Stop()
@@ -1387,7 +1384,7 @@ Public Class frmCollectionEditor
         End If
     End Sub
 
-    Private Sub pbxLiveSearchCancel_Click(sender As System.Object, e As System.EventArgs) Handles pbxLiveSearchCancel.Click
+    Private Sub pbxLiveSearchCancel_Click(sender As Object, e As EventArgs) Handles pbxLiveSearchCancel.Click
         txtLiveSearch.Text = ""
         txtLiveSearch_Leave(Me, Nothing)
         lvwSource.Focus()
@@ -1396,7 +1393,7 @@ Public Class frmCollectionEditor
 
     Friend Sub SearchTimerHandler(
         sender As Object,
-        e As System.Timers.ElapsedEventArgs) Handles SearchTimer.Elapsed
+        e As ElapsedEventArgs) Handles SearchTimer.Elapsed
 
         If m_SearchActive = True Then
             'Debug.WriteLine("Searchtimer.active.kick")
@@ -1418,7 +1415,7 @@ Public Class frmCollectionEditor
 
     Private Sub lvwSource_DoubleClick(
         sender As Object,
-        e As System.EventArgs) Handles lvwSource.DoubleClick
+        e As EventArgs) Handles lvwSource.DoubleClick
 
         ScanSourceCollectionWindow(lvwSource, lvwDestination, False)
 
@@ -1427,7 +1424,7 @@ Public Class frmCollectionEditor
     'Doubleclick to remove selected member from the destination collection
     Private Sub lvwDestination_DoubleClick(
         sender As Object,
-        e As System.EventArgs) Handles lvwDestination.DoubleClick
+        e As EventArgs) Handles lvwDestination.DoubleClick
 
         ClearFromDestinationCollectionWindow(lvwDestination, False)
 
@@ -1435,7 +1432,7 @@ Public Class frmCollectionEditor
 
     Friend Sub MemberLoadTimerHandler(
         sender As Object,
-        e As System.Timers.ElapsedEventArgs) Handles MemberLoadTimer.Elapsed
+        e As ElapsedEventArgs) Handles MemberLoadTimer.Elapsed
 
         m_SelectedCollectionID = CInt(cboCollectionPicker.SelectedValue)
         m_SelectedAnnotationTypeID = CInt(cboAnnotationTypePicker.SelectedValue)
@@ -1470,22 +1467,22 @@ Public Class frmCollectionEditor
     'DoubleClick to Move the selected member to the destination collection
 
 
-    Private Sub cmdDestAddAll_Click(sender As System.Object, e As System.EventArgs) Handles cmdDestAddAll.Click
+    Private Sub cmdDestAddAll_Click(sender As Object, e As EventArgs) Handles cmdDestAddAll.Click
         ScanSourceCollectionWindow(lvwSource, lvwDestination, True)
         CheckTransferButtonsEnabledStatus()
     End Sub
 
-    Private Sub cmdDestAdd_Click(sender As System.Object, e As System.EventArgs) Handles cmdDestAdd.Click
+    Private Sub cmdDestAdd_Click(sender As Object, e As EventArgs) Handles cmdDestAdd.Click
         ScanSourceCollectionWindow(lvwSource, lvwDestination, False)
         CheckTransferButtonsEnabledStatus()
     End Sub
 
-    Private Sub cmdDestRemove_Click(sender As System.Object, e As System.EventArgs) Handles cmdDestRemove.Click
+    Private Sub cmdDestRemove_Click(sender As Object, e As EventArgs) Handles cmdDestRemove.Click
         ClearFromDestinationCollectionWindow(lvwDestination, False)
         CheckTransferButtonsEnabledStatus()
     End Sub
 
-    Private Sub cmdDestRemoveAll_Click(sender As System.Object, e As System.EventArgs) Handles cmdDestRemoveAll.Click
+    Private Sub cmdDestRemoveAll_Click(sender As Object, e As EventArgs) Handles cmdDestRemoveAll.Click
         ClearFromDestinationCollectionWindow(lvwDestination, True)
         CheckTransferButtonsEnabledStatus()
     End Sub
@@ -1547,43 +1544,43 @@ Public Class frmCollectionEditor
 
 #Region " Menu Option Handlers"
 
-    Private Sub mnuFileExit_Click(sender As System.Object, e As System.EventArgs) Handles mnuFileExit.Click
+    Private Sub mnuFileExit_Click(sender As Object, e As EventArgs) Handles mnuFileExit.Click
         Application.Exit()
     End Sub
 
-    Private Sub mnuToolsFBatchUpload_Click(sender As System.Object, e As System.EventArgs)
+    Private Sub mnuToolsFBatchUpload_Click(sender As Object, e As EventArgs)
         'Steal this to use with file-directed loading
-        m_fileBatcher = New Protein_Uploader.clsBatchUploadFromFileList(m_PSConnectionString)
+        m_fileBatcher = New clsBatchUploadFromFileList(m_PSConnectionString)
         m_fileBatcher.UploadBatch()
     End Sub
-    Private Sub mnuToolsNucTrans_Click(sender As System.Object, e As System.EventArgs)
+    Private Sub mnuToolsNucTrans_Click(sender As Object, e As EventArgs)
 
     End Sub
 
-    Private Sub mnuToolsConvertFASTA2Access_Click(sender As System.Object, e As System.EventArgs)
+    Private Sub mnuToolsConvertFASTA2Access_Click(sender As Object, e As EventArgs)
 
     End Sub
 
-    Private Sub mnuToolsConvertAccess2FASTA_Click(sender As System.Object, e As System.EventArgs)
+    Private Sub mnuToolsConvertAccess2FASTA_Click(sender As Object, e As EventArgs)
 
     End Sub
 
-    Private Sub mnuToolsCheckup_Click(sender As System.Object, e As System.EventArgs)
+    Private Sub mnuToolsCheckup_Click(sender As Object, e As EventArgs)
 
     End Sub
 
-    Private Sub mnuToolsCollectionEdit_Click(sender As System.Object, e As System.EventArgs) Handles mnuToolsCollectionEdit.Click
+    Private Sub mnuToolsCollectionEdit_Click(sender As Object, e As EventArgs) Handles mnuToolsCollectionEdit.Click
         Dim cse As New frmCollectionStateEditor(m_PSConnectionString)
         Dim r As DialogResult = cse.ShowDialog
 
     End Sub
 
-    Private Sub mnuToolsExtractFromFile_Click(sender As System.Object, e As System.EventArgs) Handles mnuToolsExtractFromFile.Click
-        Dim f As New ExtractAnnotationFromDescription.frmExtractFromFlatfile(m_ImportHandler.Authorities, m_PSConnectionString)
+    Private Sub mnuToolsExtractFromFile_Click(sender As Object, e As EventArgs) Handles mnuToolsExtractFromFile.Click
+        Dim f As New frmExtractFromFlatfile(m_ImportHandler.Authorities, m_PSConnectionString)
         f.ShowDialog()
     End Sub
 
-    Private Sub mnuToolsUpdateArchives_Click(sender As System.Object, e As System.EventArgs)
+    Private Sub mnuToolsUpdateArchives_Click(sender As Object, e As EventArgs)
         Dim f As FolderBrowserDialog = New FolderBrowserDialog
         Dim r As DialogResult
         Dim outputPath As String
@@ -1625,7 +1622,7 @@ Public Class frmCollectionEditor
         pgbMain.Value = 0
         lblCurrentTask.Text = taskTitle
         lblCurrentTask.Visible = True
-        System.Windows.Forms.Application.DoEvents()
+        Application.DoEvents()
 
     End Sub
 
@@ -1636,7 +1633,7 @@ Public Class frmCollectionEditor
         m_fileBatcher.ProgressUpdate
 
         pgbMain.Value = CInt(fractionDone * 100)
-        System.Windows.Forms.Application.DoEvents()
+        Application.DoEvents()
     End Sub
 
     Private Sub SyncProgressHandler(statusmsg As String, fractionDone As Double) Handles m_Syncer.SyncProgress
@@ -1645,7 +1642,7 @@ Public Class frmCollectionEditor
             fractionDone = 1.0
         End If
         pgbMain.Value = CInt(fractionDone * 100)
-        System.Windows.Forms.Application.DoEvents()
+        Application.DoEvents()
     End Sub
 
     Private Sub ImportEndHandler() Handles _
@@ -1658,7 +1655,7 @@ Public Class frmCollectionEditor
         Invalidate()
         gbxDestinationCollection.Invalidate()
         gbxSourceCollection.Invalidate()
-        System.Windows.Forms.Application.DoEvents()
+        Application.DoEvents()
     End Sub
 
     Private Sub CollectionLoadHandler(CollectionTable As DataTable) Handles m_ImportHandler.CollectionLoadComplete
@@ -1695,7 +1692,7 @@ Public Class frmCollectionEditor
 
     Private Sub ValidFASTAUploadHandler(
         FASTAFilePath As String,
-        UploadInfo As Protein_Uploader.IUploadProteins.UploadInfo) Handles m_UploadHandler.ValidFASTAFileLoaded
+        UploadInfo As IUploadProteins.UploadInfo) Handles m_UploadHandler.ValidFASTAFileLoaded
 
         If m_ValidUploadsList Is Nothing Then
             m_ValidUploadsList = New Hashtable
@@ -1711,13 +1708,13 @@ Public Class frmCollectionEditor
             m_FileErrorList = New Hashtable
         End If
 
-        m_FileErrorList.Add(System.IO.Path.GetFileName(FASTAFilePath), errorCollection)
+        m_FileErrorList.Add(Path.GetFileName(FASTAFilePath), errorCollection)
 
         If m_SummarizedFileErrorList Is Nothing Then
             m_SummarizedFileErrorList = New Hashtable
         End If
 
-        m_SummarizedFileErrorList.Add(System.IO.Path.GetFileName(FASTAFilePath), SummarizeErrors(errorCollection))
+        m_SummarizedFileErrorList.Add(Path.GetFileName(FASTAFilePath), SummarizeErrors(errorCollection))
 
     End Sub
 
@@ -1727,19 +1724,19 @@ Public Class frmCollectionEditor
             m_FileWarningList = New Hashtable
         End If
 
-        m_FileWarningList.Add(System.IO.Path.GetFileName(FASTAFilePath), warningCollection)
+        m_FileWarningList.Add(Path.GetFileName(FASTAFilePath), warningCollection)
 
         If m_SummarizedFileWarningList Is Nothing Then
             m_SummarizedFileWarningList = New Hashtable
         End If
 
-        m_SummarizedFileWarningList.Add(System.IO.Path.GetFileName(FASTAFilePath), SummarizeErrors(warningCollection))
+        m_SummarizedFileWarningList.Add(Path.GetFileName(FASTAFilePath), SummarizeErrors(warningCollection))
 
     End Sub
 
     Private Function SummarizeErrors(ByRef errorCollection As ArrayList) As Hashtable
         Dim errorSummary As New Hashtable
-        Dim errorEntry As ValidateFastaFile.ICustomValidation.udtErrorInfoExtended
+        Dim errorEntry As ICustomValidation.udtErrorInfoExtended
         Dim currentCount As Integer
 
         If Not errorCollection Is Nothing AndAlso errorCollection.Count > 0 Then
@@ -1763,7 +1760,7 @@ Public Class frmCollectionEditor
             lblCurrentTask.Text = taskTitle
         End If
         pgbMain.Value = CInt(fractionDone * 100)
-        System.Windows.Forms.Application.DoEvents()
+        Application.DoEvents()
     End Sub
 
     Private Sub NormalizedFASTAFileGenerationHandler(newFilePath As String) Handles m_UploadHandler.WroteLineEndNormalizedFASTA
@@ -1775,7 +1772,7 @@ Public Class frmCollectionEditor
 #End Region
 
 
-    Private Sub mnuToolsUpdateSHA_Click(sender As System.Object, e As System.EventArgs)
+    Private Sub mnuToolsUpdateSHA_Click(sender As Object, e As EventArgs)
         If m_Syncer Is Nothing Then
             m_Syncer = New clsSyncFASTAFileArchive(m_PSConnectionString)
         End If
@@ -1783,7 +1780,7 @@ Public Class frmCollectionEditor
         m_Syncer.UpdateSHA1Hashes()
     End Sub
 
-    Private Sub mnuAdminUpdateZeroedMasses_Click(sender As System.Object, e As System.EventArgs) Handles mnuAdminUpdateZeroedMasses.Click
+    Private Sub mnuAdminUpdateZeroedMasses_Click(sender As Object, e As EventArgs) Handles mnuAdminUpdateZeroedMasses.Click
         If m_Syncer Is Nothing Then
             m_Syncer = New clsSyncFASTAFileArchive(m_PSConnectionString)
         End If
@@ -1791,7 +1788,7 @@ Public Class frmCollectionEditor
         m_Syncer.CorrectMasses()
     End Sub
 
-    Private Sub mnuAdminNameHashRefresh_Click(sender As System.Object, e As System.EventArgs) Handles mnuAdminNameHashRefresh.Click
+    Private Sub mnuAdminNameHashRefresh_Click(sender As Object, e As EventArgs) Handles mnuAdminNameHashRefresh.Click
         If m_Syncer Is Nothing Then
             m_Syncer = New clsSyncFASTAFileArchive(m_PSConnectionString)
         End If
@@ -1799,32 +1796,32 @@ Public Class frmCollectionEditor
         m_Syncer.RefreshNameHashes()
     End Sub
 
-    Private Sub mnuToolsNucToProt_Click(sender As System.Object, e As System.EventArgs) Handles mnuToolsNucToProt.Click
+    Private Sub mnuToolsNucToProt_Click(sender As Object, e As EventArgs) Handles mnuToolsNucToProt.Click
 
     End Sub
 
-    Private Sub mnuToolsConvert_Click(sender As System.Object, e As System.EventArgs) Handles mnuToolsConvert.Click
+    Private Sub mnuToolsConvert_Click(sender As Object, e As EventArgs) Handles mnuToolsConvert.Click
 
     End Sub
 
-    Private Sub mnuToolsConvertF2A_Click(sender As System.Object, e As System.EventArgs) Handles mnuToolsConvertF2A.Click
+    Private Sub mnuToolsConvertF2A_Click(sender As Object, e As EventArgs) Handles mnuToolsConvertF2A.Click
 
     End Sub
 
-    Private Sub mnuToolsConvertA2F_Click(sender As System.Object, e As System.EventArgs) Handles mnuToolsConvertA2F.Click
+    Private Sub mnuToolsConvertA2F_Click(sender As Object, e As EventArgs) Handles mnuToolsConvertA2F.Click
 
     End Sub
 
-    Private Sub mnuToolsFCheckup_Click(sender As System.Object, e As System.EventArgs) Handles mnuToolsFCheckup.Click
+    Private Sub mnuToolsFCheckup_Click(sender As Object, e As EventArgs) Handles mnuToolsFCheckup.Click
 
     End Sub
 
-    Private Sub MenuItem5_Click(sender As System.Object, e As System.EventArgs) Handles mnuAdminTestingInterface.Click
+    Private Sub MenuItem5_Click(sender As Object, e As EventArgs) Handles mnuAdminTestingInterface.Click
         Dim frmTesting As New frmTestingInterface
         frmTesting.Show()
     End Sub
 
-    Private Sub MenuItem6_Click(sender As System.Object, e As System.EventArgs) Handles mnuAdminFixArchivePaths.Click
+    Private Sub MenuItem6_Click(sender As Object, e As EventArgs) Handles mnuAdminFixArchivePaths.Click
         If m_Syncer Is Nothing Then
             m_Syncer = New clsSyncFASTAFileArchive(m_PSConnectionString)
         End If
@@ -1833,18 +1830,18 @@ Public Class frmCollectionEditor
 
     End Sub
 
-    Private Sub MenuItem8_Click(sender As System.Object, e As System.EventArgs) Handles mnuAdminAddSortingIndexes.Click
+    Private Sub MenuItem8_Click(sender As Object, e As EventArgs) Handles mnuAdminAddSortingIndexes.Click
         If m_Syncer Is Nothing Then
             m_Syncer = New clsSyncFASTAFileArchive(m_PSConnectionString)
         End If
         m_Syncer.AddSortingIndices()
     End Sub
 
-    Private Sub mnuHelpAbout_Click(sender As System.Object, e As System.EventArgs) Handles mnuHelpAbout.Click
+    Private Sub mnuHelpAbout_Click(sender As Object, e As EventArgs) Handles mnuHelpAbout.Click
         ShowAboutBox()
     End Sub
 
-    Private Sub mnuToolsOptions_Click(sender As System.Object, e As System.EventArgs) Handles mnuToolsOptions.Click
+    Private Sub mnuToolsOptions_Click(sender As Object, e As EventArgs) Handles mnuToolsOptions.Click
 
     End Sub
 

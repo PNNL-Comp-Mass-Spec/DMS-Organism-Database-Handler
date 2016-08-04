@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "AppUI_OrfDBHandler", "AppUI_OrfDBHandler\AppUI_OrfDBHandler.vbproj", "{78AD9853-60BB-4B10-8FF2-418B3A21092D}"
 EndProject
@@ -23,8 +23,6 @@ EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "TranslationTableImport", "TranslationTableImport\TranslationTableImport.vbproj", "{85531A5F-F4DB-42EB-B597-397ADF10B0E9}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SequenceInfoCalculator", "SequenceInfoCalculator\SequenceInfoCalculator.vbproj", "{99C5D78C-00DA-49A5-BAC8-19ADFE95FABE}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PRISMSeq_Uploader", "PRISMSeq_Uploader\PRISMSeq_Uploader.vdproj", "{D457DD97-D219-493A-9E2A-408F7B6FEED2}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "FastaFileMaker_Exe", "FastaFileMaker_Exe\FastaFileMaker_Exe.vbproj", "{B291F511-6EB2-447A-B7E2-B2A2E50AF2DE}"
 EndProject
@@ -80,9 +78,6 @@ Global
 		{99C5D78C-00DA-49A5-BAC8-19ADFE95FABE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99C5D78C-00DA-49A5-BAC8-19ADFE95FABE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99C5D78C-00DA-49A5-BAC8-19ADFE95FABE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D457DD97-D219-493A-9E2A-408F7B6FEED2}.Debug|Any CPU.ActiveCfg = Debug
-		{D457DD97-D219-493A-9E2A-408F7B6FEED2}.Release|Any CPU.ActiveCfg = Release
-		{D457DD97-D219-493A-9E2A-408F7B6FEED2}.Release|Any CPU.Build.0 = Release
 		{B291F511-6EB2-447A-B7E2-B2A2E50AF2DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B291F511-6EB2-447A-B7E2-B2A2E50AF2DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B291F511-6EB2-447A-B7E2-B2A2E50AF2DE}.Release|Any CPU.ActiveCfg = Release|Any CPU

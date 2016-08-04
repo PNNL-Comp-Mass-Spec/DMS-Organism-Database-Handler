@@ -1,5 +1,5 @@
 Public Class frmAddNewCollection
-    Inherits System.Windows.Forms.Form
+    Inherits Form
 
 #Region " Windows Form Designer generated code "
 
@@ -29,41 +29,41 @@ Public Class frmAddNewCollection
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    Friend WithEvents gbxMetaData As System.Windows.Forms.GroupBox
-    Friend WithEvents txtCollectionName As System.Windows.Forms.TextBox
-    Friend WithEvents lblCollectionName As System.Windows.Forms.Label
-    Friend WithEvents cboOrganismPicker As System.Windows.Forms.ComboBox
-    Friend WithEvents lblOrganismPicker As System.Windows.Forms.Label
-    Friend WithEvents lblAuthorityPicker As System.Windows.Forms.Label
-    Friend WithEvents cboAuthorityPicker As System.Windows.Forms.ComboBox
-    Friend WithEvents cmdAddOrganism As System.Windows.Forms.Button
-    Friend WithEvents cmdAddAuthority As System.Windows.Forms.Button
-    Friend WithEvents cmdCancel As System.Windows.Forms.Button
-    Friend WithEvents cmdOK As System.Windows.Forms.Button
-    Friend WithEvents lblProteinCount As System.Windows.Forms.Label
-    Friend WithEvents lblResidueCount As System.Windows.Forms.Label
-    Friend WithEvents lblDescription As System.Windows.Forms.Label
-    Friend WithEvents lblSource As System.Windows.Forms.Label
-    Friend WithEvents txtSource As System.Windows.Forms.TextBox
-    Friend WithEvents txtDescription As System.Windows.Forms.TextBox
+    Friend WithEvents gbxMetaData As GroupBox
+    Friend WithEvents txtCollectionName As TextBox
+    Friend WithEvents lblCollectionName As Label
+    Friend WithEvents cboOrganismPicker As ComboBox
+    Friend WithEvents lblOrganismPicker As Label
+    Friend WithEvents lblAuthorityPicker As Label
+    Friend WithEvents cboAuthorityPicker As ComboBox
+    Friend WithEvents cmdAddOrganism As Button
+    Friend WithEvents cmdAddAuthority As Button
+    Friend WithEvents cmdCancel As Button
+    Friend WithEvents cmdOK As Button
+    Friend WithEvents lblProteinCount As Label
+    Friend WithEvents lblResidueCount As Label
+    Friend WithEvents lblDescription As Label
+    Friend WithEvents lblSource As Label
+    Friend WithEvents txtSource As TextBox
+    Friend WithEvents txtDescription As TextBox
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.txtCollectionName = New System.Windows.Forms.TextBox()
-        Me.lblCollectionName = New System.Windows.Forms.Label()
-        Me.cboOrganismPicker = New System.Windows.Forms.ComboBox()
-        Me.lblOrganismPicker = New System.Windows.Forms.Label()
-        Me.lblAuthorityPicker = New System.Windows.Forms.Label()
-        Me.cboAuthorityPicker = New System.Windows.Forms.ComboBox()
-        Me.cmdAddOrganism = New System.Windows.Forms.Button()
-        Me.cmdAddAuthority = New System.Windows.Forms.Button()
-        Me.gbxMetaData = New System.Windows.Forms.GroupBox()
-        Me.lblDescription = New System.Windows.Forms.Label()
-        Me.txtDescription = New System.Windows.Forms.TextBox()
-        Me.cmdCancel = New System.Windows.Forms.Button()
-        Me.cmdOK = New System.Windows.Forms.Button()
-        Me.lblProteinCount = New System.Windows.Forms.Label()
-        Me.lblResidueCount = New System.Windows.Forms.Label()
-        Me.lblSource = New System.Windows.Forms.Label()
-        Me.txtSource = New System.Windows.Forms.TextBox()
+        Me.txtCollectionName = New TextBox()
+        Me.lblCollectionName = New Label()
+        Me.cboOrganismPicker = New ComboBox()
+        Me.lblOrganismPicker = New Label()
+        Me.lblAuthorityPicker = New Label()
+        Me.cboAuthorityPicker = New ComboBox()
+        Me.cmdAddOrganism = New Button()
+        Me.cmdAddAuthority = New Button()
+        Me.gbxMetaData = New GroupBox()
+        Me.lblDescription = New Label()
+        Me.txtDescription = New TextBox()
+        Me.cmdCancel = New Button()
+        Me.cmdOK = New Button()
+        Me.lblProteinCount = New Label()
+        Me.lblResidueCount = New Label()
+        Me.lblSource = New Label()
+        Me.txtSource = New TextBox()
         Me.gbxMetaData.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -279,11 +279,10 @@ Public Class frmAddNewCollection
 
     Protected m_AnnotationTypes As DataTable
     Protected m_Organisms As DataTable
-    Protected m_StandinTable As DataTable
 
     Protected m_Local_File As Boolean
 
-    Private Sub frmAddNewCollection_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+    Private Sub frmAddNewCollection_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If Me.IsLocalFile Then
             Me.cboAuthorityPicker.Enabled = True
             Me.cboOrganismPicker.Enabled = True
@@ -412,8 +411,8 @@ Public Class frmAddNewCollection
         Dim tmpTable As New DataTable
         Dim dr As DataRow
         With tmpTable.Columns
-            .Add("Display_Name", System.Type.GetType("System.String"))
-            .Add("ID", System.Type.GetType("System.Int32"))
+            .Add("Display_Name", Type.GetType("System.String"))
+            .Add("ID", Type.GetType("System.Int32"))
         End With
 
         dr = tmpTable.NewRow
@@ -428,11 +427,11 @@ Public Class frmAddNewCollection
 
 #Region " Event Handlers "
 
-    Private Sub txtCollectionName_Leave(sender As Object, e As System.EventArgs) Handles txtCollectionName.Leave
+    Private Sub txtCollectionName_Leave(sender As Object, e As EventArgs) Handles txtCollectionName.Leave
         Me.m_CollectionName = Me.txtCollectionName.Text
     End Sub
 
-    Private Sub cboOrganismPicker_SelectedIndexChanged(sender As System.Object, e As System.EventArgs)
+    Private Sub cboOrganismPicker_SelectedIndexChanged(sender As Object, e As EventArgs)
         Me.m_OrganismID = CInt(Me.cboOrganismPicker.SelectedValue)
         If Me.m_OrganismID = 0 Then
             Me.cmdOK.Enabled = False
@@ -442,19 +441,19 @@ Public Class frmAddNewCollection
 
     End Sub
 
-    Private Sub cboAuthorityPicker_SelectedIndexChanged(sender As System.Object, e As System.EventArgs)
+    Private Sub cboAuthorityPicker_SelectedIndexChanged(sender As Object, e As EventArgs)
         Me.m_AnnotationTypeID = CInt(Me.cboAuthorityPicker.SelectedValue)
     End Sub
 
-    Private Sub cmdAddOrganism_Click(sender As System.Object, e As System.EventArgs) Handles cmdAddOrganism.Click
+    Private Sub cmdAddOrganism_Click(sender As Object, e As EventArgs) Handles cmdAddOrganism.Click
 
     End Sub
 
-    Private Sub cmdAddAuthority_Click(sender As System.Object, e As System.EventArgs) Handles cmdAddAuthority.Click
+    Private Sub cmdAddAuthority_Click(sender As Object, e As EventArgs) Handles cmdAddAuthority.Click
 
     End Sub
 
-    Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
+    Private Sub cmdOK_Click(sender As Object, e As EventArgs) Handles cmdOK.Click
         Me.m_CollectionName = Me.txtCollectionName.Text
         Me.m_Description = Me.txtDescription.Text
         Me.m_CollectionSource = Me.txtSource.Text
@@ -462,7 +461,7 @@ Public Class frmAddNewCollection
         Me.m_AnnotationTypeID = CInt(Me.cboAuthorityPicker.SelectedValue)
     End Sub
 
-    Private Sub cmdCancel_Click(sender As System.Object, e As System.EventArgs) Handles cmdCancel.Click
+    Private Sub cmdCancel_Click(sender As Object, e As EventArgs) Handles cmdCancel.Click
         Me.m_CollectionName = Nothing
         Me.m_OrganismID = Nothing
         Me.m_AnnotationTypeID = Nothing

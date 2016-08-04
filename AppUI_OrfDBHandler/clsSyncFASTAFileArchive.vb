@@ -1,14 +1,22 @@
+Imports System.IO
 Imports System.Runtime.InteropServices
+Imports System.Text
+Imports System.Text.RegularExpressions
+Imports ProteinFileReader
+Imports Protein_Exporter
+Imports Protein_Exporter.ExportProteinCollectionsIFC
 Imports Protein_Importer
+Imports SequenceInfoCalculator
+Imports TableManipulationBase
 
 Public Class clsSyncFASTAFileArchive
 
     Private ReadOnly m_PSConnectionString As String
-    Private m_FileArchiver As Protein_Exporter.IArchiveOutputFiles
-    Private m_TableGetter As TableManipulationBase.IGetSQLData
-    Private m_Importer As Protein_Importer.IAddUpdateEntries
+    Private m_FileArchiver As IArchiveOutputFiles
+    Private m_TableGetter As IGetSQLData
+    Private m_Importer As IAddUpdateEntries
 
-    Private WithEvents m_Exporter As Protein_Exporter.clsGetFASTAFromDMS
+    Private WithEvents m_Exporter As clsGetFASTAFromDMS
 
     Event SyncStart(StatusMsg As String)
     Event SyncProgress(StatusMsg As String, fractionDone As Double)
@@ -25,8 +33,8 @@ Public Class clsSyncFASTAFileArchive
 
         Me.m_PSConnectionString = PSConnectionString
         'Me.m_FileArchiver = New Protein_Exporter.clsArchiveToFile(PSConnectionString, Me.m_Exporter)
-        Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString, True)
-        Me.m_Importer = New Protein_Importer.clsAddUpdateEntries(Me.m_PSConnectionString)
+        Me.m_TableGetter = New clsDBTask(Me.m_PSConnectionString, True)
+        Me.m_Importer = New clsAddUpdateEntries(Me.m_PSConnectionString)
 
 
     End Sub
@@ -55,10 +63,10 @@ Public Class clsSyncFASTAFileArchive
         Next
 
 
-        Dim outputSequenceType As Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes
-        outputSequenceType = Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward
-        Dim databaseFormatType As Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes
-        databaseFormatType = Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta
+        Dim outputSequenceType As IGetFASTAFromDMS.SequenceTypes
+        outputSequenceType = IGetFASTAFromDMS.SequenceTypes.forward
+        Dim databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes
+        databaseFormatType = IGetFASTAFromDMS.DatabaseFormatTypes.fasta
 
 
 
@@ -69,13 +77,13 @@ Public Class clsSyncFASTAFileArchive
             Me.OnSyncProgressUpdate("Processing - '" & dr.Item("FileName").ToString & "'", CDbl(currentCollectionProteinCount / totalProteinsCount))
             currentCollectionProteinCount = CInt(dr.Item("NumProteins"))
             proteinCollectionID = CInt(dr.Item("Protein_Collection_ID"))
-            sourceFilePath = System.IO.Path.Combine(OutputPath, dr.Item("FileName").ToString & ".fasta")
+            sourceFilePath = Path.Combine(OutputPath, dr.Item("FileName").ToString & ".fasta")
             SHA1 = dr.Item("Authentication_Hash").ToString
 
 
             ArchiveEntryID = Me.m_FileArchiver.ArchiveCollection(
                 proteinCollectionID,
-                Protein_Exporter.IArchiveOutputFiles.CollectionTypes.static,
+                IArchiveOutputFiles.CollectionTypes.static,
                 outputSequenceType, databaseFormatType, sourceFilePath, CreationOptionsString, SHA1, proteinCollectionList)
 
         Next
@@ -88,12 +96,12 @@ Public Class clsSyncFASTAFileArchive
 
     Sub UpdateSHA1Hashes() 'Implements IArchiveOutputFiles.UpdateSHA1Hashes
         If Me.m_FileArchiver Is Nothing Then
-            Me.m_FileArchiver = New Protein_Exporter.clsArchiveToFile(Me.m_PSConnectionString, Me.m_Exporter)
+            Me.m_FileArchiver = New clsArchiveToFile(Me.m_PSConnectionString, Me.m_Exporter)
         End If
 
         Dim sql As String
 
-        Me.m_Importer = New Protein_Importer.clsAddUpdateEntries(Me.m_PSConnectionString)
+        Me.m_Importer = New clsAddUpdateEntries(Me.m_PSConnectionString)
 
         sql = "SELECT Protein_Collection_ID, FileName, Authentication_Hash, NumProteins " &
         "FROM V_Missing_Archive_Entries"
@@ -107,7 +115,7 @@ Public Class clsSyncFASTAFileArchive
         Dim tmpStoredSHA As String
         Dim tmpGenSHA As String
         Dim tmpFilename As String
-        Dim fi As System.IO.FileInfo
+        Dim fi As FileInfo
         Dim tmpFullPath As String
         Dim currentProteinCount As Integer = 0
 
@@ -117,21 +125,21 @@ Public Class clsSyncFASTAFileArchive
 
         Dim starttime As DateTime
         Dim elapsedTime As TimeSpan
-        Dim elapsedTimeSB As New System.Text.StringBuilder
+        Dim elapsedTimeSB As New StringBuilder
 
         Dim fileCounter As Integer
         Dim totalFileCount As Integer = dt.Rows.Count
 
-        Dim tmpPath As String = System.IO.Path.GetTempPath
+        Dim tmpPath As String = Path.GetTempPath
 
-        Me.m_Exporter = New Protein_Exporter.clsGetFASTAFromDMS(
-            Me.m_PSConnectionString, Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
-            Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward)
+        Me.m_Exporter = New clsGetFASTAFromDMS(
+            Me.m_PSConnectionString, IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
+            IGetFASTAFromDMS.SequenceTypes.forward)
 
         Dim creationOptionsString As String
         creationOptionsString = "seq_direction=forward,filetype=fasta"
         Me.OnSyncStart("Updating Collections and Archive Entries")
-        starttime = System.DateTime.UtcNow
+        starttime = DateTime.UtcNow
 
         For Each dr In dt.Rows
             tmpID = CInt(dr.Item("Protein_Collection_ID"))
@@ -140,7 +148,7 @@ Public Class clsSyncFASTAFileArchive
             m_GeneratedFastaFilePath = String.Empty
 
             elapsedTimeSB.Remove(0, elapsedTimeSB.Length)
-            elapsedTime = System.DateTime.UtcNow.Subtract(starttime)
+            elapsedTime = DateTime.UtcNow.Subtract(starttime)
             If elapsedTime.Minutes < 1 And elapsedTime.Hours = 0 Then
                 elapsedTimeSB.Append("less than ")
             Else
@@ -170,12 +178,12 @@ Public Class clsSyncFASTAFileArchive
 
             fileCounter += 1
 
-            tmpFullPath = System.IO.Path.Combine(tmpPath, tmpFilename & ".fasta")
+            tmpFullPath = Path.Combine(tmpPath, tmpFilename & ".fasta")
             'Debug.WriteLine("Start: " & tmpFilename & ": " & starttime.ToLongTimeString)
 
             tmpGenSHA = Me.m_Exporter.ExportFASTAFile(tmpID, tmpPath,
-                Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
-                Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward)
+                IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
+                IGetFASTAFromDMS.SequenceTypes.forward)
 
             If Not tmpStoredSHA.Equals(tmpGenSHA) Then
                 Dim currentFastaProteinCount = 0
@@ -193,9 +201,9 @@ Public Class clsSyncFASTAFileArchive
 
             Me.m_FileArchiver.ArchiveCollection(
                 tmpID,
-                Protein_Exporter.IArchiveOutputFiles.CollectionTypes.static,
-                Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward,
-                Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
+                IArchiveOutputFiles.CollectionTypes.static,
+                IGetFASTAFromDMS.SequenceTypes.forward,
+                IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
                 tmpFullPath, creationOptionsString, tmpGenSHA, "")
             'Me.ArchiveCollection(
             '    tmpID,
@@ -203,7 +211,7 @@ Public Class clsSyncFASTAFileArchive
             '    tmpFullPath, tmpGenSHA)
 
             'tmpNameList.Clear()
-            fi = New System.IO.FileInfo(tmpFullPath)
+            fi = New FileInfo(tmpFullPath)
             fi.Delete()
             Me.m_CurrentProteinCount += CInt(dr.Item("NumProteins"))
 
@@ -229,10 +237,10 @@ Public Class clsSyncFASTAFileArchive
 
         '    For Each dr In dt.Rows
         '        counter += 1
-        '        tmpRefID = DirectCast(dr.Item("Reference_ID"), Int32)
+        '        tmpRefID = DirectCast(dr.Item("Reference_ID"), Integer)
         '        tmpName = dr.Item("Name").ToString
         '        tmpFingerprint = dr.Item("Reference_Fingerprint").ToString
-        '        tmpProtID = DirectCast(dr.Item("Protein_ID"), Int32)
+        '        tmpProtID = DirectCast(dr.Item("Protein_ID"), Integer)
 
         '        'tmpGenSHA = Me.m_Importer.GenerateArbitraryHash(tmpName + tmpProtID.ToString)
         '        errorCode = Me.m_Importer.UpdateProteinNameHash(tmpRefID, tmpName, tmpProtID)
@@ -253,7 +261,7 @@ Public Class clsSyncFASTAFileArchive
 
         '    For Each dr In dt.Rows
         '        counter += 1
-        '        tmpProtID = DirectCast(dr.Item("Protein_ID"), Int32)
+        '        tmpProtID = DirectCast(dr.Item("Protein_ID"), Integer)
         '        tmpSeq = dr.Item("Sequence").ToString
 
         '        errorCode = Me.m_Importer.UpdateProteinSequenceHash(tmpProtID, tmpSeq)
@@ -270,7 +278,7 @@ Public Class clsSyncFASTAFileArchive
         proteinCount = 0
         residueCount = 0
 
-        Dim oReader = New ProteinFileReader.FastaFileReader()
+        Dim oReader = New FastaFileReader()
         If oReader.OpenFile(fastaFilePath) Then
             While oReader.ReadNextProteinEntry()
                 proteinCount += 1
@@ -284,7 +292,7 @@ Public Class clsSyncFASTAFileArchive
 
     Sub FixArchivedFilePaths()
         If Me.m_TableGetter Is Nothing Then
-            Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString)
+            Me.m_TableGetter = New clsDBTask(Me.m_PSConnectionString)
         End If
 
         Dim SelectSQL As String
@@ -308,7 +316,7 @@ Public Class clsSyncFASTAFileArchive
     Sub AddSortingIndices()
 
         If Me.m_TableGetter Is Nothing Then
-            Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString)
+            Me.m_TableGetter = New clsDBTask(Me.m_PSConnectionString)
         End If
 
         Dim getCollectionsSQL As String = "SELECT Protein_Collection_ID, FileName, Organism_ID FROM V_Protein_Collections_By_Organism WHERE Collection_Type_ID = 1 or Collection_Type_ID = 5"
@@ -353,11 +361,11 @@ Public Class clsSyncFASTAFileArchive
                     legacyFullPath = legacyFileEntry.Item("Full_Path").ToString
                     nameIndexHash = Me.GetProteinSortingIndices(legacyFullPath)
                     For Each referenceEntry In referencesTable.Rows
-                        tmpRefID = DirectCast(referenceEntry.Item("Reference_ID"), Int32)
-                        tmpProteinID = DirectCast(referenceEntry.Item("Protein_ID"), Int32)
+                        tmpRefID = DirectCast(referenceEntry.Item("Reference_ID"), Integer)
+                        tmpProteinID = DirectCast(referenceEntry.Item("Protein_ID"), Integer)
                         tmpRefName = referenceEntry.Item("Name").ToString
                         'Try
-                        tmpSortingIndex = DirectCast(nameIndexHash.Item(tmpRefName.ToLower), Int32)
+                        tmpSortingIndex = DirectCast(nameIndexHash.Item(tmpRefName.ToLower), Integer)
 
                         If tmpSortingIndex > 0 Then
                             Me.m_Importer.UpdateProteinCollectionMember(
@@ -377,18 +385,18 @@ Public Class clsSyncFASTAFileArchive
     End Sub
 
     Private Function GetProteinSortingIndices(FilePath As String) As Hashtable
-        Dim fi As System.IO.FileInfo = New System.IO.FileInfo(FilePath)
-        Dim tr As System.IO.TextReader
+        Dim fi As FileInfo = New FileInfo(FilePath)
+        Dim tr As TextReader
         Dim s As String
-        Dim nameRegex As System.Text.RegularExpressions.Regex
-        Dim m As System.Text.RegularExpressions.Match
+        Dim nameRegex As Regex
+        Dim m As Match
         Dim nameHash As New Hashtable
         Dim counter As Integer
         Dim tmpName As String
 
-        nameRegex = New System.Text.RegularExpressions.Regex(
+        nameRegex = New Regex(
             "^\>(?<name>\S+)\s*(?<description>.*)$",
-            System.Text.RegularExpressions.RegexOptions.Compiled)
+            RegexOptions.Compiled)
 
         tr = fi.OpenText
         s = tr.ReadLine
@@ -419,7 +427,7 @@ Public Class clsSyncFASTAFileArchive
         Dim tmpRowCount As Integer = 1
 
         If Me.m_TableGetter Is Nothing Then
-            Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString)
+            Me.m_TableGetter = New clsDBTask(Me.m_PSConnectionString)
         End If
 
         Dim tmpTableInfo As DataTable = Me.m_TableGetter.GetTable(
@@ -504,10 +512,10 @@ Public Class clsSyncFASTAFileArchive
             tmptable = Me.m_TableGetter.GetTable(rowRetrievalSQL)
             If tmptable.Rows.Count > 0 Then
                 For Each dr In tmptable.Rows
-                    tmpRefID = DirectCast(dr.Item("Reference_ID"), Int32)
+                    tmpRefID = DirectCast(dr.Item("Reference_ID"), Integer)
                     tmpProteinName = dr.Item("Name").ToString
                     tmpDescription = dr.Item("Description").ToString
-                    tmpProteinID = DirectCast(dr.Item("Protein_ID"), Int32)
+                    tmpProteinID = DirectCast(dr.Item("Protein_ID"), Integer)
 
                     Me.m_Importer.UpdateProteinNameHash(
                         tmpRefID,
@@ -530,12 +538,12 @@ Public Class clsSyncFASTAFileArchive
     Protected Sub UpdateProteinSequenceInfo(Proteins As Hashtable)
 
         If Me.m_Importer Is Nothing Then
-            Me.m_Importer = New Protein_Importer.clsAddUpdateEntries(Me.m_PSConnectionString)
+            Me.m_Importer = New clsAddUpdateEntries(Me.m_PSConnectionString)
         End If
 
         Dim proteinID As Integer
         Dim sequence As String
-        Dim si As SequenceInfoCalculator.ICalculateSeqInfo
+        Dim si As ICalculateSeqInfo
 
         For Each proteinID In Proteins.Keys
             sequence = Proteins.Item(proteinID).ToString

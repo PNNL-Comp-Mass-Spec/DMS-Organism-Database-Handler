@@ -1,5 +1,9 @@
+Imports System.ComponentModel
+Imports System.Text
+Imports System.Text.RegularExpressions
+
 Public Class frmAddNamingAuthority
-    Inherits System.Windows.Forms.Form
+    Inherits Form
 
 #Region " Windows Form Designer generated code "
 
@@ -29,23 +33,23 @@ Public Class frmAddNamingAuthority
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    Friend WithEvents lblAuthShortName As System.Windows.Forms.Label
-    Friend WithEvents txtAuthName As System.Windows.Forms.TextBox
-    Friend WithEvents txtAuthWeb As System.Windows.Forms.TextBox
-    Friend WithEvents lblAuthWeb As System.Windows.Forms.Label
-    Friend WithEvents cmdCancel As System.Windows.Forms.Button
-    Friend WithEvents cmdOK As System.Windows.Forms.Button
-    Friend WithEvents txtAuthFullName As System.Windows.Forms.TextBox
-    Friend WithEvents lblAuthFullName As System.Windows.Forms.Label
+    Friend WithEvents lblAuthShortName As Label
+    Friend WithEvents txtAuthName As TextBox
+    Friend WithEvents txtAuthWeb As TextBox
+    Friend WithEvents lblAuthWeb As Label
+    Friend WithEvents cmdCancel As Button
+    Friend WithEvents cmdOK As Button
+    Friend WithEvents txtAuthFullName As TextBox
+    Friend WithEvents lblAuthFullName As Label
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.lblAuthShortName = New System.Windows.Forms.Label
-        Me.txtAuthName = New System.Windows.Forms.TextBox
-        Me.txtAuthFullName = New System.Windows.Forms.TextBox
-        Me.lblAuthFullName = New System.Windows.Forms.Label
-        Me.txtAuthWeb = New System.Windows.Forms.TextBox
-        Me.lblAuthWeb = New System.Windows.Forms.Label
-        Me.cmdCancel = New System.Windows.Forms.Button
-        Me.cmdOK = New System.Windows.Forms.Button
+        Me.lblAuthShortName = New Label
+        Me.txtAuthName = New TextBox
+        Me.txtAuthFullName = New TextBox
+        Me.lblAuthFullName = New Label
+        Me.txtAuthWeb = New TextBox
+        Me.lblAuthWeb = New Label
+        Me.cmdCancel = New Button
+        Me.cmdOK = New Button
         Me.SuspendLayout()
         '
         'lblAuthShortName
@@ -187,7 +191,7 @@ Public Class frmAddNamingAuthority
 
 #End Region
 
-    Private Sub frmAddNamingAuthority_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+    Private Sub frmAddNamingAuthority_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If Not Me.m_ShortName Is Nothing Then
             Me.txtAuthName.Text = Me.m_ShortName
         End If
@@ -202,7 +206,7 @@ Public Class frmAddNamingAuthority
 
     End Sub
 
-    Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
+    Private Sub cmdOK_Click(sender As Object, e As EventArgs) Handles cmdOK.Click
         Me.m_ShortName = Me.txtAuthName.Text
         Me.m_FullName = Me.txtAuthFullName.Text
         Me.m_WebAddress = Me.txtAuthWeb.Text
@@ -211,7 +215,7 @@ Public Class frmAddNamingAuthority
         Me.Close()
     End Sub
 
-    Private Sub cmdCancel_Click(sender As System.Object, e As System.EventArgs) Handles cmdCancel.Click
+    Private Sub cmdCancel_Click(sender As Object, e As EventArgs) Handles cmdCancel.Click
         Me.DialogResult = DialogResult.Cancel
         Me.Close()
     End Sub
@@ -219,10 +223,10 @@ Public Class frmAddNamingAuthority
 
 
     Function ValidateWebAddressFormat(rawAddress As String) As String
-        Dim m As System.Text.RegularExpressions.Match
-        Dim r1 As New System.Text.RegularExpressions.Regex("(?:([^:/?#]+):)?(?://([^/?#]*))?([^?#]*)(?:\?([^#]*))?")  'Match with specific page noted
+        Dim m As Match
+        Dim r1 As New Regex("(?:([^:/?#]+):)?(?://([^/?#]*))?([^?#]*)(?:\?([^#]*))?")  'Match with specific page noted
         Dim newaddress As String
-        Dim newAddressSB As New System.Text.StringBuilder
+        Dim newAddressSB As New StringBuilder
 
         If r1.IsMatch(rawAddress) Then
             m = r1.Match(rawAddress)
@@ -248,7 +252,7 @@ Public Class frmAddNamingAuthority
     End Function
 
 
-    Private Sub txtAuthWeb_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtAuthWeb.Validating
+    Private Sub txtAuthWeb_Validating(sender As Object, e As CancelEventArgs) Handles txtAuthWeb.Validating
         Dim txt As TextBox = DirectCast(sender, TextBox)
         Dim tmpAddress As String = Me.ValidateWebAddressFormat(txt.Text)
         txt.Text = tmpAddress

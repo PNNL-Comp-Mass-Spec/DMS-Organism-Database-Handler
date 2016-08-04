@@ -1,5 +1,8 @@
+Imports System.ComponentModel
+Imports System.Text.RegularExpressions
+
 Public Class frmFilePreview
-    Inherits System.Windows.Forms.Form
+    Inherits Form
 
 #Region " Windows Form Designer generated code "
 
@@ -29,23 +32,23 @@ Public Class frmFilePreview
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    Friend WithEvents lblLineCount As System.Windows.Forms.Label
-    Friend WithEvents txtLineCount As System.Windows.Forms.TextBox
-    Friend WithEvents cmdRefresh As System.Windows.Forms.Button
-    Friend WithEvents lblPreviewTitle As System.Windows.Forms.Label
-    Friend WithEvents colName As System.Windows.Forms.ColumnHeader
-    Friend WithEvents colDescription As System.Windows.Forms.ColumnHeader
-    Friend WithEvents cmdClose As System.Windows.Forms.Button
-    Friend WithEvents lvwPreview As System.Windows.Forms.ListView
+    Friend WithEvents lblLineCount As Label
+    Friend WithEvents txtLineCount As TextBox
+    Friend WithEvents cmdRefresh As Button
+    Friend WithEvents lblPreviewTitle As Label
+    Friend WithEvents colName As ColumnHeader
+    Friend WithEvents colDescription As ColumnHeader
+    Friend WithEvents cmdClose As Button
+    Friend WithEvents lvwPreview As ListView
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.lvwPreview = New System.Windows.Forms.ListView()
-        Me.colName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.colDescription = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.txtLineCount = New System.Windows.Forms.TextBox()
-        Me.cmdRefresh = New System.Windows.Forms.Button()
-        Me.lblLineCount = New System.Windows.Forms.Label()
-        Me.lblPreviewTitle = New System.Windows.Forms.Label()
-        Me.cmdClose = New System.Windows.Forms.Button()
+        Me.lvwPreview = New ListView()
+        Me.colName = CType(New ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colDescription = CType(New ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.txtLineCount = New TextBox()
+        Me.cmdRefresh = New Button()
+        Me.lblLineCount = New Label()
+        Me.lblPreviewTitle = New Label()
+        Me.cmdClose = New Button()
         Me.SuspendLayout()
         '
         'lvwPreview
@@ -53,7 +56,7 @@ Public Class frmFilePreview
         Me.lvwPreview.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lvwPreview.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colName, Me.colDescription})
+        Me.lvwPreview.Columns.AddRange(New ColumnHeader() {Me.colName, Me.colDescription})
         Me.lvwPreview.FullRowSelect = True
         Me.lvwPreview.GridLines = True
         Me.lvwPreview.Location = New System.Drawing.Point(-3, 58)
@@ -143,7 +146,7 @@ Public Class frmFilePreview
     Event RefreshRequest(lineCount As Integer)
     Shadows Event FormClosing()
 
-    Private ReadOnly validationRegex As System.Text.RegularExpressions.Regex
+    Private ReadOnly validationRegex As Regex
     Private m_currentLineCount As Integer = 100
 
     WriteOnly Property WindowName() As String
@@ -158,16 +161,16 @@ Public Class frmFilePreview
         End Get
     End Property
 
-    Private Sub cmdRefresh_Click(sender As System.Object, e As System.EventArgs) Handles cmdRefresh.Click
+    Private Sub cmdRefresh_Click(sender As Object, e As EventArgs) Handles cmdRefresh.Click
         RaiseEvent RefreshRequest(Me.m_currentLineCount)
         If Me.cmdRefresh.Enabled = True Then
             Me.cmdRefresh.Enabled = False
         End If
     End Sub
 
-    Private Sub txtLineCount_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtLineCount.Validating
+    Private Sub txtLineCount_Validating(sender As Object, e As CancelEventArgs) Handles txtLineCount.Validating
         Dim value As Integer
-        Dim m As System.Text.RegularExpressions.Match
+        Dim m As Match
         Dim countText As String = Me.txtLineCount.Text
 
         If validationRegex.IsMatch(CInt(countText).ToString) Then
@@ -185,12 +188,12 @@ Public Class frmFilePreview
 
     End Sub
 
-    Private Sub frmFilePreview_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+    Private Sub frmFilePreview_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Me.txtLineCount.Text = Me.m_currentLineCount.ToString
         RaiseEvent RefreshRequest(Me.m_currentLineCount)
     End Sub
 
-    Private Sub txtLineCount_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtLineCount.TextChanged
+    Private Sub txtLineCount_TextChanged(sender As Object, e As EventArgs) Handles txtLineCount.TextChanged
         Dim countText As String = Me.txtLineCount.Text
         If validationRegex.IsMatch(countText) Then
             Me.cmdRefresh.Enabled = True
@@ -199,7 +202,7 @@ Public Class frmFilePreview
         End If
     End Sub
 
-    Private Sub frmFilePreview_Closed(sender As Object, e As System.EventArgs) Handles MyBase.Closed
+    Private Sub frmFilePreview_Closed(sender As Object, e As EventArgs) Handles MyBase.Closed
         RaiseEvent FormClosing()
     End Sub
 

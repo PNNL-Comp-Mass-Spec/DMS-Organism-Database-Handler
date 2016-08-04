@@ -1,5 +1,5 @@
 Public Class frmAddAnnotationType
-    Inherits System.Windows.Forms.Form
+    Inherits Form
 
 #Region " Windows Form Designer generated code "
 
@@ -29,27 +29,27 @@ Public Class frmAddAnnotationType
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    Friend WithEvents cmdCancel As System.Windows.Forms.Button
-    Friend WithEvents cmdOK As System.Windows.Forms.Button
-    Friend WithEvents lblAnnTypeName As System.Windows.Forms.Label
-    Friend WithEvents txtAnnTypeName As System.Windows.Forms.TextBox
-    Friend WithEvents txtDescription As System.Windows.Forms.TextBox
-    Friend WithEvents lblDescription As System.Windows.Forms.Label
-    Friend WithEvents txtTypeExample As System.Windows.Forms.TextBox
-    Friend WithEvents lblTypeExample As System.Windows.Forms.Label
-    Friend WithEvents lblAuthority As System.Windows.Forms.Label
-    Friend WithEvents cboAuthorityName As System.Windows.Forms.ComboBox
+    Friend WithEvents cmdCancel As Button
+    Friend WithEvents cmdOK As Button
+    Friend WithEvents lblAnnTypeName As Label
+    Friend WithEvents txtAnnTypeName As TextBox
+    Friend WithEvents txtDescription As TextBox
+    Friend WithEvents lblDescription As Label
+    Friend WithEvents txtTypeExample As TextBox
+    Friend WithEvents lblTypeExample As Label
+    Friend WithEvents lblAuthority As Label
+    Friend WithEvents cboAuthorityName As ComboBox
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.lblAnnTypeName = New System.Windows.Forms.Label
-        Me.txtAnnTypeName = New System.Windows.Forms.TextBox
-        Me.txtDescription = New System.Windows.Forms.TextBox
-        Me.lblDescription = New System.Windows.Forms.Label
-        Me.txtTypeExample = New System.Windows.Forms.TextBox
-        Me.lblTypeExample = New System.Windows.Forms.Label
-        Me.cmdCancel = New System.Windows.Forms.Button
-        Me.cmdOK = New System.Windows.Forms.Button
-        Me.lblAuthority = New System.Windows.Forms.Label
-        Me.cboAuthorityName = New System.Windows.Forms.ComboBox
+        Me.lblAnnTypeName = New Label
+        Me.txtAnnTypeName = New TextBox
+        Me.txtDescription = New TextBox
+        Me.lblDescription = New Label
+        Me.txtTypeExample = New TextBox
+        Me.lblTypeExample = New Label
+        Me.cmdCancel = New Button
+        Me.cmdOK = New Button
+        Me.lblAuthority = New Label
+        Me.cboAuthorityName = New ComboBox
         Me.SuspendLayout()
         '
         'lblAnnTypeName
@@ -235,7 +235,7 @@ Public Class frmAddAnnotationType
 
 #End Region
 
-    Private Sub frmAddAnnotationType_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+    Private Sub frmAddAnnotationType_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If Not Me.m_TypeName Is Nothing Then
             Me.txtAnnTypeName.Text = Me.m_TypeName
         End If
@@ -294,7 +294,7 @@ Public Class frmAddAnnotationType
         AddHandler cboAuthorityName.SelectedIndexChanged, AddressOf cboAuthorityName_SelectedIndexChanged
     End Sub
 
-    Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
+    Private Sub cmdOK_Click(sender As Object, e As EventArgs) Handles cmdOK.Click
         Me.m_TypeName = Me.txtAnnTypeName.Text
         Me.m_Description = Me.txtDescription.Text
         Me.m_Example = Me.txtTypeExample.Text
@@ -304,7 +304,7 @@ Public Class frmAddAnnotationType
         Me.Close()
     End Sub
 
-    Private Sub cmdCancel_Click(sender As System.Object, e As System.EventArgs) Handles cmdCancel.Click
+    Private Sub cmdCancel_Click(sender As Object, e As EventArgs) Handles cmdCancel.Click
         Me.DialogResult = DialogResult.Cancel
         Me.Close()
     End Sub
@@ -315,11 +315,10 @@ Public Class frmAddAnnotationType
     '    txt.Text = tmpAddress
     'End Sub
 
-    Private Sub cboAuthorityName_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cboAuthorityName.SelectedIndexChanged
-        Dim cbo As ComboBox = DirectCast(sender, ComboBox)
+    Private Sub cboAuthorityName_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboAuthorityName.SelectedIndexChanged
+        Dim cbo = DirectCast(sender, ComboBox)
 
-
-        If cbo.SelectedValue.GetType Is System.Type.GetType("System.Int32") Then
+        If cbo.SelectedValue.GetType Is Type.GetType("System.Int32") Then
             Me.m_AuthID = CInt(cbo.SelectedValue)
         Else
             'Me.m_SelectedAuthorityID = 0
@@ -331,7 +330,7 @@ Public Class frmAddAnnotationType
         If Me.m_AuthID = -2 Then
             'Bring up addition dialog
             Dim AuthAdd As New clsAddNamingAuthority(Me.m_PSConnectionString)
-            AuthAdd.FormLocation = New System.Drawing.Point(Me.Left + 20, Me.Top + 30)
+            AuthAdd.FormLocation = New Point(Me.Left + 20, Me.Top + 30)
             tmpAuthID = AuthAdd.AddNamingAuthority
 
             If Not AuthAdd.EntryExists And tmpAuthID > 0 Then

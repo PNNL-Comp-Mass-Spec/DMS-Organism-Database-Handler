@@ -1,7 +1,11 @@
+Imports System.IO
+Imports Protein_Importer
+Imports Protein_Storage
+
 Public Class clsFilePreviewHandler
 
-    Private m_Proteins As Protein_Storage.IProteinStorage
-    Private m_Loader As Protein_Importer.IReadProteinImportFile
+    Private m_Proteins As IProteinStorage
+    Private m_Loader As IReadProteinImportFile
     Private m_currentFilePath As String
     Private WithEvents m_frmPreview As frmFilePreview
 
@@ -18,7 +22,7 @@ Public Class clsFilePreviewHandler
         lineCount As Integer)
 
         If Me.m_Loader Is Nothing Then
-            Me.m_Loader = New Protein_Importer.FASTAReader
+            Me.m_Loader = New FASTAReader
         End If
 
         Me.m_Proteins = Me.m_Loader.GetProteinEntries(filePath, lineCount)
@@ -49,9 +53,9 @@ Public Class clsFilePreviewHandler
             Me.m_frmPreview = New frmFilePreview
         End If
         With Me.m_frmPreview
-            .DesktopLocation = New System.Drawing.Point(horizPos, vertPos)
+            .DesktopLocation = New Point(horizPos, vertPos)
             .Height = height
-            .WindowName = "Preview of: " & System.IO.Path.GetFileName(filePath)
+            .WindowName = "Preview of: " & Path.GetFileName(filePath)
             If Me.m_frmPreview.Visible = False Then
                 .Show()
             Else

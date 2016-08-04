@@ -1,5 +1,13 @@
+Imports System.IO
+Imports NucleotideTranslator
+Imports Protein_Exporter
+Imports Protein_Exporter.ExportProteinCollectionsIFC
+Imports Protein_Importer
+Imports Protein_Uploader
+Imports TranslationTableImport
+
 Public Class frmTestingInterface
-    Inherits System.Windows.Forms.Form
+    Inherits Form
 
 #Region " Windows Form Designer generated code "
 
@@ -29,51 +37,51 @@ Public Class frmTestingInterface
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    Friend WithEvents txtTransFilePath As System.Windows.Forms.TextBox
-    Friend WithEvents gbxTransTableImportTest As System.Windows.Forms.GroupBox
-    Friend WithEvents gbxFASTAImportTest As System.Windows.Forms.GroupBox
-    Friend WithEvents txtFASTAFilePath As System.Windows.Forms.TextBox
-    Friend WithEvents txtConnString As System.Windows.Forms.TextBox
-    Friend WithEvents cmdLoadTT As System.Windows.Forms.Button
-    Friend WithEvents cmdBrowseTT As System.Windows.Forms.Button
-    Friend WithEvents cmdBrowseFF As System.Windows.Forms.Button
-    Friend WithEvents cmdLoadFF As System.Windows.Forms.Button
-    Friend WithEvents GroupBox2 As System.Windows.Forms.GroupBox
-    Friend WithEvents Button2 As System.Windows.Forms.Button
-    Friend WithEvents TextBox1 As System.Windows.Forms.TextBox
-    Friend WithEvents GroupBox3 As System.Windows.Forms.GroupBox
-    Friend WithEvents cmdExportFASTA As System.Windows.Forms.Button
-    Friend WithEvents cboCollectionsList As System.Windows.Forms.ComboBox
-    Friend WithEvents gbxConnectionString As System.Windows.Forms.GroupBox
-    Friend WithEvents cmdBatchLoadDMS As System.Windows.Forms.Button
-    Friend WithEvents gbxOtherStuff As System.Windows.Forms.GroupBox
-    Friend WithEvents cmdUpdateArchiveTables As System.Windows.Forms.Button
-    Friend WithEvents Button3 As System.Windows.Forms.Button
-    Friend WithEvents lblProgress As System.Windows.Forms.Label
-    Friend WithEvents pgbAdminConsole As System.Windows.Forms.ProgressBar
+    Friend WithEvents txtTransFilePath As TextBox
+    Friend WithEvents gbxTransTableImportTest As GroupBox
+    Friend WithEvents gbxFASTAImportTest As GroupBox
+    Friend WithEvents txtFASTAFilePath As TextBox
+    Friend WithEvents txtConnString As TextBox
+    Friend WithEvents cmdLoadTT As Button
+    Friend WithEvents cmdBrowseTT As Button
+    Friend WithEvents cmdBrowseFF As Button
+    Friend WithEvents cmdLoadFF As Button
+    Friend WithEvents GroupBox2 As GroupBox
+    Friend WithEvents Button2 As Button
+    Friend WithEvents TextBox1 As TextBox
+    Friend WithEvents GroupBox3 As GroupBox
+    Friend WithEvents cmdExportFASTA As Button
+    Friend WithEvents cboCollectionsList As ComboBox
+    Friend WithEvents gbxConnectionString As GroupBox
+    Friend WithEvents cmdBatchLoadDMS As Button
+    Friend WithEvents gbxOtherStuff As GroupBox
+    Friend WithEvents cmdUpdateArchiveTables As Button
+    Friend WithEvents Button3 As Button
+    Friend WithEvents lblProgress As Label
+    Friend WithEvents pgbAdminConsole As ProgressBar
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.txtTransFilePath = New System.Windows.Forms.TextBox
-        Me.cmdLoadTT = New System.Windows.Forms.Button
-        Me.cmdBrowseTT = New System.Windows.Forms.Button
-        Me.gbxTransTableImportTest = New System.Windows.Forms.GroupBox
-        Me.gbxFASTAImportTest = New System.Windows.Forms.GroupBox
-        Me.cmdBrowseFF = New System.Windows.Forms.Button
-        Me.cmdLoadFF = New System.Windows.Forms.Button
-        Me.txtFASTAFilePath = New System.Windows.Forms.TextBox
-        Me.txtConnString = New System.Windows.Forms.TextBox
-        Me.gbxConnectionString = New System.Windows.Forms.GroupBox
-        Me.GroupBox2 = New System.Windows.Forms.GroupBox
-        Me.Button2 = New System.Windows.Forms.Button
-        Me.TextBox1 = New System.Windows.Forms.TextBox
-        Me.GroupBox3 = New System.Windows.Forms.GroupBox
-        Me.cmdBatchLoadDMS = New System.Windows.Forms.Button
-        Me.cboCollectionsList = New System.Windows.Forms.ComboBox
-        Me.cmdExportFASTA = New System.Windows.Forms.Button
-        Me.gbxOtherStuff = New System.Windows.Forms.GroupBox
-        Me.cmdUpdateArchiveTables = New System.Windows.Forms.Button
-        Me.Button3 = New System.Windows.Forms.Button
-        Me.lblProgress = New System.Windows.Forms.Label
-        Me.pgbAdminConsole = New System.Windows.Forms.ProgressBar
+        Me.txtTransFilePath = New TextBox
+        Me.cmdLoadTT = New Button
+        Me.cmdBrowseTT = New Button
+        Me.gbxTransTableImportTest = New GroupBox
+        Me.gbxFASTAImportTest = New GroupBox
+        Me.cmdBrowseFF = New Button
+        Me.cmdLoadFF = New Button
+        Me.txtFASTAFilePath = New TextBox
+        Me.txtConnString = New TextBox
+        Me.gbxConnectionString = New GroupBox
+        Me.GroupBox2 = New GroupBox
+        Me.Button2 = New Button
+        Me.TextBox1 = New TextBox
+        Me.GroupBox3 = New GroupBox
+        Me.cmdBatchLoadDMS = New Button
+        Me.cboCollectionsList = New ComboBox
+        Me.cmdExportFASTA = New Button
+        Me.gbxOtherStuff = New GroupBox
+        Me.cmdUpdateArchiveTables = New Button
+        Me.Button3 = New Button
+        Me.lblProgress = New Label
+        Me.pgbAdminConsole = New ProgressBar
         Me.gbxTransTableImportTest.SuspendLayout()
         Me.gbxFASTAImportTest.SuspendLayout()
         Me.gbxConnectionString.SuspendLayout()
@@ -163,7 +171,7 @@ Public Class frmTestingInterface
         Me.txtConnString.Name = "txtConnString"
         Me.txtConnString.Size = New System.Drawing.Size(590, 20)
         Me.txtConnString.TabIndex = 7
-        Me.txtConnString.Text = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSP" & _
+        Me.txtConnString.Text = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSP" &
         "I;"
         '
         'gbxConnectionString
@@ -314,12 +322,12 @@ Public Class frmTestingInterface
 
 #End Region
 
-    Private WithEvents importer As Protein_Importer.IImportProteins
+    Private WithEvents importer As IImportProteins
     Private collectionList As DataTable
     Private m_LastOutputDirectory As String = "D:\outbox\output_test\"
     Private m_AppPath As String = Application.ExecutablePath
     Protected WithEvents m_Syncer As clsSyncFASTAFileArchive
-    Protected WithEvents m_Exporter As Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS
+    Protected WithEvents m_Exporter As IGetFASTAFromDMS
     Protected m_FullOutputPath As String
 
     Private m_TaskMessage As String
@@ -328,8 +336,8 @@ Public Class frmTestingInterface
 
     'Private exporter As ExportCollectionsFromDMS.IExportCollectionsFromDMS
 
-    Private Sub frmTestingInterface_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
-        importer = New Protein_Importer.clsImportHandler(Me.txtConnString.Text)
+    Private Sub frmTestingInterface_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        importer = New clsImportHandler(Me.txtConnString.Text)
         collectionList = importer.LoadProteinCollections()
         With Me.cboCollectionsList
             .DataSource = collectionList
@@ -339,14 +347,14 @@ Public Class frmTestingInterface
 
     End Sub
 
-    Private Sub cmdLoadTT_Click(sender As System.Object, e As System.EventArgs) Handles cmdLoadTT.Click
-        Dim transhandler As TranslationTableImport.ITransTableImport
-        transhandler = New TranslationTableImport.clsTransTableHandler(Me.txtConnString.Text)
+    Private Sub cmdLoadTT_Click(sender As Object, e As EventArgs) Handles cmdLoadTT.Click
+        Dim transhandler As ITransTableImport
+        transhandler = New clsTransTableHandler(Me.txtConnString.Text)
         transhandler.GetAllTranslationTableEntries(Me.txtTransFilePath.Text)
     End Sub
 
-    Private Sub cmdLoadFF_Click(sender As System.Object, e As System.EventArgs) Handles cmdLoadFF.Click
-        Dim importHandler As Protein_Importer.IImportProteins = New Protein_Importer.clsImportHandler(Me.txtConnString.Text)
+    Private Sub cmdLoadFF_Click(sender As Object, e As EventArgs) Handles cmdLoadFF.Click
+        Dim importHandler As IImportProteins = New clsImportHandler(Me.txtConnString.Text)
 
         'importHandler.LoadProteins(Me.txtFASTAFilePath.Text, "", Protein_Importer.IImportProteins.ProteinImportFileTypes.FASTA, 4, 1)
 
@@ -377,11 +385,11 @@ Public Class frmTestingInterface
 
     End Sub
 
-    Private Sub cmdBrowseTT_Click(sender As System.Object, e As System.EventArgs) Handles cmdBrowseTT.Click, cmdBrowseFF.Click
+    Private Sub cmdBrowseTT_Click(sender As Object, e As EventArgs) Handles cmdBrowseTT.Click, cmdBrowseFF.Click
         Dim newFilePath As String
         Dim OpenDialog As New OpenFileDialog
 
-        Dim proxy As Button = DirectCast(sender, Button)
+        Dim proxy = DirectCast(sender, Button)
 
         With OpenDialog
             .Title = "Open Translation Definitions File"
@@ -405,19 +413,18 @@ Public Class frmTestingInterface
         End If
     End Sub
 
-    Private Sub Button2_Click(sender As System.Object, e As System.EventArgs) Handles Button2.Click
-        Dim trans As NucleotideTranslator.ITranslateNucleotides =
-            New NucleotideTranslator.clsTranslateNucleotides(Me.txtConnString.Text)
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        Dim trans As ITranslateNucleotides =
+            New clsTranslateNucleotides(Me.txtConnString.Text)
 
         trans.LoadMatrix(1)
     End Sub
 
-    Private Sub cmdExportFASTA_Click(sender As System.Object, e As System.EventArgs) Handles cmdExportFASTA.Click
+    Private Sub cmdExportFASTA_Click(sender As Object, e As EventArgs) Handles cmdExportFASTA.Click
         Dim sd As New FolderBrowserDialog
 
         Dim filePath As String
         Dim r As DialogResult
-        Dim fingerprint As String
 
         'Dim exporter As Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS
         'Dim tmpNameList As New ArrayList
@@ -445,7 +452,7 @@ Public Class frmTestingInterface
             '    Me.txtConnString.Text,
             '    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
             '    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward)
-            Me.m_Exporter = New Protein_Exporter.clsGetFASTAFromDMS(Me.txtConnString.Text)
+            Me.m_Exporter = New clsGetFASTAFromDMS(Me.txtConnString.Text)
 
             'True Legacy fasta file
             'fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "HCMV_2003+H_sapiens_IPI_2005-04-04.fasta", filePath)
@@ -461,16 +468,16 @@ Public Class frmTestingInterface
 
             'Legacy fasta file with existing protein collection
             'fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "Shewanella_2003-12-19.fasta", filePath)
-            fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "GOs_Surface_Sargasso_Meso_2009-02-11_24.fasta", filePath)
+            Me.m_Exporter.ExportFASTAFile("na", "na", "GOs_Surface_Sargasso_Meso_2009-02-11_24.fasta", filePath)
 
             'Collection of existing collections
             'fingerprint = Me.m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=forward,filetype=fasta", "", filePath)
-            fingerprint = Me.m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=reversed,filetype=fasta", "", filePath)
+            Me.m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=reversed,filetype=fasta", "", filePath)
 
             'fingerprint = Me.m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=decoy,filetype=fasta", "", filePath)
-            fingerprint = Me.m_Exporter.ExportFASTAFile("SAR116_RBH_AA_012809", "seq_direction=forward,filetype=fasta", "", filePath)
+            Me.m_Exporter.ExportFASTAFile("SAR116_RBH_AA_012809", "seq_direction=forward,filetype=fasta", "", filePath)
 
-            fingerprint = Me.m_Exporter.ExportFASTAFile("Phycomyces_blakesleeanus_v2_filtered_2009-12-16", "seq_direction=forward,filetype=fasta", "", filePath)
+            Me.m_Exporter.ExportFASTAFile("Phycomyces_blakesleeanus_v2_filtered_2009-12-16", "seq_direction=forward,filetype=fasta", "", filePath)
 
             'Protein collection from cbo exported forward
             'fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=forward,filetype=fasta", "na", filePath)
@@ -503,18 +510,17 @@ Public Class frmTestingInterface
         Return foundRows(0).Item("FileName").ToString
     End Function
 
-    Private Sub cmdBatchLoadDMS_Click(sender As System.Object, e As System.EventArgs)
-        Dim fileBatcher As Protein_Uploader.clsBatchUploadFromFileList =
-            New Protein_Uploader.clsBatchUploadFromFileList(Me.txtConnString.Text)
+    Private Sub cmdBatchLoadDMS_Click(sender As Object, e As EventArgs)
+        Dim fileBatcher As clsBatchUploadFromFileList =
+            New clsBatchUploadFromFileList(Me.txtConnString.Text)
         fileBatcher.UploadBatch()
     End Sub
 
-    Private Sub cmdBatchLoadDMS_Click_1(sender As System.Object, e As System.EventArgs) Handles cmdBatchLoadDMS.Click
+    Private Sub cmdBatchLoadDMS_Click_1(sender As Object, e As EventArgs) Handles cmdBatchLoadDMS.Click
 
     End Sub
 
-    Private Sub cmdUpdateArchiveTables_Click(sender As System.Object, e As System.EventArgs) Handles cmdUpdateArchiveTables.Click
-        Dim f As FolderBrowserDialog = New FolderBrowserDialog
+    Private Sub cmdUpdateArchiveTables_Click(sender As Object, e As EventArgs) Handles cmdUpdateArchiveTables.Click
 
         If Me.m_Syncer Is Nothing Then
             Me.m_Syncer = New clsSyncFASTAFileArchive(Me.txtConnString.Text)
@@ -556,7 +562,7 @@ Public Class frmTestingInterface
 
     Private Sub UpdateProgress(StatusMsg As String, fractionDone As Double) Handles m_Syncer.SyncProgress, m_Exporter.FileGenerationProgress
         Me.m_ProgressMessage = StatusMsg
-        Dim percentComplete As Integer = CInt(fractionDone * 100)
+        Dim percentComplete = CInt(fractionDone * 100)
         If fractionDone > 0 Then
             Me.pgbAdminConsole.Value = CInt(fractionDone * 100)
             Me.lblProgress.Text = Me.m_TaskMessage & " (" & percentComplete & "% completed): " & Me.m_ProgressMessage
@@ -576,8 +582,8 @@ Public Class frmTestingInterface
         Me.pgbAdminConsole.Visible = False
         Me.lblProgress.Text =
             "Wrote " +
-            System.IO.Path.GetFileName(fullOutputPath) +
-            " to " + System.IO.Path.GetDirectoryName(fullOutputPath)
+            Path.GetFileName(fullOutputPath) +
+            " to " + Path.GetDirectoryName(fullOutputPath)
         Me.lblProgress.Visible = True
         Me.m_FullOutputPath = fullOutputPath
     End Sub
