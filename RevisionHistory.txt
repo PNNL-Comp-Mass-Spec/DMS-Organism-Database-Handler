@@ -1,5 +1,10 @@
 PRISMSeq Uploader Change Log
 
+Version 1.5.6060; August 4, 2016
+	- New ValidateFASTAFile.dll where the default maximum protein name length is 60 characters
+	- Resharper code cleanup
+	- Replace installer project with Inno Setup
+
 Version 1.5.5773; November 24, 2015
 	- Added option for defining the description and/or source for each new protein collection
 	- Listviews on the Batch Upload window can now be sorted
