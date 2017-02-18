@@ -394,8 +394,8 @@ Module modMain
             m_FastaTimer.Start()
             HashString = m_FastaTools.ExportFASTAFile(CollectionList, CreationOpts, LegacyFasta, DestFolder)
         Catch Ex As Exception
-            Console.WriteLine("clsAnalysisResources.CreateFastaFile(), Exception generating OrgDb file: " & Ex.Message &
-            "; " & GetExceptionStackTrace(Ex))
+            Console.WriteLine("clsAnalysisResources.CreateFastaFile(), Exception generating OrgDb file: " & Ex.Message)
+            Console.WriteLine(PRISM.Utilities.GetExceptionStackTraceMultiLine(Ex))
             Return False
         End Try
 
@@ -425,102 +425,4 @@ Module modMain
 
     End Function
 
-    ''' <summary>
-    ''' Parses the .StackTrace text of the given expression to return a compact description of the current stack
-    ''' </summary>
-    ''' <param name="objException"></param>
-    ''' <returns>String similar to "Stack trace: clsCodeTest.Test->clsCodeTest.TestException->clsCodeTest.InnerTestException in clsCodeTest.vb:line 86"</returns>
-    ''' <remarks></remarks>
-    Public Function GetExceptionStackTrace(objException As Exception) As String
-        Const REGEX_FUNCTION_NAME = "at ([^(]+)\("
-        Const REGEX_FILE_NAME = "in .+\\(.+)"
-
-        Dim trTextReader As IO.StringReader
-        Dim intIndex As Integer
-
-        Dim strFunctions() As String
-
-        Dim strCurrentFunction As String
-        Dim strFinalFile As String = String.Empty
-
-        Dim strLine As String
-        Dim strStackTrace As String
-
-        Dim reFunctionName As New Text.RegularExpressions.Regex(REGEX_FUNCTION_NAME, Text.RegularExpressions.RegexOptions.Compiled Or Text.RegularExpressions.RegexOptions.IgnoreCase)
-        Dim reFileName As New Text.RegularExpressions.Regex(REGEX_FILE_NAME, Text.RegularExpressions.RegexOptions.Compiled Or Text.RegularExpressions.RegexOptions.IgnoreCase)
-        Dim objMatch As Text.RegularExpressions.Match
-
-        ' Process each line in objException.StackTrace
-        ' Populate strFunctions() with the function name of each line
-        trTextReader = New IO.StringReader(objException.StackTrace)
-
-        Dim intFunctionCount = 0
-        ReDim strFunctions(9)
-
-        Do While trTextReader.Peek >= 0
-            strLine = trTextReader.ReadLine
-
-            If Not strLine Is Nothing AndAlso strLine.Length > 0 Then
-                strCurrentFunction = String.Empty
-
-                objMatch = reFunctionName.Match(strLine)
-                If objMatch.Success AndAlso objMatch.Groups.Count > 1 Then
-                    strCurrentFunction = objMatch.Groups(1).Value
-                Else
-                    ' Look for the word " in "
-                    intIndex = strLine.ToLower.IndexOf(" in ", StringComparison.Ordinal)
-                    If intIndex = 0 Then
-                        ' " in" not found; look for the first space after startIndex 4
-                        intIndex = strLine.IndexOf(" ", 4, StringComparison.Ordinal)
-                    End If
-                    If intIndex = 0 Then
-                        ' Space not found; use the entire string
-                        intIndex = strLine.Length - 1
-                    End If
-
-                    If intIndex > 0 Then
-                        strCurrentFunction = strLine.Substring(0, intIndex)
-                    End If
-
-                End If
-
-                If Not strCurrentFunction Is Nothing AndAlso strCurrentFunction.Length > 0 Then
-                    If intFunctionCount >= strFunctions.Length Then
-                        ' Reserve more space in strFunctions()
-                        ReDim Preserve strFunctions(strFunctions.Length * 2 - 1)
-                    End If
-
-                    strFunctions(intFunctionCount) = strCurrentFunction
-                    intFunctionCount += 1
-                End If
-
-                If strFinalFile.Length = 0 Then
-                    ' Also extract the file name where the Exception occurred
-                    objMatch = reFileName.Match(strLine)
-                    If objMatch.Success AndAlso objMatch.Groups.Count > 1 Then
-                        strFinalFile = objMatch.Groups(1).Value
-                    End If
-                End If
-
-            End If
-        Loop
-
-        strStackTrace = String.Empty
-        For intIndex = intFunctionCount - 1 To 0 Step -1
-            If Not strFunctions(intIndex) Is Nothing Then
-                If strStackTrace.Length = 0 Then
-                    strStackTrace = "Stack trace: " & strFunctions(intIndex)
-                Else
-                    strStackTrace &= "->" & strFunctions(intIndex)
-                End If
-            End If
-        Next intIndex
-
-        If Not strStackTrace Is Nothing AndAlso strFinalFile.Length > 0 Then
-            strStackTrace &= " in " & strFinalFile
-        End If
-
-        Return strStackTrace
-
-    End Function
 End Module
