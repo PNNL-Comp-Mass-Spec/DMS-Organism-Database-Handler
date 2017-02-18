@@ -227,9 +227,9 @@ Public Class frmExtractFromFlatfile
         RemoveHandler chkUseHeader.CheckedChanged, AddressOf chkUseHeader_CheckedChanged
 
         If Me.m_UseHeaderInfo = True Then
-            Me.chkUseHeader.CheckState = Windows.Forms.CheckState.Checked
+            Me.chkUseHeader.CheckState = System.Windows.Forms.CheckState.Checked
         Else
-            Me.chkUseHeader.CheckState = Windows.Forms.CheckState.Unchecked
+            Me.chkUseHeader.CheckState = System.Windows.Forms.CheckState.Unchecked
         End If
 
         AddHandler chkUseHeader.CheckedChanged, AddressOf chkUseHeader_CheckedChanged
@@ -247,7 +247,7 @@ Public Class frmExtractFromFlatfile
             r = .ShowDialog()
         End With
 
-        If r = Windows.Forms.DialogResult.OK Then
+        If r = System.Windows.Forms.DialogResult.OK Then
             filePath = openFrm.FileName
             Me.m_Extract.LoadFile(filePath, Chr(9), Me.m_UseHeaderInfo)
             Me.LoadRawFileListView()
@@ -271,7 +271,7 @@ Public Class frmExtractFromFlatfile
     Private Sub chkUseHeader_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkUseHeader.CheckedChanged
         Dim chk As System.Windows.Forms.CheckBox =
             DirectCast(sender, System.Windows.Forms.CheckBox)
-        If chk.CheckState = Windows.Forms.CheckState.Checked Then
+        If chk.CheckState = System.Windows.Forms.CheckState.Checked Then
             Me.m_UseHeaderInfo = True
         Else
             Me.m_UseHeaderInfo = False
@@ -392,7 +392,7 @@ Public Class frmExtractFromFlatfile
     End Sub
 
     Private Sub cboNamingAuthority_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cboNamingAuthority.SelectedIndexChanged
-        Dim cbo As System.Windows.Forms.ComboBox = DirectCast(sender, System.Windows.Forms.ComboBox)
+        Dim cbo = DirectCast(sender, System.Windows.Forms.ComboBox)
 
         If Me.lvwNewNames.SelectedItems.Count > 0 Then
             Me.m_Extract.ChangeAuthorityIDforGroup(Me.m_CurrentGroupID, CInt(cbo.SelectedValue))

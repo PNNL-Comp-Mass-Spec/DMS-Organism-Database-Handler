@@ -1,4 +1,5 @@
 Imports System.Collections.Generic
+Imports System.Windows.Forms
 
 Public Class clsBatchUploadFromFileList
 
@@ -63,11 +64,11 @@ Public Class clsBatchUploadFromFileList
 
         Me.m_BatchForm.FileCollection = Me.m_CurrentFileList
 
-        Dim r As System.Windows.Forms.DialogResult
+        Dim r As DialogResult
 
         r = Me.m_BatchForm.ShowDialog()
 
-        If r = Windows.Forms.DialogResult.OK Then
+        If r = DialogResult.OK Then
             fileCollection = Me.m_BatchForm.SelectedFilesCollection
             If Me.m_Uploader Is Nothing Then
                 Me.m_Uploader = New Protein_Uploader.clsPSUploadHandler(Me.m_PSConnectionString)

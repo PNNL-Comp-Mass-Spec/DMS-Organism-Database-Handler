@@ -1,4 +1,5 @@
 Imports System.Collections.Generic
+Imports System.Windows.Forms
 Imports Protein_Exporter.ExportProteinCollectionsIFC
 Imports Protein_Storage
 
@@ -221,7 +222,7 @@ Public Class clsPSUploadHandler
         Dim collectionID As Integer
         Dim mboxText As String
         Dim mboxHeader As String
-        Dim dboxResult As System.Windows.Forms.DialogResult
+        Dim dboxResult As DialogResult
         Dim errorText As String
         Dim errorLabel As String
         Dim errorCollection As ArrayList
@@ -315,19 +316,19 @@ Public Class clsPSUploadHandler
                     errorText = "Collection was in State '" & collectionState & "' and was not changed"
                     errorLabel = "Warning"
 
-                    dboxResult = System.Windows.Forms.MessageBox.Show(
+                    dboxResult = MessageBox.Show(
                         mboxText,
                         mboxHeader,
-                        Windows.Forms.MessageBoxButtons.YesNo,
-                        Windows.Forms.MessageBoxIcon.Stop,
-                        Windows.Forms.MessageBoxDefaultButton.Button2)
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Stop,
+                        MessageBoxDefaultButton.Button2)
                 Else
                     errorText = "Collections in State '" & collectionState & "' cannot be changed or deleted"
                     errorLabel = "Error"
-                    dboxResult = Windows.Forms.DialogResult.No
+                    dboxResult = DialogResult.No
                 End If
 
-                If dboxResult = Windows.Forms.DialogResult.No Then
+                If dboxResult = DialogResult.No Then
                     errorCollection = New ArrayList
                     errorCollection.Add(New ValidateFastaFile.ICustomValidation.udtErrorInfoExtended(
                         0, " N/A ", errorText, "", errorLabel))
@@ -335,10 +336,10 @@ Public Class clsPSUploadHandler
 
                 End If
             Else
-                dboxResult = Windows.Forms.DialogResult.Yes
+                dboxResult = DialogResult.Yes
             End If
 
-            If dboxResult = Windows.Forms.DialogResult.Yes Then
+            If dboxResult = DialogResult.Yes Then
                 tmpPS = Me.m_Importer.LoadProteinsForBatch(upInfo.FileInformation.FullName, upInfo.OrganismID, upInfo.AnnotationTypeID)
                 If Not tmpPS Is Nothing Then
                     If tmpPS.ProteinCount = 0 Then

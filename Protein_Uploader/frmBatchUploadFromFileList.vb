@@ -1,5 +1,7 @@
+Imports System.Windows.Forms
+
 Public Class frmBatchUploadFromFileList
-    Inherits System.Windows.Forms.Form
+    Inherits Form
 
     Private ReadOnly m_AnnotationTypeList As DataTable
     Private ReadOnly m_OrganismList As DataTable
@@ -11,9 +13,9 @@ Public Class frmBatchUploadFromFileList
 
 #Region " Windows Form Designer generated code "
 
-    Public Sub New( _
-        AuthorityList As DataTable, _
-        AnnotationTypeList As DataTable, _
+    Public Sub New(
+        AuthorityList As DataTable,
+        AnnotationTypeList As DataTable,
         OrganismList As DataTable)
 
         MyBase.New()
@@ -43,41 +45,41 @@ Public Class frmBatchUploadFromFileList
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    'Friend WithEvents lvwNewNames As System.Windows.Forms.ListView
-    Friend WithEvents cmdUploadFiles As System.Windows.Forms.Button
-    Friend WithEvents colFileName As System.Windows.Forms.ColumnHeader
-    Friend WithEvents colFilePath As System.Windows.Forms.ColumnHeader
-    Friend WithEvents colAnnType As System.Windows.Forms.ColumnHeader
-    Friend WithEvents cmdCheckAll As System.Windows.Forms.Button
-    Friend WithEvents colOrganism As System.Windows.Forms.ColumnHeader
-    Friend WithEvents cboAnnotationType As System.Windows.Forms.ComboBox
-    Friend WithEvents cmdUncheckAll As System.Windows.Forms.Button
-    Friend WithEvents lblAnnotationType As System.Windows.Forms.Label
-    Friend WithEvents lvwFiles As System.Windows.Forms.ListView
-    Friend WithEvents lblOrganismPicker As System.Windows.Forms.Label
-    Friend WithEvents cboOrganismPicker As System.Windows.Forms.ComboBox
-    Friend WithEvents txtFilePath As System.Windows.Forms.TextBox
+    'Friend WithEvents lvwNewNames As ListView
+    Friend WithEvents cmdUploadFiles As Button
+    Friend WithEvents colFileName As ColumnHeader
+    Friend WithEvents colFilePath As ColumnHeader
+    Friend WithEvents colAnnType As ColumnHeader
+    Friend WithEvents cmdCheckAll As Button
+    Friend WithEvents colOrganism As ColumnHeader
+    Friend WithEvents cboAnnotationType As ComboBox
+    Friend WithEvents cmdUncheckAll As Button
+    Friend WithEvents lblAnnotationType As Label
+    Friend WithEvents lvwFiles As ListView
+    Friend WithEvents lblOrganismPicker As Label
+    Friend WithEvents cboOrganismPicker As ComboBox
+    Friend WithEvents txtFilePath As TextBox
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.cmdUploadFiles = New System.Windows.Forms.Button()
-        Me.lblOrganismPicker = New System.Windows.Forms.Label()
-        Me.cboOrganismPicker = New System.Windows.Forms.ComboBox()
-        Me.lvwFiles = New System.Windows.Forms.ListView()
-        Me.colFileName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.colFilePath = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.colOrganism = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.colAnnType = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.cboAnnotationType = New System.Windows.Forms.ComboBox()
-        Me.lblAnnotationType = New System.Windows.Forms.Label()
-        Me.cmdCheckAll = New System.Windows.Forms.Button()
-        Me.cmdUncheckAll = New System.Windows.Forms.Button()
-        Me.txtFilePath = New System.Windows.Forms.TextBox()
+        Me.cmdUploadFiles = New Button()
+        Me.lblOrganismPicker = New Label()
+        Me.cboOrganismPicker = New ComboBox()
+        Me.lvwFiles = New ListView()
+        Me.colFileName = CType(New ColumnHeader(), ColumnHeader)
+        Me.colFilePath = CType(New ColumnHeader(), ColumnHeader)
+        Me.colOrganism = CType(New ColumnHeader(), ColumnHeader)
+        Me.colAnnType = CType(New ColumnHeader(), ColumnHeader)
+        Me.cboAnnotationType = New ComboBox()
+        Me.lblAnnotationType = New Label()
+        Me.cmdCheckAll = New Button()
+        Me.cmdUncheckAll = New Button()
+        Me.txtFilePath = New TextBox()
         Me.SuspendLayout()
         '
         'cmdUploadFiles
         '
-        Me.cmdUploadFiles.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdUploadFiles.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.cmdUploadFiles.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.cmdUploadFiles.Anchor = CType((AnchorStyles.Bottom Or AnchorStyles.Right), AnchorStyles)
+        Me.cmdUploadFiles.DialogResult = DialogResult.OK
+        Me.cmdUploadFiles.FlatStyle = FlatStyle.System
         Me.cmdUploadFiles.Location = New System.Drawing.Point(587, 630)
         Me.cmdUploadFiles.Name = "cmdUploadFiles"
         Me.cmdUploadFiles.Size = New System.Drawing.Size(221, 27)
@@ -86,7 +88,7 @@ Public Class frmBatchUploadFromFileList
         '
         'lblOrganismPicker
         '
-        Me.lblOrganismPicker.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.lblOrganismPicker.Anchor = CType((AnchorStyles.Bottom Or AnchorStyles.Left), AnchorStyles)
         Me.lblOrganismPicker.Location = New System.Drawing.Point(14, 569)
         Me.lblOrganismPicker.Name = "lblOrganismPicker"
         Me.lblOrganismPicker.Size = New System.Drawing.Size(319, 22)
@@ -95,8 +97,8 @@ Public Class frmBatchUploadFromFileList
         '
         'cboOrganismPicker
         '
-        Me.cboOrganismPicker.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cboOrganismPicker.Anchor = CType(((AnchorStyles.Bottom Or AnchorStyles.Left) _
+            Or AnchorStyles.Right), AnchorStyles)
         Me.cboOrganismPicker.Location = New System.Drawing.Point(14, 589)
         Me.cboOrganismPicker.Name = "cboOrganismPicker"
         Me.cboOrganismPicker.Size = New System.Drawing.Size(385, 25)
@@ -104,21 +106,21 @@ Public Class frmBatchUploadFromFileList
         '
         'lvwFiles
         '
-        Me.lvwFiles.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lvwFiles.Anchor = CType((((AnchorStyles.Top Or AnchorStyles.Bottom) _
+            Or AnchorStyles.Left) _
+            Or AnchorStyles.Right), AnchorStyles)
         Me.lvwFiles.CheckBoxes = True
-        Me.lvwFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colFileName, Me.colFilePath, Me.colOrganism, Me.colAnnType})
+        Me.lvwFiles.Columns.AddRange(New ColumnHeader() {Me.colFileName, Me.colFilePath, Me.colOrganism, Me.colAnnType})
         Me.lvwFiles.FullRowSelect = True
         Me.lvwFiles.GridLines = True
         Me.lvwFiles.HideSelection = False
         Me.lvwFiles.Location = New System.Drawing.Point(1, 2)
         Me.lvwFiles.Name = "lvwFiles"
         Me.lvwFiles.Size = New System.Drawing.Size(820, 555)
-        Me.lvwFiles.Sorting = System.Windows.Forms.SortOrder.Ascending
+        Me.lvwFiles.Sorting = SortOrder.Ascending
         Me.lvwFiles.TabIndex = 19
         Me.lvwFiles.UseCompatibleStateImageBehavior = False
-        Me.lvwFiles.View = System.Windows.Forms.View.Details
+        Me.lvwFiles.View = View.Details
         '
         'colFileName
         '
@@ -142,7 +144,7 @@ Public Class frmBatchUploadFromFileList
         '
         'cboAnnotationType
         '
-        Me.cboAnnotationType.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cboAnnotationType.Anchor = CType((AnchorStyles.Bottom Or AnchorStyles.Right), AnchorStyles)
         Me.cboAnnotationType.Location = New System.Drawing.Point(419, 589)
         Me.cboAnnotationType.Name = "cboAnnotationType"
         Me.cboAnnotationType.Size = New System.Drawing.Size(392, 25)
@@ -150,7 +152,7 @@ Public Class frmBatchUploadFromFileList
         '
         'lblAnnotationType
         '
-        Me.lblAnnotationType.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lblAnnotationType.Anchor = CType((AnchorStyles.Bottom Or AnchorStyles.Right), AnchorStyles)
         Me.lblAnnotationType.Location = New System.Drawing.Point(422, 569)
         Me.lblAnnotationType.Name = "lblAnnotationType"
         Me.lblAnnotationType.Size = New System.Drawing.Size(294, 22)
@@ -159,8 +161,8 @@ Public Class frmBatchUploadFromFileList
         '
         'cmdCheckAll
         '
-        Me.cmdCheckAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.cmdCheckAll.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.cmdCheckAll.Anchor = CType((AnchorStyles.Bottom Or AnchorStyles.Left), AnchorStyles)
+        Me.cmdCheckAll.FlatStyle = FlatStyle.System
         Me.cmdCheckAll.Location = New System.Drawing.Point(14, 630)
         Me.cmdCheckAll.Name = "cmdCheckAll"
         Me.cmdCheckAll.Size = New System.Drawing.Size(140, 27)
@@ -169,8 +171,8 @@ Public Class frmBatchUploadFromFileList
         '
         'cmdUncheckAll
         '
-        Me.cmdUncheckAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.cmdUncheckAll.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.cmdUncheckAll.Anchor = CType((AnchorStyles.Bottom Or AnchorStyles.Left), AnchorStyles)
+        Me.cmdUncheckAll.FlatStyle = FlatStyle.System
         Me.cmdUncheckAll.Location = New System.Drawing.Point(165, 630)
         Me.cmdUncheckAll.Name = "cmdUncheckAll"
         Me.cmdUncheckAll.Size = New System.Drawing.Size(140, 27)
@@ -377,7 +379,7 @@ Public Class frmBatchUploadFromFileList
 
     Sub PopulateListView()
         Dim fli As clsBatchUploadFromFileList.FileListInfo
-        Dim li As System.Windows.Forms.ListViewItem
+        Dim li As ListViewItem
         Dim foundRows() As DataRow
 
         RemoveHandler lvwFiles.SelectedIndexChanged, AddressOf lvwFiles_SelectedIndexChanged
@@ -385,7 +387,7 @@ Public Class frmBatchUploadFromFileList
         If Me.m_FileCollection.Count > 0 Then
             Me.lvwFiles.BeginUpdate()
             For Each fli In Me.m_FileCollection.Values
-                li = New System.Windows.Forms.ListViewItem
+                li = New ListViewItem
                 li.Text = fli.FileName
                 li.SubItems.Add(fli.FullFilePath)
                 li.SubItems.Add(fli.OrganismName)
@@ -412,7 +414,7 @@ Public Class frmBatchUploadFromFileList
             Me.m_SelectedFilesCollection.Clear()
         End If
 
-        Dim li As System.Windows.Forms.ListViewItem
+        Dim li As ListViewItem
 
         For Each li In Me.lvwFiles.CheckedItems
             Me.m_SelectedFilesCollection.Add(
@@ -428,33 +430,33 @@ Public Class frmBatchUploadFromFileList
 
         Dim selectedCount As Integer = Me.BuildSelectedFilesList()
         If selectedCount > 0 Then
-            Me.DialogResult = Windows.Forms.DialogResult.OK
+            Me.DialogResult = DialogResult.OK
         End If
     End Sub
 
     Private Sub cmdCheckAll_Click(sender As System.Object, e As System.EventArgs) Handles cmdCheckAll.Click
-        Dim li As System.Windows.Forms.ListViewItem
+        Dim li As ListViewItem
         For Each li In Me.lvwFiles.Items
             li.Checked = True
         Next
     End Sub
 
     Private Sub cmdUncheckAll_Click(sender As System.Object, e As System.EventArgs) Handles cmdUncheckAll.Click
-        Dim li As System.Windows.Forms.ListViewItem
+        Dim li As ListViewItem
         For Each li In Me.lvwFiles.Items
             li.Checked = False
         Next
     End Sub
 
     Private Sub cboOrganismPicker_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cboOrganismPicker.SelectedIndexChanged
-        Dim cbo As System.Windows.Forms.ComboBox = DirectCast(sender, System.Windows.Forms.ComboBox)
-        Dim li As System.Windows.Forms.ListViewItem
+        Dim cbo As ComboBox = DirectCast(sender, ComboBox)
+        Dim li As ListViewItem
         Dim fli As clsBatchUploadFromFileList.FileListInfo
 
         If Me.lvwFiles.SelectedItems.Count > 0 Then
             For Each li In Me.lvwFiles.SelectedItems
                 li.SubItems(2).Text = cbo.Text
-                fli = DirectCast(Me.m_FileCollection.Item(li.Text), 
+                fli = DirectCast(Me.m_FileCollection.Item(li.Text),
                     clsBatchUploadFromFileList.FileListInfo)
                 fli.NamingAuthorityID = CInt(cbo.SelectedValue)
                 Me.m_FileCollection.Item(li.Text) = fli
@@ -463,14 +465,14 @@ Public Class frmBatchUploadFromFileList
     End Sub
 
     Private Sub cboAnnotationType_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cboAnnotationType.SelectedIndexChanged
-        Dim cbo As System.Windows.Forms.ComboBox = DirectCast(sender, System.Windows.Forms.ComboBox)
-        Dim li As System.Windows.Forms.ListViewItem
+        Dim cbo As ComboBox = DirectCast(sender, ComboBox)
+        Dim li As ListViewItem
         Dim fli As clsBatchUploadFromFileList.FileListInfo
 
         If Me.lvwFiles.SelectedItems.Count > 0 Then
             For Each li In Me.lvwFiles.SelectedItems
                 li.SubItems(3).Text = cbo.Text
-                fli = DirectCast(Me.m_FileCollection.Item(li.Text), 
+                fli = DirectCast(Me.m_FileCollection.Item(li.Text),
                     clsBatchUploadFromFileList.FileListInfo)
                 fli.AnnotationTypeID = CInt(cbo.SelectedValue)
                 Me.m_FileCollection.Item(li.Text) = fli
@@ -480,7 +482,7 @@ Public Class frmBatchUploadFromFileList
 
     Private Sub lvwFiles_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lvwFiles.SelectedIndexChanged
         Dim fli As clsBatchUploadFromFileList.FileListInfo
-        Dim li As System.Windows.Forms.ListViewItem
+        Dim li As ListViewItem
 
         RemoveHandler cboAnnotationType.SelectedIndexChanged, AddressOf cboAnnotationType_SelectedIndexChanged
         RemoveHandler cboOrganismPicker.SelectedIndexChanged, AddressOf cboOrganismPicker_SelectedIndexChanged

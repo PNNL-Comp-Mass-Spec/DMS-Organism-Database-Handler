@@ -1,4 +1,7 @@
 Option Strict On
+
+Imports System.Windows.Forms
+
 Public Interface IImportProteins
 
     Function LoadProteins(filePath As String,
@@ -121,7 +124,7 @@ Public Class clsImportHandler
             Catch ex As Exception
                 ' Ignore errors here
             End Try
-            Windows.Forms.MessageBox.Show("GetProteinEntries returned an error after loading " & intProteinsLoaded.ToString & " proteins: " & strErrorMessage, "Error", Windows.Forms.MessageBoxButtons.OK, Windows.Forms.MessageBoxIcon.Error)
+            MessageBox.Show("GetProteinEntries returned an error after loading " & intProteinsLoaded.ToString & " proteins: " & strErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
 
             fastaContents.ClearProteinEntries()
         End If
