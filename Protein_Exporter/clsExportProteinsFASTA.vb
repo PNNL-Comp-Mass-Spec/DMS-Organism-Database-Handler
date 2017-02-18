@@ -23,7 +23,7 @@ Public Class clsExportProteinsFASTA
 
         Dim errorMessage As String = String.Empty
 
-        If Not PRISM.Files.clsFileTools.ValidateFreeDiskSpace(destinationPath, 150, errorMessage) Then
+        If Not PRISM.clsFileTools.ValidateFreeDiskSpace(destinationPath, 150, errorMessage) Then
             If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
             Throw New System.IO.IOException("Unable to save FASTA file at " & destinationPath & ". " & errorMessage)
         End If
@@ -42,7 +42,7 @@ Public Class clsExportProteinsFASTA
         Dim tmpPC As Protein_Storage.IProteinStorageEntry
         Dim tmpAltNames As String = String.Empty
 
-        If Not PRISM.Files.clsFileTools.ValidateFreeDiskSpace(destinationPath, 150, errorMessage) Then
+        If Not PRISM.clsFileTools.ValidateFreeDiskSpace(destinationPath, 150, errorMessage) Then
             If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
             Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
         End If
@@ -175,7 +175,7 @@ Public Class clsExportProteinsFASTA
         Dim EventTriggerThresh As Integer
 
         Dim errorMessage As String = String.Empty
-        If Not PRISM.Files.clsFileTools.ValidateFreeDiskSpace(destinationPath, 150, errorMessage) Then
+        If Not PRISM.clsFileTools.ValidateFreeDiskSpace(destinationPath, 150, errorMessage) Then
             If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
             Throw New System.IO.IOException("Unable to append to FASTA file at " & destinationPath & ". " & errorMessage)
         End If
