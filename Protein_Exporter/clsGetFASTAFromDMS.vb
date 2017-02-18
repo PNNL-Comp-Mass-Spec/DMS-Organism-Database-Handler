@@ -1,8 +1,11 @@
 Option Strict On
 
 Imports System.IO
+Imports PRISM
 
 Public Class clsGetFASTAFromDMS
+    Inherits clsEventNotifier
+
     Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS
 
     Public Const LOCK_FILE_PROGRESS_TEXT As String = "Lockfile"
@@ -22,7 +25,7 @@ Public Class clsGetFASTAFromDMS
     Protected m_SHA1Provider As System.Security.Cryptography.SHA1Managed
     Protected m_WaitingForLockFile As Boolean = False
 
-    Protected WithEvents m_FileTools As PRISM.Files.clsFileTools
+    Protected WithEvents m_FileTools As PRISM.clsFileTools
     Protected m_LastLockQueueWaitTimeLog As System.DateTime
 
     Public Sub New(ProteinStorageConnectionString As String)
@@ -30,7 +33,8 @@ Public Class clsGetFASTAFromDMS
         m_PSConnectionString = ProteinStorageConnectionString
         ClassSelector(ProteinStorageConnectionString, ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta, ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward)
         m_SHA1Provider = New System.Security.Cryptography.SHA1Managed
-        m_FileTools = New PRISM.Files.clsFileTools
+        m_FileTools = New PRISM.clsFileTools
+        RegisterEvents(m_FileTools)
     End Sub
 
     Public ReadOnly Property ExporterComponent() As clsGetFASTAFromDMSForward ' Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.ExporterComponent
@@ -210,7 +214,9 @@ Public Class clsGetFASTAFromDMS
         Dim fiSourceFile = New FileInfo(legacyStaticFilePath)
 
         If Not fiSourceFile.Exists Then
-            Throw New System.Exception("Legacy fasta file not found: " & legacyStaticFilePath & " (path comes from V_Legacy_Static_File_Locations)")
+            Dim msg = "Legacy fasta file not found: " & legacyStaticFilePath & " (path comes from V_Legacy_Static_File_Locations)"
+            OnErrorEvent(msg)
+            Throw New System.Exception(msg)
         End If
 
         ' Look for file LegacyFASTAFileName in folder ExportPath
@@ -242,7 +248,9 @@ Public Class clsGetFASTAFromDMS
         ' We need to create a lock file, then copy the .fasta file locally
 
         If String.IsNullOrEmpty(legacyStaticFilePath) Then
-            Throw New System.Exception("Storage path for " & LegacyFASTAFileName & " is empty according to V_Legacy_Static_File_Locations; unable to continue")
+            Dim msg = "Storage path for " & LegacyFASTAFileName & " is empty according to V_Legacy_Static_File_Locations; unable to continue"
+            OnErrorEvent(msg)
+            Throw New System.Exception(msg)
         End If
 
         ' Make sure we have enough disk free space
@@ -250,9 +258,11 @@ Public Class clsGetFASTAFromDMS
         Dim errorMessage As String = String.Empty
         Dim sourceFileSizeMB As Double = fiSourceFile.Length / 1024.0 / 1024.0
 
-        If Not PRISM.Files.clsFileTools.ValidateFreeDiskSpace(Path.Combine(ExportPath, "TargetFile.tmp"), sourceFileSizeMB, 150, errorMessage) Then
+        If Not PRISM.clsFileTools.ValidateFreeDiskSpace(Path.Combine(ExportPath, "TargetFile.tmp"), sourceFileSizeMB, 150, errorMessage) Then
             If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
-            Throw New IOException("Unable to copy legacy FASTA file to " & ExportPath & ". " & errorMessage)
+            Dim msg = "Unable to copy legacy FASTA file to " & ExportPath & ". " & errorMessage
+            OnErrorEvent(msg)
+            Throw New IOException(msg)
         End If
 
         ' If we get here, then finalFileName = "" or the file is not present or the LockFile is present
@@ -262,7 +272,9 @@ Public Class clsGetFASTAFromDMS
 
         If lockStream Is Nothing Then
             ' Unable to create a lock stream; an exception has likely already been thrown
-            Throw New System.Exception("Unable to create lock file required to export " & LegacyFASTAFileName)
+            Dim msg = "Unable to create lock file required to export " & LegacyFASTAFileName
+            OnErrorEvent(msg)
+            Throw New System.Exception(msg)
         End If
 
         If Not fiFinalFile Is Nothing Then
@@ -297,7 +309,7 @@ Public Class clsGetFASTAFromDMS
         End If
 
         m_LastLockQueueWaitTimeLog = System.DateTime.UtcNow
-        m_FileTools.CopyFileUsingLocks(fiSourceFile, InterimFastaFI.FullName, "OrgDBHandler", Overwrite:=False)
+        m_FileTools.CopyFileUsingLocks(fiSourceFile, InterimFastaFI.FullName, "OrgDBHandler", overWrite:=False)
 
         ' Now that the copy is done, rename the file to the final name
         fiFinalFile.Refresh()
@@ -437,7 +449,9 @@ Public Class clsGetFASTAFromDMS
 
         If lockStream Is Nothing Then
             ' Unable to create a lock stream; an exception has likely already been thrown
-            Throw New System.Exception("Unable to create lock file required to export " & finalFileName)
+            Dim msg = "Unable to create lock file required to export " & finalFileName
+            OnErrorEvent(msg)
+            Throw New System.Exception(msg)
         End If
 
         If Not finalFileFI Is Nothing Then
@@ -488,7 +502,9 @@ Public Class clsGetFASTAFromDMS
             Dim Archived_File_ID As Integer
 
             If String.IsNullOrEmpty(SHA1) Then
-                Throw New Exception("m_Getter.ExportFASTAFile returned a blank string for the Sha1 authentication hash; this likely represents a problem")
+                Dim msg = "m_Getter.ExportFASTAFile returned a blank string for the Sha1 authentication hash; this likely represents a problem"
+                OnErrorEvent(msg)
+                Throw New Exception(msg)
             End If
 
             counter = 0
@@ -504,7 +520,9 @@ Public Class clsGetFASTAFromDMS
 
                     If Archived_File_ID = 0 Then
                         ' Error making an entry in T_Archived_Output_Files; abort
-                        Throw New Exception("Error archiving collection; Archived_File_ID = 0")
+                        Dim msg = "Error archiving collection; Archived_File_ID = 0"
+                        OnErrorEvent(msg)
+                        Throw New Exception(msg)
                     End If
 
                 Else
@@ -618,7 +636,10 @@ Public Class clsGetFASTAFromDMS
                 End If
 
                 ' Exception: Unable to create Lockfile required to export Protein collection ...
-                Throw New System.Exception("Unable to create " & LOCK_FILE_PROGRESS_TEXT & " required to export " & ProteinCollectionListOrLegacyFastaFileName & "; tried 4 times without success")
+                Dim msg = "Unable to create " & LOCK_FILE_PROGRESS_TEXT & " required to export " & ProteinCollectionListOrLegacyFastaFileName &
+                    "; tried 4 times without success"
+                OnErrorEvent(msg)
+                Throw New System.Exception(msg)
             End If
         Loop
 
@@ -672,7 +693,7 @@ Public Class clsGetFASTAFromDMS
         Try
             File.Delete(strFilePath)
         Catch ex As Exception
-            Console.WriteLine("Error deleting file: " & ex.Message)
+            OnErrorEvent("Error deleting file: " & ex.Message, ex)
         End Try
     End Sub
 
@@ -723,8 +744,9 @@ Public Class clsGetFASTAFromDMS
         End If
         legacyStaticFilelocations = Me.m_TableGetter.GetTable(legacyLocationsSQL)
         If legacyStaticFilelocations.Rows.Count = 0 Then
-            Throw New System.Exception("Legacy fasta file " & LegacyFASTAFileName & " not found in V_Legacy_Static_File_Locations; unable to continue")
-            Return False
+            Dim msg = "Legacy fasta file " & LegacyFASTAFileName & " not found in V_Legacy_Static_File_Locations; unable to continue"
+            OnErrorEvent(msg)
+            Throw New System.Exception(msg)
         End If
 
         LegacyStaticFilePathOutput = legacyStaticFilelocations.Rows(0).Item("Full_Path").ToString
@@ -755,11 +777,9 @@ Public Class clsGetFASTAFromDMS
 
     Protected Sub UpdateHashValidationFile(ByRef fiHashValidationFile As FileInfo)
 
-        Dim swOutFile As StreamWriter
-        swOutFile = New StreamWriter(fiHashValidationFile.Open(IO.FileMode.Create))
-
-        swOutFile.WriteLine("Hash validated " & System.DateTime.Now.ToString)
-        swOutFile.Close()
+        Using swOutFile = New StreamWriter(fiHashValidationFile.Open(IO.FileMode.Create))
+            swOutFile.WriteLine("Hash validated " & System.DateTime.Now.ToString)
+        End Using
 
     End Sub
 
@@ -837,6 +857,7 @@ Public Class clsGetFASTAFromDMS
         End If
         Me.m_ArchiveCollectionList.Add(Path.GetFileName(FullOutputPath))
         Me.m_FinalOutputPath = FullOutputPath
+        OnDebugEvent("Saved fasta file to " + FullOutputPath)
     End Sub
 
     ''' <summary>
