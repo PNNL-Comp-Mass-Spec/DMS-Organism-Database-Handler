@@ -1,5 +1,6 @@
 Option Strict On
 
+Imports System.Linq
 Imports System.IO
 Imports PRISM
 
@@ -491,6 +492,8 @@ Public Class clsGetFASTAFromDMS
         End If
 
         Try
+            OnDebugEvent("Retrieving fasta file for protein collections " & String.Join(","c, ProteinCollectionNameList.ToArray()))
+
             ' Export the fasta file
             SHA1 = Me.m_Getter.ExportFASTAFile(
                ProteinCollectionNameList,
@@ -551,6 +554,8 @@ Public Class clsGetFASTAFromDMS
 
             InterimFastaFI.MoveTo(finalFileFI.FullName)
 
+            OnStatusEvent("Created fasta file " + finalFileFI.FullName)
+
             ' Update the hash validation file
             UpdateHashValidationFile(finalFileFI.FullName, SHA1)
 
@@ -591,7 +596,9 @@ Public Class clsGetFASTAFromDMS
                     Me.m_WaitingForLockFile = True
 
                     Dim LockTimeoutTime As DateTime = lockFi.LastWriteTimeUtc.AddMinutes(60)
-                    OnFileGenerationProgressUpdate(LOCK_FILE_PROGRESS_TEXT & " found; waiting until it is deleted or until " & LockTimeoutTime.ToLocalTime().ToString() & ": " & lockFi.Name, 0)
+                    Dim msg = LOCK_FILE_PROGRESS_TEXT & " found; waiting until it is deleted or until " & LockTimeoutTime.ToLocalTime().ToString() & ": " & lockFi.Name
+                    OnDebugEvent(msg)
+                    OnFileGenerationProgressUpdate(msg, 0)
 
                     While lockFi.Exists AndAlso System.DateTime.UtcNow < LockTimeoutTime
                         System.Threading.Thread.Sleep(5000)
@@ -603,7 +610,9 @@ Public Class clsGetFASTAFromDMS
 
                     lockFi.Refresh()
                     If lockFi.Exists Then
-                        OnFileGenerationProgressUpdate(LOCK_FILE_PROGRESS_TEXT & " still exists; assuming another process timed out; thus, now deleting file " & lockFi.Name, 0)
+                        Dim warningMsg = LOCK_FILE_PROGRESS_TEXT & " still exists; assuming another process timed out; thus, now deleting file " & lockFi.Name
+                        OnWarningEvent(warningMsg)
+                        OnFileGenerationProgressUpdate(warningMsg, 0)
                         lockFi.Delete()
                     End If
 
@@ -622,7 +631,9 @@ Public Class clsGetFASTAFromDMS
                 Exit Do
 
             Catch ex As Exception
-                OnFileGenerationProgressUpdate("Exception while monitoring " & LOCK_FILE_PROGRESS_TEXT & " " & lockFi.FullName & ": " & ex.Message, 0)
+                Dim msg = "Exception while monitoring " & LOCK_FILE_PROGRESS_TEXT & " " & lockFi.FullName & ": " & ex.Message
+                OnErrorEvent(msg)
+                OnFileGenerationProgressUpdate(msg, 0)
             End Try
 
             ' Something went wrong; wait for 15 seconds then try again
@@ -813,6 +824,7 @@ Public Class clsGetFASTAFromDMS
 
                 If fiHashValidationFile.Exists And Not blnForceRegenerateHash Then
                     If System.DateTime.UtcNow.Subtract(fiHashValidationFile.LastWriteTimeUtc).TotalHours <= intRetryHoldoffHours Then
+                        OnDebugEvent("Validated hash validation file (recently verified): " + fiHashValidationFile.FullName)
                         ' Hash check file exists, and the file is less than 48 hours old
                         Return True
                     End If
@@ -833,13 +845,19 @@ Public Class clsGetFASTAFromDMS
 
                         ' Update strExpectedHash
                         strExpectedHash = strSHA1
+
+                        OnStatusEvent("Re-exported protein collection and created new hash file due to SHA1 hash mismatch: " + fiHashValidationFile.FullName)
+                    Else
+                        OnDebugEvent("Validated hash validation file (re-verified): " + fiHashValidationFile.FullName)
                     End If
 
                     Return True
                 End If
             End If
         Catch ex As Exception
-            OnFileGenerationProgressUpdate("Exception while re-computing the hash of the fasta file: " & ex.Message, 0)
+            Dim msg = "Exception while re-computing the hash of the fasta file: " & ex.Message
+            OnErrorEvent(msg, ex)
+            OnFileGenerationProgressUpdate(msg, 0)
         End Try
 
         Return False
@@ -885,7 +903,9 @@ Public Class clsGetFASTAFromDMS
                 strServers = m_FileTools.GetServerShareBase(SourceFilePath)
             End If
 
-            OnFileGenerationProgressUpdate("Waiting for lockfile queue on " & strServers & " to fall below threshold", 0)
+            Dim msg = "Waiting for lockfile queue on " & strServers & " to fall below threshold"
+            OnDebugEvent(msg)
+            OnFileGenerationProgressUpdate(msg, 0)
         End If
     End Sub
 
