@@ -4,28 +4,28 @@ Imports Protein_Exporter.ExportProteinCollectionsIFC
 
 Public Class clsGetFASTAFromDMSForward
 
-	Protected m_TableGrabber As TableManipulationBase.IGetSQLData
+    Protected m_TableGrabber As TableManipulationBase.IGetSQLData
     Protected WithEvents m_fileDumper As IExportProteins
-	Protected m_AllCollections As Hashtable
-	Protected m_OrganismList As Hashtable
+    Protected m_AllCollections As Hashtable
+    Protected m_OrganismList As Hashtable
 
-	Protected m_CurrentFullOutputPath As String
-	Friend m_CurrentFileProteinCount As Integer
-	Protected m_CurrentArchiveFileName As String
+    Protected m_CurrentFullOutputPath As String
+    Friend m_CurrentFileProteinCount As Integer
+    Protected m_CurrentArchiveFileName As String
 
-	Protected m_PSC As Protein_Storage.IProteinStorage
-	Protected m_PSEntry As Protein_Storage.IProteinStorageEntry
+    Protected m_PSC As Protein_Storage.IProteinStorage
+    Protected m_PSEntry As Protein_Storage.IProteinStorageEntry
 
 
-	Protected m_CollectionsCache As DataTable
-	Protected m_OrganismCache As DataTable
-	Protected m_CollectionCountsCache As DataTable
+    Protected m_CollectionsCache As DataTable
+    Protected m_OrganismCache As DataTable
+    Protected m_CollectionCountsCache As DataTable
 
-	Protected m_Naming_Suffix As String = "_forward"
-	Protected m_Extension As String = ""
+    Protected m_Naming_Suffix As String = "_forward"
+    Protected m_Extension As String = ""
 
-	Protected m_RijndaelDecryption As clsRijndaelEncryptionHandler
-	'Protected m_SHA1Provider As System.Security.Cryptography.SHA1Managed
+    Protected m_RijndaelDecryption As clsRijndaelEncryptionHandler
+    'Protected m_SHA1Provider As System.Security.Cryptography.SHA1Managed
 
 
     Public Sub New(

@@ -50,8 +50,8 @@ Public Class clsRijndaelEncryptionHandler
     Const INIT_VECTOR As String = "@3k8573j4083j410"
     Const KEY_SIZE As Integer = 192
     Private m_passPhrase As String
-	'Private m_Password As PasswordDeriveBytes
-	Private m_Password As Rfc2898DeriveBytes
+    'Private m_Password As PasswordDeriveBytes
+    Private m_Password As Rfc2898DeriveBytes
 
     Private m_SymmetricKey As RijndaelManaged
     Private m_Hashgen As SHA1Managed
