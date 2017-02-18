@@ -2,13 +2,13 @@ Option Strict On
 Imports Protein_Exporter
 
 Module modMain
-    Public Const PROGRAM_DATE As String = "November 24, 2015"
+    Public Const PROGRAM_DATE As String = "February 17, 2017"
 
     Const m_DebugLevel As Integer = 4
     Const FASTA_GEN_TIMEOUT_INTERVAL_MINUTES As Integer = 70
     Const DEFAULT_COLLECTION_OPTIONS As String = "seq_direction=forward,filetype=fasta"
 
-    Private WithEvents m_FastaTools As ExportProteinCollectionsIFC.IGetFASTAFromDMS
+    Private WithEvents m_FastaTools As clsGetFASTAFromDMS
 
     Private m_FastaToolsCnStr As String = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
     Private m_message As String
@@ -26,6 +26,42 @@ Module modMain
     Private mLogProteinFileDetails As Boolean
 
 #Region "Event handlers"
+
+    Private Sub m_FastaTools_DebugEvent(statusMessage As String) Handles m_FastaTools.DebugEvent
+        Console.ForegroundColor = ConsoleColor.DarkGray
+        Console.WriteLine("  " & statusMessage)
+        Console.ResetColor()
+    End Sub
+
+    Private Sub m_FastaTools_ErrorEvent(errorMessage As String, ex As Exception) Handles m_FastaTools.ErrorEvent
+
+        Dim formattedError As String
+        If ex Is Nothing OrElse errorMessage.EndsWith(ex.Message) Then
+            formattedError = errorMessage
+        Else
+            formattedError = errorMessage + ": " + ex.Message
+        End If
+        Console.ForegroundColor = ConsoleColor.Red
+        Console.WriteLine(formattedError)
+
+        If ex IsNot Nothing Then
+            Console.ForegroundColor = ConsoleColor.Cyan
+            Console.WriteLine(PRISM.Utilities.GetExceptionStackTraceMultiLine(ex))
+        End If
+        Console.ResetColor()
+
+    End Sub
+
+    Private Sub m_FastaTools_StatusEvent(strMessage As String) Handles m_FastaTools.StatusEvent
+        Console.WriteLine(strMessage)
+    End Sub
+
+    Private Sub m_FastaTools_WarningEvent(warningMessage As String) Handles m_FastaTools.WarningEvent
+        Console.ForegroundColor = ConsoleColor.Yellow
+        Console.WriteLine(warningMessage)
+        Console.ResetColor()
+    End Sub
+
     Private Sub m_FastaTools_FileGenerationStarted(taskMsg As String) Handles m_FastaTools.FileGenerationStarted
     End Sub
 
