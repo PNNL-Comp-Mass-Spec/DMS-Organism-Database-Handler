@@ -153,8 +153,6 @@ Public Class clsGetFASTAFromDMSForward
                     collectionPassphrases.Add(nameString, passPhraseTable.Rows(0).Item("Passphrase").ToString)
                 Else
                     Throw New Exception("User " & user_ID & " does not have access to the encrypted collection '" & nameString & "'")
-                    Me.OnExportComplete()
-                    Exit Function
                 End If
             End If
 
@@ -308,7 +306,7 @@ Public Class clsGetFASTAFromDMSForward
 
             proteinCollectionsExported += 1
         Next
-        OnExportComplete()
+        OnExportComplete(tmpOutputPath)
 
         Dim tmpFI = New System.IO.FileInfo(tmpOutputPath)
 
@@ -362,7 +360,7 @@ Public Class clsGetFASTAFromDMSForward
         Dim SHA1 As String
         SHA1 = Me.m_fileDumper.Export(New DataTable, Me.m_CurrentFullOutputPath)
 
-        Me.OnExportComplete()
+        Me.OnExportComplete(m_CurrentFullOutputPath)
 
         Return SHA1
 
@@ -537,8 +535,8 @@ Public Class clsGetFASTAFromDMSForward
         RaiseEvent FileGenerationProgress(statusMsg, fractionDone)
     End Sub
 
-	Protected Sub OnExportComplete()
-		RaiseEvent FileGenerationCompleted(Me.FullOutputPath)
-	End Sub
+    Protected Sub OnExportComplete(outputFilePath As String)
+        RaiseEvent FileGenerationCompleted(outputFilePath)
+    End Sub
 
 End Class
