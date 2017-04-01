@@ -16,6 +16,7 @@ Public Class clsExportProteinsXTFASTA
       Proteins As Protein_Storage.IProteinStorage,
       ByRef destinationPath As String) As String
 
+        Const REQUIRED_SIZE_MB = 150
 
         Dim buffer(HEADER_STRING.Length) As Byte
 
@@ -23,142 +24,43 @@ Public Class clsExportProteinsXTFASTA
 
         ReDim Preserve buffer(255)
 
+        Dim currentFreeSpaceBytes As Int64
         Dim errorMessage As String = String.Empty
-        If Not PRISM.clsFileTools.ValidateFreeDiskSpace(destinationPath, 150, errorMessage) Then
+
+        Dim success = PRISMWin.clsDiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
+        If Not success Then
+            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsDiskInfo.GetDiskFreeSpac returned a blank error message"
+            Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
+        End If
+
+        If Not PRISM.clsFileTools.ValidateFreeDiskSpace(destinationPath, REQUIRED_SIZE_MB, currentFreeSpaceBytes, errorMessage) Then
             If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
             Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
         End If
 
-        Dim bw = New System.IO.BinaryWriter(IO.File.OpenWrite(destinationPath))
+        Using bw = New System.IO.BinaryWriter(IO.File.OpenWrite(destinationPath))
 
-        bw.BaseStream.Seek(0, IO.SeekOrigin.Begin)
+            bw.BaseStream.Seek(0, IO.SeekOrigin.Begin)
 
-        Dim proteinLength As Integer
+            Dim proteinLength As Integer
 
-        Dim tmpSeq As String
-        Dim tmpName As String
-        Dim tmpPC As Protein_Storage.IProteinStorageEntry
-        Dim tmpNum As Int32
+            Dim tmpSeq As String
+            Dim tmpName As String
+            Dim tmpPC As Protein_Storage.IProteinStorageEntry
+            Dim tmpNum As Int32
 
-        Me.OnExportStart("Writing to X!Tandem formatted FASTA File")
+            Me.OnExportStart("Writing to X!Tandem formatted FASTA File")
 
-        Dim counterMax As Integer = Proteins.ProteinCount
-        Dim counter As Integer
+            Dim counterMax As Integer = Proteins.ProteinCount
+            Dim counter As Integer
 
-        Dim proteinArray As New SortedSet(Of String)
+            Dim proteinArray As New SortedSet(Of String)
 
-        Dim proteinEnum = Proteins.GetEnumerator
+            Dim proteinEnum = Proteins.GetEnumerator
 
-        While proteinEnum.MoveNext()
-            proteinArray.Add(proteinEnum.Current.Key)
-        End While
-
-        Dim encoding As New System.Text.ASCIIEncoding
-
-        Dim EventTriggerThresh As Integer
-        If counterMax <= 25 Then
-            EventTriggerThresh = 1
-        Else
-            EventTriggerThresh = CInt(counterMax / 25)
-        End If
-
-        bw.Write(buffer)
-
-        For Each tmpName In proteinArray
-            Me.OnExportStart("Writing: " + tmpName)
-            tmpPC = Proteins.GetProtein(tmpName)
-            tmpSeq = tmpPC.Sequence
-
-            counter += 1
-
-            If (counter Mod EventTriggerThresh) = 0 Then
-                Me.OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
-
-            End If
-
-            proteinLength = tmpSeq.Length
-
-            Array.Clear(buffer, 0, 4)
-            tmpNum = tmpName.Length + 1
-            buffer = Me.ConvIntegertoByteArray(tmpNum, 4)
-            Array.Reverse(buffer)
-
-            bw.Write(buffer)
-            buffer = encoding.GetBytes(tmpName)
-            bw.Write(buffer)
-            bw.Write(Me.ConvIntegertoByteArray(0, 1))
-
-            Array.Clear(buffer, 0, 4)
-            tmpNum = proteinLength + 1
-            buffer = Me.ConvIntegertoByteArray(tmpNum, 4)
-            Array.Reverse(buffer)
-
-            bw.Write(buffer)
-            buffer = encoding.GetBytes(tmpSeq)
-            bw.Write(buffer)
-            bw.Write(Me.ConvIntegertoByteArray(0, 1))
-
-
-        Next
-        bw.Flush()
-        bw.Close()
-
-        bw = Nothing
-
-        Dim fingerprint As String = Me.GetFileHash(destinationPath)
-
-        Me.OnExportEnd()
-
-        Return fingerprint
-
-    End Function
-
-    Protected Overloads Overrides Function Export(
-      ProteinTables As DataSet,
-      ByRef destinationPath As String) As String
-
-
-        Dim buffer(HEADER_STRING.Length) As Byte
-
-        buffer = System.Text.Encoding.Default.GetBytes(HEADER_STRING)
-
-        ReDim Preserve buffer(255)
-
-
-        Dim errorMessage As String = String.Empty
-        If Not PRISM.clsFileTools.ValidateFreeDiskSpace(destinationPath, 150, errorMessage) Then
-            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
-            Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
-        End If
-
-        Dim bw = New System.IO.BinaryWriter(IO.File.OpenWrite(destinationPath))
-
-        bw.BaseStream.Seek(0, IO.SeekOrigin.Begin)
-
-        'Dim e As IEnumerator = Proteins.GetEnumerator
-
-        Dim proteinLength As Integer
-
-        Dim proteinTable As DataTable
-
-        Dim dr As DataRow
-        Dim foundRows() As DataRow
-
-        Dim tmpSeq As String
-        Dim tmpName As String
-
-        Dim tmpNum As Int32
-
-        Me.OnExportStart("Writing to X!Tandem formatted FASTA File")
-
-        'Dim counterMax As Integer = Proteins.ProteinCount
-        Dim counterMax As Integer ' = ProteinTable.Rows.Count
-        Dim counter As Integer
-
-        For Each proteinTable In ProteinTables.Tables
-            Me.OnExportStart("Writing: " + proteinTable.TableName)
-            counterMax = proteinTable.Rows.Count
-            foundRows = proteinTable.Select("", "Name")
+            While proteinEnum.MoveNext()
+                proteinArray.Add(proteinEnum.Current.Key)
+            End While
 
             Dim encoding As New System.Text.ASCIIEncoding
 
@@ -171,17 +73,16 @@ Public Class clsExportProteinsXTFASTA
 
             bw.Write(buffer)
 
-            For Each dr In foundRows
-                'tmpPC = Proteins.GetProtein(tmpName)
-                'tmpSeq = tmpPC.Sequence
-                tmpSeq = dr.Item("Sequence").ToString
-                tmpName = dr.Item("Name").ToString
-                'tmpDesc = dr.Item("Description").ToString
+            For Each tmpName In proteinArray
+                Me.OnExportStart("Writing: " + tmpName)
+                tmpPC = Proteins.GetProtein(tmpName)
+                tmpSeq = tmpPC.Sequence
 
                 counter += 1
 
                 If (counter Mod EventTriggerThresh) = 0 Then
                     Me.OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
+
                 End If
 
                 proteinLength = tmpSeq.Length
@@ -208,11 +109,123 @@ Public Class clsExportProteinsXTFASTA
 
 
             Next
-        Next
-        bw.Flush()
-        bw.Close()
 
-        bw = Nothing
+        End Using
+
+        Dim fingerprint As String = Me.GetFileHash(destinationPath)
+
+        Me.OnExportEnd()
+
+        Return fingerprint
+
+    End Function
+
+    Protected Overloads Overrides Function Export(
+      ProteinTables As DataSet,
+      ByRef destinationPath As String) As String
+
+        Const REQUIRED_SIZE_MB = 150
+
+        Dim buffer(HEADER_STRING.Length) As Byte
+
+        buffer = System.Text.Encoding.Default.GetBytes(HEADER_STRING)
+
+        ReDim Preserve buffer(255)
+
+        Dim currentFreeSpaceBytes As Int64
+        Dim errorMessage As String = String.Empty
+
+        Dim success = PRISMWin.clsDiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
+        If Not success Then
+            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsDiskInfo.GetDiskFreeSpac returned a blank error message"
+            Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
+        End If
+
+        If Not PRISM.clsFileTools.ValidateFreeDiskSpace(destinationPath, REQUIRED_SIZE_MB, currentFreeSpaceBytes, errorMessage) Then
+            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
+            Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
+        End If
+
+        Using bw = New System.IO.BinaryWriter(IO.File.OpenWrite(destinationPath))
+
+            bw.BaseStream.Seek(0, IO.SeekOrigin.Begin)
+
+            'Dim e As IEnumerator = Proteins.GetEnumerator
+
+            Dim proteinLength As Integer
+
+            Dim proteinTable As DataTable
+
+            Dim dr As DataRow
+            Dim foundRows() As DataRow
+
+            Dim tmpSeq As String
+            Dim tmpName As String
+
+            Dim tmpNum As Int32
+
+            Me.OnExportStart("Writing to X!Tandem formatted FASTA File")
+
+            'Dim counterMax As Integer = Proteins.ProteinCount
+            Dim counterMax As Integer ' = ProteinTable.Rows.Count
+            Dim counter As Integer
+
+            For Each proteinTable In ProteinTables.Tables
+                Me.OnExportStart("Writing: " + proteinTable.TableName)
+                counterMax = proteinTable.Rows.Count
+                foundRows = proteinTable.Select("", "Name")
+
+                Dim encoding As New System.Text.ASCIIEncoding
+
+                Dim EventTriggerThresh As Integer
+                If counterMax <= 25 Then
+                    EventTriggerThresh = 1
+                Else
+                    EventTriggerThresh = CInt(counterMax / 25)
+                End If
+
+                bw.Write(buffer)
+
+                For Each dr In foundRows
+                    'tmpPC = Proteins.GetProtein(tmpName)
+                    'tmpSeq = tmpPC.Sequence
+                    tmpSeq = dr.Item("Sequence").ToString
+                    tmpName = dr.Item("Name").ToString
+                    'tmpDesc = dr.Item("Description").ToString
+
+                    counter += 1
+
+                    If (counter Mod EventTriggerThresh) = 0 Then
+                        Me.OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
+                    End If
+
+                    proteinLength = tmpSeq.Length
+
+                    Array.Clear(buffer, 0, 4)
+                    tmpNum = tmpName.Length + 1
+                    buffer = Me.ConvIntegertoByteArray(tmpNum, 4)
+                    Array.Reverse(buffer)
+
+                    bw.Write(buffer)
+                    buffer = encoding.GetBytes(tmpName)
+                    bw.Write(buffer)
+                    bw.Write(Me.ConvIntegertoByteArray(0, 1))
+
+                    Array.Clear(buffer, 0, 4)
+                    tmpNum = proteinLength + 1
+                    buffer = Me.ConvIntegertoByteArray(tmpNum, 4)
+                    Array.Reverse(buffer)
+
+                    bw.Write(buffer)
+                    buffer = encoding.GetBytes(tmpSeq)
+                    bw.Write(buffer)
+                    bw.Write(Me.ConvIntegertoByteArray(0, 1))
+
+
+                Next
+            Next
+
+        End Using
 
         Dim fingerprint As String = Me.GetFileHash(destinationPath)
 
