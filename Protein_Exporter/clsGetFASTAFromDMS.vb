@@ -256,14 +256,24 @@ Public Class clsGetFASTAFromDMS
 
         ' Make sure we have enough disk free space
 
+        Dim destinationPath = Path.Combine(ExportPath, "TargetFile.tmp")
         Dim errorMessage As String = String.Empty
         Dim sourceFileSizeMB As Double = fiSourceFile.Length / 1024.0 / 1024.0
 
-        If Not PRISM.clsFileTools.ValidateFreeDiskSpace(Path.Combine(ExportPath, "TargetFile.tmp"), sourceFileSizeMB, 150, errorMessage) Then
+        Dim currentFreeSpaceBytes As Int64
+        Dim spaceValidationError = "Unable to copy legacy FASTA file to " & ExportPath & ". " & errorMessage
+
+        Dim success = PRISMWin.clsDiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
+        If Not success Then
+            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsDiskInfo.GetDiskFreeSpace returned a blank error message"
+            OnErrorEvent(spaceValidationError)
+            Throw New IOException(spaceValidationError)
+        End If
+
+        If Not PRISM.clsFileTools.ValidateFreeDiskSpace(destinationPath, sourceFileSizeMB, currentFreeSpaceBytes, errorMessage) Then
             If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
-            Dim msg = "Unable to copy legacy FASTA file to " & ExportPath & ". " & errorMessage
-            OnErrorEvent(msg)
-            Throw New IOException(msg)
+            OnErrorEvent(spaceValidationError)
+            Throw New IOException(spaceValidationError)
         End If
 
         ' If we get here, then finalFileName = "" or the file is not present or the LockFile is present

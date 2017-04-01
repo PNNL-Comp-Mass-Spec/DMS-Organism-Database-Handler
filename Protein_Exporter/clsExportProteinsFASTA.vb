@@ -28,7 +28,7 @@ Public Class clsExportProteinsFASTA
 
         Dim success = PRISMWin.clsDiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
         If Not success Then
-            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsDiskInfo.GetDiskFreeSpac returned a blank error message"
+            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsDiskInfo.GetDiskFreeSpace returned a blank error message"
             Throw New System.IO.IOException("Unable to save FASTA file at " & destinationPath & ". " & errorMessage)
         End If
 
@@ -180,7 +180,7 @@ Public Class clsExportProteinsFASTA
 
         Dim success = PRISMWin.clsDiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
         If Not success Then
-            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsDiskInfo.GetDiskFreeSpac returned a blank error message"
+            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsDiskInfo.GetDiskFreeSpace returned a blank error message"
             Throw New System.IO.IOException("Unable to append to FASTA file at " & destinationPath & ". " & errorMessage)
         End If
 
