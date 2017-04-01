@@ -83,10 +83,6 @@
       <Project>{15939683-D5B9-4784-9E16-89B0C059D3C8}</Project>
       <Name>TableManipulationBase</Name>
     </ProjectReference>
-    <Reference Include="PRISM, Version=2.3.6257.28473, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Shared Libraries\PRISM.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -126,7 +122,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <PackageReference Include="PRISM-Library">
+      <Version>1.0.2</Version>
+    </PackageReference>
+  </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="My Project\Settings.settings">

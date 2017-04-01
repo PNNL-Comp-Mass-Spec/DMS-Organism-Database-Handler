@@ -106,10 +106,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Shared Libraries\FlexibleFileSortUtility.dll</HintPath>
     </Reference>
-    <Reference Include="PRISM, Version=2.2.4839.25226, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Shared Libraries\PRISM.dll</HintPath>
-    </Reference>
     <Reference Include="ProteinFileReader, Version=1.2.5371.24645, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Shared Libraries\ProteinFileReader.dll</HintPath>
@@ -326,6 +322,11 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="PRISM-Library">
+      <Version>1.0.2</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>

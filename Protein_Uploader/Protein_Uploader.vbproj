@@ -82,10 +82,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Shared Libraries\FlexibleFileSortUtility.dll</HintPath>
     </Reference>
-    <Reference Include="PRISM, Version=2.3.6257.28473, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Shared Libraries\PRISM.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -156,6 +152,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="My Project\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="PRISM-Library">
+      <Version>1.0.2</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>

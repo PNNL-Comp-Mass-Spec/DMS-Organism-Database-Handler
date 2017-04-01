@@ -759,7 +759,7 @@ Public Class frmCollectionEditor
 
 #End Region
 
-    Protected Const PROGRAM_DATE As String = "February 17, 2017"
+    Protected Const PROGRAM_DATE As String = "April 1, 2017"
 
     Protected m_Organisms As DataTable
     Protected m_ProteinCollections As DataTable

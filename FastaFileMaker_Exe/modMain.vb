@@ -2,7 +2,7 @@ Option Strict On
 Imports Protein_Exporter
 
 Module modMain
-    Public Const PROGRAM_DATE As String = "February 17, 2017"
+    Public Const PROGRAM_DATE As String = "April 1, 2017"
 
     Const m_DebugLevel As Integer = 4
     Const FASTA_GEN_TIMEOUT_INTERVAL_MINUTES As Integer = 70
