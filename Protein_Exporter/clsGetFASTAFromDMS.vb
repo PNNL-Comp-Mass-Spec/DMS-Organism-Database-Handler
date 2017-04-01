@@ -893,7 +893,11 @@ Public Class clsGetFASTAFromDMS
 
         If System.DateTime.UtcNow.Subtract(m_LastLockQueueWaitTimeLog).TotalSeconds >= 30 Then
             m_LastLockQueueWaitTimeLog = System.DateTime.UtcNow
-            Console.WriteLine("Waiting for lockfile queue to fall below threshold to fall below threshold (Protein_Exporter); SourceBacklog=" & MBBacklogSource & " MB, TargetBacklog=" & MBBacklogTarget & " MB, Source=" & SourceFilePath & ", Target=" & TargetFilePath)
+            Console.WriteLine("Waiting for lockfile queue to fall below threshold to fall below threshold (Protein_Exporter); " +
+                              "SourceBacklog=" & MBBacklogSource & " MB, " +
+                              "TargetBacklog=" & MBBacklogTarget & " MB, " +
+                              "Source=" & SourceFilePath & ", " +
+                              "Target=" & TargetFilePath)
 
             If MBBacklogSource > 0 AndAlso MBBacklogTarget > 0 Then
                 strServers = m_FileTools.GetServerShareBase(SourceFilePath) & " and " & m_FileTools.GetServerShareBase(TargetFilePath)
