@@ -178,7 +178,6 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetPath)" "$(ProjectDir)..\Debug_DLL" /y /d</PostBuildEvent>
   </PropertyGroup>
 </Project>
