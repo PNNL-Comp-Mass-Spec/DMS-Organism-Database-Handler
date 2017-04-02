@@ -23,8 +23,7 @@
     <OptionExplicit>On</OptionExplicit>
     <OptionStrict>On</OptionStrict>
     <RootNamespace>AppUI_OrfDBHandler</RootNamespace>
-    <StartupObject>
-    </StartupObject>
+    <StartupObject>AppUI_OrfDBHandler.frmCollectionEditor</StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <MyType>WindowsFormsWithCustomSubMain</MyType>
