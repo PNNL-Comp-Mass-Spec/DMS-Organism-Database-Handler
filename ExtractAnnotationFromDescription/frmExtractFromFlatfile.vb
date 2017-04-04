@@ -46,45 +46,46 @@ Public Class frmExtractFromFlatfile
     Friend WithEvents TextBox1 As System.Windows.Forms.TextBox
     Friend WithEvents Label1 As System.Windows.Forms.Label
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.lblNewNames = New System.Windows.Forms.Label
-        Me.lvwNewNames = New System.Windows.Forms.ListView
-        Me.colAnnGroup = New System.Windows.Forms.ColumnHeader
-        Me.colAnnGroupName = New System.Windows.Forms.ColumnHeader
-        Me.colNamingAuth = New System.Windows.Forms.ColumnHeader
-        Me.colSplitChar = New System.Windows.Forms.ColumnHeader
-        Me.cmdUploadAnnotations = New System.Windows.Forms.Button
-        Me.lblCurrentCollectionInfo = New System.Windows.Forms.Label
-        Me.lblNamingAuthority = New System.Windows.Forms.Label
-        Me.cboNamingAuthority = New System.Windows.Forms.ComboBox
-        Me.lvwProteins = New System.Windows.Forms.ListView
-        Me.chkUseHeader = New System.Windows.Forms.CheckBox
-        Me.TextBox1 = New System.Windows.Forms.TextBox
-        Me.Label1 = New System.Windows.Forms.Label
+        Me.lblNewNames = New System.Windows.Forms.Label()
+        Me.lvwNewNames = New System.Windows.Forms.ListView()
+        Me.colAnnGroup = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colAnnGroupName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colNamingAuth = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colSplitChar = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.cmdUploadAnnotations = New System.Windows.Forms.Button()
+        Me.lblCurrentCollectionInfo = New System.Windows.Forms.Label()
+        Me.lblNamingAuthority = New System.Windows.Forms.Label()
+        Me.cboNamingAuthority = New System.Windows.Forms.ComboBox()
+        Me.lvwProteins = New System.Windows.Forms.ListView()
+        Me.chkUseHeader = New System.Windows.Forms.CheckBox()
+        Me.TextBox1 = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'lblNewNames
         '
-        Me.lblNewNames.Location = New System.Drawing.Point(8, 236)
+        Me.lblNewNames.Location = New System.Drawing.Point(11, 287)
         Me.lblNewNames.Name = "lblNewNames"
-        Me.lblNewNames.Size = New System.Drawing.Size(344, 16)
+        Me.lblNewNames.Size = New System.Drawing.Size(482, 19)
         Me.lblNewNames.TabIndex = 6
         Me.lblNewNames.Text = "Annotations Extracted from Loaded Flat text file"
         '
         'lvwNewNames
         '
         Me.lvwNewNames.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lvwNewNames.CheckBoxes = True
         Me.lvwNewNames.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colAnnGroup, Me.colAnnGroupName, Me.colNamingAuth, Me.colSplitChar})
         Me.lvwNewNames.FullRowSelect = True
         Me.lvwNewNames.GridLines = True
         Me.lvwNewNames.HideSelection = False
-        Me.lvwNewNames.Location = New System.Drawing.Point(8, 252)
+        Me.lvwNewNames.Location = New System.Drawing.Point(11, 306)
         Me.lvwNewNames.MultiSelect = False
         Me.lvwNewNames.Name = "lvwNewNames"
-        Me.lvwNewNames.Size = New System.Drawing.Size(574, 216)
+        Me.lvwNewNames.Size = New System.Drawing.Size(797, 259)
         Me.lvwNewNames.TabIndex = 18
+        Me.lvwNewNames.UseCompatibleStateImageBehavior = False
         Me.lvwNewNames.View = System.Windows.Forms.View.Details
         '
         'colAnnGroup
@@ -111,86 +112,86 @@ Public Class frmExtractFromFlatfile
         '
         Me.cmdUploadAnnotations.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdUploadAnnotations.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.cmdUploadAnnotations.Location = New System.Drawing.Point(424, 522)
+        Me.cmdUploadAnnotations.Location = New System.Drawing.Point(587, 631)
         Me.cmdUploadAnnotations.Name = "cmdUploadAnnotations"
-        Me.cmdUploadAnnotations.Size = New System.Drawing.Size(158, 22)
+        Me.cmdUploadAnnotations.Size = New System.Drawing.Size(221, 27)
         Me.cmdUploadAnnotations.TabIndex = 9
         Me.cmdUploadAnnotations.Text = "Upload Checked Groups"
         '
         'lblCurrentCollectionInfo
         '
         Me.lblCurrentCollectionInfo.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblCurrentCollectionInfo.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.lblCurrentCollectionInfo.Location = New System.Drawing.Point(0, 212)
+        Me.lblCurrentCollectionInfo.Location = New System.Drawing.Point(0, 257)
         Me.lblCurrentCollectionInfo.Name = "lblCurrentCollectionInfo"
-        Me.lblCurrentCollectionInfo.Size = New System.Drawing.Size(594, 16)
+        Me.lblCurrentCollectionInfo.Size = New System.Drawing.Size(825, 20)
         Me.lblCurrentCollectionInfo.TabIndex = 12
         Me.lblCurrentCollectionInfo.TextAlign = System.Drawing.ContentAlignment.BottomCenter
         '
         'lblNamingAuthority
         '
         Me.lblNamingAuthority.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblNamingAuthority.Location = New System.Drawing.Point(8, 474)
+        Me.lblNamingAuthority.Location = New System.Drawing.Point(4, 573)
         Me.lblNamingAuthority.Name = "lblNamingAuthority"
-        Me.lblNamingAuthority.Size = New System.Drawing.Size(176, 18)
+        Me.lblNamingAuthority.Size = New System.Drawing.Size(247, 21)
         Me.lblNamingAuthority.TabIndex = 16
         Me.lblNamingAuthority.Text = "Naming Authority"
         '
         'cboNamingAuthority
         '
         Me.cboNamingAuthority.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboNamingAuthority.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboNamingAuthority.Location = New System.Drawing.Point(10, 490)
+        Me.cboNamingAuthority.Location = New System.Drawing.Point(14, 592)
         Me.cboNamingAuthority.Name = "cboNamingAuthority"
-        Me.cboNamingAuthority.Size = New System.Drawing.Size(488, 21)
+        Me.cboNamingAuthority.Size = New System.Drawing.Size(676, 25)
         Me.cboNamingAuthority.TabIndex = 17
         '
         'lvwProteins
         '
         Me.lvwProteins.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lvwProteins.FullRowSelect = True
         Me.lvwProteins.GridLines = True
         Me.lvwProteins.Location = New System.Drawing.Point(1, 2)
         Me.lvwProteins.MultiSelect = False
         Me.lvwProteins.Name = "lvwProteins"
-        Me.lvwProteins.Size = New System.Drawing.Size(590, 206)
+        Me.lvwProteins.Size = New System.Drawing.Size(819, 251)
         Me.lvwProteins.TabIndex = 19
+        Me.lvwProteins.UseCompatibleStateImageBehavior = False
         Me.lvwProteins.View = System.Windows.Forms.View.Details
         '
         'chkUseHeader
         '
         Me.chkUseHeader.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.chkUseHeader.Location = New System.Drawing.Point(400, 234)
+        Me.chkUseHeader.Location = New System.Drawing.Point(553, 284)
         Me.chkUseHeader.Name = "chkUseHeader"
-        Me.chkUseHeader.Size = New System.Drawing.Size(184, 16)
+        Me.chkUseHeader.Size = New System.Drawing.Size(258, 20)
         Me.chkUseHeader.TabIndex = 20
         Me.chkUseHeader.Text = "Use First Line as Group Names?"
         '
         'TextBox1
         '
         Me.TextBox1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox1.Location = New System.Drawing.Point(506, 490)
+        Me.TextBox1.Location = New System.Drawing.Point(701, 592)
         Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.Size = New System.Drawing.Size(70, 21)
+        Me.TextBox1.Size = New System.Drawing.Size(98, 24)
         Me.TextBox1.TabIndex = 23
-        Me.TextBox1.Text = ""
         '
         'Label1
         '
         Me.Label1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Label1.Location = New System.Drawing.Point(504, 474)
+        Me.Label1.Location = New System.Drawing.Point(699, 573)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(68, 18)
+        Me.Label1.Size = New System.Drawing.Size(95, 21)
         Me.Label1.TabIndex = 22
         Me.Label1.Text = "Delimiter"
         '
         'frmExtractFromFlatfile
         '
-        Me.AutoScaleBaseSize = New System.Drawing.Size(5, 14)
-        Me.ClientSize = New System.Drawing.Size(592, 552)
+        Me.AutoScaleBaseSize = New System.Drawing.Size(7, 17)
+        Me.ClientSize = New System.Drawing.Size(822, 667)
         Me.Controls.Add(Me.TextBox1)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.chkUseHeader)
@@ -202,10 +203,11 @@ Public Class frmExtractFromFlatfile
         Me.Controls.Add(Me.lblNewNames)
         Me.Controls.Add(Me.lblCurrentCollectionInfo)
         Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.MinimumSize = New System.Drawing.Size(600, 586)
+        Me.MinimumSize = New System.Drawing.Size(840, 712)
         Me.Name = "frmExtractFromFlatfile"
         Me.Text = "Extract Annotations From Flatfile"
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
 
