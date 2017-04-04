@@ -543,11 +543,10 @@ Public Class clsSyncFASTAFileArchive
 
         Dim proteinID As Integer
         Dim sequence As String
-        Dim si As ICalculateSeqInfo
+        Dim si = New SequenceInfoCalculator.SequenceInfoCalculator
 
         For Each proteinID In Proteins.Keys
             sequence = Proteins.Item(proteinID).ToString
-            si = New SequenceInfoCalculator.SequenceInfoCalculator
             si.CalculateSequenceInfo(sequence)
             Me.m_Importer.UpdateProteinSequenceInfo(
                 proteinID, sequence, sequence.Length,
