@@ -55,93 +55,93 @@ Public Class frmRegexSpecifyFromDescription
     Friend WithEvents rdbDescriptionSelect As System.Windows.Forms.RadioButton
     Friend WithEvents gbxExtractionSource As System.Windows.Forms.GroupBox
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.lblStoredExpressions = New System.Windows.Forms.Label
-        Me.cboStoredExpressions = New System.Windows.Forms.ComboBox
-        Me.lblRegexEditor = New System.Windows.Forms.Label
-        Me.txtRegexEditor = New System.Windows.Forms.TextBox
-        Me.lblNewNames = New System.Windows.Forms.Label
-        Me.lvwNewNames = New System.Windows.Forms.ListView
-        Me.colAnnGroup = New System.Windows.Forms.ColumnHeader
-        Me.colAnnGroupName = New System.Windows.Forms.ColumnHeader
-        Me.colExtAnnotation = New System.Windows.Forms.ColumnHeader
-        Me.colAnnotationTYpe = New System.Windows.Forms.ColumnHeader
-        Me.lblMatchCount = New System.Windows.Forms.Label
-        Me.cmdUploadAnnotations = New System.Windows.Forms.Button
-        Me.cmdAddExpression = New System.Windows.Forms.Button
-        Me.cmdRemoveExpression = New System.Windows.Forms.Button
-        Me.lblCurrentCollectionInfo = New System.Windows.Forms.Label
-        Me.cmdMatch = New System.Windows.Forms.Button
-        Me.lblNamingAuthority = New System.Windows.Forms.Label
-        Me.cboNamingAuthority = New System.Windows.Forms.ComboBox
-        Me.lvwProteins = New System.Windows.Forms.ListView
-        Me.colProteinName = New System.Windows.Forms.ColumnHeader
-        Me.colDescription = New System.Windows.Forms.ColumnHeader
-        Me.rdbNameSelect = New System.Windows.Forms.RadioButton
-        Me.rdbDescriptionSelect = New System.Windows.Forms.RadioButton
-        Me.gbxExtractionSource = New System.Windows.Forms.GroupBox
+        Me.lblStoredExpressions = New System.Windows.Forms.Label()
+        Me.cboStoredExpressions = New System.Windows.Forms.ComboBox()
+        Me.lblRegexEditor = New System.Windows.Forms.Label()
+        Me.txtRegexEditor = New System.Windows.Forms.TextBox()
+        Me.lblNewNames = New System.Windows.Forms.Label()
+        Me.lvwNewNames = New System.Windows.Forms.ListView()
+        Me.colAnnGroup = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colAnnGroupName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colExtAnnotation = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colAnnotationTYpe = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.lblMatchCount = New System.Windows.Forms.Label()
+        Me.cmdUploadAnnotations = New System.Windows.Forms.Button()
+        Me.cmdAddExpression = New System.Windows.Forms.Button()
+        Me.cmdRemoveExpression = New System.Windows.Forms.Button()
+        Me.lblCurrentCollectionInfo = New System.Windows.Forms.Label()
+        Me.cmdMatch = New System.Windows.Forms.Button()
+        Me.lblNamingAuthority = New System.Windows.Forms.Label()
+        Me.cboNamingAuthority = New System.Windows.Forms.ComboBox()
+        Me.lvwProteins = New System.Windows.Forms.ListView()
+        Me.colProteinName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colDescription = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.rdbNameSelect = New System.Windows.Forms.RadioButton()
+        Me.rdbDescriptionSelect = New System.Windows.Forms.RadioButton()
+        Me.gbxExtractionSource = New System.Windows.Forms.GroupBox()
         Me.gbxExtractionSource.SuspendLayout()
         Me.SuspendLayout()
         '
         'lblStoredExpressions
         '
         Me.lblStoredExpressions.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblStoredExpressions.Location = New System.Drawing.Point(8, 242)
+        Me.lblStoredExpressions.Location = New System.Drawing.Point(11, 291)
         Me.lblStoredExpressions.Name = "lblStoredExpressions"
-        Me.lblStoredExpressions.Size = New System.Drawing.Size(164, 12)
+        Me.lblStoredExpressions.Size = New System.Drawing.Size(230, 14)
         Me.lblStoredExpressions.TabIndex = 3
         Me.lblStoredExpressions.Text = "Stored and Recent Expressions"
         '
         'cboStoredExpressions
         '
         Me.cboStoredExpressions.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboStoredExpressions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboStoredExpressions.Location = New System.Drawing.Point(8, 258)
+        Me.cboStoredExpressions.Location = New System.Drawing.Point(11, 310)
         Me.cboStoredExpressions.Name = "cboStoredExpressions"
-        Me.cboStoredExpressions.Size = New System.Drawing.Size(398, 21)
+        Me.cboStoredExpressions.Size = New System.Drawing.Size(550, 25)
         Me.cboStoredExpressions.TabIndex = 2
         '
         'lblRegexEditor
         '
         Me.lblRegexEditor.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblRegexEditor.Location = New System.Drawing.Point(8, 160)
+        Me.lblRegexEditor.Location = New System.Drawing.Point(11, 191)
         Me.lblRegexEditor.Name = "lblRegexEditor"
-        Me.lblRegexEditor.Size = New System.Drawing.Size(246, 18)
+        Me.lblRegexEditor.Size = New System.Drawing.Size(345, 22)
         Me.lblRegexEditor.TabIndex = 4
         Me.lblRegexEditor.Text = "Current Regular Expression"
         '
         'txtRegexEditor
         '
         Me.txtRegexEditor.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtRegexEditor.Location = New System.Drawing.Point(8, 176)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtRegexEditor.Location = New System.Drawing.Point(11, 211)
         Me.txtRegexEditor.Multiline = True
         Me.txtRegexEditor.Name = "txtRegexEditor"
-        Me.txtRegexEditor.Size = New System.Drawing.Size(440, 58)
+        Me.txtRegexEditor.Size = New System.Drawing.Size(609, 70)
         Me.txtRegexEditor.TabIndex = 5
-        Me.txtRegexEditor.Text = ""
         '
         'lblNewNames
         '
         Me.lblNewNames.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblNewNames.Location = New System.Drawing.Point(8, 286)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lblNewNames.Location = New System.Drawing.Point(11, 344)
         Me.lblNewNames.Name = "lblNewNames"
-        Me.lblNewNames.Size = New System.Drawing.Size(130, 16)
+        Me.lblNewNames.Size = New System.Drawing.Size(175, 20)
         Me.lblNewNames.TabIndex = 6
         Me.lblNewNames.Text = "Extracted Annotations"
         '
         'lvwNewNames
         '
         Me.lvwNewNames.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lvwNewNames.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colAnnGroup, Me.colAnnGroupName, Me.colExtAnnotation, Me.colAnnotationTYpe})
         Me.lvwNewNames.FullRowSelect = True
         Me.lvwNewNames.GridLines = True
-        Me.lvwNewNames.Location = New System.Drawing.Point(8, 302)
+        Me.lvwNewNames.Location = New System.Drawing.Point(11, 364)
         Me.lvwNewNames.Name = "lvwNewNames"
-        Me.lvwNewNames.Size = New System.Drawing.Size(574, 198)
+        Me.lvwNewNames.Size = New System.Drawing.Size(797, 240)
         Me.lvwNewNames.TabIndex = 18
+        Me.lvwNewNames.UseCompatibleStateImageBehavior = False
         Me.lvwNewNames.View = System.Windows.Forms.View.Details
         '
         'colAnnGroup
@@ -166,12 +166,12 @@ Public Class frmRegexSpecifyFromDescription
         'lblMatchCount
         '
         Me.lblMatchCount.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblMatchCount.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.lblMatchCount.Font = New System.Drawing.Font("Tahoma", 6.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblMatchCount.Location = New System.Drawing.Point(358, 288)
+        Me.lblMatchCount.Location = New System.Drawing.Point(501, 347)
         Me.lblMatchCount.Name = "lblMatchCount"
-        Me.lblMatchCount.Size = New System.Drawing.Size(222, 14)
+        Me.lblMatchCount.Size = New System.Drawing.Size(304, 17)
         Me.lblMatchCount.TabIndex = 8
         Me.lblMatchCount.Text = "(Matches 0/0 Descriptions)"
         Me.lblMatchCount.TextAlign = System.Drawing.ContentAlignment.BottomRight
@@ -180,9 +180,9 @@ Public Class frmRegexSpecifyFromDescription
         '
         Me.cmdUploadAnnotations.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdUploadAnnotations.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.cmdUploadAnnotations.Location = New System.Drawing.Point(424, 522)
+        Me.cmdUploadAnnotations.Location = New System.Drawing.Point(587, 631)
         Me.cmdUploadAnnotations.Name = "cmdUploadAnnotations"
-        Me.cmdUploadAnnotations.Size = New System.Drawing.Size(158, 22)
+        Me.cmdUploadAnnotations.Size = New System.Drawing.Size(221, 27)
         Me.cmdUploadAnnotations.TabIndex = 9
         Me.cmdUploadAnnotations.Text = "Upload Extracted Annotations"
         '
@@ -191,9 +191,9 @@ Public Class frmRegexSpecifyFromDescription
         Me.cmdAddExpression.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdAddExpression.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.cmdAddExpression.Font = New System.Drawing.Font("Tahoma", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdAddExpression.Location = New System.Drawing.Point(410, 258)
+        Me.cmdAddExpression.Location = New System.Drawing.Point(567, 310)
         Me.cmdAddExpression.Name = "cmdAddExpression"
-        Me.cmdAddExpression.Size = New System.Drawing.Size(20, 20)
+        Me.cmdAddExpression.Size = New System.Drawing.Size(28, 25)
         Me.cmdAddExpression.TabIndex = 10
         Me.cmdAddExpression.Text = "+"
         '
@@ -202,20 +202,20 @@ Public Class frmRegexSpecifyFromDescription
         Me.cmdRemoveExpression.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdRemoveExpression.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.cmdRemoveExpression.Font = New System.Drawing.Font("Tahoma", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdRemoveExpression.Location = New System.Drawing.Point(430, 258)
+        Me.cmdRemoveExpression.Location = New System.Drawing.Point(595, 310)
         Me.cmdRemoveExpression.Name = "cmdRemoveExpression"
-        Me.cmdRemoveExpression.Size = New System.Drawing.Size(20, 20)
+        Me.cmdRemoveExpression.Size = New System.Drawing.Size(28, 25)
         Me.cmdRemoveExpression.TabIndex = 11
         Me.cmdRemoveExpression.Text = "-"
         '
         'lblCurrentCollectionInfo
         '
         Me.lblCurrentCollectionInfo.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblCurrentCollectionInfo.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.lblCurrentCollectionInfo.Location = New System.Drawing.Point(0, 140)
+        Me.lblCurrentCollectionInfo.Location = New System.Drawing.Point(0, 167)
         Me.lblCurrentCollectionInfo.Name = "lblCurrentCollectionInfo"
-        Me.lblCurrentCollectionInfo.Size = New System.Drawing.Size(594, 16)
+        Me.lblCurrentCollectionInfo.Size = New System.Drawing.Size(825, 19)
         Me.lblCurrentCollectionInfo.TabIndex = 12
         Me.lblCurrentCollectionInfo.TextAlign = System.Drawing.ContentAlignment.BottomCenter
         '
@@ -223,45 +223,46 @@ Public Class frmRegexSpecifyFromDescription
         '
         Me.cmdMatch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdMatch.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.cmdMatch.Location = New System.Drawing.Point(456, 256)
+        Me.cmdMatch.Location = New System.Drawing.Point(631, 308)
         Me.cmdMatch.Name = "cmdMatch"
-        Me.cmdMatch.Size = New System.Drawing.Size(126, 22)
+        Me.cmdMatch.Size = New System.Drawing.Size(177, 27)
         Me.cmdMatch.TabIndex = 13
         Me.cmdMatch.Text = "Test Current Expression"
         '
         'lblNamingAuthority
         '
         Me.lblNamingAuthority.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblNamingAuthority.Location = New System.Drawing.Point(8, 506)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lblNamingAuthority.Location = New System.Drawing.Point(11, 611)
         Me.lblNamingAuthority.Name = "lblNamingAuthority"
-        Me.lblNamingAuthority.Size = New System.Drawing.Size(264, 18)
+        Me.lblNamingAuthority.Size = New System.Drawing.Size(363, 22)
         Me.lblNamingAuthority.TabIndex = 16
         Me.lblNamingAuthority.Text = "Annotation Type for Selected Group"
         '
         'cboNamingAuthority
         '
         Me.cboNamingAuthority.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboNamingAuthority.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboNamingAuthority.Location = New System.Drawing.Point(8, 522)
+        Me.cboNamingAuthority.Location = New System.Drawing.Point(11, 631)
         Me.cboNamingAuthority.Name = "cboNamingAuthority"
-        Me.cboNamingAuthority.Size = New System.Drawing.Size(404, 21)
+        Me.cboNamingAuthority.Size = New System.Drawing.Size(559, 25)
         Me.cboNamingAuthority.TabIndex = 17
         '
         'lvwProteins
         '
         Me.lvwProteins.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lvwProteins.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colProteinName, Me.colDescription})
         Me.lvwProteins.FullRowSelect = True
         Me.lvwProteins.GridLines = True
         Me.lvwProteins.Location = New System.Drawing.Point(1, 2)
         Me.lvwProteins.MultiSelect = False
         Me.lvwProteins.Name = "lvwProteins"
-        Me.lvwProteins.Size = New System.Drawing.Size(590, 136)
+        Me.lvwProteins.Size = New System.Drawing.Size(819, 163)
         Me.lvwProteins.TabIndex = 19
+        Me.lvwProteins.UseCompatibleStateImageBehavior = False
         Me.lvwProteins.View = System.Windows.Forms.View.Details
         '
         'colProteinName
@@ -276,17 +277,17 @@ Public Class frmRegexSpecifyFromDescription
         '
         'rdbNameSelect
         '
-        Me.rdbNameSelect.Location = New System.Drawing.Point(8, 20)
+        Me.rdbNameSelect.Location = New System.Drawing.Point(11, 24)
         Me.rdbNameSelect.Name = "rdbNameSelect"
-        Me.rdbNameSelect.Size = New System.Drawing.Size(104, 16)
+        Me.rdbNameSelect.Size = New System.Drawing.Size(146, 20)
         Me.rdbNameSelect.TabIndex = 20
         Me.rdbNameSelect.Text = "Protein Name"
         '
         'rdbDescriptionSelect
         '
-        Me.rdbDescriptionSelect.Location = New System.Drawing.Point(8, 40)
+        Me.rdbDescriptionSelect.Location = New System.Drawing.Point(11, 49)
         Me.rdbDescriptionSelect.Name = "rdbDescriptionSelect"
-        Me.rdbDescriptionSelect.Size = New System.Drawing.Size(104, 14)
+        Me.rdbDescriptionSelect.Size = New System.Drawing.Size(146, 17)
         Me.rdbDescriptionSelect.TabIndex = 21
         Me.rdbDescriptionSelect.Text = "Description Text"
         '
@@ -294,17 +295,17 @@ Public Class frmRegexSpecifyFromDescription
         '
         Me.gbxExtractionSource.Controls.Add(Me.rdbNameSelect)
         Me.gbxExtractionSource.Controls.Add(Me.rdbDescriptionSelect)
-        Me.gbxExtractionSource.Location = New System.Drawing.Point(460, 170)
+        Me.gbxExtractionSource.Location = New System.Drawing.Point(644, 206)
         Me.gbxExtractionSource.Name = "gbxExtractionSource"
-        Me.gbxExtractionSource.Size = New System.Drawing.Size(118, 66)
+        Me.gbxExtractionSource.Size = New System.Drawing.Size(165, 81)
         Me.gbxExtractionSource.TabIndex = 22
         Me.gbxExtractionSource.TabStop = False
         Me.gbxExtractionSource.Text = "Extract From"
         '
         'frmRegexSpecifyFromDescription
         '
-        Me.AutoScaleBaseSize = New System.Drawing.Size(5, 14)
-        Me.ClientSize = New System.Drawing.Size(592, 552)
+        Me.AutoScaleBaseSize = New System.Drawing.Size(7, 17)
+        Me.ClientSize = New System.Drawing.Size(822, 667)
         Me.Controls.Add(Me.gbxExtractionSource)
         Me.Controls.Add(Me.lvwProteins)
         Me.Controls.Add(Me.cboNamingAuthority)
@@ -322,11 +323,12 @@ Public Class frmRegexSpecifyFromDescription
         Me.Controls.Add(Me.lblCurrentCollectionInfo)
         Me.Controls.Add(Me.lblMatchCount)
         Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.MinimumSize = New System.Drawing.Size(600, 586)
+        Me.MinimumSize = New System.Drawing.Size(840, 712)
         Me.Name = "frmRegexSpecifyFromDescription"
         Me.Text = "Extract Annotations From Description"
         Me.gbxExtractionSource.ResumeLayout(False)
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
 
