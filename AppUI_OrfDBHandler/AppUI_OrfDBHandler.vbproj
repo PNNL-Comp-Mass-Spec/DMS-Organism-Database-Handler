@@ -101,6 +101,10 @@
       <Name>ExpTreeLib</Name>
       <HintPath>..\Shared Libraries\ExpTreeLib.dll</HintPath>
     </Reference>
+    <Reference Include="ExtractAnnotationFromDescription, Version=1.0.6301.20791, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Release_DLL\ExtractAnnotationFromDescription.dll</HintPath>
+    </Reference>
     <Reference Include="FlexibleFileSortUtility, Version=1.0.5610.27179, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Shared Libraries\FlexibleFileSortUtility.dll</HintPath>
@@ -108,6 +112,19 @@
     <Reference Include="ProteinFileReader, Version=1.2.5371.24645, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Shared Libraries\ProteinFileReader.dll</HintPath>
+    </Reference>
+    <Reference Include="Protein_Exporter">
+      <HintPath>..\Release_DLL\Protein_Exporter.dll</HintPath>
+    </Reference>
+    <Reference Include="Protein_Importer">
+      <HintPath>..\Release_DLL\Protein_Importer.dll</HintPath>
+    </Reference>
+    <Reference Include="Protein_Storage">
+      <HintPath>..\Release_DLL\Protein_Storage.dll</HintPath>
+    </Reference>
+    <Reference Include="Protein_Uploader, Version=1.0.6301.20791, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Release_DLL\Protein_Uploader.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -124,48 +141,21 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
+    <Reference Include="TableManipulationBase">
+      <HintPath>..\Release_DLL\TableManipulationBase.dll</HintPath>
+    </Reference>
     <Reference Include="UIControls">
       <Name>UIControls</Name>
       <HintPath>..\Shared Libraries\UIControls.dll</HintPath>
     </Reference>
-    <ProjectReference Include="..\ExtractAnnotationFromDescription\ExtractAdditionalAnnotations.vbproj">
-      <Name>ExtractAdditionalAnnotations</Name>
-      <Project>{E476B943-B24F-4483-A0F1-FFE2D20B4258}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
     <ProjectReference Include="..\NucleotideTranslator\NucleotideTranslator.vbproj">
       <Name>NucleotideTranslator</Name>
       <Project>{3AA2CACA-0803-4A08-96A2-C1EAE0F2D832}</Project>
       <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
     </ProjectReference>
-    <ProjectReference Include="..\Protein_Exporter\Protein_Exporter.vbproj">
-      <Name>Protein_Exporter</Name>
-      <Project>{A698B58B-15B8-4893-81AD-116D57B9B404}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\Protein_Importer\Protein_Importer.vbproj">
-      <Name>Protein_Importer</Name>
-      <Project>{28D5A54E-B47D-41F3-95AB-96C4346ADE38}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\Protein_Storage\Protein_Storage.vbproj">
-      <Name>Protein_Storage</Name>
-      <Project>{77B1CDDC-23D8-4408-8CA3-6FA8A31A975A}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\Protein_Uploader\Protein_Uploader.vbproj">
-      <Name>Protein_Uploader</Name>
-      <Project>{8989FDEF-3CA5-42ED-B080-294CE455A72E}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
     <ProjectReference Include="..\SequenceInfoCalculator\SequenceInfoCalculator.vbproj">
       <Name>SequenceInfoCalculator</Name>
       <Project>{99C5D78C-00DA-49A5-BAC8-19ADFE95FABE}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\TableManipulationBase\TableManipulationBase.vbproj">
-      <Name>TableManipulationBase</Name>
-      <Project>{15939683-D5B9-4784-9E16-89B0C059D3C8}</Project>
       <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
     </ProjectReference>
     <ProjectReference Include="..\TranslationTableImport\TranslationTableImport.vbproj">

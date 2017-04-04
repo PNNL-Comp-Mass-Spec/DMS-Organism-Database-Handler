@@ -3,16 +3,36 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.26228.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "AppUI_OrfDBHandler", "AppUI_OrfDBHandler\AppUI_OrfDBHandler.vbproj", "{78AD9853-60BB-4B10-8FF2-418B3A21092D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E476B943-B24F-4483-A0F1-FFE2D20B4258} = {E476B943-B24F-4483-A0F1-FFE2D20B4258}
+		{28D5A54E-B47D-41F3-95AB-96C4346ADE38} = {28D5A54E-B47D-41F3-95AB-96C4346ADE38}
+		{15939683-D5B9-4784-9E16-89B0C059D3C8} = {15939683-D5B9-4784-9E16-89B0C059D3C8}
+		{A698B58B-15B8-4893-81AD-116D57B9B404} = {A698B58B-15B8-4893-81AD-116D57B9B404}
+		{77B1CDDC-23D8-4408-8CA3-6FA8A31A975A} = {77B1CDDC-23D8-4408-8CA3-6FA8A31A975A}
+		{8989FDEF-3CA5-42ED-B080-294CE455A72E} = {8989FDEF-3CA5-42ED-B080-294CE455A72E}
+	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Protein_Exporter", "Protein_Exporter\Protein_Exporter.vbproj", "{A698B58B-15B8-4893-81AD-116D57B9B404}"
+	ProjectSection(ProjectDependencies) = postProject
+		{77B1CDDC-23D8-4408-8CA3-6FA8A31A975A} = {77B1CDDC-23D8-4408-8CA3-6FA8A31A975A}
+	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Protein_Storage", "Protein_Storage\Protein_Storage.vbproj", "{77B1CDDC-23D8-4408-8CA3-6FA8A31A975A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{15939683-D5B9-4784-9E16-89B0C059D3C8} = {15939683-D5B9-4784-9E16-89B0C059D3C8}
+	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "TableManipulationBase", "TableManipulationBase\TableManipulationBase.vbproj", "{15939683-D5B9-4784-9E16-89B0C059D3C8}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CompareProteinDatabases", "CompareProteinDatabases\CompareProteinDatabases.vbproj", "{3F7269E7-6E9F-4AA5-A1A6-FD378C7CA75F}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Protein_Uploader", "Protein_Uploader\Protein_Uploader.vbproj", "{8989FDEF-3CA5-42ED-B080-294CE455A72E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{28D5A54E-B47D-41F3-95AB-96C4346ADE38} = {28D5A54E-B47D-41F3-95AB-96C4346ADE38}
+		{15939683-D5B9-4784-9E16-89B0C059D3C8} = {15939683-D5B9-4784-9E16-89B0C059D3C8}
+		{A698B58B-15B8-4893-81AD-116D57B9B404} = {A698B58B-15B8-4893-81AD-116D57B9B404}
+		{77B1CDDC-23D8-4408-8CA3-6FA8A31A975A} = {77B1CDDC-23D8-4408-8CA3-6FA8A31A975A}
+	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ExtractAdditionalAnnotations", "ExtractAnnotationFromDescription\ExtractAdditionalAnnotations.vbproj", "{E476B943-B24F-4483-A0F1-FFE2D20B4258}"
 EndProject
@@ -25,6 +45,10 @@ EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SequenceInfoCalculator", "SequenceInfoCalculator\SequenceInfoCalculator.vbproj", "{99C5D78C-00DA-49A5-BAC8-19ADFE95FABE}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "FastaFileMaker_Exe", "FastaFileMaker_Exe\FastaFileMaker_Exe.vbproj", "{B291F511-6EB2-447A-B7E2-B2A2E50AF2DE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{15939683-D5B9-4784-9E16-89B0C059D3C8} = {15939683-D5B9-4784-9E16-89B0C059D3C8}
+		{A698B58B-15B8-4893-81AD-116D57B9B404} = {A698B58B-15B8-4893-81AD-116D57B9B404}
+	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Bulk_Fasta_Importer", "Bulk_Fasta_Importer\Bulk_Fasta_Importer.vbproj", "{B3D45B56-D409-4AFC-9674-833A3721DBAC}"
 EndProject

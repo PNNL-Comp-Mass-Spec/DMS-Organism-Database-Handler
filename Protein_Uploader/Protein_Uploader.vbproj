@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
@@ -82,6 +82,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Shared Libraries\FlexibleFileSortUtility.dll</HintPath>
     </Reference>
+    <Reference Include="Protein_Exporter">
+      <HintPath>..\Release_DLL\Protein_Exporter.dll</HintPath>
+    </Reference>
+    <Reference Include="Protein_Importer">
+      <HintPath>..\Release_DLL\Protein_Importer.dll</HintPath>
+    </Reference>
+    <Reference Include="Protein_Storage">
+      <HintPath>..\Release_DLL\Protein_Storage.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -97,26 +106,9 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="..\Protein_Exporter\Protein_Exporter.vbproj">
-      <Name>Protein_Exporter</Name>
-      <Project>{A698B58B-15B8-4893-81AD-116D57B9B404}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\Protein_Importer\Protein_Importer.vbproj">
-      <Name>Protein_Importer</Name>
-      <Project>{28D5A54E-B47D-41F3-95AB-96C4346ADE38}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\Protein_Storage\Protein_Storage.vbproj">
-      <Name>Protein_Storage</Name>
-      <Project>{77B1CDDC-23D8-4408-8CA3-6FA8A31A975A}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\TableManipulationBase\TableManipulationBase.vbproj">
-      <Name>TableManipulationBase</Name>
-      <Project>{15939683-D5B9-4784-9E16-89B0C059D3C8}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
+    <Reference Include="TableManipulationBase">
+      <HintPath>..\Release_DLL\TableManipulationBase.dll</HintPath>
+    </Reference>
     <Reference Include="ValidateFastaFile, Version=2.1.4834.35819, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Shared Libraries\ValidateFastaFile.dll</HintPath>
@@ -160,8 +152,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-    <PostBuildEvent></PostBuildEvent>
+    <PreBuildEvent>if not exist "$(ProjectDir)..\Release_DLL" (mkdir "$(ProjectDir)..\Release_DLL")</PreBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetPath)" "$(ProjectDir)..\Release_DLL\" /y /d</PostBuildEvent>
   </PropertyGroup>
 </Project>

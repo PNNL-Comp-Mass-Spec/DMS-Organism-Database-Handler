@@ -79,10 +79,12 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TableManipulationBase\TableManipulationBase.vbproj">
-      <Project>{15939683-D5B9-4784-9E16-89B0C059D3C8}</Project>
-      <Name>TableManipulationBase</Name>
-    </ProjectReference>
+    <Reference Include="Protein_Exporter">
+      <HintPath>..\Release_DLL\Protein_Exporter.dll</HintPath>
+    </Reference>
+    <Reference Include="Protein_Storage">
+      <HintPath>..\Release_DLL\Protein_Storage.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -92,11 +94,9 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="..\Protein_Exporter\Protein_Exporter.vbproj">
-      <Name>Protein_Exporter</Name>
-      <Project>{A698B58B-15B8-4893-81AD-116D57B9B404}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
+    <Reference Include="TableManipulationBase">
+      <HintPath>..\Release_DLL\TableManipulationBase.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -123,17 +123,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="PRISM-Library">
-      <Version>1.0.2</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
     <None Include="My Project\Settings.settings">
       <CustomToolNamespace>My</CustomToolNamespace>
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="PRISM-Library">
+      <Version>1.0.2</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
