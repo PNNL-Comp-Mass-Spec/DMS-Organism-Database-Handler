@@ -155,15 +155,14 @@
     <Reference Include="TableManipulationBase">
       <HintPath>..\Release_DLL\TableManipulationBase.dll</HintPath>
     </Reference>
+    <Reference Include="TranslationTableImport, Version=1.0.6302.35617, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Release_DLL\TranslationTableImport.dll</HintPath>
+    </Reference>
     <Reference Include="UIControls">
       <Name>UIControls</Name>
       <HintPath>..\Shared Libraries\UIControls.dll</HintPath>
     </Reference>
-    <ProjectReference Include="..\TranslationTableImport\TranslationTableImport.vbproj">
-      <Name>TranslationTableImport</Name>
-      <Project>{85531A5F-F4DB-42EB-B597-397ADF10B0E9}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
     <Reference Include="ValidateFastaFile, Version=2.1.4834.35819, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Shared Libraries\ValidateFastaFile.dll</HintPath>
