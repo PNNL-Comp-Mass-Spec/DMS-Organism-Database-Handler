@@ -4,11 +4,11 @@ Public Interface ICalculateSeqInfo
     Sub CalculateSequenceInfo(Sequence As String)
     Function GenerateSequenceHash(Sequence As String) As String
 
-    ReadOnly Property MonoIsotopicMass() As Double
-    ReadOnly Property AverageMass() As Double
-    ReadOnly Property SequenceLength() As Integer
-    ReadOnly Property MolecularFormula() As String
-    ReadOnly Property SHA1Hash() As String
+    ReadOnly Property MonoIsotopicMass As Double
+    ReadOnly Property AverageMass As Double
+    ReadOnly Property SequenceLength As Integer
+    ReadOnly Property MolecularFormula As String
+    ReadOnly Property SHA1Hash As String
 
 End Interface
 
@@ -22,49 +22,49 @@ Public Class SequenceInfoCalculator
     Private m_Length As Integer
     Private m_MolFormula As String
     Private m_SHA1Hash As String
-    'Private m_SHA1Provider As System.Security.Cryptography.SHA1CryptoServiceProvider
+
     Shared m_SHA1Provider As System.Security.Cryptography.SHA1Managed
 
     Private m_DMSConnectionString As String = "Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI;"
 
     Public Sub New()
-        If SequenceInfoCalculator.m_AminoAcids Is Nothing Then
+        If m_AminoAcids Is Nothing Then
             Me.InitializeFromDMS()
         End If
-        'SequenceInfoCalculator.m_SHA1Provider = New System.Security.Cryptography.SHA1CryptoServiceProvider
-        If SequenceInfoCalculator.m_SHA1Provider Is Nothing Then
-            SequenceInfoCalculator.m_SHA1Provider = New System.Security.Cryptography.SHA1Managed
+
+        If m_SHA1Provider Is Nothing Then
+            m_SHA1Provider = New System.Security.Cryptography.SHA1Managed
         End If
     End Sub
 
 
 #Region " Ken's Added Properties "
 
-    Friend ReadOnly Property MonoIsotopicMass() As Double Implements ICalculateSeqInfo.MonoIsotopicMass
+    Public ReadOnly Property MonoIsotopicMass As Double Implements ICalculateSeqInfo.MonoIsotopicMass
         Get
             Return Me.m_MonoIsotopicMass
         End Get
     End Property
 
-    Friend ReadOnly Property AverageMass() As Double Implements ICalculateSeqInfo.AverageMass
+    Public ReadOnly Property AverageMass As Double Implements ICalculateSeqInfo.AverageMass
         Get
             Return Me.m_AverageMass
         End Get
     End Property
 
-    Friend ReadOnly Property SequenceLength() As Integer Implements ICalculateSeqInfo.SequenceLength
+    Public ReadOnly Property SequenceLength As Integer Implements ICalculateSeqInfo.SequenceLength
         Get
             Return Me.m_Length
         End Get
     End Property
 
-    Friend ReadOnly Property MolecularFormula() As String Implements ICalculateSeqInfo.MolecularFormula
+    Public ReadOnly Property MolecularFormula As String Implements ICalculateSeqInfo.MolecularFormula
         Get
             Return Me.m_MolFormula
         End Get
     End Property
 
-    Friend ReadOnly Property SHA1Hash() As String Implements ICalculateSeqInfo.SHA1Hash
+    Public ReadOnly Property SHA1Hash As String Implements ICalculateSeqInfo.SHA1Hash
         Get
             Return Me.m_SHA1Hash
         End Get
@@ -73,8 +73,7 @@ Public Class SequenceInfoCalculator
 
 #End Region
 
-
-    Protected Sub CalculateSequenceInfo(Sequence As String) Implements ICalculateSeqInfo.CalculateSequenceInfo
+    Public Sub CalculateSequenceInfo(Sequence As String) Implements ICalculateSeqInfo.CalculateSequenceInfo
         Dim tmpSeqInfo As SequenceInfo
         tmpSeqInfo = SequenceInfo(Sequence)
         Me.m_MonoIsotopicMass = tmpSeqInfo.MonoisotopicMass
@@ -178,13 +177,13 @@ Public Class SequenceInfoCalculator
             End If
         End Sub
 
-        Public ReadOnly Property Symbol() As String
+        Public ReadOnly Property Symbol As String
             Get
                 Return Me.Sequence
             End Get
         End Property
 
-        Public ReadOnly Property Abbreviation() As String
+        Public ReadOnly Property Abbreviation As String
             Get
                 Return Me.Name
             End Get
@@ -252,7 +251,7 @@ Public Class SequenceInfo
 
     End Sub
 
-    Public ReadOnly Property Sequence() As String
+    Public ReadOnly Property Sequence As String
         Get
             Return m_sequence
         End Get
@@ -269,61 +268,61 @@ Public Class SequenceInfo
         Me.m_S_Count = 0
     End Sub
 
-    Public ReadOnly Property Invalidated() As Boolean
+    Public ReadOnly Property Invalidated As Boolean
         Get
             Return Me.m_invalidated
         End Get
     End Property
 
-    Public ReadOnly Property Name() As String
+    Public ReadOnly Property Name As String
         Get
             Return m_name
         End Get
     End Property
 
-    Public ReadOnly Property C_Count() As Integer
+    Public ReadOnly Property C_Count As Integer
         Get
             Return m_C_Count
         End Get
     End Property
 
-    Public ReadOnly Property H_Count() As Integer
+    Public ReadOnly Property H_Count As Integer
         Get
             Return m_H_Count
         End Get
     End Property
 
-    Public ReadOnly Property N_Count() As Integer
+    Public ReadOnly Property N_Count As Integer
         Get
             Return m_N_Count
         End Get
     End Property
 
-    Public ReadOnly Property O_Count() As Integer
+    Public ReadOnly Property O_Count As Integer
         Get
             Return m_O_Count
         End Get
     End Property
 
-    Public ReadOnly Property S_Count() As Integer
+    Public ReadOnly Property S_Count As Integer
         Get
             Return m_S_Count
         End Get
     End Property
 
-    Public ReadOnly Property AverageMass() As Double
+    Public ReadOnly Property AverageMass As Double
         Get
             Return Me.m_Average_Mass + 18.01528
         End Get
     End Property
 
-    Public ReadOnly Property MonoisotopicMass() As Double
+    Public ReadOnly Property MonoisotopicMass As Double
         Get
             Return Me.m_Monoisotopic_Mass + 18.0105633
         End Get
     End Property
 
-    Public ReadOnly Property MolecularFormula() As String
+    Public ReadOnly Property MolecularFormula As String
         Get
             Return GetMolecularFormula()
         End Get
