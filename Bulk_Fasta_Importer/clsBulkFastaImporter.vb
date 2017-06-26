@@ -1,7 +1,7 @@
 ﻿Option Strict On
 
 ' This class will read a text file specifying one or more fasta files to load into the Protein Sequences database
-' 
+'
 ' -------------------------------------------------------------------------------
 ' Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
 ' Program started October 10, 2014
@@ -9,13 +9,16 @@
 ' E-mail: matthew.monroe@pnnl.gov or matt@alchemistmatt.com
 ' Website: http://panomics.pnnl.gov/ or http://omics.pnl.gov
 ' -------------------------------------------------------------------------------
-' 
+'
 ' Licensed under the Apache License, Version 2.0; you may not use this file except
-' in compliance with the License.  You may obtain a copy of the License at 
+' in compliance with the License.  You may obtain a copy of the License at
 ' http://www.apache.org/licenses/LICENSE-2.0
 
+Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Runtime.InteropServices
+Imports Protein_Uploader
+Imports ValidateFastaFile
 
 Public Class clsBulkFastaImporter
     Inherits clsProcessFilesBaseClass
@@ -27,7 +30,7 @@ Public Class clsBulkFastaImporter
     Protected Const QUERY_TIMEOUT_SECONDS As Integer = 20
 
     Enum eBulkImporterErrorCodes
-        NoError = 0       
+        NoError = 0
         UnspecifiedError = -1
     End Enum
 
@@ -44,7 +47,7 @@ Public Class clsBulkFastaImporter
 
 #Region "Classwide Variables"
 
-    Protected WithEvents m_UploadHandler As Protein_Uploader.IUploadProteins
+    Protected WithEvents m_UploadHandler As IUploadProteins
 
     ''' <summary>
     ''' Organism info, where keys are organism name and values are organism ID
@@ -88,7 +91,6 @@ Public Class clsBulkFastaImporter
 
 #End Region
 
-
     Public Sub New()
         MyBase.mFileDate = "October 22, 2015"
         InitializeLocalVariables()
@@ -99,8 +101,8 @@ Public Class clsBulkFastaImporter
 
         Dim strErrorMessage As String
 
-        If MyBase.ErrorCode = clsProcessFilesBaseClass.eProcessFilesErrorCodes.LocalizedError Or
-           MyBase.ErrorCode = clsProcessFilesBaseClass.eProcessFilesErrorCodes.NoError Then
+        If MyBase.ErrorCode = eProcessFilesErrorCodes.LocalizedError Or
+           MyBase.ErrorCode = eProcessFilesErrorCodes.NoError Then
             Select Case mLocalErrorCode
                 Case eBulkImporterErrorCodes.NoError
                     strErrorMessage = ""
@@ -132,7 +134,7 @@ Public Class clsBulkFastaImporter
         Me.ValidationAllowAllSymbolsInProteinNames = False
         Me.ValidationAllowAsterisks = True
         Me.ValidationAllowDash = True
-        Me.ValidationMaxProteinNameLength = ValidateFastaFile.clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
+        Me.ValidationMaxProteinNameLength = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
 
     End Sub
 
@@ -149,7 +151,7 @@ Public Class clsBulkFastaImporter
             End If
 
             Dim requiredColsShown As Boolean
-            Dim currentLine As Integer = 0
+            Dim currentLine = 0
 
             Using srFastaInfoFile = New StreamReader(New FileStream(fiInfoFile.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
                 While srFastaInfoFile.Peek > -1
@@ -266,14 +268,14 @@ Public Class clsBulkFastaImporter
     Private Function LoadAnnotationInfo() As Boolean
 
         Try
-            Const sqlQuery As String = "SELECT ID, Display_Name FROM V_Annotation_Type_Picker"
+            Const sqlQuery = "SELECT ID, Display_Name FROM V_Annotation_Type_Picker"
 
             mAnnotationTypeInfo.Clear()
 
-            Using cn As SqlClient.SqlConnection = New SqlClient.SqlConnection(Me.ProteinSeqsConnectionString)
+            Using cn = New SqlConnection(Me.ProteinSeqsConnectionString)
                 cn.Open()
 
-                Using cmd = New SqlClient.SqlCommand(sqlQuery, cn)
+                Using cmd = New SqlCommand(sqlQuery, cn)
 
                     cmd.CommandTimeout = QUERY_TIMEOUT_SECONDS
 
@@ -301,14 +303,14 @@ Public Class clsBulkFastaImporter
 
     Private Function LoadOrganisms() As Boolean
         Try
-            Const sqlQuery As String = "SELECT Organism_ID, Name FROM V_Organism_Export"
+            Const sqlQuery = "SELECT Organism_ID, Name FROM V_Organism_Export"
 
             mOrganismInfo.Clear()
 
-            Using cn As SqlClient.SqlConnection = New SqlClient.SqlConnection(Me.DMSConnectionString)
+            Using cn = New SqlConnection(Me.DMSConnectionString)
                 cn.Open()
 
-                Using cmd = New SqlClient.SqlCommand(sqlQuery, cn)
+                Using cmd = New SqlCommand(sqlQuery, cn)
 
                     cmd.CommandTimeout = QUERY_TIMEOUT_SECONDS
 
@@ -333,18 +335,18 @@ Public Class clsBulkFastaImporter
         End Try
 
     End Function
-    
+
     Private Function LoadProteinCollectionInfo() As Boolean
 
         Try
-            Const sqlQuery As String = "SELECT DISTINCT Protein_Collection_ID, Name, Collection_State FROM V_Protein_Collection_List_Export"
+            Const sqlQuery = "SELECT DISTINCT Protein_Collection_ID, Name, Collection_State FROM V_Protein_Collection_List_Export"
 
             mProteinCollectionInfo.Clear()
 
-            Using cn As SqlClient.SqlConnection = New SqlClient.SqlConnection(Me.ProteinSeqsConnectionString)
+            Using cn = New SqlConnection(Me.ProteinSeqsConnectionString)
                 cn.Open()
 
-                Using cmd = New SqlClient.SqlCommand(sqlQuery, cn)
+                Using cmd = New SqlCommand(sqlQuery, cn)
 
                     cmd.CommandTimeout = QUERY_TIMEOUT_SECONDS
 
@@ -499,7 +501,7 @@ Public Class clsBulkFastaImporter
 
     Public Function UploadFastaFileList(sourceFileList As List(Of udtFastaFileInfoType)) As Boolean
 
-        Dim fileInfoList = New List(Of Protein_Uploader.IUploadProteins.UploadInfo)
+        Dim fileInfoList = New List(Of IUploadProteins.UploadInfo)
 
         For Each sourceFile In sourceFileList
             Dim fiSourceFile = New FileInfo(sourceFile.FilePath)
@@ -508,7 +510,7 @@ Public Class clsBulkFastaImporter
                 Continue For
             End If
 
-            Dim upInfo = New Protein_Uploader.IUploadProteins.UploadInfo(fiSourceFile, sourceFile.OrganismID, sourceFile.AuthID)
+            Dim upInfo = New IUploadProteins.UploadInfo(fiSourceFile, sourceFile.OrganismID, sourceFile.AuthID)
             fileInfoList.Add(upInfo)
         Next
 
@@ -516,17 +518,17 @@ Public Class clsBulkFastaImporter
 
     End Function
 
-    Public Function UploadFastaFileList(fileInfoList As List(Of Protein_Uploader.IUploadProteins.UploadInfo)) As Boolean
+    Public Function UploadFastaFileList(fileInfoList As List(Of IUploadProteins.UploadInfo)) As Boolean
 
         Try
             ' Initialize the uploader
-            m_UploadHandler = New Protein_Uploader.clsPSUploadHandler(ProteinSeqsConnectionString)
+            m_UploadHandler = New clsPSUploadHandler(ProteinSeqsConnectionString)
 
             m_UploadHandler.InitialSetup()
 
-            m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowAllSymbolsInProteinNames, ValidationAllowAllSymbolsInProteinNames)
-            m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues, ValidationAllowAsterisks)
-            m_UploadHandler.SetValidationOptions(Protein_Uploader.IUploadProteins.eValidationOptionConstants.AllowDashInResidues, ValidationAllowDash)
+            m_UploadHandler.SetValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAllSymbolsInProteinNames, ValidationAllowAllSymbolsInProteinNames)
+            m_UploadHandler.SetValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues, ValidationAllowAsterisks)
+            m_UploadHandler.SetValidationOptions(IUploadProteins.eValidationOptionConstants.AllowDashInResidues, ValidationAllowDash)
             m_UploadHandler.MaximumProteinNameLength = ValidationMaxProteinNameLength
 
         Catch ex As Exception
@@ -568,16 +570,16 @@ Public Class clsBulkFastaImporter
     Private Sub m_UploadHandler_FASTAFileWarnings(FASTAFilePath As String, warningCollection As ArrayList) Handles m_UploadHandler.FASTAFileWarnings
         Try
             For Each warningInfo In warningCollection
-                Dim udtWarningInfo = CType(warningInfo, ValidateFastaFile.ICustomValidation.udtErrorInfoExtended)
+                Dim udtWarningInfo = CType(warningInfo, ICustomValidation.udtErrorInfoExtended)
                 ShowMessage("  ... Warning: " & udtWarningInfo.MessageText & ": " & udtWarningInfo.ProteinName)
             Next
         Catch ex As Exception
             Console.WriteLine("warningCollection is not type ValidateFastaFile.ICustomValidation.udtErrorInfoExtended")
         End Try
-        
+
     End Sub
 
-    Private Sub m_UploadHandler_FASTAValidationComplete(FASTAFilePath As String, UploadInfo As Protein_Uploader.IUploadProteins.UploadInfo) Handles m_UploadHandler.FASTAValidationComplete
+    Private Sub m_UploadHandler_FASTAValidationComplete(FASTAFilePath As String, UploadInfo As IUploadProteins.UploadInfo) Handles m_UploadHandler.FASTAValidationComplete
         ShowMessage("Validated " & FASTAFilePath)
         ShowMessage("  ... ProteinCount: " & UploadInfo.ProteinCount)
 
@@ -588,7 +590,7 @@ Public Class clsBulkFastaImporter
         Catch ex As Exception
             Console.WriteLine("Exception examining UploadInfo.ErrorList: " & ex.Message)
         End Try
-        
+
     End Sub
 
     Private Sub m_UploadHandler_InvalidFASTAFile(FASTAFilePath As String, errorCollection As ArrayList) Handles m_UploadHandler.InvalidFASTAFile
@@ -596,14 +598,14 @@ Public Class clsBulkFastaImporter
 
         Try
             For Each errorInfo In errorCollection
-                Dim udtErrorInfo As ValidateFastaFile.ICustomValidation.udtErrorInfoExtended
-                udtErrorInfo = CType(errorInfo, ValidateFastaFile.ICustomValidation.udtErrorInfoExtended)
+                Dim udtErrorInfo As ICustomValidation.udtErrorInfoExtended
+                udtErrorInfo = CType(errorInfo, ICustomValidation.udtErrorInfoExtended)
                 ShowMessage("  ... Error: " & udtErrorInfo.MessageText & ": " & udtErrorInfo.ProteinName)
             Next
         Catch ex As Exception
             Console.WriteLine("errorCollection is not type ValidateFastaFile.ICustomValidation.udtErrorInfoExtended")
         End Try
-      
+
     End Sub
 
     Private Sub m_UploadHandler_LoadEnd() Handles m_UploadHandler.LoadEnd
@@ -625,7 +627,7 @@ Public Class clsBulkFastaImporter
 
     End Sub
 
-    Private Sub m_UploadHandler_ValidFASTAFileLoaded(FASTAFilePath As String, UploadData As Protein_Uploader.IUploadProteins.UploadInfo) Handles m_UploadHandler.ValidFASTAFileLoaded
+    Private Sub m_UploadHandler_ValidFASTAFileLoaded(FASTAFilePath As String, UploadData As IUploadProteins.UploadInfo) Handles m_UploadHandler.ValidFASTAFileLoaded
         ShowMessage("Uploaded " & FASTAFilePath)
         ShowMessage("  ... ProteinCount: " & UploadData.ProteinCount)
 
@@ -635,7 +637,7 @@ Public Class clsBulkFastaImporter
             End If
         Catch ex As Exception
             Console.WriteLine("Exception examining UploadData.ErrorList: " & ex.Message)
-        End Try        
+        End Try
 
     End Sub
 

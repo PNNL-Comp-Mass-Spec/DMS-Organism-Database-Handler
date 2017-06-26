@@ -1,6 +1,10 @@
 Option Strict On
 
+Imports System.Collections.Generic
+Imports System.IO
+Imports System.Security.Cryptography
 Imports Protein_Exporter.ExportProteinCollectionsIFC
+Imports Protein_Storage
 
 Public MustInherit Class clsExportProteins
     Implements IExportProteins
@@ -16,13 +20,13 @@ Public MustInherit Class clsExportProteins
     Protected Event ExportEnd() Implements IExportProteins.ExportEnd
 
     Protected Function Export(
-      Proteins As Protein_Storage.IProteinStorage,
+      Proteins As IProteinStorage,
       ByRef destinationPath As String,
-      SelectedProteinList As ArrayList) As String Implements IExportProteins.Export
+      SelectedProteinList As List(Of String)) As String Implements IExportProteins.Export
 
-        Dim tmpProteinsList As Protein_Storage.IProteinStorage
+        Dim tmpProteinsList As IProteinStorage
 
-        tmpProteinsList = New Protein_Storage.clsProteinStorage(System.IO.Path.GetFileNameWithoutExtension(destinationPath))
+        tmpProteinsList = New clsProteinStorage(Path.GetFileNameWithoutExtension(destinationPath))
 
         Dim Reference As String
 
@@ -35,7 +39,7 @@ Public MustInherit Class clsExportProteins
     End Function
 
     Protected MustOverride Function Export(
-      Proteins As Protein_Storage.IProteinStorage,
+      Proteins As IProteinStorage,
       ByRef destinationPath As String) As String Implements IExportProteins.Export
 
     Protected MustOverride Function Export(

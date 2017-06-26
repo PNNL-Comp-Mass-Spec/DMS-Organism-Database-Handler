@@ -1,5 +1,8 @@
 Option Strict On
 
+Imports System.Text
+Imports Protein_Exporter.ExportProteinCollectionsIFC
+
 Public Class clsGetFASTAFromDMSScrambled
     Inherits clsGetFASTAFromDMSForward
 
@@ -8,7 +11,7 @@ Public Class clsGetFASTAFromDMSScrambled
 
     Public Sub New(
         ProteinStorageConnectionString As String,
-        DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes)
+        DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
 
         MyBase.New(ProteinStorageConnectionString, DatabaseFormatType)
         'Me.m_Naming_Suffix = "_scrambled_seed_" + RandomSeed.ToString
@@ -17,7 +20,7 @@ Public Class clsGetFASTAFromDMSScrambled
 
     Overrides Function SequenceExtender(originalSequence As String, collectionCount As Integer) As String
 
-        Dim sb As New System.Text.StringBuilder(originalSequence.Length)
+        Dim sb As New StringBuilder(originalSequence.Length)
         Dim sequence As String = originalSequence
 
         'Dim origArray() As Char = originalSequence.ToCharArray

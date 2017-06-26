@@ -1,10 +1,17 @@
 Option Strict On
 
+Imports System.Collections.Generic
+Imports System.IO
+Imports System.Security.Principal
+Imports System.Text
+Imports System.Text.RegularExpressions
 Imports Protein_Exporter.ExportProteinCollectionsIFC
+Imports Protein_Storage
+Imports TableManipulationBase
 
 Public Class clsGetFASTAFromDMSForward
 
-    Protected m_TableGrabber As TableManipulationBase.IGetSQLData
+    Protected m_TableGrabber As IGetSQLData
     Protected WithEvents m_fileDumper As IExportProteins
     Protected m_AllCollections As Hashtable
     Protected m_OrganismList As Hashtable
@@ -13,8 +20,8 @@ Public Class clsGetFASTAFromDMSForward
     Friend m_CurrentFileProteinCount As Integer
     Protected m_CurrentArchiveFileName As String
 
-    Protected m_PSC As Protein_Storage.IProteinStorage
-    Protected m_PSEntry As Protein_Storage.IProteinStorageEntry
+    Protected m_PSC As IProteinStorage
+    Protected m_PSEntry As IProteinStorageEntry
 
 
     Protected m_CollectionsCache As DataTable
@@ -30,10 +37,10 @@ Public Class clsGetFASTAFromDMSForward
 
     Public Sub New(
      ProteinStorageConnectionString As String,
-     DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes)
+     DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
 
         'Me.m_SHA1Provider = New System.Security.Cryptography.SHA1Managed
-        Me.m_TableGrabber = New TableManipulationBase.clsDBTask(ProteinStorageConnectionString, True)
+        Me.m_TableGrabber = New clsDBTask(ProteinStorageConnectionString, True)
         Me.m_AllCollections = Me.GetCollectionNameList()
         Me.m_OrganismList = Me.GetOrganismList()
 
@@ -49,7 +56,7 @@ Public Class clsGetFASTAFromDMSForward
     End Sub
 
 
-    Event FileGenerationCompleted(FullOutputPath As String)
+    Event FileGenerationCompleted(outputPath As String)
     Event FileGenerationProgress(statusMsg As String, fractionDone As Double)
     Event FileGenerationStarted(taskMsg As String)
 
@@ -108,21 +115,21 @@ Public Class clsGetFASTAFromDMSForward
         Dim trueName As String = String.Empty
 
         Dim tmpID As Integer
-        Dim tmpIDListSB As New System.Text.StringBuilder
+        Dim tmpIDListSB As New StringBuilder
         Dim cipherSeq As String
         Dim clearSeq As String
 
         Dim decryptionRow As DataRow
 
-        Dim nameCheckRegex As New System.Text.RegularExpressions.Regex("(?<collectionname>.+)(?<direction>_(forward|reversed|scrambled)).*\.(?<type>(fasta|fasta\.pro))")
+        Dim nameCheckRegex As New Regex("(?<collectionname>.+)(?<direction>_(forward|reversed|scrambled)).*\.(?<type>(fasta|fasta\.pro))")
 
         If Not CheckProteinCollectionNameValidity(ProteinCollectionNameList) Then
             Return ""
         End If
 
-        Dim m As System.Text.RegularExpressions.Match
+        Dim m As Match
 
-        Dim user As New System.Security.Principal.WindowsPrincipal(System.Security.Principal.WindowsIdentity.GetCurrent)
+        Dim user As New WindowsPrincipal(WindowsIdentity.GetCurrent)
         Dim user_ID As String = user.Identity.Name
         Dim collectionPassphrases As Hashtable = Nothing
 
@@ -175,20 +182,20 @@ Public Class clsGetFASTAFromDMSForward
         Dim currentCollectionCount As Integer
         Dim proteinCollectionsExported As Integer
 
-        ' Get a temp file name; however, create the file in the target folder path 
+        ' Get a temp file name; however, create the file in the target folder path
         ' (in case the system-defined temp directory is on a different drive than the target folder)
 
-        Dim fiOutputPathCheck As System.IO.FileInfo
+        Dim fiOutputPathCheck As FileInfo
         Do
-            tmpOutputPathCandidate = System.IO.Path.GetTempFileName
+            tmpOutputPathCandidate = Path.GetTempFileName
             Try
                 ' The GetTempFileName function created a temp file that we don't need; delete it now (but use try/catch just in case the deletion fails for some freak reason)
-                System.IO.File.Delete(tmpOutputPathCandidate)
+                File.Delete(tmpOutputPathCandidate)
             Catch ex As Exception
             End Try
 
-            tmpOutputPath = System.IO.Path.Combine(ExportPath, System.IO.Path.GetFileName(tmpOutputPathCandidate))
-            fiOutputPathCheck = New System.IO.FileInfo(tmpOutputPath)
+            tmpOutputPath = Path.Combine(destinationFolderPath, Path.GetFileName(tmpOutputPathCandidate))
+            fiOutputPathCheck = New FileInfo(tmpOutputPath)
 
         Loop While fiOutputPathCheck.Exists
 
@@ -308,7 +315,7 @@ Public Class clsGetFASTAFromDMSForward
         Next
         OnExportComplete(tmpOutputPath)
 
-        Dim tmpFI = New System.IO.FileInfo(tmpOutputPath)
+        Dim tmpFI = New FileInfo(tmpOutputPath)
 
         tmpIDListSB.Remove(tmpIDListSB.Length - 1, 1)
         Dim name As String '= hash
@@ -341,15 +348,15 @@ Public Class clsGetFASTAFromDMSForward
         Me.m_CurrentArchiveFileName = name
 
         ' Rename (move) the temporary file to the final, full name
-        If System.IO.File.Exists(Me.m_CurrentFullOutputPath) Then
-            System.IO.File.Delete(Me.m_CurrentFullOutputPath)
+        If File.Exists(Me.m_CurrentFullOutputPath) Then
+            File.Delete(Me.m_CurrentFullOutputPath)
         End If
         tmpFI.MoveTo(Me.m_CurrentFullOutputPath)
 
         ' Assuming the final file now exists, delete the temporary file (if present)
-        Dim outputfi = New System.IO.FileInfo(Me.m_CurrentFullOutputPath)
+        Dim outputfi = New FileInfo(Me.m_CurrentFullOutputPath)
         If outputfi.Exists Then
-            tmpFI = New System.IO.FileInfo(tmpOutputPath)
+            tmpFI = New FileInfo(tmpOutputPath)
             If tmpFI.Exists Then
                 tmpFI.Delete()
             End If
@@ -405,7 +412,7 @@ Public Class clsGetFASTAFromDMSForward
         Return Me.GetPrimaryAuthorityID(proteinCollectionID)
     End Function
 
-    Function GetCollectionNameList() As System.Collections.Hashtable 'Implements IGetFASTAFromDMS.GetAllCollections
+    Function GetCollectionNameList() As Hashtable 'Implements IGetFASTAFromDMS.GetAllCollections
         If Me.m_CollectionsCache Is Nothing Then
             Me.RefreshCollectionCache()
         End If
@@ -413,7 +420,7 @@ Public Class clsGetFASTAFromDMSForward
         Return Me.m_TableGrabber.DataTableToHashtable(Me.m_CollectionsCache, "Protein_Collection_ID", "FileName")
     End Function
 
-    Function GetCollectionsByOrganism(OrganismID As Integer) As System.Collections.Hashtable
+    Function GetCollectionsByOrganism(OrganismID As Integer) As Hashtable
         If Me.m_CollectionsCache Is Nothing Then
             Me.RefreshCollectionCache()
         End If
@@ -434,7 +441,7 @@ Public Class clsGetFASTAFromDMSForward
         Return tmpTable
     End Function
 
-    Function GetOrganismList() As System.Collections.Hashtable
+    Function GetOrganismList() As Hashtable
         If Me.m_OrganismCache Is Nothing Then
             Me.RefreshOrganismCache()
         End If

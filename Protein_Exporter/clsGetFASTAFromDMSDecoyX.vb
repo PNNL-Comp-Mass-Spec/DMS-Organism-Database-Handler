@@ -1,12 +1,14 @@
 ﻿
 Option Strict On
 
+Imports Protein_Exporter.ExportProteinCollectionsIFC
+
 Public Class clsGetFASTAFromDMSDecoyX
     Inherits clsGetFASTAFromDMSDecoy
 
     Public Sub New(
         ProteinStorageConnectionString As String,
-        DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes)
+        DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
 
         MyBase.New(ProteinStorageConnectionString, DatabaseFormatType)
 

@@ -1,4 +1,5 @@
 Imports System.Collections.Generic
+Imports Protein_Exporter
 
 Public Interface IAddUpdateEntries
 
@@ -162,9 +163,9 @@ Public Class clsAddUpdateEntries
     Protected m_ProteinLengths As Hashtable
     Protected m_MaxProteinNameLength As Integer
 
-    Protected m_Hasher As System.Security.Cryptography.SHA1Managed
-    Protected ProteinHashThread As System.Threading.Thread
-    Protected ReferenceHashThread As System.Threading.Thread
+    Protected m_Hasher As Security.Cryptography.SHA1Managed
+    Protected ProteinHashThread As Threading.Thread
+    Protected ReferenceHashThread As Threading.Thread
 
 #Region "Properties"
     Public Property MaximumProteinNameLength As Integer Implements IAddUpdateEntries.MaximumProteinNameLength
@@ -199,7 +200,7 @@ Public Class clsAddUpdateEntries
 
     Public Sub New(PISConnectionString As String)
         Me.m_SQLAccess = New TableManipulationBase.clsDBTask(PISConnectionString, True)
-        Me.m_Hasher = New System.Security.Cryptography.SHA1Managed
+        Me.m_Hasher = New Security.Cryptography.SHA1Managed
     End Sub
 
     Public Sub CloseConnection()
@@ -423,7 +424,7 @@ Public Class clsAddUpdateEntries
         Return tmpAnnTypeID
 
     End Function
-    
+
     Protected Function MakeNewProteinCollection(
         FileName As String,
         Description As String,
@@ -503,7 +504,7 @@ Public Class clsAddUpdateEntries
     End Sub
 
     Protected Function GetProteinCollectionID(FilePath As String) As Integer Implements IAddUpdateEntries.GetProteinCollectionID
-        Return Me.RunSP_GetProteinCollectionID(System.IO.Path.GetFileNameWithoutExtension(FilePath))
+        Return Me.RunSP_GetProteinCollectionID(IO.Path.GetFileNameWithoutExtension(FilePath))
     End Function
 
     Protected Function CountProteinCollectionMembers(ProteinCollectionID As Integer) As Integer Implements IAddUpdateEntries.GetProteinCollectionMemberCount
@@ -522,7 +523,7 @@ Public Class clsAddUpdateEntries
 
         Return Me.RunSP_AddProteinCollectionMember(ReferenceID, ProteinID, Sorting_Index, ProteinCollectionID)
     End Function
-    
+
     Protected Function UpdateProteinCollectionMember(
         ReferenceID As Integer,
         ProteinID As Integer,
@@ -577,11 +578,14 @@ Public Class clsAddUpdateEntries
 
     Protected Function GenerateHash(SourceText As String) As String Implements IAddUpdateEntries.GenerateArbitraryHash
         'Create an encoding object to ensure the encoding standard for the source text
-        Dim Ue As New System.Text.ASCIIEncoding
+        Dim Ue As New Text.ASCIIEncoding
+
         'Retrieve a byte array based on the source text
         Dim ByteSourceText() As Byte = Ue.GetBytes(SourceText)
+
         'Compute the hash value from the source
         Dim SHA1_hash() As Byte = Me.m_Hasher.ComputeHash(ByteSourceText)
+
         'And convert it to String format for return
         Dim SHA1string As String = HexConverter.ToHexString(SHA1_hash)
 
@@ -642,7 +646,7 @@ Public Class clsAddUpdateEntries
         mode As IAddUpdateEntries.SPModes) As Integer
 
         Dim sp_Save As SqlClient.SqlCommand
-        Dim EncryptionFlag As Integer = 0
+        Dim EncryptionFlag = 0
         If IsEncrypted Then
             EncryptionFlag = 1
         End If
@@ -702,7 +706,7 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 
@@ -768,7 +772,7 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 
@@ -844,7 +848,7 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         If ret = 0 Then
             ' A zero was returned for the protein collection ID; this indicates and error
@@ -859,7 +863,7 @@ Public Class clsAddUpdateEntries
 
             If Not String.IsNullOrEmpty(SPMsg) Then Message &= "; " & SPMsg
 
-            Throw New System.Data.ConstraintException(Message)
+            Throw New ConstraintException(Message)
 
         End If
 
@@ -931,7 +935,7 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 
@@ -975,7 +979,7 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 
@@ -1019,7 +1023,7 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 
@@ -1067,7 +1071,7 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 
@@ -1106,7 +1110,7 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 
@@ -1152,7 +1156,7 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 
@@ -1183,7 +1187,7 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 
@@ -1251,7 +1255,7 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         If ret = 0 Then
             ' A zero was returned for the protein reference ID; this indicates and error
@@ -1266,7 +1270,7 @@ Public Class clsAddUpdateEntries
 
             If Not String.IsNullOrEmpty(SPMsg) Then Message &= "; " & SPMsg
 
-            Throw New System.Data.ConstraintException(Message)
+            Throw New ConstraintException(Message)
 
         End If
 
@@ -1300,7 +1304,7 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 
@@ -1350,7 +1354,7 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 
@@ -1390,7 +1394,7 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 
@@ -1436,7 +1440,7 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 
@@ -1480,7 +1484,7 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
     End Function
@@ -1521,7 +1525,7 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 
@@ -1554,13 +1558,12 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 
 
     End Function
-
 
 #End Region
 

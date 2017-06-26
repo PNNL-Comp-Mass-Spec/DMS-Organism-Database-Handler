@@ -1,6 +1,10 @@
 Option Strict On
 
+Imports System.Data.SqlClient
 Imports System.IO
+Imports System.Security.Cryptography
+Imports System.Text
+Imports Protein_Exporter.ExportProteinCollectionsIFC
 
 Public Class clsArchiveToFile
     Inherits clsArchiveOutputFilesBase
@@ -8,7 +12,7 @@ Public Class clsArchiveToFile
     Const DEFAULT_BASE_ARCHIVE_PATH As String = "\\gigasax\DMS_FASTA_File_Archive\"
 
     Protected ReadOnly m_BaseArchivePath As String
-    Protected ReadOnly m_SHA1Provider As System.Security.Cryptography.SHA1Managed
+    Protected ReadOnly m_SHA1Provider As SHA1Managed
 
     Sub New(PSConnectionString As String, ByRef ExporterModule As clsGetFASTAFromDMS)
 
@@ -22,7 +26,7 @@ Public Class clsArchiveToFile
             m_BaseArchivePath = DEFAULT_BASE_ARCHIVE_PATH
         End If
 
-        Me.m_SHA1Provider = New System.Security.Cryptography.SHA1Managed
+        Me.m_SHA1Provider = New SHA1Managed()
     End Sub
 
     Protected Overrides Function DispositionFile(
@@ -30,7 +34,7 @@ Public Class clsArchiveToFile
      SourceFilePath As String,
      CreationOptionsString As String,
      SourceAuthenticationHash As String,
-     OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes,
+     OutputSequenceType As IGetFASTAFromDMS.SequenceTypes,
      ArchivedFileType As IArchiveOutputFiles.CollectionTypes,
      ProteinCollectionsList As String) As Integer
 
@@ -41,8 +45,7 @@ Public Class clsArchiveToFile
 
         Me.CheckTableGetterStatus()
 
-        Dim ArchivedFileEntryID = 0
-
+        Dim ArchivedFileEntryID As Integer
 
         Dim archivePath As String
         Dim fi = New FileInfo(SourceFilePath)
@@ -103,31 +106,30 @@ Public Class clsArchiveToFile
                 fi.CopyTo(Me.m_Archived_File_Name)
             End If
 
-        Catch exUnauthorized As System.UnauthorizedAccessException
+        Catch exUnauthorized As UnauthorizedAccessException
             Console.WriteLine("  Warning: access denied copying file to " & Me.m_Archived_File_Name)
         Catch ex As Exception
             Me.m_LastError = "File copying error: " + ex.Message
             Return 0
         End Try
 
-        fi = Nothing
-        destFI = Nothing
-
         Return ArchivedFileEntryID
-
 
     End Function
 
     Protected Function GenerateHash(SourceText As String) As String
         'Create an encoding object to ensure the encoding standard for the source text
-        Dim Ue As New System.Text.ASCIIEncoding
+        Dim Ue As New ASCIIEncoding()
+
         'Retrieve a byte array based on the source text
         Dim ByteSourceText() As Byte = Ue.GetBytes(SourceText)
+
         'Compute the hash value from the source
-        Dim SHA1_hash() As Byte = Me.m_SHA1Provider.ComputeHash(ByteSourceText)
+        Dim SHA1_hash() As Byte = m_SHA1Provider.ComputeHash(ByteSourceText)
+
         'And convert it to String format for return
         'Dim SHA1string As String = Convert.ToBase64String(SHA1_hash)
-        Dim SHA1string As String = BitConverter.ToString(SHA1_hash).Replace("-", "").ToLower
+        Dim SHA1string As String = BitConverter.ToString(SHA1_hash).Replace("-", "").ToLower()
 
         Return SHA1string
     End Function
@@ -138,11 +140,11 @@ Public Class clsArchiveToFile
      FileDate As DateTime,
      Authentication_Hash As String,
      ArchivedFileType As IArchiveOutputFiles.CollectionTypes,
-     OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes) As String
+     OutputSequenceType As IGetFASTAFromDMS.SequenceTypes) As String
 
         Dim pathString As String
         pathString = Path.Combine(m_BaseArchivePath, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType))
-        pathString = Path.Combine(pathString, [Enum].GetName(GetType(ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes), OutputSequenceType))
+        pathString = Path.Combine(pathString, [Enum].GetName(GetType(IGetFASTAFromDMS.SequenceTypes), OutputSequenceType))
         pathString = Path.Combine(pathString, "ID_00000_" + Authentication_Hash + Path.GetExtension(SourceFilePath))
 
         Return pathString
@@ -156,14 +158,14 @@ Public Class clsArchiveToFile
      CollectionListHash As String,
      CollectionListHexHash As String) As Integer
 
-        Dim sp_Save As SqlClient.SqlCommand
+        Dim sp_Save As SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("UpdateFileArchiveEntryCollectionList", Me.m_TableGetter.Connection)
+        sp_Save = New SqlCommand("UpdateFileArchiveEntryCollectionList", Me.m_TableGetter.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
         'Define parameters
-        Dim myParam As SqlClient.SqlParameter
+        Dim myParam As SqlParameter
 
         'Define parameter for sp's return value
         myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
@@ -216,14 +218,14 @@ Public Class clsArchiveToFile
 
 
 
-        Dim sp_Save As SqlClient.SqlCommand
+        Dim sp_Save As SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("AddOutputFileArchiveEntry", Me.m_TableGetter.Connection)
+        sp_Save = New SqlCommand("AddOutputFileArchiveEntry", Me.m_TableGetter.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
         'Define parameters
-        Dim myParam As SqlClient.SqlParameter
+        Dim myParam As SqlParameter
 
         'Define parameter for sp's return value
         myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)

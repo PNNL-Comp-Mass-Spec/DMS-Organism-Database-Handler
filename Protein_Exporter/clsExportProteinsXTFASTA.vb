@@ -1,6 +1,11 @@
 Option Strict On
 
 Imports System.Collections.Generic
+Imports System.IO
+Imports System.Text
+Imports PRISM
+Imports PRISMWin
+Imports Protein_Storage
 
 Public Class clsExportProteinsXTFASTA
     Inherits clsExportProteins
@@ -13,40 +18,40 @@ Public Class clsExportProteinsXTFASTA
 
 
     Protected Overloads Overrides Function Export(
-      Proteins As Protein_Storage.IProteinStorage,
+      Proteins As IProteinStorage,
       ByRef destinationPath As String) As String
 
         Const REQUIRED_SIZE_MB = 150
 
         Dim buffer(HEADER_STRING.Length) As Byte
 
-        buffer = System.Text.Encoding.Default.GetBytes(HEADER_STRING)
+        buffer = Encoding.Default.GetBytes(HEADER_STRING)
 
         ReDim Preserve buffer(255)
 
         Dim currentFreeSpaceBytes As Int64
         Dim errorMessage As String = String.Empty
 
-        Dim success = PRISMWin.clsDiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
+        Dim success = clsDiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
         If Not success Then
             If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsDiskInfo.GetDiskFreeSpace returned a blank error message"
-            Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
+            Throw New IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
         End If
 
-        If Not PRISM.clsFileTools.ValidateFreeDiskSpace(destinationPath, REQUIRED_SIZE_MB, currentFreeSpaceBytes, errorMessage) Then
+        If Not clsFileTools.ValidateFreeDiskSpace(destinationPath, REQUIRED_SIZE_MB, currentFreeSpaceBytes, errorMessage) Then
             If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
-            Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
+            Throw New IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
         End If
 
-        Using bw = New System.IO.BinaryWriter(IO.File.OpenWrite(destinationPath))
+        Using bw = New BinaryWriter(File.OpenWrite(destinationPath))
 
-            bw.BaseStream.Seek(0, IO.SeekOrigin.Begin)
+            bw.BaseStream.Seek(0, SeekOrigin.Begin)
 
             Dim proteinLength As Integer
 
             Dim tmpSeq As String
             Dim tmpName As String
-            Dim tmpPC As Protein_Storage.IProteinStorageEntry
+            Dim tmpPC As IProteinStorageEntry
             Dim tmpNum As Int32
 
             Me.OnExportStart("Writing to X!Tandem formatted FASTA File")
@@ -62,7 +67,7 @@ Public Class clsExportProteinsXTFASTA
                 proteinArray.Add(proteinEnum.Current.Key)
             End While
 
-            Dim encoding As New System.Text.ASCIIEncoding
+            Dim encoding As New ASCIIEncoding
 
             Dim EventTriggerThresh As Integer
             If counterMax <= 25 Then
@@ -128,27 +133,27 @@ Public Class clsExportProteinsXTFASTA
 
         Dim buffer(HEADER_STRING.Length) As Byte
 
-        buffer = System.Text.Encoding.Default.GetBytes(HEADER_STRING)
+        buffer = Encoding.Default.GetBytes(HEADER_STRING)
 
         ReDim Preserve buffer(255)
 
         Dim currentFreeSpaceBytes As Int64
         Dim errorMessage As String = String.Empty
 
-        Dim success = PRISMWin.clsDiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
+        Dim success = clsDiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
         If Not success Then
             If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsDiskInfo.GetDiskFreeSpace returned a blank error message"
-            Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
+            Throw New IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
         End If
 
-        If Not PRISM.clsFileTools.ValidateFreeDiskSpace(destinationPath, REQUIRED_SIZE_MB, currentFreeSpaceBytes, errorMessage) Then
+        If Not clsFileTools.ValidateFreeDiskSpace(destinationPath, REQUIRED_SIZE_MB, currentFreeSpaceBytes, errorMessage) Then
             If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
-            Throw New System.IO.IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
+            Throw New IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
         End If
 
-        Using bw = New System.IO.BinaryWriter(IO.File.OpenWrite(destinationPath))
+        Using bw = New BinaryWriter(File.OpenWrite(destinationPath))
 
-            bw.BaseStream.Seek(0, IO.SeekOrigin.Begin)
+            bw.BaseStream.Seek(0, SeekOrigin.Begin)
 
             'Dim e As IEnumerator = Proteins.GetEnumerator
 
@@ -175,7 +180,7 @@ Public Class clsExportProteinsXTFASTA
                 counterMax = proteinTable.Rows.Count
                 foundRows = proteinTable.Select("", "Name")
 
-                Dim encoding As New System.Text.ASCIIEncoding
+                Dim encoding As New ASCIIEncoding
 
                 Dim EventTriggerThresh As Integer
                 If counterMax <= 25 Then

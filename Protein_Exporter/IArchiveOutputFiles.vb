@@ -1,5 +1,7 @@
 Option Strict On
 
+Imports Protein_Exporter.ExportProteinCollectionsIFC
+
 Public Interface IArchiveOutputFiles
 
     Enum CollectionTypes
@@ -19,8 +21,8 @@ Public Interface IArchiveOutputFiles
     Function ArchiveCollection(
         ProteinCollectionID As Integer,
         ProteinCollectionType As CollectionTypes,
-        OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes,
-        DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
+        OutputSequenceType As IGetFASTAFromDMS.SequenceTypes,
+        DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
         SourceFilePath As String,
         CreationOptionsString As String,
         Authentication_Hash As String,
@@ -29,8 +31,8 @@ Public Interface IArchiveOutputFiles
     Function ArchiveCollection(
         ProteinCollectionName As String,
         ProteinCollectionType As CollectionTypes,
-        OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes,
-        DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
+        OutputSequenceType As IGetFASTAFromDMS.SequenceTypes,
+        DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
         SourceFilePath As String,
         CreationOptionsString As String,
         Authentication_Hash As String,

@@ -1,15 +1,19 @@
 Option Strict On
 
+Imports System.Data.SqlClient
 Imports System.IO
+Imports System.Text.RegularExpressions
+Imports Protein_Exporter.ExportProteinCollectionsIFC
+Imports TableManipulationBase
 
 Public MustInherit Class clsArchiveOutputFilesBase
     Implements IArchiveOutputFiles
 
     Protected m_Exporter As clsGetFASTAFromDMSForward
-    Protected m_TableGetter As TableManipulationBase.IGetSQLData
+    Protected m_TableGetter As IGetSQLData
     Protected m_PSConnectionString As String
     Protected m_LastError As String
-    Protected m_OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes
+    Protected m_OutputSequenceType As IGetFASTAFromDMS.SequenceTypes
     Protected m_Archived_File_Name As String
 
     Protected Event ArchiveStart() Implements IArchiveOutputFiles.ArchiveStart
@@ -22,7 +26,7 @@ Public MustInherit Class clsArchiveOutputFilesBase
     Sub New(PSConnectionString As String, ByRef ExporterModule As clsGetFASTAFromDMS)
 
         Me.m_PSConnectionString = PSConnectionString
-        Me.m_TableGetter = New TableManipulationBase.clsDBTask(PSConnectionString, True)
+        Me.m_TableGetter = New clsDBTask(PSConnectionString, True)
         Me.m_Exporter = ExporterModule.ExporterComponent
     End Sub
 
@@ -42,8 +46,8 @@ Public MustInherit Class clsArchiveOutputFilesBase
     Protected Function ArchiveCollection(
         ProteinCollectionID As Integer,
         ArchivedFileType As IArchiveOutputFiles.CollectionTypes,
-        OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes,
-        DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
+        OutputSequenceType As IGetFASTAFromDMS.SequenceTypes,
+        DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
         SourceFilePath As String,
         CreationOptionsString As String,
         Authentication_Hash As String,
@@ -65,8 +69,8 @@ Public MustInherit Class clsArchiveOutputFilesBase
     Protected Function ArchiveCollection(
         ProteinCollectionName As String,
         ArchivedFileType As IArchiveOutputFiles.CollectionTypes,
-        OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes,
-        DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
+        OutputSequenceType As IGetFASTAFromDMS.SequenceTypes,
+        DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
         SourceFilePath As String,
         CreationOptionsString As String,
         Authentication_Hash As String,
@@ -91,14 +95,14 @@ Public MustInherit Class clsArchiveOutputFilesBase
         SourceFilePath As String,
         CreationOptionsString As String,
         SourceAuthenticationHash As String,
-        OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes,
+        OutputSequenceType As IGetFASTAFromDMS.SequenceTypes,
         ArchivedFileType As IArchiveOutputFiles.CollectionTypes, ProteinCollectionsList As String) As Integer
 
     Protected Function GetProteinCount(SourceFilePath As String) As Integer
-        Dim idLineRegex As System.Text.RegularExpressions.Regex
-        idLineRegex = New System.Text.RegularExpressions.Regex("^>.+", System.Text.RegularExpressions.RegexOptions.Compiled)
+        Dim idLineRegex As Regex
+        idLineRegex = New Regex("^>.+", RegexOptions.Compiled)
 
-        Dim fi = New System.IO.FileInfo(SourceFilePath)
+        Dim fi = New FileInfo(SourceFilePath)
         Dim counter = 0
 
         If (fi.Exists) Then
@@ -118,7 +122,7 @@ Public MustInherit Class clsArchiveOutputFilesBase
 
     Protected Sub CheckTableGetterStatus()
         If Me.m_TableGetter Is Nothing Then
-            Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString, True)
+            Me.m_TableGetter = New clsDBTask(Me.m_PSConnectionString, True)
         End If
     End Sub
 
@@ -176,14 +180,14 @@ Public MustInherit Class clsArchiveOutputFilesBase
         ProteinCollectionID As Integer,
         ArchivedFileID As Integer) As Integer
 
-        Dim sp_Save As SqlClient.SqlCommand
+        Dim sp_Save As SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("AddArchivedFileEntryXRef", Me.m_TableGetter.Connection)
+        sp_Save = New SqlCommand("AddArchivedFileEntryXRef", Me.m_TableGetter.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
         'Define parameters
-        Dim myParam As SqlClient.SqlParameter
+        Dim myParam As SqlParameter
 
         'Define parameter for sp's return value
         myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)

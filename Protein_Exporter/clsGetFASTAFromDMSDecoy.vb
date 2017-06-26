@@ -1,5 +1,9 @@
 Option Strict On
 
+Imports System.Collections.Generic
+Imports System.IO
+Imports Protein_Exporter.ExportProteinCollectionsIFC
+
 Public Class clsGetFASTAFromDMSDecoy
     Inherits clsGetFASTAFromDMSForward
 
@@ -9,7 +13,7 @@ Public Class clsGetFASTAFromDMSDecoy
 
     Public Sub New(
         ProteinStorageConnectionString As String,
-        DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes)
+        DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
 
         MyBase.New(ProteinStorageConnectionString, DatabaseFormatType)
         Me.m_RevGenerator = New clsGetFASTAFromDMSReversed(

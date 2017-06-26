@@ -1,5 +1,9 @@
 ﻿Option Strict On
 
+Imports System.IO
+Imports System.Reflection
+Imports System.Threading
+Imports ValidateFastaFile
 ' This program can be used to load one or more FASTA files into the Protein Sequences database
 '
 
@@ -9,7 +13,7 @@ Module modMain
 
     Private mInputFilePath As String
     Private mPreviewMode As Boolean
-    Private mMaxProteinNameLength As Integer = ValidateFastaFile.clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
+    Private mMaxProteinNameLength As Integer = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
 
     Private mLogMessagesToFile As Boolean
     Private mLogFilePath As String
@@ -17,7 +21,7 @@ Module modMain
     Private mQuietMode As Boolean
 
     Private WithEvents mBulkImporter As clsBulkFastaImporter
-    Private mLastProgressReportTime As System.DateTime
+    Private mLastProgressReportTime As DateTime
     Private mLastProgressReportValue As Integer
 
     Public Function Main() As Integer
@@ -106,14 +110,14 @@ Module modMain
     End Sub
 
     Private Function GetAppVersion() As String
-        Return System.Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString & " (" & PROGRAM_DATE & ")"
+        Return Assembly.GetExecutingAssembly.GetName.Version.ToString & " (" & PROGRAM_DATE & ")"
     End Function
 
     Private Function SetOptionsUsingCommandLineParameters(objParseCommandLine As clsParseCommandLine) As Boolean
         ' Returns True if no problems; otherwise, returns false
 
         Dim strValue As String = String.Empty
-        Dim strValidParameters() As String = New String() {"I", "L", "Preview", "MaxLength"}
+        Dim strValidParameters = New String() {"I", "L", "Preview", "MaxLength"}
 
         Try
             ' Make sure no invalid parameters are present
@@ -157,7 +161,7 @@ Module modMain
     End Function
 
     Private Sub ShowErrorMessage(strMessage As String)
-        Dim strSeparator As String = "------------------------------------------------------------------------------"
+        Dim strSeparator = "------------------------------------------------------------------------------"
 
         Console.WriteLine()
         Console.WriteLine(strSeparator)
@@ -175,14 +179,14 @@ Module modMain
             Console.WriteLine()
 
             Console.WriteLine("Program syntax:")
-            Console.WriteLine(IO.Path.GetFileName(Reflection.Assembly.GetExecutingAssembly().Location) &
+            Console.WriteLine(Path.GetFileName(Assembly.GetExecutingAssembly().Location) &
                               " FastaInfoFile.txt [/MaxLength:##] [/Preview] [/L]")
             Console.WriteLine()
             Console.WriteLine("FastaInfoFile.txt is a tab delimited text file listing the FASTA files to import")
             Console.WriteLine("Required columns are: FastaFilePath, OrganismName_or_ID, and AnnotationTypeName_or_ID")
             Console.WriteLine()
             Console.WriteLine("Use /MaxLength to define the maximum allowable length for protein names")
-            Console.WriteLine("The default is /MaxLength:" & ValidateFastaFile.clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH)
+            Console.WriteLine("The default is /MaxLength:" & clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH)
             Console.WriteLine()
 
             Console.WriteLine("Use /Preview to see the fasta files that would be imported")
@@ -198,7 +202,7 @@ Module modMain
             Console.WriteLine()
 
             ' Delay for 750 msec in case the user double clicked this file from within Windows Explorer (or started the program via a shortcut)
-            System.Threading.Thread.Sleep(750)
+            Thread.Sleep(750)
 
         Catch ex As Exception
             ShowErrorMessage("Error displaying the program syntax: " & ex.Message)
@@ -207,8 +211,8 @@ Module modMain
     End Sub
 
     Private Sub mBulkImporter_ProgressChanged(taskDescription As String, percentComplete As Single) Handles mBulkImporter.ProgressChanged
-        Const PERCENT_REPORT_INTERVAL As Integer = 25
-        Const PROGRESS_DOT_INTERVAL_MSEC As Integer = 250
+        Const PERCENT_REPORT_INTERVAL = 25
+        Const PROGRESS_DOT_INTERVAL_MSEC = 250
 
         If percentComplete >= mLastProgressReportValue Then
             If mLastProgressReportValue > 0 Then

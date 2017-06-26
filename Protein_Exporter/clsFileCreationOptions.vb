@@ -1,27 +1,30 @@
 Option Strict On
 
+Imports System.Text
+Imports System.Text.RegularExpressions
+Imports Protein_Exporter.ExportProteinCollectionsIFC
+Imports TableManipulationBase
+
 Friend Class clsFileCreationOptions
-    Private m_TableGetter As TableManipulationBase.IGetSQLData
-    Private m_PSConnectionString As String
-    Private m_SeqDirection As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes
-    Private m_FileType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes
+    Private ReadOnly m_TableGetter As IGetSQLData
+    Private ReadOnly m_PSConnectionString As String
+    Private m_SeqDirection As IGetFASTAFromDMS.SequenceTypes
+    Private m_FileType As IGetFASTAFromDMS.DatabaseFormatTypes
     Private m_CreationValuesTable As DataTable
     Private m_KeywordTable As DataTable
-    'Private m_ValuesTable As DataTable
-
 
     Sub New(PSConnectionString As String)
         Me.m_PSConnectionString = PSConnectionString
-        Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString, True)
+        Me.m_TableGetter = New clsDBTask(Me.m_PSConnectionString, True)
     End Sub
 
-    ReadOnly Property SequenceDirection() As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes
+    ReadOnly Property SequenceDirection() As IGetFASTAFromDMS.SequenceTypes
         Get
             Return Me.m_SeqDirection
         End Get
     End Property
 
-    ReadOnly Property FileFormatType() As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes
+    ReadOnly Property FileFormatType() As IGetFASTAFromDMS.DatabaseFormatTypes
         Get
             Return Me.m_FileType
         End Get
@@ -32,13 +35,13 @@ Friend Class clsFileCreationOptions
         'Dim valuesTableSQL As String
         Dim creationValuesSQL As String
         Dim optionsHash As New Hashtable
-        Dim mCollection As System.Text.RegularExpressions.MatchCollection
-        Dim m As System.Text.RegularExpressions.Match
-        Dim optionsStringParser As System.Text.RegularExpressions.Regex
+        Dim mCollection As MatchCollection
+        Dim m As Match
+        Dim optionsStringParser As Regex
         Dim dr As DataRow
         Dim foundRows() As DataRow
         Dim checkRows() As DataRow
-        Dim errorString As System.Text.StringBuilder
+        Dim errorString As StringBuilder
 
         Dim tmpKeyword As String
         Dim tmpValue As String
@@ -46,7 +49,7 @@ Friend Class clsFileCreationOptions
         Dim validKeyword As Boolean
         Dim validValue As Boolean
 
-        Dim cleanOptionsString As New System.Text.StringBuilder
+        Dim cleanOptionsString As New StringBuilder
 
         keywordTableSQL = "SELECT Keyword_ID, Keyword, Default_Value FROM T_Creation_Option_Keywords"
         'valuesTableSQL = "SELECT Value_ID, Value_String, Keyword_ID FROM T_Creation_Option_Values"
@@ -66,7 +69,7 @@ Friend Class clsFileCreationOptions
 
         'optionsStringParser = New System.Text.RegularExpressions.Regex(
         '    "(?<keyword>\S+)\s*=\s*(?<value>\S+),*?")
-        optionsStringParser = New System.Text.RegularExpressions.Regex(
+        optionsStringParser = New Regex(
             "(?<keyword>[^,\s]*)\s*=\s*(?<value>[^,\s]+)")
 
         mCollection = optionsStringParser.Matches(optionsString)
@@ -80,7 +83,7 @@ Friend Class clsFileCreationOptions
             foundRows = Me.m_CreationValuesTable.Select("Keyword = '" & tmpKeyword & "' AND Value_String = '" & tmpValue & "'")
             If foundRows.Length < 1 Then
                 'check if keyword or value is bad
-                errorString = New System.Text.StringBuilder
+                errorString = New StringBuilder
                 checkRows = Me.m_CreationValuesTable.Select("Keyword = '" & tmpKeyword)
                 If checkRows.Length > 0 Then validKeyword = True
 
@@ -96,12 +99,10 @@ Friend Class clsFileCreationOptions
                     errorString.Append("Value: " & tmpValue & "is not a valid option")
                 End If
                 Throw New Exception(errorString.ToString)
-                Return ""
             End If
 
             If optionsHash.ContainsKey(tmpKeyword) Then
                 Throw New Exception(tmpKeyword & " is a duplicate keyword")
-                Return ""
             Else
                 optionsHash.Add(tmpKeyword, tmpValue)
             End If
@@ -133,12 +134,12 @@ Friend Class clsFileCreationOptions
                     '    Case "scrambled"
                     '        Me.m_SeqDirection = ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.scrambled
                     'End Select
-                    Me.m_SeqDirection = DirectCast([Enum].Parse(GetType(ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes), tmpValue), 
-                     ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes)
+                    Me.m_SeqDirection = DirectCast([Enum].Parse(GetType(IGetFASTAFromDMS.SequenceTypes), tmpValue),
+                     IGetFASTAFromDMS.SequenceTypes)
                 Case "filetype"
 
-                    Me.m_FileType = DirectCast([Enum].Parse(GetType(ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes), tmpValue), 
-                     ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes)
+                    Me.m_FileType = DirectCast([Enum].Parse(GetType(IGetFASTAFromDMS.DatabaseFormatTypes), tmpValue),
+                     IGetFASTAFromDMS.DatabaseFormatTypes)
 
                     'Select Case tmpValue
                     '    Case "fasta"
@@ -161,10 +162,10 @@ Friend Class clsFileCreationOptions
     End Function
 
     Function MakeCreationOptionsString(
-        seqDirection As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes,
-        DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes) As String
+        seqDirection As IGetFASTAFromDMS.SequenceTypes,
+        DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes) As String
 
-        Dim creationOptionsSB As New System.Text.StringBuilder
+        Dim creationOptionsSB As New StringBuilder
 
         With creationOptionsSB
             .Append("seq_direction=")

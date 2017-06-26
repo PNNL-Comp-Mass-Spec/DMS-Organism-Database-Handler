@@ -1,5 +1,8 @@
 Option Strict On
 
+Imports System.Collections.Generic
+Imports Protein_Storage
+
 Namespace ExportProteinCollectionsIFC
 
     Public Interface IExportProteins
@@ -9,12 +12,12 @@ Namespace ExportProteinCollectionsIFC
         Event ExportEnd()
 
         Function Export(
-            Proteins As Protein_Storage.IProteinStorage,
+            Proteins As IProteinStorage,
             ByRef destinationPath As String,
-            SelectedProteinList As ArrayList) As String
+            SelectedProteinList As List(Of String)) As String
 
         Function Export(
-            Proteins As Protein_Storage.IProteinStorage,
+            Proteins As IProteinStorage,
             ByRef destinationPath As String) As String
 
         Function Export(

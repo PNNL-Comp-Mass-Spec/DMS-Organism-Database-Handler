@@ -1,5 +1,9 @@
 Option Strict On
 
+Imports System.Security.Cryptography
+Imports System.Text
+Imports TableManipulationBase
+
 Public Interface ICalculateSeqInfo
     Sub CalculateSequenceInfo(Sequence As String)
     Function GenerateSequenceHash(Sequence As String) As String
@@ -23,9 +27,9 @@ Public Class SequenceInfoCalculator
     Private m_MolFormula As String
     Private m_SHA1Hash As String
 
-    Shared m_SHA1Provider As System.Security.Cryptography.SHA1Managed
+    Shared m_SHA1Provider As SHA1Managed
 
-    Private m_DMSConnectionString As String = "Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI;"
+    Private ReadOnly m_DMSConnectionString As String = "Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI;"
 
     Public Sub New()
         If m_AminoAcids Is Nothing Then
@@ -33,7 +37,7 @@ Public Class SequenceInfoCalculator
         End If
 
         If m_SHA1Provider Is Nothing Then
-            m_SHA1Provider = New System.Security.Cryptography.SHA1Managed
+            m_SHA1Provider = New SHA1Managed()
         End If
     End Sub
 
@@ -112,9 +116,11 @@ Public Class SequenceInfoCalculator
 
     Protected Function GenerateHash(SourceText As String) As String Implements ICalculateSeqInfo.GenerateSequenceHash
         'Create an encoding object to ensure the encoding standard for the source text
-        Dim Ue As New System.Text.ASCIIEncoding
+        Dim Ue As New ASCIIEncoding()
+
         'Retrieve a byte array based on the source text
         Dim ByteSourceText() As Byte = Ue.GetBytes(SourceText)
+
         'Compute the hash value from the source
         Dim SHA1_hash() As Byte = SequenceInfoCalculator.m_SHA1Provider.ComputeHash(ByteSourceText)
         'And convert it to String format for return
@@ -124,8 +130,8 @@ Public Class SequenceInfoCalculator
     End Function
 
     Private Sub InitializeFromDMS()
-        SequenceInfoCalculator.m_AminoAcids = New Hashtable(30)
-        Dim getSQL As TableManipulationBase.IGetSQLData
+        m_AminoAcids = New Hashtable(30)
+        Dim getSQL As IGetSQLData
 
         Dim tmpSLC As String
         Dim tmpDesc As String
@@ -137,9 +143,9 @@ Public Class SequenceInfoCalculator
         Dim tmpMM As Double
         Dim tmpAM As Double
 
-        getSQL = New TableManipulationBase.clsDBTask(Me.m_DMSConnectionString)
+        getSQL = New clsDBTask(Me.m_DMSConnectionString)
 
-        Dim sqlString As String = "SELECT * FROM T_Residues WHERE [Num_C] > 0"
+        Dim sqlString = "SELECT * FROM T_Residues WHERE [Num_C] > 0"
         Dim tmpAATable As DataTable = getSQL.GetTable(sqlString)
 
         Dim dr As DataRow
@@ -237,8 +243,9 @@ Public Class SequenceInfo
     Public Sub New(seq As String, name As String,
                     C_Count As Integer, H_Count As Integer, N_Count As Integer, O_Count As Integer, S_Count As Integer,
                     average As Double, monoisotopic As Double)
+
         m_sequence = seq
-        m_name = name
+        Me.Name = name
         m_C_Count = C_Count
         m_H_Count = H_Count
         m_N_Count = N_Count

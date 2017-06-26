@@ -6,7 +6,6 @@ Imports ProteinFileReader
 Imports Protein_Exporter
 Imports Protein_Exporter.ExportProteinCollectionsIFC
 Imports Protein_Importer
-Imports SequenceInfoCalculator
 Imports TableManipulationBase
 
 Public Class clsSyncFASTAFileArchive
@@ -45,7 +44,7 @@ Public Class clsSyncFASTAFileArchive
             "FROM V_Missing_Archive_Entries"
 
         'TODO add collection list string
-        Dim proteinCollectionList As String = ""
+        Dim proteinCollectionList = ""
 
 
         Dim dt As DataTable
@@ -55,9 +54,9 @@ Public Class clsSyncFASTAFileArchive
         Dim proteinCollectionID As Integer
         Dim ArchiveEntryID As Integer
         Dim SHA1 As String
-        Dim CreationOptionsString As String = "seq_direction=forward,filetype=fasta"
+        Dim CreationOptionsString = "seq_direction=forward,filetype=fasta"
         Dim totalProteinsCount As Integer
-        Dim currentCollectionProteinCount As Integer = 0
+        Dim currentCollectionProteinCount = 0
         For Each dr In dt.Rows
             Me.m_TotalProteinsCount += CInt(dr.Item("NumProteins"))
         Next
@@ -117,7 +116,6 @@ Public Class clsSyncFASTAFileArchive
         Dim tmpFilename As String
         Dim fi As FileInfo
         Dim tmpFullPath As String
-        Dim currentProteinCount As Integer = 0
 
         For Each dr In dt.Rows
             Me.m_TotalProteinsCount += CInt(dr.Item("Numproteins"))
@@ -319,14 +317,14 @@ Public Class clsSyncFASTAFileArchive
             Me.m_TableGetter = New clsDBTask(Me.m_PSConnectionString)
         End If
 
-        Dim getCollectionsSQL As String = "SELECT Protein_Collection_ID, FileName, Organism_ID FROM V_Protein_Collections_By_Organism WHERE Collection_Type_ID = 1 or Collection_Type_ID = 5"
+        Dim getCollectionsSQL = "SELECT Protein_Collection_ID, FileName, Organism_ID FROM V_Protein_Collections_By_Organism WHERE Collection_Type_ID = 1 or Collection_Type_ID = 5"
 
         Dim collectionTable As DataTable = Me.m_TableGetter.GetTable(getCollectionsSQL)
         Dim collectionEntry As DataRow
         Dim tmpCollectionName As String
         Dim tmpCollectionID As Integer
 
-        Dim getLegacyFilesSQL As String = "SELECT DISTINCT FileName, Full_Path, Organism_ID FROM V_Legacy_Static_File_Locations"
+        Dim getLegacyFilesSQL = "SELECT DISTINCT FileName, Full_Path, Organism_ID FROM V_Legacy_Static_File_Locations"
         Dim legacyTable As DataTable = Me.m_TableGetter.GetTable(getLegacyFilesSQL)
         Dim legacyfoundrows() As DataRow
         Dim legacyFileEntry As DataRow
@@ -385,7 +383,7 @@ Public Class clsSyncFASTAFileArchive
     End Sub
 
     Private Function GetProteinSortingIndices(FilePath As String) As Hashtable
-        Dim fi As FileInfo = New FileInfo(FilePath)
+        Dim fi = New FileInfo(FilePath)
         Dim tr As TextReader
         Dim s As String
         Dim nameRegex As Regex
@@ -424,7 +422,7 @@ Public Class clsSyncFASTAFileArchive
         Dim proteinTable As DataTable
         Dim dr As DataRow
         Dim counter As Integer
-        Dim tmpRowCount As Integer = 1
+        Dim tmpRowCount = 1
 
         If Me.m_TableGetter Is Nothing Then
             Me.m_TableGetter = New clsDBTask(Me.m_PSConnectionString)
@@ -437,7 +435,7 @@ Public Class clsSyncFASTAFileArchive
 
         dr = tmpTableInfo.Rows(0)
 
-        Dim tmpProteinCount As Integer = CInt(dr.Item("TableRowCount"))
+        Dim tmpProteinCount = CInt(dr.Item("TableRowCount"))
 
         Dim startcount As Integer
 
@@ -476,7 +474,7 @@ Public Class clsSyncFASTAFileArchive
 
     Sub RefreshNameHashes()
         Dim TotalNameCount As Integer
-        Dim NameCountSQL As String = "SELECT TOP 1 Reference_ID FROM T_Protein_Names ORDER BY Reference_ID DESC"
+        Dim NameCountSQL = "SELECT TOP 1 Reference_ID FROM T_Protein_Names ORDER BY Reference_ID DESC"
         Dim tmptable As DataTable
         Dim dr As DataRow
 
@@ -490,9 +488,9 @@ Public Class clsSyncFASTAFileArchive
 
         Dim rowRetrievalSQL As String
 
-        Dim startIndex As Integer = 0
+        Dim startIndex = 0
         Dim counter As Integer
-        Dim stepvalue As Integer = 10000
+        Dim stepvalue = 10000
 
         If TotalNameCount <= stepvalue Then
             stepvalue = TotalNameCount

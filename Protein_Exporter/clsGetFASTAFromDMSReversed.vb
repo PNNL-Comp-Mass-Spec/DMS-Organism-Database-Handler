@@ -8,7 +8,7 @@ Public Class clsGetFASTAFromDMSReversed
 
     Public Sub New(
         ProteinStorageConnectionString As String,
-        DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes)
+        DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
 
         MyBase.New(ProteinStorageConnectionString, DatabaseFormatType)
         Me.m_Naming_Suffix = "_reversed"
