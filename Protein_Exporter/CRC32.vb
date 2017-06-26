@@ -8,10 +8,10 @@ Public Class CRC32
     ' (wpsjr1@succeed.net) - much quicker than the nasty
     ' original version I posted.  Excellent work!
 
-    Private crc32Table() As Integer
+    Private ReadOnly crc32Table() As Integer
     Private Const BUFFER_SIZE As Integer = 1024
 
-    Public Function GetCrc32(ByRef stream As System.IO.Stream) As Integer
+    Public Function GetCrc32(stream As Stream) As Integer
 
         Dim crc32Result = &HFFFFFFFF
 
@@ -28,7 +28,7 @@ Public Class CRC32
             count = stream.Read(buffer, 0, readSize)
         Loop
 
-        GetCrc32 = Not (crc32Result)
+        Return Not (crc32Result)
 
     End Function
 

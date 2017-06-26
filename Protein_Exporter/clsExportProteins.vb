@@ -62,52 +62,58 @@ Public MustInherit Class clsExportProteins
         RaiseEvent ExportEnd()
     End Sub
 
-    Protected Function GetFileHash(FullFilePath As String) As String Implements IExportProteins.GenerateFileAuthenticationHash
-
-        'Dim shaGen As System.Security.Cryptography.MD5CryptoServiceProvider
-        'shaGen = New System.Security.Cryptography.MD5CryptoServiceProvider
-
-        Dim crcGen As CRC32
-        crcGen = New CRC32
-        Dim crc = 0
-
-        Dim fi As New System.IO.FileInfo(FullFilePath)
-        Dim f As System.IO.Stream
-
-        If fi.Exists Then
-            f = fi.OpenRead()
-
-            'tmpSHA = shaGen.ComputeHash(f)
-            crc = crcGen.GetCrc32(f)
-            Dim crcString As String = String.Format("{0:X8}", crc)
-
-            'Dim SHA1string As String = HexConverter.ToHexString(tmpSHA)
-
-            f.Close()
-            f = Nothing
-            fi = Nothing
-            'Return SHA1string
-            Return crcString
-        Else
-            Return Nothing
-        End If
+    Public Function GetHashCRC32(fullFilePath As String) As String
+        Return GetFileHash(fullFilePath)
     End Function
 
+    Public Function GetHashMD5(fullFilePath As String) As String
+        Return GetFileHashMD5(fullFilePath)
+    End Function
 
+    ''' <summary>
+    ''' Compute the CRC32 hash for the file
+    ''' </summary>
+    ''' <param name="fullFilePath"></param>
+    ''' <returns>File hash</returns>
+    Protected Function GetFileHash(fullFilePath As String) As String Implements IExportProteins.GenerateFileAuthenticationHash
 
+        Dim crcGen = New CRC32
 
+        Dim fi As New FileInfo(fullFilePath)
 
+        If Not fi.Exists Then Return String.Empty
 
+        Using f = fi.OpenRead()
 
+            Dim crc = crcGen.GetCrc32(f)
+            Dim crcString As String = String.Format("{0:X8}", crc)
+            Return crcString
 
+        End Using
 
+    End Function
 
+    ''' <summary>
+    ''' Compute the MD5 hash for the file
+    ''' </summary>
+    ''' <param name="fullFilePath"></param>
+    ''' <returns>File hash</returns>
+    Protected Function GetFileHashMD5(fullFilePath As String) As String
 
+        Dim md5Gen = New MD5CryptoServiceProvider
 
+        Dim fi As New FileInfo(fullFilePath)
 
+        If Not fi.Exists Then Return String.Empty
 
+        Using f = fi.OpenRead()
 
+            Dim tmpHash = md5Gen.ComputeHash(f)
+            Dim md5String As String = clsRijndaelEncryptionHandler.ToHexString(tmpHash)
+            Return md5String
 
+        End Using
 
+    End Function
 
 End Class

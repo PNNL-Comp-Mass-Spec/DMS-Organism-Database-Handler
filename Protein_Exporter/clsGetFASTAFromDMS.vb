@@ -126,6 +126,14 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
+    ''' <summary>
+    ''' Create the FASTA file for the given protein collection ID
+    ''' </summary>
+    ''' <param name="destinationFolderPath"></param>
+    ''' <param name="ProteinCollectionID">Protein collection ID</param>
+    ''' <param name="DatabaseFormatType">Typically fasta for .fasta files; fastapro will create a .fasta.pro file</param>
+    ''' <param name="OutputSequenceType">Sequence type (forward, reverse, scrambled, decoy, or decoyX)</param>
+    ''' <returns>CRC32 hash of the generated (or retrieved) file</returns>
     Overloads Function ExportFASTAFile(
      ProteinCollectionID As Integer,
      destinationFolderPath As String,
@@ -145,13 +153,21 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
+    ''' <summary>
+    ''' Create the FASTA file, either for the given protein collections, or for the legacy FASTA file
+    ''' </summary>
+    ''' <param name="protCollectionList">Protein collection list, or empty string if retrieving a legacy FASTA file</param>
+    ''' <param name="creationOptions">Creation options, for example: seq_direction=forward,filetype=fasta</param>
+    ''' <param name="legacyFASTAFileName">Legacy FASTA file name, or empty string if exporting protein collections</param>
+    ''' <param name="destinationFolderPath"></param>
+    ''' <returns>CRC32 hash of the generated (or retrieved) file</returns>
     Overloads Function ExportFASTAFile(
      ProteinCollectionNameList As String,
      CreationOptions As String,
      LegacyFASTAFileName As String,
      destinationFolderPath As String) As String Implements IGetFASTAFromDMS.ExportFASTAFile
 
-        ' Returns the Sha1 hash of the exported file
+        ' Returns the CRC32 hash of the exported file
         ' Returns nothing or "" if an error
 
         Dim ProteinCollections() As String
@@ -211,14 +227,14 @@ Public Class clsGetFASTAFromDMS
       destinationFolderPath As String) As String
 
         Dim legacyStaticFilePath = ""
-        Dim finalFileHash = ""
+        Dim crc32Hash = ""
 
-        Dim strCollectionListHexHash As String = Me.GenerateHash(LegacyFASTAFileName)
-        Dim LockFileHash As String = strCollectionListHexHash
+        Dim filenameSha1Hash As String = GenerateHash(legacyFASTAFileName)
+        Dim lockFileHash As String = filenameSha1Hash
 
         Dim lockFi As FileInfo
 
-        If Not LookupLegacyFastaFileDetails(LegacyFASTAFileName, legacyStaticFilePath, finalFileHash) Then
+        If Not LookupLegacyFastaFileDetails(legacyFASTAFileName, legacyStaticFilePath, crc32Hash) Then
             ' Could not find LegacyFASTAFileName in V_Legacy_Static_File_Locations
             ' An exception has probably already been thrown
             Return Nothing
@@ -229,7 +245,7 @@ Public Class clsGetFASTAFromDMS
         If Not fiSourceFile.Exists Then
             Dim msg = "Legacy fasta file not found: " & legacyStaticFilePath & " (path comes from V_Legacy_Static_File_Locations)"
             OnErrorEvent(msg)
-            Throw New System.Exception(msg)
+            Throw New Exception(msg)
         End If
 
         ' Look for file LegacyFASTAFileName in folder destinationFolderPath
@@ -248,9 +264,9 @@ Public Class clsGetFASTAFromDMS
             Else
                 ' Make sure the file sizes match and that the local file is not older than the source file
                 If fiSourceFile.Length = fiFinalFile.Length AndAlso fiFinalFile.LastWriteTimeUtc >= fiSourceFile.LastWriteTimeUtc.AddSeconds(-0.1) Then
-                    If ExportLegacyFastaValidateHash(fiFinalFile, finalFileHash, False) Then
-                        Me.OnTaskCompletion(fiFinalFile.FullName)
-                        Return finalFileHash
+                    If ExportLegacyFastaValidateHash(fiFinalFile, crc32Hash, False) Then
+                        OnTaskCompletion(fiFinalFile.FullName)
+                        Return crc32Hash
                     End If
                 End If
             End If
@@ -309,16 +325,16 @@ Public Class clsGetFASTAFromDMS
             If fiFinalFile.Exists AndAlso fiSourceFile.Length = fiFinalFile.Length AndAlso fiFinalFile.LastWriteTimeUtc >= fiSourceFile.LastWriteTimeUtc.AddSeconds(-0.1) Then
                 ' The final file now does exist (and has the correct size / date)
                 ' The other process that made the file should have updated the database with the file hash; determine the hash now
-                If Not LookupLegacyFastaFileDetails(LegacyFASTAFileName, legacyStaticFilePath, finalFileHash) Then
+                If Not LookupLegacyFastaFileDetails(legacyFASTAFileName, legacyStaticFilePath, crc32Hash) Then
                     ' Could not find LegacyFASTAFileName in V_Legacy_Static_File_Locations
                     ' An exception has probably already been thrown
                     Return Nothing
                 End If
 
-                If ExportLegacyFastaValidateHash(fiFinalFile, finalFileHash, False) Then
-                    Me.OnTaskCompletion(fiFinalFile.FullName)
-                    Return finalFileHash
+                If ExportLegacyFastaValidateHash(fiFinalFile, crc32Hash, False) Then
                     DeleteLockStream(destinationFolderPath, lockFileHash, lockStream)
+                    OnTaskCompletion(fiFinalFile.FullName)
+                    Return crc32Hash
                 End If
 
             End If
@@ -326,7 +342,7 @@ Public Class clsGetFASTAFromDMS
         End If
 
         ' Copy the .Fasta file from the remote computer to this computer
-        ' We're temporarily naming it with the hash name
+        ' We're temporarily naming it with a SHA1 hash based on the filename
         Dim InterimFastaFI As New FileInfo(Path.Combine(destinationFolderPath, filenameSha1Hash & "_" & Path.GetFileNameWithoutExtension(legacyStaticFilePath) & ".fasta"))
         If InterimFastaFI.Exists Then
             InterimFastaFI.Delete()
@@ -347,10 +363,10 @@ Public Class clsGetFASTAFromDMS
 
         ' File successfully copied to this computer
         ' Update the hash validation file, and update the DB if the newly copied file's hash value differs from the DB
-        If ExportLegacyFastaValidateHash(fiFinalFile, finalFileHash, True) Then
-            Me.OnTaskCompletion(fiFinalFile.FullName)
-            Return finalFileHash
+        If ExportLegacyFastaValidateHash(fiFinalFile, crc32Hash, True) Then
             DeleteLockStream(destinationFolderPath, lockFileHash, lockStream)
+            OnTaskCompletion(fiFinalFile.FullName)
+            Return crc32Hash
         End If
 
         ' This code will only get reached if an error occurred in ExportLegacyFastaValidateHash()
@@ -359,7 +375,7 @@ Public Class clsGetFASTAFromDMS
         Me.OnTaskCompletion(fiFinalFile.FullName)
         DeleteLockStream(destinationFolderPath, lockFileHash, lockStream)
 
-        Return finalFileHash
+        Return crc32Hash
 
     End Function
 
@@ -399,18 +415,16 @@ Public Class clsGetFASTAFromDMS
 
         Dim CollectionName As String
 
-        Dim SHA1 As String
+        Dim crc32Hash As String
         Dim tmpID As Integer
         Dim InterimFastaFI As FileInfo
         Dim lockFi As FileInfo
 
-        Dim strProteinCollectionList As String
-        strProteinCollectionList = Join(ProteinCollectionNameList.ToArray, ",")
+        Dim strProteinCollectionList = Join(protCollectionList.ToArray, ",")
 
-        Dim hashableString As String
-        hashableString = strProteinCollectionList + "/" + CreationOptionsString
-        Dim strCollectionListHexHash As String = Me.GenerateHash(hashableString)
-        Dim LockFileHash As String = strCollectionListHexHash
+        Dim hashableString As String = strProteinCollectionList + "/" + creationOptionsString
+        Dim filenameSha1Hash As String = GenerateHash(hashableString)
+        Dim lockFileHash As String = filenameSha1Hash
 
         Dim finalFileName As String
         Dim fileNameSql As String
@@ -424,7 +438,7 @@ Public Class clsGetFASTAFromDMS
 
         fileNameSql = "SELECT Archived_File_Path, Archived_File_ID, Authentication_Hash " &
           "FROM T_Archived_Output_Files " &
-          "WHERE Collection_List_Hex_Hash = '" & strCollectionListHexHash & "' AND " &
+          "WHERE Collection_List_Hex_Hash = '" & filenameSha1Hash & "' AND " &
           "Protein_Collection_List = '" & strProteinCollectionList & "' AND " &
           "Archived_File_State_ID <> 3 " &
           "ORDER BY File_Modification_Date desc"
@@ -518,17 +532,17 @@ Public Class clsGetFASTAFromDMS
             OnDebugEvent("Retrieving fasta file for protein collections " & String.Join(","c, ProteinCollectionNameList.ToArray()))
 
             ' Export the fasta file
-            SHA1 = Me.m_Getter.ExportFASTAFile(
-               ProteinCollectionNameList,
-               AlternateAnnotationTypeID,
-               PadWithPrimaryAnnotation)
+            crc32Hash = m_Getter.ExportFASTAFile(
+               protCollectionList,
                destinationFolderPath,
+               alternateAnnotationTypeID,
+               padWithPrimaryAnnotation)
 
             Dim counter As Integer
             Dim Archived_File_ID As Integer
 
-            If String.IsNullOrEmpty(SHA1) Then
-                Dim msg = "m_Getter.ExportFASTAFile returned a blank string for the Sha1 authentication hash; this likely represents a problem"
+            If String.IsNullOrEmpty(crc32Hash) Then
+                Dim msg = "m_Getter.ExportFASTAFile returned a blank string for the CRC32 authentication hash; this likely represents a problem"
                 OnErrorEvent(msg)
                 Throw New Exception(msg)
             End If
@@ -580,7 +594,7 @@ Public Class clsGetFASTAFromDMS
             OnStatusEvent("Created fasta file " + finalFileFI.FullName)
 
             ' Update the hash validation file
-            UpdateHashValidationFile(finalFileFI.FullName, SHA1)
+            UpdateHashValidationFile(finalFileFI.FullName, crc32Hash)
 
         Catch
             DeleteLockStream(destinationFolderPath, lockFileHash, lockStream)
@@ -589,8 +603,8 @@ Public Class clsGetFASTAFromDMS
 
         DeleteLockStream(destinationFolderPath, lockFileHash, lockStream)
 
-        Me.OnTaskCompletion(finalFileFI.FullName)
-        Return SHA1
+        OnTaskCompletion(finalFileFI.FullName)
+        Return crc32Hash
 
     End Function
 
@@ -747,23 +761,22 @@ Public Class clsGetFASTAFromDMS
     End Sub
 
     Protected Function GenerateAndStoreLegacyFileHash(strFastaFilePath As String) As String
-        Dim FileHash As String = String.Empty
 
         ' The database does not have a valid Authentication_Hash values for this .Fasta file; generate one now
-        FileHash = Me.GenerateFileAuthenticationHash(strFastaFilePath)
+        Dim crc32Hash = GenerateFileAuthenticationHash(strFastaFilePath)
 
         ' Add an entry to T_Legacy_File_Upload_Requests
-        ' Also store the Sha1 hash for future use
-        RunSP_AddLegacyFileUploadRequest(Path.GetFileName(strFastaFilePath), FileHash)
+        ' Also store the CRC32 hash for future use
+        RunSP_AddLegacyFileUploadRequest(Path.GetFileName(strFastaFilePath), crc32Hash)
 
-        Return FileHash
+        Return crc32Hash
 
     End Function
 
     Protected Function LookupLegacyFastaFileDetails(
        LegacyFASTAFileName As String,
-       ByRef LegacyStaticFilePathOutput As String,
-       ByRef FileHashOutput As String) As Boolean
+       <Out()> ByRef LegacyStaticFilePathOutput As String,
+       <Out()> ByRef crc32HashOutput As String) As Boolean
 
         Dim legacyLocationsSQL As String
 
@@ -783,28 +796,28 @@ Public Class clsGetFASTAFromDMS
         End If
 
         LegacyStaticFilePathOutput = legacyStaticFilelocations.Rows(0).Item("Full_Path").ToString
-        FileHashOutput = legacyStaticFilelocations.Rows(0).Item("Authentication_Hash").ToString
-        If FileHashOutput Is Nothing Then FileHashOutput = String.Empty
+        crc32HashOutput = legacyStaticFilelocations.Rows(0).Item("Authentication_Hash").ToString
+        If crc32HashOutput Is Nothing Then crc32HashOutput = String.Empty
 
         Return True
 
     End Function
 
-    Protected Function GetHashFileValidationInfo(strFastaFilePath As String, strSHA1 As String) As FileInfo
+    Protected Function GetHashFileValidationInfo(strFastaFilePath As String, crc32Hash As String) As FileInfo
 
         Dim fiFastaFile As FileInfo
         Dim strHashValidationFileName As String
 
         fiFastaFile = New FileInfo(strFastaFilePath)
-        strHashValidationFileName = Path.Combine(fiFastaFile.DirectoryName, fiFastaFile.Name & "." & strSHA1 & ".hashcheck")
+        strHashValidationFileName = Path.Combine(fiFastaFile.DirectoryName, fiFastaFile.Name & "." & crc32Hash & ".hashcheck")
 
         Return New FileInfo(strHashValidationFileName)
 
     End Function
 
-    Protected Sub UpdateHashValidationFile(strFastaFilePath As String, strSHA1 As String)
+    Protected Sub UpdateHashValidationFile(strFastaFilePath As String, crc32Hash As String)
         Dim fiHashValidationFile As FileInfo
-        fiHashValidationFile = GetHashFileValidationInfo(strFastaFilePath, strSHA1)
+        fiHashValidationFile = GetHashFileValidationInfo(strFastaFilePath, crc32Hash)
         UpdateHashValidationFile(fiHashValidationFile)
     End Sub
 
@@ -821,22 +834,20 @@ Public Class clsGetFASTAFromDMS
     ''' If the actual hash differs and if blnForceRegenerateHash=True, then this strExpectedHash get updated
     ''' blnForceRegenerateHash should be set to True only when processing legacy fasta files that have been newly copied to this computer
     ''' </summary>
-    ''' <param name="strFastaFilePath">Fasta file to check</param>
-    ''' <param name="strExpectedHash">Expected SHA-1 hash.</param>
-    ''' <param name="intRetryHoldoffHours">Time between re-generating the hash value for an existing file</param>
-    ''' <param name="blnForceRegenerateHash">Re-generate the hash</param>
+    ''' <param name="fastaFilePath">Fasta file to check</param>
+    ''' <param name="expectedHash">Expected CRC32 hash; updated if incorrect and blnForceRegenerateHash is true</param>
+    ''' <param name="retryHoldoffHours">Time between re-generating the hash value for an existing file</param>
+    ''' <param name="forceRegenerateHash">Re-generate the hash</param>
     ''' <returns>True if the hash values match, or if blnForceRegenerateHash=True</returns>
-    ''' <remarks></remarks>
-    Protected Function ValidateMatchingHash(
-     strFastaFilePath As String,
-     ByRef strExpectedHash As String,
      intRetryHoldoffHours As Integer,
      blnForceRegenerateHash As Boolean) As Boolean
+    ''' <remarks>Public method because the Analysis Manager uses this class when running offline jobs</remarks>
+    Public Function ValidateMatchingHash(
+     fastaFilePath As String,
+     ByRef expectedHash As String,
 
         Dim fiFastaFile As FileInfo
         Dim fiHashValidationFile As FileInfo
-
-        Dim strSHA1 As String
 
         Try
             fiFastaFile = New FileInfo(strFastaFilePath)
@@ -852,23 +863,23 @@ Public Class clsGetFASTAFromDMS
                     End If
                 End If
 
-                ' Either the hash validation file doesn't exist, or it's too old, or blnForceRegenerateHash = True
+                ' Either the hash validation file doesn't exist, or it's too old, or forceRegenerateHash = True
                 ' Regenerate the hash
-                strSHA1 = Me.GenerateFileAuthenticationHash(fiFastaFile.FullName)
+                Dim crc32Hash = GenerateFileAuthenticationHash(fiFastaFile.FullName)
 
-                If strExpectedHash = strSHA1 OrElse blnForceRegenerateHash Then
+                If expectedHash = crc32Hash OrElse forceRegenerateHash Then
                     ' Update the hash validation file
-                    UpdateHashValidationFile(strFastaFilePath, strSHA1)
+                    UpdateHashValidationFile(fastaFilePath, crc32Hash)
 
-                    If strExpectedHash <> strSHA1 And blnForceRegenerateHash Then
-                        ' Hash values don't match, but blnForceRegenerateHash=True
+                    If expectedHash <> crc32Hash And forceRegenerateHash Then
+                        ' Hash values don't match, but forceRegenerateHash=True
                         ' Update the hash value stored in T_Legacy_File_Upload_Requests for this fasta file
-                        RunSP_AddLegacyFileUploadRequest(fiFastaFile.Name, strSHA1)
+                        RunSP_AddLegacyFileUploadRequest(fiFastaFile.Name, crc32Hash)
 
-                        ' Update strExpectedHash
-                        strExpectedHash = strSHA1
+                        ' Update expectedHash
+                        expectedHash = crc32Hash
 
-                        OnStatusEvent("Re-exported protein collection and created new hash file due to SHA1 hash mismatch: " + fiHashValidationFile.FullName)
+                        OnStatusEvent("Re-exported protein collection and created new hash file due to CRC32 hash mismatch: " + fiHashValidationFile.FullName)
                     Else
                         OnDebugEvent("Validated hash validation file (re-verified): " + fiHashValidationFile.FullName)
                     End If
@@ -946,8 +957,13 @@ Public Class clsGetFASTAFromDMS
         RaiseEvent FileGenerationProgress(statusMsg, fractionDone)
     End Sub
 
-    Function GenerateFileAuthenticationHash(FullFilePath As String) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.GenerateFileAuthenticationHash
-        Return Me.m_Getter.GetFileHash(FullFilePath)
+    ''' <summary>
+    ''' Compute the CRC32 hash for the file
+    ''' </summary>
+    ''' <param name="fullFilePath"></param>
+    ''' <returns>File hash</returns>
+    Function GenerateFileAuthenticationHash(FullFilePath As String) As String Implements IGetFASTAFromDMS.GenerateFileAuthenticationHash
+        Return m_Getter.GetFileHash(FullFilePath)
     End Function
 
     Function GetAllCollections() As Hashtable Implements IGetFASTAFromDMS.GetAllCollections

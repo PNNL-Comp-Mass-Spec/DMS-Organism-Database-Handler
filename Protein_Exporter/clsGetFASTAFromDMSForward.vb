@@ -91,6 +91,14 @@ Public Class clsGetFASTAFromDMSForward
         Return originalReference
     End Function
 
+    ''' <summary>
+    ''' Create the FASTA file for the given protein collections
+    ''' </summary>
+    ''' <param name="protCollectionList"></param>
+    ''' <param name="destinationFolderPath"></param>
+    ''' <param name="AlternateAuthorityID"></param>
+    ''' <param name="PadWithPrimaryAnnotation"></param>
+    ''' <returns>CRC32 hash for the file</returns>
     Overridable Overloads Function ExportFASTAFile(
        ProteinCollectionNameList As ArrayList,
        destinationFolderPath As String,
@@ -362,18 +370,22 @@ Public Class clsGetFASTAFromDMSForward
             End If
         End If
 
-        ' Determine the SHA-hash of the output file
+        ' Determine the CRC32 hash of the output file
         ' This process will also rename the file, e.g. from "C:\Temp\SAR116_RBH_AA_012809_forward.fasta" to "C:\Temp\38FFACAC.fasta"
-        Dim SHA1 As String
-        SHA1 = Me.m_fileDumper.Export(New DataTable, Me.m_CurrentFullOutputPath)
+        Dim crc32Hash = Me.m_fileDumper.Export(New DataTable, Me.m_CurrentFullOutputPath)
 
         Me.OnExportComplete(m_CurrentFullOutputPath)
 
-        Return SHA1
-
+        Return crc32Hash
 
     End Function
 
+    ''' <summary>
+    ''' Create the FASTA file for the given protein collections
+    ''' </summary>
+    ''' <param name="protCollectionList">Protein collection list, or empty string if retrieving a legacy FASTA file</param>
+    ''' <param name="destinationFolderPath"></param>
+    ''' <returns>CRC32 hash of the generated (or retrieved) file</returns>
     Overridable Overloads Function ExportFASTAFile(
        ProteinCollectionNameList As ArrayList,
        destinationFolderPath As String) As String
@@ -505,6 +517,11 @@ Public Class clsGetFASTAFromDMSForward
         Return CInt(foundRows(0).Item("Primary_Annotation_Type_ID"))
     End Function
 
+    ''' <summary>
+    ''' Compute the CRC32 hash for the file
+    ''' </summary>
+    ''' <param name="fullFilePath"></param>
+    ''' <returns>File hash</returns>
     Function GetFileHash(FullFilePath As String) As String
 
         Return Me.m_fileDumper.GenerateFileAuthenticationHash(FullFilePath)

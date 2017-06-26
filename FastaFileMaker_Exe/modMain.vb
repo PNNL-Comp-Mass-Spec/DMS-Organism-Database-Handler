@@ -369,7 +369,7 @@ Module modMain
                                DestFolder As String,
                                blnLogProteinFileDetails As Boolean) As Boolean
 
-        Dim HashString As String
+        Dim crc32Hash As String
 
         'Instantiate fasta tool if not already done
         If m_FastaTools Is Nothing Then
@@ -392,7 +392,7 @@ Module modMain
         m_FastaGenStartTime = DateTime.UtcNow
         Try
             m_FastaTimer.Start()
-            HashString = m_FastaTools.ExportFASTAFile(CollectionList, CreationOpts, LegacyFasta, DestFolder)
+            crc32Hash = m_FastaTools.ExportFASTAFile(protCollectionList, creationOpts, legacyFasta, destinationFolderPath)
         Catch Ex As Exception
             Console.WriteLine("clsAnalysisResources.CreateFastaFile(), Exception generating OrgDb file: " & Ex.Message)
             Console.WriteLine(PRISM.Utilities.GetExceptionStackTraceMultiLine(Ex))
@@ -418,7 +418,7 @@ Module modMain
         End If
 
         If blnLogProteinFileDetails Then
-            LogProteinFileDetails(CollectionList, CreationOpts, LegacyFasta, HashString, DestFolder, m_FastaFileName, "")
+            LogProteinFileDetails(protCollectionList, creationOpts, legacyFasta, crc32Hash, destinationFolderPath, m_FastaFileName, "")
         End If
 
         Return True

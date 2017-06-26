@@ -21,6 +21,12 @@ Public Class clsGetFASTAFromDMSDecoy
         'Me.m_Naming_Suffix = "_reversed"
     End Sub
 
+    ''' <summary>
+    ''' Create the decoy FASTA file for the given protein collections
+    ''' </summary>
+    ''' <param name="protCollectionList">Protein collection list, or empty string if retrieving a legacy FASTA file</param>
+    ''' <param name="destinationFolderPath"></param>
+    ''' <returns>CRC32 hash of the generated (or retrieved) file</returns>
     Overloads Overrides Function ExportFASTAFile(
         ProteinCollectionNameList As ArrayList,
         ExportPath As String,
@@ -65,10 +71,9 @@ Public Class clsGetFASTAFromDMSDecoy
         revReader.Close()
         revFI.Delete()
 
-        Dim returnHash As String
-        returnHash = Me.GetFileHash(fwdFI.FullName)
+        Dim crc32HashFinal = Me.GetFileHash(fwdFI.FullName)
 
-        Return returnHash
+        Return crc32HashFinal
 
     End Function
 
