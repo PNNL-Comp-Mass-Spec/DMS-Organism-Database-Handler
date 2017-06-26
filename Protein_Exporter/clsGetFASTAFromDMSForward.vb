@@ -100,7 +100,7 @@ Public Class clsGetFASTAFromDMSForward
     ''' <param name="PadWithPrimaryAnnotation"></param>
     ''' <returns>CRC32 hash for the file</returns>
     Overridable Overloads Function ExportFASTAFile(
-       ProteinCollectionNameList As ArrayList,
+       protCollectionList As List(Of String),
        destinationFolderPath As String,
        AlternateAuthorityID As Integer,
        PadWithPrimaryAnnotation As Boolean) As String   'Implements IGetFASTAFromDMS.ExportFASTAFile
@@ -131,7 +131,7 @@ Public Class clsGetFASTAFromDMSForward
 
         Dim nameCheckRegex As New Regex("(?<collectionname>.+)(?<direction>_(forward|reversed|scrambled)).*\.(?<type>(fasta|fasta\.pro))")
 
-        If Not CheckProteinCollectionNameValidity(ProteinCollectionNameList) Then
+        If Not CheckProteinCollectionNameValidity(protCollectionList) Then
             Return ""
         End If
 
@@ -144,7 +144,7 @@ Public Class clsGetFASTAFromDMSForward
         Dim collectionNameList As String = String.Empty
 
         ' Check each collectionname for encryption of contents
-        For Each nameString As String In ProteinCollectionNameList
+        For Each nameString As String In protCollectionList
             encCheckRows = Me.m_CollectionsCache.Select("Filename = '" & nameString & "' AND Contents_Encrypted > 0")
 
             If encCheckRows.Length > 0 Then
@@ -207,14 +207,14 @@ Public Class clsGetFASTAFromDMSForward
 
         Loop While fiOutputPathCheck.Exists
 
-        If ProteinCollectionNameList.Count = 1 Then
+        If protCollectionList.Count = 1 Then
             OnExportStart("Exporting protein collection " & collectionNameList)
         Else
-            OnExportStart("Exporting " & ProteinCollectionNameList.Count & "protein collections: " & collectionNameList)
+            OnExportStart("Exporting " & protCollectionList.Count & "protein collections: " & collectionNameList)
         End If
 
         proteinCollectionsExported = 0
-        For Each ProteinCollectionName In ProteinCollectionNameList
+        For Each ProteinCollectionName In protCollectionList
             currentCollectionPos = 0
             currentCollectionCount = 0
             sectionStart = currentCollectionPos
@@ -304,10 +304,10 @@ Public Class clsGetFASTAFromDMSForward
 
                 Dim fractionDoneOverall As Double = 0
                 If collectionLength > 0 Then
-                    fractionDoneOverall = (proteinCollectionsExported / ProteinCollectionNameList.Count) + (currentCollectionCount / collectionLength) / ProteinCollectionNameList.Count
+                    fractionDoneOverall = (proteinCollectionsExported / protCollectionList.Count) + (currentCollectionCount / collectionLength) / protCollectionList.Count
                 End If
 
-                OnExportProgressUpdate(currentCollectionCount & " entries exported, collection " & (proteinCollectionsExported + 1) & " of " & (ProteinCollectionNameList.Count), fractionDoneOverall)
+                OnExportProgressUpdate(currentCollectionCount & " entries exported, collection " & (proteinCollectionsExported + 1) & " of " & (protCollectionList.Count), fractionDoneOverall)
 
             Loop Until collectionTable.Rows.Count = 0
 
@@ -328,7 +328,7 @@ Public Class clsGetFASTAFromDMSForward
         tmpIDListSB.Remove(tmpIDListSB.Length - 1, 1)
         Dim name As String '= hash
 
-        If ProteinCollectionNameList.Count > 1 Then
+        If protCollectionList.Count > 1 Then
             name = tmpIDListSB.ToString
             If destinationFolderPath.Length + name.Length > 225 Then
                 ' If exporting a large number of protein collections, name can be very long
@@ -387,21 +387,22 @@ Public Class clsGetFASTAFromDMSForward
     ''' <param name="destinationFolderPath"></param>
     ''' <returns>CRC32 hash of the generated (or retrieved) file</returns>
     Overridable Overloads Function ExportFASTAFile(
-       ProteinCollectionNameList As ArrayList,
+       protCollectionList As List(Of String),
        destinationFolderPath As String) As String
 
         Dim primaryAuthorityID = 1
+        Const PadWithPrimaryAnnotation = True
 
-        Return Me.ExportFASTAFile(ProteinCollectionNameList,
+        Return Me.ExportFASTAFile(protCollectionList,
                                   destinationFolderPath, primaryAuthorityID, PadWithPrimaryAnnotation)
 
 
     End Function
 
-    Protected Function CheckProteinCollectionNameValidity(proteinCollectionNameList As ArrayList) As Boolean
+    Protected Function CheckProteinCollectionNameValidity(protCollectionList As List(Of String)) As Boolean
         Dim name As String
         Dim id As Integer
-        For Each name In proteinCollectionNameList
+        For Each name In protCollectionList
             id = Me.FindIDByName(name)
             If id < 1 Then
                 Throw New Exception("The collection named '" + name + "' does not exist in the system")

@@ -28,8 +28,8 @@ Public Class clsGetFASTAFromDMSDecoy
     ''' <param name="destinationFolderPath"></param>
     ''' <returns>CRC32 hash of the generated (or retrieved) file</returns>
     Overloads Overrides Function ExportFASTAFile(
-        ProteinCollectionNameList As ArrayList,
-        ExportPath As String,
+        protCollectionList As List(Of String),
+        destinationFolderPath As String,
         AlternateAuthorityID As Integer,
         PadWithPrimaryAnnotation As Boolean) As String
 

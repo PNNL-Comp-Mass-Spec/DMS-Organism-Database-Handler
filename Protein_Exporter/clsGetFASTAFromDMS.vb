@@ -140,16 +140,18 @@ Public Class clsGetFASTAFromDMS
      DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
      OutputSequenceType As IGetFASTAFromDMS.SequenceTypes) As String Implements IGetFASTAFromDMS.ExportFASTAFile
 
-        Dim proteincollectionname As String = Me.GetProteinCollectionName(ProteinCollectionID)
-        Dim al As New ArrayList
+        Dim proteincollectionname As String = GetProteinCollectionName(ProteinCollectionID)
 
-        Dim creationOptionsHandler As New clsFileCreationOptions(Me.m_PSConnectionString)
+        Dim creationOptionsHandler As New clsFileCreationOptions(m_PSConnectionString)
 
         Dim creationOptions As String = creationOptionsHandler.MakeCreationOptionsString(
          OutputSequenceType, DatabaseFormatType)
 
-        al.Add(proteincollectionname)
-        Return Me.ExportMultipleFASTAFiles(al, creationOptions, ExportPath, 0, True, DatabaseFormatType, OutputSequenceType)
+        Dim protCollectionList As New List(Of String) From {
+            proteincollectionname
+        }
+
+        Return ExportProteinCollections(protCollectionList, creationOptions, destinationFolderPath, 0, True, DatabaseFormatType, OutputSequenceType)
 
     End Function
 
@@ -162,21 +164,15 @@ Public Class clsGetFASTAFromDMS
     ''' <param name="destinationFolderPath"></param>
     ''' <returns>CRC32 hash of the generated (or retrieved) file</returns>
     Overloads Function ExportFASTAFile(
-     ProteinCollectionNameList As String,
-     CreationOptions As String,
-     LegacyFASTAFileName As String,
+     protCollectionList As String,
+     creationOptions As String,
+     legacyFASTAFileName As String,
      destinationFolderPath As String) As String Implements IGetFASTAFromDMS.ExportFASTAFile
 
         ' Returns the CRC32 hash of the exported file
         ' Returns nothing or "" if an error
 
-        Dim ProteinCollections() As String
-        Dim collectionName As String
-
-        Dim collectionList As ArrayList = Nothing
-
-        Dim optionsParser As clsFileCreationOptions
-        optionsParser = New clsFileCreationOptions(Me.m_PSConnectionString)
+        Dim optionsParser = New clsFileCreationOptions(m_PSConnectionString)
         Dim cleanOptionsString As String
 
         If m_TableGetter Is Nothing Then
@@ -184,25 +180,21 @@ Public Class clsGetFASTAFromDMS
         End If
 
         ' Trim any leading or trailing commas
-        ProteinCollectionNameList = ProteinCollectionNameList.Trim(","c)
+        protCollectionList = protCollectionList.Trim(","c)
 
         ' Look for cases of multiple commas in a row or spaces around a comma
         ' Replace any matches with a single comma
-        Dim extraCommaCheckRegex As New System.Text.RegularExpressions.Regex("[, ]{2,}")
+        Dim extraCommaCheckRegex As New Regex("[, ]{2,}")
 
-        ProteinCollectionNameList = extraCommaCheckRegex.Replace(ProteinCollectionNameList, ",")
+        protCollectionList = extraCommaCheckRegex.Replace(protCollectionList, ",")
 
-        If ProteinCollectionNameList.Length > 0 And Not ProteinCollectionNameList.ToLower.Equals("na") Then
+        If protCollectionList.Length > 0 And Not protCollectionList.ToLower.Equals("na") Then
             'Parse out protein collections from "," delimited list
-            ProteinCollections = ProteinCollectionNameList.Split(","c)
 
-            collectionList = New ArrayList(ProteinCollections.Length)
-            For Each collectionName In ProteinCollections
-                collectionList.Add(collectionName.Trim())
-            Next
+            Dim collectionList = protCollectionList.Split(","c).ToList()
 
             'Parse options string
-            cleanOptionsString = optionsParser.ExtractOptions(CreationOptions)
+            cleanOptionsString = optionsParser.ExtractOptions(creationOptions)
 
             Return ExportProteinCollections(
              collectionList,
@@ -211,7 +203,7 @@ Public Class clsGetFASTAFromDMS
              optionsParser.FileFormatType,
              optionsParser.SequenceDirection)
 
-        ElseIf LegacyFASTAFileName.Length > 0 And Not LegacyFASTAFileName.ToLower.Equals("na") Then
+        ElseIf legacyFASTAFileName.Length > 0 And Not legacyFASTAFileName.ToLower.Equals("na") Then
 
             Return ExportLegacyFastaFile(legacyFASTAFileName, destinationFolderPath)
 
@@ -277,9 +269,9 @@ Public Class clsGetFASTAFromDMS
         ' We need to create a lock file, then copy the .fasta file locally
 
         If String.IsNullOrEmpty(legacyStaticFilePath) Then
-            Dim msg = "Storage path for " & LegacyFASTAFileName & " is empty according to V_Legacy_Static_File_Locations; unable to continue"
+            Dim msg = "Storage path for " & legacyFASTAFileName & " is empty according to V_Legacy_Static_File_Locations; unable to continue"
             OnErrorEvent(msg)
-            Throw New System.Exception(msg)
+            Throw New Exception(msg)
         End If
 
         ' Make sure we have enough disk free space
@@ -312,9 +304,9 @@ Public Class clsGetFASTAFromDMS
 
         If lockStream Is Nothing Then
             ' Unable to create a lock stream; an exception has likely already been thrown
-            Dim msg = "Unable to create lock file required to export " & LegacyFASTAFileName
+            Dim msg = "Unable to create lock file required to export " & legacyFASTAFileName
             OnErrorEvent(msg)
-            Throw New System.Exception(msg)
+            Throw New Exception(msg)
         End If
 
         If Not fiFinalFile Is Nothing Then
@@ -348,7 +340,7 @@ Public Class clsGetFASTAFromDMS
             InterimFastaFI.Delete()
         End If
 
-        m_LastLockQueueWaitTimeLog = System.DateTime.UtcNow
+        m_LastLockQueueWaitTimeLog = DateTime.UtcNow
         m_FileTools.CopyFileUsingLocks(fiSourceFile, InterimFastaFI.FullName, "OrgDBHandler", overWrite:=False)
 
         ' Now that the copy is done, rename the file to the final name
@@ -371,9 +363,9 @@ Public Class clsGetFASTAFromDMS
 
         ' This code will only get reached if an error occurred in ExportLegacyFastaValidateHash()
         ' We'll go ahead and return the hash anyway
-        Me.OnFileGenerationCompleted(fiFinalFile.FullName)
-        Me.OnTaskCompletion(fiFinalFile.FullName)
         DeleteLockStream(destinationFolderPath, lockFileHash, lockStream)
+        OnFileGenerationCompleted(fiFinalFile.FullName)
+        OnTaskCompletion(fiFinalFile.FullName)
 
         Return crc32Hash
 
@@ -404,14 +396,14 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
-    Protected Overloads Function ExportMultipleFASTAFiles(
-     ProteinCollectionNameList As ArrayList,
-     CreationOptionsString As String,
-     AlternateAnnotationTypeID As Integer,
-     PadWithPrimaryAnnotation As Boolean,
-     DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
-     OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes) As String
+    Protected Function ExportProteinCollections(
+     protCollectionList As List(Of String),
+     creationOptionsString As String,
      destinationFolderPath As String,
+     alternateAnnotationTypeID As Integer,
+     padWithPrimaryAnnotation As Boolean,
+     databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
+     outputSequenceType As IGetFASTAFromDMS.SequenceTypes) As String
 
         Dim CollectionName As String
 
@@ -489,7 +481,7 @@ Public Class clsGetFASTAFromDMS
             ' Unable to create a lock stream; an exception has likely already been thrown
             Dim msg = "Unable to create lock file required to export " & finalFileName
             OnErrorEvent(msg)
-            Throw New System.Exception(msg)
+            Throw New Exception(msg)
         End If
 
         If Not finalFileFI Is Nothing Then
@@ -524,12 +516,12 @@ Public Class clsGetFASTAFromDMS
         ClassSelector(m_PSConnectionString, databaseFormatType, outputSequenceType)
 
         ' If more than one protein collection, then we're generating a dynamic protein collection
-        If ProteinCollectionNameList.Count > 1 Then
-            Me.m_CollectionType = IArchiveOutputFiles.CollectionTypes.dynamic
+        If protCollectionList.Count > 1 Then
+            m_CollectionType = IArchiveOutputFiles.CollectionTypes.dynamic
         End If
 
         Try
-            OnDebugEvent("Retrieving fasta file for protein collections " & String.Join(","c, ProteinCollectionNameList.ToArray()))
+            OnDebugEvent("Retrieving fasta file for protein collections " & String.Join(","c, protCollectionList.ToArray()))
 
             ' Export the fasta file
             crc32Hash = m_Getter.ExportFASTAFile(
@@ -548,7 +540,7 @@ Public Class clsGetFASTAFromDMS
             End If
 
             counter = 0
-            For Each CollectionName In ProteinCollectionNameList
+            For Each CollectionName In protCollectionList
                 If counter = 0 Then
                     Archived_File_ID = m_Archiver.ArchiveCollection(
                      CollectionName,
@@ -675,12 +667,12 @@ Public Class clsGetFASTAFromDMS
             If intAttemptCount >= 4 Then
                 ' Something went wrong 4 times in a row (typically either creating or deleting the .Lock file)
                 ' Give up trying to export
-                If ProteinCollectionListOrLegacyFastaFileName Is Nothing Then
-                    ProteinCollectionListOrLegacyFastaFileName = "??"
+                If proteinCollectionListOrLegacyFastaFileName Is Nothing Then
+                    proteinCollectionListOrLegacyFastaFileName = "??"
                 End If
 
                 ' Exception: Unable to create Lockfile required to export Protein collection ...
-                Dim msg = "Unable to create " & LOCK_FILE_PROGRESS_TEXT & " required to export " & ProteinCollectionListOrLegacyFastaFileName &
+                Dim msg = "Unable to create " & LOCK_FILE_PROGRESS_TEXT & " required to export " & proteinCollectionListOrLegacyFastaFileName &
                     "; tried 4 times without success"
                 OnErrorEvent(msg)
                 Throw New Exception(msg)
@@ -816,8 +808,8 @@ Public Class clsGetFASTAFromDMS
 
     Protected Sub UpdateHashValidationFile(ByRef fiHashValidationFile As FileInfo)
 
-        Using swOutFile = New StreamWriter(fiHashValidationFile.Open(IO.FileMode.Create))
-            swOutFile.WriteLine("Hash validated " & System.DateTime.Now.ToString)
+        Using swOutFile = New StreamWriter(fiHashValidationFile.Open(FileMode.Create))
+            swOutFile.WriteLine("Hash validated " & DateTime.Now.ToString)
         End Using
 
     End Sub
@@ -895,9 +887,9 @@ Public Class clsGetFASTAFromDMS
     Public Event FileGenerationProgress(statusMsg As String, fractionDone As Double) Implements IGetFASTAFromDMS.FileGenerationProgress
     Public Event FileGenerationStarted(taskMsg As String) Implements IGetFASTAFromDMS.FileGenerationStarted
 
-        If Me.m_ArchiveCollectionList Is Nothing Then
-            Me.m_ArchiveCollectionList = New ArrayList
     Private Sub OnFileGenerationCompleted(outputPath As String) Handles m_Getter.FileGenerationCompleted
+        If m_ArchiveCollectionList Is Nothing Then
+            m_ArchiveCollectionList = New List(Of String)
         End If
         m_ArchiveCollectionList.Add(Path.GetFileName(outputPath))
         m_FinalOutputPath = outputPath
