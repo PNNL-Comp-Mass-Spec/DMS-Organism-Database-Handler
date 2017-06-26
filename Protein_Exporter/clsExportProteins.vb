@@ -93,63 +93,21 @@ Public MustInherit Class clsExportProteins
         End If
     End Function
 
-    Class HexConverter
-
-        ' Private Shared hexDigits As Char() = {"0"c, "1"c, "2"c, "3"c, "4"c, "5"c, "6"c, "7"c, "8"c, "9"c, "A"c, "B"c, "C"c, "D"c, "E"c, "F"c}
-
-
-
-        Public Shared Function ToHexString(bytes() As Byte) As String
-
-            'hash = sha1.Hash;
-            '   buff = new StringBuilder();
-            '   foreach (byte hashByte in hash)
-            '   {
-            '      buff.Append(String.Format("{0:X1}", hashByte));
-            '   }
-            '   Console.WriteLine("Hash: {0}", buff.ToString());
 
 
 
 
 
-            'Dim hexStr As String = ""
-            'Dim i As Integer = 0
-
-            'Dim sb As New System.Text.StringBuilder
-
-            'For i = 0 To bytes.Length - 1
-
-            '    sb.Append(bytes(i).ToString("X").PadLeft(2, "0"c))
-
-            'Next
-
-            'hexStr = sb.ToString
-
-            'Return hexStr
 
 
-            Dim hexStr = ""
-            'Dim i As Integer = 0
-            Dim b As Byte
-
-            Dim sb As New System.Text.StringBuilder
-
-            'For i = 0 To bytes.Length - 1
-            For Each b In bytes
-
-                'sb.Append(bytes(i).ToString("X").PadLeft(2, "0"c))
-                sb.Append(String.Format("{0:X1}", b))
-
-            Next
-
-            hexStr = sb.ToString
-
-            Return hexStr
 
 
-        End Function 'ToHexString
 
-    End Class 'HexConverter
+
+
+
+
+
+
 
 End Class

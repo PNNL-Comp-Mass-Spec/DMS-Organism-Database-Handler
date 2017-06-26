@@ -155,7 +155,7 @@ Public Class clsRijndaelEncryptionHandler
         'Compute the hash value from the source
         Dim SHA1_hash() As Byte = Me.m_Hashgen.ComputeHash(ByteSourceText)
         'And convert it to String format for return
-        Dim SHA1string As String = HexConverter.ToHexString(SHA1_hash)
+        Dim SHA1string As String = ToHexString(SHA1_hash)
 
         Return SHA1string
     End Function
@@ -257,29 +257,16 @@ Public Class clsRijndaelEncryptionHandler
         Return plainText
     End Function
 
-    Class HexConverter
+    Public Shared Function ToHexString(bytes() As Byte) As String
 
-        Private Shared hexDigits As Char() = {"0"c, "1"c, "2"c, "3"c, "4"c, "5"c, "6"c, "7"c, "8"c, "9"c, "A"c, "B"c, "C"c, "D"c, "E"c, "F"c}
+        Dim sb As New StringBuilder
 
-        Public Shared Function ToHexString(bytes() As Byte) As String
+        For Each b In bytes
+            sb.Append(String.Format("{0:X2}", b))
+        Next
 
-            Dim hexStr = ""
-            Dim i As Integer
+        Return sb.ToString()
 
-            Dim sb As New System.Text.StringBuilder
-
-            For i = 0 To bytes.Length - 1
-
-                sb.Append(bytes(i).ToString("X").PadLeft(2, "0"c))
-
-            Next
-
-            hexStr = sb.ToString
-            Return hexStr.ToUpper
-
-        End Function 'ToHexString
-
-    End Class 'HexConverter
-
+    End Function
 
 End Class
