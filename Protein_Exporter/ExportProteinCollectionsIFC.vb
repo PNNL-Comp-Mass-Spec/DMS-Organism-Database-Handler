@@ -60,7 +60,7 @@ Namespace ExportProteinCollectionsIFC
 
         Event FileGenerationStarted(taskMsg As String)
         Event FileGenerationProgress(statusMsg As String, fractionDone As Double)
-        Event FileGenerationCompleted(FullOutputPath As String)
+        Event FileGenerationCompleted(outputPath As String)
 
         Enum SequenceTypes
             forward = 1

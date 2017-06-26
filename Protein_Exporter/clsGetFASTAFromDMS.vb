@@ -886,17 +886,17 @@ Public Class clsGetFASTAFromDMS
     End Function
 
 #Region "Events and Event Handlers"
-    Public Event FileGenerationCompleted(FullOutputPath As String) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationCompleted
-    Public Event FileGenerationProgress(statusMsg As String, fractionDone As Double) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationProgress
-    Public Event FileGenerationStarted(taskMsg As String) Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.FileGenerationStarted
+    Public Event FileGenerationCompleted(outputPath As String) Implements IGetFASTAFromDMS.FileGenerationCompleted
+    Public Event FileGenerationProgress(statusMsg As String, fractionDone As Double) Implements IGetFASTAFromDMS.FileGenerationProgress
+    Public Event FileGenerationStarted(taskMsg As String) Implements IGetFASTAFromDMS.FileGenerationStarted
 
-    Private Sub OnFileGenerationCompleted(FullOutputPath As String) Handles m_Getter.FileGenerationCompleted
         If Me.m_ArchiveCollectionList Is Nothing Then
             Me.m_ArchiveCollectionList = New ArrayList
+    Private Sub OnFileGenerationCompleted(outputPath As String) Handles m_Getter.FileGenerationCompleted
         End If
-        Me.m_ArchiveCollectionList.Add(Path.GetFileName(FullOutputPath))
-        Me.m_FinalOutputPath = FullOutputPath
-        OnDebugEvent("Saved fasta file to " + FullOutputPath)
+        m_ArchiveCollectionList.Add(Path.GetFileName(outputPath))
+        m_FinalOutputPath = outputPath
+        OnDebugEvent("Saved fasta file to " + outputPath)
     End Sub
 
     ''' <summary>
