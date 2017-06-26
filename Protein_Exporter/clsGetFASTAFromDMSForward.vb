@@ -76,10 +76,10 @@ Public Class clsGetFASTAFromDMSForward
     End Property
 
     Protected Overridable Function ExtendedExportPath(
-     ExportPath As String,
-     ProteinCollectionName As String) As String
+       destinationFolderPath As String,
+       proteinCollectionName As String) As String
 
-        Return System.IO.Path.Combine(ExportPath, ProteinCollectionName + Me.m_Naming_Suffix + Me.m_Extension)
+        Return Path.Combine(destinationFolderPath, proteinCollectionName + Me.m_Naming_Suffix + Me.m_Extension)
 
     End Function
 
@@ -93,7 +93,7 @@ Public Class clsGetFASTAFromDMSForward
 
     Overridable Overloads Function ExportFASTAFile(
        ProteinCollectionNameList As ArrayList,
-       ExportPath As String,
+       destinationFolderPath As String,
        AlternateAuthorityID As Integer,
        PadWithPrimaryAnnotation As Boolean) As String   'Implements IGetFASTAFromDMS.ExportFASTAFile
 
@@ -322,12 +322,12 @@ Public Class clsGetFASTAFromDMSForward
 
         If ProteinCollectionNameList.Count > 1 Then
             name = tmpIDListSB.ToString
-            If ExportPath.Length + name.Length > 225 Then
+            If destinationFolderPath.Length + name.Length > 225 Then
                 ' If exporting a large number of protein collections, name can be very long
                 ' This can lead to error: The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters
                 ' Thus, truncate name
                 Dim intMaxNameLength As Integer
-                intMaxNameLength = 225 - ExportPath.Length
+                intMaxNameLength = 225 - destinationFolderPath.Length
                 If intMaxNameLength < 30 Then intMaxNameLength = 30
 
                 name = name.Substring(0, intMaxNameLength)
@@ -344,7 +344,7 @@ Public Class clsGetFASTAFromDMSForward
             name = trueName
         End If
 
-        Me.m_CurrentFullOutputPath = Me.ExtendedExportPath(ExportPath, name)
+        Me.m_CurrentFullOutputPath = Me.ExtendedExportPath(destinationFolderPath, name)
         Me.m_CurrentArchiveFileName = name
 
         ' Rename (move) the temporary file to the final, full name
@@ -376,12 +376,12 @@ Public Class clsGetFASTAFromDMSForward
 
     Overridable Overloads Function ExportFASTAFile(
        ProteinCollectionNameList As ArrayList,
-       ExportPath As String) As String 'Implements IGetFASTAFromDMS.ExportFASTAFile
+       destinationFolderPath As String) As String
 
         Dim primaryAuthorityID = 1
 
         Return Me.ExportFASTAFile(ProteinCollectionNameList,
-         ExportPath, primaryAuthorityID, True)
+                                  destinationFolderPath, primaryAuthorityID, PadWithPrimaryAnnotation)
 
 
     End Function

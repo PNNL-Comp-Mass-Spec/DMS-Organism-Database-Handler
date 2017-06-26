@@ -128,9 +128,9 @@ Public Class clsGetFASTAFromDMS
 
     Overloads Function ExportFASTAFile(
      ProteinCollectionID As Integer,
-     ExportPath As String,
-     DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
-     OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.ExportFASTAFile
+     destinationFolderPath As String,
+     DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
+     OutputSequenceType As IGetFASTAFromDMS.SequenceTypes) As String Implements IGetFASTAFromDMS.ExportFASTAFile
 
         Dim proteincollectionname As String = Me.GetProteinCollectionName(ProteinCollectionID)
         Dim al As New ArrayList
@@ -149,7 +149,7 @@ Public Class clsGetFASTAFromDMS
      ProteinCollectionNameList As String,
      CreationOptions As String,
      LegacyFASTAFileName As String,
-     ExportPath As String) As String Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.ExportFASTAFile
+     destinationFolderPath As String) As String Implements IGetFASTAFromDMS.ExportFASTAFile
 
         ' Returns the Sha1 hash of the exported file
         ' Returns nothing or "" if an error
@@ -191,13 +191,13 @@ Public Class clsGetFASTAFromDMS
             Return ExportProteinCollections(
              collectionList,
              cleanOptionsString,
-             ExportPath, 0, True,
+             destinationFolderPath, 0, True,
              optionsParser.FileFormatType,
              optionsParser.SequenceDirection)
 
         ElseIf LegacyFASTAFileName.Length > 0 And Not LegacyFASTAFileName.ToLower.Equals("na") Then
 
-            Return ExportLegacyFastaFile(LegacyFASTAFileName, ExportPath)
+            Return ExportLegacyFastaFile(legacyFASTAFileName, destinationFolderPath)
 
         End If
 
@@ -206,8 +206,9 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
-    Protected Function ExportLegacyFastaFile(LegacyFASTAFileName As String,
-      ExportPath As String) As String
+    Protected Function ExportLegacyFastaFile(
+      legacyFASTAFileName As String,
+      destinationFolderPath As String) As String
 
         Dim legacyStaticFilePath = ""
         Dim finalFileHash = ""
@@ -231,16 +232,16 @@ Public Class clsGetFASTAFromDMS
             Throw New System.Exception(msg)
         End If
 
-        ' Look for file LegacyFASTAFileName in folder ExportPath
+        ' Look for file LegacyFASTAFileName in folder destinationFolderPath
         ' If it exists, and if a .lock file does not exist, then compare file sizes and file modification dates
 
         Dim fiFinalFile As FileInfo
-        fiFinalFile = New FileInfo(Path.Combine(ExportPath, LegacyFASTAFileName))
+        fiFinalFile = New FileInfo(Path.Combine(destinationFolderPath, legacyFASTAFileName))
         If fiFinalFile.Exists AndAlso fiFinalFile.Length > 0 Then
             ' Make sure a .lock file doesn't exist
             ' If it does exist, then another process on this computer is likely creating the .Fasta file
 
-            lockFi = New FileInfo(Path.Combine(ExportPath, LockFileHash + ".lock"))
+            lockFi = New FileInfo(Path.Combine(destinationFolderPath, lockFileHash + ".lock"))
 
             If lockFi.Exists Then
                 ' Another program is creating a .Fasta file; cannot assume it is ready-for-use
@@ -267,22 +268,23 @@ Public Class clsGetFASTAFromDMS
 
         ' Make sure we have enough disk free space
 
-        Dim destinationPath = Path.Combine(ExportPath, "TargetFile.tmp")
+        Dim destinationPath = Path.Combine(destinationFolderPath, "TargetFile.tmp")
         Dim errorMessage As String = String.Empty
         Dim sourceFileSizeMB As Double = fiSourceFile.Length / 1024.0 / 1024.0
 
         Dim currentFreeSpaceBytes As Int64
-        Dim spaceValidationError = "Unable to copy legacy FASTA file to " & ExportPath & ". " & errorMessage
 
-        Dim success = PRISMWin.clsDiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
+        Dim success = clsDiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
         If Not success Then
             If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsDiskInfo.GetDiskFreeSpace returned a blank error message"
+            Dim spaceValidationError = "Unable to copy legacy FASTA file to " & destinationFolderPath & ". " & errorMessage
             OnErrorEvent(spaceValidationError)
             Throw New IOException(spaceValidationError)
         End If
 
-        If Not PRISM.clsFileTools.ValidateFreeDiskSpace(destinationPath, sourceFileSizeMB, currentFreeSpaceBytes, errorMessage) Then
+        If Not clsFileTools.ValidateFreeDiskSpace(destinationPath, sourceFileSizeMB, currentFreeSpaceBytes, errorMessage) Then
             If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
+            Dim spaceValidationError = "Unable to copy legacy FASTA file to " & destinationFolderPath & ". " & errorMessage
             OnErrorEvent(spaceValidationError)
             Throw New IOException(spaceValidationError)
         End If
@@ -290,7 +292,7 @@ Public Class clsGetFASTAFromDMS
         ' If we get here, then finalFileName = "" or the file is not present or the LockFile is present
         ' Try to create a lock file, then either wait for an existing lock file to go away or export the database
         Dim lockStream As FileStream
-        lockStream = CreateLockStream(ExportPath, LockFileHash, LegacyFASTAFileName)
+        lockStream = CreateLockStream(destinationFolderPath, lockFileHash, legacyFASTAFileName)
 
         If lockStream Is Nothing Then
             ' Unable to create a lock stream; an exception has likely already been thrown
@@ -314,9 +316,9 @@ Public Class clsGetFASTAFromDMS
                 End If
 
                 If ExportLegacyFastaValidateHash(fiFinalFile, finalFileHash, False) Then
-                    DeleteLockStream(ExportPath, LockFileHash, lockStream)
                     Me.OnTaskCompletion(fiFinalFile.FullName)
                     Return finalFileHash
+                    DeleteLockStream(destinationFolderPath, lockFileHash, lockStream)
                 End If
 
             End If
@@ -325,7 +327,7 @@ Public Class clsGetFASTAFromDMS
 
         ' Copy the .Fasta file from the remote computer to this computer
         ' We're temporarily naming it with the hash name
-        Dim InterimFastaFI As New FileInfo(Path.Combine(ExportPath, strCollectionListHexHash & "_" & Path.GetFileNameWithoutExtension(legacyStaticFilePath) & ".fasta"))
+        Dim InterimFastaFI As New FileInfo(Path.Combine(destinationFolderPath, filenameSha1Hash & "_" & Path.GetFileNameWithoutExtension(legacyStaticFilePath) & ".fasta"))
         If InterimFastaFI.Exists Then
             InterimFastaFI.Delete()
         End If
@@ -346,16 +348,16 @@ Public Class clsGetFASTAFromDMS
         ' File successfully copied to this computer
         ' Update the hash validation file, and update the DB if the newly copied file's hash value differs from the DB
         If ExportLegacyFastaValidateHash(fiFinalFile, finalFileHash, True) Then
-            DeleteLockStream(ExportPath, LockFileHash, lockStream)
             Me.OnTaskCompletion(fiFinalFile.FullName)
             Return finalFileHash
+            DeleteLockStream(destinationFolderPath, lockFileHash, lockStream)
         End If
 
         ' This code will only get reached if an error occurred in ExportLegacyFastaValidateHash()
         ' We'll go ahead and return the hash anyway
-        DeleteLockStream(ExportPath, LockFileHash, lockStream)
         Me.OnFileGenerationCompleted(fiFinalFile.FullName)
         Me.OnTaskCompletion(fiFinalFile.FullName)
+        DeleteLockStream(destinationFolderPath, lockFileHash, lockStream)
 
         Return finalFileHash
 
@@ -389,11 +391,11 @@ Public Class clsGetFASTAFromDMS
     Protected Overloads Function ExportMultipleFASTAFiles(
      ProteinCollectionNameList As ArrayList,
      CreationOptionsString As String,
-     ExportPath As String,
      AlternateAnnotationTypeID As Integer,
      PadWithPrimaryAnnotation As Boolean,
      DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
      OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes) As String
+     destinationFolderPath As String,
 
         Dim CollectionName As String
 
@@ -440,15 +442,15 @@ Public Class clsGetFASTAFromDMS
         Dim finalFileFI As FileInfo = Nothing
 
         If finalFileName.Length > 0 Then
-            ' Look for file finalFileName in folder ExportPath
+            ' Look for file finalFileName in folder destinationFolderPath
             ' If it exists, and if a .lock file does not exist, then we can safely assume the .Fasta file is ready for use
 
-            finalFileFI = New FileInfo(Path.Combine(ExportPath, finalFileName))
+            finalFileFI = New FileInfo(Path.Combine(destinationFolderPath, finalFileName))
             If finalFileFI.Exists AndAlso finalFileFI.Length > 0 Then
                 ' Make sure a .lock file doesn't exist
                 ' If it does exist, then another process on this computer is likely creating the .Fasta file
 
-                lockFi = New FileInfo(Path.Combine(ExportPath, LockFileHash + ".lock"))
+                lockFi = New FileInfo(Path.Combine(destinationFolderPath, lockFileHash + ".lock"))
 
                 If lockFi.Exists Then
                     ' Another program is creating a .Fasta file; cannot assume it is ready-for-use
@@ -467,7 +469,7 @@ Public Class clsGetFASTAFromDMS
         ' If we get here, then finalFileName = "" or the file is not present or the LockFile is present or the hash file is out-of-date
         ' Try to create a lock file, then either wait for an existing lock file to go away or export the database
         Dim lockStream As FileStream
-        lockStream = CreateLockStream(ExportPath, LockFileHash, "Protein collection list " & strProteinCollectionList)
+        lockStream = CreateLockStream(destinationFolderPath, lockFileHash, "Protein collection list " & strProteinCollectionList)
 
         If lockStream Is Nothing Then
             ' Unable to create a lock stream; an exception has likely already been thrown
@@ -494,8 +496,8 @@ Public Class clsGetFASTAFromDMS
                 ' Since this can be time consuming, we only do this every 48 hours
                 ' If the generated hash does not match the expected hash (finalFileHash) then we will re-generate the .fasta file
                 If ValidateMatchingHash(finalFileFI.FullName, finalFileHash, 48, False) Then
-                    DeleteLockStream(ExportPath, LockFileHash, lockStream)
-                    Me.OnTaskCompletion(finalFileFI.FullName)
+                    DeleteLockStream(destinationFolderPath, lockFileHash, lockStream)
+                    OnTaskCompletion(finalFileFI.FullName)
                     Return finalFileHash
                 End If
 
@@ -518,9 +520,9 @@ Public Class clsGetFASTAFromDMS
             ' Export the fasta file
             SHA1 = Me.m_Getter.ExportFASTAFile(
                ProteinCollectionNameList,
-               ExportPath,
                AlternateAnnotationTypeID,
                PadWithPrimaryAnnotation)
+               destinationFolderPath,
 
             Dim counter As Integer
             Dim Archived_File_ID As Integer
@@ -581,11 +583,11 @@ Public Class clsGetFASTAFromDMS
             UpdateHashValidationFile(finalFileFI.FullName, SHA1)
 
         Catch
-            DeleteLockStream(ExportPath, LockFileHash, lockStream)
+            DeleteLockStream(destinationFolderPath, lockFileHash, lockStream)
             Throw
         End Try
 
-        DeleteLockStream(ExportPath, LockFileHash, lockStream)
+        DeleteLockStream(destinationFolderPath, lockFileHash, lockStream)
 
         Me.OnTaskCompletion(finalFileFI.FullName)
         Return SHA1
@@ -593,9 +595,9 @@ Public Class clsGetFASTAFromDMS
     End Function
 
     Protected Function CreateLockStream(
-       ExportPath As String,
-       LockFileHash As String,
-       ProteinCollectionListOrLegacyFastaFileName As String) As FileStream
+       destinationFolderPath As String,
+       lockFileHash As String,
+       proteinCollectionListOrLegacyFastaFileName As String) As FileStream
 
         ' Creates a new lock file
         ' If an existing file is not found, but a lock file was successfully created, then lockStream will be a valid file stream
@@ -606,7 +608,7 @@ Public Class clsGetFASTAFromDMS
 
         Dim lockStream As FileStream
 
-        lockFi = New FileInfo(Path.Combine(ExportPath, LockFileHash + ".lock"))
+        lockFi = New FileInfo(Path.Combine(destinationFolderPath, lockFileHash + ".lock"))
 
         Do
             intAttemptCount += 1
@@ -729,14 +731,13 @@ Public Class clsGetFASTAFromDMS
         End Try
     End Sub
 
-    Protected Sub DeleteLockStream(ExportPath As String, LockFileHash As String, lockStream As FileStream)
+    Protected Sub DeleteLockStream(destinationFolderPath As String, lockFileHash As String, lockStream As FileStream)
 
         If Not lockStream Is Nothing Then
             lockStream.Close()
         End If
 
-        Dim lockFi As FileInfo
-        lockFi = New FileInfo(Path.Combine(ExportPath, LockFileHash + ".lock"))
+        Dim lockFi = New FileInfo(Path.Combine(destinationFolderPath, lockFileHash + ".lock"))
         If Not lockFi Is Nothing Then
             If lockFi.Exists Then
                 lockFi.Delete()

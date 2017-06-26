@@ -43,15 +43,15 @@ Namespace ExportProteinCollectionsIFC
 
         Function ExportFASTAFile(
             ProteinCollectionID As Integer,
-            ExportPath As String,
-            DatabaseFormatType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes,
-            OutputSequenceType As ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes) As String
+            destinationFolderPath As String,
+            DatabaseFormatType As DatabaseFormatTypes,
+            OutputSequenceType As SequenceTypes) As String
 
         Function ExportFASTAFile(
-            ProteinCollectionNameList As String,
+            protCollectionList As String,
             CreationOptions As String,
             LegacyFASTAFileName As String,
-            ExportPath As String) As String
+            destinationFolderPath As String) As String
 
         Function GenerateFileAuthenticationHash(FullFilePath As String) As String
         Function GetStoredFileAuthenticationHash(ProteinCollectionName As String) As String
