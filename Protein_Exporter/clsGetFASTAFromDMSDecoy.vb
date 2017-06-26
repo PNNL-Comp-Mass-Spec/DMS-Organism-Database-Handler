@@ -36,39 +36,29 @@ Public Class clsGetFASTAFromDMSDecoy
         Dim fwdFilePath As String
         Dim revFilePath As String
 
-        Dim fwdHash As String
-        fwdHash = MyBase.ExportFASTAFile(ProteinCollectionNameList,
-            ExportPath, AlternateAuthorityID, PadWithPrimaryAnnotation)
+        MyBase.ExportFASTAFile(protCollectionList,
+                               destinationFolderPath, AlternateAuthorityID, PadWithPrimaryAnnotation)
 
         fwdFilePath = Me.FullOutputPath
 
-        Dim revHash As String
-
-        revHash = Me.m_RevGenerator.ExportFASTAFile(ProteinCollectionNameList,
-            ExportPath, AlternateAuthorityID, PadWithPrimaryAnnotation)
+        Me.m_RevGenerator.ExportFASTAFile(protCollectionList,
+                                          destinationFolderPath, AlternateAuthorityID, PadWithPrimaryAnnotation)
 
         revFilePath = Me.m_RevGenerator.FullOutputPath
 
-        Dim fwdFI = New System.IO.FileInfo(fwdFilePath)
+        Dim fwdFI = New FileInfo(fwdFilePath)
+        Dim revFI = New FileInfo(revFilePath)
 
-        Dim appendWriter As System.IO.TextWriter = fwdFI.AppendText
+        Using reverseReader = New StreamReader(New FileStream(revFI.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            Using appender = New StreamWriter(New FileStream(fwdFI.FullName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
 
-        Dim revFI = New System.IO.FileInfo(revFilePath)
+                While (Not reverseReader.EndOfStream)
+                    Dim dataLine = reverseReader.ReadLine()
+                    appender.WriteLine(dataLine)
+                End While
+            End Using
+        End Using
 
-        Dim revReader As System.IO.TextReader = revFI.OpenText
-
-        Dim s As String
-
-        s = revReader.ReadLine
-        While Not s Is Nothing
-            appendWriter.WriteLine(s)
-            s = revReader.ReadLine
-        End While
-
-        appendWriter.Flush()
-        appendWriter.Close()
-
-        revReader.Close()
         revFI.Delete()
 
         Dim crc32HashFinal = Me.GetFileHash(fwdFI.FullName)
