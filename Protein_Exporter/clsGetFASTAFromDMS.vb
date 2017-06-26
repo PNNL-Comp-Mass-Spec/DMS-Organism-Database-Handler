@@ -824,12 +824,12 @@ Public Class clsGetFASTAFromDMS
     ''' <param name="retryHoldoffHours">Time between re-generating the hash value for an existing file</param>
     ''' <param name="forceRegenerateHash">Re-generate the hash</param>
     ''' <returns>True if the hash values match, or if blnForceRegenerateHash=True</returns>
-     intRetryHoldoffHours As Integer,
-     blnForceRegenerateHash As Boolean) As Boolean
     ''' <remarks>Public method because the Analysis Manager uses this class when running offline jobs</remarks>
     Public Function ValidateMatchingHash(
      fastaFilePath As String,
      ByRef expectedHash As String,
+     Optional retryHoldoffHours As Integer = 48,
+     Optional forceRegenerateHash As Boolean = False) As Boolean
 
         Dim fiFastaFile As FileInfo
         Dim fiHashValidationFile As FileInfo
