@@ -620,8 +620,6 @@ Public Class clsGetFASTAFromDMS
         Dim startTime As DateTime = DateTime.UtcNow
         Dim intAttemptCount = 0
 
-        Dim lockStream As FileStream
-
         lockFi = New FileInfo(Path.Combine(destinationFolderPath, lockFileHash + ".lock"))
 
         Do
@@ -661,11 +659,9 @@ Public Class clsGetFASTAFromDMS
 
                 ' Try to create the lock file
                 ' If another process is still using it, an exception will be thrown
-                lockStream = lockFi.Create()
+                Dim lockStream = New FileStream(lockFi.FullName, FileMode.CreateNew, FileAccess.Write, FileShare.Read)
 
-                ' We have successfully created a lock file, 
-                ' so we should exit the Do Loop
-                Exit Do
+                Return lockStream
 
             Catch ex As Exception
                 Dim msg = "Exception while monitoring " & LOCK_FILE_PROGRESS_TEXT & " " & lockFi.FullName & ": " & ex.Message
@@ -690,9 +686,6 @@ Public Class clsGetFASTAFromDMS
                 Throw New Exception(msg)
             End If
         Loop
-
-
-        Return lockStream
 
     End Function
 
