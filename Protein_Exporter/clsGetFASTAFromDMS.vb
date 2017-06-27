@@ -835,13 +835,13 @@ Public Class clsGetFASTAFromDMS
         Dim fiHashValidationFile As FileInfo
 
         Try
-            fiFastaFile = New FileInfo(strFastaFilePath)
+            fiFastaFile = New FileInfo(fastaFilePath)
 
             If fiFastaFile.Exists Then
-                fiHashValidationFile = GetHashFileValidationInfo(strFastaFilePath, strExpectedHash)
+                fiHashValidationFile = GetHashFileValidationInfo(fastaFilePath, expectedHash)
 
-                If fiHashValidationFile.Exists And Not blnForceRegenerateHash Then
-                    If System.DateTime.UtcNow.Subtract(fiHashValidationFile.LastWriteTimeUtc).TotalHours <= intRetryHoldoffHours Then
+                If fiHashValidationFile.Exists And Not forceRegenerateHash Then
+                    If DateTime.UtcNow.Subtract(fiHashValidationFile.LastWriteTimeUtc).TotalHours <= retryHoldoffHours Then
                         OnDebugEvent("Validated hash validation file (recently verified): " + fiHashValidationFile.FullName)
                         ' Hash check file exists, and the file is less than 48 hours old
                         Return True
@@ -909,8 +909,8 @@ Public Class clsGetFASTAFromDMS
     Private Sub m_FileTools_WaitingForLockQueue(SourceFilePath As String, TargetFilePath As String, MBBacklogSource As Integer, MBBacklogTarget As Integer) Handles m_FileTools.WaitingForLockQueue
         Dim strServers As String
 
-        If System.DateTime.UtcNow.Subtract(m_LastLockQueueWaitTimeLog).TotalSeconds >= 30 Then
-            m_LastLockQueueWaitTimeLog = System.DateTime.UtcNow
+        If DateTime.UtcNow.Subtract(m_LastLockQueueWaitTimeLog).TotalSeconds >= 30 Then
+            m_LastLockQueueWaitTimeLog = DateTime.UtcNow
             Console.WriteLine("Waiting for lockfile queue to fall below threshold to fall below threshold (Protein_Exporter); " +
                               "SourceBacklog=" & MBBacklogSource & " MB, " +
                               "TargetBacklog=" & MBBacklogTarget & " MB, " +

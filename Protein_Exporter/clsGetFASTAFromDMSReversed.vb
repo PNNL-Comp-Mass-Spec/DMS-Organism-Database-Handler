@@ -1,5 +1,7 @@
 Option Strict On
 
+Imports Protein_Exporter.ExportProteinCollectionsIFC
+
 Public Class clsGetFASTAFromDMSReversed
     Inherits clsGetFASTAFromDMSForward
 
@@ -14,6 +16,11 @@ Public Class clsGetFASTAFromDMSReversed
         Me.m_Naming_Suffix = "_reversed"
     End Sub
 
+    ''' <summary>
+    ''' When true, reverse proteins start with XXX.
+    ''' When false, they start with Reversed_
+    ''' </summary>
+    ''' <returns></returns>
     Public Property UseXXX() As Boolean
         Get
             Return m_UseXXX

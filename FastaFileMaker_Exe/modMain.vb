@@ -184,13 +184,13 @@ Module modMain
 
     End Function
 
-    Private Sub LogProteinFileDetails(CollectionList As String,
-                                      CreationOpts As String,
-                                      LegacyFasta As String,
-                                      HashString As String,
-                                      DestFolder As String,
-                                      FastaFileName As String,
-                                      LogFolderPath As String)
+    Private Sub LogProteinFileDetails(protCollectionList As String,
+                                      creationOpts As String,
+                                      legacyFasta As String,
+                                      crc32Hash As String,
+                                      destinationFolderPath As String,
+                                      fastaFileName As String,
+                                      logFolderPath As String)
 
 
         ' Appends a new entry to the log file
@@ -204,8 +204,8 @@ Module modMain
             ' Create a new log file each day
             strLogFileName = "FastaFileMakerLog_" & DateTime.Now.ToString("yyyy-MM-dd") & ".txt"
 
-            If Not LogFolderPath Is Nothing AndAlso LogFolderPath.Length > 0 Then
-                strLogFilePath = IO.Path.Combine(LogFolderPath, strLogFileName)
+            If Not logFolderPath Is Nothing AndAlso logFolderPath.Length > 0 Then
+                strLogFilePath = IO.Path.Combine(logFolderPath, strLogFileName)
             Else
                 strLogFilePath = String.Copy(strLogFileName)
             End If
@@ -231,20 +231,20 @@ Module modMain
             End If
 
             Dim fiFastaFile As IO.FileInfo
-            If Not DestFolder Is Nothing AndAlso DestFolder.Length > 0 Then
-                fiFastaFile = New IO.FileInfo(IO.Path.Combine(DestFolder, FastaFileName))
+            If Not destinationFolderPath Is Nothing AndAlso destinationFolderPath.Length > 0 Then
+                fiFastaFile = New IO.FileInfo(IO.Path.Combine(destinationFolderPath, fastaFileName))
             Else
-                fiFastaFile = New IO.FileInfo(FastaFileName)
+                fiFastaFile = New IO.FileInfo(fastaFileName)
             End If
 
 
             swOutFile.WriteLine(DateTime.Now.ToString("yyyy-MM-dd") & ControlChars.Tab &
                                 DateTime.Now.ToString("hh:mm:ss tt") & ControlChars.Tab &
-                                CollectionList & ControlChars.Tab &
-                                CreationOpts & ControlChars.Tab &
-                                LegacyFasta & ControlChars.Tab &
-                                HashString & ControlChars.Tab &
-                                FastaFileName & ControlChars.Tab &
+                                protCollectionList & ControlChars.Tab &
+                                creationOpts & ControlChars.Tab &
+                                legacyFasta & ControlChars.Tab &
+                                crc32Hash & ControlChars.Tab &
+                                fastaFileName & ControlChars.Tab &
                                 fiFastaFile.LastWriteTime.ToString() & ControlChars.Tab &
                                 fiFastaFile.CreationTime.ToString() & ControlChars.Tab &
                                 fiFastaFile.Length & ControlChars.Tab &
@@ -363,10 +363,10 @@ Module modMain
 
     End Sub
 
-    Public Function TestExport(CollectionList As String,
-                               CreationOpts As String,
-                               LegacyFasta As String,
-                               DestFolder As String,
+    Public Function TestExport(protCollectionList As String,
+                               creationOpts As String,
+                               legacyFasta As String,
+                               destinationFolderPath As String,
                                blnLogProteinFileDetails As Boolean) As Boolean
 
         Dim crc32Hash As String

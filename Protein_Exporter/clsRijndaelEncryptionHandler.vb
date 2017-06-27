@@ -14,13 +14,13 @@ Public Class clsRijndaelEncryptionHandler
     ' Plaintext value to be encrypted.
     ' </param>
     ' <param name="passPhrase">
-    ' Passphrase from which a pseudo-random password will be derived. The 
-    ' derived password will be used to generate the encryption key. 
-    ' Passphrase can be any string. In this example we assume that this 
+    ' Passphrase from which a pseudo-random password will be derived. The
+    ' derived password will be used to generate the encryption key.
+    ' Passphrase can be any string. In this example we assume that this
     ' passphrase is an ASCII string.
     ' </param>
     ' <param name="saltValue">
-    ' Salt value used along with passphrase to generate password. Salt can 
+    ' Salt value used along with passphrase to generate password. Salt can
     ' be any string. In this example we assume that salt is an ASCII string.
     ' </param>
     ' <param name="hashAlgorithm">
@@ -32,12 +32,12 @@ Public Class clsRijndaelEncryptionHandler
     ' should be enough.
     ' </param>
     ' <param name="initVector">
-    ' Initialization vector (or IV). This value is required to encrypt the 
-    ' first block of plaintext data. For RijndaelManaged class IV must be 
+    ' Initialization vector (or IV). This value is required to encrypt the
+    ' first block of plaintext data. For RijndaelManaged class IV must be
     ' exactly 16 ASCII characters long.
     ' </param>
     ' <param name="keySize">
-    ' Size of encryption key in bits. Allowed values are: 128, 192, and 256. 
+    ' Size of encryption key in bits. Allowed values are: 128, 192, and 256.
     ' Longer keys are more secure than shorter keys.
     ' </param>
     ' <returns>
@@ -67,15 +67,15 @@ Public Class clsRijndaelEncryptionHandler
 
         ' Convert strings into byte arrays.
         ' Let us assume that strings only contain ASCII codes.
-        ' If strings include Unicode characters, use Unicode, UTF7, or UTF8 
+        ' If strings include Unicode characters, use Unicode, UTF7, or UTF8
         ' encoding.
         Me.m_initVectorBytes = Encoding.ASCII.GetBytes(INIT_VECTOR)
 
         Me.m_saltValueBytes = Encoding.ASCII.GetBytes(SALT_VALUE)
 
         ' First, we must create a password, from which the key will be derived.
-        ' This password will be generated from the specified passphrase and 
-        ' salt value. The password will be created using the specified hash 
+        ' This password will be generated from the specified passphrase and
+        ' salt value. The password will be created using the specified hash
         ' algorithm. Password creation can be done in several iterations.
         Me.m_Password = New Rfc2898DeriveBytes(passPhrase, Me.m_saltValueBytes, NUM_PW_ITERATIONS)
         'Old: Me.m_Password = New PasswordDeriveBytes(passPhrase, Me.m_saltValueBytes, HASH_ALGORITHM, NUM_PW_ITERATIONS)
@@ -92,8 +92,8 @@ Public Class clsRijndaelEncryptionHandler
         ' (CBC). Use default options for other symmetric key parameters.
         Me.m_SymmetricKey.Mode = CipherMode.CBC
 
-        ' Generate encryptor from the existing key bytes and initialization 
-        ' vector. Key size will be defined based on the number of the key 
+        ' Generate encryptor from the existing key bytes and initialization
+        ' vector. Key size will be defined based on the number of the key
         ' bytes.
         Me.m_Encryptor = Me.m_SymmetricKey.CreateEncryptor(Me.m_KeyBytes, Me.m_initVectorBytes)
 
@@ -145,15 +145,19 @@ Public Class clsRijndaelEncryptionHandler
     End Function
 
     Public Function MakeArbitraryHash(Sourcetext As String) As String
-        If Me.m_Hashgen Is Nothing Then
-            Me.m_Hashgen = New SHA1Managed
+        If Me.m_SHA1Provider Is Nothing Then
+            Me.m_SHA1Provider = New SHA1Managed()
         End If
+
         'Create an encoding object to ensure the encoding standard for the source text
-        Dim Ue As New System.Text.ASCIIEncoding
+        Dim Ue As New ASCIIEncoding()
+
         'Retrieve a byte array based on the source text
         Dim ByteSourceText() As Byte = Ue.GetBytes(Sourcetext)
+
         'Compute the hash value from the source
-        Dim SHA1_hash() As Byte = Me.m_Hashgen.ComputeHash(ByteSourceText)
+        Dim SHA1_hash() As Byte = m_SHA1Provider.ComputeHash(ByteSourceText)
+
         'And convert it to String format for return
         Dim SHA1string As String = ToHexString(SHA1_hash)
 
@@ -167,13 +171,13 @@ Public Class clsRijndaelEncryptionHandler
     ' Base64-formatted ciphertext value.
     ' </param>
     ' <param name="passPhrase">
-    ' Passphrase from which a pseudo-random password will be derived. The 
-    ' derived password will be used to generate the encryption key. 
-    ' Passphrase can be any string. In this example we assume that this 
+    ' Passphrase from which a pseudo-random password will be derived. The
+    ' derived password will be used to generate the encryption key.
+    ' Passphrase can be any string. In this example we assume that this
     ' passphrase is an ASCII string.
     ' </param>
     ' <param name="saltValue">
-    ' Salt value used along with passphrase to generate password. Salt can 
+    ' Salt value used along with passphrase to generate password. Salt can
     ' be any string. In this example we assume that salt is an ASCII string.
     ' </param>
     ' <param name="hashAlgorithm">
@@ -185,22 +189,22 @@ Public Class clsRijndaelEncryptionHandler
     ' should be enough.
     ' </param>
     ' <param name="initVector">
-    ' Initialization vector (or IV). This value is required to encrypt the 
-    ' first block of plaintext data. For RijndaelManaged class IV must be 
+    ' Initialization vector (or IV). This value is required to encrypt the
+    ' first block of plaintext data. For RijndaelManaged class IV must be
     ' exactly 16 ASCII characters long.
     ' </param>
     ' <param name="keySize">
-    ' Size of encryption key in bits. Allowed values are: 128, 192, and 256. 
+    ' Size of encryption key in bits. Allowed values are: 128, 192, and 256.
     ' Longer keys are more secure than shorter keys.
     ' </param>
     ' <returns>
     ' Decrypted string value.
     ' </returns>
     ' <remarks>
-    ' Most of the logic in this function is similar to the Encrypt 
+    ' Most of the logic in this function is similar to the Encrypt
     ' logic. In order for decryption to work, all parameters of this function
-    ' - except cipherText value - must match the corresponding parameters of 
-    ' the Encrypt function which was called to generate the 
+    ' - except cipherText value - must match the corresponding parameters of
+    ' the Encrypt function which was called to generate the
     ' ciphertext.
     ' </remarks>
 
@@ -246,7 +250,7 @@ Public Class clsRijndaelEncryptionHandler
         memoryStream.Close()
         cryptoStream.Close()
 
-        ' Convert decrypted data into a string. 
+        ' Convert decrypted data into a string.
         ' Let us assume that the original plaintext string was UTF8-encoded.
         Dim plainText As String
         plainText = Encoding.UTF8.GetString(plainTextBytes,

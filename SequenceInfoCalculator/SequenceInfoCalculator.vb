@@ -122,7 +122,8 @@ Public Class SequenceInfoCalculator
         Dim ByteSourceText() As Byte = Ue.GetBytes(SourceText)
 
         'Compute the hash value from the source
-        Dim SHA1_hash() As Byte = SequenceInfoCalculator.m_SHA1Provider.ComputeHash(ByteSourceText)
+        Dim SHA1_hash() As Byte = m_SHA1Provider.ComputeHash(ByteSourceText)
+
         'And convert it to String format for return
         Dim SHA1string As String = ToHexString(SHA1_hash)
 
