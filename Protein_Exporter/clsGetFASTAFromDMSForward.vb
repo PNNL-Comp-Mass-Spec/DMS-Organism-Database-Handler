@@ -32,14 +32,11 @@ Public Class clsGetFASTAFromDMSForward
     Protected m_Extension As String = ""
 
     Protected m_RijndaelDecryption As clsRijndaelEncryptionHandler
-    'Protected m_SHA1Provider As System.Security.Cryptography.SHA1Managed
-
 
     Public Sub New(
      ProteinStorageConnectionString As String,
      DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
 
-        'Me.m_SHA1Provider = New System.Security.Cryptography.SHA1Managed
         Me.m_TableGrabber = New clsDBTask(ProteinStorageConnectionString, True)
         Me.m_AllCollections = Me.GetCollectionNameList()
         Me.m_OrganismList = Me.GetOrganismList()
@@ -103,13 +100,11 @@ Public Class clsGetFASTAFromDMSForward
        protCollectionList As List(Of String),
        destinationFolderPath As String,
        AlternateAuthorityID As Integer,
-       PadWithPrimaryAnnotation As Boolean) As String   'Implements IGetFASTAFromDMS.ExportFASTAFile
+       PadWithPrimaryAnnotation As Boolean) As String
 
         Dim ProteinCollectionName As String
         Dim collectionSQL As String
         Dim collectionTable As DataTable
-
-        Dim alternateNames As Hashtable
 
         Dim authorizationSQL As String
         Dim authorizationTable As DataTable
@@ -217,8 +212,6 @@ Public Class clsGetFASTAFromDMSForward
         For Each ProteinCollectionName In protCollectionList
             currentCollectionPos = 0
             currentCollectionCount = 0
-            sectionStart = currentCollectionPos
-            sectionEnd = 0
 
             ' Make sure there are no leading or trailing spaces
             ProteinCollectionName = ProteinCollectionName.Trim()
@@ -265,8 +258,6 @@ Public Class clsGetFASTAFromDMSForward
                       "AND Annotation_Type_ID = " & AlternateAuthorityID & " " &
                       "AND Sorting_Index BETWEEN " & sectionStart.ToString & " AND " & sectionEnd.ToString & " " &
                     "ORDER BY Sorting_Index"
-                    alternateNames = New Hashtable
-
                 End If
 
 
@@ -406,7 +397,6 @@ Public Class clsGetFASTAFromDMSForward
             id = Me.FindIDByName(name)
             If id < 1 Then
                 Throw New Exception("The collection named '" + name + "' does not exist in the system")
-                Return False
             End If
         Next
         Return True
@@ -538,19 +528,6 @@ Public Class clsGetFASTAFromDMSForward
         Dim ProteinCollectionName = CStr(Me.m_AllCollections.Item(ProteinCollectionID))
         Return Me.GetStoredHash(ProteinCollectionName)
     End Function
-
-    'Protected Function GenerateHash(SourceText As String) As String
-    '    'Create an encoding object to ensure the encoding standard for the source text
-    '    Dim Ue As New System.Text.ASCIIEncoding
-    '    'Retrieve a byte array based on the source text
-    '    Dim ByteSourceText() As Byte = Ue.GetBytes(SourceText)
-    '    'Compute the hash value from the source
-    '    Dim SHA1_hash() As Byte = Me.m_SHA1Provider.ComputeHash(ByteSourceText)
-    '    'And convert it to String format for return
-    '    Dim SHA1string As String = Convert.ToBase64String(SHA1_hash)
-
-    '    Return SHA1string
-    'End Function
 
     Protected Sub OnExportStart(taskMsg As String) Handles m_fileDumper.ExportStart
         RaiseEvent FileGenerationStarted(taskMsg)

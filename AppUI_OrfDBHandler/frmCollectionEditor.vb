@@ -1553,21 +1553,6 @@ Public Class frmCollectionEditor
         m_fileBatcher = New clsBatchUploadFromFileList(m_PSConnectionString)
         m_fileBatcher.UploadBatch()
     End Sub
-    Private Sub mnuToolsNucTrans_Click(sender As Object, e As EventArgs)
-
-    End Sub
-
-    Private Sub mnuToolsConvertFASTA2Access_Click(sender As Object, e As EventArgs)
-
-    End Sub
-
-    Private Sub mnuToolsConvertAccess2FASTA_Click(sender As Object, e As EventArgs)
-
-    End Sub
-
-    Private Sub mnuToolsCheckup_Click(sender As Object, e As EventArgs)
-
-    End Sub
 
     Private Sub mnuToolsCollectionEdit_Click(sender As Object, e As EventArgs) Handles mnuToolsCollectionEdit.Click
         Dim cse As New frmCollectionStateEditor(m_PSConnectionString)

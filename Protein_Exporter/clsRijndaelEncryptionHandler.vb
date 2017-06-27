@@ -49,7 +49,6 @@ Public Class clsRijndaelEncryptionHandler
     Const SALT_VALUE As String = "pRi5m533kRu135"
     Const INIT_VECTOR As String = "@3k8573j4083j410"
     Const KEY_SIZE As Integer = 192
-    Private m_passPhrase As String
     'Private m_Password As PasswordDeriveBytes
     Private m_Password As Rfc2898DeriveBytes
 
@@ -63,7 +62,6 @@ Public Class clsRijndaelEncryptionHandler
     Private m_initVectorBytes As Byte()
 
     Sub New(passPhrase As String)
-        Me.m_passPhrase = passPhrase
 
         ' Convert strings into byte arrays.
         ' Let us assume that strings only contain ASCII codes.
@@ -78,12 +76,10 @@ Public Class clsRijndaelEncryptionHandler
         ' salt value. The password will be created using the specified hash
         ' algorithm. Password creation can be done in several iterations.
         Me.m_Password = New Rfc2898DeriveBytes(passPhrase, Me.m_saltValueBytes, NUM_PW_ITERATIONS)
-        'Old: Me.m_Password = New PasswordDeriveBytes(passPhrase, Me.m_saltValueBytes, HASH_ALGORITHM, NUM_PW_ITERATIONS)
 
         ' Use the password to generate pseudo-random bytes for the encryption
         ' key. Specify the size of the key in bytes (instead of bits).
         Me.m_KeyBytes = Me.m_Password.GetBytes(CInt(KEY_SIZE / 8))
-        'Old: Me.m_KeyBytes = Me.m_Password.GetBytes(CInt(KEY_SIZE / 8))
 
         ' Create uninitialized Rijndael encryption object.
         Me.m_SymmetricKey = New RijndaelManaged
@@ -100,11 +96,6 @@ Public Class clsRijndaelEncryptionHandler
         Me.m_Decryptor = Me.m_SymmetricKey.CreateDecryptor(Me.m_KeyBytes, Me.m_initVectorBytes)
 
     End Sub
-
-    ' Not implemented
-    'Public Function GetHashedPassword() As String
-    '    'return me.m_SymmetricKey.
-    'End Function
 
     Public Function Encrypt(plainText As String) As String
 

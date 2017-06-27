@@ -7,8 +7,6 @@ Imports Protein_Exporter.ExportProteinCollectionsIFC
 Public Class clsGetFASTAFromDMSDecoy
     Inherits clsGetFASTAFromDMSForward
 
-    Private m_RndNumGen As Random
-    'Private m_FwdGenerator As clsGetFASTAFromDMSForward
     Protected m_RevGenerator As clsGetFASTAFromDMSReversed
 
     Public Sub New(

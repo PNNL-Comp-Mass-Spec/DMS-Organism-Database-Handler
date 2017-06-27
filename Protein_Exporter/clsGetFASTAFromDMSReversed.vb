@@ -5,7 +5,6 @@ Imports Protein_Exporter.ExportProteinCollectionsIFC
 Public Class clsGetFASTAFromDMSReversed
     Inherits clsGetFASTAFromDMSForward
 
-    Private m_RndNumGen As Random
     Protected m_UseXXX As Boolean
 
     Public Sub New(

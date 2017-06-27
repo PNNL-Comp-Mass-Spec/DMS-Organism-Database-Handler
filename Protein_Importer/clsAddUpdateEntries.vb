@@ -350,8 +350,6 @@ Public Class clsAddUpdateEntries
     Protected Function AddProteinSequence(protein As Protein_Storage.IProteinStorageEntry) As Integer
         Dim protein_id As Integer
 
-        'If Not Me.m_ProteinFingerprints.ContainsKey(protein.SHA1Hash) Then
-
         With protein
             protein_id = Me.RunSP_AddProteinSequence(
                 .Sequence,
@@ -362,11 +360,7 @@ Public Class clsAddUpdateEntries
                 .SHA1Hash,
                 .IsEncrypted,
                 IAddUpdateEntries.SPModes.add)
-            'Me.m_ProteinFingerprints.Add(.SHA1Hash, protein_id)
         End With
-        'Else
-        'protein_id = DirectCast(Me.m_ProteinFingerprints.Item(protein.SHA1Hash), Int32)
-        'End If
 
         Return protein_id
 
@@ -627,7 +621,8 @@ Public Class clsAddUpdateEntries
         sp_Save.ExecuteNonQuery()
 
         'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        ' Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+
         StateName = CStr(sp_Save.Parameters("@State_Name").Value)
 
         Return StateName

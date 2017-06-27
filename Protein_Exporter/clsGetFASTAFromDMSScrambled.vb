@@ -7,15 +7,13 @@ Public Class clsGetFASTAFromDMSScrambled
     Inherits clsGetFASTAFromDMSForward
 
     Private m_RndNumGen As Random
-    Private m_RandomSeed As Integer
 
     Public Sub New(
         ProteinStorageConnectionString As String,
         DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
 
         MyBase.New(ProteinStorageConnectionString, DatabaseFormatType)
-        'Me.m_Naming_Suffix = "_scrambled_seed_" + RandomSeed.ToString
-        'Me.m_RndNumGen = New Random(RandomSeed)
+
     End Sub
 
     Overrides Function SequenceExtender(originalSequence As String, collectionCount As Integer) As String
@@ -23,30 +21,8 @@ Public Class clsGetFASTAFromDMSScrambled
         Dim sb As New StringBuilder(originalSequence.Length)
         Dim sequence As String = originalSequence
 
-        'Dim origArray() As Char = originalSequence.ToCharArray
-        'Dim res As Char
-
         Dim index As Integer
         Dim counter As Integer
-
-        'Dim al As New ArrayList(originalSequence.Length)
-
-        'For counter = 1 To originalSequence.Length
-        '    al.Add(counter)
-        'Next
-
-        'While al.Count > 0
-        '    index = DirectCast(al.Item(Me.m_RndNumGen.Next(0, al.Count - 1)), Int32)
-        '    Debug.WriteLine(
-        '        "count = " + al.Count.ToString +
-        '        "; maxRnd = " + (al.Count - 1).ToString +
-        '        "; index = " + index.ToString +
-        '        "; al.item = " + al.Item(index).ToString +
-        '        "; residue = " + origArray(DirectCast(al.Item(index), Int32)))
-        '    sb.Append(origArray(DirectCast(al.Item(index), Int32)))
-
-        '    al.RemoveAt(index)
-        'End While
 
         If Me.m_RndNumGen Is Nothing Then
             Me.m_RndNumGen = New Random(collectionCount)
@@ -72,7 +48,7 @@ Public Class clsGetFASTAFromDMSScrambled
             counter -= 1
 
         End While
-        sequence = sb.ToString
+
         Return sb.ToString
 
     End Function

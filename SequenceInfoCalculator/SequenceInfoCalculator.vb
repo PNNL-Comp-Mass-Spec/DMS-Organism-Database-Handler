@@ -89,9 +89,7 @@ Public Class SequenceInfoCalculator
     End Sub
 
     Protected Function SequenceInfo(sequence As String, Optional description As String = "") As SequenceInfo
-        Dim aminoAcids As Char() = sequence.ToCharArray()
-        Dim i As Integer = 0
-        Dim result As SequenceInfo = New SequenceInfo("", description, 0, 0, 0, 0, 0, 0.0, 0.0)
+        Dim result = New SequenceInfo("", description, 0, 0, 0, 0, 0, 0.0, 0.0)
 
         Dim aaInfo As AminoAcidInfo
         Dim aaString() As Char
@@ -99,12 +97,8 @@ Public Class SequenceInfoCalculator
         aaString = sequence.ToCharArray
 
         For Each aa In aaString
-            'For i = 0 To aminoAcids.Length - 1
-            'Dim aaString As String = New String(aminoAcids, i, 1)
-            'Dim aaInfo As AminoAcidInfo = DirectCast(m_AminoAcids.Item(aaString), AminoAcidInfo)
-            aaInfo = DirectCast(SequenceInfoCalculator.m_AminoAcids.Item(aa.ToString), AminoAcidInfo)
+            aaInfo = DirectCast(m_AminoAcids.Item(aa.ToString), AminoAcidInfo)
             If (aaInfo) Is Nothing Then
-                'result.Invalidate()
                 result.AddSequenceInfo(New SequenceInfo(aaString, "Not Found, adding input", 0, 0, 0, 0, 0, 0, 0))
             Else
                 result.AddSequenceInfo(aaInfo)
@@ -190,12 +184,6 @@ Public Class SequenceInfoCalculator
             End Get
         End Property
 
-        Public ReadOnly Property Abbreviation As String
-            Get
-                Return Me.Name
-            End Get
-        End Property
-
     End Class
 
     Public Shared Function ToHexString(bytes() As Byte) As String
@@ -213,12 +201,9 @@ Public Class SequenceInfoCalculator
 End Class
 
 
-
-
 Public Class SequenceInfo
     Private m_invalidated As Boolean = False
     Private m_sequence As String
-    Private ReadOnly m_name As String
     Private m_C_Count As Integer
     Private m_H_Count As Integer
     Private m_N_Count As Integer
@@ -226,8 +211,6 @@ Public Class SequenceInfo
     Private m_S_Count As Integer
     Private m_Average_Mass As Double
     Private m_Monoisotopic_Mass As Double
-
-    Shared ResidueCheck As System.Text.RegularExpressions.Regex
 
     Public Sub New(seq As String, name As String,
                     C_Count As Integer, H_Count As Integer, N_Count As Integer, O_Count As Integer, S_Count As Integer,
@@ -242,8 +225,6 @@ Public Class SequenceInfo
         m_S_Count = S_Count
         m_Average_Mass = average
         m_Monoisotopic_Mass = monoisotopic
-
-
 
     End Sub
 
@@ -271,10 +252,6 @@ Public Class SequenceInfo
     End Property
 
     Public ReadOnly Property Name As String
-        Get
-            Return m_name
-        End Get
-    End Property
 
     Public ReadOnly Property C_Count As Integer
         Get
