@@ -19,13 +19,13 @@ Source: ..\Executables\Release\ExtractAnnotationFromDescription.dll  ; DestDir: 
 Source: ..\Executables\Release\FlexibleFileSortUtility.dll           ; DestDir: {app}
 Source: ..\Executables\Release\NucleotideTranslator.dll              ; DestDir: {app}
 Source: ..\Executables\Release\PRISM.dll                             ; DestDir: {app}
+Source: ..\Executables\Release\PRISMWin.dll                          ; DestDir: {app}
 Source: ..\Executables\Release\Protein_Exporter.dll                  ; DestDir: {app}
 Source: ..\Executables\Release\Protein_Importer.dll                  ; DestDir: {app}
 Source: ..\Executables\Release\Protein_Storage.dll                   ; DestDir: {app}
 Source: ..\Executables\Release\Protein_Uploader.dll                  ; DestDir: {app}
 Source: ..\Executables\Release\ProteinFileReader.dll                 ; DestDir: {app}
 Source: ..\Executables\Release\SequenceInfoCalculator.dll            ; DestDir: {app}
-Source: ..\Executables\Release\Skybound.VisualStyles.dll             ; DestDir: {app}
 Source: ..\Executables\Release\TableManipulationBase.dll             ; DestDir: {app}
 Source: ..\Executables\Release\TranslationTableImport.dll            ; DestDir: {app}
 Source: ..\Executables\Release\UIControls.dll                        ; DestDir: {app}

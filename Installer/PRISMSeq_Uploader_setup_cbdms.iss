@@ -19,13 +19,13 @@ Source: ..\Executables\Release_CBDMS_GUI\ExtractAnnotationFromDescription.dll  ;
 Source: ..\Executables\Release_CBDMS_GUI\FlexibleFileSortUtility.dll           ; DestDir: {app}
 Source: ..\Executables\Release_CBDMS_GUI\NucleotideTranslator.dll              ; DestDir: {app}
 Source: ..\Executables\Release_CBDMS_GUI\PRISM.dll                             ; DestDir: {app}
+Source: ..\Executables\Release_CBDMS_GUI\PRISMWin.dll                          ; DestDir: {app}
 Source: ..\Executables\Release_CBDMS_GUI\Protein_Exporter.dll                  ; DestDir: {app}
 Source: ..\Executables\Release_CBDMS_GUI\Protein_Importer.dll                  ; DestDir: {app}
 Source: ..\Executables\Release_CBDMS_GUI\Protein_Storage.dll                   ; DestDir: {app}
 Source: ..\Executables\Release_CBDMS_GUI\Protein_Uploader.dll                  ; DestDir: {app}
 Source: ..\Executables\Release_CBDMS_GUI\ProteinFileReader.dll                 ; DestDir: {app}
 Source: ..\Executables\Release_CBDMS_GUI\SequenceInfoCalculator.dll            ; DestDir: {app}
-Source: ..\Executables\Release_CBDMS_GUI\Skybound.VisualStyles.dll             ; DestDir: {app}
 Source: ..\Executables\Release_CBDMS_GUI\TableManipulationBase.dll             ; DestDir: {app}
 Source: ..\Executables\Release_CBDMS_GUI\TranslationTableImport.dll            ; DestDir: {app}
 Source: ..\Executables\Release_CBDMS_GUI\UIControls.dll                        ; DestDir: {app}
