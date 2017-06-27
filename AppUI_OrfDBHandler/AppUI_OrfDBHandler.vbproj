@@ -97,9 +97,6 @@
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CompareProteinDatabases">
-      <HintPath>..\Release_DLL\CompareProteinDatabases.dll</HintPath>
-    </Reference>
     <Reference Include="ExpTreeLib">
       <Name>ExpTreeLib</Name>
       <HintPath>..\Shared Libraries\ExpTreeLib.dll</HintPath>
