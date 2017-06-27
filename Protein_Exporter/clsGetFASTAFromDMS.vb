@@ -46,6 +46,18 @@ Public Class clsGetFASTAFromDMS
     Protected WithEvents m_FileTools As clsFileTools
     Protected m_LastLockQueueWaitTimeLog As DateTime
 
+    Public ReadOnly Property ExporterComponent() As clsGetFASTAFromDMSForward
+        Get
+            Return m_Getter
+        End Get
+    End Property
+
+    Public ReadOnly Property WaitingForLockFile() As Boolean
+        Get
+            Return m_WaitingForLockFile
+        End Get
+    End Property
+
     ''' <summary>
     ''' Constructor when running in offline mode
     ''' </summary>
@@ -66,18 +78,6 @@ Public Class clsGetFASTAFromDMS
         m_FileTools = New clsFileTools()
         RegisterEvents(m_FileTools)
     End Sub
-
-    Public ReadOnly Property ExporterComponent() As clsGetFASTAFromDMSForward
-        Get
-            Return m_Getter
-        End Get
-    End Property
-
-    Public ReadOnly Property WaitingForLockFile() As Boolean
-        Get
-            Return m_WaitingForLockFile
-        End Get
-    End Property
 
     Public Sub New(
      dbConnectionString As String,
