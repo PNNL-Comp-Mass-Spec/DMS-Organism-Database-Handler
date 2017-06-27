@@ -38,7 +38,7 @@ Public Class frmCollectionEditor
     Private components As System.ComponentModel.IContainer
 
     'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.  
+    'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
     Friend WithEvents pnlProgBar As Panel
     Friend WithEvents gbxSourceCollection As GroupBox
@@ -759,7 +759,7 @@ Public Class frmCollectionEditor
 
 #End Region
 
-    Protected Const PROGRAM_DATE As String = "April 1, 2017"
+    Protected Const PROGRAM_DATE As String = "June 26, 2017"
 
     Protected m_Organisms As DataTable
     Protected m_ProteinCollections As DataTable
