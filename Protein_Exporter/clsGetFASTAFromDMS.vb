@@ -857,7 +857,7 @@ Public Class clsGetFASTAFromDMS
 
         Using swOutFile = New StreamWriter(New FileStream(fiHashValidationFile.FullName, FileMode.Create, FileAccess.Write, FileShare.Read))
             swOutFile.WriteLine("Hash validated " & DateTime.Now.ToString())
-            swOutFile.WriteLine("Validated by " + Environment.MachineName)
+            swOutFile.WriteLine("Validated on " + Environment.MachineName)
         End Using
     End Sub
 
@@ -902,7 +902,7 @@ Public Class clsGetFASTAFromDMS
                 ' Regenerate the hash
                 Dim crc32Hash = GenerateFileAuthenticationHash(fiFastaFile.FullName)
 
-                If expectedHash = crc32Hash OrElse forceRegenerateHash Then
+                If String.Equals(expectedHash, crc32Hash) OrElse forceRegenerateHash Then
                     ' Update the hash validation file
                     UpdateHashValidationFile(fastaFilePath, crc32Hash, hashcheckExtension)
 
