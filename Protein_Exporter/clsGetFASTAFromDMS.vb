@@ -21,6 +21,7 @@ Public Class clsGetFASTAFromDMS
     Implements IGetFASTAFromDMS
 
     Public Const LOCK_FILE_PROGRESS_TEXT As String = "Lockfile"
+    Public Const HASHCHECK_SUFFIX As String = ".hashcheck"
 
     Protected WithEvents m_Getter As clsGetFASTAFromDMSForward
     Protected m_Archiver As IArchiveOutputFiles
@@ -806,31 +807,60 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
-    Protected Function GetHashFileValidationInfo(strFastaFilePath As String, crc32Hash As String) As FileInfo
+    ''' <summary>
+    ''' Construct the hashcheck file path, given the FASTA file path and its CRC32 hash
+    ''' </summary>
+    ''' <param name="strFastaFilePath"></param>
+    ''' <param name="crc32Hash"></param>
+    ''' <param name="hashcheckExtension">Hashcheck file extension; if an empty string, the default of .hashcheck is used</param>
+    ''' <returns>FileInfo object for the .hascheck file</returns>
+    ''' <remarks>
+    ''' Example .hashcheck filenames:
+    '''   ID_004137_23AA5A07.fasta.23AA5A07.hashcheck
+    '''   H_sapiens_Ensembl_v68_2013-01-08.fasta.DF687525.hashcheck
+    ''' </remarks>
+    Protected Function GetHashFileValidationInfo(
+      strFastaFilePath As String,
+      crc32Hash As String,
+      Optional hashcheckExtension As String = "") As FileInfo
 
         Dim fiFastaFile As FileInfo
         Dim strHashValidationFileName As String
 
+        Dim extensionToUse As String
+        If String.IsNullOrWhiteSpace(hashcheckExtension) Then
+            extensionToUse = hashcheckExtension
+        Else
+            extensionToUse = hashcheckExtension
+        End If
+
         fiFastaFile = New FileInfo(strFastaFilePath)
-        strHashValidationFileName = Path.Combine(fiFastaFile.DirectoryName, fiFastaFile.Name & "." & crc32Hash & ".hashcheck")
+        strHashValidationFileName = Path.Combine(fiFastaFile.DirectoryName, fiFastaFile.Name & "." & crc32Hash & extensionToUse)
 
         Return New FileInfo(strHashValidationFileName)
 
     End Function
 
-    Protected Sub UpdateHashValidationFile(strFastaFilePath As String, crc32Hash As String)
+    ''' <summary>
+    ''' Update the hashcheck file
+    ''' </summary>
+    ''' <param name="strFastaFilePath"></param>
+    ''' <param name="crc32Hash"></param>
+    ''' <param name="hashcheckExtension">Hashcheck file extension; if an empty string, the default of .hashcheck is used</param>
+    Protected Sub UpdateHashValidationFile(
+      strFastaFilePath As String,
+      crc32Hash As String,
+      Optional hashcheckExtension As String = "")
+
         Dim fiHashValidationFile As FileInfo
-        fiHashValidationFile = GetHashFileValidationInfo(strFastaFilePath, crc32Hash)
-        UpdateHashValidationFile(fiHashValidationFile)
-    End Sub
+        fiHashValidationFile = GetHashFileValidationInfo(strFastaFilePath, crc32Hash, hashcheckExtension)
 
-    Protected Sub UpdateHashValidationFile(ByRef fiHashValidationFile As FileInfo)
-
-        Using swOutFile = New StreamWriter(fiHashValidationFile.Open(FileMode.Create))
-            swOutFile.WriteLine("Hash validated " & DateTime.Now.ToString)
+        Using swOutFile = New StreamWriter(New FileStream(fiHashValidationFile.FullName, FileMode.Create, FileAccess.Write, FileShare.Read))
+            swOutFile.WriteLine("Hash validated " & DateTime.Now.ToString())
+            swOutFile.WriteLine("Validated by " + Environment.MachineName)
         End Using
-
     End Sub
+
 
     ''' <summary>
     ''' Validates that the hash of a .fasta file matches the expected hash value
@@ -841,6 +871,7 @@ Public Class clsGetFASTAFromDMS
     ''' <param name="expectedHash">Expected CRC32 hash; updated if incorrect and blnForceRegenerateHash is true</param>
     ''' <param name="retryHoldoffHours">Time between re-generating the hash value for an existing file</param>
     ''' <param name="forceRegenerateHash">Re-generate the hash</param>
+    ''' <param name="hashcheckExtension">Hashcheck file extension; if an empty string, the default of .hashcheck is used</param>
     ''' <returns>True if the hash values match, or if blnForceRegenerateHash=True</returns>
     ''' <remarks>Public method because the Analysis Manager uses this class when running offline jobs</remarks>
     Public Function ValidateMatchingHash(
@@ -848,6 +879,7 @@ Public Class clsGetFASTAFromDMS
       ByRef expectedHash As String,
       Optional retryHoldoffHours As Integer = 48,
       Optional forceRegenerateHash As Boolean = False,
+      Optional hashcheckExtension As String = "") As Boolean
 
         Dim fiFastaFile As FileInfo
         Dim fiHashValidationFile As FileInfo
@@ -856,7 +888,7 @@ Public Class clsGetFASTAFromDMS
             fiFastaFile = New FileInfo(fastaFilePath)
 
             If fiFastaFile.Exists Then
-                fiHashValidationFile = GetHashFileValidationInfo(fastaFilePath, expectedHash)
+                fiHashValidationFile = GetHashFileValidationInfo(fastaFilePath, expectedHash, hashcheckExtension)
 
                 If fiHashValidationFile.Exists And Not forceRegenerateHash Then
                     If DateTime.UtcNow.Subtract(fiHashValidationFile.LastWriteTimeUtc).TotalHours <= retryHoldoffHours Then
@@ -872,7 +904,7 @@ Public Class clsGetFASTAFromDMS
 
                 If expectedHash = crc32Hash OrElse forceRegenerateHash Then
                     ' Update the hash validation file
-                    UpdateHashValidationFile(fastaFilePath, crc32Hash)
+                    UpdateHashValidationFile(fastaFilePath, crc32Hash, hashcheckExtension)
 
                     If expectedHash <> crc32Hash And forceRegenerateHash Then
                         ' Hash values don't match, but forceRegenerateHash=True
