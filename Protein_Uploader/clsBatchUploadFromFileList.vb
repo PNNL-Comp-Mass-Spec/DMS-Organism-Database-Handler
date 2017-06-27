@@ -112,54 +112,6 @@ Public Class clsBatchUploadFromFileList
 
     End Function
 
-    'Protected Function GetDMSFileEntities() As Hashtable
-    '    Dim fileList As New Hashtable
-    '    Dim collectionList As New ArrayList
-    '    Dim fileTable As DataTable
-    '    Dim collectionTable As DataTable
-    '    Dim DMSOrgDBSQL As String
-    '    Dim dr As DataRow
-
-    '    Dim LoadedCollectionsSQL As String
-
-    '    Dim tmpFileName As String
-    '    Dim tmpOrganismName As String
-    '    Dim tmpOrganismID As Integer
-    '    Dim tmpFullPath As String
-
-    '    DMSOrgDBSQL = "SELECT ID, FileName, Full_Path, Organism_Name, Organism_ID FROM " & DMS_Org_DB_Table_Name
-    '    fileTable = Me.m_TableGetter.GetTable(DMSOrgDBSQL)
-
-    '    LoadedCollectionsSQL = "SELECT FileName FROM " & Protein_Collections_Table_Name
-    '    collectionTable = Me.m_TableGetter.GetTable(LoadedCollectionsSQL)
-
-    '    For Each dr In collectionTable.Rows
-    '        collectionList.Add(dr.Item("FileName").ToString)
-    '    Next
-
-    '    If Me.m_CurrentFileList Is Nothing Then
-    '        Me.m_CurrentFileList = New Hashtable
-    '    Else
-    '        Me.m_CurrentFileList.Clear()
-    '    End If
-
-    '    For Each dr In fileTable.Rows
-    '        tmpFileName = dr.Item("FileName").ToString
-    '        tmpOrganismName = dr.Item("Organism_Name").ToString
-    '        tmpOrganismID = CInt(dr.Item("Organism_ID"))
-    '        tmpFullPath = dr.Item("Full_Path").ToString
-    '        If Not fileList.ContainsKey(tmpFileName) And Not collectionList.Contains(System.IO.Path.GetFileNameWithoutExtension(tmpFileName)) Then
-    '            fileList.Add(tmpFileName, New FileListInfo(tmpFileName, tmpFullPath, tmpOrganismName, tmpOrganismID))
-    '        End If
-    '    Next
-
-    '    fileTable.Clear()
-    '    fileTable = Nothing
-
-    '    Return fileList
-
-    'End Function
-
     Protected Function GetDMSFileEntities() As Hashtable
         Dim fileList As New Hashtable
         Dim collectionList As New ArrayList
@@ -175,16 +127,6 @@ Public Class clsBatchUploadFromFileList
         Dim tmpFullPath As String
         Dim tmpAnnTypeID As Integer
         Dim tmpAuthTypeID As Integer
-
-        'DMSOrgDBSQL = "SELECT ID, FileName, Full_Path, Organism_Name, Organism_ID FROM " & DMS_Org_DB_Table_Name
-        'fileTable = Me.m_TableGetter.GetTable(DMSOrgDBSQL)
-
-        'LoadedCollectionsSQL = "SELECT FileName FROM " & Protein_Collections_Table_Name
-        'collectionTable = Me.m_TableGetter.GetTable(LoadedCollectionsSQL)
-
-        'For Each dr In collectionTable.Rows
-        '    collectionList.Add(dr.Item("FileName").ToString)
-        'Next
 
         LoadedCollectionsSQL = "SELECT FileName, Full_Path, Organism_Name, Organism_ID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered"
 
