@@ -39,7 +39,6 @@ Public Class clsGetFASTAFromDMS
 
     Protected m_ArchiveCollectionList As List(Of String)
     Protected m_TableGetter As IGetSQLData
-    Protected m_UserID As String
     Protected m_SHA1Provider As SHA1Managed
     Protected m_WaitingForLockFile As Boolean = False
 
@@ -69,29 +68,29 @@ Public Class clsGetFASTAFromDMS
     ''' <summary>
     ''' Constructor when the Protein Sequences database is available
     ''' </summary>
-    ''' <param name="dbConnectionString"></param>
+    ''' <param name="dbConnectionString">Protein sequences database connection string</param>
     Public Sub New(dbConnectionString As String)
-
-        m_PSConnectionString = dbConnectionString
-        ClassSelector(dbConnectionString, IGetFASTAFromDMS.DatabaseFormatTypes.fasta, IGetFASTAFromDMS.SequenceTypes.forward)
-        m_SHA1Provider = New SHA1Managed()
-        m_FileTools = New clsFileTools()
-        RegisterEvents(m_FileTools)
+        Me.New(dbConnectionString, IGetFASTAFromDMS.DatabaseFormatTypes.fasta, IGetFASTAFromDMS.SequenceTypes.forward)
     End Sub
 
+    ''' <summary>
+    ''' Constructor that takes connection string, database format type, and output sequence type
+    ''' </summary>
+    ''' <param name="dbConnectionString"></param>
+    ''' <param name="databaseFormatType"></param>
+    ''' <param name="outputSequenceType"></param>
     Public Sub New(
-     dbConnectionString As String,
-     databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
-     outputSequenceType As IGetFASTAFromDMS.SequenceTypes)
+      dbConnectionString As String,
+      databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
+      outputSequenceType As IGetFASTAFromDMS.SequenceTypes)
 
         m_SHA1Provider = New SHA1Managed()
         m_PSConnectionString = dbConnectionString
 
-        Dim user As New WindowsPrincipal(WindowsIdentity.GetCurrent())
-        m_UserID = user.Identity.Name  ' VB.NET
+        ClassSelector(dbConnectionString, databaseFormatType, outputSequenceType)
 
-        ClassSelector(dbConnectionString,
-         databaseFormatType, outputSequenceType)
+        m_FileTools = New clsFileTools()
+        RegisterEvents(m_FileTools)
 
     End Sub
 
