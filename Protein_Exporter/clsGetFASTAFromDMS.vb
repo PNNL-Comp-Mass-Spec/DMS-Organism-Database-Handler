@@ -30,7 +30,13 @@ Public Class clsGetFASTAFromDMS
     Protected m_FinalOutputPath As String
     Protected m_ArchivalName As String
     Protected m_CurrentFileProteinCount As Integer
+
+    ''' <summary>
+    ''' Protein sequences database connection string
+    ''' </summary>
+    ''' <remarks>Empty string if offline and only planning to use ValidateMatchingHash</remarks>
     Protected m_PSConnectionString As String
+
     Protected m_ArchiveCollectionList As List(Of String)
     Protected m_TableGetter As IGetSQLData
     Protected m_UserID As String
@@ -40,16 +46,28 @@ Public Class clsGetFASTAFromDMS
     Protected WithEvents m_FileTools As clsFileTools
     Protected m_LastLockQueueWaitTimeLog As DateTime
 
-    Public Sub New(ProteinStorageConnectionString As String)
+    ''' <summary>
+    ''' Constructor when running in offline mode
+    ''' </summary>
+    ''' <remarks>Useful if only calling ValidateMatchingHash</remarks>
+    Public Sub New()
+        Me.New(String.Empty)
+    End Sub
 
-        m_PSConnectionString = ProteinStorageConnectionString
-        ClassSelector(ProteinStorageConnectionString, IGetFASTAFromDMS.DatabaseFormatTypes.fasta, IGetFASTAFromDMS.SequenceTypes.forward)
+    ''' <summary>
+    ''' Constructor when the Protein Sequences database is available
+    ''' </summary>
+    ''' <param name="dbConnectionString"></param>
+    Public Sub New(dbConnectionString As String)
+
+        m_PSConnectionString = dbConnectionString
+        ClassSelector(dbConnectionString, IGetFASTAFromDMS.DatabaseFormatTypes.fasta, IGetFASTAFromDMS.SequenceTypes.forward)
         m_SHA1Provider = New SHA1Managed()
         m_FileTools = New clsFileTools()
         RegisterEvents(m_FileTools)
     End Sub
 
-    Public ReadOnly Property ExporterComponent() As clsGetFASTAFromDMSForward ' Implements ExportProteinCollectionsIFC.IGetFASTAFromDMS.ExporterComponent
+    Public ReadOnly Property ExporterComponent() As clsGetFASTAFromDMSForward
         Get
             Return m_Getter
         End Get
@@ -62,17 +80,18 @@ Public Class clsGetFASTAFromDMS
     End Property
 
     Public Sub New(
-     ProteinStorageConnectionString As String,
-     DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
-     OutputSequenceType As IGetFASTAFromDMS.SequenceTypes)
+     dbConnectionString As String,
+     databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
+     outputSequenceType As IGetFASTAFromDMS.SequenceTypes)
+
         m_SHA1Provider = New SHA1Managed()
-        m_PSConnectionString = ProteinStorageConnectionString
+        m_PSConnectionString = dbConnectionString
 
         Dim user As New WindowsPrincipal(WindowsIdentity.GetCurrent())
         m_UserID = user.Identity.Name  ' VB.NET
 
-        ClassSelector(ProteinStorageConnectionString,
-         DatabaseFormatType, OutputSequenceType)
+        ClassSelector(dbConnectionString,
+         databaseFormatType, outputSequenceType)
 
     End Sub
 
