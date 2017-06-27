@@ -33,9 +33,14 @@ Public Class clsGetFASTAFromDMSForward
 
     Protected m_RijndaelDecryption As clsRijndaelEncryptionHandler
 
+    ''' <summary>
+    ''' Constructor
+    ''' </summary>
+    ''' <param name="dbConnectionString">Protein sequences database connection string</param>
+    ''' <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
     Public Sub New(
-     dbConnectionString As String,
-     databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
+      dbConnectionString As String,
+      databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
 
         Dim persistConnection = Not String.IsNullOrWhiteSpace(dbConnectionString)
 

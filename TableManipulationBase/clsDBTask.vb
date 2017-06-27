@@ -55,10 +55,6 @@ Public Class clsDBTask
         SetupNew(persistConnection)
     End Sub
 
-    Public Sub New(Optional persistConnection As Boolean = False)
-        SetupNew(persistConnection)
-    End Sub
-
     Private Sub SetupNew(persistConnection As Boolean)
         m_PersistConnection = persistConnection
         If m_PersistConnection Then
