@@ -1,6 +1,5 @@
 Option Strict On
 
-Imports System
 Imports System.IO
 Imports System.Text
 Imports System.Security.Cryptography
@@ -45,21 +44,20 @@ Public Class clsRijndaelEncryptionHandler
     ' </returns>
 
     Const NUM_PW_ITERATIONS As Integer = 1
-    Const HASH_ALGORITHM As String = "SHA1"
     Const SALT_VALUE As String = "pRi5m533kRu135"
     Const INIT_VECTOR As String = "@3k8573j4083j410"
     Const KEY_SIZE As Integer = 192
-    'Private m_Password As PasswordDeriveBytes
-    Private m_Password As Rfc2898DeriveBytes
 
-    Private m_SymmetricKey As RijndaelManaged
-    Private m_Hashgen As SHA1Managed
-    Private m_Encryptor As ICryptoTransform
-    Private m_Decryptor As ICryptoTransform
+    Private ReadOnly m_Password As Rfc2898DeriveBytes
 
-    Private m_KeyBytes As Byte()
-    Private m_saltValueBytes As Byte()
-    Private m_initVectorBytes As Byte()
+    Private ReadOnly m_SymmetricKey As RijndaelManaged
+    Private m_SHA1Provider As SHA1Managed
+    Private ReadOnly m_Encryptor As ICryptoTransform
+    Private ReadOnly m_Decryptor As ICryptoTransform
+
+    Private ReadOnly m_KeyBytes As Byte()
+    Private ReadOnly m_saltValueBytes As Byte()
+    Private ReadOnly m_initVectorBytes As Byte()
 
     Sub New(passPhrase As String)
 
