@@ -10,13 +10,12 @@ Public Class clsGetFASTAFromDMSDecoy
     Protected m_RevGenerator As clsGetFASTAFromDMSReversed
 
     Public Sub New(
-        ProteinStorageConnectionString As String,
-        DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
+        dbConnectionString As String,
+        databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
 
-        MyBase.New(ProteinStorageConnectionString, DatabaseFormatType)
-        Me.m_RevGenerator = New clsGetFASTAFromDMSReversed(
-            ProteinStorageConnectionString, DatabaseFormatType)
-        'Me.m_Naming_Suffix = "_reversed"
+        MyBase.New(dbConnectionString, databaseFormatType)
+        m_RevGenerator = New clsGetFASTAFromDMSReversed(
+            dbConnectionString, databaseFormatType)
     End Sub
 
     ''' <summary>
@@ -37,12 +36,12 @@ Public Class clsGetFASTAFromDMSDecoy
         MyBase.ExportFASTAFile(protCollectionList,
                                destinationFolderPath, AlternateAuthorityID, PadWithPrimaryAnnotation)
 
-        fwdFilePath = Me.FullOutputPath
+        fwdFilePath = FullOutputPath
 
-        Me.m_RevGenerator.ExportFASTAFile(protCollectionList,
+        m_RevGenerator.ExportFASTAFile(protCollectionList,
                                           destinationFolderPath, AlternateAuthorityID, PadWithPrimaryAnnotation)
 
-        revFilePath = Me.m_RevGenerator.FullOutputPath
+        revFilePath = m_RevGenerator.FullOutputPath
 
         Dim fwdFI = New FileInfo(fwdFilePath)
         Dim revFI = New FileInfo(revFilePath)
@@ -59,7 +58,7 @@ Public Class clsGetFASTAFromDMSDecoy
 
         revFI.Delete()
 
-        Dim crc32HashFinal = Me.GetFileHash(fwdFI.FullName)
+        Dim crc32HashFinal = GetFileHash(fwdFI.FullName)
 
         Return crc32HashFinal
 

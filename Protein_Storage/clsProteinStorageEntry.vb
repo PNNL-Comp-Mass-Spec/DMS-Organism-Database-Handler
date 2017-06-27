@@ -18,15 +18,15 @@ Public Class clsProteinStorageEntry
             Throw New Exception("Reference name cannot be empty")
         End If
 
-        Me.m_Reference = Reference
-        Me.m_Description = Description
-        Me.m_Sequence = Sequence
-        Me.m_MonoMass = MonoisotopicMass
-        Me.m_AvgMass = AverageMass
-        Me.m_Length = Length
-        Me.m_MolecularFormula = MolecularFormula
-        Me.m_AuthHash = AuthenticationHash
-        Me.m_SortCount = SortingIndex
+        m_Reference = Reference
+        m_Description = Description
+        m_Sequence = Sequence
+        m_MonoMass = MonoisotopicMass
+        m_AvgMass = AverageMass
+        m_Length = Length
+        m_MolecularFormula = MolecularFormula
+        m_AuthHash = AuthenticationHash
+        m_SortCount = SortingIndex
 
         m_Protein_ID = 0
 
@@ -53,149 +53,149 @@ Public Class clsProteinStorageEntry
 
     Protected ReadOnly Property Reference() As String Implements IProteinStorageEntry.Reference
         Get
-            Return Me.m_Reference
+            Return m_Reference
         End Get
     End Property
 
     Protected Property AlternateReference() As String Implements IProteinStorageEntry.AlternateReference
         Get
-            Return Me.m_AlternateReference
+            Return m_AlternateReference
         End Get
         Set(Value As String)
             If Value.Length > 0 Then
-                Me.m_AlternateReference = Value
+                m_AlternateReference = Value
             Else
-                Me.m_AlternateReference = Nothing
+                m_AlternateReference = Nothing
             End If
         End Set
     End Property
 
     Protected ReadOnly Property HasAlternateReference() As Boolean Implements IProteinStorageEntry.HasAlternateReferences
         Get
-            Return Not Me.m_AlternateReference Is Nothing
+            Return Not m_AlternateReference Is Nothing
         End Get
     End Property
 
     Protected ReadOnly Property Description() As String Implements IProteinStorageEntry.Description
         Get
-            Return Me.m_Description
+            Return m_Description
         End Get
     End Property
 
     Protected Property Sequence() As String Implements IProteinStorageEntry.Sequence
         Get
-            Return Me.m_Sequence
+            Return m_Sequence
         End Get
         Set(Value As String)
-            Me.m_Sequence = Value
+            m_Sequence = Value
         End Set
     End Property
 
     Protected Property IsEncrypted() As Boolean Implements IProteinStorageEntry.IsEncrypted
         Get
-            Return Me.m_IsEncrypted
+            Return m_IsEncrypted
         End Get
         Set(Value As Boolean)
-            Me.m_IsEncrypted = Value
+            m_IsEncrypted = Value
         End Set
     End Property
 
     Protected ReadOnly Property MonoisotopicMass() As Double Implements IProteinStorageEntry.MonoisotopicMass
         Get
-            Return Me.m_MonoMass
+            Return m_MonoMass
         End Get
     End Property
 
     Protected ReadOnly Property AverageMass() As Double Implements IProteinStorageEntry.AverageMass
         Get
-            Return Me.m_AvgMass
+            Return m_AvgMass
         End Get
     End Property
 
     Protected ReadOnly Property Length() As Integer Implements IProteinStorageEntry.Length
         Get
-            Return Me.m_Length
+            Return m_Length
         End Get
     End Property
 
     Protected ReadOnly Property MolecularFormula() As String Implements IProteinStorageEntry.MolecularFormula
         Get
-            Return Me.m_MolecularFormula
+            Return m_MolecularFormula
         End Get
     End Property
 
     Protected Property SHA1Hash() As String Implements IProteinStorageEntry.SHA1Hash
         Get
-            Return Me.m_AuthHash
+            Return m_AuthHash
         End Get
         Set(value As String)
-            Me.m_AuthHash = value
+            m_AuthHash = value
         End Set
     End Property
 
     Public Property Protein_ID() As Integer Implements IProteinStorageEntry.Protein_ID
         Get
-            Return Me.m_Protein_ID
+            Return m_Protein_ID
         End Get
         Set(Value As Integer)
-            Me.m_Protein_ID = Value
+            m_Protein_ID = Value
         End Set
     End Property
 
     Protected Property Reference_ID() As Integer Implements IProteinStorageEntry.Reference_ID
         Get
-            Return Me.m_Reference_ID
+            Return m_Reference_ID
         End Get
         Set(Value As Integer)
-            Me.m_Reference_ID = Value
+            m_Reference_ID = Value
         End Set
     End Property
 
     Protected Property Member_ID() As Integer Implements IProteinStorageEntry.Member_ID
         Get
-            Return Me.m_Member_ID
+            Return m_Member_ID
         End Get
         Set(Value As Integer)
-            Me.m_Member_ID = Value
+            m_Member_ID = Value
         End Set
     End Property
 
     Protected Property Authority_ID() As Integer Implements IProteinStorageEntry.Authority_ID
         Get
-            Return Me.m_Authority_ID
+            Return m_Authority_ID
         End Get
         Set(Value As Integer)
-            Me.m_Authority_ID = Value
+            m_Authority_ID = Value
         End Set
     End Property
 
     Protected Property SortingIndex() As Integer Implements IProteinStorageEntry.SortingIndex
         Get
-            Return Me.m_SortCount
+            Return m_SortCount
         End Get
         Set(Value As Integer)
-            Me.m_SortCount = Value
+            m_SortCount = Value
         End Set
     End Property
 
     Protected ReadOnly Property NameXRefs() As List(Of String) Implements IProteinStorageEntry.NameXRefs
         Get
-            Return Me.m_XRefList
+            Return m_XRefList
         End Get
     End Property
 
     Protected Sub AddXRef(newReference As String) Implements IProteinStorageEntry.AddXRef
-        If Me.m_XRefList Is Nothing Then
-            Me.m_XRefList = New List(Of String)
+        If m_XRefList Is Nothing Then
+            m_XRefList = New List(Of String)
         End If
-        Me.m_XRefList.Add(newReference)
+        m_XRefList.Add(newReference)
     End Sub
 
     Protected Sub ChangeReferenceName(newName As String) Implements IProteinStorageEntry.SetReferenceName
         If String.IsNullOrWhiteSpace(newName) Then
             Throw New Exception("New protein name cannot be empty")
         End If
-        Me.m_Reference = newName
+        m_Reference = newName
     End Sub
 
     Public Overrides Function ToString() As String
@@ -205,6 +205,6 @@ Public Class clsProteinStorageEntry
         Else
             Return m_Reference & ", ResidueCount=" & m_Length & ", " & m_Sequence.Substring(0, 20)
         End If
-        
+
     End Function
 End Class

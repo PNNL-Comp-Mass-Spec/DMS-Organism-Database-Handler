@@ -19,27 +19,27 @@ Public Interface IArchiveOutputFiles
     Event ArchiveComplete(ArchivePath As String)
 
     Function ArchiveCollection(
-        ProteinCollectionID As Integer,
-        ProteinCollectionType As CollectionTypes,
-        OutputSequenceType As IGetFASTAFromDMS.SequenceTypes,
-        DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
-        SourceFilePath As String,
-        CreationOptionsString As String,
-        Authentication_Hash As String,
-        ProteinCollectionList As String) As Integer
+        proteinCollectionID As Integer,
+        proteinCollectionType As CollectionTypes,
+        outputSequenceType As IGetFASTAFromDMS.SequenceTypes,
+        databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
+        sourceFilePath As String,
+        creationOptionsString As String,
+        authentication_Hash As String,
+        proteinCollectionList As String) As Integer
 
     Function ArchiveCollection(
-        ProteinCollectionName As String,
-        ProteinCollectionType As CollectionTypes,
-        OutputSequenceType As IGetFASTAFromDMS.SequenceTypes,
-        DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
-        SourceFilePath As String,
-        CreationOptionsString As String,
-        Authentication_Hash As String,
-        ProteinCollectionList As String) As Integer
+        proteinCollectionName As String,
+        proteinCollectionType As CollectionTypes,
+        outputSequenceType As IGetFASTAFromDMS.SequenceTypes,
+        databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
+        sourceFilePath As String,
+        creationOptionsString As String,
+        authentication_Hash As String,
+        proteinCollectionList As String) As Integer
 
     Sub AddArchiveCollectionXRef(
-        ProteinCollectionID As Integer,
-        Archived_File_ID As Integer)
+        proteinCollectionID As Integer,
+        archived_File_ID As Integer)
 
 End Interface

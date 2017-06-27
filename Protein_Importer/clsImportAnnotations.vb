@@ -35,93 +35,93 @@ Public Class GeneOntologyEntry
 
     Property ID() As String
         Get
-            Return Me.m_ID
+            Return m_ID
         End Get
         Set(Value As String)
-            Me.m_ID = Me.CleanUpLine(Value)
+            m_ID = CleanUpLine(Value)
         End Set
     End Property
     Property Name() As String
         Get
-            Return Me.m_Name
+            Return m_Name
         End Get
         Set(Value As String)
-            Me.m_Name = Me.CleanUpLine(Value)
+            m_Name = CleanUpLine(Value)
         End Set
     End Property
     Property [NameSpace]() As String
         Get
-            Return Me.m_Namespace
+            Return m_Namespace
         End Get
         Set(Value As String)
-            Me.m_Namespace = Me.CleanUpLine(Value)
+            m_Namespace = CleanUpLine(Value)
         End Set
     End Property
     Property Definition() As String
         Get
-            Return Me.m_Definition
+            Return m_Definition
         End Get
         Set(Value As String)
-            Me.m_Definition = Me.CleanUpLine(Value)
+            m_Definition = CleanUpLine(Value)
         End Set
     End Property
     Property Comment() As String
         Get
-            Return Me.m_Comment
+            Return m_Comment
         End Get
         Set(Value As String)
-            Me.m_Comment = Me.CleanUpLine(Value)
+            m_Comment = CleanUpLine(Value)
         End Set
     End Property
     Property IsObsolete() As Boolean
         Get
-            Return Me.m_IsObsolete
+            Return m_IsObsolete
         End Get
         Set(Value As Boolean)
-            Me.m_IsObsolete = Value
+            m_IsObsolete = Value
         End Set
     End Property
     ReadOnly Property ExactSynonym_List() As ArrayList
         Get
-            Return Me.m_ExactSynonym
+            Return m_ExactSynonym
         End Get
     End Property
     ReadOnly Property IsA_List() As ArrayList
         Get
-            Return Me.m_IsA
+            Return m_IsA
         End Get
     End Property
     ReadOnly Property XRefAnalog_List() As ArrayList
         Get
-            Return Me.m_XRefAnalog
+            Return m_XRefAnalog
         End Get
     End Property
     ReadOnly Property Relationship() As ArrayList
         Get
-            Return Me.m_Relationship
+            Return m_Relationship
         End Get
     End Property
     ReadOnly Property SubSet() As ArrayList
         Get
-            Return Me.m_SubSet
+            Return m_SubSet
         End Get
     End Property
 
 
     Sub Add_ExactSynonym_Entry(synonym As String)
-        Me.m_ExactSynonym.Add(Me.CleanUpLine(synonym))
+        m_ExactSynonym.Add(CleanUpLine(synonym))
     End Sub
     Sub Add_IsA_Entry(IsAReference As String)
-        Me.m_IsA.Add(IsAReference)
+        m_IsA.Add(IsAReference)
     End Sub
     Sub Add_XRefAnalog_Entry(XRef As String)
-        Me.m_XRefAnalog.Add(XRef)
+        m_XRefAnalog.Add(XRef)
     End Sub
     Sub Add_RelationShip_Entry(Relationship As String)
-        Me.m_Relationship.Add(Relationship)
+        m_Relationship.Add(Relationship)
     End Sub
     Sub Add_Subset_Entry(Subset As String)
-        Me.m_SubSet.Add(Subset)
+        m_SubSet.Add(Subset)
     End Sub
 
     Private Function CleanUpLine(entryLine As String) As String
@@ -170,50 +170,50 @@ Public Class GeneOntologyListOBO
 
         Dim reOptions = RegexOptions.IgnoreCase Or RegexOptions.CultureInvariant Or RegexOptions.IgnorePatternWhitespace Or RegexOptions.Compiled
 
-        Me.r_entryHeader = New Regex(
+        r_entryHeader = New Regex(
             "^\[Term\]$",
             reOptions)
-        Me.r_IDLine = New Regex(
+        r_IDLine = New Regex(
             "^(?<tag>id):\s+(?<value>.+)$",
             reOptions
             )
-        Me.r_NameLine = New Regex(
+        r_NameLine = New Regex(
             "^(?<tag>name):\s+(?<value>.+)$",
             reOptions
             )
-        Me.r_NameSpaceLine = New Regex(
+        r_NameSpaceLine = New Regex(
             "^(?<tag>namespace):\s+(?<value>.+)$",
             reOptions
             )
-        Me.r_DefinitionLine = New Regex(
+        r_DefinitionLine = New Regex(
             "^(?<tag>def):\s+\""+(?<value>.*)\""\s*\[*(?<xref>.*)\]*\s*",
             reOptions
             )
-        Me.r_CommentLine = New Regex(
+        r_CommentLine = New Regex(
             "^(?<tag>comment):\s+(?<value>.+)$",
            reOptions
             )
-        Me.r_IsObsoleteLine = New Regex(
+        r_IsObsoleteLine = New Regex(
             "^(?<tag>is_obsolete):\s+(?<value>true|false)$",
             reOptions
             )
-        Me.r_ExactSynonymLine = New Regex(
+        r_ExactSynonymLine = New Regex(
             "^(?<tag>exact_synonym):\s+\""+(?<value>.*)\""\s*\[(?<xref>.*)\]S*$",
             reOptions
             )
-        Me.r_IsALine = New Regex(
+        r_IsALine = New Regex(
             "^(?<tag>is_a):\s+(?<value>\S+)\s*\!.*$",
             reOptions
             )
-        Me.r_RelationshipLine = New Regex(
+        r_RelationshipLine = New Regex(
             "^(?<tag>relationship):\s+part_of\s+(?<value>\S+)\s*\!.*$",
             reOptions
             )
-        Me.r_XRefAnalogLine = New Regex(
+        r_XRefAnalogLine = New Regex(
             "^(?<tag>xref_analog):\s+(?<value>.+)$",
             reOptions
             )
-        Me.r_SubsetLine = New Regex(
+        r_SubsetLine = New Regex(
             "^(?<tag>subset):\s+(?<value>.+)$",
             reOptions
             )

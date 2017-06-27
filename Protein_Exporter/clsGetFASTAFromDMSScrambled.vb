@@ -9,10 +9,10 @@ Public Class clsGetFASTAFromDMSScrambled
     Private m_RndNumGen As Random
 
     Public Sub New(
-        ProteinStorageConnectionString As String,
-        DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
+        dbConnectionString As String,
+        databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
 
-        MyBase.New(ProteinStorageConnectionString, DatabaseFormatType)
+        MyBase.New(dbConnectionString, databaseFormatType)
 
     End Sub
 
@@ -24,16 +24,16 @@ Public Class clsGetFASTAFromDMSScrambled
         Dim index As Integer
         Dim counter As Integer
 
-        If Me.m_RndNumGen Is Nothing Then
-            Me.m_RndNumGen = New Random(collectionCount)
-            Me.m_Naming_Suffix = "_scrambled_seed_" + collectionCount.ToString
+        If m_RndNumGen Is Nothing Then
+            m_RndNumGen = New Random(collectionCount)
+            m_Naming_Suffix = "_scrambled_seed_" + collectionCount.ToString
         End If
 
         counter = sequence.Length
 
         While counter > 0
             Debug.Assert(counter = sequence.Length)
-            index = Me.m_RndNumGen.Next(counter)
+            index = m_RndNumGen.Next(counter)
             sb.Append(sequence.Substring(index, 1))
 
             If index > 0 Then

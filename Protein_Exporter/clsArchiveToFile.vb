@@ -26,7 +26,7 @@ Public Class clsArchiveToFile
             m_BaseArchivePath = DEFAULT_BASE_ARCHIVE_PATH
         End If
 
-        Me.m_SHA1Provider = New SHA1Managed()
+        m_SHA1Provider = New SHA1Managed()
     End Sub
 
     Protected Overrides Function DispositionFile(
@@ -43,7 +43,7 @@ Public Class clsArchiveToFile
 
         Dim ProteinCollectionsListFromDB As String
 
-        Me.CheckTableGetterStatus()
+        CheckTableGetterStatus()
 
         Dim ArchivedFileEntryID As Integer
 
@@ -61,22 +61,22 @@ Public Class clsArchiveToFile
           "Archived_File_State_ID <> 3 " &
           "ORDER BY File_Modification_Date DESC"
 
-        Dim tmptable As DataTable = Me.m_TableGetter.GetTable(checkSQL)
-        CollectionListHexHash = Me.GenerateHash(ProteinCollectionsList + "/" + CreationOptionsString)
+        Dim tmptable As DataTable = m_TableGetter.GetTable(checkSQL)
+        CollectionListHexHash = GenerateHash(ProteinCollectionsList + "/" + CreationOptionsString)
         If tmptable.Rows.Count = 0 Then
-            proteinCount = Me.GetProteinCount(SourceFilePath)
+            proteinCount = GetProteinCount(SourceFilePath)
 
-            archivePath = Me.GenerateArchivePath(
+            archivePath = GenerateArchivePath(
               SourceFilePath, ProteinCollectionID,
               fi.LastWriteTime,
               SourceAuthenticationHash,
               ArchivedFileType, OutputSequenceType)
 
-            ArchivedFileEntryID = Me.RunSP_AddOutputFileArchiveEntry(
+            ArchivedFileEntryID = RunSP_AddOutputFileArchiveEntry(
               ProteinCollectionID, CreationOptionsString, SourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount,
               archivePath, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType), ProteinCollectionsList, CollectionListHexHash)
 
-            tmptable = Me.m_TableGetter.GetTable(checkSQL)
+            tmptable = m_TableGetter.GetTable(checkSQL)
 
         Else
             ' Archived file entry already exists
@@ -89,27 +89,27 @@ Public Class clsArchiveToFile
              CollectionListHexHashInDB = "" OrElse
              ProteinCollectionsListFromDB <> ProteinCollectionsList OrElse
              CollectionListHexHashInDB <> CollectionListHexHash Then
-                Me.RunSP_UpdateFileArchiveEntryCollectionList(ArchivedFileEntryID, ProteinCollectionsList, SourceAuthenticationHash, CollectionListHexHash)
+                RunSP_UpdateFileArchiveEntryCollectionList(ArchivedFileEntryID, ProteinCollectionsList, SourceAuthenticationHash, CollectionListHexHash)
             End If
         End If
-        Me.m_Archived_File_Name = tmptable.Rows(0).Item("Archived_File_Path").ToString
+        m_Archived_File_Name = tmptable.Rows(0).Item("Archived_File_Path").ToString
 
 
         Try
-            di = New DirectoryInfo(Path.GetDirectoryName(Me.m_Archived_File_Name))
-            destFI = New FileInfo(Me.m_Archived_File_Name)
+            di = New DirectoryInfo(Path.GetDirectoryName(m_Archived_File_Name))
+            destFI = New FileInfo(m_Archived_File_Name)
             If Not di.Exists Then
                 di.Create()
             End If
 
             If Not destFI.Exists Then
-                fi.CopyTo(Me.m_Archived_File_Name)
+                fi.CopyTo(m_Archived_File_Name)
             End If
 
         Catch exUnauthorized As UnauthorizedAccessException
-            Console.WriteLine("  Warning: access denied copying file to " & Me.m_Archived_File_Name)
+            Console.WriteLine("  Warning: access denied copying file to " & m_Archived_File_Name)
         Catch ex As Exception
-            Me.m_LastError = "File copying error: " + ex.Message
+            m_LastError = "File copying error: " + ex.Message
             Return 0
         End Try
 
@@ -160,7 +160,7 @@ Public Class clsArchiveToFile
 
         Dim sp_Save As SqlCommand
 
-        sp_Save = New SqlCommand("UpdateFileArchiveEntryCollectionList", Me.m_TableGetter.Connection)
+        sp_Save = New SqlCommand("UpdateFileArchiveEntryCollectionList", m_TableGetter.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -194,7 +194,7 @@ Public Class clsArchiveToFile
         'Execute the sp
         sp_Save.ExecuteNonQuery()
 
-        'Me.m_Archived_File_Name = ArchivedFileFullPath
+        'm_Archived_File_Name = ArchivedFileFullPath
 
 
         'Get return value
@@ -220,7 +220,7 @@ Public Class clsArchiveToFile
 
         Dim sp_Save As SqlCommand
 
-        sp_Save = New SqlCommand("AddOutputFileArchiveEntry", Me.m_TableGetter.Connection)
+        sp_Save = New SqlCommand("AddOutputFileArchiveEntry", m_TableGetter.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -283,7 +283,7 @@ Public Class clsArchiveToFile
         'Execute the sp
         sp_Save.ExecuteNonQuery()
 
-        Me.m_Archived_File_Name = ArchivedFileFullPath
+        m_Archived_File_Name = ArchivedFileFullPath
 
         'Get return value
         Dim ret = CInt(sp_Save.Parameters("@Return").Value)

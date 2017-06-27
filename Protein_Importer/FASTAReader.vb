@@ -41,20 +41,20 @@ Public Class FASTAReader
 #End Region
 
     Public Sub New()
-        Me.m_DescLineMatcher = New System.Text.RegularExpressions.Regex("^\>.+$")
-        Me.m_DescLineRegEx = New System.Text.RegularExpressions.Regex("^\>(?<name>\S+)\s+(?<description>.*)$")
-        Me.m_NoDescLineRegEx = New System.Text.RegularExpressions.Regex("^\>(?<name>\S+)$")
+        m_DescLineMatcher = New System.Text.RegularExpressions.Regex("^\>.+$")
+        m_DescLineRegEx = New System.Text.RegularExpressions.Regex("^\>(?<name>\S+)\s+(?<description>.*)$")
+        m_NoDescLineRegEx = New System.Text.RegularExpressions.Regex("^\>(?<name>\S+)$")
 
     End Sub
 
     Protected ReadOnly Property LastErrorMessage() As String Implements IReadProteinImportFile.LastErrorMessage
         Get
-            Return Me.m_LastError
+            Return m_LastError
         End Get
     End Property
 
     Protected Function LoadFASTAFile(FilePath As String) As Protein_Storage.IProteinStorage Implements IReadProteinImportFile.GetProteinEntries
-        Return Me.LoadFASTAFile(FilePath, -1)
+        Return LoadFASTAFile(FilePath, -1)
     End Function
 
     Protected Function LoadFASTAFile(FilePath As String, NumRecordsToLoad As Integer) As Protein_Storage.IProteinStorage Implements IReadProteinImportFile.GetProteinEntries
@@ -73,9 +73,9 @@ Public Class FASTAReader
 
         Dim recordCount As Integer
 
-        Me.m_FASTAFilePath = FilePath
+        m_FASTAFilePath = FilePath
 
-        Dim lineEndCharCount As Integer = Me.LineEndCharacterCount(FilePath)
+        Dim lineEndCharCount As Integer = LineEndCharacterCount(FilePath)
 
         Try
 
@@ -90,7 +90,7 @@ Public Class FASTAReader
                     Dim s = fileReader.ReadLine.Trim
 
                     Do While Not s Is Nothing
-                        If Me.m_DescLineMatcher.IsMatch(s) Then
+                        If m_DescLineMatcher.IsMatch(s) Then
                             'DescriptionLine, new record
                             If currPos > 0 Then 'dump current record
                                 seqInfo.CalculateSequenceInfo(strSeqTemp)
@@ -108,12 +108,12 @@ Public Class FASTAReader
                             strDescTemp = ""
                             strSeqTemp = ""
 
-                            If Me.m_DescLineRegEx.IsMatch(s) Then
-                                descMatch = Me.m_DescLineRegEx.Match(s)
+                            If m_DescLineRegEx.IsMatch(s) Then
+                                descMatch = m_DescLineRegEx.Match(s)
                                 strORFTemp = descMatch.Groups("name").Value
                                 strDescTemp = descMatch.Groups("description").Value
-                            ElseIf Me.m_NoDescLineRegEx.IsMatch(s) Then
-                                descMatch = Me.m_NoDescLineRegEx.Match(s)
+                            ElseIf m_NoDescLineRegEx.IsMatch(s) Then
+                                descMatch = m_NoDescLineRegEx.Match(s)
                                 strORFTemp = descMatch.Groups(1).Value
                                 strDescTemp = ""
                             End If
@@ -150,7 +150,7 @@ Public Class FASTAReader
         Catch e As Exception
             ' Exception occurred
             ' For safety, we will clear fastaContents
-            Me.m_LastError = e.Message
+            m_LastError = e.Message
         End Try
 
         Return fastaContents

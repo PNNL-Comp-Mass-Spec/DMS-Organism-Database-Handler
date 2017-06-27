@@ -77,43 +77,43 @@ Public Class clsGetFASTAFromDMS
     End Sub
 
     Private Sub ClassSelector(
-     ProteinStorageConnectionString As String,
-     DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
-     OutputSequenceType As IGetFASTAFromDMS.SequenceTypes)
+     dbConnectionString As String,
+     databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
+     outputSequenceType As IGetFASTAFromDMS.SequenceTypes)
 
-        m_DatabaseFormatType = DatabaseFormatType
-        m_OutputSequenceType = OutputSequenceType
+        m_DatabaseFormatType = databaseFormatType
+        m_OutputSequenceType = outputSequenceType
 
-        Select Case OutputSequenceType
+        Select Case outputSequenceType
 
             Case IGetFASTAFromDMS.SequenceTypes.forward
                 m_Getter = New clsGetFASTAFromDMSForward(
-                 ProteinStorageConnectionString, DatabaseFormatType)
+                    dbConnectionString, databaseFormatType)
                 m_CollectionType = IArchiveOutputFiles.CollectionTypes.static
 
             Case IGetFASTAFromDMS.SequenceTypes.reversed
                 m_Getter = New clsGetFASTAFromDMSReversed(
-                 ProteinStorageConnectionString, DatabaseFormatType)
+                    dbConnectionString, databaseFormatType)
                 m_CollectionType = IArchiveOutputFiles.CollectionTypes.dynamic
 
             Case IGetFASTAFromDMS.SequenceTypes.scrambled
                 m_Getter = New clsGetFASTAFromDMSScrambled(
-                 ProteinStorageConnectionString, DatabaseFormatType)
+                    dbConnectionString, databaseFormatType)
                 m_CollectionType = IArchiveOutputFiles.CollectionTypes.dynamic
 
             Case IGetFASTAFromDMS.SequenceTypes.decoy
                 m_Getter = New clsGetFASTAFromDMSDecoy(
-                 ProteinStorageConnectionString, DatabaseFormatType)
+                    dbConnectionString, databaseFormatType)
                 m_CollectionType = IArchiveOutputFiles.CollectionTypes.dynamic
 
             Case IGetFASTAFromDMS.SequenceTypes.decoyX
                 m_Getter = New clsGetFASTAFromDMSDecoyX(
-                 ProteinStorageConnectionString, DatabaseFormatType)
+                    dbConnectionString, databaseFormatType)
                 m_CollectionType = IArchiveOutputFiles.CollectionTypes.dynamic
 
         End Select
 
-        m_Archiver = New clsArchiveToFile(ProteinStorageConnectionString, Me)
+        m_Archiver = New clsArchiveToFile(dbConnectionString, Me)
 
     End Sub
 
@@ -137,21 +137,21 @@ Public Class clsGetFASTAFromDMS
     Overloads Function ExportFASTAFile(
      ProteinCollectionID As Integer,
      destinationFolderPath As String,
-     DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
-     OutputSequenceType As IGetFASTAFromDMS.SequenceTypes) As String Implements IGetFASTAFromDMS.ExportFASTAFile
+     databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
+     outputSequenceType As IGetFASTAFromDMS.SequenceTypes) As String Implements IGetFASTAFromDMS.ExportFASTAFile
 
         Dim proteincollectionname As String = GetProteinCollectionName(ProteinCollectionID)
 
         Dim creationOptionsHandler As New clsFileCreationOptions(m_PSConnectionString)
 
         Dim creationOptions As String = creationOptionsHandler.MakeCreationOptionsString(
-         OutputSequenceType, DatabaseFormatType)
+         outputSequenceType, databaseFormatType)
 
         Dim protCollectionList As New List(Of String) From {
             proteincollectionname
         }
 
-        Return ExportProteinCollections(protCollectionList, creationOptions, destinationFolderPath, 0, True, DatabaseFormatType, OutputSequenceType)
+        Return ExportProteinCollections(protCollectionList, creationOptions, destinationFolderPath, 0, True, databaseFormatType, outputSequenceType)
 
     End Function
 

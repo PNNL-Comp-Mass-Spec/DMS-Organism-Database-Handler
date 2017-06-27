@@ -65,33 +65,33 @@ Public Class clsRijndaelEncryptionHandler
         ' Let us assume that strings only contain ASCII codes.
         ' If strings include Unicode characters, use Unicode, UTF7, or UTF8
         ' encoding.
-        Me.m_initVectorBytes = Encoding.ASCII.GetBytes(INIT_VECTOR)
+        m_initVectorBytes = Encoding.ASCII.GetBytes(INIT_VECTOR)
 
-        Me.m_saltValueBytes = Encoding.ASCII.GetBytes(SALT_VALUE)
+        m_saltValueBytes = Encoding.ASCII.GetBytes(SALT_VALUE)
 
         ' First, we must create a password, from which the key will be derived.
         ' This password will be generated from the specified passphrase and
         ' salt value. The password will be created using the specified hash
         ' algorithm. Password creation can be done in several iterations.
-        Me.m_Password = New Rfc2898DeriveBytes(passPhrase, Me.m_saltValueBytes, NUM_PW_ITERATIONS)
+        m_Password = New Rfc2898DeriveBytes(passPhrase, m_saltValueBytes, NUM_PW_ITERATIONS)
 
         ' Use the password to generate pseudo-random bytes for the encryption
         ' key. Specify the size of the key in bytes (instead of bits).
-        Me.m_KeyBytes = Me.m_Password.GetBytes(CInt(KEY_SIZE / 8))
+        m_KeyBytes = m_Password.GetBytes(CInt(KEY_SIZE / 8))
 
         ' Create uninitialized Rijndael encryption object.
-        Me.m_SymmetricKey = New RijndaelManaged
+        m_SymmetricKey = New RijndaelManaged
 
         ' It is reasonable to set encryption mode to Cipher Block Chaining
         ' (CBC). Use default options for other symmetric key parameters.
-        Me.m_SymmetricKey.Mode = CipherMode.CBC
+        m_SymmetricKey.Mode = CipherMode.CBC
 
         ' Generate encryptor from the existing key bytes and initialization
         ' vector. Key size will be defined based on the number of the key
         ' bytes.
-        Me.m_Encryptor = Me.m_SymmetricKey.CreateEncryptor(Me.m_KeyBytes, Me.m_initVectorBytes)
+        m_Encryptor = m_SymmetricKey.CreateEncryptor(m_KeyBytes, m_initVectorBytes)
 
-        Me.m_Decryptor = Me.m_SymmetricKey.CreateDecryptor(Me.m_KeyBytes, Me.m_initVectorBytes)
+        m_Decryptor = m_SymmetricKey.CreateDecryptor(m_KeyBytes, m_initVectorBytes)
 
     End Sub
 
@@ -109,7 +109,7 @@ Public Class clsRijndaelEncryptionHandler
         ' Define cryptographic stream (always use Write mode for encryption).
         Dim cryptoStream As CryptoStream
         cryptoStream = New CryptoStream(memoryStream,
-                                        Me.m_Encryptor,
+                                        m_Encryptor,
                                         CryptoStreamMode.Write)
         ' Start encrypting.
         cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length)
@@ -134,8 +134,8 @@ Public Class clsRijndaelEncryptionHandler
     End Function
 
     Public Function MakeArbitraryHash(Sourcetext As String) As String
-        If Me.m_SHA1Provider Is Nothing Then
-            Me.m_SHA1Provider = New SHA1Managed()
+        If m_SHA1Provider Is Nothing Then
+            m_SHA1Provider = New SHA1Managed()
         End If
 
         'Create an encoding object to ensure the encoding standard for the source text
@@ -220,7 +220,7 @@ Public Class clsRijndaelEncryptionHandler
         ' Define memory stream which will be used to hold encrypted data.
         Dim cryptoStream As CryptoStream
         cryptoStream = New CryptoStream(memoryStream,
-                                        Me.m_Decryptor,
+                                        m_Decryptor,
                                         CryptoStreamMode.Read)
 
         ' Since at this point we don't know what the size of decrypted data

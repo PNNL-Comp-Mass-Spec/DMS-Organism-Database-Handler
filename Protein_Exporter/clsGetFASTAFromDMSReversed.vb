@@ -8,11 +8,11 @@ Public Class clsGetFASTAFromDMSReversed
     Protected m_UseXXX As Boolean
 
     Public Sub New(
-        ProteinStorageConnectionString As String,
-        DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
+        dbConnectionString As String,
+        databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
 
-        MyBase.New(ProteinStorageConnectionString, DatabaseFormatType)
-        Me.m_Naming_Suffix = "_reversed"
+        MyBase.New(dbConnectionString, databaseFormatType)
+        m_Naming_Suffix = "_reversed"
     End Sub
 
     ''' <summary>

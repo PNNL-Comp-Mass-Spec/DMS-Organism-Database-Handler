@@ -8,7 +8,7 @@ Friend Class clsCollectionEncryptor
 
     Sub New(PassPhrase As String, PSConnectionString As String)
 
-        Me.m_RijndaelEncryptor = New Protein_Exporter.clsRijndaelEncryptionHandler(PassPhrase)
+        m_RijndaelEncryptor = New Protein_Exporter.clsRijndaelEncryptionHandler(PassPhrase)
 
         If clsCollectionEncryptor.m_TableGrabber Is Nothing Then
             clsCollectionEncryptor.m_TableGrabber = New TableManipulationBase.clsDBTask(PSConnectionString, True)
@@ -20,7 +20,7 @@ Friend Class clsCollectionEncryptor
 
         Dim e = StorageCollection.GetEnumerator
 
-        Me.OnEncryptionStart("Encrypting Sequences")
+        OnEncryptionStart("Encrypting Sequences")
         Dim counter = 0
         Dim counterMax As Integer = StorageCollection.ProteinCount
         Dim EventTriggerThresh As Integer
@@ -33,12 +33,12 @@ Friend Class clsCollectionEncryptor
 
         While e.MoveNext()
             If counter Mod EventTriggerThresh = 0 Then
-                Me.OnEncryptionProgressUpdate(CDbl(counter / counterMax))
+                OnEncryptionProgressUpdate(CDbl(counter / counterMax))
             End If
 
             Dim ce = e.Current.Value
-            ce.Sequence = Me.m_RijndaelEncryptor.Encrypt(ce.Sequence)
-            ce.SHA1Hash = Me.m_RijndaelEncryptor.MakeArbitraryHash(ce.Sequence)
+            ce.Sequence = m_RijndaelEncryptor.Encrypt(ce.Sequence)
+            ce.SHA1Hash = m_RijndaelEncryptor.MakeArbitraryHash(ce.Sequence)
             ce.IsEncrypted = True
             counter += 1
         End While

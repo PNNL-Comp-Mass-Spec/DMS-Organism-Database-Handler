@@ -7,13 +7,13 @@ Public Class clsGetFASTAFromDMSDecoyX
     Inherits clsGetFASTAFromDMSDecoy
 
     Public Sub New(
-        ProteinStorageConnectionString As String,
-        DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
+        dbConnectionString As String,
+        databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
 
-        MyBase.New(ProteinStorageConnectionString, DatabaseFormatType)
+        MyBase.New(dbConnectionString, databaseFormatType)
 
-        Me.m_RevGenerator = New clsGetFASTAFromDMSReversed(
-            ProteinStorageConnectionString, DatabaseFormatType)
+        m_RevGenerator = New clsGetFASTAFromDMSReversed(
+            dbConnectionString, databaseFormatType)
 
         m_RevGenerator.UseXXX = True
 

@@ -55,7 +55,7 @@ Public Class clsExportProteinsFASTA
             Dim tmpPC As IProteinStorageEntry
             Dim tmpAltNames As String = String.Empty
 
-            Me.OnExportStart("Writing to FASTA File")
+            OnExportStart("Writing to FASTA File")
 
             Dim counterMax As Integer = Proteins.ProteinCount
             Dim counter As Integer
@@ -73,7 +73,7 @@ Public Class clsExportProteinsFASTA
 
             For Each tmpName In nameList
 
-                Me.OnExportStart("Writing: " + tmpName)
+                OnExportStart("Writing: " + tmpName)
 
                 tmpPC = Proteins.GetProtein(tmpName)
                 tmpSeq = tmpPC.Sequence
@@ -81,7 +81,7 @@ Public Class clsExportProteinsFASTA
                 counter += 1
 
                 If (counter Mod EventTriggerThresh) = 0 Then
-                    Me.OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
+                    OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
                 End If
 
                 proteinLength = tmpSeq.Length
@@ -90,15 +90,15 @@ Public Class clsExportProteinsFASTA
 
                 sw.WriteLine((">" & tmpPC.Reference & " " & tmpDesc & tmpAltNames).Trim())
 
-                For proteinPosition = 1 To proteinLength Step Me.m_seqLineLength
-                    seqLine = Mid(tmpSeq, proteinPosition, Me.m_seqLineLength)
+                For proteinPosition = 1 To proteinLength Step m_seqLineLength
+                    seqLine = Mid(tmpSeq, proteinPosition, m_seqLineLength)
                     sw.WriteLine(seqLine)
                 Next
             Next
 
         End Using
 
-        Dim fingerprint As String = Me.GetFileHash(destinationPath)
+        Dim fingerprint As String = GetFileHash(destinationPath)
 
         Dim fi = New FileInfo(destinationPath)
 
@@ -117,7 +117,7 @@ Public Class clsExportProteinsFASTA
             destinationPath = newDestinationPath
         End If
 
-        Me.OnExportEnd()
+        OnExportEnd()
 
         Return fingerprint
 
@@ -134,7 +134,7 @@ Public Class clsExportProteinsFASTA
             writtenProteinCount = WriteFromDatatable(ProteinTable, destinationPath)
         Next
 
-        Return Me.FinalizeFile(destinationPath)
+        Return FinalizeFile(destinationPath)
 
     End Function
 
@@ -147,7 +147,7 @@ Public Class clsExportProteinsFASTA
         If ProteinTable.Rows.Count > 0 Then
             writtenProteinCount = WriteFromDatatable(ProteinTable, destinationPath)
         Else
-            Return Me.FinalizeFile(destinationPath)
+            Return FinalizeFile(destinationPath)
         End If
 
         Return destinationPath
@@ -186,7 +186,7 @@ Public Class clsExportProteinsFASTA
         ' Open the output file for append
         Using sw = New StreamWriter(New FileStream(destinationPath, FileMode.Append, FileAccess.Write, FileShare.Read))
 
-            'Me.OnDetailedExportStart("Writing: " + proteinTable.TableName)
+            'OnDetailedExportStart("Writing: " + proteinTable.TableName)
 
             counterMax = proteinTable.Rows.Count
             If counterMax <= 25 Then
@@ -198,22 +198,22 @@ Public Class clsExportProteinsFASTA
             foundRows = proteinTable.Select("")
 
             For Each dr In foundRows
-                Dim tmpSeq = Me.m_ExportComponent.SequenceExtender(dr.Item("Sequence").ToString, proteinTable.Rows.Count)
+                Dim tmpSeq = m_ExportComponent.SequenceExtender(dr.Item("Sequence").ToString, proteinTable.Rows.Count)
 
                 counter += 1
 
                 If (counter Mod EventTriggerThresh) = 0 Then
-                    'Me.OnDetailedProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
+                    'OnDetailedProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
                 End If
 
                 Dim proteinLength = tmpSeq.Length
                 Dim tmpDesc = cntrlFinder.Replace(dr.Item("Description").ToString, " ")
-                Dim tmpName = Me.m_ExportComponent.ReferenceExtender(dr.Item("Name").ToString)
+                Dim tmpName = m_ExportComponent.ReferenceExtender(dr.Item("Name").ToString)
 
                 sw.WriteLine((">" & tmpName & " " & tmpDesc & tmpAltNames).Trim())
 
-                For proteinPosition = 1 To proteinLength Step Me.m_seqLineLength
-                    Dim seqLinePortion = Mid(tmpSeq, proteinPosition, Me.m_seqLineLength)
+                For proteinPosition = 1 To proteinLength Step m_seqLineLength
+                    Dim seqLinePortion = Mid(tmpSeq, proteinPosition, m_seqLineLength)
                     sw.WriteLine(seqLinePortion)
                 Next
 
@@ -228,7 +228,7 @@ Public Class clsExportProteinsFASTA
     End Function
 
     Function FinalizeFile(ByRef destinationPath As String) As String
-        Dim fingerprint As String = Me.GetFileHash(destinationPath)
+        Dim fingerprint As String = GetFileHash(destinationPath)
 
         Dim fi = New FileInfo(destinationPath)
 
@@ -247,7 +247,7 @@ Public Class clsExportProteinsFASTA
             destinationPath = newDestinationPath
         End If
 
-        Me.OnExportEnd()
+        OnExportEnd()
 
         Return fingerprint
     End Function

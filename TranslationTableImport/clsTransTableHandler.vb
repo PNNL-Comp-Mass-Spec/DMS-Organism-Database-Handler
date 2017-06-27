@@ -37,11 +37,11 @@ Public Class clsTransTableHandler
     Const IDTableName As String = "T_DNA_Translation_Tables"
 
     Public Sub New(PIS_ConnectionString As String)
-        Me.m_ConnectionString = PIS_ConnectionString
+        m_ConnectionString = PIS_ConnectionString
     End Sub
 
     Friend Function GetAllTranslationTableEntries(FilePath As String) As DataTable Implements ITransTableImport.GetAllTranslationTableEntries
-        Me.ScanFileForEntries(FilePath)
+        ScanFileForEntries(FilePath)
 
         ' Not implemented
         Return New DataTable()
@@ -60,13 +60,13 @@ Public Class clsTransTableHandler
 
         Dim dba As TableManipulationBase.IGetSQLData
 
-        dba = New TableManipulationBase.clsDBTask(Me.m_ConnectionString, True)
+        dba = New TableManipulationBase.clsDBTask(m_ConnectionString, True)
 
         Dim EntrySQL As String = "SELECT * FROM " & clsTransTableHandler.EntriesTableName
         Dim entryDA As SqlClient.SqlDataAdapter = New SqlClient.SqlDataAdapter(EntrySQL, dba.Connection)
         Dim entryCB As SqlClient.SqlCommandBuilder = New SqlClient.SqlCommandBuilder(entryDA)
 
-        Me.m_Translation_Entries = dba.GetTable(EntrySQL, entryDA, entryCB)
+        m_Translation_Entries = dba.GetTable(EntrySQL, entryDA, entryCB)
 
 
 
@@ -74,7 +74,7 @@ Public Class clsTransTableHandler
         Dim idDA As SqlClient.SqlDataAdapter = New SqlClient.SqlDataAdapter(idSQL, dba.Connection)
         Dim idCB As SqlClient.SqlCommandBuilder = New SqlClient.SqlCommandBuilder(idDA)
 
-        Me.m_Translation_Tables = dba.GetTable(idSQL, idDA, idCB)
+        m_Translation_Tables = dba.GetTable(idSQL, idDA, idCB)
 
 
 
@@ -97,9 +97,9 @@ Public Class clsTransTableHandler
                             rawEntry.Add(entryLine)
                             entryLine = tr.ReadLine
                         Loop
-                        Me.ProcessTranslationEntry(rawEntry)
-                        entryDA.Update(Me.m_Translation_Entries)
-                        idDA.Update(Me.m_Translation_Tables)
+                        ProcessTranslationEntry(rawEntry)
+                        entryDA.Update(m_Translation_Entries)
+                        idDA.Update(m_Translation_Tables)
                     End If
                     tmpLineCache = tr.ReadLine
                 Else
@@ -116,7 +116,7 @@ Public Class clsTransTableHandler
     End Sub
 
     Private Sub SyncLocalToDMS()
-        Dim dba As TableManipulationBase.IGetSQLData = New TableManipulationBase.clsDBTask(Me.m_ConnectionString)
+        Dim dba As TableManipulationBase.IGetSQLData = New TableManipulationBase.clsDBTask(m_ConnectionString)
 
         Dim dmsDA As SqlClient.SqlDataAdapter = New SqlClient.SqlDataAdapter("SELECT * FROM " & clsTransTableHandler.EntriesTableName, dba.Connection)
         Dim dmsCB As SqlClient.SqlCommandBuilder = New SqlClient.SqlCommandBuilder(dmsDA)
@@ -197,7 +197,7 @@ Public Class clsTransTableHandler
             End Select
         Next
 
-        Dim success As Boolean = Me.SplitCodonEntries(AAList, StartList, Base1List, Base2List, Base3List, nameList, id)
+        Dim success As Boolean = SplitCodonEntries(AAList, StartList, Base1List, Base2List, Base3List, nameList, id)
 
     End Sub
 
@@ -243,17 +243,17 @@ Public Class clsTransTableHandler
         Dim tmpName As String
 
         For Each tmpName In NameList
-            dr = Me.m_Translation_Tables.NewRow
+            dr = m_Translation_Tables.NewRow
             dr.Item("Translation_Table_Name") = tmpName.Trim & " (ID = " & CStr(ID) & ")"
             dr.Item("DNA_Translation_Table_ID") = ID
-            Me.m_Translation_Tables.Rows.Add(dr)
+            m_Translation_Tables.Rows.Add(dr)
         Next
 
 
         Dim arrAA As Char() = AAString.ToCharArray
 
         For Each tmpAA In arrAA
-            dr = Me.m_Translation_Entries.NewRow
+            dr = m_Translation_Entries.NewRow
             counter += 1
             tmpStartString = Mid(StartString, counter, 1)
             If tmpStartString = "M" Then
@@ -273,7 +273,7 @@ Public Class clsTransTableHandler
             dr.Item("Base_3") = Base3
             dr.Item("DNA_Translation_Table_ID") = ID
 
-            Me.m_Translation_Entries.Rows.Add(dr)
+            m_Translation_Entries.Rows.Add(dr)
 
         Next
 

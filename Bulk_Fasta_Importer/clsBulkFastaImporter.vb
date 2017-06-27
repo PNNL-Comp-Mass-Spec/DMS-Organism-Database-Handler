@@ -129,12 +129,12 @@ Public Class clsBulkFastaImporter
         mLocalErrorCode = eBulkImporterErrorCodes.NoError
         mLastProgressTime = DateTime.UtcNow()
 
-        Me.DMSConnectionString = DMS_CONNECTION_STRING
-        Me.ProteinSeqsConnectionString = PROTEINSEQS_CONNECTION_STRING
-        Me.ValidationAllowAllSymbolsInProteinNames = False
-        Me.ValidationAllowAsterisks = True
-        Me.ValidationAllowDash = True
-        Me.ValidationMaxProteinNameLength = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
+        DMSConnectionString = DMS_CONNECTION_STRING
+        ProteinSeqsConnectionString = PROTEINSEQS_CONNECTION_STRING
+        ValidationAllowAllSymbolsInProteinNames = False
+        ValidationAllowAsterisks = True
+        ValidationAllowDash = True
+        ValidationMaxProteinNameLength = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
 
     End Sub
 
@@ -272,7 +272,7 @@ Public Class clsBulkFastaImporter
 
             mAnnotationTypeInfo.Clear()
 
-            Using cn = New SqlConnection(Me.ProteinSeqsConnectionString)
+            Using cn = New SqlConnection(ProteinSeqsConnectionString)
                 cn.Open()
 
                 Using cmd = New SqlCommand(sqlQuery, cn)
@@ -307,7 +307,7 @@ Public Class clsBulkFastaImporter
 
             mOrganismInfo.Clear()
 
-            Using cn = New SqlConnection(Me.DMSConnectionString)
+            Using cn = New SqlConnection(DMSConnectionString)
                 cn.Open()
 
                 Using cmd = New SqlCommand(sqlQuery, cn)
@@ -343,7 +343,7 @@ Public Class clsBulkFastaImporter
 
             mProteinCollectionInfo.Clear()
 
-            Using cn = New SqlConnection(Me.ProteinSeqsConnectionString)
+            Using cn = New SqlConnection(ProteinSeqsConnectionString)
                 cn.Open()
 
                 Using cmd = New SqlCommand(sqlQuery, cn)
@@ -538,7 +538,7 @@ Public Class clsBulkFastaImporter
 
         Try
             Console.WriteLine()
-            If Me.PreviewMode Then
+            If PreviewMode Then
                 ShowMessage("Previewing upload of " & fileInfoList.Count & " file(s)")
                 For Each fileInfo In fileInfoList
                     Console.WriteLine(fileInfo.FileInformation.FullName)

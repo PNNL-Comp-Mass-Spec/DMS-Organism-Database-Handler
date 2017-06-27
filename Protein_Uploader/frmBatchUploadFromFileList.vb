@@ -19,8 +19,8 @@ Public Class frmBatchUploadFromFileList
         OrganismList As DataTable)
 
         MyBase.New()
-        Me.m_AnnotationTypeList = AnnotationTypeList
-        Me.m_OrganismList = OrganismList
+        m_AnnotationTypeList = AnnotationTypeList
+        m_OrganismList = OrganismList
 
         'This call is required by the Windows Form Designer.
         InitializeComponent()
@@ -43,7 +43,7 @@ Public Class frmBatchUploadFromFileList
     Private components As System.ComponentModel.IContainer
 
     'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.  
+    'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
     'Friend WithEvents lvwNewNames As ListView
     Friend WithEvents cmdUploadFiles As Button

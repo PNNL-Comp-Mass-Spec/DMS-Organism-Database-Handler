@@ -14,19 +14,19 @@ Friend Class clsFileCreationOptions
     Private m_KeywordTable As DataTable
 
     Sub New(PSConnectionString As String)
-        Me.m_PSConnectionString = PSConnectionString
-        Me.m_TableGetter = New clsDBTask(Me.m_PSConnectionString, True)
+        m_PSConnectionString = PSConnectionString
+        m_TableGetter = New clsDBTask(m_PSConnectionString, True)
     End Sub
 
     ReadOnly Property SequenceDirection() As IGetFASTAFromDMS.SequenceTypes
         Get
-            Return Me.m_SeqDirection
+            Return m_SeqDirection
         End Get
     End Property
 
     ReadOnly Property FileFormatType() As IGetFASTAFromDMS.DatabaseFormatTypes
         Get
-            Return Me.m_FileType
+            Return m_FileType
         End Get
     End Property
     'Options string looks like... "seq_direction=forward;filetype=fasta"
@@ -55,16 +55,16 @@ Friend Class clsFileCreationOptions
         'valuesTableSQL = "SELECT Value_ID, Value_String, Keyword_ID FROM T_Creation_Option_Values"
         creationValuesSQL = "SELECT Keyword, Value_String, String_Element FROM V_Creation_String_Lookup"
 
-        If Me.m_KeywordTable Is Nothing Then
-            Me.m_KeywordTable = Me.m_TableGetter.GetTable(keywordTableSQL)
+        If m_KeywordTable Is Nothing Then
+            m_KeywordTable = m_TableGetter.GetTable(keywordTableSQL)
         End If
 
-        'If Me.m_ValuesTable Is Nothing Then
-        '    Me.m_ValuesTable = Me.m_TableGetter.GetTable(valuesTableSQL)
+        'If m_ValuesTable Is Nothing Then
+        '    m_ValuesTable = m_TableGetter.GetTable(valuesTableSQL)
         'End If
 
-        If Me.m_CreationValuesTable Is Nothing Then
-            Me.m_CreationValuesTable = Me.m_TableGetter.GetTable(creationValuesSQL)
+        If m_CreationValuesTable Is Nothing Then
+            m_CreationValuesTable = m_TableGetter.GetTable(creationValuesSQL)
         End If
 
         'optionsStringParser = New System.Text.RegularExpressions.Regex(
@@ -80,14 +80,14 @@ Friend Class clsFileCreationOptions
             tmpValue = m.Groups("value").Value
 
             'Check for valid keyword/value pair
-            foundRows = Me.m_CreationValuesTable.Select("Keyword = '" & tmpKeyword & "' AND Value_String = '" & tmpValue & "'")
+            foundRows = m_CreationValuesTable.Select("Keyword = '" & tmpKeyword & "' AND Value_String = '" & tmpValue & "'")
             If foundRows.Length < 1 Then
                 'check if keyword or value is bad
                 errorString = New StringBuilder
-                checkRows = Me.m_CreationValuesTable.Select("Keyword = '" & tmpKeyword)
+                checkRows = m_CreationValuesTable.Select("Keyword = '" & tmpKeyword)
                 If checkRows.Length > 0 Then validKeyword = True
 
-                checkRows = Me.m_CreationValuesTable.Select("Value_String = '" & tmpValue & "'")
+                checkRows = m_CreationValuesTable.Select("Value_String = '" & tmpValue & "'")
                 If checkRows.Length > 0 Then validValue = True
 
                 If Not validKeyword Then
@@ -110,7 +110,7 @@ Friend Class clsFileCreationOptions
         Next
 
         'parse hashtable into canonical options string for return
-        foundRows = Me.m_KeywordTable.Select("", "Keyword_ID ASC")
+        foundRows = m_KeywordTable.Select("", "Keyword_ID ASC")
         For Each dr In foundRows
             If cleanOptionsString.ToString.Length > 0 Then
                 cleanOptionsString.Append(",")
@@ -126,27 +126,12 @@ Friend Class clsFileCreationOptions
 
             Select Case tmpKeyword
                 Case "seq_direction"
-                    'Select Case tmpValue
-                    '    Case "forward"
-                    '        Me.m_SeqDirection = ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward
-                    '    Case "reversed"
-                    '        Me.m_SeqDirection = ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.reversed
-                    '    Case "scrambled"
-                    '        Me.m_SeqDirection = ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.scrambled
-                    'End Select
-                    Me.m_SeqDirection = DirectCast([Enum].Parse(GetType(IGetFASTAFromDMS.SequenceTypes), tmpValue),
-                     IGetFASTAFromDMS.SequenceTypes)
+                    m_SeqDirection = DirectCast([Enum].Parse(GetType(IGetFASTAFromDMS.SequenceTypes), tmpValue),
+                        IGetFASTAFromDMS.SequenceTypes)
+
                 Case "filetype"
-
-                    Me.m_FileType = DirectCast([Enum].Parse(GetType(IGetFASTAFromDMS.DatabaseFormatTypes), tmpValue),
-                     IGetFASTAFromDMS.DatabaseFormatTypes)
-
-                    'Select Case tmpValue
-                    '    Case "fasta"
-                    '        Me.m_FileType = ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.FASTA
-                    '    Case "fastapro"
-                    '        Me.m_FileType = ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.FASTAPro
-                    'End Select
+                    m_FileType = DirectCast([Enum].Parse(GetType(IGetFASTAFromDMS.DatabaseFormatTypes), tmpValue),
+                        IGetFASTAFromDMS.DatabaseFormatTypes)
             End Select
 
             With cleanOptionsString
@@ -163,7 +148,7 @@ Friend Class clsFileCreationOptions
 
     Function MakeCreationOptionsString(
         seqDirection As IGetFASTAFromDMS.SequenceTypes,
-        DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes) As String
+        databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes) As String
 
         Dim creationOptionsSB As New StringBuilder
 
@@ -172,7 +157,7 @@ Friend Class clsFileCreationOptions
             .Append(seqDirection.ToString)
             .Append(",")
             .Append("filetype=")
-            .Append(DatabaseFormatType.ToString)
+            .Append(databaseFormatType.ToString)
         End With
 
         Return creationOptionsSB.ToString

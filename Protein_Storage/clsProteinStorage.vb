@@ -10,22 +10,22 @@ Public Class clsProteinStorage
     Private m_PassPhrase As String
 
     Public Sub New(fastaFileName As String)
-        Me.FileName = fastaFileName
+        FileName = fastaFileName
         m_Proteins = New Dictionary(Of String, IProteinStorageEntry)
     End Sub
 
     Protected Sub AddProtein(proteinEntry As IProteinStorageEntry) Implements IProteinStorage.AddProtein
-        If Me.m_ProteinNames Is Nothing Then
-            Me.m_ProteinNames = New SortedSet(Of String)
+        If m_ProteinNames Is Nothing Then
+            m_ProteinNames = New SortedSet(Of String)
         End If
 
         If Not m_Proteins.ContainsKey(proteinEntry.Reference) Then
             m_Proteins.Add(proteinEntry.Reference, proteinEntry)
-            Me.m_ProteinNames.Add(proteinEntry.Reference)
-            Me.m_ResidueCount += proteinEntry.Sequence.Length
+            m_ProteinNames.Add(proteinEntry.Reference)
+            m_ResidueCount += proteinEntry.Sequence.Length
         Else
             proteinEntry.SetReferenceName(proteinEntry.Reference + "_dup_" + proteinEntry.SHA1Hash.Substring(1, 10))
-            Me.AddProtein(proteinEntry)
+            AddProtein(proteinEntry)
             'flag with some kinda error so we can check out the duplicate entry and rename it
         End If
     End Sub
@@ -44,7 +44,7 @@ Public Class clsProteinStorage
     End Function
 
     Protected Function SortedProteinNameList() As SortedSet(Of String) Implements IProteinStorage.GetSortedProteinNames
-        Return Me.m_ProteinNames
+        Return m_ProteinNames
     End Function
 
     Protected Sub ClearProteins() Implements IProteinStorage.ClearProteinEntries
@@ -55,7 +55,7 @@ Public Class clsProteinStorage
 
     Protected ReadOnly Property TotalResidueCount() As Integer Implements IProteinStorage.TotalResidueCount
         Get
-            Return Me.m_ResidueCount
+            Return m_ResidueCount
         End Get
     End Property
 
@@ -70,13 +70,13 @@ Public Class clsProteinStorage
     Protected Property PassPhrase() As String Implements IProteinStorage.PassPhrase
         Get
             If EncryptSequences Then
-                Return Me.m_PassPhrase
+                Return m_PassPhrase
             Else
                 Return Nothing
             End If
         End Get
         Set(Value As String)
-            Me.m_PassPhrase = Value
+            m_PassPhrase = Value
         End Set
     End Property
 

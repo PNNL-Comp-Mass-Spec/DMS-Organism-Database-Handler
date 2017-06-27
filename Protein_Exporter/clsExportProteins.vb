@@ -12,7 +12,7 @@ Public MustInherit Class clsExportProteins
     Protected m_ExportComponent As clsGetFASTAFromDMSForward
 
     Public Sub New(ByRef ExportComponent As clsGetFASTAFromDMSForward)
-        Me.m_ExportComponent = ExportComponent
+        m_ExportComponent = ExportComponent
     End Sub
 
     Protected Event ExportStart(taskTitle As String) Implements IExportProteins.ExportStart

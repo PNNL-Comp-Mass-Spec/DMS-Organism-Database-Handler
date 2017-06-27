@@ -34,20 +34,22 @@ Public Class clsGetFASTAFromDMSForward
     Protected m_RijndaelDecryption As clsRijndaelEncryptionHandler
 
     Public Sub New(
-     ProteinStorageConnectionString As String,
-     DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
+     dbConnectionString As String,
+     databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
 
-        Me.m_TableGrabber = New clsDBTask(ProteinStorageConnectionString, True)
-        Me.m_AllCollections = Me.GetCollectionNameList()
-        Me.m_OrganismList = Me.GetOrganismList()
+        Dim persistConnection = Not String.IsNullOrWhiteSpace(dbConnectionString)
 
-        Select Case DatabaseFormatType
+        m_TableGrabber = New clsDBTask(dbConnectionString, persistConnection)
+        m_AllCollections = GetCollectionNameList()
+        m_OrganismList = GetOrganismList()
+
+        Select Case databaseFormatType
             Case IGetFASTAFromDMS.DatabaseFormatTypes.fasta
-                Me.m_fileDumper = New clsExportProteinsFASTA(Me)
-                Me.m_Extension = ".fasta"
+                m_fileDumper = New clsExportProteinsFASTA(Me)
+                m_Extension = ".fasta"
             Case IGetFASTAFromDMS.DatabaseFormatTypes.fastapro
-                Me.m_fileDumper = New clsExportProteinsXTFASTA(Me)
-                Me.m_Extension = ".fasta.pro"
+                m_fileDumper = New clsExportProteinsXTFASTA(Me)
+                m_Extension = ".fasta.pro"
         End Select
 
     End Sub
@@ -59,16 +61,16 @@ Public Class clsGetFASTAFromDMSForward
 
     Property FullOutputPath() As String
         Get
-            Return Me.m_CurrentFullOutputPath
+            Return m_CurrentFullOutputPath
         End Get
         Set(Value As String)
-            Me.m_CurrentFullOutputPath = Value
+            m_CurrentFullOutputPath = Value
         End Set
     End Property
 
     ReadOnly Property ArchivalName() As String
         Get
-            Return Me.m_CurrentArchiveFileName
+            Return m_CurrentArchiveFileName
         End Get
     End Property
 
@@ -76,7 +78,7 @@ Public Class clsGetFASTAFromDMSForward
        destinationFolderPath As String,
        proteinCollectionName As String) As String
 
-        Return Path.Combine(destinationFolderPath, proteinCollectionName + Me.m_Naming_Suffix + Me.m_Extension)
+        Return Path.Combine(destinationFolderPath, proteinCollectionName + m_Naming_Suffix + m_Extension)
 
     End Function
 
@@ -140,7 +142,7 @@ Public Class clsGetFASTAFromDMSForward
 
         ' Check each collectionname for encryption of contents
         For Each nameString As String In protCollectionList
-            encCheckRows = Me.m_CollectionsCache.Select("Filename = '" & nameString & "' AND Contents_Encrypted > 0")
+            encCheckRows = m_CollectionsCache.Select("Filename = '" & nameString & "' AND Contents_Encrypted > 0")
 
             If encCheckRows.Length > 0 Then
                 'Determine the encrypted collections to which this user has access
@@ -148,14 +150,14 @@ Public Class clsGetFASTAFromDMSForward
                   "FROM V_Encrypted_Collection_Authorizations " &
                   "WHERE Login_Name = '" & user_ID & "'"
 
-                authorizationTable = Me.m_TableGrabber.GetTable(authorizationSQL)
+                authorizationTable = m_TableGrabber.GetTable(authorizationSQL)
                 authCheckRows = authorizationTable.Select("Protein_Collection_Name = '" & nameString & "' OR Protein_Collection_Name = 'Administrator'")
                 If authCheckRows.Length > 0 Then
-                    tmpID = Me.FindIDByName(nameString)
+                    tmpID = FindIDByName(nameString)
                     passPhraseSQL = "SELECT Passphrase " &
                      "FROM T_Encrypted_Collection_Passphrases " &
                      "WHERE Protein_Collection_ID = " & tmpID.ToString
-                    passPhraseTable = Me.m_TableGrabber.GetTable(passPhraseSQL)
+                    passPhraseTable = m_TableGrabber.GetTable(passPhraseSQL)
 
                     If collectionPassphrases Is Nothing Then
                         collectionPassphrases = New Hashtable
@@ -227,7 +229,7 @@ Public Class clsGetFASTAFromDMSForward
             lengthCheckSQL = "SELECT NumProteins FROM T_Protein_Collections " &
               "WHERE FileName = '" & ProteinCollectionName & "'"
 
-            lengthCheckTable = Me.m_TableGrabber.GetTable(lengthCheckSQL)
+            lengthCheckTable = m_TableGrabber.GetTable(lengthCheckSQL)
 
             If lengthCheckTable.Rows.Count > 0 Then
                 foundrow = lengthCheckTable.Rows(0)
@@ -241,7 +243,7 @@ Public Class clsGetFASTAFromDMSForward
                 sectionEnd = sectionStart + 10000
 
                 If PadWithPrimaryAnnotation Then
-                    tmpID = Me.FindIDByName(trueName)
+                    tmpID = FindIDByName(trueName)
                     collectionSQL =
                      "SELECT Name, Description, Sequence, Protein_ID " &
                      "FROM V_Protein_Database_Export " &
@@ -261,15 +263,15 @@ Public Class clsGetFASTAFromDMSForward
                 End If
 
 
-                collectionTable = Me.m_TableGrabber.GetTable(collectionSQL)
+                collectionTable = m_TableGrabber.GetTable(collectionSQL)
 
                 If Not collectionPassphrases Is Nothing Then
                     If collectionPassphrases.ContainsKey(trueName) Then
 
-                        Me.m_RijndaelDecryption = New clsRijndaelEncryptionHandler(collectionPassphrases.Item(trueName).ToString)
+                        m_RijndaelDecryption = New clsRijndaelEncryptionHandler(collectionPassphrases.Item(trueName).ToString)
                         For Each decryptionRow In collectionTable.Rows
                             cipherSeq = decryptionRow.Item("Sequence").ToString
-                            clearSeq = Me.m_RijndaelDecryption.Decrypt(cipherSeq)
+                            clearSeq = m_RijndaelDecryption.Decrypt(cipherSeq)
                             decryptionRow.Item("Sequence") = clearSeq
                             decryptionRow.AcceptChanges()
                         Next
@@ -284,10 +286,10 @@ Public Class clsGetFASTAFromDMSForward
 
                 collectionTable.TableName = tableName
 
-                Me.m_CurrentFileProteinCount = collectionTable.Rows.Count
+                m_CurrentFileProteinCount = collectionTable.Rows.Count
 
                 'collection.Tables.Add(collectionTable)
-                Me.m_fileDumper.Export(collectionTable, tmpOutputPath)
+                m_fileDumper.Export(collectionTable, tmpOutputPath)
 
 
                 currentCollectionPos = sectionEnd + 1
@@ -320,7 +322,7 @@ Public Class clsGetFASTAFromDMSForward
         Dim name As String '= hash
 
         If protCollectionList.Count > 1 Then
-            name = tmpIDListSB.ToString
+            name = tmpIDListSB.ToString()
             If destinationFolderPath.Length + name.Length > 225 Then
                 ' If exporting a large number of protein collections, name can be very long
                 ' This can lead to error: The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters
@@ -343,17 +345,17 @@ Public Class clsGetFASTAFromDMSForward
             name = trueName
         End If
 
-        Me.m_CurrentFullOutputPath = Me.ExtendedExportPath(destinationFolderPath, name)
-        Me.m_CurrentArchiveFileName = name
+        m_CurrentFullOutputPath = ExtendedExportPath(destinationFolderPath, name)
+        m_CurrentArchiveFileName = name
 
         ' Rename (move) the temporary file to the final, full name
-        If File.Exists(Me.m_CurrentFullOutputPath) Then
-            File.Delete(Me.m_CurrentFullOutputPath)
+        If File.Exists(m_CurrentFullOutputPath) Then
+            File.Delete(m_CurrentFullOutputPath)
         End If
-        tmpFI.MoveTo(Me.m_CurrentFullOutputPath)
+        tmpFI.MoveTo(m_CurrentFullOutputPath)
 
         ' Assuming the final file now exists, delete the temporary file (if present)
-        Dim outputfi = New FileInfo(Me.m_CurrentFullOutputPath)
+        Dim outputfi = New FileInfo(m_CurrentFullOutputPath)
         If outputfi.Exists Then
             tmpFI = New FileInfo(tmpOutputPath)
             If tmpFI.Exists Then
@@ -363,9 +365,9 @@ Public Class clsGetFASTAFromDMSForward
 
         ' Determine the CRC32 hash of the output file
         ' This process will also rename the file, e.g. from "C:\Temp\SAR116_RBH_AA_012809_forward.fasta" to "C:\Temp\38FFACAC.fasta"
-        Dim crc32Hash = Me.m_fileDumper.Export(New DataTable, Me.m_CurrentFullOutputPath)
+        Dim crc32Hash = m_fileDumper.Export(New DataTable, m_CurrentFullOutputPath)
 
-        Me.OnExportComplete(m_CurrentFullOutputPath)
+        OnExportComplete(m_CurrentFullOutputPath)
 
         Return crc32Hash
 
@@ -384,8 +386,7 @@ Public Class clsGetFASTAFromDMSForward
         Dim primaryAuthorityID = 1
         Const PadWithPrimaryAnnotation = True
 
-        Return Me.ExportFASTAFile(protCollectionList,
-                                  destinationFolderPath, primaryAuthorityID, PadWithPrimaryAnnotation)
+        Return ExportFASTAFile(protCollectionList, destinationFolderPath, primaryAuthorityID, PadWithPrimaryAnnotation)
 
 
     End Function
@@ -394,7 +395,7 @@ Public Class clsGetFASTAFromDMSForward
         Dim name As String
         Dim id As Integer
         For Each name In protCollectionList
-            id = Me.FindIDByName(name)
+            id = FindIDByName(name)
             If id < 1 Then
                 Throw New Exception("The collection named '" + name + "' does not exist in the system")
             End If
@@ -405,37 +406,37 @@ Public Class clsGetFASTAFromDMSForward
     Protected Function GetPrimaryAuthorityID(proteinCollectionID As Integer) As Integer
         Dim foundrows() As DataRow
 
-        foundrows = Me.m_CollectionsCache.Select("Protein_Collection_ID = " & proteinCollectionID.ToString)
+        foundrows = m_CollectionsCache.Select("Protein_Collection_ID = " & proteinCollectionID.ToString)
 
         Return CInt(foundrows(0).Item("Primary_Annotation_Type_ID"))
     End Function
 
     Protected Function GetPrimaryAuthorityID(proteinCollectionName As String) As Integer
-        Dim proteinCollectionID As Integer = Me.FindIDByName(proteinCollectionName)
-        Return Me.GetPrimaryAuthorityID(proteinCollectionID)
+        Dim proteinCollectionID As Integer = FindIDByName(proteinCollectionName)
+        Return GetPrimaryAuthorityID(proteinCollectionID)
     End Function
 
     Function GetCollectionNameList() As Hashtable 'Implements IGetFASTAFromDMS.GetAllCollections
-        If Me.m_CollectionsCache Is Nothing Then
-            Me.RefreshCollectionCache()
+        If m_CollectionsCache Is Nothing Then
+            RefreshCollectionCache()
         End If
 
-        Return Me.m_TableGrabber.DataTableToHashtable(Me.m_CollectionsCache, "Protein_Collection_ID", "FileName")
+        Return m_TableGrabber.DataTableToHashtable(m_CollectionsCache, "Protein_Collection_ID", "FileName")
     End Function
 
     Function GetCollectionsByOrganism(OrganismID As Integer) As Hashtable
-        If Me.m_CollectionsCache Is Nothing Then
-            Me.RefreshCollectionCache()
+        If m_CollectionsCache Is Nothing Then
+            RefreshCollectionCache()
         End If
 
-        Return Me.m_TableGrabber.DataTableToHashtable(Me.m_CollectionsCache, "Protein_Collection_ID", "FileName", "[Organism_ID] = " & OrganismID.ToString)
+        Return m_TableGrabber.DataTableToHashtable(m_CollectionsCache, "Protein_Collection_ID", "FileName", "[Organism_ID] = " & OrganismID.ToString)
     End Function
 
     Function GetCollectionsByOrganismTable(OrganismID As Integer) As DataTable
-        Dim tmpTable As DataTable = Me.m_CollectionsCache.Clone
+        Dim tmpTable As DataTable = m_CollectionsCache.Clone
 
         Dim dr As DataRow
-        Dim foundRows() As DataRow = Me.m_CollectionsCache.Select("[Organism_ID] = " & OrganismID.ToString)
+        Dim foundRows() As DataRow = m_CollectionsCache.Select("[Organism_ID] = " & OrganismID.ToString)
 
         For Each dr In foundRows
             tmpTable.ImportRow(dr)
@@ -445,28 +446,28 @@ Public Class clsGetFASTAFromDMSForward
     End Function
 
     Function GetOrganismList() As Hashtable
-        If Me.m_OrganismCache Is Nothing Then
-            Me.RefreshOrganismCache()
+        If m_OrganismCache Is Nothing Then
+            RefreshOrganismCache()
         End If
 
-        Return Me.m_TableGrabber.DataTableToHashtable(Me.m_OrganismCache, "Organism_ID", "Name")
+        Return m_TableGrabber.DataTableToHashtable(m_OrganismCache, "Organism_ID", "Name")
     End Function
 
     Function GetOrganismListTable() As DataTable
-        If Me.m_OrganismCache Is Nothing Then
-            Me.RefreshOrganismCache()
+        If m_OrganismCache Is Nothing Then
+            RefreshOrganismCache()
         End If
 
-        Return Me.m_OrganismCache
+        Return m_OrganismCache
     End Function
 
     Protected Sub RefreshCollectionCache()
-        Me.m_CollectionsCache = Me.m_TableGrabber.GetTable(
+        m_CollectionsCache = m_TableGrabber.GetTable(
          "SELECT * FROM V_Protein_Collections_By_Organism ORDER BY Protein_Collection_ID")
     End Sub
 
     Protected Sub RefreshOrganismCache()
-        Me.m_OrganismCache = Me.m_TableGrabber.GetTable(
+        m_OrganismCache = m_TableGrabber.GetTable(
          "SELECT ID as Organism_ID, Short_Name as Name FROM V_Organism_Picker ORDER BY Organism_ID")
     End Sub
 
@@ -479,10 +480,10 @@ Public Class clsGetFASTAFromDMSForward
 
         ' Make sure there are no leading or trailing spaces
         CollectionName = CollectionName.Trim()
-        foundRows = Me.m_CollectionsCache.Select("[FileName] = '" & CollectionName & "'")
+        foundRows = m_CollectionsCache.Select("[FileName] = '" & CollectionName & "'")
         If foundRows.Length = 0 Then
-            Me.RefreshCollectionCache()
-            foundRows = Me.m_CollectionsCache.Select("[FileName] = '" & CollectionName & "'")
+            RefreshCollectionCache()
+            foundRows = m_CollectionsCache.Select("[FileName] = '" & CollectionName & "'")
         End If
         Dim id As Integer
         Try
@@ -495,16 +496,16 @@ Public Class clsGetFASTAFromDMSForward
 
     Function FindNameByID(CollectionID As Integer) As String
         Dim foundrows() As DataRow
-        foundrows = Me.m_CollectionsCache.Select("Protein_Collection_ID = " & CollectionID.ToString)
+        foundrows = m_CollectionsCache.Select("Protein_Collection_ID = " & CollectionID.ToString)
         If foundrows.Length = 0 Then
-            Me.RefreshCollectionCache()
-            foundrows = Me.m_CollectionsCache.Select("Protein_Collection_ID = " & CollectionID.ToString)
+            RefreshCollectionCache()
+            foundrows = m_CollectionsCache.Select("Protein_Collection_ID = " & CollectionID.ToString)
         End If
         Return foundrows(0).Item("FileName").ToString
     End Function
 
     Protected Function FindPrimaryAnnotationID(collectionID As Integer) As Integer
-        Dim foundRows() As DataRow = Me.m_CollectionsCache.Select("Protein_Collection_ID = " & collectionID.ToString)
+        Dim foundRows() As DataRow = m_CollectionsCache.Select("Protein_Collection_ID = " & collectionID.ToString)
         Return CInt(foundRows(0).Item("Primary_Annotation_Type_ID"))
     End Function
 
@@ -515,18 +516,18 @@ Public Class clsGetFASTAFromDMSForward
     ''' <returns>File hash</returns>
     Function GetFileHash(FullFilePath As String) As String
 
-        Return Me.m_fileDumper.GenerateFileAuthenticationHash(FullFilePath)
+        Return m_fileDumper.GenerateFileAuthenticationHash(FullFilePath)
 
     End Function
 
     Function GetStoredHash(ProteinCollectionName As String) As String
-        Dim foundRows() As DataRow = Me.m_CollectionsCache.Select("[FileName] = '" & ProteinCollectionName & "'")
+        Dim foundRows() As DataRow = m_CollectionsCache.Select("[FileName] = '" & ProteinCollectionName & "'")
         Return CStr(foundRows(0).Item("Authentication_Hash"))
     End Function
 
     Function GetStoredHash(ProteinCollectionID As Integer) As String
-        Dim ProteinCollectionName = CStr(Me.m_AllCollections.Item(ProteinCollectionID))
-        Return Me.GetStoredHash(ProteinCollectionName)
+        Dim ProteinCollectionName = CStr(m_AllCollections.Item(ProteinCollectionID))
+        Return GetStoredHash(ProteinCollectionName)
     End Function
 
     Protected Sub OnExportStart(taskMsg As String) Handles m_fileDumper.ExportStart

@@ -33,7 +33,7 @@ Public Class SequenceInfoCalculator
 
     Public Sub New()
         If m_AminoAcids Is Nothing Then
-            Me.InitializeFromDMS()
+            InitializeFromDMS()
         End If
 
         If m_SHA1Provider Is Nothing Then
@@ -46,31 +46,31 @@ Public Class SequenceInfoCalculator
 
     Public ReadOnly Property MonoIsotopicMass As Double Implements ICalculateSeqInfo.MonoIsotopicMass
         Get
-            Return Me.m_MonoIsotopicMass
+            Return m_MonoIsotopicMass
         End Get
     End Property
 
     Public ReadOnly Property AverageMass As Double Implements ICalculateSeqInfo.AverageMass
         Get
-            Return Me.m_AverageMass
+            Return m_AverageMass
         End Get
     End Property
 
     Public ReadOnly Property SequenceLength As Integer Implements ICalculateSeqInfo.SequenceLength
         Get
-            Return Me.m_Length
+            Return m_Length
         End Get
     End Property
 
     Public ReadOnly Property MolecularFormula As String Implements ICalculateSeqInfo.MolecularFormula
         Get
-            Return Me.m_MolFormula
+            Return m_MolFormula
         End Get
     End Property
 
     Public ReadOnly Property SHA1Hash As String Implements ICalculateSeqInfo.SHA1Hash
         Get
-            Return Me.m_SHA1Hash
+            Return m_SHA1Hash
         End Get
     End Property
 
@@ -80,11 +80,11 @@ Public Class SequenceInfoCalculator
     Public Sub CalculateSequenceInfo(Sequence As String) Implements ICalculateSeqInfo.CalculateSequenceInfo
         Dim tmpSeqInfo As SequenceInfo
         tmpSeqInfo = SequenceInfo(Sequence)
-        Me.m_MonoIsotopicMass = tmpSeqInfo.MonoisotopicMass
-        Me.m_AverageMass = tmpSeqInfo.AverageMass
-        Me.m_MolFormula = tmpSeqInfo.MolecularFormula
-        Me.m_Length = Sequence.Length
-        Me.m_SHA1Hash = Me.GenerateHash(Sequence)
+        m_MonoIsotopicMass = tmpSeqInfo.MonoisotopicMass
+        m_AverageMass = tmpSeqInfo.AverageMass
+        m_MolFormula = tmpSeqInfo.MolecularFormula
+        m_Length = Sequence.Length
+        m_SHA1Hash = GenerateHash(Sequence)
 
     End Sub
 
@@ -138,7 +138,7 @@ Public Class SequenceInfoCalculator
         Dim tmpMM As Double
         Dim tmpAM As Double
 
-        getSQL = New clsDBTask(Me.m_DMSConnectionString)
+        getSQL = New clsDBTask(m_DMSConnectionString)
 
         Dim sqlString = "SELECT * FROM T_Residues WHERE [Num_C] > 0"
         Dim tmpAATable As DataTable = getSQL.GetTable(sqlString)
@@ -180,7 +180,7 @@ Public Class SequenceInfoCalculator
 
         Public ReadOnly Property Symbol As String
             Get
-                Return Me.Sequence
+                Return Sequence
             End Get
         End Property
 
@@ -212,12 +212,12 @@ Public Class SequenceInfo
     Private m_Average_Mass As Double
     Private m_Monoisotopic_Mass As Double
 
-    Public Sub New(seq As String, name As String,
+    Public Sub New(seq As String, seqName As String,
                     C_Count As Integer, H_Count As Integer, N_Count As Integer, O_Count As Integer, S_Count As Integer,
                     average As Double, monoisotopic As Double)
 
         m_sequence = seq
-        Me.Name = name
+        Name = seqName
         m_C_Count = C_Count
         m_H_Count = H_Count
         m_N_Count = N_Count
@@ -235,19 +235,19 @@ Public Class SequenceInfo
     End Property
 
     Public Sub Invalidate()
-        Me.m_invalidated = True
-        Me.m_Average_Mass = 0
-        Me.m_C_Count = 0
-        Me.m_H_Count = 0
-        Me.m_Monoisotopic_Mass = 0
-        Me.m_N_Count = 0
-        Me.m_O_Count = 0
-        Me.m_S_Count = 0
+        m_invalidated = True
+        m_Average_Mass = 0
+        m_C_Count = 0
+        m_H_Count = 0
+        m_Monoisotopic_Mass = 0
+        m_N_Count = 0
+        m_O_Count = 0
+        m_S_Count = 0
     End Sub
 
     Public ReadOnly Property Invalidated As Boolean
         Get
-            Return Me.m_invalidated
+            Return m_invalidated
         End Get
     End Property
 
@@ -285,13 +285,13 @@ Public Class SequenceInfo
 
     Public ReadOnly Property AverageMass As Double
         Get
-            Return Me.m_Average_Mass + 18.01528
+            Return m_Average_Mass + 18.01528
         End Get
     End Property
 
     Public ReadOnly Property MonoisotopicMass As Double
         Get
-            Return Me.m_Monoisotopic_Mass + 18.0105633
+            Return m_Monoisotopic_Mass + 18.0105633
         End Get
     End Property
 
@@ -302,25 +302,25 @@ Public Class SequenceInfo
     End Property
 
     Private Function GetMolecularFormula() As String
-        Dim mf As String = "C" & Me.m_C_Count & " H" & Me.m_H_Count & " N" & Me.m_N_Count & " O" & Me.m_O_Count & " S" & Me.m_S_Count
+        Dim mf As String = "C" & m_C_Count & " H" & m_H_Count & " N" & m_N_Count & " O" & m_O_Count & " S" & m_S_Count
         Return mf
     End Function
 
     Public Sub AddSequenceInfo(info As SequenceInfo)
 
-        If Me.m_sequence.Length = 0 Then
-            Me.m_H_Count = 2
-            Me.m_O_Count = 1
+        If m_sequence.Length = 0 Then
+            m_H_Count = 2
+            m_O_Count = 1
         End If
-        Me.m_sequence = Me.m_sequence & info.Sequence
-        If Not (Me.m_invalidated) Then
-            Me.m_C_Count = Me.m_C_Count + info.C_Count
-            Me.m_H_Count = Me.m_H_Count + info.H_Count
-            Me.m_N_Count = Me.m_N_Count + info.N_Count
-            Me.m_O_Count = Me.m_O_Count + info.O_Count
-            Me.m_S_Count = Me.m_S_Count + info.S_Count
-            Me.m_Monoisotopic_Mass = Me.m_Monoisotopic_Mass + info.m_Monoisotopic_Mass
-            Me.m_Average_Mass = Me.m_Average_Mass + info.m_Average_Mass
+        m_sequence = m_sequence & info.Sequence
+        If Not (m_invalidated) Then
+            m_C_Count = m_C_Count + info.C_Count
+            m_H_Count = m_H_Count + info.H_Count
+            m_N_Count = m_N_Count + info.N_Count
+            m_O_Count = m_O_Count + info.O_Count
+            m_S_Count = m_S_Count + info.S_Count
+            m_Monoisotopic_Mass = m_Monoisotopic_Mass + info.m_Monoisotopic_Mass
+            m_Average_Mass = m_Average_Mass + info.m_Average_Mass
         End If
     End Sub
 End Class

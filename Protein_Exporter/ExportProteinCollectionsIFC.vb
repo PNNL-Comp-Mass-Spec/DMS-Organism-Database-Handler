@@ -42,15 +42,15 @@ Namespace ExportProteinCollectionsIFC
         Function GetCollectionsByOrganismTable(OrganismID As Integer) As DataTable
 
         Function ExportFASTAFile(
-            ProteinCollectionID As Integer,
+            proteinCollectionID As Integer,
             destinationFolderPath As String,
-            DatabaseFormatType As DatabaseFormatTypes,
-            OutputSequenceType As SequenceTypes) As String
+            databaseFormatType As DatabaseFormatTypes,
+            outputSequenceType As SequenceTypes) As String
 
         Function ExportFASTAFile(
             protCollectionList As String,
-            CreationOptions As String,
-            LegacyFASTAFileName As String,
+            creationOptions As String,
+            legacyFASTAFileName As String,
             destinationFolderPath As String) As String
 
         Function GenerateFileAuthenticationHash(FullFilePath As String) As String

@@ -25,68 +25,68 @@ Public MustInherit Class clsArchiveOutputFilesBase
 
     Sub New(PSConnectionString As String, ByRef ExporterModule As clsGetFASTAFromDMS)
 
-        Me.m_PSConnectionString = PSConnectionString
-        Me.m_TableGetter = New clsDBTask(PSConnectionString, True)
-        Me.m_Exporter = ExporterModule.ExporterComponent
+        m_PSConnectionString = PSConnectionString
+        m_TableGetter = New clsDBTask(PSConnectionString, True)
+        m_Exporter = ExporterModule.ExporterComponent
     End Sub
 
     Protected ReadOnly Property LastErrorMessage() As String Implements IArchiveOutputFiles.LastErrorMessage
         Get
-            Return Me.m_LastError
+            Return m_LastError
         End Get
     End Property
 
     Protected ReadOnly Property Archived_File_Name() As String Implements IArchiveOutputFiles.Archived_File_Name
         Get
-            Return Me.m_Archived_File_Name
+            Return m_Archived_File_Name
         End Get
     End Property
 
 
     Protected Function ArchiveCollection(
-        ProteinCollectionID As Integer,
-        ArchivedFileType As IArchiveOutputFiles.CollectionTypes,
-        OutputSequenceType As IGetFASTAFromDMS.SequenceTypes,
-        DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
-        SourceFilePath As String,
-        CreationOptionsString As String,
-        Authentication_Hash As String,
-        ProteinCollectionList As String) As Integer Implements IArchiveOutputFiles.ArchiveCollection
+        proteinCollectionID As Integer,
+        archivedFileType As IArchiveOutputFiles.CollectionTypes,
+        outputSequenceType As IGetFASTAFromDMS.SequenceTypes,
+        databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
+        sourceFilePath As String,
+        creationOptionsString As String,
+        authentication_Hash As String,
+        proteinCollectionList As String) As Integer Implements IArchiveOutputFiles.ArchiveCollection
 
-        Me.OnArchiveStart()
+        OnArchiveStart()
 
-        Return Me.DispositionFile(
-            ProteinCollectionID,
-            SourceFilePath,
-            CreationOptionsString,
-            Authentication_Hash,
-            OutputSequenceType,
-            ArchivedFileType,
-            ProteinCollectionList)
+        Return DispositionFile(
+            proteinCollectionID,
+            sourceFilePath,
+            creationOptionsString,
+            authentication_Hash,
+            outputSequenceType,
+            archivedFileType,
+            proteinCollectionList)
 
     End Function
 
     Protected Function ArchiveCollection(
-        ProteinCollectionName As String,
-        ArchivedFileType As IArchiveOutputFiles.CollectionTypes,
-        OutputSequenceType As IGetFASTAFromDMS.SequenceTypes,
-        DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
-        SourceFilePath As String,
-        CreationOptionsString As String,
-        Authentication_Hash As String,
-        ProteinCollectionList As String) As Integer Implements IArchiveOutputFiles.ArchiveCollection
+        proteinCollectionName As String,
+        archivedFileType As IArchiveOutputFiles.CollectionTypes,
+        outputSequenceType As IGetFASTAFromDMS.SequenceTypes,
+        databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
+        sourceFilePath As String,
+        creationOptionsString As String,
+        authentication_Hash As String,
+        proteinCollectionList As String) As Integer Implements IArchiveOutputFiles.ArchiveCollection
 
-        Dim ProteinCollectionID As Integer = Me.GetProteinCollectionID(ProteinCollectionName)
+        Dim proteinCollectionID As Integer = GetProteinCollectionID(proteinCollectionName)
 
-        Return Me.ArchiveCollection(
-            ProteinCollectionID,
-            ArchivedFileType,
-            OutputSequenceType,
-            DatabaseFormatType,
-            SourceFilePath,
-            CreationOptionsString,
-            Authentication_Hash,
-            ProteinCollectionList)
+        Return ArchiveCollection(
+            proteinCollectionID,
+            archivedFileType,
+            outputSequenceType,
+            databaseFormatType,
+            sourceFilePath,
+            creationOptionsString,
+            authentication_Hash,
+            proteinCollectionList)
 
     End Function
 
@@ -121,8 +121,8 @@ Public MustInherit Class clsArchiveOutputFilesBase
     End Function
 
     Protected Sub CheckTableGetterStatus()
-        If Me.m_TableGetter Is Nothing Then
-            Me.m_TableGetter = New clsDBTask(Me.m_PSConnectionString, True)
+        If m_TableGetter Is Nothing Then
+            m_TableGetter = New clsDBTask(m_PSConnectionString, True)
         End If
     End Sub
 
@@ -140,10 +140,10 @@ Public MustInherit Class clsArchiveOutputFilesBase
                         "' AND " & "Creation_Options = '" & CreationOptionsString & "'"
 
         Dim dt As DataTable
-        dt = Me.m_TableGetter.GetTable(SQL)
+        dt = m_TableGetter.GetTable(SQL)
 
         If dt.Rows.Count > 0 Then
-            Me.m_Archived_File_Name = dt.Rows(0).Item("Archived_File_Path").ToString
+            m_Archived_File_Name = dt.Rows(0).Item("Archived_File_Path").ToString
             Return CInt(dt.Rows(0).Item("Archived_File_ID"))
         Else
             Return 0
@@ -156,7 +156,7 @@ Public MustInherit Class clsArchiveOutputFilesBase
         ProteinCollectionID As Integer,
         ArchivedFileID As Integer) Implements IArchiveOutputFiles.AddArchiveCollectionXRef
 
-        Dim intReturn As Integer = Me.RunSP_AddArchivedFileEntryXRef(ProteinCollectionID, ArchivedFileID)
+        Dim intReturn As Integer = RunSP_AddArchivedFileEntryXRef(ProteinCollectionID, ArchivedFileID)
 
         If intReturn <> 0 Then
             Throw New Exception("Error calling RunSP_AddArchivedFileEntryXRef with ProteinCollectionID " & ProteinCollectionID & " and ArchivedFileID " & ArchivedFileID & ", ReturnCode=" & intReturn)
@@ -165,15 +165,15 @@ Public MustInherit Class clsArchiveOutputFilesBase
     End Sub
 
     Protected Function GetFileAuthenticationHash(sourcePath As String) As String
-        Return Me.m_Exporter.GetFileHash(sourcePath)
+        Return m_Exporter.GetFileHash(sourcePath)
     End Function
 
     Protected Function GetStoredFileAuthenticationHash(ProteinCollectionID As Integer) As String
-        Return Me.m_Exporter.GetStoredHash(ProteinCollectionID)
+        Return m_Exporter.GetStoredHash(ProteinCollectionID)
     End Function
 
     Protected Function GetProteinCollectionID(ProteinCollectionName As String) As Integer
-        Return Me.m_Exporter.FindIDByName(ProteinCollectionName)
+        Return m_Exporter.FindIDByName(ProteinCollectionName)
     End Function
 
     Protected Function RunSP_AddArchivedFileEntryXRef(
@@ -182,7 +182,7 @@ Public MustInherit Class clsArchiveOutputFilesBase
 
         Dim sp_Save As SqlCommand
 
-        sp_Save = New SqlCommand("AddArchivedFileEntryXRef", Me.m_TableGetter.Connection)
+        sp_Save = New SqlCommand("AddArchivedFileEntryXRef", m_TableGetter.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -220,12 +220,12 @@ Public MustInherit Class clsArchiveOutputFilesBase
 
     Protected Sub OnArchiveStart()
         RaiseEvent ArchiveStart()
-        Me.OnOverallProgressUpdate(0.0)
+        OnOverallProgressUpdate(0.0)
     End Sub
 
     Protected Sub OnSubTaskStart(SubTaskDescription As String)
         RaiseEvent SubTaskStart(SubTaskDescription)
-        Me.OnSubTaskProgressUpdate(0.0)
+        OnSubTaskProgressUpdate(0.0)
     End Sub
 
     Protected Sub OnOverallProgressUpdate(fractionDone As Double)

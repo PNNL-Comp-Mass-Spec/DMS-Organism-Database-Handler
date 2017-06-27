@@ -54,7 +54,7 @@ Public Class clsExportProteinsXTFASTA
             Dim tmpPC As IProteinStorageEntry
             Dim tmpNum As Int32
 
-            Me.OnExportStart("Writing to X!Tandem formatted FASTA File")
+            OnExportStart("Writing to X!Tandem formatted FASTA File")
 
             Dim counterMax As Integer = Proteins.ProteinCount
             Dim counter As Integer
@@ -79,14 +79,14 @@ Public Class clsExportProteinsXTFASTA
             bw.Write(buffer)
 
             For Each tmpName In proteinArray
-                Me.OnExportStart("Writing: " + tmpName)
+                OnExportStart("Writing: " + tmpName)
                 tmpPC = Proteins.GetProtein(tmpName)
                 tmpSeq = tmpPC.Sequence
 
                 counter += 1
 
                 If (counter Mod EventTriggerThresh) = 0 Then
-                    Me.OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
+                    OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
 
                 End If
 
@@ -94,32 +94,32 @@ Public Class clsExportProteinsXTFASTA
 
                 Array.Clear(buffer, 0, 4)
                 tmpNum = tmpName.Length + 1
-                buffer = Me.ConvIntegertoByteArray(tmpNum, 4)
+                buffer = ConvIntegertoByteArray(tmpNum, 4)
                 Array.Reverse(buffer)
 
                 bw.Write(buffer)
                 buffer = encoding.GetBytes(tmpName)
                 bw.Write(buffer)
-                bw.Write(Me.ConvIntegertoByteArray(0, 1))
+                bw.Write(ConvIntegertoByteArray(0, 1))
 
                 Array.Clear(buffer, 0, 4)
                 tmpNum = proteinLength + 1
-                buffer = Me.ConvIntegertoByteArray(tmpNum, 4)
+                buffer = ConvIntegertoByteArray(tmpNum, 4)
                 Array.Reverse(buffer)
 
                 bw.Write(buffer)
                 buffer = encoding.GetBytes(tmpSeq)
                 bw.Write(buffer)
-                bw.Write(Me.ConvIntegertoByteArray(0, 1))
+                bw.Write(ConvIntegertoByteArray(0, 1))
 
 
             Next
 
         End Using
 
-        Dim fingerprint As String = Me.GetFileHash(destinationPath)
+        Dim fingerprint As String = GetFileHash(destinationPath)
 
-        Me.OnExportEnd()
+        OnExportEnd()
 
         Return fingerprint
 
@@ -169,14 +169,14 @@ Public Class clsExportProteinsXTFASTA
 
             Dim tmpNum As Int32
 
-            Me.OnExportStart("Writing to X!Tandem formatted FASTA File")
+            OnExportStart("Writing to X!Tandem formatted FASTA File")
 
             'Dim counterMax As Integer = Proteins.ProteinCount
             Dim counterMax As Integer ' = ProteinTable.Rows.Count
             Dim counter As Integer
 
             For Each proteinTable In ProteinTables.Tables
-                Me.OnExportStart("Writing: " + proteinTable.TableName)
+                OnExportStart("Writing: " + proteinTable.TableName)
                 counterMax = proteinTable.Rows.Count
                 foundRows = proteinTable.Select("", "Name")
 
@@ -201,30 +201,30 @@ Public Class clsExportProteinsXTFASTA
                     counter += 1
 
                     If (counter Mod EventTriggerThresh) = 0 Then
-                        Me.OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
+                        OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
                     End If
 
                     proteinLength = tmpSeq.Length
 
                     Array.Clear(buffer, 0, 4)
                     tmpNum = tmpName.Length + 1
-                    buffer = Me.ConvIntegertoByteArray(tmpNum, 4)
+                    buffer = ConvIntegertoByteArray(tmpNum, 4)
                     Array.Reverse(buffer)
 
                     bw.Write(buffer)
                     buffer = encoding.GetBytes(tmpName)
                     bw.Write(buffer)
-                    bw.Write(Me.ConvIntegertoByteArray(0, 1))
+                    bw.Write(ConvIntegertoByteArray(0, 1))
 
                     Array.Clear(buffer, 0, 4)
                     tmpNum = proteinLength + 1
-                    buffer = Me.ConvIntegertoByteArray(tmpNum, 4)
+                    buffer = ConvIntegertoByteArray(tmpNum, 4)
                     Array.Reverse(buffer)
 
                     bw.Write(buffer)
                     buffer = encoding.GetBytes(tmpSeq)
                     bw.Write(buffer)
-                    bw.Write(Me.ConvIntegertoByteArray(0, 1))
+                    bw.Write(ConvIntegertoByteArray(0, 1))
 
 
                 Next
@@ -232,9 +232,9 @@ Public Class clsExportProteinsXTFASTA
 
         End Using
 
-        Dim fingerprint As String = Me.GetFileHash(destinationPath)
+        Dim fingerprint As String = GetFileHash(destinationPath)
 
-        Me.OnExportEnd()
+        OnExportEnd()
 
         Return fingerprint
 

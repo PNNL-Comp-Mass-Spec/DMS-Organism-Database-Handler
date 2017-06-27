@@ -13,7 +13,7 @@ Public Class clsProteinStorageDMS
     Private m_PassPhrase As String
 
     Public Sub New(fastaFileName As String)
-        Me.FileName = fastaFileName
+        FileName = fastaFileName
     End Sub
 
     Public Sub AddProtein(proteinEntry As IProteinStorageEntry) Implements IProteinStorage.AddProtein
@@ -21,29 +21,29 @@ Public Class clsProteinStorageDMS
         Dim ProteinEntryID As Integer = proteinEntry.Protein_ID
         Dim ProteinEntryName As String = proteinEntry.Reference
 
-        If Me.m_Proteins Is Nothing Then
-            Me.m_Proteins = New Dictionary(Of String, IProteinStorageEntry)
+        If m_Proteins Is Nothing Then
+            m_Proteins = New Dictionary(Of String, IProteinStorageEntry)
         End If
 
-        If Me.m_UniqueProteinIDList Is Nothing Then
-            Me.m_UniqueProteinIDList = New Dictionary(Of Integer, SortedSet(Of String))
+        If m_UniqueProteinIDList Is Nothing Then
+            m_UniqueProteinIDList = New Dictionary(Of Integer, SortedSet(Of String))
         End If
 
-        If Me.m_ProteinNames Is Nothing Then
-            Me.m_ProteinNames = New SortedSet(Of String)
+        If m_ProteinNames Is Nothing Then
+            m_ProteinNames = New SortedSet(Of String)
         End If
 
         Dim nameList As SortedSet(Of String) = Nothing
 
-        If Not Me.m_UniqueProteinIDList.TryGetValue(ProteinEntryID, nameList) Then
+        If Not m_UniqueProteinIDList.TryGetValue(ProteinEntryID, nameList) Then
             nameList = New SortedSet(Of String)
             nameList.Add(ProteinEntryName)
-            Me.m_UniqueProteinIDList.Add(ProteinEntryID, nameList)
-            Me.m_ResidueCount += proteinEntry.Sequence.Length
+            m_UniqueProteinIDList.Add(ProteinEntryID, nameList)
+            m_ResidueCount += proteinEntry.Sequence.Length
         Else
 
             For Each proteinName In nameList
-                Dim existingEntry = Me.m_Proteins.Item(proteinName)
+                Dim existingEntry = m_Proteins.Item(proteinName)
 
                 If Not proteinEntry.Reference.Equals(existingEntry.Reference) Then
                     existingEntry.AddXRef(ProteinEntryName)
@@ -52,25 +52,25 @@ Public Class clsProteinStorageDMS
             Next
 
             nameList.Add(ProteinEntryName)
-            Me.m_UniqueProteinIDList(ProteinEntryID) = nameList
+            m_UniqueProteinIDList(ProteinEntryID) = nameList
         End If
 
-        If Not Me.m_ProteinNames.Contains(ProteinEntryName) Then
-            Me.m_Proteins.Add(ProteinEntryName, proteinEntry)
-            Me.m_ProteinNames.Add(ProteinEntryName)
+        If Not m_ProteinNames.Contains(ProteinEntryName) Then
+            m_Proteins.Add(ProteinEntryName, proteinEntry)
+            m_ProteinNames.Add(ProteinEntryName)
         End If
 
     End Sub
 
     Protected Function SortedProteinNameList() As SortedSet(Of String) Implements IProteinStorage.GetSortedProteinNames
-        Return Me.m_ProteinNames
+        Return m_ProteinNames
     End Function
 
     Protected Property FileName As String Implements IProteinStorage.FileName
 
     Protected Function GetProtein(Reference As String) As Protein_Storage.IProteinStorageEntry Implements IProteinStorage.GetProtein
-        If Me.m_Proteins.ContainsKey(Reference) Then
-            Return Me.m_Proteins.Item(Reference)
+        If m_Proteins.ContainsKey(Reference) Then
+            Return m_Proteins.Item(Reference)
         Else
             Return Nothing
         End If
@@ -78,11 +78,11 @@ Public Class clsProteinStorageDMS
 
     Protected Sub ClearProteins() Implements IProteinStorage.ClearProteinEntries
 
-        Me.m_ResidueCount = 0
+        m_ResidueCount = 0
 
         Try
             If Not m_Proteins Is Nothing Then
-                Me.m_Proteins.Clear()
+                m_Proteins.Clear()
             End If
         Catch ex As Exception
             ' Ignore errors here
@@ -90,7 +90,7 @@ Public Class clsProteinStorageDMS
 
         Try
             If Not m_ProteinNames Is Nothing Then
-                Me.m_ProteinNames.Clear()
+                m_ProteinNames.Clear()
             End If
         Catch ex As Exception
             ' Ignore errors here
@@ -98,7 +98,7 @@ Public Class clsProteinStorageDMS
 
         Try
             If Not m_UniqueProteinIDList Is Nothing Then
-                Me.m_UniqueProteinIDList.Clear()
+                m_UniqueProteinIDList.Clear()
             End If
         Catch ex As Exception
             ' Ignore errors here
@@ -108,40 +108,40 @@ Public Class clsProteinStorageDMS
 
     Protected ReadOnly Property TotalResidueCount() As Integer Implements IProteinStorage.TotalResidueCount
         Get
-            Return Me.m_ResidueCount
+            Return m_ResidueCount
         End Get
     End Property
 
     Protected ReadOnly Property ProteinCount() As Integer Implements IProteinStorage.ProteinCount
         Get
-            Return Me.m_Proteins.Count
+            Return m_Proteins.Count
         End Get
     End Property
 
     Protected Property EncryptSequences() As Boolean Implements IProteinStorage.EncryptSequences
         Get
-            Return Me.m_EncryptionFlag
+            Return m_EncryptionFlag
         End Get
         Set(Value As Boolean)
-            Me.m_EncryptionFlag = Value
+            m_EncryptionFlag = Value
         End Set
     End Property
 
     Protected Property PassPhrase() As String Implements IProteinStorage.PassPhrase
         Get
             If EncryptSequences Then
-                Return Me.m_PassPhrase
+                Return m_PassPhrase
             Else
                 Return Nothing
             End If
         End Get
         Set(Value As String)
-            Me.m_PassPhrase = Value
+            m_PassPhrase = Value
         End Set
     End Property
 
     Protected Function m_GetEnumerator() As Dictionary(Of String, IProteinStorageEntry).Enumerator Implements IProteinStorage.GetEnumerator
-        Return Me.m_Proteins.GetEnumerator
+        Return m_Proteins.GetEnumerator
     End Function
 
     Public Overrides Function ToString() As String

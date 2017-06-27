@@ -51,18 +51,18 @@ Public Class clsDBTask
 
     ' constructor
     Public Sub New(connString As String, Optional persistConnection As Boolean = False)
-        Me.m_connection_str = connString
-        Me.SetupNew(persistConnection)
+        m_connection_str = connString
+        SetupNew(persistConnection)
     End Sub
 
     Public Sub New(Optional persistConnection As Boolean = False)
-        Me.SetupNew(persistConnection)
+        SetupNew(persistConnection)
     End Sub
 
     Private Sub SetupNew(persistConnection As Boolean)
-        Me.m_PersistConnection = persistConnection
-        If Me.m_PersistConnection Then
-            Me.OpenConnection(Me.m_connection_str)
+        m_PersistConnection = persistConnection
+        If m_PersistConnection Then
+            OpenConnection(m_connection_str)
         Else
             ' Nothing to do
         End If
@@ -71,10 +71,10 @@ Public Class clsDBTask
 
     '------[for DB access]-----------------------------------------------------------
     Protected Sub OpenConnection() Implements IGetSQLData.OpenConnection
-        If Me.m_connection_str = "" Then
+        If m_connection_str = "" Then
             Exit Sub
         End If
-        OpenConnection(Me.m_connection_str)
+        OpenConnection(m_connection_str)
     End Sub
 
     Protected Sub OpenConnection(connString As String) Implements IGetSQLData.OpenConnection
@@ -111,7 +111,7 @@ Public Class clsDBTask
             If m_DBCn Is Nothing Then
                 Return False
             Else
-                If Me.m_DBCn.State = ConnectionState.Open Then
+                If m_DBCn.State = ConnectionState.Open Then
                     Return True
                 Else
                     Return False
@@ -122,20 +122,20 @@ Public Class clsDBTask
 
     Protected Property ConnectionString() As String Implements IGetSQLData.ConnectionString
         Get
-            Return Me.m_connection_str
+            Return m_connection_str
         End Get
         Set(Value As String)
-            Me.m_connection_str = Value
+            m_connection_str = Value
         End Set
     End Property
 
     Protected ReadOnly Property Connection() As SqlConnection Implements IGetSQLData.Connection
         Get
-            If Me.Connected Then
-                Return Me.m_DBCn
+            If Connected Then
+                Return m_DBCn
             Else
-                Me.OpenConnection()
-                Return Me.m_DBCn
+                OpenConnection()
+                Return m_DBCn
             End If
         End Get
     End Property
@@ -165,12 +165,12 @@ Public Class clsDBTask
 
         Dim numTries As Integer = 3
 
-        If Not Me.m_PersistConnection Then Me.OpenConnection()
+        If Not m_PersistConnection Then OpenConnection()
 
         GetID_CMD.CommandTimeout = 600
-        GetID_CMD.Connection = Me.m_DBCn
+        GetID_CMD.Connection = m_DBCn
 
-        If Me.Connected = True Then
+        If Connected = True Then
 
             SQLDataAdapter = New SqlDataAdapter
             SQLCommandBuilder = New SqlCommandBuilder(SQLDataAdapter)
@@ -193,7 +193,7 @@ Public Class clsDBTask
             'SQLDataAdapter.Dispose()
             'SQLDataAdapter = Nothing
 
-            If Not Me.m_PersistConnection Then Me.CloseConnection()
+            If Not m_PersistConnection Then CloseConnection()
         Else
             tmpIDTable = Nothing
         End If

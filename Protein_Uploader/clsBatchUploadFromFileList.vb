@@ -1,10 +1,12 @@
 Imports System.Collections.Generic
+Imports System.IO
 Imports System.Windows.Forms
+Imports TableManipulationBase
 
 Public Class clsBatchUploadFromFileList
 
     Protected WithEvents m_Uploader As IUploadProteins
-    Protected m_TableGetter As TableManipulationBase.IGetSQLData
+    Protected m_TableGetter As IGetSQLData
     Protected m_CurrentFileList As Hashtable
 
     Protected m_PSConnectionString As String
@@ -20,9 +22,9 @@ Public Class clsBatchUploadFromFileList
 
     Sub New(PSConnectionString As String)
 
-        Me.m_PSConnectionString = PSConnectionString
-        Me.m_Uploader = New clsPSUploadHandler(PSConnectionString)
-        Me.m_TableGetter = New TableManipulationBase.clsDBTask(PSConnectionString)
+        m_PSConnectionString = PSConnectionString
+        m_Uploader = New clsPSUploadHandler(PSConnectionString)
+        m_TableGetter = New clsDBTask(PSConnectionString)
     End Sub
 
     Public Event ProgressUpdate(fractionDone As Double)
@@ -51,35 +53,35 @@ Public Class clsBatchUploadFromFileList
         Dim fileCollection As Hashtable
         Dim fce As FileListInfo
 
-        Dim ui As Protein_Uploader.IUploadProteins.UploadInfo
+        Dim ui As IUploadProteins.UploadInfo
         Dim uiList = New List(Of IUploadProteins.UploadInfo)
 
-        Me.m_AnnotationTypeTable = Me.GetAnnotationTypeTable()
-        Me.m_AuthorityTable = Me.GetAuthorityTable
-        Me.m_OrganismTable = Me.GetOrganismsTable
+        m_AnnotationTypeTable = GetAnnotationTypeTable()
+        m_AuthorityTable = GetAuthorityTable()
+        m_OrganismTable = GetOrganismsTable()
 
-        Me.m_BatchForm = New frmBatchUploadFromFileList(Me.m_AuthorityTable, Me.m_AnnotationTypeTable, Me.m_OrganismTable)
+        m_BatchForm = New frmBatchUploadFromFileList(m_AuthorityTable, m_AnnotationTypeTable, m_OrganismTable)
 
-        Me.m_CurrentFileList = Me.GetDMSFileEntities
+        m_CurrentFileList = GetDMSFileEntities()
 
-        Me.m_BatchForm.FileCollection = Me.m_CurrentFileList
+        m_BatchForm.FileCollection = m_CurrentFileList
 
         Dim r As DialogResult
 
-        r = Me.m_BatchForm.ShowDialog()
+        r = m_BatchForm.ShowDialog()
 
         If r = DialogResult.OK Then
-            fileCollection = Me.m_BatchForm.SelectedFilesCollection
-            If Me.m_Uploader Is Nothing Then
-                Me.m_Uploader = New Protein_Uploader.clsPSUploadHandler(Me.m_PSConnectionString)
+            fileCollection = m_BatchForm.SelectedFilesCollection
+            If m_Uploader Is Nothing Then
+                m_Uploader = New clsPSUploadHandler(m_PSConnectionString)
             End If
             For Each fce In fileCollection.Values
-                ui = Me.TransformToUploadInfo(fce)
+                ui = TransformToUploadInfo(fce)
                 uiList.Add(ui)
             Next
 
-            Me.m_Uploader.InitialSetup()
-            Me.m_Uploader.BatchUpload(uiList)
+            m_Uploader.InitialSetup()
+            m_Uploader.BatchUpload(uiList)
 
 
         End If
@@ -88,23 +90,23 @@ Public Class clsBatchUploadFromFileList
 
     Protected Function GetAuthorityTable() As DataTable
         Const authSQL = "SELECT ID, Display_Name, Details FROM V_Authority_Picker"
-        Return Me.m_TableGetter.GetTable(authSQL)
+        Return m_TableGetter.GetTable(authSQL)
     End Function
 
     Protected Function GetAnnotationTypeTable() As DataTable
         Const annoSQL = "SELECT ID, Display_Name, Details FROM V_Annotation_Type_Picker"
-        Return Me.m_TableGetter.GetTable(annoSQL)
+        Return m_TableGetter.GetTable(annoSQL)
     End Function
 
     Protected Function GetOrganismsTable() As DataTable
         Const orgSQL = "SELECT ID, Short_Name, Display_Name, Organism_Name FROM V_Organism_Picker"
-        Return Me.m_TableGetter.GetTable(orgSQL)
+        Return m_TableGetter.GetTable(orgSQL)
     End Function
 
-    Private Function TransformToUploadInfo(fli As FileListInfo) As Protein_Uploader.IUploadProteins.UploadInfo
+    Private Function TransformToUploadInfo(fli As FileListInfo) As IUploadProteins.UploadInfo
 
-        Dim fi = New System.IO.FileInfo(fli.FullFilePath)
-        Dim ui As New Protein_Uploader.IUploadProteins.UploadInfo(fi, fli.OrganismID, fli.AnnotationTypeID)
+        Dim fi = New FileInfo(fli.FullFilePath)
+        Dim ui As New IUploadProteins.UploadInfo(fi, fli.OrganismID, fli.AnnotationTypeID)
 
         Return ui
 
@@ -186,15 +188,15 @@ Public Class clsBatchUploadFromFileList
 
         LoadedCollectionsSQL = "SELECT FileName, Full_Path, Organism_Name, Organism_ID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered"
 
-        If Me.m_TableGetter Is Nothing Then
-            Me.m_TableGetter = New TableManipulationBase.clsDBTask(Me.m_PSConnectionString)
+        If m_TableGetter Is Nothing Then
+            m_TableGetter = New clsDBTask(m_PSConnectionString)
         End If
-        fileTable = Me.m_TableGetter.GetTable(LoadedCollectionsSQL)
+        fileTable = m_TableGetter.GetTable(LoadedCollectionsSQL)
 
-        If Me.m_CurrentFileList Is Nothing Then
-            Me.m_CurrentFileList = New Hashtable
+        If m_CurrentFileList Is Nothing Then
+            m_CurrentFileList = New Hashtable
         Else
-            Me.m_CurrentFileList.Clear()
+            m_CurrentFileList.Clear()
         End If
 
         For Each dr In fileTable.Rows
@@ -204,7 +206,7 @@ Public Class clsBatchUploadFromFileList
             tmpFullPath = dr.Item("Full_Path").ToString
             tmpAnnTypeID = CInt(dr.Item("Annotation_Type_ID"))
             tmpAuthTypeID = CInt(dr.Item("Authority_ID"))
-            If Not fileList.ContainsKey(tmpFileName) And Not collectionList.Contains(System.IO.Path.GetFileNameWithoutExtension(tmpFileName)) Then
+            If Not fileList.ContainsKey(tmpFileName) And Not collectionList.Contains(Path.GetFileNameWithoutExtension(tmpFileName)) Then
                 fileList.Add(tmpFileName, New FileListInfo(tmpFileName, tmpFullPath, tmpOrganismName, tmpOrganismID, tmpAnnTypeID, tmpAuthTypeID))
             End If
         Next
@@ -224,12 +226,12 @@ Public Class clsBatchUploadFromFileList
 
         For Each fli In fileNameList.Values
             upInfoContainer = New IUploadProteins.UploadInfo(
-                New System.IO.FileInfo(fli.FullFilePath),
+                New FileInfo(fli.FullFilePath),
                 fli.OrganismID, fli.NamingAuthorityID)
             selectedFileList.Add(upInfoContainer)
         Next
 
-        Me.m_Uploader.BatchUpload(selectedFileList)
+        m_Uploader.BatchUpload(selectedFileList)
 
     End Function
 
@@ -275,64 +277,64 @@ Public Class clsBatchUploadFromFileList
 
         Property FileName() As String
             Get
-                Return Me.m_FileName
+                Return m_FileName
             End Get
             Set(Value As String)
-                Me.m_FileName = Value
+                m_FileName = Value
             End Set
         End Property
 
         Property FullFilePath() As String
             Get
-                Return Me.m_FullFilePath
+                Return m_FullFilePath
             End Get
             Set(Value As String)
-                Me.m_FullFilePath = Value
+                m_FullFilePath = Value
             End Set
         End Property
 
         Property OrganismName() As String
             Get
-                Return Me.m_Organism
+                Return m_Organism
             End Get
             Set(Value As String)
-                Me.m_Organism = Value
+                m_Organism = Value
             End Set
         End Property
 
         Property OrganismID() As Integer
             Get
-                Return Me.m_OrganismID
+                Return m_OrganismID
             End Get
             Set(Value As Integer)
-                Me.m_OrganismID = Value
+                m_OrganismID = Value
             End Set
         End Property
 
         Property NamingAuthorityID() As Integer
             Get
-                Return Me.m_NamingAuthorityID
+                Return m_NamingAuthorityID
             End Get
             Set(Value As Integer)
-                Me.m_NamingAuthorityID = Value
+                m_NamingAuthorityID = Value
             End Set
         End Property
 
         Property AnnotationTypeID() As Integer
             Get
-                Return Me.m_AnnotationTypeID
+                Return m_AnnotationTypeID
             End Get
             Set(Value As Integer)
-                Me.m_AnnotationTypeID = Value
+                m_AnnotationTypeID = Value
             End Set
         End Property
 
         Property AnnotationType() As String
             Get
-                Return Me.m_AnnotationType
+                Return m_AnnotationType
             End Get
             Set(Value As String)
-                Me.m_AnnotationType = Value
+                m_AnnotationType = Value
             End Set
         End Property
     End Structure
