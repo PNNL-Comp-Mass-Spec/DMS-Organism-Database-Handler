@@ -2,26 +2,26 @@ Imports System.Collections.Specialized
 Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Data.OleDb
+Imports System.Runtime.InteropServices
 
 Public Interface IGetSQLData
-    Function GetTable(SelectSQL As String) As DataTable
-    Function GetTable(
-        SelectSQL As String,
-        ByRef SQLDataAdapter As SqlDataAdapter,
-        ByRef SQLCommandBuilder As SqlCommandBuilder) As DataTable
 
-    Function GetTableTemplate(TableName As String) As DataTable
-    Function GetTableTemplate(
-        TableName As String,
-        ByRef SQLDataAdapter As SqlDataAdapter,
-        ByRef SQLCommandBuilder As SqlCommandBuilder) As DataTable
+    Function GetTable(selectSQL As String) As DataTable
+
+    Function GetTable(
+        selectSQL As String,
+        <Out()> ByRef SQLDataAdapter As SqlDataAdapter) As DataTable
+
+    Function GetTableTemplate(tableName As String) As DataTable
+
     Function DataTableToHashtable(
-        ByRef dt As DataTable,
+        dt As DataTable,
         keyFieldName As String,
         valueFieldName As String,
         Optional filterString As String = "") As Hashtable
+
     Function DataTableToComplexHashtable(
-        ByRef dt As DataTable,
+        dt As DataTable,
         keyFieldName As String,
         valueFieldName As String,
         Optional filterString As String = "") As Hashtable
@@ -136,30 +136,19 @@ Public Class clsDBTask
         End Get
     End Property
 
-    Protected Function GetTableTemplate(
-        tableName As String,
-        ByRef SQLDataAdapter As SqlDataAdapter,
-        ByRef SQLCommandBuilder As SqlCommandBuilder) As DataTable Implements IGetSQLData.GetTableTemplate
-
-        Dim sql As String = "SELECT * FROM " & tableName & " WHERE 1=0"
-        Return GetTable(sql, SQLDataAdapter, SQLCommandBuilder)
-
-    End Function
-
     Protected Function GetTableTemplate(tableName As String) As DataTable Implements IGetSQLData.GetTableTemplate
         Dim sql As String = "SELECT * FROM " & tableName & " WHERE 1=0"
         Return GetTable(sql)
     End Function
 
     Protected Function GetTable(
-        SelectSQL As String,
-        ByRef SQLDataAdapter As SqlDataAdapter,
-        ByRef SQLCommandBuilder As SqlCommandBuilder) As DataTable Implements IGetSQLData.GetTable
+        selectSQL As String,
+        <Out()> ByRef SQLDataAdapter As SqlDataAdapter) As DataTable Implements IGetSQLData.GetTable
 
         Dim tmpIDTable As New DataTable
-        Dim GetID_CMD As SqlCommand = New SqlCommand(SelectSQL)
+        Dim GetID_CMD = New SqlCommand(selectSQL)
 
-        Dim numTries As Integer = 3
+        Dim numTries = 3
 
         If Not m_PersistConnection Then OpenConnection()
 
@@ -168,8 +157,7 @@ Public Class clsDBTask
 
         If Connected = True Then
 
-            SQLDataAdapter = New SqlDataAdapter
-            SQLCommandBuilder = New SqlCommandBuilder(SQLDataAdapter)
+            SQLDataAdapter = New SqlDataAdapter()
             SQLDataAdapter.SelectCommand = GetID_CMD
 
             While numTries > 0
@@ -186,11 +174,9 @@ Public Class clsDBTask
 
             End While
 
-            'SQLDataAdapter.Dispose()
-            'SQLDataAdapter = Nothing
-
             If Not m_PersistConnection Then CloseConnection()
         Else
+            SQLDataAdapter = Nothing
             tmpIDTable = Nothing
         End If
 
@@ -198,16 +184,12 @@ Public Class clsDBTask
 
     End Function
 
-    Protected Function GetTable(SelectSQL As String) As DataTable Implements IGetSQLData.GetTable
+    Protected Function GetTable(selectSQL As String) As DataTable Implements IGetSQLData.GetTable
         Dim tmpDA As SqlDataAdapter = Nothing
-        Dim tmpCB As SqlCommandBuilder = Nothing
 
-        Dim tmpTable As DataTable = GetTable(SelectSQL, tmpDA, tmpCB)
+        Dim tmpTable As DataTable = GetTable(selectSQL, tmpDA)
+
         tmpDA.Dispose()
-        tmpDA = Nothing
-
-        tmpCB.Dispose()
-        tmpCB = Nothing
 
         Return tmpTable
 
@@ -237,29 +219,19 @@ Public Class clsDBTask
     End Sub
 
     Protected Function DataTableToHashTable(
-    ByRef dt As DataTable,
-    keyFieldName As String,
-    valueFieldName As String,
-    Optional filterString As String = "") As Hashtable Implements IGetSQLData.DataTableToHashtable
+      dt As DataTable,
+      keyFieldName As String,
+      valueFieldName As String,
+      Optional filterString As String = "") As Hashtable Implements IGetSQLData.DataTableToHashtable
 
-        Dim dr As DataRow
         Dim foundRows() As DataRow = dt.Select(filterString)
         Dim ht As New Hashtable(foundRows.Length)
-        'Dim al As ArrayList
-        Dim key As String
 
         For Each dr In foundRows
-            key = dr.Item(keyFieldName).ToString
+            Dim key = dr.Item(keyFieldName).ToString()
             If Not ht.Contains(key) Then
-                ht.Add(key, dr.Item(valueFieldName).ToString)
+                ht.Add(key, dr.Item(valueFieldName).ToString())
             End If
-            'If ht.Contains(key) Then
-            '    al = DirectCast(ht(key), ArrayList)
-            'Else
-            '    al = New ArrayList
-            'End If
-            'al.Add(dr.Item(valueFieldName).ToString)
-            'ht(key) = al
         Next
 
         Return ht
@@ -268,7 +240,7 @@ Public Class clsDBTask
 
 
     Protected Function DataTableToComplexHashTable(
-        ByRef dt As DataTable,
+        dt As DataTable,
         keyFieldName As String,
         valueFieldName As String,
         Optional filterString As String = "") As Hashtable Implements IGetSQLData.DataTableToComplexHashtable

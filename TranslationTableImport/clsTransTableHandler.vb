@@ -63,18 +63,16 @@ Public Class clsTransTableHandler
         dba = New TableManipulationBase.clsDBTask(m_ConnectionString, True)
 
         Dim EntrySQL As String = "SELECT * FROM " & clsTransTableHandler.EntriesTableName
-        Dim entryDA As SqlClient.SqlDataAdapter = New SqlClient.SqlDataAdapter(EntrySQL, dba.Connection)
-        Dim entryCB As SqlClient.SqlCommandBuilder = New SqlClient.SqlCommandBuilder(entryDA)
+        Dim entryDA = New SqlClient.SqlDataAdapter(EntrySQL, dba.Connection)
 
-        m_Translation_Entries = dba.GetTable(EntrySQL, entryDA, entryCB)
+        m_Translation_Entries = dba.GetTable(EntrySQL, entryDA)
 
 
 
         Dim idSQL As String = "SELECT * FROM " & clsTransTableHandler.IDTableName
-        Dim idDA As SqlClient.SqlDataAdapter = New SqlClient.SqlDataAdapter(idSQL, dba.Connection)
-        Dim idCB As SqlClient.SqlCommandBuilder = New SqlClient.SqlCommandBuilder(idDA)
+        Dim idDA = New SqlClient.SqlDataAdapter(idSQL, dba.Connection)
 
-        m_Translation_Tables = dba.GetTable(idSQL, idDA, idCB)
+        m_Translation_Tables = dba.GetTable(idSQL, idDA)
 
 
 
