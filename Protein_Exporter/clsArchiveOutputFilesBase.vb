@@ -23,10 +23,13 @@ Public MustInherit Class clsArchiveOutputFilesBase
     Protected Event ArchiveComplete(ArchivePath As String) Implements IArchiveOutputFiles.ArchiveComplete
 
 
-    Sub New(PSConnectionString As String, ByRef ExporterModule As clsGetFASTAFromDMS)
+    Sub New(dbConnectionString As String, ByRef ExporterModule As clsGetFASTAFromDMS)
 
-        m_PSConnectionString = PSConnectionString
-        m_TableGetter = New clsDBTask(PSConnectionString, True)
+        m_PSConnectionString = dbConnectionString
+
+        Dim persistConnection = Not String.IsNullOrWhiteSpace(dbConnectionString)
+
+        m_TableGetter = New clsDBTask(dbConnectionString, persistConnection)
         m_Exporter = ExporterModule.ExporterComponent
     End Sub
 

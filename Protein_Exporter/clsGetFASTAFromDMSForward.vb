@@ -467,13 +467,22 @@ Public Class clsGetFASTAFromDMSForward
     End Function
 
     Protected Sub RefreshCollectionCache()
-        m_CollectionsCache = m_TableGrabber.GetTable(
-         "SELECT * FROM V_Protein_Collections_By_Organism ORDER BY Protein_Collection_ID")
+        If String.IsNullOrWhiteSpace(m_TableGrabber.ConnectionString) Then
+            m_CollectionsCache = New DataTable()
+        Else
+            m_CollectionsCache = m_TableGrabber.GetTable(
+                "SELECT * FROM V_Protein_Collections_By_Organism ORDER BY Protein_Collection_ID")
+        End If
     End Sub
 
     Protected Sub RefreshOrganismCache()
-        m_OrganismCache = m_TableGrabber.GetTable(
-         "SELECT ID as Organism_ID, Short_Name as Name FROM V_Organism_Picker ORDER BY Organism_ID")
+        If String.IsNullOrWhiteSpace(m_TableGrabber.ConnectionString) Then
+            m_OrganismCache = New DataTable()
+        Else
+            m_OrganismCache = m_TableGrabber.GetTable(
+                "SELECT ID as Organism_ID, Short_Name as Name FROM V_Organism_Picker ORDER BY Organism_ID")
+        End If
+
     End Sub
 
     Function FindIDByName(CollectionName As String) As Integer
