@@ -15,6 +15,8 @@ Public Class frmValidationReport
 
         'Add any initialization after the InitializeComponent() call
 
+        m_ErrorCollection = New List(Of ICustomValidation.udtErrorInfoExtended)
+        m_WarningCollection = New List(Of ICustomValidation.udtErrorInfoExtended)
 
     End Sub
 
@@ -310,18 +312,28 @@ Public Class frmValidationReport
 
 #End Region
 
-    Private m_ErrorCollection As ArrayList      ' Array of type ValidateFastaFile.ICustomValidation.udtErrorInfoExtended
-    Private m_WarningCollection As ArrayList    ' Array of type ValidateFastaFile.ICustomValidation.udtErrorInfoExtended
+    Private ReadOnly m_ErrorCollection As List(Of ICustomValidation.udtErrorInfoExtended)
+    Private ReadOnly m_WarningCollection As List(Of ICustomValidation.udtErrorInfoExtended)
 
-    Private m_FileErrorList As Hashtable        ' Tracks the errors found for each file
-    Private m_FileWarningList As Hashtable      ' Tracks the warnings found for each file
+    Private m_FileErrorList As Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended))        ' Tracks the errors found for each file
+    Private m_FileWarningList As Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended))      ' Tracks the warnings found for each file
 
-    Private m_FileValidList As Hashtable
-    Private m_SummarizedFileErrors As Hashtable
-    Private m_SummarizedFileWarnings As Hashtable
+    ''' <summary>
+    ''' Keys are fasta file paths, values are upload info
+    ''' </summary>
+    Private m_FileValidList As Dictionary(Of String, IUploadProteins.UploadInfo)
+
+    ''' <summary>
+    ''' Keys are fasta file names, values are dictionaries of error messages, tracking the count of each error
+    ''' </summary>
+    Private m_SummarizedFileErrors As Dictionary(Of String, Dictionary(Of String, Integer))
+
+    ''' <summary>
+    ''' Keys are fasta file names, values are dictionaries of warning messages, tracking the count of each warning
+    ''' </summary>
+    Private m_SummarizedFileWarnings As Dictionary(Of String, Dictionary(Of String, Integer))
 
     Private m_Organisms As DataTable
-    Private m_ErrorListLoaded As Boolean
 
     Private Sub frmValidationReport_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
@@ -361,115 +373,130 @@ Public Class frmValidationReport
     End Sub
 
     Private Sub cboFileListErrors_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboFileListErrors.SelectedIndexChanged
-        Me.lvwErrorList.Items.Clear()
-        If Not Me.m_FileErrorList Is Nothing AndAlso Me.m_FileErrorList.Count > 0 Then
-            Me.m_ErrorCollection = DirectCast(Me.m_FileErrorList.Item(Me.cboFileListErrors.Text), ArrayList)
-        End If
 
-        If Not m_SummarizedFileErrors Is Nothing AndAlso m_SummarizedFileErrors.Count > 0 Then
-            Dim errorSummary = DirectCast(Me.m_SummarizedFileErrors.Item(Me.cboFileListErrors.Text), Hashtable)
-            Me.FillErrorListView(errorSummary)
-        End If
+        HandleErrorOrWarningListSelectedIndexChanged(
+            cboFileListErrors.Text, lvwErrorList, m_FileErrorList, m_SummarizedFileErrors, m_ErrorCollection)
+
     End Sub
 
     Private Sub cboFileListWarnings_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboFileListWarnings.SelectedIndexChanged
-        Me.lvwWarningList.Items.Clear()
-        If Not Me.m_FileWarningList Is Nothing AndAlso Me.m_FileWarningList.Count > 0 Then
-            Me.m_WarningCollection = DirectCast(Me.m_FileWarningList.Item(Me.cboFileListWarnings.Text), ArrayList)
-        End If
 
-        If Not m_SummarizedFileWarnings Is Nothing AndAlso m_SummarizedFileWarnings.Count > 0 Then
-            Dim WarningSummary = DirectCast(Me.m_SummarizedFileWarnings.Item(Me.cboFileListWarnings.Text), Hashtable)
-            Me.FillWarningListView(WarningSummary)
-        End If
+        HandleErrorOrWarningListSelectedIndexChanged(
+            cboFileListWarnings.Text, lvwWarningList, m_FileWarningList, m_SummarizedFileWarnings, m_WarningCollection)
+
     End Sub
 
-    Friend WriteOnly Property ErrorSummaryList() As Hashtable
-        Set(Value As Hashtable)
-            Me.m_SummarizedFileErrors = Value
+    Private Sub HandleErrorOrWarningListSelectedIndexChanged(
+      selectedItemText As String,
+      objListview As ListView,
+      itemListByFile As IReadOnlyDictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended)),
+      summarizedItemList As IReadOnlyDictionary(Of String, Dictionary(Of String, Integer)),
+      itemCollection As List(Of ICustomValidation.udtErrorInfoExtended))
+
+        objListview.Items.Clear()
+        If Not itemListByFile Is Nothing AndAlso itemListByFile.Count > 0 Then
+            Dim itemList As List(Of ICustomValidation.udtErrorInfoExtended) = Nothing
+
+            If itemListByFile.TryGetValue(selectedItemText, itemList) Then
+                itemCollection.AddRange(itemList)
+            Else
+                itemCollection.Clear()
+            End If
+        End If
+
+        If Not summarizedItemList Is Nothing AndAlso summarizedItemList.Count > 0 Then
+            Dim itemSummary As Dictionary(Of String, Integer) = Nothing
+
+            If summarizedItemList.TryGetValue(selectedItemText, itemSummary) Then
+                FillErrorOrWarningListView(objListview, itemSummary)
+            End If
+
+        End If
+
+    End Sub
+
+    Friend WriteOnly Property ErrorSummaryList As Dictionary(Of String, Dictionary(Of String, Integer))
+        Set
+            m_SummarizedFileErrors = Value
         End Set
     End Property
 
-    Friend WriteOnly Property WarningSummaryList() As Hashtable
-        Set(Value As Hashtable)
-            Me.m_SummarizedFileWarnings = Value
+    Friend WriteOnly Property WarningSummaryList As Dictionary(Of String, Dictionary(Of String, Integer))
+        Set
+            m_SummarizedFileWarnings = Value
         End Set
     End Property
 
-    Friend WriteOnly Property FileErrorList() As Hashtable
-        Set(Value As Hashtable)
-            Me.m_FileErrorList = Value
+    Friend WriteOnly Property FileErrorList As Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended))
+        Set
+            m_FileErrorList = Value
         End Set
     End Property
 
-    Friend WriteOnly Property FileWarningList() As Hashtable
-        Set(Value As Hashtable)
-            Me.m_FileWarningList = Value
+    Friend WriteOnly Property FileWarningList As Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended))
+        Set
+            m_FileWarningList = Value
         End Set
     End Property
 
-    Friend WriteOnly Property FileValidList() As Hashtable
-        Set(Value As Hashtable)
-            Me.m_FileValidList = Value
+    Friend WriteOnly Property FileValidList As Dictionary(Of String, IUploadProteins.UploadInfo)
+        Set
+            m_FileValidList = Value
         End Set
     End Property
 
-    Friend WriteOnly Property OrganismList() As DataTable
-        Set(Value As DataTable)
-            Me.m_Organisms = Value
+    Friend WriteOnly Property OrganismList As DataTable
+        Set
+            m_Organisms = Value
         End Set
     End Property
 
     Private Function GetOrganismName(organismID As Integer) As String
         Dim foundrows() As DataRow
 
-        foundrows = Me.m_Organisms.Select("ID = " & organismID.ToString)
+        foundrows = m_Organisms.Select("ID = " & organismID.ToString)
 
         Return foundrows(0).Item("Display_Name").ToString
 
     End Function
 
-    Private Sub BindFileListToErrorComboBox(contents As Hashtable)
+    Private Sub BindFileListToErrorComboBox(contents As Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended)))
 
-        Dim errorCount As Integer
         RemoveHandler cboFileListErrors.SelectedIndexChanged, AddressOf cboFileListErrors_SelectedIndexChanged
 
         If Not contents Is Nothing Then
-            Dim counter = contents.GetEnumerator
 
-            Me.cboFileListErrors.BeginUpdate()
+            cboFileListErrors.BeginUpdate()
 
-            While counter.MoveNext()
-                errorCount = DirectCast(Me.m_FileErrorList.Item(counter.Key), ArrayList).Count
-                Me.cboFileListErrors.Items.Add(counter.Key) '.ToString & " (" & errorCount & " Errors)")
-            End While
+            For Each item In contents
+                Dim errorCount = item.Value.Count
+                cboFileListErrors.Items.Add(item.Key) '.ToString & " (" & errorCount & " Errors)")
+            Next
 
-            Me.cboFileListErrors.EndUpdate()
+            cboFileListErrors.EndUpdate()
 
         Else
-            Me.cboFileListErrors.BeginUpdate()
-            Me.cboFileListErrors.Items.Add("-- No Errors --")
-            Me.cboFileListErrors.EndUpdate()
+            cboFileListErrors.BeginUpdate()
+            cboFileListErrors.Items.Add("-- No Errors --")
+            cboFileListErrors.EndUpdate()
         End If
 
         AddHandler cboFileListErrors.SelectedIndexChanged, AddressOf cboFileListErrors_SelectedIndexChanged
 
     End Sub
 
-    Private Sub BindFileListToWarningComboBox(contents As Hashtable)
+    Private Sub BindFileListToWarningComboBox(contents As Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended)))
 
-        Dim WarningCount As Integer
         RemoveHandler cboFileListWarnings.SelectedIndexChanged, AddressOf cboFileListWarnings_SelectedIndexChanged
 
         If Not contents Is Nothing Then
-            Dim counter = contents.GetEnumerator
 
-            Me.cboFileListWarnings.BeginUpdate()
+            cboFileListWarnings.BeginUpdate()
 
-            While counter.MoveNext()
-                WarningCount = DirectCast(Me.m_FileWarningList.Item(counter.Key), ArrayList).Count
-                Me.cboFileListWarnings.Items.Add(counter.Key)
-            End While
+            For Each item In contents
+                Dim warningCount = item.Value.Count
+                cboFileListWarnings.Items.Add(item.Key) '.ToString & " (" & warningCount & " Errors)")
+            Next
 
             cboFileListWarnings.EndUpdate()
 
@@ -483,66 +510,59 @@ Public Class frmValidationReport
 
     End Sub
 
-    Private Sub FillErrorListView(errorSummary As Hashtable)
-        FillErrorOrWarningListView(Me.lvwErrorList, errorSummary)
-    End Sub
-
-    Private Sub FillWarningListView(warningSummary As Hashtable)
-        FillErrorOrWarningListView(Me.lvwWarningList, warningSummary)
-    End Sub
-
-    Private Sub FillErrorOrWarningListView(objListview As ListView, itemSummary As Hashtable)
+    Private Sub FillErrorOrWarningListView(objListview As ListView, itemSummary As Dictionary(Of String, Integer))
         Dim li As ListViewItem
 
         If Not itemSummary Is Nothing Then
-            Dim counter = itemSummary.GetEnumerator
 
             objListview.BeginUpdate()
             objListview.Items.Clear()
 
-            While counter.MoveNext()
-                li = New ListViewItem(counter.Value.ToString)
-                li.SubItems.Add(counter.Key.ToString)
+            For Each item In itemSummary
+
+                li = New ListViewItem(item.Value.ToString())
+                li.SubItems.Add(item.Key)
                 objListview.Items.Add(li)
-            End While
+            Next
 
             objListview.EndUpdate()
         End If
     End Sub
 
     Private Sub FillValidListView()
-        Dim li As ListViewItem
-        Dim entry As IUploadProteins.UploadInfo
-        Dim FileName As String
 
-        If Me.m_FileValidList Is Nothing Then
-            Me.m_FileValidList = New Hashtable
+        If m_FileValidList Is Nothing Then
+            m_FileValidList = New Dictionary(Of String, IUploadProteins.UploadInfo)
         End If
 
-        If Me.m_FileValidList.Count = 0 Then
+        If m_FileValidList.Count = 0 Then
             Exit Sub
         End If
 
-        Dim counter = Me.m_FileValidList.GetEnumerator
+        lvwValidList.BeginUpdate()
+        lvwValidList.Items.Clear()
 
-        Me.lvwValidList.BeginUpdate()
-        Me.lvwValidList.Items.Clear()
+        For Each item In m_FileValidList
 
-        While counter.MoveNext()
-            entry = DirectCast(counter.Value, IUploadProteins.UploadInfo)
-            FileName = Path.GetFileName(counter.Key.ToString)
-            li = New ListViewItem(FileName)
-            li.SubItems.Add(Me.GetOrganismName(entry.OrganismID))
-            li.SubItems.Add(entry.ProteinCount.ToString)
-            li.SubItems.Add(entry.ExportedProteinCount.ToString)
-            Me.lvwValidList.Items.Add(li)
-        End While
+            Dim FileName = Path.GetFileName(item.Key)
+            Dim uploadInfo = item.Value
 
-        Me.lvwValidList.EndUpdate()
+            Dim li = New ListViewItem(FileName)
+            li.SubItems.Add(GetOrganismName(uploadInfo.OrganismID))
+            li.SubItems.Add(uploadInfo.ProteinCount.ToString)
+            li.SubItems.Add(uploadInfo.ExportedProteinCount.ToString)
+
+            lvwValidList.Items.Add(li)
+        Next
+
+        lvwValidList.EndUpdate()
 
     End Sub
 
-    Private Sub DumpDetailedErrorOrWarningList(errorList As ArrayList, FASTAFileName As String, strMessageType As String)
+    Private Sub DumpDetailedErrorOrWarningList(
+      errorList As IReadOnlyCollection(Of ICustomValidation.udtErrorInfoExtended),
+      fastaFileName As String,
+      messageType As String)
 
         Dim SaveDialog As New SaveFileDialog
 

@@ -500,7 +500,13 @@ Public Class frmBatchAddNewCollectionTest
     Private m_LastUsedDirectory As String
     Private m_LastSelectedOrganism As String = String.Empty
     Private m_LastSelectedAnnotationType As String = String.Empty
-    Private m_FileList As Hashtable
+
+    ''' <summary>
+    ''' Keys are full paths to the fasta file
+    ''' Values are FileInfo instances
+    ''' </summary>
+    Private m_FileList As Dictionary(Of String, FileInfo)
+
     Private m_CheckedFileList As List(Of IUploadProteins.UploadInfo)
 
     ' Keys are file paths, values are UploadInfo objects
@@ -511,7 +517,13 @@ Public Class frmBatchAddNewCollectionTest
 
     Private ReadOnly m_AnnotationTypeList As DataTable
     Private ReadOnly m_CollectionsTable As DataTable
-    Private m_CollectionsList As Hashtable
+
+    ''' <summary>
+    ''' Keys are protein collection ID
+    ''' Values are Protein Collection name
+    ''' </summary>
+    Private m_CollectionsList As Dictionary(Of Integer, String)
+
     Private m_SelectedOrganismID As Integer
     Private m_SelectedAnnotationTypeID As Integer
     Private ReadOnly m_PSConnectionString As String
@@ -678,8 +690,8 @@ Public Class frmBatchAddNewCollectionTest
 
 #Region " Directory Loading "
 
-    Private Function CollectionsTableToHash(dt As DataTable) As Hashtable
-        Dim ht As New Hashtable(dt.Rows.Count)
+    Private Function CollectionsTableToList(dt As DataTable) As Dictionary(Of Integer, String)
+        Dim collectionInfo As New Dictionary(Of Integer, String)(dt.Rows.Count)
         Dim dr As DataRow
         Dim foundrows() As DataRow = dt.Select("", "Protein_Collection_ID")
         Dim tmpID As Integer
@@ -687,14 +699,13 @@ Public Class frmBatchAddNewCollectionTest
 
         For Each dr In foundrows
             tmpID = DirectCast(dr.Item("Protein_Collection_ID"), Integer)
-            tmpName = dr.Item("FileName").ToString
-            If Not ht.Contains(tmpID) Then
-                ht.Add(tmpID, tmpName)
+            tmpName = dr.Item("FileName").ToString()
+            If Not collectionInfo.ContainsKey(tmpID) Then
+                collectionInfo.Add(tmpID, tmpName)
             End If
-            'ht.Add(CInt(dr.Item("Protein_Collection_ID")), dr.Item("FileName").ToString)
         Next
 
-        Return ht
+        Return collectionInfo
 
     End Function
 
@@ -715,7 +726,7 @@ Public Class frmBatchAddNewCollectionTest
         If Not m_FileList Is Nothing Then
             m_FileList.Clear()
         Else
-            m_FileList = New Hashtable
+            m_FileList = New Dictionary(Of String, FileInfo)
         End If
 
         For Each fi In foundFASTAFiles
@@ -748,7 +759,7 @@ Public Class frmBatchAddNewCollectionTest
         lvw.Items.Clear()
 
         If m_CollectionsList Is Nothing Then
-            m_CollectionsList = New Hashtable
+            m_CollectionsList = New Dictionary(Of Integer, String)
         End If
 
         For Each fi In m_FileList.Values

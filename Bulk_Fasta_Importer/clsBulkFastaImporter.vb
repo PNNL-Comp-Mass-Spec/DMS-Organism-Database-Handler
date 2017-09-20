@@ -182,7 +182,7 @@ Public Class clsBulkFastaImporter
 
                     Dim fastaFilePath = dataCols(0)
                     If Not fastaFilePath.Contains("\") Then
-                        fastaFilePath = Path.Combine(fiInfoFile.Directory.FullName, dataCols(0))
+                        fastaFilePath = Path.Combine(fiInfoFile.DirectoryName, dataCols(0))
                     End If
 
                     Dim fiFastaFile = New FileInfo(fastaFilePath)
@@ -567,11 +567,10 @@ Public Class clsBulkFastaImporter
         End If
     End Sub
 
-    Private Sub m_UploadHandler_FASTAFileWarnings(FASTAFilePath As String, warningCollection As ArrayList) Handles m_UploadHandler.FASTAFileWarnings
+    Private Sub m_UploadHandler_FASTAFileWarnings(FASTAFilePath As String, warningCollection As List(Of ICustomValidation.udtErrorInfoExtended)) Handles m_UploadHandler.FASTAFileWarnings
         Try
-            For Each warningInfo In warningCollection
-                Dim udtWarningInfo = CType(warningInfo, ICustomValidation.udtErrorInfoExtended)
-                ShowMessage("  ... Warning: " & udtWarningInfo.MessageText & ": " & udtWarningInfo.ProteinName)
+            For Each item In warningCollection
+                ShowMessage("  ... Warning: " & item.MessageText & ": " & item.ProteinName)
             Next
         Catch ex As Exception
             Console.WriteLine("warningCollection is not type ValidateFastaFile.ICustomValidation.udtErrorInfoExtended")
@@ -593,14 +592,12 @@ Public Class clsBulkFastaImporter
 
     End Sub
 
-    Private Sub m_UploadHandler_InvalidFASTAFile(FASTAFilePath As String, errorCollection As ArrayList) Handles m_UploadHandler.InvalidFASTAFile
+    Private Sub m_UploadHandler_InvalidFASTAFile(FASTAFilePath As String, errorCollection As List(Of ICustomValidation.udtErrorInfoExtended)) Handles m_UploadHandler.InvalidFASTAFile
         ShowWarning("Invalid fasta file: " & FASTAFilePath)
 
         Try
-            For Each errorInfo In errorCollection
-                Dim udtErrorInfo As ICustomValidation.udtErrorInfoExtended
-                udtErrorInfo = CType(errorInfo, ICustomValidation.udtErrorInfoExtended)
-                ShowMessage("  ... Error: " & udtErrorInfo.MessageText & ": " & udtErrorInfo.ProteinName)
+            For Each item In errorCollection
+                ShowMessage("  ... Error: " & item.MessageText & ": " & item.ProteinName)
             Next
         Catch ex As Exception
             Console.WriteLine("errorCollection is not type ValidateFastaFile.ICustomValidation.udtErrorInfoExtended")

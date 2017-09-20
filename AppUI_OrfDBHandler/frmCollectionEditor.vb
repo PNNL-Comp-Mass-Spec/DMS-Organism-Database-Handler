@@ -1696,57 +1696,59 @@ Public Class frmCollectionEditor
         UploadInfo As IUploadProteins.UploadInfo) Handles m_UploadHandler.ValidFASTAFileLoaded
 
         If m_ValidUploadsList Is Nothing Then
-            m_ValidUploadsList = New Hashtable
+            m_ValidUploadsList = New Dictionary(Of String, IUploadProteins.UploadInfo)
         End If
 
         m_ValidUploadsList.Add(FASTAFilePath, UploadInfo)
 
     End Sub
 
-    Private Sub InvalidFASTAFileHandler(FASTAFilePath As String, errorCollection As ArrayList) Handles m_UploadHandler.InvalidFASTAFile
+    Private Sub InvalidFASTAFileHandler(FASTAFilePath As String, errorCollection As List(Of ICustomValidation.udtErrorInfoExtended)) Handles m_UploadHandler.InvalidFASTAFile
 
         If m_FileErrorList Is Nothing Then
-            m_FileErrorList = New Hashtable
+            m_FileErrorList = New Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended))
         End If
 
         m_FileErrorList.Add(Path.GetFileName(FASTAFilePath), errorCollection)
 
         If m_SummarizedFileErrorList Is Nothing Then
-            m_SummarizedFileErrorList = New Hashtable
+            m_SummarizedFileErrorList = New Dictionary(Of String, Dictionary(Of String, Integer))
         End If
 
         m_SummarizedFileErrorList.Add(Path.GetFileName(FASTAFilePath), SummarizeErrors(errorCollection))
 
     End Sub
 
-    Private Sub FASTAFileWarningsHandler(FASTAFilePath As String, warningCollection As ArrayList) Handles m_UploadHandler.FASTAFileWarnings
+    Private Sub FASTAFileWarningsHandler(FASTAFilePath As String, warningCollection As List(Of ICustomValidation.udtErrorInfoExtended)) Handles m_UploadHandler.FASTAFileWarnings
 
         If m_FileWarningList Is Nothing Then
-            m_FileWarningList = New Hashtable
+            m_FileWarningList = New Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended))
         End If
 
         m_FileWarningList.Add(Path.GetFileName(FASTAFilePath), warningCollection)
 
         If m_SummarizedFileWarningList Is Nothing Then
-            m_SummarizedFileWarningList = New Hashtable
+            m_SummarizedFileWarningList = New Dictionary(Of String, Dictionary(Of String, Integer))
         End If
 
         m_SummarizedFileWarningList.Add(Path.GetFileName(FASTAFilePath), SummarizeErrors(warningCollection))
 
     End Sub
 
-    Private Function SummarizeErrors(ByRef errorCollection As ArrayList) As Hashtable
-        Dim errorSummary As New Hashtable
-        Dim errorEntry As ICustomValidation.udtErrorInfoExtended
-        Dim currentCount As Integer
+    Private Function SummarizeErrors(ByRef errorCollection As List(Of ICustomValidation.udtErrorInfoExtended)) As Dictionary(Of String, Integer)
+
+        ' Keys are error messages, values are the number of times the error was reported
+        Dim errorSummary As New Dictionary(Of String, Integer)
 
         If Not errorCollection Is Nothing AndAlso errorCollection.Count > 0 Then
             For Each errorEntry In errorCollection
-                If Not errorSummary.Contains(errorEntry.MessageText.ToString) Then
-                    errorSummary.Add(errorEntry.MessageText.ToString, "1")
+                Dim message = errorEntry.MessageText
+                Dim currentCount As Integer
+
+                If errorSummary.TryGetValue(message, currentCount) Then
+                    errorSummary.Item(message) = currentCount + 1
                 Else
-                    currentCount = CInt(errorSummary.Item(errorEntry.MessageText.ToString))
-                    errorSummary.Item(errorEntry.MessageText.ToString) = (currentCount + 1).ToString
+                    errorSummary.Add(message, 1)
                 End If
             Next
         End If
@@ -1771,15 +1773,6 @@ Public Class frmCollectionEditor
     End Sub
 
 #End Region
-
-
-    Private Sub mnuToolsUpdateSHA_Click(sender As Object, e As EventArgs)
-        If m_Syncer Is Nothing Then
-            m_Syncer = New clsSyncFASTAFileArchive(m_PSConnectionString)
-        End If
-
-        m_Syncer.UpdateSHA1Hashes()
-    End Sub
 
     Private Sub mnuAdminUpdateZeroedMasses_Click(sender As Object, e As EventArgs) Handles mnuAdminUpdateZeroedMasses.Click
         If m_Syncer Is Nothing Then

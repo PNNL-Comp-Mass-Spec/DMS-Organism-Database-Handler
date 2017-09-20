@@ -76,8 +76,8 @@ Public Interface IUploadProteins
     Event BatchProgress(status As String)
     Event ValidationProgress(taskTitle As String, fractionDone As Double)
     Event ValidFASTAFileLoaded(FASTAFilePath As String, UploadData As UploadInfo)
-    Event InvalidFASTAFile(FASTAFilePath As String, errorCollection As ArrayList)
-    Event FASTAFileWarnings(FASTAFilePath As String, warningCollection As ArrayList)
+    Event InvalidFASTAFile(FASTAFilePath As String, errorCollection As List(Of ICustomValidation.udtErrorInfoExtended))
+    Event FASTAFileWarnings(FASTAFilePath As String, warningCollection As List(Of ICustomValidation.udtErrorInfoExtended))
     Event FASTAValidationComplete(FASTAFilePath As String, UploadInfo As UploadInfo)
     Event WroteLineEndNormalizedFASTA(newFilePath As String)
 End Interface
@@ -105,8 +105,8 @@ Public Class clsPSUploadHandler
     Protected Event BatchProgress(status As String) Implements IUploadProteins.BatchProgress
     Protected Event ValidationProgress(taskTitle As String, fractionDone As Double) Implements IUploadProteins.ValidationProgress
     Protected Event ValidFASTAFileLoaded(FASTAFilePath As String, UploadData As IUploadProteins.UploadInfo) Implements IUploadProteins.ValidFASTAFileLoaded
-    Protected Event InvalidFASTAFile(FASTAFilePath As String, errorCollection As ArrayList) Implements IUploadProteins.InvalidFASTAFile
-    Protected Event FASTAFileWarnings(FASTAFilePath As String, warningCollection As ArrayList) Implements IUploadProteins.FASTAFileWarnings
+    Protected Event InvalidFASTAFile(FASTAFilePath As String, errorCollection As List(Of ICustomValidation.udtErrorInfoExtended)) Implements IUploadProteins.InvalidFASTAFile
+    Protected Event FASTAFileWarnings(FASTAFilePath As String, warningCollection As List(Of ICustomValidation.udtErrorInfoExtended)) Implements IUploadProteins.FASTAFileWarnings
     Protected Event FASTAValidationComplete(FASTAFilePath As String, UploadInfo As IUploadProteins.UploadInfo) Implements IUploadProteins.FASTAValidationComplete
     Protected Event WroteLineEndNormalizedFASTA(newFilePath As String) Implements IUploadProteins.WroteLineEndNormalizedFASTA
 
@@ -179,11 +179,11 @@ Public Class clsPSUploadHandler
         RaiseEvent WroteLineEndNormalizedFASTA(newFASTAFilePath)
     End Sub
 
-    Private Sub OnFASTAFileWarnings(FASTAFilePath As String, warningCollection As ArrayList)
+    Private Sub OnFASTAFileWarnings(FASTAFilePath As String, warningCollection As List(Of ICustomValidation.udtErrorInfoExtended))
         RaiseEvent FASTAFileWarnings(FASTAFilePath, warningCollection)
     End Sub
 
-    Private Sub OnInvalidFASTAFile(FASTAFilePath As String, errorCollection As ArrayList)
+    Private Sub OnInvalidFASTAFile(FASTAFilePath As String, errorCollection As List(Of ICustomValidation.udtErrorInfoExtended))
         RaiseEvent InvalidFASTAFile(FASTAFilePath, errorCollection)
     End Sub
 
@@ -230,7 +230,7 @@ Public Class clsPSUploadHandler
         Dim dboxResult As DialogResult
         Dim errorText As String
         Dim errorLabel As String
-        Dim errorCollection As ArrayList
+        Dim errorCollection As List(Of ICustomValidation.udtErrorInfoExtended)
 
 
         For Each upInfo In fileInfoList
@@ -334,7 +334,7 @@ Public Class clsPSUploadHandler
                 End If
 
                 If dboxResult = DialogResult.No Then
-                    errorCollection = New ArrayList
+                    errorCollection = New List(Of ICustomValidation.udtErrorInfoExtended)
                     errorCollection.Add(New ICustomValidation.udtErrorInfoExtended(
                         0, " N/A ", errorText, "", errorLabel))
                     OnInvalidFASTAFile(tmpFileName, errorCollection)
@@ -350,7 +350,7 @@ Public Class clsPSUploadHandler
                     If tmpPS.ProteinCount = 0 Then
                         ' No proteins
 
-                        errorCollection = New ArrayList
+                        errorCollection = New List(Of ICustomValidation.udtErrorInfoExtended)
                         errorCollection.Add(New ICustomValidation.udtErrorInfoExtended(
                             0, " N/A ", "No valid proteins were loaded from the .Fasta file", "", "Error"))
 

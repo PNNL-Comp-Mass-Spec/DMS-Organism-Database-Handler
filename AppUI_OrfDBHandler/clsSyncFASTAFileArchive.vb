@@ -20,7 +20,6 @@ Public Class clsSyncFASTAFileArchive
     Event SyncStart(StatusMsg As String)
     Event SyncProgress(StatusMsg As String, fractionDone As Double)
     Event SyncComplete()
-    Event FileSyncProgress(CurrentProteinCount As Integer)
 
     Private m_CurrentStatusMsg As String
     Private m_CurrentProteinCount As Integer
@@ -28,7 +27,7 @@ Public Class clsSyncFASTAFileArchive
 
     Private m_GeneratedFastaFilePath As String
 
-    Sub New(PSConnectionString As String)
+    Public Sub New(PSConnectionString As String)
 
         Me.m_PSConnectionString = PSConnectionString
         'Me.m_FileArchiver = New Protein_Exporter.clsArchiveToFile(PSConnectionString, Me.m_Exporter)
@@ -38,7 +37,7 @@ Public Class clsSyncFASTAFileArchive
 
     End Sub
 
-    Function SyncCollectionsAndArchiveTables(OutputPath As String) As Integer
+    Public Function SyncCollectionsAndArchiveTables(OutputPath As String) As Integer
         Dim SQL As String
         SQL = "SELECT Protein_Collection_ID, FileName, Authentication_Hash, DateModified, Collection_Type_ID, NumProteins " &
             "FROM V_Missing_Archive_Entries"
@@ -52,7 +51,6 @@ Public Class clsSyncFASTAFileArchive
         Dim dr As DataRow
         Dim sourceFilePath As String
         Dim proteinCollectionID As Integer
-        Dim ArchiveEntryID As Integer
         Dim SHA1 As String
         Dim CreationOptionsString = "seq_direction=forward,filetype=fasta"
         Dim totalProteinsCount As Integer
@@ -315,50 +313,38 @@ Public Class clsSyncFASTAFileArchive
         Dim getCollectionsSQL = "SELECT Protein_Collection_ID, FileName, Organism_ID FROM V_Protein_Collections_By_Organism WHERE Collection_Type_ID = 1 or Collection_Type_ID = 5"
 
         Dim collectionTable As DataTable = Me.m_TableGetter.GetTable(getCollectionsSQL)
-        Dim collectionEntry As DataRow
-        Dim tmpCollectionName As String
-        Dim tmpCollectionID As Integer
 
         Dim getLegacyFilesSQL = "SELECT DISTINCT FileName, Full_Path, Organism_ID FROM V_Legacy_Static_File_Locations"
         Dim legacyTable As DataTable = Me.m_TableGetter.GetTable(getLegacyFilesSQL)
-        Dim legacyfoundrows() As DataRow
-        Dim legacyFileEntry As DataRow
-        Dim legacyFullPath As String
 
-        Dim nameIndexHash As Hashtable
+        Dim nameIndexHash As Dictionary(Of String, Integer)
 
-        Dim getReferencesSQL As String
-        Dim referencesTable As DataTable
-        Dim referenceEntry As DataRow
-
-        Dim tmpRefName As String
-        Dim tmpRefID As Integer
-        Dim tmpProteinID As Integer
-        Dim tmpSortingIndex As Integer
-        Dim tmpOrgID As Integer
-
-        For Each collectionEntry In collectionTable.Rows
-            tmpCollectionName = collectionEntry.Item("FileName").ToString
-            tmpCollectionID = CInt(collectionEntry.Item("Protein_Collection_ID"))
+        For Each collectionEntry As DataRow In collectionTable.Rows
+            Dim tmpCollectionName = collectionEntry.Item("FileName").ToString
+            Dim tmpCollectionID = CInt(collectionEntry.Item("Protein_Collection_ID"))
             If tmpCollectionID = 1026 Then
                 Debug.WriteLine("")
             End If
-            tmpOrgID = CInt(collectionEntry.Item("Organism_ID"))
-            legacyfoundrows = legacyTable.Select("FileName = '" & tmpCollectionName & ".fasta' AND Organism_ID = " & tmpOrgID)
+
+            Dim tmpOrgID = CInt(collectionEntry.Item("Organism_ID"))
+
+            Dim legacyfoundrows = legacyTable.Select("FileName = '" & tmpCollectionName & ".fasta' AND Organism_ID = " & tmpOrgID)
             If legacyfoundrows.Length > 0 Then
-                getReferencesSQL = "SELECT * FROM V_Tmp_Member_Name_Lookup WHERE Protein_Collection_ID = " & tmpCollectionID.ToString &
+                Dim getReferencesSQL = "SELECT * FROM V_Tmp_Member_Name_Lookup WHERE Protein_Collection_ID = " & tmpCollectionID.ToString &
                                     " AND Sorting_Index is NULL"
-                referencesTable = Me.m_TableGetter.GetTable(getReferencesSQL)
+                Dim referencesTable = Me.m_TableGetter.GetTable(getReferencesSQL)
                 If referencesTable.Rows.Count > 0 Then
-                    legacyFileEntry = legacyfoundrows(0)
-                    legacyFullPath = legacyFileEntry.Item("Full_Path").ToString
+                    Dim legacyFileEntry = legacyfoundrows(0)
+                    Dim legacyFullPath = legacyFileEntry.Item("Full_Path").ToString
                     nameIndexHash = Me.GetProteinSortingIndices(legacyFullPath)
-                    For Each referenceEntry In referencesTable.Rows
-                        tmpRefID = DirectCast(referenceEntry.Item("Reference_ID"), Integer)
-                        tmpProteinID = DirectCast(referenceEntry.Item("Protein_ID"), Integer)
-                        tmpRefName = referenceEntry.Item("Name").ToString
+
+                    For Each referenceEntry As DataRow In referencesTable.Rows
+                        Dim tmpRefID = DirectCast(referenceEntry.Item("Reference_ID"), Integer)
+                        Dim tmpProteinID = DirectCast(referenceEntry.Item("Protein_ID"), Integer)
+                        Dim tmpRefName = referenceEntry.Item("Name").ToString
+
                         'Try
-                        tmpSortingIndex = DirectCast(nameIndexHash.Item(tmpRefName.ToLower), Integer)
+                        Dim tmpSortingIndex = nameIndexHash.Item(tmpRefName.ToLower())
 
                         If tmpSortingIndex > 0 Then
                             Me.m_Importer.UpdateProteinCollectionMember(
@@ -377,13 +363,13 @@ Public Class clsSyncFASTAFileArchive
 
     End Sub
 
-    Private Function GetProteinSortingIndices(FilePath As String) As Hashtable
+    Private Function GetProteinSortingIndices(FilePath As String) As Dictionary(Of String, Integer)
         Dim fi = New FileInfo(FilePath)
         Dim tr As TextReader
         Dim s As String
         Dim nameRegex As Regex
         Dim m As Match
-        Dim nameHash As New Hashtable
+        Dim nameHash As New Dictionary(Of String, Integer)
         Dim counter As Integer
         Dim tmpName As String
 
@@ -412,8 +398,9 @@ Public Class clsSyncFASTAFileArchive
 
     End Function
 
-        Dim proteinList As New Hashtable
     Public Sub CorrectMasses()
+
+        Dim proteinList = New Dictionary(Of Integer, String)
         Dim proteinTable As DataTable
         Dim dr As DataRow
         Dim counter As Integer
@@ -528,7 +515,7 @@ Public Class clsSyncFASTAFileArchive
 
     End Sub
 
-    Protected Sub UpdateProteinSequenceInfo(Proteins As Hashtable)
+    Private Sub UpdateProteinSequenceInfo(Proteins As Dictionary(Of Integer, String))
 
         If Me.m_Importer Is Nothing Then
             Me.m_Importer = New clsAddUpdateEntries(Me.m_PSConnectionString)
