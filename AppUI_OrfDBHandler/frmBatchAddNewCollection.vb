@@ -744,7 +744,7 @@ Public Class frmBatchAddNewCollection
             End Select
         Next
 
-        LoadListView(lvwFolderContents)
+        LoadListView()
 
     End Sub
 
@@ -755,14 +755,11 @@ Public Class frmBatchAddNewCollection
     ''' <summary>
     ''' Populate the top Listview with fasta files in the selected folder
     ''' </summary>
-    ''' <param name="lvw"></param>
     ''' <remarks></remarks>
-    Private Sub LoadListView(lvw As ListView)
-        Dim fi As FileInfo
-        Dim li As ListViewItem
-        lvw.BeginUpdate()
+    Private Sub LoadListView()
+        lvwFolderContents.BeginUpdate()
 
-        lvw.Items.Clear()
+        lvwFolderContents.Items.Clear()
 
         If m_CollectionsList Is Nothing Then
             m_CollectionsList = New Dictionary(Of Integer, String)
