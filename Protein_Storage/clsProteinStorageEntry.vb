@@ -51,17 +51,17 @@ Public Class clsProteinStorageEntry
 
     Protected m_IsEncrypted As Boolean = False
 
-    Protected ReadOnly Property Reference() As String Implements IProteinStorageEntry.Reference
+    Protected ReadOnly Property Reference As String Implements IProteinStorageEntry.Reference
         Get
             Return m_Reference
         End Get
     End Property
 
-    Protected Property AlternateReference() As String Implements IProteinStorageEntry.AlternateReference
+    Protected Property AlternateReference As String Implements IProteinStorageEntry.AlternateReference
         Get
             Return m_AlternateReference
         End Get
-        Set(Value As String)
+        Set
             If Value.Length > 0 Then
                 m_AlternateReference = Value
             Else
@@ -70,115 +70,115 @@ Public Class clsProteinStorageEntry
         End Set
     End Property
 
-    Protected ReadOnly Property HasAlternateReference() As Boolean Implements IProteinStorageEntry.HasAlternateReferences
+    Protected ReadOnly Property HasAlternateReference As Boolean Implements IProteinStorageEntry.HasAlternateReferences
         Get
             Return Not m_AlternateReference Is Nothing
         End Get
     End Property
 
-    Protected ReadOnly Property Description() As String Implements IProteinStorageEntry.Description
+    Protected ReadOnly Property Description As String Implements IProteinStorageEntry.Description
         Get
             Return m_Description
         End Get
     End Property
 
-    Protected Property Sequence() As String Implements IProteinStorageEntry.Sequence
+    Protected Property Sequence As String Implements IProteinStorageEntry.Sequence
         Get
             Return m_Sequence
         End Get
-        Set(Value As String)
+        Set
             m_Sequence = Value
         End Set
     End Property
 
-    Protected Property IsEncrypted() As Boolean Implements IProteinStorageEntry.IsEncrypted
+    Protected Property IsEncrypted As Boolean Implements IProteinStorageEntry.IsEncrypted
         Get
             Return m_IsEncrypted
         End Get
-        Set(Value As Boolean)
+        Set
             m_IsEncrypted = Value
         End Set
     End Property
 
-    Protected ReadOnly Property MonoisotopicMass() As Double Implements IProteinStorageEntry.MonoisotopicMass
+    Protected ReadOnly Property MonoisotopicMass As Double Implements IProteinStorageEntry.MonoisotopicMass
         Get
             Return m_MonoMass
         End Get
     End Property
 
-    Protected ReadOnly Property AverageMass() As Double Implements IProteinStorageEntry.AverageMass
+    Protected ReadOnly Property AverageMass As Double Implements IProteinStorageEntry.AverageMass
         Get
             Return m_AvgMass
         End Get
     End Property
 
-    Protected ReadOnly Property Length() As Integer Implements IProteinStorageEntry.Length
+    Protected ReadOnly Property Length As Integer Implements IProteinStorageEntry.Length
         Get
             Return m_Length
         End Get
     End Property
 
-    Protected ReadOnly Property MolecularFormula() As String Implements IProteinStorageEntry.MolecularFormula
+    Protected ReadOnly Property MolecularFormula As String Implements IProteinStorageEntry.MolecularFormula
         Get
             Return m_MolecularFormula
         End Get
     End Property
 
-    Protected Property SHA1Hash() As String Implements IProteinStorageEntry.SHA1Hash
+    Protected Property SHA1Hash As String Implements IProteinStorageEntry.SHA1Hash
         Get
             Return m_AuthHash
         End Get
-        Set(value As String)
-            m_AuthHash = value
+        Set
+            m_AuthHash = Value
         End Set
     End Property
 
-    Public Property Protein_ID() As Integer Implements IProteinStorageEntry.Protein_ID
+    Public Property Protein_ID As Integer Implements IProteinStorageEntry.Protein_ID
         Get
             Return m_Protein_ID
         End Get
-        Set(Value As Integer)
+        Set
             m_Protein_ID = Value
         End Set
     End Property
 
-    Protected Property Reference_ID() As Integer Implements IProteinStorageEntry.Reference_ID
+    Protected Property Reference_ID As Integer Implements IProteinStorageEntry.Reference_ID
         Get
             Return m_Reference_ID
         End Get
-        Set(Value As Integer)
+        Set
             m_Reference_ID = Value
         End Set
     End Property
 
-    Protected Property Member_ID() As Integer Implements IProteinStorageEntry.Member_ID
+    Protected Property Member_ID As Integer Implements IProteinStorageEntry.Member_ID
         Get
             Return m_Member_ID
         End Get
-        Set(Value As Integer)
+        Set
             m_Member_ID = Value
         End Set
     End Property
 
-    Protected Property Authority_ID() As Integer Implements IProteinStorageEntry.Authority_ID
+    Protected Property Authority_ID As Integer Implements IProteinStorageEntry.Authority_ID
         Get
             Return m_Authority_ID
         End Get
-        Set(Value As Integer)
+        Set
             m_Authority_ID = Value
         End Set
     End Property
 
-    Protected Property SortingIndex() As Integer Implements IProteinStorageEntry.SortingIndex
+    Protected Property SortingIndex As Integer Implements IProteinStorageEntry.SortingIndex
         Get
             Return m_SortCount
         End Get
-        Set(Value As Integer)
+        Set
             m_SortCount = Value
         End Set
     End Property
 
-    Protected ReadOnly Property NameXRefs() As List(Of String) Implements IProteinStorageEntry.NameXRefs
+    Protected ReadOnly Property NameXRefs As List(Of String) Implements IProteinStorageEntry.NameXRefs
         Get
             Return m_XRefList
         End Get

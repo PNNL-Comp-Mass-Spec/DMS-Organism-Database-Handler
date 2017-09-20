@@ -53,21 +53,21 @@ Public Class clsProteinStorage
         m_ProteinNames.Clear()
     End Sub
 
-    Protected ReadOnly Property TotalResidueCount() As Integer Implements IProteinStorage.TotalResidueCount
+    Protected ReadOnly Property TotalResidueCount As Integer Implements IProteinStorage.TotalResidueCount
         Get
             Return m_ResidueCount
         End Get
     End Property
 
-    Protected ReadOnly Property ProteinCount() As Integer Implements IProteinStorage.ProteinCount
+    Protected ReadOnly Property ProteinCount As Integer Implements IProteinStorage.ProteinCount
         Get
             Return m_Proteins.Count()
         End Get
     End Property
 
     Protected Property EncryptSequences As Boolean Implements IProteinStorage.EncryptSequences
-    
-    Protected Property PassPhrase() As String Implements IProteinStorage.PassPhrase
+
+    Protected Property PassPhrase As String Implements IProteinStorage.PassPhrase
         Get
             If EncryptSequences Then
                 Return m_PassPhrase
@@ -75,7 +75,7 @@ Public Class clsProteinStorage
                 Return Nothing
             End If
         End Get
-        Set(Value As String)
+        Set
             m_PassPhrase = Value
         End Set
     End Property

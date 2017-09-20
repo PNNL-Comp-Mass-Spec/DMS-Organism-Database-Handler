@@ -117,13 +117,13 @@ Friend Class AnnotationStorage
     'End Function
 
     'Returns hashtable containing all the added primary reference names as keys
-    'and SortedSets of their corresponding xref names for the specified 
+    'and SortedSets of their corresponding xref names for the specified
     'Annotation group id
     Function GetAllRawXRefs(GroupID As Integer) As Dictionary(Of String, SortedSet(Of String))
         Return Me.GetGroup(GroupID).GetAllXRefs
     End Function
 
-    'Returns a SortedSet containing all the xref names for the given 
+    'Returns a SortedSet containing all the xref names for the given
     'primary reference name
     Function GetXRefs(
         PrimaryReferenceName As String,

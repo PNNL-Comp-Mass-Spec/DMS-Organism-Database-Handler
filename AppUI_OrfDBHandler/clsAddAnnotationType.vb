@@ -13,44 +13,44 @@ Public Class clsAddAnnotationType
     Protected m_Authorities As DataTable
     Protected m_FormLocation As Point
 
-    ReadOnly Property TypeName() As String
+    ReadOnly Property TypeName As String
         Get
             Return Me.m_TypeName
         End Get
     End Property
 
-    ReadOnly Property Description() As String
+    ReadOnly Property Description As String
         Get
             Return Me.m_Description
         End Get
     End Property
 
-    ReadOnly Property AnnotationExample() As String
+    ReadOnly Property AnnotationExample As String
         Get
             Return Me.m_Example
         End Get
     End Property
 
-    ReadOnly Property AuthorityID() As Integer
+    ReadOnly Property AuthorityID As Integer
         Get
             Return Me.m_AuthID
         End Get
     End Property
 
-    ReadOnly Property DisplayName() As String
+    ReadOnly Property DisplayName As String
         Get
             Return GetDisplayName(Me.m_AuthID, Me.m_TypeName)
         End Get
     End Property
 
-    ReadOnly Property EntryExists() As Boolean
+    ReadOnly Property EntryExists As Boolean
         Get
             Return Me.m_EntryExists
         End Get
     End Property
 
-    WriteOnly Property FormLocation() As Point
-        Set(Value As Point)
+    WriteOnly Property FormLocation As Point
+        Set
             Me.m_FormLocation = Value
         End Set
     End Property

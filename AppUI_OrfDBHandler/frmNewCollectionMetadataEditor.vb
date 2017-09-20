@@ -4,8 +4,8 @@
         Get
             Return txtDescription.Text
         End Get
-        Set(value As String)
-            txtDescription.Text = value
+        Set
+            txtDescription.Text = Value
         End Set
     End Property
 
@@ -13,8 +13,8 @@
         Get
             Return txtSource.Text
         End Get
-        Set(value As String)
-            txtSource.Text = value
+        Set
+            txtSource.Text = Value
         End Set
     End Property
 

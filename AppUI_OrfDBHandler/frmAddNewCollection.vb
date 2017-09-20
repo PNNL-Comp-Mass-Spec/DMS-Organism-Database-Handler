@@ -319,68 +319,68 @@ Public Class frmAddNewCollection
 
     End Sub
 
-    Friend Property IsLocalFile() As Boolean
+    Friend Property IsLocalFile As Boolean
         Get
             Return Me.m_Local_File
         End Get
-        Set(Value As Boolean)
+        Set
             Me.m_Local_File = Value
         End Set
     End Property
 
-    Friend Property CollectionName() As String
+    Friend Property CollectionName As String
         Get
             Return Me.m_CollectionName
         End Get
-        Set(Value As String)
+        Set
             Me.m_CollectionName = Value
         End Set
     End Property
 
-    Friend Property CollectionDescription() As String
+    Friend Property CollectionDescription As String
         Get
             Return Me.m_Description
         End Get
-        Set(Value As String)
+        Set
             Me.m_Description = Value
         End Set
     End Property
 
-    Friend Property CollectionSource() As String
+    Friend Property CollectionSource As String
         Get
             Return Me.m_CollectionSource
         End Get
-        Set(Value As String)
+        Set
             Me.m_CollectionSource = Value
         End Set
     End Property
 
-    Friend WriteOnly Property OrganismList() As DataTable
-        Set(Value As DataTable)
+    Friend WriteOnly Property OrganismList As DataTable
+        Set
             Me.m_Organisms = Value
         End Set
     End Property
 
-    Friend WriteOnly Property AnnotationTypes() As DataTable
-        Set(Value As DataTable)
+    Friend WriteOnly Property AnnotationTypes As DataTable
+        Set
             Me.m_AnnotationTypes = Value
         End Set
     End Property
 
-    Friend Property OrganismID() As Integer
+    Friend Property OrganismID As Integer
         Get
             Return Me.m_OrganismID
         End Get
-        Set(Value As Integer)
+        Set
             Me.m_OrganismID = Value
         End Set
     End Property
 
-    Friend Property AnnotationTypeID() As Integer
+    Friend Property AnnotationTypeID As Integer
         Get
             Return Me.m_AnnotationTypeID
         End Get
-        Set(Value As Integer)
+        Set
             Me.m_AnnotationTypeID = Value
         End Set
     End Property

@@ -13,38 +13,38 @@ Public Class clsAddNamingAuthority
     Protected ReadOnly m_AuthorityTable As DataTable
     Protected m_FormLocation As Point
 
-    ReadOnly Property ShortName() As String
+    ReadOnly Property ShortName As String
         Get
             Return Me.m_shortName
         End Get
     End Property
 
-    ReadOnly Property FullName() As String
+    ReadOnly Property FullName As String
         Get
             Return Me.m_fullName
         End Get
     End Property
 
-    ReadOnly Property WebAddress() As String
+    ReadOnly Property WebAddress As String
         Get
             Return Me.m_webAddress
         End Get
     End Property
 
-    ReadOnly Property EntryExists() As Boolean
+    ReadOnly Property EntryExists As Boolean
         Get
             Return Me.m_EntryExists
         End Get
     End Property
 
-    ReadOnly Property AuthoritiesTable() As DataTable
+    ReadOnly Property AuthoritiesTable As DataTable
         Get
             Return Me.m_AuthorityTable
         End Get
     End Property
 
-    WriteOnly Property FormLocation() As Point
-        Set(Value As Point)
+    WriteOnly Property FormLocation As Point
+        Set
             Me.m_FormLocation = Value
         End Set
     End Property

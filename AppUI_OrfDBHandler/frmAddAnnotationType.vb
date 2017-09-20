@@ -185,50 +185,50 @@ Public Class frmAddAnnotationType
 
 #Region " Return Properties "
 
-    Property TypeName() As String
+    Property TypeName As String
         Get
             Return Me.m_TypeName
         End Get
-        Set(Value As String)
+        Set
             Me.m_TypeName = Value
         End Set
     End Property
 
-    Property Description() As String
+    Property Description As String
         Get
             Return Me.m_Description
         End Get
-        Set(Value As String)
+        Set
             Me.m_Description = Value
         End Set
     End Property
 
-    Property Example() As String
+    Property Example As String
         Get
             Return Me.m_Example
         End Get
-        Set(Value As String)
+        Set
             Me.m_Example = Value
         End Set
     End Property
 
-    Property AuthorityID() As Integer
+    Property AuthorityID As Integer
         Get
             Return Me.m_AuthID
         End Get
-        Set(Value As Integer)
+        Set
             Me.m_AuthID = Value
         End Set
     End Property
 
-    WriteOnly Property ConnectionString() As String
-        Set(Value As String)
+    WriteOnly Property ConnectionString As String
+        Set
             Me.m_PSConnectionString = Value
         End Set
     End Property
 
-    WriteOnly Property AuthorityTable() As DataTable
-        Set(Value As DataTable)
+    WriteOnly Property AuthorityTable As DataTable
+        Set
             Me.m_AuthoritiesTable = Value
         End Set
     End Property

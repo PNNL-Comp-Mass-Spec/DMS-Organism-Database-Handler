@@ -759,51 +759,67 @@ Public Class frmCollectionEditor
 
 #End Region
 
-    Protected Const PROGRAM_DATE As String = "June 26, 2017"
+    Private Const PROGRAM_DATE As String = "September 20, 2017"
 
-    Protected m_Organisms As DataTable
-    Protected m_ProteinCollections As DataTable
-    Protected m_ProteinCollectionNames As DataTable
-    Protected m_AnnotationTypes As DataTable
-    Protected m_CollectionMembers As DataTable
-    Protected m_SelectedOrganismID As Integer
-    Protected m_SelectedAnnotationTypeID As Integer
-    Protected m_SelectedFilePath As String
-    Protected m_SelectedCollectionID As Integer
-    Protected m_LastBatchULDirectoryPath As String
-    Protected m_PSConnectionString As String = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
+    Private m_Organisms As DataTable
+    Private m_ProteinCollections As DataTable
+    Private m_ProteinCollectionNames As DataTable
+    Private m_AnnotationTypes As DataTable
+    Private m_CollectionMembers As DataTable
+    Private m_SelectedOrganismID As Integer
+    Private m_SelectedAnnotationTypeID As Integer
+    Private m_SelectedFilePath As String
+    Private m_SelectedCollectionID As Integer
+    Private m_LastBatchULDirectoryPath As String
+    Private m_PSConnectionString As String = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
 
-    Protected m_LastSelectedOrganism As String = ""
-    Protected m_LastSelectedAnnotationType As String = ""
-    Protected m_LastValueForAllowAsterisks As Boolean = False
-    Protected m_LastValueForAllowDash As Boolean = False
-    Protected m_LastValueForMaxProteinNameLength As Integer = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
+    Private m_LastSelectedOrganism As String = ""
+    Private m_LastSelectedAnnotationType As String = ""
+    Private m_LastValueForAllowAsterisks As Boolean = False
+    Private m_LastValueForAllowDash As Boolean = False
+    Private m_LastValueForMaxProteinNameLength As Integer = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
 
-    Protected WithEvents m_ImportHandler As IImportProteins
-    Protected WithEvents m_UploadHandler As IUploadProteins
-    Protected WithEvents m_SourceListViewHandler As DataListViewHandler
-    'Protected WithEvents m_Validator As ValidateFastaFile.ICustomValidation
-    Protected WithEvents m_fileBatcher As clsBatchUploadFromFileList
+    Private WithEvents m_ImportHandler As IImportProteins
+    Private WithEvents m_UploadHandler As IUploadProteins
+    Private WithEvents m_SourceListViewHandler As DataListViewHandler
+    Private WithEvents m_fileBatcher As clsBatchUploadFromFileList
 
-    Protected m_LocalFileLoaded As Boolean
+    Private m_LocalFileLoaded As Boolean
 
     Private m_SearchActive As Boolean = False
 
     Private m_BatchLoadTotalCount As Integer
     Private m_BatchLoadCurrentCount As Integer
 
-    Private m_FileErrorList As Hashtable
-    Private m_SummarizedFileErrorList As Hashtable
+    ''' <summary>
+    ''' Keys are fasta file names, values are lists of errors
+    ''' </summary>
+    Private m_FileErrorList As Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended))
 
-    Private m_FileWarningList As Hashtable
-    Private m_SummarizedFileWarningList As Hashtable
+    ''' <summary>
+    ''' Keys are fasta file names, values are dictionaries of error messages, tracking the count of each error
+    ''' </summary>
+    Private m_SummarizedFileErrorList As Dictionary(Of String, Dictionary(Of String, Integer))
 
-    Private m_ValidUploadsList As Hashtable
+    ''' <summary>
+    ''' Keys are fasta file names, values are lists of warnings
+    ''' </summary>
+    Private m_FileWarningList As Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended))
 
-    Protected WithEvents m_Syncer As clsSyncFASTAFileArchive
+    ''' <summary>
+    ''' Keys are fasta file names, values are dictionaries of warning messages, tracking the count of each warning
+    ''' </summary>
+    Private m_SummarizedFileWarningList As Dictionary(Of String, Dictionary(Of String, Integer))
 
-    Protected m_EncryptSequences As Boolean = False
+    ''' <summary>
+    ''' Keys are FASTA file paths
+    ''' Values are upload info
+    ''' </summary>
+    Private m_ValidUploadsList As Dictionary(Of String, IUploadProteins.UploadInfo)
 
+    Private WithEvents m_Syncer As clsSyncFASTAFileArchive
+
+    Private ReadOnly m_EncryptSequences As Boolean = False
 
     Friend WithEvents SearchTimer As New Timer(2000)
     Friend WithEvents MemberLoadTimer As New Timer(2000)
@@ -900,7 +916,7 @@ Public Class frmCollectionEditor
         End If
     End Sub
 
-    Protected Sub BindOrganismListToControl(organismList As DataTable)
+    Private Sub BindOrganismListToControl(organismList As DataTable)
 
         cboOrganismFilter.BeginUpdate()
         With cboOrganismFilter
@@ -912,7 +928,7 @@ Public Class frmCollectionEditor
 
     End Sub
 
-    Protected Sub BindAnnotationTypeListToControl(annotationTypeList As DataTable)
+    Private Sub BindAnnotationTypeListToControl(annotationTypeList As DataTable)
         cboAnnotationTypePicker.BeginUpdate()
 
         With cboAnnotationTypePicker
@@ -926,7 +942,7 @@ Public Class frmCollectionEditor
         cboAnnotationTypePicker.EndUpdate()
     End Sub
 
-    Protected Sub BindCollectionListToControl(collectionList As DataView)
+    Private Sub BindCollectionListToControl(collectionList As DataView)
 
         cboCollectionPicker.BeginUpdate()
         If collectionList.Count = 0 Then
@@ -953,7 +969,7 @@ Public Class frmCollectionEditor
 
     End Sub
 
-    Protected Sub BatchLoadController()
+    Private Sub BatchLoadController()
         Dim resultReturn As DialogResult
 
         m_ProteinCollectionNames = m_ImportHandler.LoadProteinCollectionNames
@@ -1487,7 +1503,7 @@ Public Class frmCollectionEditor
         CheckTransferButtonsEnabledStatus()
     End Sub
 
-    Protected Sub ScanSourceCollectionWindow(
+    Private Sub ScanSourceCollectionWindow(
         lvwSrc As ListView, lvwDest As ListView, SelectAll As Boolean)
 
         Dim entry As ListViewItem
@@ -1511,7 +1527,7 @@ Public Class frmCollectionEditor
 
     End Sub
 
-    Protected Function ScanDestinationCollectionWindow(lvwDest As ListView) As List(Of String)
+    Private Function ScanDestinationCollectionWindow(lvwDest As ListView) As List(Of String)
         Dim selectedList As New List(Of String)
         Dim li As ListViewItem
 
@@ -1523,7 +1539,7 @@ Public Class frmCollectionEditor
 
     End Function
 
-    Protected Sub ClearFromDestinationCollectionWindow(lvwDest As ListView, SelectAll As Boolean)
+    Private Sub ClearFromDestinationCollectionWindow(lvwDest As ListView, SelectAll As Boolean)
         Dim entry As ListViewItem
 
         If SelectAll Then

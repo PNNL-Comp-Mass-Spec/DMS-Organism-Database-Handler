@@ -14,7 +14,7 @@ Public Class frmValidationReport
         InitializeComponent()
 
         'Add any initialization after the InitializeComponent() call
-        'Me.m_FileList = errorFileList
+
 
     End Sub
 
@@ -32,7 +32,7 @@ Public Class frmValidationReport
     Private components As System.ComponentModel.IContainer
 
     'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.  
+    'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
     Friend WithEvents colErrorDescription As ColumnHeader
     Friend WithEvents lvwErrorList As ListView
@@ -324,37 +324,38 @@ Public Class frmValidationReport
     Private m_ErrorListLoaded As Boolean
 
     Private Sub frmValidationReport_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Me.FillValidListView()
-        Me.BindFileListToErrorComboBox(Me.m_FileErrorList)
-        Me.BindFileListToWarningComboBox(Me.m_FileWarningList)
 
-        If Me.cboFileListErrors.Items.Count > 0 Then
-            Me.cboFileListErrors.SelectedIndex = 0
-            Me.cboFileListErrors.Select()
-            Me.cboFileListErrors_SelectedIndexChanged(Me, Nothing)
+        FillValidListView()
+        BindFileListToErrorComboBox(m_FileErrorList)
+        BindFileListToWarningComboBox(m_FileWarningList)
+
+        If cboFileListErrors.Items.Count > 0 Then
+            cboFileListErrors.SelectedIndex = 0
+            cboFileListErrors.Select()
+            cboFileListErrors_SelectedIndexChanged(Me, Nothing)
         End If
 
-        If Me.cboFileListWarnings.Items.Count > 0 Then
-            Me.cboFileListWarnings.SelectedIndex = 0
-            Me.cboFileListWarnings.Select()
-            Me.cboFileListWarnings_SelectedIndexChanged(Me, Nothing)
+        If cboFileListWarnings.Items.Count > 0 Then
+            cboFileListWarnings.SelectedIndex = 0
+            cboFileListWarnings.Select()
+            cboFileListWarnings_SelectedIndexChanged(Me, Nothing)
         End If
 
     End Sub
 
     Private Sub cmdExportErrorDetails_Click(sender As Object, e As EventArgs) Handles cmdExportErrorDetails.Click
-        If Me.m_ErrorCollection Is Nothing OrElse Me.m_ErrorCollection.Count = 0 Then
+        If m_ErrorCollection Is Nothing OrElse m_ErrorCollection.Count = 0 Then
             MessageBox.Show("Error list is empty; nothing to export", "Nothing to do", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Else
-            Me.DumpDetailedErrorOrWarningList(Me.m_ErrorCollection, Me.cboFileListErrors.Text, "Error")
+            DumpDetailedErrorOrWarningList(m_ErrorCollection, cboFileListErrors.Text, "Error")
         End If
     End Sub
 
     Private Sub cmdExportWarningDetails_Click(sender As Object, e As EventArgs) Handles cmdExportWarningDetails.Click
-        If Me.m_WarningCollection Is Nothing OrElse Me.m_WarningCollection.Count = 0 Then
+        If m_WarningCollection Is Nothing OrElse m_WarningCollection.Count = 0 Then
             MessageBox.Show("Warning list is empty; nothing to export", "Nothing to do", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Else
-            Me.DumpDetailedErrorOrWarningList(Me.m_WarningCollection, Me.cboFileListWarnings.Text, "Warning")
+            DumpDetailedErrorOrWarningList(m_WarningCollection, cboFileListWarnings.Text, "Warning")
         End If
 
     End Sub
@@ -470,12 +471,12 @@ Public Class frmValidationReport
                 Me.cboFileListWarnings.Items.Add(counter.Key)
             End While
 
-            Me.cboFileListWarnings.EndUpdate()
+            cboFileListWarnings.EndUpdate()
 
         Else
-            Me.cboFileListWarnings.BeginUpdate()
-            Me.cboFileListWarnings.Items.Add("-- No Warnings --")
-            Me.cboFileListWarnings.EndUpdate()
+            cboFileListWarnings.BeginUpdate()
+            cboFileListWarnings.Items.Add("-- No Warnings --")
+            cboFileListWarnings.EndUpdate()
         End If
 
         AddHandler cboFileListWarnings.SelectedIndexChanged, AddressOf cboFileListWarnings_SelectedIndexChanged
@@ -551,8 +552,8 @@ Public Class frmValidationReport
 
         Dim intErrorCount = 0
 
-        If strMessageType Is Nothing OrElse strMessageType.Length = 0 Then
-            strMessageType = "Error"
+        If String.IsNullOrWhiteSpace(messageType) Then
+            messageType = "Error"
         End If
 
         With SaveDialog
@@ -562,7 +563,7 @@ Public Class frmValidationReport
             .FilterIndex = 1
             .RestoreDirectory = True
             .OverwritePrompt = True
-            .FileName = Path.GetFileNameWithoutExtension(FASTAFileName) & "_" & strMessageType
+            .FileName = Path.GetFileNameWithoutExtension(fastaFileName) & "_" & messageType
         End With
 
         If SaveDialog.ShowDialog = DialogResult.OK Then
@@ -595,7 +596,7 @@ Public Class frmValidationReport
 
         End Using
 
-        MessageBox.Show("Wrote " & intErrorCount.ToString & " " & strMessageType & "s to " & SaveDialog.FileName, "Detailed " & strMessageType & " List", MessageBoxButtons.OK)
+        MessageBox.Show("Wrote " & intErrorCount.ToString & " " & messageType & "s to " & SaveDialog.FileName, "Detailed " & messageType & " List", MessageBoxButtons.OK)
 
     End Sub
 

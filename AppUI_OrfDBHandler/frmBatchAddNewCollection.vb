@@ -536,29 +536,29 @@ Public Class frmBatchAddNewCollectionTest
 #End Region
 
 #Region " Properties "
-    ReadOnly Property FileList() As List(Of IUploadProteins.UploadInfo)
+    ReadOnly Property FileList As List(Of IUploadProteins.UploadInfo)
         Get
             Return m_CheckedFileList
         End Get
     End Property
 
-    ReadOnly Property SelectedOrganismID() As Integer
+    ReadOnly Property SelectedOrganismID As Integer
         Get
             Return m_SelectedOrganismID
         End Get
     End Property
 
-    ReadOnly Property SelectedAnnotationTypeID() As Integer
+    ReadOnly Property SelectedAnnotationTypeID As Integer
         Get
             Return m_SelectedAnnotationTypeID
         End Get
     End Property
 
-    Property CurrentDirectory() As String
+    Property CurrentDirectory As String
         Get
             Return m_LastUsedDirectory
         End Get
-        Set(Value As String)
+        Set
             m_LastUsedDirectory = Value
         End Set
     End Property
@@ -588,12 +588,12 @@ Public Class frmBatchAddNewCollectionTest
                 Return String.Empty
             End If
         End Get
-        Set(Value As String)
+        Set
             m_LastSelectedOrganism = Value
         End Set
     End Property
 
-    Property SelectedAnnotationType() As String
+    Property SelectedAnnotationType As String
         Get
             If cboAnnotationTypePicker.Items.Count > 0 Then
                 Return cboAnnotationTypePicker.Text
@@ -601,41 +601,39 @@ Public Class frmBatchAddNewCollectionTest
                 Return String.Empty
             End If
         End Get
-        Set(Value As String)
+        Set
             m_LastSelectedAnnotationType = Value
         End Set
     End Property
 
-    Property ValidationAllowAsterisks() As Boolean
+    Property ValidationAllowAsterisks As Boolean
         Get
             Return chkValidationAllowAsterisks.Checked
         End Get
-        Set(Value As Boolean)
+        Set
             chkValidationAllowAsterisks.Checked = Value
         End Set
     End Property
 
-    Property ValidationAllowDash() As Boolean
+    Property ValidationAllowDash As Boolean
         Get
             Return chkValidationAllowDash.Checked
         End Get
-        Set(Value As Boolean)
+        Set
             chkValidationAllowDash.Checked = Value
         End Set
     End Property
 
-    Property ValidationAllowAllSymbolsInProteinNames() As Boolean
+    Property ValidationAllowAllSymbolsInProteinNames As Boolean
         Get
             Return chkValidationAllowAllSymbolsInProteinNames.Checked
         End Get
-        Set(Value As Boolean)
+        Set
             chkValidationAllowAllSymbolsInProteinNames.Checked = Value
         End Set
     End Property
 
-
-
-    Property ValidationMaxProteinNameLength() As Integer
+    Property ValidationMaxProteinNameLength As Integer
         Get
             Dim intValue As Integer
             If Integer.TryParse(txtMaximumProteinNameLength.Text, intValue) Then
@@ -644,9 +642,9 @@ Public Class frmBatchAddNewCollectionTest
                 Return clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
             End If
         End Get
-        Set(value As Integer)
-            If value < 5 Then value = 5
-            txtMaximumProteinNameLength.Text = value.ToString()
+        Set
+            If Value < 5 Then Value = 5
+            txtMaximumProteinNameLength.Text = Value.ToString()
         End Set
     End Property
 
@@ -745,7 +743,6 @@ Public Class frmBatchAddNewCollectionTest
     Private Sub LoadListView(lvw As ListView)
         Dim fi As FileInfo
         Dim li As ListViewItem
-        Dim tmpName As String
         lvw.BeginUpdate()
 
         lvw.Items.Clear()
@@ -756,22 +753,21 @@ Public Class frmBatchAddNewCollectionTest
 
         For Each fi In m_FileList.Values
 
-            ' Protein Collection Name
-            tmpName = Path.GetFileNameWithoutExtension(fi.Name)
+            Dim proteinCollectionName = Path.GetFileNameWithoutExtension(fi.Name)
 
-            li = New ListViewItem
+            Dim li = New ListViewItem()
 
-            ' Fasta file name
+            ' Fasta file name (with the extension)
             li.Text = fi.Name
 
             ' Last Write Time
             li.SubItems.Add(Format(fi.LastWriteTime, "g"))
 
             ' File Size
-            li.SubItems.Add(Numeric2Bytes(CDbl(fi.Length)))
+            li.SubItems.Add(Numeric2Bytes(fi.Length))
 
             ' Whether or not the fasta file is already a protein collection
-            If m_CollectionsList.ContainsValue(tmpName) Then
+            If m_CollectionsList.ContainsValue(proteinCollectionName) Then
                 li.SubItems.Add("Yes")
             Else
                 li.SubItems.Add("No")
@@ -780,9 +776,10 @@ Public Class frmBatchAddNewCollectionTest
             ' Full file path
             li.SubItems.Add(fi.FullName)
 
-            lvw.Items.Add(li)
+            lvwFolderContents.Items.Add(li)
         Next
-        lvw.EndUpdate()
+
+        lvwFolderContents.EndUpdate()
     End Sub
 
     Private Sub LoadOrganismPicker(cbo As ComboBox, orgList As DataView)
@@ -891,36 +888,30 @@ Public Class frmBatchAddNewCollectionTest
 
     Private Sub AddFileToSelectedList()
 
-        Dim li As ListViewItem
-        Dim si As ListViewItem
-        Dim newLi As ListViewItem
-        Dim upInfo As IUploadProteins.UploadInfo
-
         Try
             If m_SelectedFileList Is Nothing Then
                 m_SelectedFileList = New Dictionary(Of String, IUploadProteins.UploadInfo)(StringComparer.CurrentCultureIgnoreCase)
             End If
 
-            For Each li In lvwFolderContents.SelectedItems
-                upInfo = New IUploadProteins.UploadInfo
-
+            For Each li As ListViewItem In lvwFolderContents.SelectedItems
                 Dim fastaFilePath = GetFolderContentsColumn(li, eFolderContentsColumn.FilePath)
-                upInfo.FileInformation = DirectCast(m_FileList.Item(fastaFilePath), FileInfo)
 
-                upInfo.OrganismID = DirectCast(cboOrganismSelect.SelectedValue, Integer)
-                upInfo.AnnotationTypeID = DirectCast(cboAnnotationTypePicker.SelectedValue, Integer)
+                Dim upInfo = New IUploadProteins.UploadInfo() With {
+                    .FileInformation = m_FileList.Item(fastaFilePath),
+                    .OrganismID = DirectCast(cboOrganismSelect.SelectedValue, Integer),
+                    .AnnotationTypeID = DirectCast(cboAnnotationTypePicker.SelectedValue, Integer),
+                    .Description = String.Empty,
+                    .Source = String.Empty,
+                    .EncryptSequences = False,
+                    .EncryptionPassphrase = String.Empty
+                }
 
-                upInfo.Description = String.Empty
-                upInfo.Source = String.Empty
-
-                ' Encryption is disabled
-                upInfo.EncryptSequences = False
-                upInfo.EncryptionPassphrase = String.Empty
+                Dim proteinCollection = Path.GetFileNameWithoutExtension(upInfo.FileInformation.Name)
 
                 If m_SelectedFileList.ContainsKey(upInfo.FileInformation.FullName) Then
                     m_SelectedFileList.Remove(upInfo.FileInformation.FullName)
-                    For Each si In lvwSelectedFiles.Items
-                        If si.Text = Path.GetFileNameWithoutExtension(upInfo.FileInformation.Name) Then
+                    For Each si As ListViewItem In lvwSelectedFiles.Items
+                        If si.Text = proteinCollection Then
                             lvwSelectedFiles.Items.Remove(si)
                         End If
                     Next
@@ -947,6 +938,8 @@ Public Class frmBatchAddNewCollectionTest
 
                 lvwSelectedFiles.Items.Add(newLi)
                 m_SelectedFileList.Add(upInfo.FileInformation.FullName, upInfo)
+
+
             Next
         Catch ex As Exception
             MessageBox.Show("Error in AddFileToSelectedList: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -955,7 +948,7 @@ Public Class frmBatchAddNewCollectionTest
 
     End Sub
 
-    Private Sub AddUpdateDictionaryItem(itemList As Dictionary(Of String, Integer), newItem As String)
+    Private Sub AddUpdateDictionaryItem(itemList As IDictionary(Of String, Integer), newItem As String)
 
         Dim itemCount As Integer
         If itemList.TryGetValue(newItem, itemCount) Then
@@ -979,7 +972,7 @@ Public Class frmBatchAddNewCollectionTest
     End Function
 
     ''' <summary>
-    ''' 
+    '''
     ''' </summary>
     ''' <param name="li"></param>
     ''' <param name="eColumn"></param>
@@ -1198,10 +1191,10 @@ Public Class frmBatchAddNewCollectionTest
 
         ' Show a window with the most commonly used description and source
 
-        Dim oMetadataWindow = New frmNewCollectionMetadataEditor()
-
-        oMetadataWindow.Description = MostCommonItem(descriptionList)
-        oMetadataWindow.Source = MostCommonItem(sourceList)
+        Dim oMetadataWindow = New frmNewCollectionMetadataEditor With {
+            .Description = MostCommonItem(descriptionList),
+            .Source = MostCommonItem(sourceList)
+        }
 
         Dim eDialogResult = oMetadataWindow.ShowDialog()
 
@@ -1580,12 +1573,6 @@ Public Class frmBatchAddNewCollectionTest
         Private ReadOnly mSortingDates As Boolean
         Private ReadOnly mColIndex As Integer
         Private ReadOnly mSortOrder As SortOrder
-
-        Public Sub New(Optional sortingDates As Boolean = False)
-            mSortingDates = sortingDates
-            mColIndex = 0
-            mSortOrder = SortOrder.Ascending
-        End Sub
 
         Public Sub New(column As Integer, order As SortOrder, Optional sortingDates As Boolean = False)
             mSortingDates = sortingDates

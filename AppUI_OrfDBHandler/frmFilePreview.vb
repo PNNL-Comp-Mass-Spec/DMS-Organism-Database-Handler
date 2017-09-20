@@ -149,13 +149,13 @@ Public Class frmFilePreview
     Private ReadOnly validationRegex As Regex
     Private m_currentLineCount As Integer = 100
 
-    WriteOnly Property WindowName() As String
-        Set(Value As String)
+    WriteOnly Property WindowName As String
+        Set
             Me.Text = Value
         End Set
     End Property
 
-    ReadOnly Property FormVisibility() As Boolean
+    ReadOnly Property FormVisibility As Boolean
         Get
             Return Me.Visible
         End Get

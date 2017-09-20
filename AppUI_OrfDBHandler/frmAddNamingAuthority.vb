@@ -162,29 +162,29 @@ Public Class frmAddNamingAuthority
 
 #Region " Return Properties "
 
-    Property ShortName() As String
+    Property ShortName As String
         Get
             Return Me.m_ShortName
         End Get
-        Set(Value As String)
+        Set
             Me.m_ShortName = Value
         End Set
     End Property
 
-    Property FullName() As String
+    Property FullName As String
         Get
             Return Me.m_FullName
         End Get
-        Set(Value As String)
+        Set
             Me.m_FullName = Value
         End Set
     End Property
 
-    Property WebAddress() As String
+    Property WebAddress As String
         Get
             Return Me.m_WebAddress
         End Get
-        Set(Value As String)
+        Set
             Me.m_WebAddress = Value
         End Set
     End Property

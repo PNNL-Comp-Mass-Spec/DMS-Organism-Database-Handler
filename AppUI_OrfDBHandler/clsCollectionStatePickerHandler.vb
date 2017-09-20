@@ -13,8 +13,8 @@ Public Class clsCollectionStatePickerHandler
         Me.m_forceReload = True
     End Sub
 
-    WriteOnly Property ForceIDTableReload() As Boolean
-        Set(Value As Boolean)
+    WriteOnly Property ForceIDTableReload As Boolean
+        Set
             Me.m_forceReload = Value
         End Set
     End Property

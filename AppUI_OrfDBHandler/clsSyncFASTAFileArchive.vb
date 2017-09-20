@@ -80,7 +80,7 @@ Public Class clsSyncFASTAFileArchive
             SHA1 = dr.Item("Authentication_Hash").ToString
 
 
-            ArchiveEntryID = Me.m_FileArchiver.ArchiveCollection(
+            Me.m_FileArchiver.ArchiveCollection(
                 proteinCollectionID,
                 IArchiveOutputFiles.CollectionTypes.static,
                 outputSequenceType, databaseFormatType, sourceFilePath, CreationOptionsString, SHA1, proteinCollectionList)
@@ -93,7 +93,7 @@ Public Class clsSyncFASTAFileArchive
 
     End Function
 
-    Sub UpdateSHA1Hashes() 'Implements IArchiveOutputFiles.UpdateSHA1Hashes
+    Public Sub UpdateSHA1Hashes() 'Implements IArchiveOutputFiles.UpdateSHA1Hashes
         If Me.m_FileArchiver Is Nothing Then
             Me.m_FileArchiver = New clsArchiveToFile(Me.m_PSConnectionString, Me.m_Exporter)
         End If
@@ -124,9 +124,6 @@ Public Class clsSyncFASTAFileArchive
         Dim starttime As DateTime
         Dim elapsedTime As TimeSpan
         Dim elapsedTimeSB As New StringBuilder
-
-        Dim fileCounter As Integer
-        Dim totalFileCount As Integer = dt.Rows.Count
 
         Dim tmpPath As String = Path.GetTempPath
 
@@ -173,8 +170,6 @@ Public Class clsSyncFASTAFileArchive
             Me.OnSyncProgressUpdate(
                 Me.m_CurrentStatusMsg,
                 CDbl(Me.m_CurrentProteinCount / Me.m_TotalProteinsCount))
-
-            fileCounter += 1
 
             tmpFullPath = Path.Combine(tmpPath, tmpFilename & ".fasta")
             'Debug.WriteLine("Start: " & tmpFilename & ": " & starttime.ToLongTimeString)
@@ -271,7 +266,7 @@ Public Class clsSyncFASTAFileArchive
 
     End Sub
 
-    Private Sub CountProteinsAndResidues(fastaFilePath As String, <Out()> ByRef proteinCount As Integer, <Out()> ByRef residueCount As Integer)
+    Private Sub CountProteinsAndResidues(fastaFilePath As String, <Out> ByRef proteinCount As Integer, <Out> ByRef residueCount As Integer)
 
         proteinCount = 0
         residueCount = 0
@@ -288,7 +283,7 @@ Public Class clsSyncFASTAFileArchive
 
     End Sub
 
-    Sub FixArchivedFilePaths()
+    Public Sub FixArchivedFilePaths()
         If Me.m_TableGetter Is Nothing Then
             Me.m_TableGetter = New clsDBTask(Me.m_PSConnectionString)
         End If
@@ -311,7 +306,7 @@ Public Class clsSyncFASTAFileArchive
 
     End Sub
 
-    Sub AddSortingIndices()
+    Public Sub AddSortingIndices()
 
         If Me.m_TableGetter Is Nothing Then
             Me.m_TableGetter = New clsDBTask(Me.m_PSConnectionString)
@@ -404,8 +399,8 @@ Public Class clsSyncFASTAFileArchive
                 counter += 1
                 m = nameRegex.Match(s)
                 tmpName = m.Groups("name").Value
-                If Not nameHash.ContainsKey(tmpName.ToLower) Then
-                    nameHash.Add(tmpName.ToLower, counter)
+                If Not nameHash.ContainsKey(tmpName.ToLower()) Then
+                    nameHash.Add(tmpName.ToLower(), counter)
                 End If
             End If
             s = tr.ReadLine
@@ -416,9 +411,9 @@ Public Class clsSyncFASTAFileArchive
         Return nameHash
 
     End Function
-    Sub CorrectMasses()
 
         Dim proteinList As New Hashtable
+    Public Sub CorrectMasses()
         Dim proteinTable As DataTable
         Dim dr As DataRow
         Dim counter As Integer
@@ -460,7 +455,7 @@ Public Class clsSyncFASTAFileArchive
             tmpRowCount = proteinTable.Rows.Count
 
             For Each dr In proteinTable.Rows
-                proteinList.Add(CInt(dr.Item("Protein_ID")), dr.Item("Sequence").ToString)
+                proteinList.Add(CInt(dr.Item("Protein_ID")), dr.Item("Sequence").ToString())
             Next
 
             Me.OnSyncProgressUpdate("Processing Protein_ID " + startcount.ToString + "-" + counter.ToString + " of " + tmpProteinCount.ToString, CDbl(counter / tmpProteinCount))
@@ -472,7 +467,7 @@ Public Class clsSyncFASTAFileArchive
         Me.OnSyncCompletion()
     End Sub
 
-    Sub RefreshNameHashes()
+    Public Sub RefreshNameHashes()
         Dim TotalNameCount As Integer
         Dim NameCountSQL = "SELECT TOP 1 Reference_ID FROM T_Protein_Names ORDER BY Reference_ID DESC"
         Dim tmptable As DataTable
@@ -539,12 +534,10 @@ Public Class clsSyncFASTAFileArchive
             Me.m_Importer = New clsAddUpdateEntries(Me.m_PSConnectionString)
         End If
 
-        Dim proteinID As Integer
-        Dim sequence As String
         Dim si = New SequenceInfoCalculator.SequenceInfoCalculator
 
         For Each proteinID In Proteins.Keys
-            sequence = Proteins.Item(proteinID).ToString
+            Dim sequence = Proteins.Item(proteinID)
             si.CalculateSequenceInfo(sequence)
             Me.m_Importer.UpdateProteinSequenceInfo(
                 proteinID, sequence, sequence.Length,
