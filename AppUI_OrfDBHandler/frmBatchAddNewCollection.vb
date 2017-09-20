@@ -11,10 +11,12 @@ Public Class frmBatchAddNewCollection
 #Region " Windows Form Designer generated code "
 
     Public Sub New(
-        OrganismList As DataTable,
-        AnnotationTypeList As DataTable,
-        ExistingCollectionsList As DataTable,
-        PSConnectionString As String)
+        organismList As DataTable,
+        annotationTypeList As DataTable,
+        existingCollectionsList As DataTable,
+        psConnectionString As String,
+        selectedFolderPath As String,
+        cachedFileDescriptions As Dictionary(Of String, KeyValuePair(Of String, String)))
 
         MyBase.New()
 
@@ -22,13 +24,21 @@ Public Class frmBatchAddNewCollection
         InitializeComponent()
 
         'Add any initialization after the InitializeComponent() call
-        Me.m_OrganismList = OrganismList
-        Me.m_OrganismListSorted = New DataView(Me.m_OrganismList)
-        m_OrganismListSorted.Sort = "Display_Name"
+        m_OrganismList = organismList
+        m_OrganismListSorted = New DataView(m_OrganismList) With {
+            .Sort = "Display_Name"
+        }
 
-        Me.m_AnnotationTypeList = AnnotationTypeList
-        Me.m_CollectionsTable = ExistingCollectionsList
-        Me.m_PSConnectionString = PSConnectionString
+        m_AnnotationTypeList = annotationTypeList
+        m_CollectionsTable = existingCollectionsList
+        m_PSConnectionString = psConnectionString
+
+        m_CachedFileDescriptions = cachedFileDescriptions
+
+        ctlTreeViewFolderBrowser.DataSource = New TreeStrategyFolderBrowserProvider()
+        ctlTreeViewFolderBrowser.CheckBoxBehaviorMode = CheckBoxBehaviorMode.None
+
+        InitializeTreeView(selectedFolderPath)
 
     End Sub
 
@@ -660,13 +670,7 @@ Public Class frmBatchAddNewCollection
 
     Private Sub frmBatchAddNewCollection_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        ctlTreeViewFolderBrowser.DataSource = New TreeStrategyFolderBrowserProvider()
-        ctlTreeViewFolderBrowser.CheckBoxBehaviorMode = CheckBoxBehaviorMode.None
-
         m_CollectionsList = CollectionsTableToList(m_CollectionsTable)
-
-        m_RestoreDirectoryTime = DateTime.UtcNow.AddSeconds(0.25)
-        m_RestoreDirectoryTimer.Start()
 
         If m_FileList Is Nothing Then
             m_FileList = New Dictionary(Of String, FileInfo)
@@ -1088,6 +1092,10 @@ Public Class frmBatchAddNewCollection
                 m_SelectedFileList.Remove(filePath)
             End If
         Next
+    End Sub
+
+    Private Sub RestoreSelectedDirectory()
+        InitializeTreeView(m_LastUsedDirectory)
     End Sub
 
     Private Sub SelectAllRows(lv As ListView)

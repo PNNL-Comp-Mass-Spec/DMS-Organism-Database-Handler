@@ -998,7 +998,9 @@ Public Class frmCollectionEditor
             m_Organisms,
             m_AnnotationTypes,
             m_ProteinCollectionNames,
-            m_PSConnectionString)
+            m_PSConnectionString,
+            m_LastBatchULDirectoryPath,
+            m_CachedFileDescriptions)
 
         Dim tmpSelectedFileList As List(Of IUploadProteins.UploadInfo)
 
@@ -1015,9 +1017,6 @@ Public Class frmCollectionEditor
         frmBatchUpload.ValidationAllowAsterisks = m_LastValueForAllowAsterisks
         frmBatchUpload.ValidationAllowDash = m_LastValueForAllowDash
         frmBatchUpload.ValidationMaxProteinNameLength = m_LastValueForMaxProteinNameLength
-
-        ' Set the last directory used
-        frmBatchUpload.CurrentDirectory = m_LastBatchULDirectoryPath
 
         ' Show the window
         resultReturn = frmBatchUpload.ShowDialog
