@@ -1653,6 +1653,35 @@ Public Class frmBatchAddNewCollection
             UpdateStatus("Folder path copied to the clipboard")
         End If
     End Sub
+
+    Private Sub ctlTreeViewFolderBrowser_KeyUp(sender As Object, e As KeyEventArgs) Handles ctlTreeViewFolderBrowser.KeyUp
+        If e.KeyCode = Keys.F5 Then
+
+            Try
+                Dim folderPath = SelectedNodeFolderPath
+                If String.IsNullOrWhiteSpace(folderPath) Then Exit Sub
+
+                Dim currentFolder = New DirectoryInfo(folderPath)
+
+                While Not currentFolder.Exists AndAlso Not currentFolder.Parent Is Nothing
+                    currentFolder = currentFolder.Parent
+                End While
+
+                ctlTreeViewFolderBrowser.Populate(currentFolder.FullName)
+
+                InitializeTreeView(currentFolder.FullName)
+
+                If Not ctlTreeViewFolderBrowser.SelectedNode.IsExpanded Then
+                    ctlTreeViewFolderBrowser.SelectedNode.Expand()
+                End If
+
+            Catch ex As Exception
+                MessageBox.Show("Error in NodeMouseDoubleClick: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            End Try
+
+        End If
+    End Sub
+
     Private Sub m_StatusResetTimer_Tick(sender As Object, e As EventArgs) Handles m_StatusResetTimer.Tick
         If m_StatusResetRequired AndAlso DateTime.UtcNow > m_StatusClearTime Then
             m_StatusResetRequired = False
