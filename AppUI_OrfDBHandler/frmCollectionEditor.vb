@@ -994,7 +994,7 @@ Public Class frmCollectionEditor
             m_SummarizedFileWarningList.Clear()
         End If
 
-        Dim frmBatchUpload As New frmBatchAddNewCollectionTest(
+        Dim frmBatchUpload As New frmBatchAddNewCollection(
             m_Organisms,
             m_AnnotationTypes,
             m_ProteinCollectionNames,

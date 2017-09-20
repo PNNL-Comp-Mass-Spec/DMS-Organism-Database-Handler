@@ -5,7 +5,7 @@ Imports Protein_Uploader
 Imports Raccoom.Windows.Forms
 Imports ValidateFastaFile
 
-Public Class frmBatchAddNewCollectionTest
+Public Class frmBatchAddNewCollection
     Inherits Form
 
 #Region " Windows Form Designer generated code "
@@ -44,10 +44,6 @@ Public Class frmBatchAddNewCollectionTest
 
     'Required by the Windows Form Designer
     Private components As System.ComponentModel.IContainer
-
-    'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.  
-    'Do not modify it using the code editor.
     Friend WithEvents ctlTreeViewFolderBrowser As TreeViewFolderBrowser
     Friend WithEvents cboOrganismSelect As ComboBox
     Friend WithEvents lblBatchUploadTree As Label
@@ -85,42 +81,42 @@ Public Class frmBatchAddNewCollectionTest
     Friend WithEvents chkValidationAllowDash As CheckBox
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBatchAddNewCollectionTest))
-        Me.lblBatchUploadTree = New Label()
-        Me.lblOrganismSelect = New Label()
-        Me.lblFolderContents = New Label()
-        Me.cmdCancel = New Button()
-        Me.cmdUploadChecked = New Button()
-        Me.lvwFolderContents = New ListView()
-        Me.colFileName = CType(New ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.colFileModDate = CType(New ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.colFileSize = CType(New ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.colCollectionExists = CType(New ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.cboAnnotationTypePicker = New ComboBox()
-        Me.lblAnnAuth = New Label()
-        Me.lvwSelectedFiles = New ListView()
-        Me.colUpFileName = CType(New ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.colSelOrganism = CType(New ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.colDescription = CType(New ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.colSource = CType(New ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.colAnnType = CType(New ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.lblSelectedFiles = New Label()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBatchAddNewCollection))
         Me.ctlTreeViewFolderBrowser = New Raccoom.Windows.Forms.TreeViewFolderBrowser()
         Me.cboOrganismSelect = New System.Windows.Forms.ComboBox()
+        Me.lblBatchUploadTree = New System.Windows.Forms.Label()
+        Me.lblOrganismSelect = New System.Windows.Forms.Label()
+        Me.lblFolderContents = New System.Windows.Forms.Label()
+        Me.cmdCancel = New System.Windows.Forms.Button()
+        Me.cmdUploadChecked = New System.Windows.Forms.Button()
+        Me.lvwFolderContents = New System.Windows.Forms.ListView()
+        Me.colFileName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colFileModDate = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colFileSize = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colCollectionExists = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.cboAnnotationTypePicker = New System.Windows.Forms.ComboBox()
+        Me.lblAnnAuth = New System.Windows.Forms.Label()
+        Me.lvwSelectedFiles = New System.Windows.Forms.ListView()
+        Me.colUpFileName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colSelOrganism = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colDescription = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colSource = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colAnnType = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.lblSelectedFiles = New System.Windows.Forms.Label()
         Me.cmdAddFile = New UIControls.ImageButton()
         Me.cmdRemoveFile = New UIControls.ImageButton()
-        Me.cmdPreviewFile = New Button()
-        Me.chkEncryptionEnable = New CheckBox()
-        Me.lblPassphrase = New Label()
-        Me.txtPassphrase = New TextBox()
-        Me.fraValidationOptions = New GroupBox()
-        Me.chkValidationAllowAllSymbolsInProteinNames = New CheckBox()
-        Me.txtMaximumProteinNameLength = New TextBox()
-        Me.lblMaximumProteinNameLength = New Label()
-        Me.chkValidationAllowAsterisks = New CheckBox()
-        Me.chkValidationAllowDash = New CheckBox()
-        Me.cmdRefreshFiles = New Button()
-        Me.cmdUpdateDescription = New Button()
+        Me.cmdPreviewFile = New System.Windows.Forms.Button()
+        Me.chkEncryptionEnable = New System.Windows.Forms.CheckBox()
+        Me.lblPassphrase = New System.Windows.Forms.Label()
+        Me.txtPassphrase = New System.Windows.Forms.TextBox()
+        Me.fraValidationOptions = New System.Windows.Forms.GroupBox()
+        Me.chkValidationAllowAllSymbolsInProteinNames = New System.Windows.Forms.CheckBox()
+        Me.txtMaximumProteinNameLength = New System.Windows.Forms.TextBox()
+        Me.lblMaximumProteinNameLength = New System.Windows.Forms.Label()
+        Me.chkValidationAllowAsterisks = New System.Windows.Forms.CheckBox()
+        Me.chkValidationAllowDash = New System.Windows.Forms.CheckBox()
+        Me.cmdRefreshFiles = New System.Windows.Forms.Button()
+        Me.cmdUpdateDescription = New System.Windows.Forms.Button()
         Me.fraValidationOptions.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -142,7 +138,7 @@ Public Class frmBatchAddNewCollectionTest
         Me.cboOrganismSelect.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboOrganismSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboOrganismSelect.Location = New System.Drawing.Point(8, 562)
+        Me.cboOrganismSelect.Location = New System.Drawing.Point(8, 587)
         Me.cboOrganismSelect.Name = "cboOrganismSelect"
         Me.cboOrganismSelect.Size = New System.Drawing.Size(585, 25)
         Me.cboOrganismSelect.TabIndex = 11
@@ -158,7 +154,7 @@ Public Class frmBatchAddNewCollectionTest
         'lblOrganismSelect
         '
         Me.lblOrganismSelect.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblOrganismSelect.Location = New System.Drawing.Point(8, 542)
+        Me.lblOrganismSelect.Location = New System.Drawing.Point(8, 567)
         Me.lblOrganismSelect.Name = "lblOrganismSelect"
         Me.lblOrganismSelect.Size = New System.Drawing.Size(261, 20)
         Me.lblOrganismSelect.TabIndex = 10
@@ -178,7 +174,7 @@ Public Class frmBatchAddNewCollectionTest
         '
         Me.cmdCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cmdCancel.Location = New System.Drawing.Point(1077, 628)
+        Me.cmdCancel.Location = New System.Drawing.Point(1077, 653)
         Me.cmdCancel.Name = "cmdCancel"
         Me.cmdCancel.Size = New System.Drawing.Size(84, 36)
         Me.cmdCancel.TabIndex = 20
@@ -187,7 +183,7 @@ Public Class frmBatchAddNewCollectionTest
         'cmdUploadChecked
         '
         Me.cmdUploadChecked.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdUploadChecked.Location = New System.Drawing.Point(894, 628)
+        Me.cmdUploadChecked.Location = New System.Drawing.Point(894, 653)
         Me.cmdUploadChecked.Name = "cmdUploadChecked"
         Me.cmdUploadChecked.Size = New System.Drawing.Size(168, 36)
         Me.cmdUploadChecked.TabIndex = 19
@@ -198,13 +194,13 @@ Public Class frmBatchAddNewCollectionTest
         Me.lvwFolderContents.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lvwFolderContents.Columns.AddRange(New ColumnHeader() {Me.colFileName, Me.colFileModDate, Me.colFileSize, Me.colCollectionExists})
+        Me.lvwFolderContents.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colFileName, Me.colFileModDate, Me.colFileSize, Me.colCollectionExists})
         Me.lvwFolderContents.FullRowSelect = True
         Me.lvwFolderContents.GridLines = True
         Me.lvwFolderContents.HideSelection = False
         Me.lvwFolderContents.Location = New System.Drawing.Point(342, 32)
         Me.lvwFolderContents.Name = "lvwFolderContents"
-        Me.lvwFolderContents.Size = New System.Drawing.Size(819, 193)
+        Me.lvwFolderContents.Size = New System.Drawing.Size(819, 218)
         Me.lvwFolderContents.Sorting = System.Windows.Forms.SortOrder.Ascending
         Me.lvwFolderContents.TabIndex = 3
         Me.lvwFolderContents.UseCompatibleStateImageBehavior = False
@@ -234,7 +230,7 @@ Public Class frmBatchAddNewCollectionTest
         '
         Me.cboAnnotationTypePicker.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboAnnotationTypePicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboAnnotationTypePicker.Location = New System.Drawing.Point(617, 562)
+        Me.cboAnnotationTypePicker.Location = New System.Drawing.Point(617, 587)
         Me.cboAnnotationTypePicker.Name = "cboAnnotationTypePicker"
         Me.cboAnnotationTypePicker.Size = New System.Drawing.Size(364, 25)
         Me.cboAnnotationTypePicker.TabIndex = 13
@@ -242,7 +238,7 @@ Public Class frmBatchAddNewCollectionTest
         'lblAnnAuth
         '
         Me.lblAnnAuth.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblAnnAuth.Location = New System.Drawing.Point(617, 542)
+        Me.lblAnnAuth.Location = New System.Drawing.Point(617, 567)
         Me.lblAnnAuth.Name = "lblAnnAuth"
         Me.lblAnnAuth.Size = New System.Drawing.Size(285, 20)
         Me.lblAnnAuth.TabIndex = 12
@@ -252,11 +248,11 @@ Public Class frmBatchAddNewCollectionTest
         '
         Me.lvwSelectedFiles.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lvwSelectedFiles.Columns.AddRange(New ColumnHeader() {Me.colUpFileName, Me.colSelOrganism, Me.colDescription, Me.colSource, Me.colAnnType})
+        Me.lvwSelectedFiles.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colUpFileName, Me.colSelOrganism, Me.colDescription, Me.colSource, Me.colAnnType})
         Me.lvwSelectedFiles.FullRowSelect = True
         Me.lvwSelectedFiles.GridLines = True
         Me.lvwSelectedFiles.HideSelection = False
-        Me.lvwSelectedFiles.Location = New System.Drawing.Point(342, 310)
+        Me.lvwSelectedFiles.Location = New System.Drawing.Point(342, 335)
         Me.lvwSelectedFiles.Name = "lvwSelectedFiles"
         Me.lvwSelectedFiles.Size = New System.Drawing.Size(819, 224)
         Me.lvwSelectedFiles.TabIndex = 9
@@ -291,7 +287,7 @@ Public Class frmBatchAddNewCollectionTest
         'lblSelectedFiles
         '
         Me.lblSelectedFiles.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblSelectedFiles.Location = New System.Drawing.Point(342, 279)
+        Me.lblSelectedFiles.Location = New System.Drawing.Point(342, 304)
         Me.lblSelectedFiles.Name = "lblSelectedFiles"
         Me.lblSelectedFiles.Size = New System.Drawing.Size(868, 19)
         Me.lblSelectedFiles.TabIndex = 8
@@ -302,7 +298,7 @@ Public Class frmBatchAddNewCollectionTest
         Me.cmdAddFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdAddFile.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.cmdAddFile.GenerateDisabledImage = True
-        Me.cmdAddFile.Location = New System.Drawing.Point(657, 247)
+        Me.cmdAddFile.Location = New System.Drawing.Point(657, 272)
         Me.cmdAddFile.Name = "cmdAddFile"
         Me.cmdAddFile.Size = New System.Drawing.Size(48, 44)
         Me.cmdAddFile.TabIndex = 6
@@ -313,7 +309,7 @@ Public Class frmBatchAddNewCollectionTest
         Me.cmdRemoveFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdRemoveFile.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.cmdRemoveFile.GenerateDisabledImage = True
-        Me.cmdRemoveFile.Location = New System.Drawing.Point(727, 247)
+        Me.cmdRemoveFile.Location = New System.Drawing.Point(727, 272)
         Me.cmdRemoveFile.Name = "cmdRemoveFile"
         Me.cmdRemoveFile.Size = New System.Drawing.Size(48, 44)
         Me.cmdRemoveFile.TabIndex = 7
@@ -323,7 +319,7 @@ Public Class frmBatchAddNewCollectionTest
         '
         Me.cmdPreviewFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdPreviewFile.Enabled = False
-        Me.cmdPreviewFile.Location = New System.Drawing.Point(979, 272)
+        Me.cmdPreviewFile.Location = New System.Drawing.Point(979, 297)
         Me.cmdPreviewFile.Name = "cmdPreviewFile"
         Me.cmdPreviewFile.Size = New System.Drawing.Size(182, 30)
         Me.cmdPreviewFile.TabIndex = 5
@@ -332,7 +328,7 @@ Public Class frmBatchAddNewCollectionTest
         'chkEncryptionEnable
         '
         Me.chkEncryptionEnable.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.chkEncryptionEnable.Location = New System.Drawing.Point(707, 603)
+        Me.chkEncryptionEnable.Location = New System.Drawing.Point(707, 628)
         Me.chkEncryptionEnable.Name = "chkEncryptionEnable"
         Me.chkEncryptionEnable.Size = New System.Drawing.Size(174, 23)
         Me.chkEncryptionEnable.TabIndex = 16
@@ -342,7 +338,7 @@ Public Class frmBatchAddNewCollectionTest
         'lblPassphrase
         '
         Me.lblPassphrase.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblPassphrase.Location = New System.Drawing.Point(703, 628)
+        Me.lblPassphrase.Location = New System.Drawing.Point(703, 653)
         Me.lblPassphrase.Name = "lblPassphrase"
         Me.lblPassphrase.Size = New System.Drawing.Size(178, 20)
         Me.lblPassphrase.TabIndex = 17
@@ -353,9 +349,9 @@ Public Class frmBatchAddNewCollectionTest
         '
         Me.txtPassphrase.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.txtPassphrase.Enabled = False
-        Me.txtPassphrase.Location = New System.Drawing.Point(707, 648)
+        Me.txtPassphrase.Location = New System.Drawing.Point(707, 673)
         Me.txtPassphrase.Name = "txtPassphrase"
-        Me.txtPassphrase.PasswordChar = ChrW(8226)
+        Me.txtPassphrase.PasswordChar = Global.Microsoft.VisualBasic.ChrW(8226)
         Me.txtPassphrase.Size = New System.Drawing.Size(154, 24)
         Me.txtPassphrase.TabIndex = 18
         Me.txtPassphrase.Visible = False
@@ -368,7 +364,7 @@ Public Class frmBatchAddNewCollectionTest
         Me.fraValidationOptions.Controls.Add(Me.lblMaximumProteinNameLength)
         Me.fraValidationOptions.Controls.Add(Me.chkValidationAllowAsterisks)
         Me.fraValidationOptions.Controls.Add(Me.chkValidationAllowDash)
-        Me.fraValidationOptions.Location = New System.Drawing.Point(6, 597)
+        Me.fraValidationOptions.Location = New System.Drawing.Point(6, 622)
         Me.fraValidationOptions.Name = "fraValidationOptions"
         Me.fraValidationOptions.Size = New System.Drawing.Size(687, 75)
         Me.fraValidationOptions.TabIndex = 15
@@ -418,7 +414,7 @@ Public Class frmBatchAddNewCollectionTest
         'cmdRefreshFiles
         '
         Me.cmdRefreshFiles.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdRefreshFiles.Location = New System.Drawing.Point(979, 233)
+        Me.cmdRefreshFiles.Location = New System.Drawing.Point(979, 258)
         Me.cmdRefreshFiles.Name = "cmdRefreshFiles"
         Me.cmdRefreshFiles.Size = New System.Drawing.Size(182, 30)
         Me.cmdRefreshFiles.TabIndex = 4
@@ -427,18 +423,18 @@ Public Class frmBatchAddNewCollectionTest
         'cmdUpdateDescription
         '
         Me.cmdUpdateDescription.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdUpdateDescription.Location = New System.Drawing.Point(1044, 549)
+        Me.cmdUpdateDescription.Location = New System.Drawing.Point(1044, 574)
         Me.cmdUpdateDescription.Name = "cmdUpdateDescription"
         Me.cmdUpdateDescription.Size = New System.Drawing.Size(117, 49)
         Me.cmdUpdateDescription.TabIndex = 14
         Me.cmdUpdateDescription.Text = "Update &Description"
         '
-        'frmBatchAddNewCollectionTest
+        'frmBatchAddNewCollection
         '
         Me.AcceptButton = Me.cmdUploadChecked
         Me.AutoScaleBaseSize = New System.Drawing.Size(7, 17)
         Me.CancelButton = Me.cmdCancel
-        Me.ClientSize = New System.Drawing.Size(1175, 682)
+        Me.ClientSize = New System.Drawing.Size(1175, 707)
         Me.Controls.Add(Me.cmdCancel)
         Me.Controls.Add(Me.cmdUploadChecked)
         Me.Controls.Add(Me.cmdUpdateDescription)
@@ -462,7 +458,7 @@ Public Class frmBatchAddNewCollectionTest
         Me.Controls.Add(Me.lblSelectedFiles)
         Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.MinimumSize = New System.Drawing.Size(1120, 576)
-        Me.Name = "frmBatchAddNewCollectionTest"
+        Me.Name = "frmBatchAddNewCollection"
         Me.Text = "Batch Upload FASTA Files"
         Me.fraValidationOptions.ResumeLayout(False)
         Me.fraValidationOptions.PerformLayout()
@@ -1472,7 +1468,7 @@ Public Class frmBatchAddNewCollectionTest
         lvwSelectedFiles.SelectedItems.Clear()
     End Sub
 
-    Private Sub frmBatchAddNewCollectionTest_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
+    Private Sub frmBatchAddNewCollection_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
         If lvwSelectedFiles.Items.Count > 0 And Not m_ReallyClose Then
             Dim r As DialogResult
 
