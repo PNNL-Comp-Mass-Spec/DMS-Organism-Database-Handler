@@ -1,8 +1,8 @@
-Imports ExpTreeLib
 Imports System.ComponentModel
 Imports System.IO
 Imports System.Linq
 Imports Protein_Uploader
+Imports Raccoom.Windows.Forms
 Imports ValidateFastaFile
 
 Public Class frmBatchAddNewCollectionTest
@@ -48,7 +48,7 @@ Public Class frmBatchAddNewCollectionTest
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    Friend WithEvents expUploadFolderSelect As ExpTreeLib.ExpTree
+    Friend WithEvents ctlTreeViewFolderBrowser As TreeViewFolderBrowser
     Friend WithEvents cboOrganismSelect As ComboBox
     Friend WithEvents lblBatchUploadTree As Label
     Friend WithEvents lblOrganismSelect As Label
@@ -86,8 +86,6 @@ Public Class frmBatchAddNewCollectionTest
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBatchAddNewCollectionTest))
-        Me.expUploadFolderSelect = New ExpTreeLib.ExpTree()
-        Me.cboOrganismSelect = New ComboBox()
         Me.lblBatchUploadTree = New Label()
         Me.lblOrganismSelect = New Label()
         Me.lblFolderContents = New Label()
@@ -107,6 +105,8 @@ Public Class frmBatchAddNewCollectionTest
         Me.colSource = CType(New ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.colAnnType = CType(New ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.lblSelectedFiles = New Label()
+        Me.ctlTreeViewFolderBrowser = New Raccoom.Windows.Forms.TreeViewFolderBrowser()
+        Me.cboOrganismSelect = New System.Windows.Forms.ComboBox()
         Me.cmdAddFile = New UIControls.ImageButton()
         Me.cmdRemoveFile = New UIControls.ImageButton()
         Me.cmdPreviewFile = New Button()
@@ -124,14 +124,18 @@ Public Class frmBatchAddNewCollectionTest
         Me.fraValidationOptions.SuspendLayout()
         Me.SuspendLayout()
         '
-        'expUploadFolderSelect
+        'ctlTreeViewFolderBrowser
         '
-        Me.expUploadFolderSelect.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.ctlTreeViewFolderBrowser.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.expUploadFolderSelect.Location = New System.Drawing.Point(14, 32)
-        Me.expUploadFolderSelect.Name = "expUploadFolderSelect"
-        Me.expUploadFolderSelect.Size = New System.Drawing.Size(308, 502)
-        Me.expUploadFolderSelect.TabIndex = 1
+        Me.ctlTreeViewFolderBrowser.DataSource = Nothing
+        Me.ctlTreeViewFolderBrowser.HideSelection = False
+        Me.ctlTreeViewFolderBrowser.Location = New System.Drawing.Point(10, 35)
+        Me.ctlTreeViewFolderBrowser.Name = "treeViewFolderBrowser1"
+        Me.ctlTreeViewFolderBrowser.ShowLines = False
+        Me.ctlTreeViewFolderBrowser.ShowRootLines = False
+        Me.ctlTreeViewFolderBrowser.Size = New System.Drawing.Size(326, 524)
+        Me.ctlTreeViewFolderBrowser.TabIndex = 0
         '
         'cboOrganismSelect
         '
@@ -449,8 +453,8 @@ Public Class frmBatchAddNewCollectionTest
         Me.Controls.Add(Me.lvwSelectedFiles)
         Me.Controls.Add(Me.lvwFolderContents)
         Me.Controls.Add(Me.lblOrganismSelect)
+        Me.Controls.Add(Me.ctlTreeViewFolderBrowser)
         Me.Controls.Add(Me.cboOrganismSelect)
-        Me.Controls.Add(Me.expUploadFolderSelect)
         Me.Controls.Add(Me.lblBatchUploadTree)
         Me.Controls.Add(Me.lblFolderContents)
         Me.Controls.Add(Me.cboAnnotationTypePicker)
@@ -559,7 +563,24 @@ Public Class frmBatchAddNewCollectionTest
         End Set
     End Property
 
-    Property SelectedOrganismName() As String
+    Private ReadOnly Property SelectedNodeFolderPath As String
+        Get
+            Try
+                Dim currentNode = TryCast(ctlTreeViewFolderBrowser.SelectedNode, TreeNodePath)
+
+                If Not currentNode Is Nothing AndAlso Not String.IsNullOrWhiteSpace(currentNode.Path) Then
+                    Return currentNode.Path
+                End If
+
+            Catch ex As Exception
+                ' Ignore errors
+            End Try
+
+            Return String.Empty
+        End Get
+    End Property
+
+    Property SelectedOrganismName As String
         Get
             If cboOrganismSelect.Items.Count > 0 Then
                 Return cboOrganismSelect.Text
@@ -632,20 +653,17 @@ Public Class frmBatchAddNewCollectionTest
 #End Region
 
     Private Sub frmBatchAddNewCollection_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Dim di As DirectoryInfo
-        expUploadFolderSelect.StartUpDirectory = ExpTree.StartDir.Desktop
 
-        m_CollectionsList = CollectionsTableToHash(m_CollectionsTable)
+        ctlTreeViewFolderBrowser.DataSource = New TreeStrategyFolderBrowserProvider()
+        ctlTreeViewFolderBrowser.CheckBoxBehaviorMode = CheckBoxBehaviorMode.None
 
-        If Not String.IsNullOrEmpty(m_LastUsedDirectory) Then
-            di = New DirectoryInfo(m_LastUsedDirectory)
-            If di.Exists Then
-                expUploadFolderSelect.ExpandANode(m_LastUsedDirectory)
-            End If
-        End If
+        m_CollectionsList = CollectionsTableToList(m_CollectionsTable)
+
+        m_RestoreDirectoryTime = DateTime.UtcNow.AddSeconds(0.25)
+        m_RestoreDirectoryTimer.Start()
 
         If m_FileList Is Nothing Then
-            m_FileList = New Hashtable
+            m_FileList = New Dictionary(Of String, FileInfo)
         End If
 
         m_CheckedFileList = New List(Of IUploadProteins.UploadInfo)
@@ -657,9 +675,6 @@ Public Class frmBatchAddNewCollectionTest
 
         SelectComboBoxItemByName(cboOrganismSelect, m_LastSelectedOrganism, 2)
         SelectComboBoxItemByName(cboAnnotationTypePicker, m_LastSelectedAnnotationType, 1)
-
-        SystemImageListManager.SetListViewImageList(lvwFolderContents, True, False)
-        SystemImageListManager.SetListViewImageList(lvwFolderContents, False, False)
 
     End Sub
 
@@ -951,29 +966,11 @@ Public Class frmBatchAddNewCollectionTest
 
     End Sub
 
-    Private Sub AfterNodeSelect(
-     pathName As String,
-     CSI As CShItem) Handles expUploadFolderSelect.ExpTreeNodeSelected
+    Private Sub AfterNodeSelect()
+        Dim folderPath = Me.SelectedNodeFolderPath
+        If String.IsNullOrWhiteSpace(folderPath) Then Return
 
-        Dim totalItems As Integer
-
-        Dim dirList = CSI.GetDirectories
-
-        totalItems = dirList.Count
-        m_LastUsedDirectory = pathName
-
-        If totalItems > 0 Then
-            dirList.Sort()
-        End If
-
-        If pathName <> CShItem.strMyComputer And pathName <> CShItem.strSystemFolder And pathName <> "Desktop" Then
-            ScanDirectory(pathName, lvwFolderContents)
-            lblFolderContents.Text = "Results Files In: '" & pathName & "'"
-        Else
-            lblFolderContents.Text = "Results Files In ..."
-        End If
-
-
+        ScanDirectory(folderPath)
     End Sub
 
     Private Function GetFolderContentsColumn(li As ListViewItem, eColumn As eFolderContentsColumn) As String
@@ -992,6 +989,33 @@ Public Class frmBatchAddNewCollectionTest
         Dim value = li.SubItems(eColumn).Text
         Return value
     End Function
+
+    Private Sub InitializeTreeView(Optional selectedDirectoryPath As String = "")
+        Try
+            If Not String.IsNullOrWhiteSpace(selectedDirectoryPath) AndAlso Directory.Exists(selectedDirectoryPath) Then
+
+                If String.Equals(Me.SelectedNodeFolderPath, selectedDirectoryPath, StringComparison.OrdinalIgnoreCase) Then
+                    ScanDirectory(selectedDirectoryPath)
+                    Return
+                End If
+
+                ctlTreeViewFolderBrowser.Populate(selectedDirectoryPath)
+                Return
+            End If
+        Catch ex As Exception
+            If Not String.IsNullOrWhiteSpace(selectedDirectoryPath) Then
+                MessageBox.Show("Error refreshing folders and files for directory " & selectedDirectoryPath & ": " & ex.Message,
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            End If
+        End Try
+
+        ctlTreeViewFolderBrowser.Populate()
+        If Not ctlTreeViewFolderBrowser.TopNode.IsExpanded Then
+            ctlTreeViewFolderBrowser.TopNode.Expand()
+        End If
+
+    End Sub
+
 
     ''' <summary>
     ''' Populates m_CheckedFileList
@@ -1404,12 +1428,7 @@ Public Class frmBatchAddNewCollectionTest
     End Sub
 
     Private Sub cmdRefreshFiles_Click(sender As Object, e As EventArgs) Handles cmdRefreshFiles.Click
-        Try
-            expUploadFolderSelect.RefreshTree()
-        Catch ex As Exception
-            MessageBox.Show("Error refreshing folders and files: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-        End Try
-
+        InitializeTreeView(m_LastUsedDirectory)
     End Sub
 
     Private Sub cmdUpdateDescription_Click(sender As Object, e As EventArgs) Handles cmdUpdateDescription.Click
@@ -1549,6 +1568,10 @@ Public Class frmBatchAddNewCollectionTest
             SelectAllRows(lvwFolderContents)
         End If
 
+    End Sub
+
+    Private Sub ctlTreeViewFolderBrowser_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles ctlTreeViewFolderBrowser.AfterSelect
+        AfterNodeSelect()
     End Sub
 
     Private Class ListViewItemComparer

@@ -97,10 +97,6 @@
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExpTreeLib">
-      <Name>ExpTreeLib</Name>
-      <HintPath>..\Shared Libraries\ExpTreeLib.dll</HintPath>
-    </Reference>
     <Reference Include="ExtractAnnotationFromDescription, Version=1.0.6301.20791, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Release_DLL\ExtractAnnotationFromDescription.dll</HintPath>
@@ -129,6 +125,14 @@
     <Reference Include="Protein_Uploader, Version=1.0.6301.20791, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Release_DLL\Protein_Uploader.dll</HintPath>
+    </Reference>
+    <Reference Include="Raccoom.TreeViewFolderBrowser, Version=3.0.0.22254, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Shared Libraries\Raccoom.TreeViewFolderBrowser.dll</HintPath>
+    </Reference>
+    <Reference Include="Raccoom.TreeViewFolderBrowser.DataProviders, Version=3.0.0.22257, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Shared Libraries\Raccoom.TreeViewFolderBrowser.DataProviders.dll</HintPath>
     </Reference>
     <Reference Include="SequenceInfoCalculator, Version=1.0.6301.20790, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
