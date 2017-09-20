@@ -715,19 +715,19 @@ Public Class frmBatchAddNewCollection
 
     End Function
 
-    Private Sub ScanDirectory(DirectoryPath As String, lvw As ListView)
+    Private Sub ScanDirectory(directoryPath As String)
 
-        Dim di As New DirectoryInfo(DirectoryPath)
-        Dim fi As FileInfo
-        Dim foundFASTAFiles() As FileInfo
+        lblFolderContents.Text = "Results Files In: '" & directoryPath & "'"
 
-        Dim tmpParsedType As String
+        Dim di As New DirectoryInfo(directoryPath)
 
-        If di.Exists Then
-            foundFASTAFiles = di.GetFiles()
-        Else
+        If Not di.Exists Then
             Exit Sub
         End If
+
+        m_LastUsedDirectory = directoryPath
+
+        Dim foundFASTAFiles = di.GetFiles()
 
         If Not m_FileList Is Nothing Then
             m_FileList.Clear()
@@ -736,10 +736,10 @@ Public Class frmBatchAddNewCollection
         End If
 
         For Each fi In foundFASTAFiles
-            tmpParsedType = Path.GetExtension(fi.Name)
+            Dim fileExtension = Path.GetExtension(fi.Name)
 
-            Select Case tmpParsedType
-                Case ".fasta", ".fst", ".fa", ".pep"
+            Select Case fileExtension.ToLower()
+                Case ".fasta", ".fst", ".fa", ".pep", ".faa"
                     m_FileList.Add(fi.FullName, fi)
             End Select
         Next
