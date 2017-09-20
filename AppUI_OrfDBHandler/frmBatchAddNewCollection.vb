@@ -23,6 +23,14 @@ Public Class frmBatchAddNewCollection
         'This call is required by the Windows Form Designer.
         InitializeComponent()
 
+        m_StatusResetTimer = New Timer With {
+            .Interval = 1000
+        }
+
+        m_StatusResetTimer.Start()
+
+        ClearStatus()
+
         'Add any initialization after the InitializeComponent() call
         m_OrganismList = organismList
         m_OrganismListSorted = New DataView(m_OrganismList) With {
@@ -88,6 +96,7 @@ Public Class frmBatchAddNewCollection
     Friend WithEvents colDescription As ColumnHeader
     Friend WithEvents colSource As ColumnHeader
     Friend WithEvents cmdUpdateDescription As Button
+    Friend WithEvents lblStatus As Label
     Friend WithEvents chkValidationAllowDash As CheckBox
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
@@ -127,6 +136,7 @@ Public Class frmBatchAddNewCollection
         Me.chkValidationAllowDash = New System.Windows.Forms.CheckBox()
         Me.cmdRefreshFiles = New System.Windows.Forms.Button()
         Me.cmdUpdateDescription = New System.Windows.Forms.Button()
+        Me.lblStatus = New System.Windows.Forms.Label()
         Me.fraValidationOptions.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -439,12 +449,22 @@ Public Class frmBatchAddNewCollection
         Me.cmdUpdateDescription.TabIndex = 14
         Me.cmdUpdateDescription.Text = "Update &Description"
         '
+        'lblStatus
+        '
+        Me.lblStatus.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.lblStatus.Location = New System.Drawing.Point(342, 258)
+        Me.lblStatus.Name = "lblStatus"
+        Me.lblStatus.Size = New System.Drawing.Size(295, 46)
+        Me.lblStatus.TabIndex = 21
+        Me.lblStatus.Text = "Status"
+        '
         'frmBatchAddNewCollection
         '
         Me.AcceptButton = Me.cmdUploadChecked
         Me.AutoScaleBaseSize = New System.Drawing.Size(7, 17)
         Me.CancelButton = Me.cmdCancel
         Me.ClientSize = New System.Drawing.Size(1175, 707)
+        Me.Controls.Add(Me.lblStatus)
         Me.Controls.Add(Me.cmdCancel)
         Me.Controls.Add(Me.cmdUploadChecked)
         Me.Controls.Add(Me.cmdUpdateDescription)
@@ -556,6 +576,11 @@ Public Class frmBatchAddNewCollection
     ''' </summary>
     ''' <remarks>Useful in case validation fails and the uploader needs to try again to upload a FASTA file</remarks>
     Private ReadOnly m_CachedFileDescriptions As Dictionary(Of String, KeyValuePair(Of String, String))
+
+    Private m_StatusResetRequired As Boolean
+    Private m_StatusClearTime As DateTime
+
+    Private WithEvents m_StatusResetTimer As Timer
 
 #End Region
 
@@ -990,6 +1015,18 @@ Public Class frmBatchAddNewCollection
         If String.IsNullOrWhiteSpace(folderPath) Then Return
 
         ScanDirectory(folderPath)
+    End Sub
+
+    Private Sub ClearStatus()
+        lblStatus.Text = String.Empty
+    End Sub
+
+    Private Sub UpdateStatus(message As String)
+        lblStatus.Text = message
+
+        m_StatusClearTime = DateTime.UtcNow.AddSeconds(5)
+        m_StatusResetRequired = True
+
     End Sub
 
     Private Function GetFolderContentsColumn(li As ListViewItem, eColumn As eFolderContentsColumn) As String
@@ -1606,6 +1643,21 @@ Public Class frmBatchAddNewCollection
 
     Private Sub ctlTreeViewFolderBrowser_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles ctlTreeViewFolderBrowser.AfterSelect
         AfterNodeSelect()
+    End Sub
+
+    Private Sub ctlTreeViewFolderBrowser_MouseUp(sender As Object, e As MouseEventArgs) Handles ctlTreeViewFolderBrowser.MouseUp
+        If e.Button = MouseButtons.Right Then
+            Dim folderPath = SelectedNodeFolderPath
+            If String.IsNullOrWhiteSpace(folderPath) Then Exit Sub
+            Clipboard.SetText(folderPath)
+            UpdateStatus("Folder path copied to the clipboard")
+        End If
+    End Sub
+    Private Sub m_StatusResetTimer_Tick(sender As Object, e As EventArgs) Handles m_StatusResetTimer.Tick
+        If m_StatusResetRequired AndAlso DateTime.UtcNow > m_StatusClearTime Then
+            m_StatusResetRequired = False
+            lblStatus.Text = String.Empty
+        End If
     End Sub
 
     Private Class ListViewItemComparer
