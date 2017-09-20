@@ -551,6 +551,12 @@ Public Class frmBatchAddNewCollection
     ' Tracks the index of the last column clicked in lvwFolderContents
     Private mSortColumnFolderContents As Integer = -1
 
+    ''' <summary>
+    ''' Tracks Description and Source that the uploader has defined for each file (not persisted when the application closes)
+    ''' </summary>
+    ''' <remarks>Useful in case validation fails and the uploader needs to try again to upload a FASTA file</remarks>
+    Private ReadOnly m_CachedFileDescriptions As Dictionary(Of String, KeyValuePair(Of String, String))
+
 #End Region
 
 #Region " Properties "
@@ -928,16 +934,28 @@ Public Class frmBatchAddNewCollection
                     Next
                 End If
 
-                newLi = New ListViewItem(Path.GetFileNameWithoutExtension(upInfo.FileInformation.Name))
+                Dim kvDescriptionSource As KeyValuePair(Of String, String) = Nothing
+                Dim fileDescription As String
+                Dim fileSource As String
+
+                If m_CachedFileDescriptions.TryGetValue(proteinCollection, kvDescriptionSource) Then
+                    fileDescription = kvDescriptionSource.Key
+                    fileSource = kvDescriptionSource.Value
+                Else
+                    fileDescription = String.Empty
+                    fileSource = String.Empty
+                End If
+
+                Dim newLi = New ListViewItem(proteinCollection)
                 With newLi
                     ' Organism (Column 1)
                     .SubItems.Add(cboOrganismSelect.Text)
 
                     ' Description (Column 2)
-                    .SubItems.Add(String.Empty)
+                    .SubItems.Add(fileDescription)
 
                     ' Source (Column 3)
-                    .SubItems.Add(String.Empty)
+                    .SubItems.Add(fileSource)
 
                     ' Annotation Type (Column 4)
                     .SubItems.Add(cboAnnotationTypePicker.Text)
@@ -1220,6 +1238,17 @@ Public Class frmBatchAddNewCollection
             For Each li In itemsToUpdate
                 li.SubItems(eSelectedFileColumn.Description).Text = updatedDescription
                 li.SubItems(eSelectedFileColumn.Source).Text = updatedSource
+
+
+                Dim proteinCollection = li.SubItems(eSelectedFileColumn.ProteinCollectionName).Text
+
+                Dim kvDescriptionSource = New KeyValuePair(Of String, String)(updatedDescription, updatedSource)
+
+                If m_CachedFileDescriptions.ContainsKey(proteinCollection) Then
+                    m_CachedFileDescriptions(proteinCollection) = kvDescriptionSource
+                Else
+                    m_CachedFileDescriptions.Add(proteinCollection, kvDescriptionSource)
+                End If
             Next
         End If
 

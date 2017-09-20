@@ -20,6 +20,8 @@ Public Class frmCollectionEditor
 
         'Add any initialization after the InitializeComponent() call
 
+        m_CachedFileDescriptions = New Dictionary(Of String, KeyValuePair(Of String, String))
+
         ReadSettings()
 
     End Sub
@@ -823,6 +825,14 @@ Public Class frmCollectionEditor
 
     Friend WithEvents SearchTimer As New Timer(2000)
     Friend WithEvents MemberLoadTimer As New Timer(2000)
+
+    ''' <summary>
+    ''' Tracks the description and source that the user has entered for each FASTA file
+    ''' Key: fasta file name
+    ''' Value: KeyValuePair of Description and Source
+    ''' </summary>
+    ''' <remarks>Useful in case validation fails and the uploader needs to try again to upload a FASTA file</remarks>
+    Private ReadOnly m_CachedFileDescriptions As Dictionary(Of String, KeyValuePair(Of String, String))
 
     Private Sub frmCollectionEditor_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         'Get initial info - organism list, full collections list
