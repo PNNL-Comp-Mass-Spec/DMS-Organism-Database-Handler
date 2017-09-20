@@ -1,7 +1,7 @@
 ; This is an Inno Setup configuration file
 ; http://www.jrsoftware.org/isinfo.php
 
-#define ApplicationVersion GetFileVersion('..\Executables\Release_CBDMS_GUI\PRISMSeq Uploader.exe')
+#define ApplicationVersion GetFileVersion('..\Executables\Debug_CBDMS_GUI\PRISMSeq Uploader.exe')
 
 [CustomMessages]
 AppName=PRISMSeq Uploader
@@ -12,24 +12,25 @@ WelcomeLabel2=This will install [name/ver] on your computer. This version is cus
 ; WelcomeLabel2=Welcome message%n%nAdditional sentence
 [Files]
 
-Source: ..\Executables\Release_CBDMS_GUI\PRISMSeq Uploader.exe                 ; DestDir: {app}
-Source: ..\Executables\Release_CBDMS_GUI\PRISMSeq Uploader.exe.config          ; DestDir: {app}
-Source: ..\Executables\Release_CBDMS_GUI\ExpTreeLib.dll                        ; DestDir: {app}
-Source: ..\Executables\Release_CBDMS_GUI\ExtractAnnotationFromDescription.dll  ; DestDir: {app}
-Source: ..\Executables\Release_CBDMS_GUI\FlexibleFileSortUtility.dll           ; DestDir: {app}
-Source: ..\Executables\Release_CBDMS_GUI\NucleotideTranslator.dll              ; DestDir: {app}
-Source: ..\Executables\Release_CBDMS_GUI\PRISM.dll                             ; DestDir: {app}
-Source: ..\Executables\Release_CBDMS_GUI\PRISMWin.dll                          ; DestDir: {app}
-Source: ..\Executables\Release_CBDMS_GUI\Protein_Exporter.dll                  ; DestDir: {app}
-Source: ..\Executables\Release_CBDMS_GUI\Protein_Importer.dll                  ; DestDir: {app}
-Source: ..\Executables\Release_CBDMS_GUI\Protein_Storage.dll                   ; DestDir: {app}
-Source: ..\Executables\Release_CBDMS_GUI\Protein_Uploader.dll                  ; DestDir: {app}
-Source: ..\Executables\Release_CBDMS_GUI\ProteinFileReader.dll                 ; DestDir: {app}
-Source: ..\Executables\Release_CBDMS_GUI\SequenceInfoCalculator.dll            ; DestDir: {app}
-Source: ..\Executables\Release_CBDMS_GUI\TableManipulationBase.dll             ; DestDir: {app}
-Source: ..\Executables\Release_CBDMS_GUI\TranslationTableImport.dll            ; DestDir: {app}
-Source: ..\Executables\Release_CBDMS_GUI\UIControls.dll                        ; DestDir: {app}
-Source: ..\Executables\Release_CBDMS_GUI\ValidateFastaFile.dll                 ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\PRISMSeq Uploader.exe                 ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\PRISMSeq Uploader.exe.config          ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\ExtractAnnotationFromDescription.dll  ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\FlexibleFileSortUtility.dll           ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\NucleotideTranslator.dll              ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\PRISM.dll                             ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\PRISMWin.dll                          ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Protein_Exporter.dll                  ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Protein_Importer.dll                  ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Protein_Storage.dll                   ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Protein_Uploader.dll                  ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\ProteinFileReader.dll                 ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Raccoom.TreeViewFolderBrowser.DataProviders.dll   ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Raccoom.TreeViewFolderBrowser.dll                 ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\SequenceInfoCalculator.dll            ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\TableManipulationBase.dll             ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\TranslationTableImport.dll            ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\UIControls.dll                        ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\ValidateFastaFile.dll                 ; DestDir: {app}
 
 Source: ..\Aux_Files\delete_16x.ico                                  ; DestDir: {app}
 Source: ..\AppUI_OrfDBHandler\PRISMSeq_Favicon.ico                   ; DestDir: {app}

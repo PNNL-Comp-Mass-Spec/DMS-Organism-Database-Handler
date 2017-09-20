@@ -322,10 +322,10 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>if not exist "$(SolutionDir)Executables\Release_CBDMS_GUI" mkdir "$(SolutionDir)Executables\Release_CBDMS_GUI"
-xcopy "$(TargetDir)*.exe"  "$(SolutionDir)Executables\Release_CBDMS_GUI\" /d /y /f
-xcopy "$(TargetDir)*.dll" "$(SolutionDir)Executables\Release_CBDMS_GUI\" /d /y /f
-xcopy "$(TargetDir)*.pdb" "$(SolutionDir)Executables\Release_CBDMS_GUI\" /d /y /f
+    <PostBuildEvent>if not exist "$(SolutionDir)Executables\Release_CBDMS_GUI" mkdir "$(SolutionDir)Executables\Debug_CBDMS_GUI"
+xcopy "$(TargetDir)*.exe"  "$(SolutionDir)Executables\Debug_CBDMS_GUI\" /d /y /f
+xcopy "$(TargetDir)*.dll" "$(SolutionDir)Executables\Debug_CBDMS_GUI\" /d /y /f
+xcopy "$(TargetDir)*.pdb" "$(SolutionDir)Executables\Debug_CBDMS_GUI\" /d /y /f
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

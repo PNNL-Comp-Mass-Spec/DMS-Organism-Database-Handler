@@ -1,5 +1,18 @@
 PRISMSeq Uploader Change Log
 
+Version 1.5.6472; September 20, 2017
+	- Replace ExpTreeLib with Raccoom.TreeViewFolderBrowser
+	- Remember user-defined description and source for each fasta file (as long as the program keeps running)
+	- Replace Arraylists and Hashtables with generic lists and dictionaries
+
+Version 1.5.6386; June 26, 2017
+	- Use PRISMWin.dll instead of Skybound.VisualStyles.dll
+
+Version 1.5.6257; February 17, 2017 
+	- Update to .NET 4.6.2
+	- Obtain PRISM.dll from NuGet
+	- Use clsEventNotifier in PRISM.dll
+
 Version 1.5.6060; August 4, 2016
 	- New ValidateFASTAFile.dll where the default maximum protein name length is 60 characters
 	- Resharper code cleanup

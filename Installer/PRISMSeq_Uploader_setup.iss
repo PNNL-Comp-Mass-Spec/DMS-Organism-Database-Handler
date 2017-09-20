@@ -1,7 +1,7 @@
 ; This is an Inno Setup configuration file
 ; http://www.jrsoftware.org/isinfo.php
 
-#define ApplicationVersion GetFileVersion('..\Executables\Release\PRISMSeq Uploader.exe')
+#define ApplicationVersion GetFileVersion('..\Executables\Debug\PRISMSeq Uploader.exe')
 
 [CustomMessages]
 AppName=PRISMSeq Uploader
@@ -12,24 +12,25 @@ WelcomeLabel2=This will install [name/ver] on your computer.
 ; WelcomeLabel2=Welcome message%n%nAdditional sentence
 [Files]
 
-Source: ..\Executables\Release\PRISMSeq Uploader.exe                 ; DestDir: {app}
-Source: ..\Executables\Release\PRISMSeq Uploader.exe.config          ; DestDir: {app}
-Source: ..\Executables\Release\ExpTreeLib.dll                        ; DestDir: {app}
-Source: ..\Executables\Release\ExtractAnnotationFromDescription.dll  ; DestDir: {app}
-Source: ..\Executables\Release\FlexibleFileSortUtility.dll           ; DestDir: {app}
-Source: ..\Executables\Release\NucleotideTranslator.dll              ; DestDir: {app}
-Source: ..\Executables\Release\PRISM.dll                             ; DestDir: {app}
-Source: ..\Executables\Release\PRISMWin.dll                          ; DestDir: {app}
-Source: ..\Executables\Release\Protein_Exporter.dll                  ; DestDir: {app}
-Source: ..\Executables\Release\Protein_Importer.dll                  ; DestDir: {app}
-Source: ..\Executables\Release\Protein_Storage.dll                   ; DestDir: {app}
-Source: ..\Executables\Release\Protein_Uploader.dll                  ; DestDir: {app}
-Source: ..\Executables\Release\ProteinFileReader.dll                 ; DestDir: {app}
-Source: ..\Executables\Release\SequenceInfoCalculator.dll            ; DestDir: {app}
-Source: ..\Executables\Release\TableManipulationBase.dll             ; DestDir: {app}
-Source: ..\Executables\Release\TranslationTableImport.dll            ; DestDir: {app}
-Source: ..\Executables\Release\UIControls.dll                        ; DestDir: {app}
-Source: ..\Executables\Release\ValidateFastaFile.dll                 ; DestDir: {app}
+Source: ..\Executables\Debug\PRISMSeq Uploader.exe                 ; DestDir: {app}
+Source: ..\Executables\Debug\PRISMSeq Uploader.exe.config          ; DestDir: {app}
+Source: ..\Executables\Debug\ExtractAnnotationFromDescription.dll  ; DestDir: {app}
+Source: ..\Executables\Debug\FlexibleFileSortUtility.dll           ; DestDir: {app}
+Source: ..\Executables\Debug\NucleotideTranslator.dll              ; DestDir: {app}
+Source: ..\Executables\Debug\PRISM.dll                             ; DestDir: {app}
+Source: ..\Executables\Debug\PRISMWin.dll                          ; DestDir: {app}
+Source: ..\Executables\Debug\Protein_Exporter.dll                  ; DestDir: {app}
+Source: ..\Executables\Debug\Protein_Importer.dll                  ; DestDir: {app}
+Source: ..\Executables\Debug\Protein_Storage.dll                   ; DestDir: {app}
+Source: ..\Executables\Debug\Protein_Uploader.dll                  ; DestDir: {app}
+Source: ..\Executables\Debug\ProteinFileReader.dll                 ; DestDir: {app}
+Source: ..\Executables\Debug\Raccoom.TreeViewFolderBrowser.DataProviders.dll   ; DestDir: {app}
+Source: ..\Executables\Debug\Raccoom.TreeViewFolderBrowser.dll                 ; DestDir: {app}
+Source: ..\Executables\Debug\SequenceInfoCalculator.dll            ; DestDir: {app}
+Source: ..\Executables\Debug\TableManipulationBase.dll             ; DestDir: {app}
+Source: ..\Executables\Debug\TranslationTableImport.dll            ; DestDir: {app}
+Source: ..\Executables\Debug\UIControls.dll                        ; DestDir: {app}
+Source: ..\Executables\Debug\ValidateFastaFile.dll                 ; DestDir: {app}
 
 Source: ..\Aux_Files\delete_16x.ico                                  ; DestDir: {app}
 Source: ..\AppUI_OrfDBHandler\PRISMSeq_Favicon.ico                   ; DestDir: {app}
