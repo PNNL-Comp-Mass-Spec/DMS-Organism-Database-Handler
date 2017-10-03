@@ -160,7 +160,7 @@ Public Class frmBatchAddNewCollection
         Me.cboOrganismSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboOrganismSelect.Location = New System.Drawing.Point(8, 587)
         Me.cboOrganismSelect.Name = "cboOrganismSelect"
-        Me.cboOrganismSelect.Size = New System.Drawing.Size(585, 25)
+        Me.cboOrganismSelect.Size = New System.Drawing.Size(609, 25)
         Me.cboOrganismSelect.TabIndex = 11
         '
         'lblBatchUploadTree
@@ -186,7 +186,7 @@ Public Class frmBatchAddNewCollection
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblFolderContents.Location = New System.Drawing.Point(342, 12)
         Me.lblFolderContents.Name = "lblFolderContents"
-        Me.lblFolderContents.Size = New System.Drawing.Size(811, 20)
+        Me.lblFolderContents.Size = New System.Drawing.Size(835, 20)
         Me.lblFolderContents.TabIndex = 2
         Me.lblFolderContents.Text = "Selected folder contents"
         '
@@ -194,7 +194,7 @@ Public Class frmBatchAddNewCollection
         '
         Me.cmdCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cmdCancel.Location = New System.Drawing.Point(1077, 653)
+        Me.cmdCancel.Location = New System.Drawing.Point(1101, 653)
         Me.cmdCancel.Name = "cmdCancel"
         Me.cmdCancel.Size = New System.Drawing.Size(84, 36)
         Me.cmdCancel.TabIndex = 20
@@ -203,7 +203,7 @@ Public Class frmBatchAddNewCollection
         'cmdUploadChecked
         '
         Me.cmdUploadChecked.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdUploadChecked.Location = New System.Drawing.Point(894, 653)
+        Me.cmdUploadChecked.Location = New System.Drawing.Point(918, 653)
         Me.cmdUploadChecked.Name = "cmdUploadChecked"
         Me.cmdUploadChecked.Size = New System.Drawing.Size(168, 36)
         Me.cmdUploadChecked.TabIndex = 19
@@ -220,7 +220,7 @@ Public Class frmBatchAddNewCollection
         Me.lvwFolderContents.HideSelection = False
         Me.lvwFolderContents.Location = New System.Drawing.Point(342, 32)
         Me.lvwFolderContents.Name = "lvwFolderContents"
-        Me.lvwFolderContents.Size = New System.Drawing.Size(819, 218)
+        Me.lvwFolderContents.Size = New System.Drawing.Size(843, 218)
         Me.lvwFolderContents.Sorting = System.Windows.Forms.SortOrder.Ascending
         Me.lvwFolderContents.TabIndex = 3
         Me.lvwFolderContents.UseCompatibleStateImageBehavior = False
@@ -250,7 +250,7 @@ Public Class frmBatchAddNewCollection
         '
         Me.cboAnnotationTypePicker.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cboAnnotationTypePicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboAnnotationTypePicker.Location = New System.Drawing.Point(617, 587)
+        Me.cboAnnotationTypePicker.Location = New System.Drawing.Point(641, 587)
         Me.cboAnnotationTypePicker.Name = "cboAnnotationTypePicker"
         Me.cboAnnotationTypePicker.Size = New System.Drawing.Size(364, 25)
         Me.cboAnnotationTypePicker.TabIndex = 13
@@ -258,7 +258,7 @@ Public Class frmBatchAddNewCollection
         'lblAnnAuth
         '
         Me.lblAnnAuth.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblAnnAuth.Location = New System.Drawing.Point(617, 567)
+        Me.lblAnnAuth.Location = New System.Drawing.Point(641, 567)
         Me.lblAnnAuth.Name = "lblAnnAuth"
         Me.lblAnnAuth.Size = New System.Drawing.Size(285, 20)
         Me.lblAnnAuth.TabIndex = 12
@@ -274,7 +274,7 @@ Public Class frmBatchAddNewCollection
         Me.lvwSelectedFiles.HideSelection = False
         Me.lvwSelectedFiles.Location = New System.Drawing.Point(342, 335)
         Me.lvwSelectedFiles.Name = "lvwSelectedFiles"
-        Me.lvwSelectedFiles.Size = New System.Drawing.Size(819, 224)
+        Me.lvwSelectedFiles.Size = New System.Drawing.Size(843, 224)
         Me.lvwSelectedFiles.TabIndex = 9
         Me.lvwSelectedFiles.UseCompatibleStateImageBehavior = False
         Me.lvwSelectedFiles.View = System.Windows.Forms.View.Details
@@ -318,7 +318,7 @@ Public Class frmBatchAddNewCollection
         Me.cmdAddFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdAddFile.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.cmdAddFile.GenerateDisabledImage = True
-        Me.cmdAddFile.Location = New System.Drawing.Point(657, 272)
+        Me.cmdAddFile.Location = New System.Drawing.Point(681, 272)
         Me.cmdAddFile.Name = "cmdAddFile"
         Me.cmdAddFile.Size = New System.Drawing.Size(48, 44)
         Me.cmdAddFile.TabIndex = 6
@@ -329,7 +329,7 @@ Public Class frmBatchAddNewCollection
         Me.cmdRemoveFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdRemoveFile.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.cmdRemoveFile.GenerateDisabledImage = True
-        Me.cmdRemoveFile.Location = New System.Drawing.Point(727, 272)
+        Me.cmdRemoveFile.Location = New System.Drawing.Point(751, 272)
         Me.cmdRemoveFile.Name = "cmdRemoveFile"
         Me.cmdRemoveFile.Size = New System.Drawing.Size(48, 44)
         Me.cmdRemoveFile.TabIndex = 7
@@ -339,7 +339,7 @@ Public Class frmBatchAddNewCollection
         '
         Me.cmdPreviewFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdPreviewFile.Enabled = False
-        Me.cmdPreviewFile.Location = New System.Drawing.Point(979, 297)
+        Me.cmdPreviewFile.Location = New System.Drawing.Point(1003, 297)
         Me.cmdPreviewFile.Name = "cmdPreviewFile"
         Me.cmdPreviewFile.Size = New System.Drawing.Size(182, 30)
         Me.cmdPreviewFile.TabIndex = 5
@@ -434,7 +434,7 @@ Public Class frmBatchAddNewCollection
         'cmdRefreshFiles
         '
         Me.cmdRefreshFiles.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdRefreshFiles.Location = New System.Drawing.Point(979, 258)
+        Me.cmdRefreshFiles.Location = New System.Drawing.Point(1003, 258)
         Me.cmdRefreshFiles.Name = "cmdRefreshFiles"
         Me.cmdRefreshFiles.Size = New System.Drawing.Size(182, 30)
         Me.cmdRefreshFiles.TabIndex = 4
@@ -443,7 +443,7 @@ Public Class frmBatchAddNewCollection
         'cmdUpdateDescription
         '
         Me.cmdUpdateDescription.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdUpdateDescription.Location = New System.Drawing.Point(1044, 574)
+        Me.cmdUpdateDescription.Location = New System.Drawing.Point(1068, 574)
         Me.cmdUpdateDescription.Name = "cmdUpdateDescription"
         Me.cmdUpdateDescription.Size = New System.Drawing.Size(117, 49)
         Me.cmdUpdateDescription.TabIndex = 14
@@ -463,7 +463,9 @@ Public Class frmBatchAddNewCollection
         Me.AcceptButton = Me.cmdUploadChecked
         Me.AutoScaleBaseSize = New System.Drawing.Size(7, 17)
         Me.CancelButton = Me.cmdCancel
-        Me.ClientSize = New System.Drawing.Size(1175, 707)
+        Me.ClientSize = New System.Drawing.Size(1199, 707)
+        Me.Controls.Add(Me.cmdRemoveFile)
+        Me.Controls.Add(Me.cmdAddFile)
         Me.Controls.Add(Me.lblStatus)
         Me.Controls.Add(Me.cmdCancel)
         Me.Controls.Add(Me.cmdUploadChecked)
@@ -474,8 +476,6 @@ Public Class frmBatchAddNewCollection
         Me.Controls.Add(Me.lblPassphrase)
         Me.Controls.Add(Me.chkEncryptionEnable)
         Me.Controls.Add(Me.cmdPreviewFile)
-        Me.Controls.Add(Me.cmdRemoveFile)
-        Me.Controls.Add(Me.cmdAddFile)
         Me.Controls.Add(Me.lvwSelectedFiles)
         Me.Controls.Add(Me.lvwFolderContents)
         Me.Controls.Add(Me.lblOrganismSelect)
