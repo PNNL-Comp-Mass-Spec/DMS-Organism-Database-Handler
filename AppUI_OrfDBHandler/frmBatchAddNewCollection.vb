@@ -167,9 +167,9 @@ Public Class frmBatchAddNewCollection
         '
         Me.lblBatchUploadTree.Location = New System.Drawing.Point(14, 12)
         Me.lblBatchUploadTree.Name = "lblBatchUploadTree"
-        Me.lblBatchUploadTree.Size = New System.Drawing.Size(260, 20)
+        Me.lblBatchUploadTree.Size = New System.Drawing.Size(320, 20)
         Me.lblBatchUploadTree.TabIndex = 0
-        Me.lblBatchUploadTree.Text = "Select Source Folder for Upload"
+        Me.lblBatchUploadTree.Text = "Select source folder for upload (F5 to refresh)"
         '
         'lblOrganismSelect
         '
@@ -178,7 +178,7 @@ Public Class frmBatchAddNewCollection
         Me.lblOrganismSelect.Name = "lblOrganismSelect"
         Me.lblOrganismSelect.Size = New System.Drawing.Size(261, 20)
         Me.lblOrganismSelect.TabIndex = 10
-        Me.lblOrganismSelect.Text = "Select Destination &Organism"
+        Me.lblOrganismSelect.Text = "Select destination &organism"
         '
         'lblFolderContents
         '
@@ -188,7 +188,7 @@ Public Class frmBatchAddNewCollection
         Me.lblFolderContents.Name = "lblFolderContents"
         Me.lblFolderContents.Size = New System.Drawing.Size(811, 20)
         Me.lblFolderContents.TabIndex = 2
-        Me.lblFolderContents.Text = "Selected Folder Contents"
+        Me.lblFolderContents.Text = "Selected folder contents"
         '
         'cmdCancel
         '
@@ -207,7 +207,7 @@ Public Class frmBatchAddNewCollection
         Me.cmdUploadChecked.Name = "cmdUploadChecked"
         Me.cmdUploadChecked.Size = New System.Drawing.Size(168, 36)
         Me.cmdUploadChecked.TabIndex = 19
-        Me.cmdUploadChecked.Text = "&Upload New FASTAs"
+        Me.cmdUploadChecked.Text = "&Upload new FASTAs"
         '
         'lvwFolderContents
         '
@@ -311,7 +311,7 @@ Public Class frmBatchAddNewCollection
         Me.lblSelectedFiles.Name = "lblSelectedFiles"
         Me.lblSelectedFiles.Size = New System.Drawing.Size(868, 19)
         Me.lblSelectedFiles.TabIndex = 8
-        Me.lblSelectedFiles.Text = "FASTA Files Selected for Upload"
+        Me.lblSelectedFiles.Text = "FASTA files selected for upload"
         '
         'cmdAddFile
         '
@@ -742,7 +742,7 @@ Public Class frmBatchAddNewCollection
 
     Private Sub ScanDirectory(directoryPath As String)
 
-        lblFolderContents.Text = "Results Files In: '" & directoryPath & "'"
+        lblFolderContents.Text = "FASTA files in: '" & directoryPath & "'"
 
         Dim di As New DirectoryInfo(directoryPath)
 
@@ -1048,14 +1048,20 @@ Public Class frmBatchAddNewCollection
 
     Private Sub InitializeTreeView(Optional selectedDirectoryPath As String = "")
         Try
-            If Not String.IsNullOrWhiteSpace(selectedDirectoryPath) AndAlso Directory.Exists(selectedDirectoryPath) Then
+            If Not String.IsNullOrWhiteSpace(selectedDirectoryPath) Then
 
-                If String.Equals(Me.SelectedNodeFolderPath, selectedDirectoryPath, StringComparison.OrdinalIgnoreCase) Then
-                    ScanDirectory(selectedDirectoryPath)
+                Dim currentFolder = New DirectoryInfo(selectedDirectoryPath)
+
+                While Not currentFolder.Exists AndAlso Not currentFolder.Parent Is Nothing
+                    currentFolder = currentFolder.Parent
+                End While
+
+                If String.Equals(Me.SelectedNodeFolderPath, currentFolder.FullName, StringComparison.OrdinalIgnoreCase) Then
+                    ScanDirectory(currentFolder.FullName)
                     Return
                 End If
 
-                ctlTreeViewFolderBrowser.Populate(selectedDirectoryPath)
+                ctlTreeViewFolderBrowser.Populate(currentFolder.FullName)
                 Return
             End If
         Catch ex As Exception
@@ -1144,10 +1150,6 @@ Public Class frmBatchAddNewCollection
                 m_SelectedFileList.Remove(filePath)
             End If
         Next
-    End Sub
-
-    Private Sub RestoreSelectedDirectory()
-        InitializeTreeView(m_LastUsedDirectory)
     End Sub
 
     Private Sub SelectAllRows(lv As ListView)
