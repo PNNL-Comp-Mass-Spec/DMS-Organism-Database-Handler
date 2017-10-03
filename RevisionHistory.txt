@@ -1,5 +1,8 @@
 PRISMSeq Uploader Change Log
 
+Version 1.5.6485; October 3, 2017
+	- Add UIControls project (decompiled from source)
+
 Version 1.5.6472; September 20, 2017
 	- Replace ExpTreeLib with Raccoom.TreeViewFolderBrowser
 	- Remember user-defined description and source for each fasta file (as long as the program keeps running)

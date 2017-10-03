@@ -160,10 +160,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Release_DLL\TranslationTableImport.dll</HintPath>
     </Reference>
-    <Reference Include="UIControls">
-      <Name>UIControls</Name>
-      <HintPath>..\Shared Libraries\UIControls.dll</HintPath>
-    </Reference>
     <Reference Include="ValidateFastaFile, Version=2.1.4834.35819, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Shared Libraries\ValidateFastaFile.dll</HintPath>
@@ -234,6 +230,11 @@
     <Compile Include="frmValidationReport.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="My Project\Settings.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -272,6 +273,11 @@
       <DependentUpon>frmValidationReport.vb</DependentUpon>
     </EmbeddedResource>
     <Content Include="PRISMSeq_Favicon.ico" />
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -317,6 +323,12 @@
     <PackageReference Include="PRISM-Library">
       <Version>2.4.32</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UIControls\UIControls.csproj">
+      <Project>{e44f2cc8-20cb-4862-8bfb-a2f3d9220c57}</Project>
+      <Name>UIControls</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
