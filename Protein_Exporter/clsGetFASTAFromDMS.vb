@@ -829,7 +829,7 @@ Public Class clsGetFASTAFromDMS
 
         Dim extensionToUse As String
         If String.IsNullOrWhiteSpace(hashcheckExtension) Then
-            extensionToUse = hashcheckExtension
+            extensionToUse = HASHCHECK_SUFFIX
         Else
             extensionToUse = hashcheckExtension
         End If
