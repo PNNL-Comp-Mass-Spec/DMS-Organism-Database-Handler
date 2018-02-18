@@ -3,13 +3,15 @@
 Imports System.IO
 Imports System.Reflection
 Imports System.Threading
+Imports PRISM
 Imports ValidateFastaFile
+
 ' This program can be used to load one or more FASTA files into the Protein Sequences database
 '
 
 Module modMain
 
-    Public Const PROGRAM_DATE As String = "June 26, 2017"
+    Public Const PROGRAM_DATE As String = "February 17, 2018"
 
     Private mInputFilePath As String
     Private mPreviewMode As Boolean
@@ -28,7 +30,7 @@ Module modMain
         ' Returns 0 if no error, error code if an error
 
         Dim intReturnCode As Integer
-        Dim objParseCommandLine As New clsParseCommandLine
+        Dim commandLineParser As New clsParseCommandLine()
         Dim blnProceed As Boolean
 
         ' Initialize the options
@@ -41,19 +43,19 @@ Module modMain
 
         Try
             blnProceed = False
-            If objParseCommandLine.ParseCommandLine Then
-                If SetOptionsUsingCommandLineParameters(objParseCommandLine) Then blnProceed = True
+            If commandLineParser.ParseCommandLine Then
+                If SetOptionsUsingCommandLineParameters(commandLineParser) Then blnProceed = True
             End If
 
             If Not blnProceed OrElse
-               objParseCommandLine.NeedToShowHelp OrElse
-               objParseCommandLine.ParameterCount + objParseCommandLine.NonSwitchParameterCount = 0 OrElse
+               commandLineParser.NeedToShowHelp OrElse
+               commandLineParser.ParameterCount + commandLineParser.NonSwitchParameterCount = 0 OrElse
                mInputFilePath.Length = 0 Then
                 ShowProgramHelp()
                 intReturnCode = -1
             Else
 
-                mBulkImporter = New clsBulkFastaImporter
+                mBulkImporter = New clsBulkFastaImporter()
                 mBulkImporter.PreviewMode = mPreviewMode
                 mBulkImporter.ValidationMaxProteinNameLength = mMaxProteinNameLength
 
@@ -69,8 +71,6 @@ Module modMain
                     mBulkImporter.DMSConnectionString = dmsConnectionString
                 End If
 
-
-                mBulkImporter.ShowMessages = True
                 mBulkImporter.LogMessagesToFile = mLogMessagesToFile
                 If Not String.IsNullOrEmpty(mLogFilePath) Then mBulkImporter.LogFilePath = mLogFilePath
 
@@ -113,7 +113,7 @@ Module modMain
         Return Assembly.GetExecutingAssembly.GetName.Version.ToString & " (" & PROGRAM_DATE & ")"
     End Function
 
-    Private Function SetOptionsUsingCommandLineParameters(objParseCommandLine As clsParseCommandLine) As Boolean
+    Private Function SetOptionsUsingCommandLineParameters(commandLineParser As clsParseCommandLine) As Boolean
         ' Returns True if no problems; otherwise, returns false
 
         Dim strValue As String = String.Empty
@@ -121,11 +121,11 @@ Module modMain
 
         Try
             ' Make sure no invalid parameters are present
-            If objParseCommandLine.InvalidParametersPresent(strValidParameters) Then
+            If commandLineParser.InvalidParametersPresent(strValidParameters) Then
                 Return False
             Else
-                With objParseCommandLine
-                    ' Query objParseCommandLine to see if various parameters are present
+                With commandLineParser
+                    ' Query commandLineParser to see if various parameters are present
                     If .RetrieveValueForParameter("I", strValue) Then
                         mInputFilePath = strValue
                     ElseIf .NonSwitchParameterCount > 0 Then
@@ -210,7 +210,7 @@ Module modMain
 
     End Sub
 
-    Private Sub mBulkImporter_ProgressChanged(taskDescription As String, percentComplete As Single) Handles mBulkImporter.ProgressChanged
+    Private Sub mBulkImporter_ProgressChanged(taskDescription As String, percentComplete As Single) Handles mBulkImporter.ProgressUpdate
         Const PERCENT_REPORT_INTERVAL = 25
         Const PROGRESS_DOT_INTERVAL_MSEC = 250
 

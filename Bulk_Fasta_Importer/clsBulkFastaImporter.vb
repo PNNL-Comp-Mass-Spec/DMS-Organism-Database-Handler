@@ -21,7 +21,7 @@ Imports Protein_Uploader
 Imports ValidateFastaFile
 
 Public Class clsBulkFastaImporter
-    Inherits clsProcessFilesBaseClass
+    Inherits PRISM.FileProcessor.ProcessFilesBase
 
 #Region "Constants and Enums"
 

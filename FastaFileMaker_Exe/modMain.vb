@@ -1,8 +1,10 @@
 Option Strict On
+
+Imports PRISM
 Imports Protein_Exporter
 
 Module modMain
-    Public Const PROGRAM_DATE As String = "June 26, 2017"
+    Public Const PROGRAM_DATE As String = "February 17, 2018"
 
     Const m_DebugLevel As Integer = 4
     Const FASTA_GEN_TIMEOUT_INTERVAL_MINUTES As Integer = 70
@@ -46,7 +48,7 @@ Module modMain
 
         If ex IsNot Nothing Then
             Console.ForegroundColor = ConsoleColor.Cyan
-            Console.WriteLine(PRISM.Utilities.GetExceptionStackTraceMultiLine(ex))
+            Console.WriteLine(clsStackTraceFormatter.GetExceptionStackTraceMultiLine(ex))
         End If
         Console.ResetColor()
 
@@ -100,7 +102,7 @@ Module modMain
 #End Region
 
     Public Sub Main()
-        Dim objParseCommandLine As New clsParseCommandLine
+        Dim commandLineParser As New clsParseCommandLine
         Dim blnProceed As Boolean
 
         Try
@@ -112,13 +114,13 @@ Module modMain
             mDestFolder = String.Empty
             mLogProteinFileDetails = False
 
-            If objParseCommandLine.ParseCommandLine Then
-                If SetOptionsUsingCommandLineParameters(objParseCommandLine) Then blnProceed = True
+            If commandLineParser.ParseCommandLine Then
+                If SetOptionsUsingCommandLineParameters(commandLineParser) Then blnProceed = True
             End If
 
             If Not blnProceed OrElse
-               objParseCommandLine.NeedToShowHelp OrElse
-               objParseCommandLine.ParameterCount + objParseCommandLine.NonSwitchParameterCount = 0 OrElse
+               commandLineParser.NeedToShowHelp OrElse
+               commandLineParser.ParameterCount + commandLineParser.NonSwitchParameterCount = 0 OrElse
                (mProteinCollectionList.Length = 0 AndAlso mLegacyFasta.Length = 0) Then
                 ShowProgramHelp()
             Else
@@ -260,7 +262,7 @@ Module modMain
 
     End Sub
 
-    Private Function SetOptionsUsingCommandLineParameters(objParseCommandLine As clsParseCommandLine) As Boolean
+    Private Function SetOptionsUsingCommandLineParameters(commandLineParser As clsParseCommandLine) As Boolean
         ' Returns True if no problems; otherwise, returns false
 
         Dim strValue As String = String.Empty
@@ -268,11 +270,11 @@ Module modMain
 
         Try
             ' Make sure no invalid parameters are present
-            If objParseCommandLine.InvalidParametersPresent(strValidParameters) Then
+            If commandLineParser.InvalidParametersPresent(strValidParameters) Then
                 Return False
             Else
-                With objParseCommandLine
-                    ' Query objParseCommandLine to see if various parameters are present
+                With commandLineParser
+                    ' Query commandLineParser to see if various parameters are present
                     If .RetrieveValueForParameter("P", strValue) Then mProteinCollectionList = strValue
                     If .RetrieveValueForParameter("C", strValue) Then mCreationOpts = strValue
                     If .RetrieveValueForParameter("L", strValue) Then mLegacyFasta = strValue
@@ -395,7 +397,7 @@ Module modMain
             crc32Hash = m_FastaTools.ExportFASTAFile(protCollectionList, creationOpts, legacyFasta, destinationFolderPath)
         Catch Ex As Exception
             Console.WriteLine("clsAnalysisResources.CreateFastaFile(), Exception generating OrgDb file: " & Ex.Message)
-            Console.WriteLine(PRISM.Utilities.GetExceptionStackTraceMultiLine(Ex))
+            Console.WriteLine(clsStackTraceFormatter.GetExceptionStackTraceMultiLine(Ex))
             Return False
         End Try
 
