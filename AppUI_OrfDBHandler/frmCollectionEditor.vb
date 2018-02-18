@@ -761,7 +761,7 @@ Public Class frmCollectionEditor
 
 #End Region
 
-    Private Const PROGRAM_DATE As String = "October 3, 2017"
+    Private Const PROGRAM_DATE As String = "February 17, 2018"
 
     Private m_Organisms As DataTable
     Private m_ProteinCollections As DataTable
@@ -796,7 +796,7 @@ Public Class frmCollectionEditor
     ''' <summary>
     ''' Keys are fasta file names, values are lists of errors
     ''' </summary>
-    Private m_FileErrorList As Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended))
+    Private m_FileErrorList As Dictionary(Of String, List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
 
     ''' <summary>
     ''' Keys are fasta file names, values are dictionaries of error messages, tracking the count of each error
@@ -806,7 +806,7 @@ Public Class frmCollectionEditor
     ''' <summary>
     ''' Keys are fasta file names, values are lists of warnings
     ''' </summary>
-    Private m_FileWarningList As Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended))
+    Private m_FileWarningList As Dictionary(Of String, List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
 
     ''' <summary>
     ''' Keys are fasta file names, values are dictionaries of warning messages, tracking the count of each warning
@@ -1712,10 +1712,10 @@ Public Class frmCollectionEditor
 
     End Sub
 
-    Private Sub InvalidFASTAFileHandler(FASTAFilePath As String, errorCollection As List(Of ICustomValidation.udtErrorInfoExtended)) Handles m_UploadHandler.InvalidFASTAFile
+    Private Sub InvalidFASTAFileHandler(FASTAFilePath As String, errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) Handles m_UploadHandler.InvalidFASTAFile
 
         If m_FileErrorList Is Nothing Then
-            m_FileErrorList = New Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended))
+            m_FileErrorList = New Dictionary(Of String, List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
         End If
 
         m_FileErrorList.Add(Path.GetFileName(FASTAFilePath), errorCollection)
@@ -1728,10 +1728,10 @@ Public Class frmCollectionEditor
 
     End Sub
 
-    Private Sub FASTAFileWarningsHandler(FASTAFilePath As String, warningCollection As List(Of ICustomValidation.udtErrorInfoExtended)) Handles m_UploadHandler.FASTAFileWarnings
+    Private Sub FASTAFileWarningsHandler(FASTAFilePath As String, warningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) Handles m_UploadHandler.FASTAFileWarnings
 
         If m_FileWarningList Is Nothing Then
-            m_FileWarningList = New Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended))
+            m_FileWarningList = New Dictionary(Of String, List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
         End If
 
         m_FileWarningList.Add(Path.GetFileName(FASTAFilePath), warningCollection)
@@ -1744,7 +1744,7 @@ Public Class frmCollectionEditor
 
     End Sub
 
-    Private Function SummarizeErrors(ByRef errorCollection As List(Of ICustomValidation.udtErrorInfoExtended)) As Dictionary(Of String, Integer)
+    Private Function SummarizeErrors(ByRef errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) As Dictionary(Of String, Integer)
 
         ' Keys are error messages, values are the number of times the error was reported
         Dim errorSummary As New Dictionary(Of String, Integer)

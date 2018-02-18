@@ -15,8 +15,8 @@ Public Class frmValidationReport
 
         'Add any initialization after the InitializeComponent() call
 
-        m_ErrorCollection = New List(Of ICustomValidation.udtErrorInfoExtended)
-        m_WarningCollection = New List(Of ICustomValidation.udtErrorInfoExtended)
+        m_ErrorCollection = New List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)
+        m_WarningCollection = New List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)
 
     End Sub
 
@@ -312,11 +312,11 @@ Public Class frmValidationReport
 
 #End Region
 
-    Private ReadOnly m_ErrorCollection As List(Of ICustomValidation.udtErrorInfoExtended)
-    Private ReadOnly m_WarningCollection As List(Of ICustomValidation.udtErrorInfoExtended)
+    Private ReadOnly m_ErrorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)
+    Private ReadOnly m_WarningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)
 
-    Private m_FileErrorList As Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended))        ' Tracks the errors found for each file
-    Private m_FileWarningList As Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended))      ' Tracks the warnings found for each file
+    Private m_FileErrorList As Dictionary(Of String, List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))        ' Tracks the errors found for each file
+    Private m_FileWarningList As Dictionary(Of String, List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))      ' Tracks the warnings found for each file
 
     ''' <summary>
     ''' Keys are fasta file paths, values are upload info
@@ -389,13 +389,13 @@ Public Class frmValidationReport
     Private Sub HandleErrorOrWarningListSelectedIndexChanged(
       selectedItemText As String,
       objListview As ListView,
-      itemListByFile As IReadOnlyDictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended)),
+      itemListByFile As IReadOnlyDictionary(Of String, List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)),
       summarizedItemList As IReadOnlyDictionary(Of String, Dictionary(Of String, Integer)),
-      itemCollection As List(Of ICustomValidation.udtErrorInfoExtended))
+      itemCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
 
         objListview.Items.Clear()
         If Not itemListByFile Is Nothing AndAlso itemListByFile.Count > 0 Then
-            Dim itemList As List(Of ICustomValidation.udtErrorInfoExtended) = Nothing
+            Dim itemList As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended) = Nothing
 
             If itemListByFile.TryGetValue(selectedItemText, itemList) Then
                 itemCollection.AddRange(itemList)
@@ -427,13 +427,13 @@ Public Class frmValidationReport
         End Set
     End Property
 
-    Friend WriteOnly Property FileErrorList As Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended))
+    Friend WriteOnly Property FileErrorList As Dictionary(Of String, List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
         Set
             m_FileErrorList = Value
         End Set
     End Property
 
-    Friend WriteOnly Property FileWarningList As Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended))
+    Friend WriteOnly Property FileWarningList As Dictionary(Of String, List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
         Set
             m_FileWarningList = Value
         End Set
@@ -460,7 +460,7 @@ Public Class frmValidationReport
 
     End Function
 
-    Private Sub BindFileListToErrorComboBox(contents As Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended)))
+    Private Sub BindFileListToErrorComboBox(contents As Dictionary(Of String, List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)))
 
         RemoveHandler cboFileListErrors.SelectedIndexChanged, AddressOf cboFileListErrors_SelectedIndexChanged
 
@@ -485,7 +485,7 @@ Public Class frmValidationReport
 
     End Sub
 
-    Private Sub BindFileListToWarningComboBox(contents As Dictionary(Of String, List(Of ICustomValidation.udtErrorInfoExtended)))
+    Private Sub BindFileListToWarningComboBox(contents As Dictionary(Of String, List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)))
 
         RemoveHandler cboFileListWarnings.SelectedIndexChanged, AddressOf cboFileListWarnings_SelectedIndexChanged
 
@@ -560,7 +560,7 @@ Public Class frmValidationReport
     End Sub
 
     Private Sub DumpDetailedErrorOrWarningList(
-      errorList As IReadOnlyCollection(Of ICustomValidation.udtErrorInfoExtended),
+      errorList As IReadOnlyCollection(Of clsCustomValidateFastaFiles.udtErrorInfoExtended),
       fastaFileName As String,
       messageType As String)
 
@@ -568,7 +568,7 @@ Public Class frmValidationReport
 
         Dim SelectedSavePath As String
 
-        Dim errorDetail As ICustomValidation.udtErrorInfoExtended
+        Dim errorDetail As clsCustomValidateFastaFiles.udtErrorInfoExtended
 
         Dim intErrorCount = 0
 

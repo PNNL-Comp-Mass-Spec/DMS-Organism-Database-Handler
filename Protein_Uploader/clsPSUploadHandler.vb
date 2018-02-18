@@ -76,8 +76,8 @@ Public Interface IUploadProteins
     Event BatchProgress(status As String)
     Event ValidationProgress(taskTitle As String, fractionDone As Double)
     Event ValidFASTAFileLoaded(FASTAFilePath As String, UploadData As UploadInfo)
-    Event InvalidFASTAFile(FASTAFilePath As String, errorCollection As List(Of ICustomValidation.udtErrorInfoExtended))
-    Event FASTAFileWarnings(FASTAFilePath As String, warningCollection As List(Of ICustomValidation.udtErrorInfoExtended))
+    Event InvalidFASTAFile(FASTAFilePath As String, errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
+    Event FASTAFileWarnings(FASTAFilePath As String, warningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
     Event FASTAValidationComplete(FASTAFilePath As String, UploadInfo As UploadInfo)
     Event WroteLineEndNormalizedFASTA(newFilePath As String)
 End Interface
@@ -95,7 +95,7 @@ Public Class clsPSUploadHandler
     Protected WithEvents m_Importer As IImportProteins
     Protected WithEvents m_Upload As IAddUpdateEntries
     Protected WithEvents m_Export As IGetFASTAFromDMS
-    Protected WithEvents m_Validator As ICustomValidation
+    Protected WithEvents m_Validator As clsCustomValidateFastaFiles
     Protected WithEvents m_Archiver As IArchiveOutputFiles
 
 
@@ -105,8 +105,8 @@ Public Class clsPSUploadHandler
     Protected Event BatchProgress(status As String) Implements IUploadProteins.BatchProgress
     Protected Event ValidationProgress(taskTitle As String, fractionDone As Double) Implements IUploadProteins.ValidationProgress
     Protected Event ValidFASTAFileLoaded(FASTAFilePath As String, UploadData As IUploadProteins.UploadInfo) Implements IUploadProteins.ValidFASTAFileLoaded
-    Protected Event InvalidFASTAFile(FASTAFilePath As String, errorCollection As List(Of ICustomValidation.udtErrorInfoExtended)) Implements IUploadProteins.InvalidFASTAFile
-    Protected Event FASTAFileWarnings(FASTAFilePath As String, warningCollection As List(Of ICustomValidation.udtErrorInfoExtended)) Implements IUploadProteins.FASTAFileWarnings
+    Protected Event InvalidFASTAFile(FASTAFilePath As String, errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) Implements IUploadProteins.InvalidFASTAFile
+    Protected Event FASTAFileWarnings(FASTAFilePath As String, warningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) Implements IUploadProteins.FASTAFileWarnings
     Protected Event FASTAValidationComplete(FASTAFilePath As String, UploadInfo As IUploadProteins.UploadInfo) Implements IUploadProteins.FASTAValidationComplete
     Protected Event WroteLineEndNormalizedFASTA(newFilePath As String) Implements IUploadProteins.WroteLineEndNormalizedFASTA
 
@@ -166,7 +166,7 @@ Public Class clsPSUploadHandler
         OnLoadEnd()
     End Sub
 
-    Private Sub Task_LoadProgress(taskDescription As String, percentComplete As Single) Handles m_Validator.ProgressChanged
+    Private Sub Task_LoadProgress(taskDescription As String, percentComplete As Single) Handles m_Validator.ProgressUpdate
         RaiseEvent ValidationProgress(taskDescription, CDbl(percentComplete / 100))
     End Sub
 
@@ -179,11 +179,11 @@ Public Class clsPSUploadHandler
         RaiseEvent WroteLineEndNormalizedFASTA(newFASTAFilePath)
     End Sub
 
-    Private Sub OnFASTAFileWarnings(FASTAFilePath As String, warningCollection As List(Of ICustomValidation.udtErrorInfoExtended))
+    Private Sub OnFASTAFileWarnings(FASTAFilePath As String, warningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
         RaiseEvent FASTAFileWarnings(FASTAFilePath, warningCollection)
     End Sub
 
-    Private Sub OnInvalidFASTAFile(FASTAFilePath As String, errorCollection As List(Of ICustomValidation.udtErrorInfoExtended))
+    Private Sub OnInvalidFASTAFile(FASTAFilePath As String, errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
         RaiseEvent InvalidFASTAFile(FASTAFilePath, errorCollection)
     End Sub
 
@@ -230,7 +230,7 @@ Public Class clsPSUploadHandler
         Dim dboxResult As DialogResult
         Dim errorText As String
         Dim errorLabel As String
-        Dim errorCollection As List(Of ICustomValidation.udtErrorInfoExtended)
+        Dim errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)
 
 
         For Each upInfo In fileInfoList
@@ -238,27 +238,26 @@ Public Class clsPSUploadHandler
             fi = upInfo.FileInformation
 
             ' Configure the validator to possibly allow asterisks in the residues
-            m_Validator.OptionSwitches(IValidateFastaFile.SwitchOptions.AllowAllSymbolsInProteinNames) = mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAllSymbolsInProteinNames)
+            m_Validator.OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowAllSymbolsInProteinNames) = mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAllSymbolsInProteinNames)
 
             ' Configure the validator to possibly allow asterisks in the residues
-            m_Validator.OptionSwitches(IValidateFastaFile.SwitchOptions.AllowAsteriskInResidues) = mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues)
+            m_Validator.OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowAsteriskInResidues) = mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues)
 
             ' Configure the validator to possibly allow dashes in the residues
-            m_Validator.OptionSwitches(IValidateFastaFile.SwitchOptions.AllowDashInResidues) = mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowDashInResidues)
+            m_Validator.OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowDashInResidues) = mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowDashInResidues)
 
             ' Configure the additional validation options
-            m_Validator.SetValidationOptions(ICustomValidation.eValidationOptionConstants.AllowAllSymbolsInProteinNames,
+            m_Validator.SetValidationOptions(clsCustomValidateFastaFiles.eValidationOptionConstants.AllowAllSymbolsInProteinNames,
                                                 mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAllSymbolsInProteinNames))
 
-            m_Validator.SetValidationOptions(ICustomValidation.eValidationOptionConstants.AllowAsterisksInResidues,
+            m_Validator.SetValidationOptions(clsCustomValidateFastaFiles.eValidationOptionConstants.AllowAsterisksInResidues,
                                                 mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues))
 
-            m_Validator.SetValidationOptions(ICustomValidation.eValidationOptionConstants.AllowDashInResidues,
+            m_Validator.SetValidationOptions(clsCustomValidateFastaFiles.eValidationOptionConstants.AllowDashInResidues,
                                                 mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowDashInResidues))
 
             ' Update the default rules (important if AllowAsteriskInResidues = True or AllowDashInResidues = True)
             m_Validator.SetDefaultRules()
-            m_Validator.ShowMessages = True
 
             ' Update the maximum protein name length
             If mMaximumProteinNameLength <= 0 Then
@@ -334,8 +333,8 @@ Public Class clsPSUploadHandler
                 End If
 
                 If dboxResult = DialogResult.No Then
-                    errorCollection = New List(Of ICustomValidation.udtErrorInfoExtended)
-                    errorCollection.Add(New ICustomValidation.udtErrorInfoExtended(
+                    errorCollection = New List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)
+                    errorCollection.Add(New clsCustomValidateFastaFiles.udtErrorInfoExtended(
                         0, " N/A ", errorText, "", errorLabel))
                     OnInvalidFASTAFile(tmpFileName, errorCollection)
 
@@ -350,8 +349,8 @@ Public Class clsPSUploadHandler
                     If tmpPS.ProteinCount = 0 Then
                         ' No proteins
 
-                        errorCollection = New List(Of ICustomValidation.udtErrorInfoExtended)
-                        errorCollection.Add(New ICustomValidation.udtErrorInfoExtended(
+                        errorCollection = New List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)
+                        errorCollection.Add(New clsCustomValidateFastaFiles.udtErrorInfoExtended(
                             0, " N/A ", "No valid proteins were loaded from the .Fasta file", "", "Error"))
 
                         OnInvalidFASTAFile(upInfo.FileInformation.FullName, errorCollection)

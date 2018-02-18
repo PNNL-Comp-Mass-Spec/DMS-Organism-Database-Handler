@@ -567,13 +567,13 @@ Public Class clsBulkFastaImporter
         End If
     End Sub
 
-    Private Sub m_UploadHandler_FASTAFileWarnings(FASTAFilePath As String, warningCollection As List(Of ICustomValidation.udtErrorInfoExtended)) Handles m_UploadHandler.FASTAFileWarnings
+    Private Sub m_UploadHandler_FASTAFileWarnings(FASTAFilePath As String, warningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) Handles m_UploadHandler.FASTAFileWarnings
         Try
             For Each item In warningCollection
                 ShowMessage("  ... Warning: " & item.MessageText & ": " & item.ProteinName)
             Next
         Catch ex As Exception
-            Console.WriteLine("warningCollection is not type ValidateFastaFile.ICustomValidation.udtErrorInfoExtended")
+            Console.WriteLine("warningCollection is not type ValidateFastaFile.clsCustomValidateFastaFiles.udtErrorInfoExtended")
         End Try
 
     End Sub
@@ -592,7 +592,7 @@ Public Class clsBulkFastaImporter
 
     End Sub
 
-    Private Sub m_UploadHandler_InvalidFASTAFile(FASTAFilePath As String, errorCollection As List(Of ICustomValidation.udtErrorInfoExtended)) Handles m_UploadHandler.InvalidFASTAFile
+    Private Sub m_UploadHandler_InvalidFASTAFile(FASTAFilePath As String, errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) Handles m_UploadHandler.InvalidFASTAFile
         ShowWarning("Invalid fasta file: " & FASTAFilePath)
 
         Try
@@ -600,7 +600,7 @@ Public Class clsBulkFastaImporter
                 ShowMessage("  ... Error: " & item.MessageText & ": " & item.ProteinName)
             Next
         Catch ex As Exception
-            Console.WriteLine("errorCollection is not type ValidateFastaFile.ICustomValidation.udtErrorInfoExtended")
+            Console.WriteLine("errorCollection is not type ValidateFastaFile.clsCustomValidateFastaFiles.udtErrorInfoExtended")
         End Try
 
     End Sub
