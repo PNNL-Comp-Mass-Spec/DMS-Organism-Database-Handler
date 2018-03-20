@@ -1040,6 +1040,9 @@ Public Class clsGetFASTAFromDMS
 
     Protected Function RunSP_AddLegacyFileUploadRequest(legacyFilename As String, authenticationHash As String) As Integer
 
+        If String.IsNullOrWhiteSpace(m_PSConnectionString) Then
+            Return 0
+        End If
 
         Dim sp_Save = New SqlCommand("AddLegacyFileUploadRequest", m_TableGetter.Connection) With {
             .CommandType = CommandType.StoredProcedure
