@@ -1,7 +1,5 @@
 Imports System.Collections.Specialized
-Imports System.Data
 Imports System.Data.SqlClient
-Imports System.Data.OleDb
 Imports System.Runtime.InteropServices
 
 Public Interface IGetSQLData
@@ -10,7 +8,7 @@ Public Interface IGetSQLData
 
     Function GetTable(
         selectSQL As String,
-        <Out()> ByRef SQLDataAdapter As SqlDataAdapter) As DataTable
+        <Out> ByRef SQLDataAdapter As SqlDataAdapter) As DataTable
 
     Function GetTableTemplate(tableName As String) As DataTable
 
@@ -30,9 +28,9 @@ Public Interface IGetSQLData
     Sub OpenConnection(connString As String)
     Sub CloseConnection()
 
-    Property ConnectionString() As String
-    ReadOnly Property Connected() As Boolean
-    ReadOnly Property Connection() As SqlConnection
+    Property ConnectionString As String
+    ReadOnly Property Connected As Boolean
+    ReadOnly Property Connection As SqlConnection
 
 End Interface
 
@@ -49,7 +47,11 @@ Public Class clsDBTask
 
 #End Region
 
-    ' constructor
+    ''' <summary>
+    ''' Constructor
+    ''' </summary>
+    ''' <param name="connString"></param>
+    ''' <param name="persistConnection"></param>
     Public Sub New(connString As String, Optional persistConnection As Boolean = False)
         m_connection_str = connString
         SetupNew(persistConnection)
@@ -74,7 +76,7 @@ Public Class clsDBTask
     End Sub
 
     Protected Sub OpenConnection(connString As String) Implements IGetSQLData.OpenConnection
-        Dim retryCount As Integer = 3
+        Dim retryCount = 3
         If m_DBCn Is Nothing Then
             m_DBCn = New SqlConnection(connString)
         End If
@@ -88,7 +90,7 @@ Public Class clsDBTask
                     If retryCount = 0 Then
                         Throw New Exception("could not open database connection after three tries using " & connString & ": " & ex.Message)
                     End If
-                    System.Threading.Thread.Sleep(3000)
+                    Threading.Thread.Sleep(3000)
                     m_DBCn.Close()
                 End Try
             End While
@@ -102,7 +104,7 @@ Public Class clsDBTask
         End If
     End Sub
 
-    Protected ReadOnly Property Connected() As Boolean Implements IGetSQLData.Connected
+    Protected ReadOnly Property Connected As Boolean Implements IGetSQLData.Connected
         Get
             If m_DBCn Is Nothing Then
                 Return False
@@ -116,16 +118,16 @@ Public Class clsDBTask
         End Get
     End Property
 
-    Protected Property ConnectionString() As String Implements IGetSQLData.ConnectionString
+    Protected Property ConnectionString As String Implements IGetSQLData.ConnectionString
         Get
             Return m_connection_str
         End Get
-        Set(Value As String)
+        Set
             m_connection_str = Value
         End Set
     End Property
 
-    Protected ReadOnly Property Connection() As SqlConnection Implements IGetSQLData.Connection
+    Protected ReadOnly Property Connection As SqlConnection Implements IGetSQLData.Connection
         Get
             If Connected Then
                 Return m_DBCn
@@ -143,22 +145,24 @@ Public Class clsDBTask
 
     Protected Function GetTable(
         selectSQL As String,
-        <Out()> ByRef SQLDataAdapter As SqlDataAdapter) As DataTable Implements IGetSQLData.GetTable
+        <Out> ByRef SQLDataAdapter As SqlDataAdapter) As DataTable Implements IGetSQLData.GetTable
 
         Dim tmpIDTable As New DataTable
-        Dim GetID_CMD = New SqlCommand(selectSQL)
 
         Dim numTries = 3
 
         If Not m_PersistConnection Then OpenConnection()
 
-        GetID_CMD.CommandTimeout = 600
-        GetID_CMD.Connection = m_DBCn
+        Dim cmd = New SqlCommand(selectSQL) With {
+            .CommandTimeout = 600,
+            .Connection = m_DBCn
+        }
 
         If Connected = True Then
 
-            SQLDataAdapter = New SqlDataAdapter()
-            SQLDataAdapter.SelectCommand = GetID_CMD
+            SQLDataAdapter = New SqlDataAdapter With {
+                .SelectCommand = cmd
+            }
 
             While numTries > 0
                 Try
@@ -169,7 +173,7 @@ Public Class clsDBTask
                     If numTries = 0 Then
                         Throw New Exception("could not get records after three tries: " & ex.Message)
                     End If
-                    System.Threading.Thread.Sleep(3000)
+                    Threading.Thread.Sleep(3000)
                 End Try
 
             End While

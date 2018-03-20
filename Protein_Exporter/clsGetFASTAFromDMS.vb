@@ -6,7 +6,6 @@ Imports System.IO
 Imports System.Linq
 Imports System.Runtime.InteropServices
 Imports System.Security.Cryptography
-Imports System.Security.Principal
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
@@ -149,17 +148,17 @@ Public Class clsGetFASTAFromDMS
     ''' Create the FASTA file for the given protein collection ID
     ''' </summary>
     ''' <param name="destinationFolderPath"></param>
-    ''' <param name="ProteinCollectionID">Protein collection ID</param>
+    ''' <param name="proteinCollectionID">Protein collection ID</param>
     ''' <param name="DatabaseFormatType">Typically fasta for .fasta files; fastapro will create a .fasta.pro file</param>
     ''' <param name="OutputSequenceType">Sequence type (forward, reverse, scrambled, decoy, or decoyX)</param>
     ''' <returns>CRC32 hash of the generated (or retrieved) file</returns>
     Overloads Function ExportFASTAFile(
-      ProteinCollectionID As Integer,
+      proteinCollectionID As Integer,
       destinationFolderPath As String,
       databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
       outputSequenceType As IGetFASTAFromDMS.SequenceTypes) As String Implements IGetFASTAFromDMS.ExportFASTAFile
 
-        Dim proteincollectionname As String = GetProteinCollectionName(ProteinCollectionID)
+        Dim proteincollectionname As String = GetProteinCollectionName(proteinCollectionID)
 
         Dim creationOptionsHandler As New clsFileCreationOptions(m_PSConnectionString)
 
@@ -997,20 +996,20 @@ Public Class clsGetFASTAFromDMS
     ''' </summary>
     ''' <param name="fullFilePath"></param>
     ''' <returns>File hash</returns>
-    Function GenerateFileAuthenticationHash(FullFilePath As String) As String Implements IGetFASTAFromDMS.GenerateFileAuthenticationHash
-        Return m_Getter.GetFileHash(FullFilePath)
+    Function GenerateFileAuthenticationHash(fullFilePath As String) As String Implements IGetFASTAFromDMS.GenerateFileAuthenticationHash
+        Return m_Getter.GetFileHash(fullFilePath)
     End Function
 
     Function GetAllCollections() As Hashtable Implements IGetFASTAFromDMS.GetAllCollections
         Return m_Getter.GetCollectionNameList
     End Function
 
-    Function GetCollectionsByOrganism(OrganismID As Integer) As Hashtable Implements IGetFASTAFromDMS.GetCollectionsByOrganism
-        Return m_Getter.GetCollectionsByOrganism(OrganismID)
+    Function GetCollectionsByOrganism(organismID As Integer) As Hashtable Implements IGetFASTAFromDMS.GetCollectionsByOrganism
+        Return m_Getter.GetCollectionsByOrganism(organismID)
     End Function
 
-    Function GetCollectionsByOrganismTable(OrganismID As Integer) As DataTable Implements IGetFASTAFromDMS.GetCollectionsByOrganismTable
-        Return m_Getter.GetCollectionsByOrganismTable(OrganismID)
+    Function GetCollectionsByOrganismTable(organismID As Integer) As DataTable Implements IGetFASTAFromDMS.GetCollectionsByOrganismTable
+        Return m_Getter.GetCollectionsByOrganismTable(organismID)
     End Function
 
     Function GetOrganismList() As Hashtable Implements IGetFASTAFromDMS.GetOrganismList
@@ -1021,49 +1020,39 @@ Public Class clsGetFASTAFromDMS
         Return m_Getter.GetOrganismListTable
     End Function
 
-    Overloads Function GetStoredFileAuthenticationHash(ProteinCollectionID As Integer) As String Implements IGetFASTAFromDMS.GetStoredFileAuthenticationHash
-        Return m_Getter.GetStoredHash(ProteinCollectionID)
+    Overloads Function GetStoredFileAuthenticationHash(proteinCollectionID As Integer) As String Implements IGetFASTAFromDMS.GetStoredFileAuthenticationHash
+        Return m_Getter.GetStoredHash(proteinCollectionID)
     End Function
 
-    Overloads Function GetStoredFileAuthenticationHash(ProteinCollectionName As String) As String Implements IGetFASTAFromDMS.GetStoredFileAuthenticationHash
-        Return m_Getter.GetStoredHash(ProteinCollectionName)
+    Overloads Function GetStoredFileAuthenticationHash(proteinCollectionName As String) As String Implements IGetFASTAFromDMS.GetStoredFileAuthenticationHash
+        Return m_Getter.GetStoredHash(proteinCollectionName)
     End Function
 
-    Function GetProteinCollectionID(ProteinCollectionName As String) As Integer Implements IGetFASTAFromDMS.GetProteinCollectionID
-        Return m_Getter.FindIDByName(Path.GetFileNameWithoutExtension(ProteinCollectionName))
+    Function GetProteinCollectionID(proteinCollectionName As String) As Integer Implements IGetFASTAFromDMS.GetProteinCollectionID
+        Return m_Getter.FindIDByName(Path.GetFileNameWithoutExtension(proteinCollectionName))
     End Function
 
-    Protected Function GetProteinCollectionName(ProteinCollectionID As Integer) As String
-        Return m_Getter.FindNameByID(ProteinCollectionID)
+    Protected Function GetProteinCollectionName(proteinCollectionID As Integer) As String
+        Return m_Getter.FindNameByID(proteinCollectionID)
     End Function
+
 #End Region
 
-    Protected Function RunSP_AddLegacyFileUploadRequest(LegacyFilename As String, AuthenticationHash As String) As Integer
+    Protected Function RunSP_AddLegacyFileUploadRequest(legacyFilename As String, authenticationHash As String) As Integer
 
-        Dim sp_Save As SqlCommand
 
-        sp_Save = New SqlCommand("AddLegacyFileUploadRequest", m_TableGetter.Connection)
+        Dim sp_Save = New SqlCommand("AddLegacyFileUploadRequest", m_TableGetter.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
 
-        sp_Save.CommandType = CommandType.StoredProcedure
+        ' Define parameters
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
-        'Define parameters
-        Dim myParam As SqlParameter
+        sp_Save.Parameters.Add("@legacy_File_name", SqlDbType.VarChar, 128).Value = legacyFilename
 
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
+        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
 
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@legacy_File_name", SqlDbType.VarChar, 128)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = LegacyFilename
-
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
-        myParam.Direction = ParameterDirection.Output
-
-        myParam = sp_Save.Parameters.Add("@AuthenticationHash", SqlDbType.VarChar, 8)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = AuthenticationHash
+        sp_Save.Parameters.Add("@AuthenticationHash", SqlDbType.VarChar, 8).Value = authenticationHash
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -1075,21 +1064,20 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
-    Protected Function GenerateHash(SourceText As String) As String
-        'Create an encoding object to ensure the encoding standard for the source text
-        Dim Ue As New ASCIIEncoding()
+    Protected Function GenerateHash(sourceText As String) As String
+        ' Create an encoding object to ensure the encoding standard for the source text
+        Dim encoding As New ASCIIEncoding()
 
-        'Retrieve a byte array based on the source text
-        Dim ByteSourceText() As Byte = Ue.GetBytes(SourceText)
+        ' Retrieve a byte array based on the source text
+        Dim byteSourceText() As Byte = encoding.GetBytes(sourceText)
 
-        'Compute the hash value from the source
-        Dim SHA1_hash() As Byte = m_SHA1Provider.ComputeHash(ByteSourceText)
+        ' Compute the hash value from the source
+        Dim sha1Hash() As Byte = m_SHA1Provider.ComputeHash(byteSourceText)
 
-        'And convert it to String format for return
-        'Dim SHA1string As String = Convert.ToBase64String(SHA1_hash)
-        Dim SHA1string As String = BitConverter.ToString(SHA1_hash).Replace("-", "").ToLower()
+        ' And convert it to String format for return
+        Dim sha1String As String = BitConverter.ToString(sha1Hash).Replace("-", "").ToLower()
 
-        Return SHA1string
+        Return sha1String
     End Function
 
 End Class

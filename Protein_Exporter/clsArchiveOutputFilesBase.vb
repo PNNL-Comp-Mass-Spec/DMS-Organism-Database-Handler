@@ -94,18 +94,18 @@ Public MustInherit Class clsArchiveOutputFilesBase
     End Function
 
     Protected MustOverride Function DispositionFile(
-        ProteinCollectionID As Integer,
-        SourceFilePath As String,
-        CreationOptionsString As String,
-        SourceAuthenticationHash As String,
-        OutputSequenceType As IGetFASTAFromDMS.SequenceTypes,
-        ArchivedFileType As IArchiveOutputFiles.CollectionTypes, ProteinCollectionsList As String) As Integer
+        proteinCollectionID As Integer,
+        sourceFilePath As String,
+        creationOptionsString As String,
+        sourceAuthenticationHash As String,
+        outputSequenceType As IGetFASTAFromDMS.SequenceTypes,
+        archivedFileType As IArchiveOutputFiles.CollectionTypes, ProteinCollectionsList As String) As Integer
 
-    Protected Function GetProteinCount(SourceFilePath As String) As Integer
+    Protected Function GetProteinCount(sourceFilePath As String) As Integer
         Dim idLineRegex As Regex
         idLineRegex = New Regex("^>.+", RegexOptions.Compiled)
 
-        Dim fi = New FileInfo(SourceFilePath)
+        Dim fi = New FileInfo(sourceFilePath)
         Dim counter = 0
 
         If (fi.Exists) Then
@@ -130,17 +130,17 @@ Public MustInherit Class clsArchiveOutputFilesBase
     End Sub
 
     Protected Function CheckForExistingArchiveEntry(
-        Authentication_Hash As String,
-        ArchivedFileType As IArchiveOutputFiles.CollectionTypes,
-        CreationOptionsString As String) As Integer
+        authentication_Hash As String,
+        archivedFileType As IArchiveOutputFiles.CollectionTypes,
+        creationOptionsString As String) As Integer
 
         Dim SQL As String
         SQL = "SELECT Archived_File_ID,  Archived_File_Path " &
                 "FROM V_Archived_Output_Files " &
-                "WHERE Authentication_Hash = '" & Authentication_Hash & "' AND " &
+                "WHERE Authentication_Hash = '" & authentication_Hash & "' AND " &
                         "Archived_File_Type = '" &
-                        [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), ArchivedFileType) &
-                        "' AND " & "Creation_Options = '" & CreationOptionsString & "'"
+                        [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), archivedFileType) &
+                        "' AND " & "Creation_Options = '" & creationOptionsString & "'"
 
         Dim dt As DataTable
         dt = m_TableGetter.GetTable(SQL)
@@ -156,13 +156,13 @@ Public MustInherit Class clsArchiveOutputFilesBase
     End Function
 
     Protected Sub AddArchiveCollectionXRef(
-        ProteinCollectionID As Integer,
-        ArchivedFileID As Integer) Implements IArchiveOutputFiles.AddArchiveCollectionXRef
+        proteinCollectionID As Integer,
+        archivedFileID As Integer) Implements IArchiveOutputFiles.AddArchiveCollectionXRef
 
-        Dim intReturn As Integer = RunSP_AddArchivedFileEntryXRef(ProteinCollectionID, ArchivedFileID)
+        Dim intReturn As Integer = RunSP_AddArchivedFileEntryXRef(proteinCollectionID, archivedFileID)
 
         If intReturn <> 0 Then
-            Throw New Exception("Error calling RunSP_AddArchivedFileEntryXRef with ProteinCollectionID " & ProteinCollectionID & " and ArchivedFileID " & ArchivedFileID & ", ReturnCode=" & intReturn)
+            Throw New Exception("Error calling RunSP_AddArchivedFileEntryXRef with ProteinCollectionID " & proteinCollectionID & " and ArchivedFileID " & archivedFileID & ", ReturnCode=" & intReturn)
         End If
 
     End Sub
@@ -180,54 +180,39 @@ Public MustInherit Class clsArchiveOutputFilesBase
     End Function
 
     Protected Function RunSP_AddArchivedFileEntryXRef(
-        ProteinCollectionID As Integer,
-        ArchivedFileID As Integer) As Integer
+        proteinCollectionID As Integer,
+        archivedFileID As Integer) As Integer
 
-        Dim sp_Save As SqlCommand
+        Dim sp_Save = New SqlCommand("AddArchivedFileEntryXRef", m_TableGetter.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
 
-        sp_Save = New SqlCommand("AddArchivedFileEntryXRef", m_TableGetter.Connection)
+        ' Define parameters
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
-        sp_Save.CommandType = CommandType.StoredProcedure
+        sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int).Value = proteinCollectionID
 
-        'Define parameters
-        Dim myParam As SqlParameter
+        sp_Save.Parameters.Add("@Archived_File_ID", SqlDbType.Int).Value = archivedFileID
 
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
+        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 250).Direction = ParameterDirection.Output
 
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = ProteinCollectionID
-
-        myParam = sp_Save.Parameters.Add("@Archived_File_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = ArchivedFileID
-
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 250)
-        myParam.Direction = ParameterDirection.Output
-
-
-        'Execute the sp
+        ' Execute the sp
         sp_Save.ExecuteNonQuery()
 
-        'Get return value
+        ' Get return value
         Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
 
     End Function
 
-
-
     Protected Sub OnArchiveStart()
         RaiseEvent ArchiveStart()
         OnOverallProgressUpdate(0.0)
     End Sub
 
-    Protected Sub OnSubTaskStart(SubTaskDescription As String)
-        RaiseEvent SubTaskStart(SubTaskDescription)
+    Protected Sub OnSubTaskStart(subTaskDescription As String)
+        RaiseEvent SubTaskStart(subTaskDescription)
         OnSubTaskProgressUpdate(0.0)
     End Sub
 
@@ -239,8 +224,8 @@ Public MustInherit Class clsArchiveOutputFilesBase
         RaiseEvent SubTaskProgressUpdate(fractionDone)
     End Sub
 
-    Protected Sub OnArchiveComplete(ArchivedPath As String)
-        RaiseEvent ArchiveComplete(ArchivedPath)
+    Protected Sub OnArchiveComplete(archivedPath As String)
+        RaiseEvent ArchiveComplete(archivedPath)
     End Sub
 
 End Class
