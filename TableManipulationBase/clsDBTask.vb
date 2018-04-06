@@ -76,21 +76,28 @@ Public Class clsDBTask
     End Sub
 
     Protected Sub OpenConnection(connString As String) Implements IGetSQLData.OpenConnection
-        Dim retryCount = 3
+        Const MAX_ATTEMPTS = 6
+
         If m_DBCn Is Nothing Then
             m_DBCn = New SqlConnection(connString)
         End If
+
         If m_DBCn.State <> ConnectionState.Open Then
-            While retryCount > 0
+
+            Dim connectionAttempt = 1
+            While connectionAttempt <= MAX_ATTEMPTS
                 Try
                     m_DBCn.Open()
-                    retryCount = 0
+                    Exit While
                 Catch ex As SqlException
-                    retryCount -= 1
-                    If retryCount = 0 Then
-                        Throw New Exception("could not open database connection after three tries using " & connString & ": " & ex.Message)
+                    connectionAttempt += 1
+                    If connectionAttempt > 6 Then
+                        Throw New Exception(String.Format(
+                            "Could not open database connection after {0} tries using {1}: {2}",
+                            MAX_ATTEMPTS, connString, ex.Message))
                     End If
-                    Threading.Thread.Sleep(3000)
+
+                    Threading.Thread.Sleep(3000 * connectionAttempt)
                     m_DBCn.Close()
                 End Try
             End While
@@ -147,14 +154,15 @@ Public Class clsDBTask
         selectSQL As String,
         <Out> ByRef SQLDataAdapter As SqlDataAdapter) As DataTable Implements IGetSQLData.GetTable
 
-        Dim tmpIDTable As New DataTable
+        Const MAX_ATTEMPTS = 6
+        Const COMMAND_TIMEOUT_SECONDS = 600
 
-        Dim numTries = 3
+        Dim tmpIDTable As New DataTable
 
         If Not m_PersistConnection Then OpenConnection()
 
         Dim cmd = New SqlCommand(selectSQL) With {
-            .CommandTimeout = 600,
+            .CommandTimeout = COMMAND_TIMEOUT_SECONDS,
             .Connection = m_DBCn
         }
 
@@ -164,16 +172,18 @@ Public Class clsDBTask
                 .SelectCommand = cmd
             }
 
-            While numTries > 0
+            Dim connectionAttempt = 1
+            While connectionAttempt <= MAX_ATTEMPTS
+
                 Try
                     SQLDataAdapter.Fill(tmpIDTable)
                     Exit While
                 Catch ex As Exception
-                    numTries -= 1
-                    If numTries = 0 Then
-                        Throw New Exception("could not get records after three tries: " & ex.Message)
+                    connectionAttempt += 1
+                    If connectionAttempt > MAX_ATTEMPTS Then
+                        Throw New Exception(String.Format("Could not get records after {0} attempts for query {1}: {2}", MAX_ATTEMPTS, selectSQL, ex.Message))
                     End If
-                    Threading.Thread.Sleep(3000)
+                    Threading.Thread.Sleep(3000 * connectionAttempt)
                 End Try
 
             End While
