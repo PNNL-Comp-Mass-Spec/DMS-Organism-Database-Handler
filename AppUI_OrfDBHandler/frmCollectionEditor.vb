@@ -761,7 +761,7 @@ Public Class frmCollectionEditor
 
 #End Region
 
-    Private Const PROGRAM_DATE As String = "March 20, 2018"
+    Private Const PROGRAM_DATE As String = "April 6, 2018"
 
     Private m_Organisms As DataTable
     Private m_ProteinCollections As DataTable
