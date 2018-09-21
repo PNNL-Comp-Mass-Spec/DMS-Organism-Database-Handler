@@ -4,7 +4,7 @@ Imports PRISM
 Imports Protein_Exporter
 
 Module modMain
-    Public Const PROGRAM_DATE As String = "April 6, 2018"
+    Public Const PROGRAM_DATE As String = "September 20, 2018"
 
     Const m_DebugLevel As Integer = 4
     Const FASTA_GEN_TIMEOUT_INTERVAL_MINUTES As Integer = 70
@@ -48,7 +48,7 @@ Module modMain
 
         If ex IsNot Nothing Then
             Console.ForegroundColor = ConsoleColor.Cyan
-            Console.WriteLine(clsStackTraceFormatter.GetExceptionStackTraceMultiLine(ex))
+            Console.WriteLine(StackTraceFormatter.GetExceptionStackTraceMultiLine(ex))
         End If
         Console.ResetColor()
 
@@ -397,7 +397,7 @@ Module modMain
             crc32Hash = m_FastaTools.ExportFASTAFile(protCollectionList, creationOpts, legacyFasta, destinationFolderPath)
         Catch Ex As Exception
             Console.WriteLine("clsAnalysisResources.CreateFastaFile(), Exception generating OrgDb file: " & Ex.Message)
-            Console.WriteLine(clsStackTraceFormatter.GetExceptionStackTraceMultiLine(Ex))
+            Console.WriteLine(StackTraceFormatter.GetExceptionStackTraceMultiLine(Ex))
             Return False
         End Try
 

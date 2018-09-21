@@ -15,7 +15,7 @@ Imports Protein_Exporter.ExportProteinCollectionsIFC
 Imports TableManipulationBase
 
 Public Class clsGetFASTAFromDMS
-    Inherits clsEventNotifier
+    Inherits EventNotifier
 
     Implements IGetFASTAFromDMS
 
@@ -42,7 +42,7 @@ Public Class clsGetFASTAFromDMS
     Protected m_SHA1Provider As SHA1Managed
     Protected m_WaitingForLockFile As Boolean = False
 
-    Protected WithEvents m_FileTools As clsFileTools
+    Protected WithEvents m_FileTools As FileTools
     Protected m_LastLockQueueWaitTimeLog As DateTime
 
     Public ReadOnly Property ExporterComponent() As clsGetFASTAFromDMSForward
@@ -89,7 +89,7 @@ Public Class clsGetFASTAFromDMS
 
         ClassSelector(dbConnectionString, databaseFormatType, outputSequenceType)
 
-        m_FileTools = New clsFileTools()
+        m_FileTools = New FileTools()
         RegisterEvents(m_FileTools)
 
     End Sub
@@ -253,6 +253,8 @@ Public Class clsGetFASTAFromDMS
         Dim fiSourceFile = New FileInfo(legacyStaticFilePath)
 
         If Not fiSourceFile.Exists Then
+            ' Be careful changing this message; the AnalysisResources class in the Analysis Manager
+            ' looks for error messages that start with "Legacy fasta file not found:"
             Dim msg = "Legacy fasta file not found: " & legacyStaticFilePath & " (path comes from V_Legacy_Static_File_Locations)"
             OnErrorEvent(msg)
             Throw New Exception(msg)
@@ -300,16 +302,16 @@ Public Class clsGetFASTAFromDMS
 
         Dim currentFreeSpaceBytes As Int64
 
-        Dim success = clsDiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
+        Dim success = DiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
         If Not success Then
-            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsDiskInfo.GetDiskFreeSpace returned a blank error message"
+            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "DiskInfo.GetDiskFreeSpace returned a blank error message"
             Dim spaceValidationError = "Unable to copy legacy FASTA file to " & destinationFolderPath & ". " & errorMessage
             OnErrorEvent(spaceValidationError)
             Throw New IOException(spaceValidationError)
         End If
 
-        If Not clsFileTools.ValidateFreeDiskSpace(destinationPath, sourceFileSizeMB, currentFreeSpaceBytes, errorMessage) Then
-            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
+        If Not FileTools.ValidateFreeDiskSpace(destinationPath, sourceFileSizeMB, currentFreeSpaceBytes, errorMessage) Then
+            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "FileTools.ValidateFreeDiskSpace returned a blank error message"
             Dim spaceValidationError = "Unable to copy legacy FASTA file to " & destinationFolderPath & ". " & errorMessage
             OnErrorEvent(spaceValidationError)
             Throw New IOException(spaceValidationError)
