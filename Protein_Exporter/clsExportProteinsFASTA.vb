@@ -32,14 +32,14 @@ Public Class clsExportProteinsFASTA
         Dim currentFreeSpaceBytes As Int64
         Dim errorMessage As String = String.Empty
 
-        Dim success = clsDiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
+        Dim success = DiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
         If Not success Then
-            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsDiskInfo.GetDiskFreeSpace returned a blank error message"
+            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "DiskInfo.GetDiskFreeSpace returned a blank error message"
             Throw New IOException("Unable to save FASTA file at " & destinationPath & ". " & errorMessage)
         End If
 
-        If Not clsFileTools.ValidateFreeDiskSpace(destinationPath, REQUIRED_SIZE_MB, currentFreeSpaceBytes, errorMessage) Then
-            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
+        If Not FileTools.ValidateFreeDiskSpace(destinationPath, REQUIRED_SIZE_MB, currentFreeSpaceBytes, errorMessage) Then
+            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "FileTools.ValidateFreeDiskSpace returned a blank error message"
             Throw New IOException("Unable to save FASTA file at " & destinationPath & ". " & errorMessage)
         End If
 
@@ -172,14 +172,14 @@ Public Class clsExportProteinsFASTA
         Dim currentFreeSpaceBytes As Int64
         Dim errorMessage As String = String.Empty
 
-        Dim success = clsDiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
+        Dim success = DiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
         If Not success Then
-            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsDiskInfo.GetDiskFreeSpace returned a blank error message"
+            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "DiskInfo.GetDiskFreeSpace returned a blank error message"
             Throw New IOException("Unable to append to FASTA file at " & destinationPath & ". " & errorMessage)
         End If
 
-        If Not clsFileTools.ValidateFreeDiskSpace(destinationPath, REQUIRED_SIZE_MB, currentFreeSpaceBytes, errorMessage) Then
-            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "clsFileTools.ValidateFreeDiskSpace returned a blank error message"
+        If Not FileTools.ValidateFreeDiskSpace(destinationPath, REQUIRED_SIZE_MB, currentFreeSpaceBytes, errorMessage) Then
+            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "FileTools.ValidateFreeDiskSpace returned a blank error message"
             Throw New IOException("Unable to append to FASTA file at " & destinationPath & ". " & errorMessage)
         End If
 
