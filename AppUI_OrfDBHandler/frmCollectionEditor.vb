@@ -784,7 +784,7 @@ Public Class frmCollectionEditor
     Private WithEvents m_ImportHandler As IImportProteins
     Private WithEvents m_UploadHandler As IUploadProteins
     Private WithEvents m_SourceListViewHandler As DataListViewHandler
-    Private WithEvents m_fileBatcher As clsBatchUploadFromFileList
+    ' Unused: Private WithEvents m_fileBatcher As clsBatchUploadFromFileList
 
     Private m_LocalFileLoaded As Boolean
 
@@ -1446,7 +1446,7 @@ Public Class frmCollectionEditor
 
     End Sub
 
-    'Doubleclick to remove selected member from the destination collection
+    ' Double click to remove selected member from the destination collection
     Private Sub lvwDestination_DoubleClick(
         sender As Object,
         e As EventArgs) Handles lvwDestination.DoubleClick
@@ -1573,15 +1573,16 @@ Public Class frmCollectionEditor
         Application.Exit()
     End Sub
 
-    Private Sub mnuToolsFBatchUpload_Click(sender As Object, e As EventArgs)
-        'Steal this to use with file-directed loading
-        m_fileBatcher = New clsBatchUploadFromFileList(m_PSConnectionString)
-        m_fileBatcher.UploadBatch()
-    End Sub
+    ' Unused
+    'Private Sub mnuToolsFBatchUpload_Click(sender As Object, e As EventArgs)
+    '    'Steal this to use with file-directed loading
+    '    m_fileBatcher = New clsBatchUploadFromFileList(m_PSConnectionString)
+    '    m_fileBatcher.UploadBatch()
+    'End Sub
 
     Private Sub mnuToolsCollectionEdit_Click(sender As Object, e As EventArgs) Handles mnuToolsCollectionEdit.Click
         Dim cse As New frmCollectionStateEditor(m_PSConnectionString)
-        Dim r As DialogResult = cse.ShowDialog
+        cse.ShowDialog()
 
     End Sub
 
@@ -1590,32 +1591,33 @@ Public Class frmCollectionEditor
         f.ShowDialog()
     End Sub
 
-    Private Sub mnuToolsUpdateArchives_Click(sender As Object, e As EventArgs)
-        Dim f As FolderBrowserDialog = New FolderBrowserDialog
-        Dim r As DialogResult
-        Dim outputPath As String
+    ' Unused
+    'Private Sub mnuToolsUpdateArchives_Click(sender As Object, e As EventArgs)
+    '    Dim f As FolderBrowserDialog = New FolderBrowserDialog
+    '    Dim r As DialogResult
+    '    Dim outputPath As String
 
-        If m_Syncer Is Nothing Then
-            m_Syncer = New clsSyncFASTAFileArchive(m_PSConnectionString)
-        End If
+    '    If m_Syncer Is Nothing Then
+    '        m_Syncer = New clsSyncFASTAFileArchive(m_PSConnectionString)
+    '    End If
 
 
 
-        With f
-            .RootFolder = Environment.SpecialFolder.MyComputer
-            .ShowNewFolderButton = True
+    '    With f
+    '        .RootFolder = Environment.SpecialFolder.MyComputer
+    '        .ShowNewFolderButton = True
 
-            r = .ShowDialog()
-        End With
+    '        r = .ShowDialog()
+    '    End With
 
-        If r = DialogResult.OK Then
-            outputPath = f.SelectedPath
+    '    If r = DialogResult.OK Then
+    '        outputPath = f.SelectedPath
 
-            Dim errorCode As Integer
-            errorCode = m_Syncer.SyncCollectionsAndArchiveTables(outputPath)
-        End If
+    '        Dim errorCode As Integer
+    '        errorCode = m_Syncer.SyncCollectionsAndArchiveTables(outputPath)
+    '    End If
 
-    End Sub
+    'End Sub
 
 #End Region
 
@@ -1624,8 +1626,8 @@ Public Class frmCollectionEditor
         m_ImportHandler.LoadStart,
         m_SourceListViewHandler.LoadStart,
         m_UploadHandler.LoadStart,
-        m_fileBatcher.LoadStart,
         m_Syncer.SyncStart
+        ' m_fileBatcher.LoadStart
 
         pnlProgBar.Visible = True
         pgbMain.Visible = True
@@ -1639,8 +1641,8 @@ Public Class frmCollectionEditor
     Private Sub ImportProgressHandler(fractionDone As Double) Handles _
         m_ImportHandler.LoadProgress,
         m_SourceListViewHandler.LoadProgress,
-        m_UploadHandler.LoadProgress,
-        m_fileBatcher.ProgressUpdate
+        m_UploadHandler.LoadProgress
+        ' m_fileBatcher.ProgressUpdate
 
         pgbMain.Value = CInt(fractionDone * 100)
         Application.DoEvents()
@@ -1658,8 +1660,9 @@ Public Class frmCollectionEditor
     Private Sub ImportEndHandler() Handles _
         m_ImportHandler.LoadEnd,
         m_SourceListViewHandler.LoadEnd,
-        m_UploadHandler.LoadEnd, m_fileBatcher.LoadEnd,
+        m_UploadHandler.LoadEnd,
         m_Syncer.SyncComplete
+        ' m_fileBatcher.LoadEnd
 
         lblCurrentTask.Text = "Complete: " & lblCurrentTask.Text
         Invalidate()
@@ -1690,7 +1693,7 @@ Public Class frmCollectionEditor
 
     End Sub
 
-    Private Sub BatchImportProgressHandler(Status As String) Handles m_UploadHandler.BatchProgress, m_fileBatcher.TaskChange
+    Private Sub BatchImportProgressHandler(Status As String) Handles m_UploadHandler.BatchProgress  ', m_fileBatcher.TaskChange
         m_BatchLoadCurrentCount += 1
         lblBatchProgress.Text = Status & " (File " & m_BatchLoadCurrentCount.ToString & " of " & m_BatchLoadTotalCount & ")"
         Application.DoEvents()

@@ -7,7 +7,6 @@ Imports System.Security.Principal
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports Protein_Exporter.ExportProteinCollectionsIFC
-Imports Protein_Storage
 Imports TableManipulationBase
 
 Public Class clsGetFASTAFromDMSForward
@@ -21,13 +20,8 @@ Public Class clsGetFASTAFromDMSForward
     Friend m_CurrentFileProteinCount As Integer
     Protected m_CurrentArchiveFileName As String
 
-    Protected m_PSC As IProteinStorage
-    Protected m_PSEntry As IProteinStorageEntry
-
-
     Protected m_CollectionsCache As DataTable
     Protected m_OrganismCache As DataTable
-    Protected m_CollectionCountsCache As DataTable
 
     Protected m_Naming_Suffix As String = "_forward"
     Protected m_Extension As String = ""
@@ -69,16 +63,17 @@ Public Class clsGetFASTAFromDMSForward
         Get
             Return m_CurrentFullOutputPath
         End Get
-        Set(Value As String)
+        Set
             m_CurrentFullOutputPath = Value
         End Set
     End Property
 
-    ReadOnly Property ArchivalName() As String
-        Get
-            Return m_CurrentArchiveFileName
-        End Get
-    End Property
+    ' Unused
+    'ReadOnly Property ArchivalName() As String
+    '    Get
+    '        Return m_CurrentArchiveFileName
+    '    End Get
+    'End Property
 
     Protected Overridable Function ExtendedExportPath(
        destinationFolderPath As String,
@@ -395,18 +390,24 @@ Public Class clsGetFASTAFromDMSForward
         Return True
     End Function
 
-    Protected Function GetPrimaryAuthorityID(proteinCollectionID As Integer) As Integer
-        Dim foundrows() As DataRow
+    ' Unused
+    'Protected Function GetPrimaryAuthorityID(proteinCollectionID As Integer) As Integer
+    '    Dim foundRows = m_CollectionsCache.Select("Protein_Collection_ID = " & proteinCollectionID.ToString()).ToList()
 
-        foundrows = m_CollectionsCache.Select("Protein_Collection_ID = " & proteinCollectionID.ToString)
+    '    Dim primaryAnnotationTypeID = foundRows(0).Item("Primary_Annotation_Type_ID").ToString()
+    '    Dim idValue As Integer
+    '    If foundRows.Count = 0 OrElse Not Integer.TryParse(primaryAnnotationTypeID, idValue) Then
+    '        Return 0
+    '    End If
 
-        Return CInt(foundrows(0).Item("Primary_Annotation_Type_ID"))
-    End Function
+    '    Return idValue
+    'End Function
 
-    Protected Function GetPrimaryAuthorityID(proteinCollectionName As String) As Integer
-        Dim proteinCollectionID As Integer = FindIDByName(proteinCollectionName)
-        Return GetPrimaryAuthorityID(proteinCollectionID)
-    End Function
+    ' Unused
+    'Protected Function GetPrimaryAuthorityID(proteinCollectionName As String) As Integer
+    '    Dim proteinCollectionID As Integer = FindIDByName(proteinCollectionName)
+    '    Return GetPrimaryAuthorityID(proteinCollectionID)
+    'End Function
 
     Function GetCollectionNameList() As Hashtable 'Implements IGetFASTAFromDMS.GetAllCollections
         If m_CollectionsCache Is Nothing Then

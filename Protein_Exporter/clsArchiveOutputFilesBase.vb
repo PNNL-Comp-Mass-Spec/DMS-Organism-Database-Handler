@@ -13,7 +13,7 @@ Public MustInherit Class clsArchiveOutputFilesBase
     Protected m_TableGetter As IGetSQLData
     Protected m_PSConnectionString As String
     Protected m_LastError As String
-    Protected m_OutputSequenceType As IGetFASTAFromDMS.SequenceTypes
+    ' Unused: Protected m_OutputSequenceType As IGetFASTAFromDMS.SequenceTypes
     Protected m_Archived_File_Name As String
 
     Protected Event ArchiveStart() Implements IArchiveOutputFiles.ArchiveStart
@@ -129,31 +129,32 @@ Public MustInherit Class clsArchiveOutputFilesBase
         End If
     End Sub
 
-    Protected Function CheckForExistingArchiveEntry(
-        authentication_Hash As String,
-        archivedFileType As IArchiveOutputFiles.CollectionTypes,
-        creationOptionsString As String) As Integer
+    ' Unused
+    'Protected Function CheckForExistingArchiveEntry(
+    '    authentication_Hash As String,
+    '    archivedFileType As IArchiveOutputFiles.CollectionTypes,
+    '    creationOptionsString As String) As Integer
 
-        Dim SQL As String
-        SQL = "SELECT Archived_File_ID,  Archived_File_Path " &
-                "FROM V_Archived_Output_Files " &
-                "WHERE Authentication_Hash = '" & authentication_Hash & "' AND " &
-                        "Archived_File_Type = '" &
-                        [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), archivedFileType) &
-                        "' AND " & "Creation_Options = '" & creationOptionsString & "'"
+    '    Dim SQL As String
+    '    SQL = "SELECT Archived_File_ID,  Archived_File_Path " &
+    '            "FROM V_Archived_Output_Files " &
+    '            "WHERE Authentication_Hash = '" & authentication_Hash & "' AND " &
+    '                    "Archived_File_Type = '" &
+    '                    [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), archivedFileType) &
+    '                    "' AND " & "Creation_Options = '" & creationOptionsString & "'"
 
-        Dim dt As DataTable
-        dt = m_TableGetter.GetTable(SQL)
+    '    Dim dt As DataTable
+    '    dt = m_TableGetter.GetTable(SQL)
 
-        If dt.Rows.Count > 0 Then
-            m_Archived_File_Name = dt.Rows(0).Item("Archived_File_Path").ToString
-            Return CInt(dt.Rows(0).Item("Archived_File_ID"))
-        Else
-            Return 0
-        End If
+    '    If dt.Rows.Count > 0 Then
+    '        m_Archived_File_Name = dt.Rows(0).Item("Archived_File_Path").ToString
+    '        Return CInt(dt.Rows(0).Item("Archived_File_ID"))
+    '    Else
+    '        Return 0
+    '    End If
 
 
-    End Function
+    'End Function
 
     Protected Sub AddArchiveCollectionXRef(
         proteinCollectionID As Integer,
@@ -167,13 +168,15 @@ Public MustInherit Class clsArchiveOutputFilesBase
 
     End Sub
 
-    Protected Function GetFileAuthenticationHash(sourcePath As String) As String
-        Return m_Exporter.GetFileHash(sourcePath)
-    End Function
+    ' Unused
+    'Protected Function GetFileAuthenticationHash(sourcePath As String) As String
+    '    Return m_Exporter.GetFileHash(sourcePath)
+    'End Function
 
-    Protected Function GetStoredFileAuthenticationHash(ProteinCollectionID As Integer) As String
-        Return m_Exporter.GetStoredHash(ProteinCollectionID)
-    End Function
+    ' Unused
+    'Protected Function GetStoredFileAuthenticationHash(ProteinCollectionID As Integer) As String
+    '    Return m_Exporter.GetStoredHash(ProteinCollectionID)
+    'End Function
 
     Protected Function GetProteinCollectionID(ProteinCollectionName As String) As Integer
         Return m_Exporter.FindIDByName(ProteinCollectionName)
@@ -211,21 +214,23 @@ Public MustInherit Class clsArchiveOutputFilesBase
         OnOverallProgressUpdate(0.0)
     End Sub
 
-    Protected Sub OnSubTaskStart(subTaskDescription As String)
-        RaiseEvent SubTaskStart(subTaskDescription)
-        OnSubTaskProgressUpdate(0.0)
-    End Sub
+    ' Unused
+    'Protected Sub OnSubTaskStart(subTaskDescription As String)
+    '    RaiseEvent SubTaskStart(subTaskDescription)
+    '    OnSubTaskProgressUpdate(0.0)
+    'End Sub
 
     Protected Sub OnOverallProgressUpdate(fractionDone As Double)
         RaiseEvent OverallProgressUpdate(fractionDone)
     End Sub
 
-    Protected Sub OnSubTaskProgressUpdate(fractionDone As Double)
-        RaiseEvent SubTaskProgressUpdate(fractionDone)
-    End Sub
+    ' Unused
+    'Protected Sub OnSubTaskProgressUpdate(fractionDone As Double)
+    '    RaiseEvent SubTaskProgressUpdate(fractionDone)
+    'End Sub
 
-    Protected Sub OnArchiveComplete(archivedPath As String)
-        RaiseEvent ArchiveComplete(archivedPath)
-    End Sub
+    'Protected Sub OnArchiveComplete(archivedPath As String)
+    '    RaiseEvent ArchiveComplete(archivedPath)
+    'End Sub
 
 End Class

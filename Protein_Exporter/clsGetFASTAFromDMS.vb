@@ -28,8 +28,8 @@ Public Class clsGetFASTAFromDMS
     Protected m_OutputSequenceType As IGetFASTAFromDMS.SequenceTypes
     Protected m_CollectionType As IArchiveOutputFiles.CollectionTypes
     Protected m_FinalOutputPath As String
-    Protected m_ArchivalName As String
-    Protected m_CurrentFileProteinCount As Integer
+    ' Unused: Protected m_ArchivalName As String
+    ' Unused: Protected m_CurrentFileProteinCount As Integer
 
     ''' <summary>
     ''' Protein sequences database connection string
@@ -51,12 +51,14 @@ Public Class clsGetFASTAFromDMS
         End Get
     End Property
 
-    Public ReadOnly Property WaitingForLockFile() As Boolean
-        Get
-            Return m_WaitingForLockFile
-        End Get
-    End Property
+    ' Unused
+    'Public ReadOnly Property WaitingForLockFile As Boolean
+    '    Get
+    '        Return m_WaitingForLockFile
+    '    End Get
+    'End Property
 
+    ' ReSharper disable once UnusedMember.Global
     ''' <summary>
     ''' Constructor when running in offline mode
     ''' </summary>
@@ -135,14 +137,15 @@ Public Class clsGetFASTAFromDMS
 
     End Sub
 
-    Protected Overridable Function GetCollectionTable(selectionSQL As String) As DataTable
-        If m_TableGetter Is Nothing Then
-            m_TableGetter = New clsDBTask(m_PSConnectionString, True)
-        End If
+    ' Unused
+    'Protected Overridable Function GetCollectionTable(selectionSQL As String) As DataTable
+    '    If m_TableGetter Is Nothing Then
+    '        m_TableGetter = New clsDBTask(m_PSConnectionString, True)
+    '    End If
 
-        Return m_TableGetter.GetTable(selectionSQL)
+    '    Return m_TableGetter.GetTable(selectionSQL)
 
-    End Function
+    'End Function
 
     ''' <summary>
     ''' Create the FASTA file for the given protein collection ID
