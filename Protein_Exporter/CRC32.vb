@@ -2,6 +2,7 @@ Option Strict Off
 
 Imports System.IO
 
+<Obsolete("Use CRC32 in PRISM.dll")>
 Public Class CRC32
 
     ' This is v2 of the VB CRC32 algorithm provided by Paul
