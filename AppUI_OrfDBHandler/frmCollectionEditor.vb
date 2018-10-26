@@ -952,7 +952,7 @@ Public Class frmCollectionEditor
         cboAnnotationTypePicker.EndUpdate()
     End Sub
 
-    Private Sub BindCollectionListToControl(collectionList As DataView)
+    Private Sub BindCollectionListToControl(collectionList As ICollection)
 
         cboCollectionPicker.BeginUpdate()
         If collectionList.Count = 0 Then
@@ -1421,13 +1421,13 @@ Public Class frmCollectionEditor
         e As ElapsedEventArgs) Handles SearchTimer.Elapsed
 
         If m_SearchActive = True Then
-            'Debug.WriteLine("Searchtimer.active.kick")
+            'Debug.WriteLine("SearchTimer.active.kick")
 
             m_SourceListViewHandler.Load(m_CollectionMembers, txtLiveSearch.Text)
             m_SearchActive = False
             SearchTimer.Stop()
         Else
-            'Debug.WriteLine("Searchtimer.inactive.kick")
+            'Debug.WriteLine("SearchTimer.inactive.kick")
 
         End If
     End Sub
@@ -1646,8 +1646,8 @@ Public Class frmCollectionEditor
         Application.DoEvents()
     End Sub
 
-    Private Sub SyncProgressHandler(statusmsg As String, fractionDone As Double) Handles m_Syncer.SyncProgress
-        lblBatchProgress.Text = statusmsg
+    Private Sub SyncProgressHandler(statusMsg As String, fractionDone As Double) Handles m_Syncer.SyncProgress
+        lblBatchProgress.Text = statusMsg
         If fractionDone > 1.0 Then
             fractionDone = 1.0
         End If

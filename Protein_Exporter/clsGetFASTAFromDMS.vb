@@ -45,7 +45,7 @@ Public Class clsGetFASTAFromDMS
     Protected WithEvents m_FileTools As FileTools
     Protected m_LastLockQueueWaitTimeLog As DateTime
 
-    Public ReadOnly Property ExporterComponent() As clsGetFASTAFromDMSForward
+    Public ReadOnly Property ExporterComponent As clsGetFASTAFromDMSForward
         Get
             Return m_Getter
         End Get
@@ -158,7 +158,7 @@ Public Class clsGetFASTAFromDMS
       databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
       outputSequenceType As IGetFASTAFromDMS.SequenceTypes) As String Implements IGetFASTAFromDMS.ExportFASTAFile
 
-        Dim proteincollectionname As String = GetProteinCollectionName(proteinCollectionID)
+        Dim proteinCollectionName As String = GetProteinCollectionName(proteinCollectionID)
 
         Dim creationOptionsHandler As New clsFileCreationOptions(m_PSConnectionString)
 
@@ -166,7 +166,7 @@ Public Class clsGetFASTAFromDMS
          outputSequenceType, databaseFormatType)
 
         Dim protCollectionList As New List(Of String) From {
-            proteincollectionname
+                proteinCollectionName
         }
 
         Return ExportProteinCollections(protCollectionList, creationOptions, destinationFolderPath, 0, True, databaseFormatType, outputSequenceType)
@@ -434,8 +434,8 @@ Public Class clsGetFASTAFromDMS
 
         Dim strProteinCollectionList = Join(protCollectionList.ToArray, ",")
 
-        Dim hashableString As String = strProteinCollectionList + "/" + creationOptionsString
-        Dim filenameSha1Hash As String = GenerateHash(hashableString)
+        Dim stringToHash As String = strProteinCollectionList + "/" + creationOptionsString
+        Dim filenameSha1Hash As String = GenerateHash(stringToHash)
         Dim lockFileHash As String = filenameSha1Hash
 
         Dim finalFileName As String
@@ -598,7 +598,7 @@ Public Class clsGetFASTAFromDMS
             End If
 
             ' Delete any other files that exist with the same extension as finalFileFI.FullName
-            ' These are likely index files used by Inspect or MSGFDB and they will need to be re-generated
+            ' These are likely index files used by Inspect or MSGF+ (aka MSGFDB) and they will need to be re-generated
             DeleteFASTAIndexFiles(finalFileFI)
 
             InterimFastaFI.MoveTo(finalFileFI.FullName)
@@ -715,6 +715,8 @@ Public Class clsGetFASTAFromDMS
             ' ID_002750_1363538A_shuffle.trie
             ' ID_002750_1363538A_shuffle_Log.txt
 
+            ' ReSharper disable CommentTypo
+
             ' MSGFDB's BuildSA function creates these files:
             ' ID_002614_23305E80.revConcat.fasta
             ' ID_002614_23305E80.fasta.23305E80.hashcheck
@@ -725,6 +727,8 @@ Public Class clsGetFASTAFromDMS
             ' ID_002614_23305E80.seq
             ' ID_002614_23305E80.revConcat.seqanno
             ' ID_002614_23305E80.seqanno
+
+            ' ReSharper restore CommentTypo
 
             ' This code will also delete the .hashcheck file; that's OK
             ' e.g., ID_002750_1363538A.fasta.1363538A.hashcheck
@@ -785,7 +789,7 @@ Public Class clsGetFASTAFromDMS
 
         Dim legacyLocationsSQL As String
 
-        Dim legacyStaticFilelocations As DataTable
+        Dim legacyStaticFileLocations As DataTable
 
         ' Lookup the details for LegacyFASTAFileName in the database
         legacyLocationsSQL = "SELECT FileName, Full_Path, Authentication_Hash FROM V_Legacy_Static_File_Locations WHERE FileName = '" & LegacyFASTAFileName & "'"
@@ -793,15 +797,15 @@ Public Class clsGetFASTAFromDMS
         If m_TableGetter Is Nothing Then
             m_TableGetter = New clsDBTask(m_PSConnectionString)
         End If
-        legacyStaticFilelocations = m_TableGetter.GetTable(legacyLocationsSQL)
-        If legacyStaticFilelocations.Rows.Count = 0 Then
+        legacyStaticFileLocations = m_TableGetter.GetTable(legacyLocationsSQL)
+        If legacyStaticFileLocations.Rows.Count = 0 Then
             Dim msg = "Legacy fasta file " & LegacyFASTAFileName & " not found in V_Legacy_Static_File_Locations; unable to continue"
             OnErrorEvent(msg)
             Throw New Exception(msg)
         End If
 
-        LegacyStaticFilePathOutput = legacyStaticFilelocations.Rows(0).Item("Full_Path").ToString
-        crc32HashOutput = legacyStaticFilelocations.Rows(0).Item("Authentication_Hash").ToString
+        LegacyStaticFilePathOutput = legacyStaticFileLocations.Rows(0).Item("Full_Path").ToString
+        crc32HashOutput = legacyStaticFileLocations.Rows(0).Item("Authentication_Hash").ToString
         If crc32HashOutput Is Nothing Then crc32HashOutput = String.Empty
 
         Return True
@@ -814,7 +818,7 @@ Public Class clsGetFASTAFromDMS
     ''' <param name="strFastaFilePath"></param>
     ''' <param name="crc32Hash"></param>
     ''' <param name="hashcheckExtension">Hashcheck file extension; if an empty string, the default of .hashcheck is used</param>
-    ''' <returns>FileInfo object for the .hascheck file</returns>
+    ''' <returns>FileInfo object for the .hashcheck file</returns>
     ''' <remarks>
     ''' Example .hashcheck filenames:
     '''   ID_004137_23AA5A07.fasta.23AA5A07.hashcheck

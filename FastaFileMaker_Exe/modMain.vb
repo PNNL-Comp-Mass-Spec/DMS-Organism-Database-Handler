@@ -4,7 +4,7 @@ Imports PRISM
 Imports Protein_Exporter
 
 Module modMain
-    Public Const PROGRAM_DATE As String = "September 20, 2018"
+    Public Const PROGRAM_DATE As String = "October 19, 2018"
 
     Const m_DebugLevel As Integer = 4
     Const FASTA_GEN_TIMEOUT_INTERVAL_MINUTES As Integer = 70
@@ -29,39 +29,20 @@ Module modMain
 
 #Region "Event handlers"
 
-    Private Sub m_FastaTools_DebugEvent(statusMessage As String) Handles m_FastaTools.DebugEvent
-        Console.ForegroundColor = ConsoleColor.DarkGray
-        Console.WriteLine("  " & statusMessage)
-        Console.ResetColor()
+    Private Sub m_FastaTools_DebugEvent(message As String) Handles m_FastaTools.DebugEvent
+        ConsoleMsgUtils.ShowDebug(message,)
     End Sub
 
-    Private Sub m_FastaTools_ErrorEvent(errorMessage As String, ex As Exception) Handles m_FastaTools.ErrorEvent
-
-        Dim formattedError As String
-        If ex Is Nothing OrElse errorMessage.EndsWith(ex.Message) Then
-            formattedError = errorMessage
-        Else
-            formattedError = errorMessage + ": " + ex.Message
-        End If
-        Console.ForegroundColor = ConsoleColor.Red
-        Console.WriteLine(formattedError)
-
-        If ex IsNot Nothing Then
-            Console.ForegroundColor = ConsoleColor.Cyan
-            Console.WriteLine(StackTraceFormatter.GetExceptionStackTraceMultiLine(ex))
-        End If
-        Console.ResetColor()
-
+    Private Sub m_FastaTools_ErrorEvent(message As String, ex As Exception) Handles m_FastaTools.ErrorEvent
+        ConsoleMsgUtils.ShowError(message, ex)
     End Sub
 
-    Private Sub m_FastaTools_StatusEvent(strMessage As String) Handles m_FastaTools.StatusEvent
-        Console.WriteLine(strMessage)
+    Private Sub m_FastaTools_StatusEvent(message As String) Handles m_FastaTools.StatusEvent
+        Console.WriteLine(message)
     End Sub
 
-    Private Sub m_FastaTools_WarningEvent(warningMessage As String) Handles m_FastaTools.WarningEvent
-        Console.ForegroundColor = ConsoleColor.Yellow
-        Console.WriteLine(warningMessage)
-        Console.ResetColor()
+    Private Sub m_FastaTools_WarningEvent(message As String) Handles m_FastaTools.WarningEvent
+        ConsoleMsgUtils.ShowWarning(message)
     End Sub
 
     Private Sub m_FastaTools_FileGenerationStarted(taskMsg As String) Handles m_FastaTools.FileGenerationStarted
@@ -157,10 +138,8 @@ Module modMain
             End If
 
         Catch ex As Exception
-            Console.WriteLine("Error occurred in modMain->Main: " & ControlChars.NewLine & ex.Message)
+            ConsoleMsgUtils.ShowError("Error occurred in modMain", ex)
         End Try
-
-
 
     End Sub
 
@@ -186,7 +165,7 @@ Module modMain
 
     End Function
 
-    Private Sub LogProteinFileDetails(protCollectionList As String,
+    Private Sub LogProteinFileDetails(proteinCollectionList As String,
                                       creationOpts As String,
                                       legacyFasta As String,
                                       crc32Hash As String,
@@ -242,7 +221,7 @@ Module modMain
 
             swOutFile.WriteLine(DateTime.Now.ToString("yyyy-MM-dd") & ControlChars.Tab &
                                 DateTime.Now.ToString("hh:mm:ss tt") & ControlChars.Tab &
-                                protCollectionList & ControlChars.Tab &
+                                proteinCollectionList & ControlChars.Tab &
                                 creationOpts & ControlChars.Tab &
                                 legacyFasta & ControlChars.Tab &
                                 crc32Hash & ControlChars.Tab &
@@ -347,25 +326,16 @@ Module modMain
                               "You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0")
             Console.WriteLine()
 
-            Console.WriteLine("Notice: This computer software was prepared by Battelle Memorial Institute, " &
-                              "hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the " &
-                              "Department of Energy (DOE).  All rights in the computer software are reserved " &
-                              "by DOE on behalf of the United States Government and the Contractor as " &
-                              "provided in the Contract.  NEITHER THE GOVERNMENT NOR THE CONTRACTOR MAKES ANY " &
-                              "WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY LIABILITY FOR THE USE OF THIS " &
-                              "SOFTWARE.  This notice including this sentence must appear on any copies of " &
-                              "this computer software.")
-
             ' Delay for 750 msec in case the user double clicked this file from within Windows Explorer (or started the program via a shortcut)
             Threading.Thread.Sleep(750)
 
         Catch ex As Exception
-            Console.WriteLine("Error displaying the program syntax: " & ex.Message)
+            ConsoleMsgUtils.ShowError("Error displaying the program syntax", ex)
         End Try
 
     End Sub
 
-    Public Function TestExport(protCollectionList As String,
+    Public Function TestExport(proteinCollectionList As String,
                                creationOpts As String,
                                legacyFasta As String,
                                destinationFolderPath As String,
@@ -394,7 +364,7 @@ Module modMain
         m_FastaGenStartTime = DateTime.UtcNow
         Try
             m_FastaTimer.Start()
-            crc32Hash = m_FastaTools.ExportFASTAFile(protCollectionList, creationOpts, legacyFasta, destinationFolderPath)
+            crc32Hash = m_FastaTools.ExportFASTAFile(proteinCollectionList, creationOpts, legacyFasta, destinationFolderPath)
         Catch Ex As Exception
             Console.WriteLine("clsAnalysisResources.CreateFastaFile(), Exception generating OrgDb file: " & Ex.Message)
             Console.WriteLine(StackTraceFormatter.GetExceptionStackTraceMultiLine(Ex))
@@ -420,7 +390,7 @@ Module modMain
         End If
 
         If blnLogProteinFileDetails Then
-            LogProteinFileDetails(protCollectionList, creationOpts, legacyFasta, crc32Hash, destinationFolderPath, m_FastaFileName, "")
+            LogProteinFileDetails(proteinCollectionList, creationOpts, legacyFasta, crc32Hash, destinationFolderPath, m_FastaFileName, "")
         End If
 
         Return True

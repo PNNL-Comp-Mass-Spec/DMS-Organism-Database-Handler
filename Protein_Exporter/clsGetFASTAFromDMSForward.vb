@@ -100,14 +100,14 @@ Public Class clsGetFASTAFromDMSForward
     ''' </summary>
     ''' <param name="protCollectionList"></param>
     ''' <param name="destinationFolderPath"></param>
-    ''' <param name="AlternateAuthorityID"></param>
-    ''' <param name="PadWithPrimaryAnnotation"></param>
+    ''' <param name="alternateAnnotationTypeID"></param>
+    ''' <param name="padWithPrimaryAnnotation"></param>
     ''' <returns>CRC32 hash for the file</returns>
     Overridable Overloads Function ExportFASTAFile(
        protCollectionList As List(Of String),
        destinationFolderPath As String,
-       AlternateAuthorityID As Integer,
-       PadWithPrimaryAnnotation As Boolean) As String
+       alternateAnnotationTypeID As Integer,
+       padWithPrimaryAnnotation As Boolean) As String
 
         Dim ProteinCollectionName As String
         Dim collectionSQL As String
@@ -177,27 +177,14 @@ Public Class clsGetFASTAFromDMSForward
             collectionNameList &= nameString
         Next
 
-        Dim lengthCheckSQL As String
-        Dim lengthCheckTable As DataTable
-        Dim collectionLength As Integer
-        Dim currentCollectionPos As Integer
-        Dim foundrow As DataRow
-        Dim sectionStart As Integer
-        Dim sectionEnd As Integer
-        Dim tableName As String
-
-        Dim tmpOutputPath As String
-        Dim tmpOutputPathCandidate As String
-
-        Dim currentCollectionCount As Integer
-        Dim proteinCollectionsExported As Integer
-
         ' Get a temp file name; however, create the file in the target folder path
         ' (in case the system-defined temp directory is on a different drive than the target folder)
 
         Dim fiOutputPathCheck As FileInfo
+        Dim tmpOutputPath As String
+
         Do
-            tmpOutputPathCandidate = Path.GetTempFileName
+            Dim tmpOutputPathCandidate = Path.GetTempFileName
             Try
                 ' The GetTempFileName function created a temp file that we don't need; delete it now (but use try/catch just in case the deletion fails for some freak reason)
                 File.Delete(tmpOutputPathCandidate)
@@ -215,10 +202,10 @@ Public Class clsGetFASTAFromDMSForward
             OnExportStart("Exporting " & protCollectionList.Count & "protein collections: " & collectionNameList)
         End If
 
-        proteinCollectionsExported = 0
+        Dim proteinCollectionsExported = 0
         For Each ProteinCollectionName In protCollectionList
-            currentCollectionPos = 0
-            currentCollectionCount = 0
+            Dim currentCollectionPos = 0
+            Dim currentCollectionCount = 0
 
             ' Make sure there are no leading or trailing spaces
             ProteinCollectionName = ProteinCollectionName.Trim()
@@ -231,42 +218,42 @@ Public Class clsGetFASTAFromDMSForward
             End If
 
             ' Lookup the number of proteins that should be in this protein collection
-            lengthCheckSQL = "SELECT NumProteins FROM T_Protein_Collections " &
-              "WHERE FileName = '" & ProteinCollectionName & "'"
+            Dim lengthCheckSQL = "SELECT NumProteins FROM T_Protein_Collections " &
+                                 "WHERE FileName = '" & ProteinCollectionName & "'"
 
-            lengthCheckTable = m_TableGrabber.GetTable(lengthCheckSQL)
+            Dim lengthCheckTable = m_TableGrabber.GetTable(lengthCheckSQL)
+            Dim collectionLength As Integer
 
             If lengthCheckTable.Rows.Count > 0 Then
-                foundrow = lengthCheckTable.Rows(0)
-                collectionLength = CType(foundrow.Item(0), Int32)
+                Dim foundRow = lengthCheckTable.Rows(0)
+                collectionLength = CType(foundRow.Item(0), Int32)
             Else
                 collectionLength = -1
             End If
 
             Do
-                sectionStart = currentCollectionPos
-                sectionEnd = sectionStart + 10000
+                Dim sectionStart = currentCollectionPos
+                Dim sectionEnd = sectionStart + 10000
 
-                If PadWithPrimaryAnnotation Then
+                If padWithPrimaryAnnotation Then
                     tmpID = FindIDByName(trueName)
                     collectionSQL =
                      "SELECT Name, Description, Sequence, Protein_ID " &
                      "FROM V_Protein_Database_Export " &
                      "WHERE " &
-                      "Protein_Collection_ID = " & tmpID.ToString & " " &
-                      "AND Sorting_Index BETWEEN " & sectionStart.ToString & " AND " & sectionEnd.ToString & " " &
-                    "ORDER BY Sorting_Index"
+                       "Protein_Collection_ID = " & tmpID.ToString & " " &
+                       "AND Sorting_Index BETWEEN " & sectionStart.ToString & " AND " & sectionEnd.ToString & " " &
+                     "ORDER BY Sorting_Index"
 
                 Else
                     collectionSQL =
                      "SELECT Name, Description, Sequence, Protein_ID " &
                      "FROM V_Protein_Database_Export " &
                      "WHERE Protein_Collection_ID = " & tmpID.ToString & ") " &
-                      "AND Annotation_Type_ID = " & AlternateAuthorityID & " " &
-                      "AND Sorting_Index BETWEEN " & sectionStart.ToString & " AND " & sectionEnd.ToString & " " &
-                    "ORDER BY Sorting_Index"
+                       "AND Annotation_Type_ID = " & alternateAnnotationTypeID & " " &
+                       "AND Sorting_Index BETWEEN " & sectionStart.ToString & " AND " & sectionEnd.ToString & " " &
+                     "ORDER BY Sorting_Index"
                 End If
-
 
                 collectionTable = m_TableGrabber.GetTable(collectionSQL)
 
@@ -312,9 +299,10 @@ Public Class clsGetFASTAFromDMSForward
             tmpIDListSB.Append(Format(tmpID, "000000"))
             tmpIDListSB.Append("+")
             If currentCollectionCount <> collectionLength Then
-                Throw New Exception("The number of proteins exported for collection '" + ProteinCollectionName &
-                 "' does not match the exected value:" &
-                 currentCollectionCount & " exported from T_Protein_Collection_Members vs. " & collectionLength & " listed in T_Protein_Collections")
+                Throw New Exception(String.Format(
+                    "The number of proteins exported for collection '{0}' does not match the expected value: " &
+                    "{1} exported from T_Protein_Collection_Members vs. {2} listed in T_Protein_Collections",
+                    ProteinCollectionName, currentCollectionCount, collectionLength))
             End If
 
             proteinCollectionsExported += 1
@@ -360,8 +348,8 @@ Public Class clsGetFASTAFromDMSForward
         tmpFI.MoveTo(m_CurrentFullOutputPath)
 
         ' Assuming the final file now exists, delete the temporary file (if present)
-        Dim outputfi = New FileInfo(m_CurrentFullOutputPath)
-        If outputfi.Exists Then
+        Dim finalOutputFile = New FileInfo(m_CurrentFullOutputPath)
+        If finalOutputFile.Exists Then
             tmpFI = New FileInfo(tmpOutputPath)
             If tmpFI.Exists Then
                 tmpFI.Delete()
@@ -389,10 +377,9 @@ Public Class clsGetFASTAFromDMSForward
        destinationFolderPath As String) As String
 
         Dim primaryAuthorityID = 1
-        Const PadWithPrimaryAnnotation = True
+        Const padWithPrimaryAnnotation = True
 
-        Return ExportFASTAFile(protCollectionList, destinationFolderPath, primaryAuthorityID, PadWithPrimaryAnnotation)
-
+        Return ExportFASTAFile(protCollectionList, destinationFolderPath, primaryAuthorityID, padWithPrimaryAnnotation)
 
     End Function
 
@@ -509,18 +496,28 @@ Public Class clsGetFASTAFromDMSForward
     End Function
 
     Function FindNameByID(CollectionID As Integer) As String
-        Dim foundrows() As DataRow
-        foundrows = m_CollectionsCache.Select("Protein_Collection_ID = " & CollectionID.ToString)
-        If foundrows.Length = 0 Then
+        Dim foundRows = m_CollectionsCache.Select("Protein_Collection_ID = " & CollectionID.ToString).ToList()
+
+        If foundRows.Count = 0 Then
             RefreshCollectionCache()
-            foundrows = m_CollectionsCache.Select("Protein_Collection_ID = " & CollectionID.ToString)
+            foundRows = m_CollectionsCache.Select("Protein_Collection_ID = " & CollectionID.ToString).ToList()
         End If
-        Return foundrows(0).Item("FileName").ToString
+
+        If foundRows.Count > 0 Then
+            Return foundRows(0).Item("FileName").ToString()
+        End If
+
+        Return String.Empty
     End Function
 
     Protected Function FindPrimaryAnnotationID(collectionID As Integer) As Integer
-        Dim foundRows() As DataRow = m_CollectionsCache.Select("Protein_Collection_ID = " & collectionID.ToString)
-        Return CInt(foundRows(0).Item("Primary_Annotation_Type_ID"))
+        Dim foundRows = m_CollectionsCache.Select("Protein_Collection_ID = " & collectionID.ToString()).ToList()
+
+        If foundRows.Count > 0 Then
+            Return CInt(foundRows(0).Item("Primary_Annotation_Type_ID"))
+        End If
+
+        Return 0
     End Function
 
     ''' <summary>

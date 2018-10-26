@@ -62,7 +62,7 @@ Public Class clsBulkFastaImporter
     Private mAnnotationTypeInfo As Dictionary(Of String, Integer)
 
     ''' <summary>
-    ''' Protein collection info, where keys are protecin collection names and values are protein collection IDs
+    ''' Protein collection info, where keys are protein collection names and values are protein collection IDs
     ''' </summary>
     ''' <remarks>String searches will be case insensitive</remarks>
     Private mProteinCollectionInfo As Dictionary(Of String, Integer)
@@ -92,7 +92,7 @@ Public Class clsBulkFastaImporter
 #End Region
 
     Public Sub New()
-        MyBase.mFileDate = "October 22, 2015"
+        MyBase.mFileDate = "October 19, 2018"
         InitializeLocalVariables()
     End Sub
 
@@ -101,8 +101,8 @@ Public Class clsBulkFastaImporter
 
         Dim strErrorMessage As String
 
-        If MyBase.ErrorCode = eProcessFilesErrorCodes.LocalizedError Or
-           MyBase.ErrorCode = eProcessFilesErrorCodes.NoError Then
+        If MyBase.ErrorCode = ProcessFilesErrorCodes.LocalizedError Or
+           MyBase.ErrorCode = ProcessFilesErrorCodes.NoError Then
             Select Case mLocalErrorCode
                 Case eBulkImporterErrorCodes.NoError
                     strErrorMessage = ""
@@ -146,16 +146,16 @@ Public Class clsBulkFastaImporter
             Dim fiInfoFile = New FileInfo(fastaInfoFilePath)
             If Not fiInfoFile.Exists Then
                 ShowErrorMessage("File not found: " & fastaInfoFilePath)
-                MyBase.SetBaseClassErrorCode(eProcessFilesErrorCodes.InvalidInputFilePath)
+                MyBase.SetBaseClassErrorCode(ProcessFilesErrorCodes.InvalidInputFilePath)
                 Return sourceFileList
             End If
 
             Dim requiredColsShown As Boolean
             Dim currentLine = 0
 
-            Using srFastaInfoFile = New StreamReader(New FileStream(fiInfoFile.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
-                While srFastaInfoFile.Peek > -1
-                    Dim dataLine = srFastaInfoFile.ReadLine()
+            Using reader = New StreamReader(New FileStream(fiInfoFile.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                While Not reader.EndOfStream
+                    Dim dataLine = reader.ReadLine()
                     currentLine += 1
 
                     If String.IsNullOrWhiteSpace(dataLine) Then

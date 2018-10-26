@@ -1,3 +1,4 @@
+Imports System.Linq
 Imports Protein_Importer
 
 Public Class clsAddAnnotationType
@@ -64,13 +65,17 @@ Public Class clsAddAnnotationType
 
     End Sub
 
-    Private Function GetDisplayName(AuthorityID As Integer, typeName As String) As String
+    Private Function GetDisplayName(authID As Integer, authTypeName As String) As String
         Dim authName As String
-        Dim foundrows As DataRow() = Me.m_Authorities.Select("ID = " & AuthorityID)
+        Dim foundRows = Me.m_Authorities.Select("ID = " & authID).ToList()
 
-        authName = foundrows(0).Item("Display_Name").ToString
+        If (foundRows.Count > 0) Then
+            authName = foundRows(0).Item("Display_Name").ToString()
+        Else
+            authName = "UnknownAuth"
+        End If
 
-        Return authName & " - " & typeName
+        Return authName & " - " & authTypeName
     End Function
 
     Function AddAnnotationType() As Integer

@@ -6,12 +6,12 @@ Imports System.Threading
 Imports PRISM
 Imports ValidateFastaFile
 
-' This program can be used to load one or more FASTA files into the Protein Sequences database
-'
-
+''' <summary>
+''' This program can be used to load one or more FASTA files into the Protein Sequences database
+''' </summary>
 Module modMain
 
-    Public Const PROGRAM_DATE As String = "September 20, 2018"
+    Public Const PROGRAM_DATE As String = "October 24, 2018"
 
     Private mInputFilePath As String
     Private mPreviewMode As Boolean
@@ -22,7 +22,6 @@ Module modMain
 
     Private mQuietMode As Boolean
 
-    Private WithEvents mBulkImporter As clsBulkFastaImporter
     Private mLastProgressReportTime As DateTime
     Private mLastProgressReportValue As Integer
 
@@ -55,34 +54,38 @@ Module modMain
                 intReturnCode = -1
             Else
 
-                mBulkImporter = New clsBulkFastaImporter()
-                mBulkImporter.PreviewMode = mPreviewMode
-                mBulkImporter.ValidationMaxProteinNameLength = mMaxProteinNameLength
+                Dim fastaImporter = New clsBulkFastaImporter With {
+                    .PreviewMode = mPreviewMode,
+                    .ValidationMaxProteinNameLength = mMaxProteinNameLength
+                }
+
+                AddHandler fastaImporter.ProgressUpdate, AddressOf BulkImporter_ProgressChanged
+                AddHandler fastaImporter.ProgressReset, AddressOf BulkImporter_ProgressReset
 
                 ' Data Source=proteinseqs;Initial Catalog=Protein_Sequences
                 Dim proteinSeqsConnectionString = My.Settings.ProteinSeqsDBConnectStr
                 Dim dmsConnectionString = My.Settings.DMSConnectStr
 
                 If Not String.IsNullOrWhiteSpace(proteinSeqsConnectionString) Then
-                    mBulkImporter.ProteinSeqsConnectionString = proteinSeqsConnectionString
+                    fastaImporter.ProteinSeqsConnectionString = proteinSeqsConnectionString
                 End If
 
                 If Not String.IsNullOrWhiteSpace(dmsConnectionString) Then
-                    mBulkImporter.DMSConnectionString = dmsConnectionString
+                    fastaImporter.DMSConnectionString = dmsConnectionString
                 End If
 
-                mBulkImporter.LogMessagesToFile = mLogMessagesToFile
-                If Not String.IsNullOrEmpty(mLogFilePath) Then mBulkImporter.LogFilePath = mLogFilePath
+                fastaImporter.LogMessagesToFile = mLogMessagesToFile
+                If Not String.IsNullOrEmpty(mLogFilePath) Then fastaImporter.LogFilePath = mLogFilePath
 
                 Dim outputFolderNamePlaceholder As String = String.Empty
                 Dim paramFilePathPlaceholder As String = String.Empty
 
-                If mBulkImporter.ProcessFilesWildcard(mInputFilePath, outputFolderNamePlaceholder, paramFilePathPlaceholder) Then
+                If fastaImporter.ProcessFilesWildcard(mInputFilePath, outputFolderNamePlaceholder, paramFilePathPlaceholder) Then
                     intReturnCode = 0
                 Else
-                    intReturnCode = mBulkImporter.ErrorCode
+                    intReturnCode = fastaImporter.ErrorCode
                     If intReturnCode <> 0 AndAlso Not mQuietMode Then
-                        Console.WriteLine("Error while processing: " & mBulkImporter.GetErrorMessage())
+                        Console.WriteLine("Error while processing: " & fastaImporter.GetErrorMessage())
                     End If
                 End If
 
@@ -210,7 +213,7 @@ Module modMain
 
     End Sub
 
-    Private Sub mBulkImporter_ProgressChanged(taskDescription As String, percentComplete As Single) Handles mBulkImporter.ProgressUpdate
+    Private Sub BulkImporter_ProgressChanged(taskDescription As String, percentComplete As Single)
         Const PERCENT_REPORT_INTERVAL = 25
         Const PROGRESS_DOT_INTERVAL_MSEC = 250
 
@@ -229,7 +232,7 @@ Module modMain
         End If
     End Sub
 
-    Private Sub mBulkImporter_ProgressReset() Handles mBulkImporter.ProgressReset
+    Private Sub BulkImporter_ProgressReset()
         mLastProgressReportTime = DateTime.UtcNow
         mLastProgressReportValue = 0
     End Sub

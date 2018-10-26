@@ -59,7 +59,7 @@ Public Class clsExportProteinsFASTA
 
             Dim counterMax As Integer = Proteins.ProteinCount
             Dim counter As Integer
-            Dim cntrlFinder = New Regex("[\x00-\x1F\x7F-\xFF]", RegexOptions.Compiled)
+            Dim hexCodeFinder = New Regex("[\x00-\x1F\x7F-\xFF]", RegexOptions.Compiled)
 
 
             Dim EventTriggerThresh As Integer
@@ -85,7 +85,7 @@ Public Class clsExportProteinsFASTA
                 End If
 
                 proteinLength = tmpSeq.Length
-                tmpDesc = cntrlFinder.Replace(tmpPC.Description, " ")
+                tmpDesc = hexCodeFinder.Replace(tmpPC.Description, " ")
 
 
                 sw.WriteLine((">" & tmpPC.Reference & " " & tmpDesc & tmpAltNames).Trim())
@@ -128,10 +128,9 @@ Public Class clsExportProteinsFASTA
       ByRef destinationPath As String) As String
 
         Dim ProteinTable As DataTable
-        Dim writtenProteinCount As Integer
 
         For Each ProteinTable In ProteinTables.Tables
-            writtenProteinCount = WriteFromDatatable(ProteinTable, destinationPath)
+            WriteFromDataTable(ProteinTable, destinationPath)
         Next
 
         Return FinalizeFile(destinationPath)
@@ -142,10 +141,8 @@ Public Class clsExportProteinsFASTA
       ProteinTable As DataTable,
       ByRef destinationPath As String) As String
 
-        Dim writtenProteinCount As Integer
-
         If ProteinTable.Rows.Count > 0 Then
-            writtenProteinCount = WriteFromDatatable(ProteinTable, destinationPath)
+            WriteFromDataTable(ProteinTable, destinationPath)
         Else
             Return FinalizeFile(destinationPath)
         End If
@@ -154,7 +151,7 @@ Public Class clsExportProteinsFASTA
 
     End Function
 
-    Function WriteFromDatatable(proteinTable As DataTable, destinationPath As String) As Integer
+    Function WriteFromDataTable(proteinTable As DataTable, destinationPath As String) As Integer
 
         Const REQUIRED_SIZE_MB = 150
 
@@ -162,9 +159,7 @@ Public Class clsExportProteinsFASTA
         Dim counter As Integer
         Dim proteinsWritten = 0
 
-        Dim cntrlFinder = New Regex("[\x00-\x1F\x7F-\xFF]", RegexOptions.Compiled)
-        Dim dr As DataRow
-        Dim foundRows() As DataRow
+        Dim hexCodeFinder = New Regex("[\x00-\x1F\x7F-\xFF]", RegexOptions.Compiled)
 
         Dim tmpAltNames As String = String.Empty
         Dim EventTriggerThresh As Integer
@@ -184,7 +179,7 @@ Public Class clsExportProteinsFASTA
         End If
 
         ' Open the output file for append
-        Using sw = New StreamWriter(New FileStream(destinationPath, FileMode.Append, FileAccess.Write, FileShare.Read))
+        Using writer = New StreamWriter(New FileStream(destinationPath, FileMode.Append, FileAccess.Write, FileShare.Read))
 
             'OnDetailedExportStart("Writing: " + proteinTable.TableName)
 
@@ -195,10 +190,10 @@ Public Class clsExportProteinsFASTA
                 EventTriggerThresh = CInt(counterMax / 25)
             End If
 
-            foundRows = proteinTable.Select("")
+            Dim foundRows = proteinTable.Select("")
 
-            For Each dr In foundRows
-                Dim tmpSeq = m_ExportComponent.SequenceExtender(dr.Item("Sequence").ToString, proteinTable.Rows.Count)
+            For Each currentRow In foundRows
+                Dim tmpSeq = m_ExportComponent.SequenceExtender(currentRow.Item("Sequence").ToString, proteinTable.Rows.Count)
 
                 counter += 1
 
@@ -207,14 +202,14 @@ Public Class clsExportProteinsFASTA
                 End If
 
                 Dim proteinLength = tmpSeq.Length
-                Dim tmpDesc = cntrlFinder.Replace(dr.Item("Description").ToString, " ")
-                Dim tmpName = m_ExportComponent.ReferenceExtender(dr.Item("Name").ToString)
+                Dim tmpDesc = hexCodeFinder.Replace(currentRow.Item("Description").ToString, " ")
+                Dim tmpName = m_ExportComponent.ReferenceExtender(currentRow.Item("Name").ToString)
 
-                sw.WriteLine((">" & tmpName & " " & tmpDesc & tmpAltNames).Trim())
+                writer.WriteLine((">" & tmpName & " " & tmpDesc & tmpAltNames).Trim())
 
                 For proteinPosition = 1 To proteinLength Step m_seqLineLength
                     Dim seqLinePortion = Mid(tmpSeq, proteinPosition, m_seqLineLength)
-                    sw.WriteLine(seqLinePortion)
+                    writer.WriteLine(seqLinePortion)
                 Next
 
                 proteinsWritten += 1

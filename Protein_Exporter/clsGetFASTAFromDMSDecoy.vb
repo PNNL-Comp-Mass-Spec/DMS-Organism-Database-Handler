@@ -27,19 +27,19 @@ Public Class clsGetFASTAFromDMSDecoy
     Overloads Overrides Function ExportFASTAFile(
         protCollectionList As List(Of String),
         destinationFolderPath As String,
-        AlternateAuthorityID As Integer,
-        PadWithPrimaryAnnotation As Boolean) As String
+        alternateAnnotationTypeID As Integer,
+        padWithPrimaryAnnotation As Boolean) As String
 
         Dim fwdFilePath As String
         Dim revFilePath As String
 
         MyBase.ExportFASTAFile(protCollectionList,
-                               destinationFolderPath, AlternateAuthorityID, PadWithPrimaryAnnotation)
+                               destinationFolderPath, alternateAnnotationTypeID, padWithPrimaryAnnotation)
 
         fwdFilePath = FullOutputPath
 
         m_RevGenerator.ExportFASTAFile(protCollectionList,
-                                          destinationFolderPath, AlternateAuthorityID, PadWithPrimaryAnnotation)
+                                       destinationFolderPath, alternateAnnotationTypeID, padWithPrimaryAnnotation)
 
         revFilePath = m_RevGenerator.FullOutputPath
 

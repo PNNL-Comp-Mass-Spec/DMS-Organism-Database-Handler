@@ -62,22 +62,20 @@ Public Class clsTransTableHandler
 
         dba = New TableManipulationBase.clsDBTask(m_ConnectionString, True)
 
-        Dim EntrySQL As String = "SELECT * FROM " & clsTransTableHandler.EntriesTableName
+        Dim EntrySQL As String = "SELECT * FROM " & EntriesTableName
         Dim entryDA = New SqlClient.SqlDataAdapter(EntrySQL, dba.Connection)
 
         m_Translation_Entries = dba.GetTable(EntrySQL, entryDA)
 
 
-
-        Dim idSQL As String = "SELECT * FROM " & clsTransTableHandler.IDTableName
+        Dim idSQL As String = "SELECT * FROM " & IDTableName
         Dim idDA = New SqlClient.SqlDataAdapter(idSQL, dba.Connection)
 
         m_Translation_Tables = dba.GetTable(idSQL, idDA)
 
 
-
         'Try
-        fi = New System.IO.FileInfo(filePath)
+        fi = New IO.FileInfo(filePath)
         If (fi.Exists) Then
             tr = fi.OpenText
             tmpLineCache = tr.ReadLine
@@ -116,13 +114,13 @@ Public Class clsTransTableHandler
     Private Sub SyncLocalToDMS()
         Dim dba As TableManipulationBase.IGetSQLData = New TableManipulationBase.clsDBTask(m_ConnectionString)
 
-        Dim dmsDA As SqlClient.SqlDataAdapter = New SqlClient.SqlDataAdapter("SELECT * FROM " & clsTransTableHandler.EntriesTableName, dba.Connection)
-        Dim dmsCB As SqlClient.SqlCommandBuilder = New SqlClient.SqlCommandBuilder(dmsDA)
+        Dim dmsDA = New SqlClient.SqlDataAdapter("SELECT * FROM " & clsTransTableHandler.EntriesTableName, dba.Connection)
+        Dim dmsCB = New SqlClient.SqlCommandBuilder(dmsDA)
 
         dmsCB.QuotePrefix = "["
         dmsCB.QuoteSuffix = "]"
 
-        Dim dmsDS As DataSet = New DataSet
+        Dim dmsDS = New DataSet
 
         dmsDA.Fill(dmsDS, clsTransTableHandler.EntriesTableName)
 
@@ -145,8 +143,8 @@ Public Class clsTransTableHandler
         Dim tmp As String
         Dim tmpStartPos As Integer
 
-        Dim trimString As String = " ,"""
-        Dim trimChar As Char() = trimString.ToCharArray
+        Dim trimString = " ,"""
+        Dim trimChars As Char() = trimString.ToCharArray()
 
         Dim s As String
         For Each s In rawEntryCollection
@@ -156,7 +154,7 @@ Public Class clsTransTableHandler
                     tmp = s.TrimStart
                     tmpStartPos = InStr(tmp, " ") + 1
                     tmp = Mid(tmp, tmpStartPos)
-                    tmp = tmp.Trim(trimChar)
+                    tmp = tmp.Trim(trimChars)
                     tmpNameList = tmp.Split(";".ToCharArray)
                     For Each tmpName In tmpNameList
                         nameList.Add(tmpName)
@@ -165,18 +163,18 @@ Public Class clsTransTableHandler
                 Case "id "
                     tmp = s.TrimStart
                     tmp = Mid(tmp, InStr(tmp, " ") + 1)
-                    tmp = tmp.TrimEnd(trimChar)
+                    tmp = tmp.TrimEnd(trimChars)
                     id = CInt(tmp)
                 Case "ncb"
                     tmp = s.TrimStart
                     tmpStartPos = InStr(tmp, """") + 1
                     tmp = Mid(tmp, tmpStartPos)
-                    tmp = tmp.TrimEnd(trimChar)
+                    tmp = tmp.TrimEnd(trimChars)
                     AAList = tmp
                 Case "snc"
                     tmp = s.TrimStart
                     tmp = Mid(tmp, tmpStartPos)
-                    tmp = tmp.TrimEnd(trimChar)
+                    tmp = tmp.TrimEnd(trimChars)
                     StartList = tmp
                 Case "-- "
 
@@ -208,7 +206,7 @@ Public Class clsTransTableHandler
         Return tmpString
 
     End Function
-    
+
     Private Function SplitCodonEntries(
         AAString As String,
         StartString As String,

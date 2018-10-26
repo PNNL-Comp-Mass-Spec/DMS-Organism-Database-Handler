@@ -66,9 +66,9 @@ Public Class clsArchiveToFile
           "Archived_File_State_ID <> 3 " &
           "ORDER BY File_Modification_Date DESC"
 
-        Dim tmptable As DataTable = m_TableGetter.GetTable(checkSQL)
+        Dim tmpTable As DataTable = m_TableGetter.GetTable(checkSQL)
         CollectionListHexHash = GenerateHash(proteinCollectionsList + "/" + creationOptionsString)
-        If tmptable.Rows.Count = 0 Then
+        If tmpTable.Rows.Count = 0 Then
             proteinCount = GetProteinCount(sourceFilePath)
 
             archivePath = GenerateArchivePath(
@@ -81,23 +81,23 @@ Public Class clsArchiveToFile
               proteinCollectionID, creationOptionsString, sourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount,
               archivePath, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), archivedFileType), proteinCollectionsList, CollectionListHexHash)
 
-            tmptable = m_TableGetter.GetTable(checkSQL)
+            tmpTable = m_TableGetter.GetTable(checkSQL)
 
         Else
             ' Archived file entry already exists
 
-            ArchivedFileEntryID = CInt(tmptable.Rows(0).Item("Archived_File_ID"))
-            CollectionListHexHashInDB = CStr(tmptable.Rows(0).Item("Collection_List_Hex_Hash"))
-            ProteinCollectionsListFromDB = CStr(tmptable.Rows(0).Item("Protein_Collection_List"))
+            ArchivedFileEntryID = CInt(tmpTable.Rows(0).Item("Archived_File_ID"))
+            CollectionListHexHashInDB = CStr(tmpTable.Rows(0).Item("Collection_List_Hex_Hash"))
+            ProteinCollectionsListFromDB = CStr(tmpTable.Rows(0).Item("Protein_Collection_List"))
 
-            If tmptable.Rows(0).Item("Protein_Collection_List").GetType.Name = "DBNull" OrElse
+            If tmpTable.Rows(0).Item("Protein_Collection_List").GetType.Name = "DBNull" OrElse
              CollectionListHexHashInDB = "" OrElse
              ProteinCollectionsListFromDB <> proteinCollectionsList OrElse
              CollectionListHexHashInDB <> CollectionListHexHash Then
                 RunSP_UpdateFileArchiveEntryCollectionList(ArchivedFileEntryID, proteinCollectionsList, sourceAuthenticationHash, CollectionListHexHash)
             End If
         End If
-        m_Archived_File_Name = tmptable.Rows(0).Item("Archived_File_Path").ToString
+        m_Archived_File_Name = tmpTable.Rows(0).Item("Archived_File_Path").ToString
 
 
         Try
