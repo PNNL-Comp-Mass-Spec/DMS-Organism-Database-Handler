@@ -125,6 +125,17 @@ Module modMain
                     mDestFolder = IO.Path.GetDirectoryName(Reflection.Assembly.GetExecutingAssembly().Location)
                 End If
 
+                If mProteinCollectionList.IndexOf(","c) > 0 AndAlso
+                   mProteinCollectionList.IndexOf(".fasta", StringComparison.OrdinalIgnoreCase) > 0 Then
+                    ConsoleMsgUtils.ShowError("Protein collection list should not have file extension .fasta; edit the list: " & mProteinCollectionList)
+                    Return
+                End If
+
+                If mProteinCollectionList.IndexOf(","c) < 0 AndAlso
+                   mProteinCollectionList.EndsWith(".fasta", StringComparison.OrdinalIgnoreCase) Then
+                    ConsoleMsgUtils.ShowWarning("Auto removing '.fasta' from the protein collection name")
+                    mProteinCollectionList = mProteinCollectionList.Substring(0, mProteinCollectionList.Length - ".fasta".Length)
+                End If
 
                 ' Data Source=proteinseqs;Initial Catalog=Protein_Sequences
                 Dim proteinSeqsConnectionString = My.Settings.ProteinSeqsDBConnectStr
