@@ -1,3 +1,5 @@
+Imports System.Collections.Generic
+
 Public Interface ITransTableImport
     Function GetAllTranslationTableEntries(ASN1_FilePath As String) As DataTable
 
@@ -51,7 +53,7 @@ Public Class clsTransTableHandler
         'Look through a given ASN.1 file and scan for translation table entries
         Dim fi As System.IO.FileInfo
         Dim tr As System.IO.TextReader
-        Dim rawEntry As System.Collections.Specialized.StringCollection
+        Dim rawEntry As List(Of String)
         Dim entryLine As String
         Dim tmpLineCache As String
         Dim checkString As String
@@ -87,7 +89,7 @@ Public Class clsTransTableHandler
                 checkString = Left(tmpLineCache, 2)
                 If checkString <> "--" Then      'not a comment line. Process further
                     If checkString = " {" Then   'Beginning of an entry block
-                        rawEntry = New System.Collections.Specialized.StringCollection
+                        rawEntry = New List(Of String)
                         entryLine = tr.ReadLine
                         Do While Left(entryLine, 2) <> " }"
                             rawEntry.Add(entryLine)
@@ -124,19 +126,17 @@ Public Class clsTransTableHandler
 
         dmsDA.Fill(dmsDS, clsTransTableHandler.EntriesTableName)
 
-
-
     End Sub
 
 
-    Private Sub ProcessTranslationEntry(rawEntryCollection As System.Collections.Specialized.StringCollection)
+    Private Sub ProcessTranslationEntry(rawEntryCollection As List(Of String))
         Dim id As Integer
         Dim AAList As String = String.Empty
         Dim StartList As String = String.Empty
         Dim Base1List As String = String.Empty
         Dim Base2List As String = String.Empty
         Dim Base3List As String = String.Empty
-        Dim nameList As New System.Collections.Specialized.StringCollection
+        Dim nameList As New List(Of String)
         Dim tmpNameList() As String
         Dim tmpName As String
 
@@ -213,7 +213,7 @@ Public Class clsTransTableHandler
         Base1List As String,
         Base2List As String,
         Base3List As String,
-        NameList As System.Collections.Specialized.StringCollection,
+        NameList As List(Of String),
         ID As Integer) As Boolean
 
         'Check for length consistency

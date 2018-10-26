@@ -2,6 +2,7 @@ Option Strict On
 
 Imports System.Collections.Generic
 Imports System.IO
+Imports System.Linq
 Imports System.Security.Principal
 Imports System.Text
 Imports System.Text.RegularExpressions
@@ -141,11 +142,13 @@ Public Class clsGetFASTAFromDMSForward
 
         Dim user As New WindowsPrincipal(WindowsIdentity.GetCurrent)
         Dim user_ID As String = user.Identity.Name
-        Dim collectionPassphrases As Hashtable = Nothing
+
+        ' Dictionary mapping protein collection name to the associated passphrase
+        Dim proteinCollectionPassphrases = New Dictionary(Of String, String)
 
         Dim collectionNameList As String = String.Empty
 
-        ' Check each collectionname for encryption of contents
+        ' Check each collection name for encryption of contents
         For Each nameString As String In protCollectionList
             encCheckRows = m_CollectionsCache.Select("Filename = '" & nameString & "' AND Contents_Encrypted > 0")
 
@@ -164,10 +167,7 @@ Public Class clsGetFASTAFromDMSForward
                      "WHERE Protein_Collection_ID = " & tmpID.ToString
                     passPhraseTable = m_TableGrabber.GetTable(passPhraseSQL)
 
-                    If collectionPassphrases Is Nothing Then
-                        collectionPassphrases = New Hashtable
-                    End If
-                    collectionPassphrases.Add(nameString, passPhraseTable.Rows(0).Item("Passphrase").ToString)
+                    proteinCollectionPassphrases.Add(nameString, passPhraseTable.Rows(0).Item("Passphrase").ToString)
                 Else
                     Throw New Exception("User " & user_ID & " does not have access to the encrypted collection '" & nameString & "'")
                 End If
@@ -257,19 +257,19 @@ Public Class clsGetFASTAFromDMSForward
 
                 collectionTable = m_TableGrabber.GetTable(collectionSQL)
 
-                If Not collectionPassphrases Is Nothing Then
-                    If collectionPassphrases.ContainsKey(trueName) Then
+                Dim passPhraseForCollection = ""
+                If proteinCollectionPassphrases.TryGetValue(trueName, passPhraseForCollection) Then
 
-                        m_RijndaelDecryption = New clsRijndaelEncryptionHandler(collectionPassphrases.Item(trueName).ToString)
-                        For Each decryptionRow In collectionTable.Rows
-                            cipherSeq = decryptionRow.Item("Sequence").ToString
-                            clearSeq = m_RijndaelDecryption.Decrypt(cipherSeq)
-                            decryptionRow.Item("Sequence") = clearSeq
-                            decryptionRow.AcceptChanges()
-                        Next
-                    End If
+                    m_RijndaelDecryption = New clsRijndaelEncryptionHandler(passPhraseForCollection)
+                    For Each decryptionRow In collectionTable.Rows
+                        cipherSeq = decryptionRow.Item("Sequence").ToString()
+                        clearSeq = m_RijndaelDecryption.Decrypt(cipherSeq)
+                        decryptionRow.Item("Sequence") = clearSeq
+                        decryptionRow.AcceptChanges()
+                    Next
                 End If
 
+                Dim tableName As String
                 If collectionLength < 10000 Then
                     tableName = trueName
                 Else

@@ -1,3 +1,4 @@
+Imports System.Collections.Generic
 Imports System.Text.RegularExpressions
 
 Public Interface IImportAnnotations
@@ -12,9 +13,6 @@ Public MustInherit Class clsImportAnnotationsBase
     Public Sub New()
 
     End Sub
-
-
-
 
 End Class
 
@@ -154,7 +152,7 @@ Public Class GeneOntologyListOBO
 
 
     'Send it the text block from a single entry
-    Sub New(GOEntryText As System.Collections.Specialized.StringCollection)
+    Sub New(GOEntryText As List(Of String))
 
     End Sub
 
@@ -162,7 +160,7 @@ Public Class GeneOntologyListOBO
 
     End Sub
 
-    Protected Sub ProcessEntry(EntryCollection As System.Collections.Specialized.StringCollection)
+    Protected Sub ProcessEntry(EntryCollection As List(Of String))
 
     End Sub
 
