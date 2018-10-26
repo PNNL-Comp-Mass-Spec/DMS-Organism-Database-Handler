@@ -11,7 +11,7 @@ Imports ValidateFastaFile
 ''' </summary>
 Module modMain
 
-    Public Const PROGRAM_DATE As String = "October 24, 2018"
+    Public Const PROGRAM_DATE As String = "October 25, 2018"
 
     Private mInputFilePath As String
     Private mPreviewMode As Boolean
@@ -28,9 +28,9 @@ Module modMain
     Public Function Main() As Integer
         ' Returns 0 if no error, error code if an error
 
-        Dim intReturnCode As Integer
+        Dim returnCode As Integer
         Dim commandLineParser As New clsParseCommandLine()
-        Dim blnProceed As Boolean
+        Dim proceed As Boolean
 
         ' Initialize the options
         mInputFilePath = String.Empty
@@ -41,17 +41,17 @@ Module modMain
         mLogFilePath = String.Empty
 
         Try
-            blnProceed = False
+            proceed = False
             If commandLineParser.ParseCommandLine Then
-                If SetOptionsUsingCommandLineParameters(commandLineParser) Then blnProceed = True
+                If SetOptionsUsingCommandLineParameters(commandLineParser) Then proceed = True
             End If
 
-            If Not blnProceed OrElse
+            If Not proceed OrElse
                commandLineParser.NeedToShowHelp OrElse
                commandLineParser.ParameterCount + commandLineParser.NonSwitchParameterCount = 0 OrElse
                mInputFilePath.Length = 0 Then
                 ShowProgramHelp()
-                intReturnCode = -1
+                returnCode = -1
             Else
 
                 Dim fastaImporter = New clsBulkFastaImporter With {
@@ -81,10 +81,10 @@ Module modMain
                 Dim paramFilePathPlaceholder As String = String.Empty
 
                 If fastaImporter.ProcessFilesWildcard(mInputFilePath, outputFolderNamePlaceholder, paramFilePathPlaceholder) Then
-                    intReturnCode = 0
+                    returnCode = 0
                 Else
-                    intReturnCode = fastaImporter.ErrorCode
-                    If intReturnCode <> 0 AndAlso Not mQuietMode Then
+                    returnCode = fastaImporter.ErrorCode
+                    If returnCode <> 0 AndAlso Not mQuietMode Then
                         Console.WriteLine("Error while processing: " & fastaImporter.GetErrorMessage())
                     End If
                 End If
@@ -94,20 +94,20 @@ Module modMain
 
         Catch ex As Exception
             ShowErrorMessage("Error occurred in modMain->Main: " & ControlChars.NewLine & ex.Message)
-            intReturnCode = -1
+            returnCode = -1
         End Try
 
-        Return intReturnCode
+        Return returnCode
 
     End Function
 
-    Private Sub DisplayProgressPercent(intPercentComplete As Integer, blnAddCarriageReturn As Boolean)
-        If blnAddCarriageReturn Then
+    Private Sub DisplayProgressPercent(percentComplete As Integer, addCarriageReturn As Boolean)
+        If addCarriageReturn Then
             Console.WriteLine()
         End If
-        If intPercentComplete > 100 Then intPercentComplete = 100
-        Console.Write("Processing: " & intPercentComplete.ToString & "% ")
-        If blnAddCarriageReturn Then
+        If percentComplete > 100 Then percentComplete = 100
+        Console.Write("Processing: " & percentComplete.ToString & "% ")
+        If addCarriageReturn Then
             Console.WriteLine()
         End If
     End Sub
