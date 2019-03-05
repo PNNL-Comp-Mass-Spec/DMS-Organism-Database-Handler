@@ -92,7 +92,7 @@ Public Class clsBulkFastaImporter
 #End Region
 
     Public Sub New()
-        MyBase.mFileDate = "October 19, 2018"
+        MyBase.mFileDate = "March 5, 2019"
         InitializeLocalVariables()
     End Sub
 
