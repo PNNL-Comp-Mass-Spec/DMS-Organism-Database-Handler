@@ -32,7 +32,7 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -80,16 +80,11 @@
   <ItemGroup>
     <Reference Include="FlexibleFileSortUtility, Version=1.0.5610.27179, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Shared Libraries\FlexibleFileSortUtility.dll</HintPath>
+      <HintPath>..\Shared Libraries\NET_4\FlexibleFileSortUtility.dll</HintPath>
     </Reference>
-    <Reference Include="Protein_Exporter">
-      <HintPath>..\Release_DLL\Protein_Exporter.dll</HintPath>
-    </Reference>
-    <Reference Include="Protein_Importer">
-      <HintPath>..\Release_DLL\Protein_Importer.dll</HintPath>
-    </Reference>
-    <Reference Include="Protein_Storage">
-      <HintPath>..\Release_DLL\Protein_Storage.dll</HintPath>
+    <Reference Include="PRISM, Version=2.4.7048.29768, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Shared Libraries\NET_4\PRISM.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -109,9 +104,8 @@
     <Reference Include="TableManipulationBase">
       <HintPath>..\Release_DLL\TableManipulationBase.dll</HintPath>
     </Reference>
-    <Reference Include="ValidateFastaFile, Version=2.1.4834.35819, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Shared Libraries\ValidateFastaFile.dll</HintPath>
+    <Reference Include="ValidateFastaFile">
+      <HintPath>..\Shared Libraries\NET_4\ValidateFastaFile.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -146,9 +140,18 @@
     <Folder Include="My Project\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="PRISM-Library">
-      <Version>2.5.17</Version>
-    </PackageReference>
+    <ProjectReference Include="..\Protein_Exporter\Protein_Exporter.vbproj">
+      <Project>{a698b58b-15b8-4893-81ad-116d57b9b404}</Project>
+      <Name>Protein_Exporter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Protein_Importer\Protein_Importer.vbproj">
+      <Project>{28d5a54e-b47d-41f3-95ab-96c4346ade38}</Project>
+      <Name>Protein_Importer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Protein_Storage\Protein_Storage.vbproj">
+      <Project>{77b1cddc-23d8-4408-8ca3-6fa8a31a975a}</Project>
+      <Name>Protein_Storage</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
