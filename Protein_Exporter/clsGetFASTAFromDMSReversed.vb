@@ -16,7 +16,7 @@ Public Class clsGetFASTAFromDMSReversed
     End Sub
 
     ''' <summary>
-    ''' When true, reverse proteins start with XXX.
+    ''' When true, reverse proteins start with XXX_
     ''' When false, they start with Reversed_
     ''' </summary>
     ''' <returns></returns>
@@ -37,7 +37,7 @@ Public Class clsGetFASTAFromDMSReversed
 
     Overrides Function ReferenceExtender(originalReference As String) As String
         If m_UseXXX Then
-            Return "XXX." + originalReference
+            Return "XXX_" + originalReference
         Else
             Return "Reversed_" + originalReference
         End If
