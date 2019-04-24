@@ -11,11 +11,14 @@ Public Class clsGetFASTAFromDMSDecoy
 
     Public Sub New(
         dbConnectionString As String,
-        databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
+        databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
+        decoyUsesXXX as boolean)
 
         MyBase.New(dbConnectionString, databaseFormatType)
         m_RevGenerator = New clsGetFASTAFromDMSReversed(
-            dbConnectionString, databaseFormatType)
+            dbConnectionString, databaseFormatType) With {
+            .UseXXX = decoyUsesXXX
+            }
     End Sub
 
     ''' <summary>
