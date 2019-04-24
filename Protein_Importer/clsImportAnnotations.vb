@@ -31,75 +31,85 @@ Public Class GeneOntologyEntry
     Private m_SubSet As ArrayList
 
 
-    Property ID() As String
+    Property ID As String
         Get
             Return m_ID
         End Get
-        Set(Value As String)
+        Set
             m_ID = CleanUpLine(Value)
         End Set
     End Property
-    Property Name() As String
+
+    Property Name As String
         Get
             Return m_Name
         End Get
-        Set(Value As String)
+        Set
             m_Name = CleanUpLine(Value)
         End Set
     End Property
-    Property [NameSpace]() As String
+
+    Property [NameSpace] As String
         Get
             Return m_Namespace
         End Get
-        Set(Value As String)
+        Set
             m_Namespace = CleanUpLine(Value)
         End Set
     End Property
-    Property Definition() As String
+
+    Property Definition As String
         Get
             Return m_Definition
         End Get
-        Set(Value As String)
+        Set
             m_Definition = CleanUpLine(Value)
         End Set
     End Property
-    Property Comment() As String
+
+    Property Comment As String
         Get
             Return m_Comment
         End Get
-        Set(Value As String)
+        Set
             m_Comment = CleanUpLine(Value)
         End Set
     End Property
-    Property IsObsolete() As Boolean
+
+    Property IsObsolete As Boolean
         Get
             Return m_IsObsolete
         End Get
-        Set(Value As Boolean)
+        Set
             m_IsObsolete = Value
         End Set
     End Property
-    ReadOnly Property ExactSynonym_List() As ArrayList
+
+    ReadOnly Property ExactSynonym_List As ArrayList
         Get
             Return m_ExactSynonym
         End Get
     End Property
-    ReadOnly Property IsA_List() As ArrayList
+
+    ReadOnly Property IsA_List As ArrayList
         Get
             Return m_IsA
         End Get
     End Property
-    ReadOnly Property XRefAnalog_List() As ArrayList
+
+    ReadOnly Property XRefAnalog_List As ArrayList
         Get
             Return m_XRefAnalog
         End Get
     End Property
-    ReadOnly Property Relationship() As ArrayList
+
+    ReadOnly Property Relationship As ArrayList
         Get
             Return m_Relationship
         End Get
     End Property
-    ReadOnly Property SubSet() As ArrayList
+
+    ReadOnly Property SubSet As ArrayList
         Get
             Return m_SubSet
         End Get
@@ -115,11 +125,11 @@ Public Class GeneOntologyEntry
     Sub Add_XRefAnalog_Entry(XRef As String)
         m_XRefAnalog.Add(XRef)
     End Sub
-    Sub Add_RelationShip_Entry(Relationship As String)
-        m_Relationship.Add(Relationship)
+    Sub Add_RelationShip_Entry(relationshipEntry As String)
+        m_Relationship.Add(relationshipEntry)
     End Sub
-    Sub Add_Subset_Entry(Subset As String)
-        m_SubSet.Add(Subset)
+    Sub Add_Subset_Entry(subsetEntry As String)
+        m_SubSet.Add(subsetEntry)
     End Sub
 
     Private Function CleanUpLine(entryLine As String) As String
@@ -129,9 +139,7 @@ Public Class GeneOntologyEntry
 
 End Class
 
-
 Public Class GeneOntologyListOBO
-
 
 #Region " Regular Expressions "
     Private r_entryHeader As Regex
@@ -147,9 +155,6 @@ Public Class GeneOntologyListOBO
     Private r_RelationshipLine As Regex
     Private r_SubsetLine As Regex
 #End Region
-
-
-
 
     'Send it the text block from a single entry
     Sub New(GOEntryText As List(Of String))

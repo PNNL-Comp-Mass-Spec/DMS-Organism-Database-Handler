@@ -32,8 +32,9 @@ Public Interface IImportProteins
         collectionName As String,
         namingAuthorityID As Integer) As DataTable
 
-    ReadOnly Property CollectionMembers() As Protein_Storage.IProteinStorage
-    ReadOnly Property Authorities() As Hashtable
+    ReadOnly Property CollectionMembers As Protein_Storage.IProteinStorage
+
+    ReadOnly Property Authorities As Hashtable
 
     Event LoadStart(taskTitle As String)
     Event LoadProgress(fractionDone As Double)
@@ -86,22 +87,22 @@ Public Class clsImportHandler
         m_CollectionsList = LoadProteinCollectionNames()
     End Sub
 
-    Protected ReadOnly Property CollectionMembers() As Protein_Storage.IProteinStorage Implements IImportProteins.CollectionMembers
+    Protected ReadOnly Property CollectionMembers As Protein_Storage.IProteinStorage Implements IImportProteins.CollectionMembers
         Get
             Return m_FileContents
         End Get
     End Property
 
-    Protected ReadOnly Property Authorities() As Hashtable Implements IImportProteins.Authorities
+    Protected ReadOnly Property Authorities As Hashtable Implements IImportProteins.Authorities
         Get
             Return m_AuthoritiesList
         End Get
     End Property
 
     Protected Function GetCollectionNameFromID(ProteinCollectionID As Integer) As String
-        Dim foundrows() As DataRow = m_CollectionsList.Select("Protein_Collection_ID = " & CStr(ProteinCollectionID))
-        Dim dr As DataRow = foundrows(0)
-        Dim collectionName As String = CStr(dr.Item("FileName"))
+        Dim foundRows() As DataRow = m_CollectionsList.Select("Protein_Collection_ID = " & CStr(ProteinCollectionID))
+        Dim dr As DataRow = foundRows(0)
+        Dim collectionName = CStr(dr.Item("FileName"))
 
         Return collectionName
     End Function
@@ -134,7 +135,7 @@ Public Class clsImportHandler
     End Function
 
     Protected Function LoadOrganisms() As DataTable Implements IImportProteins.LoadOrganisms
-        Dim orgSQL As String = "SELECT * FROM V_Organism_Picker ORDER BY Short_Name"
+        Dim orgSQL = "SELECT * FROM V_Organism_Picker ORDER BY Short_Name"
         Dim tmpOrgTable As DataTable = m_SQLAccess.GetTable(orgSQL)
 
         Dim dr As DataRow = tmpOrgTable.NewRow
@@ -277,9 +278,8 @@ Public Class clsImportHandler
     End Sub
 
     Protected Function LoadProteinCollections() As DataTable Implements IImportProteins.LoadProteinCollections
-        Dim PCSQL As String
 
-        PCSQL = "SELECT MIN(FileName) AS FileName, Protein_Collection_ID, " &
+        Dim PCSQL = "SELECT MIN(FileName) AS FileName, Protein_Collection_ID, " &
                     "MIN(Organism_ID) AS Organism_ID, MIN(Authority_ID) AS Authority_ID, " &
                     "MIN(Display) AS Display, MIN(Authentication_Hash) AS Authentication_Hash " &
                 "FROM V_Protein_Collections_By_Organism " &
@@ -302,9 +302,8 @@ Public Class clsImportHandler
     End Function
 
     Protected Function LoadProteinCollections(Organism_ID As Integer) As DataTable
-        Dim PCSQL As String
 
-        PCSQL = "SELECT FileName, Protein_Collection_ID, Organism_ID, Authority_ID, Display, Authentication_Hash" &
+        Dim PCSQL = "SELECT FileName, Protein_Collection_ID, Organism_ID, Authority_ID, Display, Authentication_Hash" &
                               " FROM V_Protein_Collections_By_Organism" &
                               " WHERE Organism_ID = " & Organism_ID &
                               " ORDER BY [FileName]"
@@ -350,9 +349,8 @@ Public Class clsImportHandler
         m_CollectionsList = LoadProteinCollections()
 
         If authorityID <= 0 Then
-            Dim foundrows() As DataRow
-            foundrows = m_CollectionsList.Select("Protein_Collection_ID = " & collectionID)
-            authorityID = CInt(foundrows(0).Item("Authority_ID"))
+            Dim foundRows = m_CollectionsList.Select("Protein_Collection_ID = " & collectionID)
+            authorityID = CInt(foundRows(0).Item("Authority_ID"))
 
         End If
 

@@ -33,13 +33,13 @@ Public MustInherit Class clsArchiveOutputFilesBase
         m_Exporter = ExporterModule.ExporterComponent
     End Sub
 
-    Protected ReadOnly Property LastErrorMessage() As String Implements IArchiveOutputFiles.LastErrorMessage
+    Protected ReadOnly Property LastErrorMessage As String Implements IArchiveOutputFiles.LastErrorMessage
         Get
             Return m_LastError
         End Get
     End Property
 
-    Protected ReadOnly Property Archived_File_Name() As String Implements IArchiveOutputFiles.Archived_File_Name
+    Protected ReadOnly Property Archived_File_Name As String Implements IArchiveOutputFiles.Archived_File_Name
         Get
             Return m_Archived_File_Name
         End Get

@@ -9,8 +9,8 @@ Public Interface IArchiveOutputFiles
         dynamic = 2
     End Enum
 
-    ReadOnly Property LastErrorMessage() As String
-    ReadOnly Property Archived_File_Name() As String
+    ReadOnly Property LastErrorMessage As String
+    ReadOnly Property Archived_File_Name As String
 
     Event ArchiveStart()
     Event SubTaskStart(TaskDescription As String)

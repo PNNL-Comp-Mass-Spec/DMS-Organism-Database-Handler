@@ -405,29 +405,15 @@ Public Class frmExtractFromFlatfile
     End Sub
 
     Private Class AuthorityContainer
-        Private ReadOnly m_AuthName As String
-        Private m_AuthID As Integer
+        Sub New(AuthorityName As String, AuthorityID As Integer)
 
-        Sub New(
-            AuthorityName As String,
-            AuthorityID As Integer)
-
-            Me.m_AuthID = AuthorityID
-            Me.m_AuthName = AuthorityName
-
+            Me.AuthorityID = AuthorityID
+            Me.AuthorityName = AuthorityName
         End Sub
 
-        ReadOnly Property AuthorityName() As String
-            Get
-                Return Me.m_AuthName
-            End Get
-        End Property
+        Public ReadOnly Property AuthorityName As String
 
-        ReadOnly Property AuthorityID() As Integer
-            Get
-                Return Me.m_AuthID
-            End Get
-        End Property
+        Public ReadOnly Property AuthorityID As Integer
 
     End Class
 

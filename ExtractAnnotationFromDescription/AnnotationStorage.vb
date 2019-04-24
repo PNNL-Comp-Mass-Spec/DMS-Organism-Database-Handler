@@ -69,7 +69,7 @@ Friend Class AnnotationStorage
         Return Me.m_GlobalProteinNameList
     End Function
 
-    ReadOnly Property GroupCount() As Integer
+    ReadOnly Property GroupCount As Integer
         Get
             Return Me.m_AnnotationGroups.Count
         End Get
@@ -85,7 +85,7 @@ Friend Class AnnotationStorage
         Get
             Return Me.m_AnnotationGroups.Item(GroupID).AnnotationAuthorityID
         End Get
-        Set(Value As Integer)
+        Set
             Me.m_AnnotationGroups.Item(GroupID).AnnotationAuthorityID = Value
         End Set
     End Property
@@ -94,13 +94,12 @@ Friend Class AnnotationStorage
         Get
             Return Me.GetGroup(GroupID).GroupName
         End Get
-        Set(Value As String)
+        Set
             Dim oldName As String
             Dim group As AnnotationGroup = Me.GetGroup(GroupID)
             oldName = group.GroupName
             group.GroupName = Value
             Me.m_AnnotationGroups.Item(GroupID) = group
-            group = Nothing
             Me.m_GroupNameLookup.Remove(oldName)
             Me.m_GroupNameLookup.Item(Value) = GroupID
         End Set

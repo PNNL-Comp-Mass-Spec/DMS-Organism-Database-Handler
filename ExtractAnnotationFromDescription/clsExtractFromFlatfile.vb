@@ -21,19 +21,19 @@ Friend Class clsExtractFromFlatfile
         Me.m_PSConnectionString = PSConnectionString
     End Sub
     
-    ReadOnly Property FileContents() As List(Of Hashtable)
+    ReadOnly Property FileContents As List(Of Hashtable)
         Get
             Return Me.m_FileContents
         End Get
     End Property
 
-    ReadOnly Property Annotations() As AnnotationStorage
+    ReadOnly Property Annotations As AnnotationStorage
         Get
             Return Me.m_AnnotationStorage
         End Get
     End Property
 
-    ReadOnly Property ColumnNames() As Hashtable
+    ReadOnly Property ColumnNames As Hashtable
         Get
             Return Me.m_ColumnNameLookup
         End Get

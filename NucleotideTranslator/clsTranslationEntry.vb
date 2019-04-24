@@ -16,19 +16,19 @@ Friend Class clsTranslationEntry
         Me.m_TranslatedAA = TranslatedAA
     End Sub
 
-    Friend ReadOnly Property BaseLetter() As String
+    Friend ReadOnly Property BaseLetter As String
         Get
             Return Me.m_Base
         End Get
     End Property
 
-    Friend ReadOnly Property TranslationEntries() As ArrayList
+    Friend ReadOnly Property TranslationEntries As ArrayList
         Get
             Return Me.m_TransEntries
         End Get
     End Property
 
-    Friend ReadOnly Property TranslatedAA() As String
+    Friend ReadOnly Property TranslatedAA As String
         Get
             Return Me.m_TranslatedAA
         End Get

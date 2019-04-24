@@ -80,7 +80,7 @@ Public Class clsBulkFastaImporter
 
     Public Property DMSConnectionString As String
 
-    Public Property PreviewMode() As Boolean
+    Public Property PreviewMode As Boolean
 
     Public Property ProteinSeqsConnectionString As String
 

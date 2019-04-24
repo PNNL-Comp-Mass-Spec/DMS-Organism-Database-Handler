@@ -6,7 +6,7 @@ Imports SequenceInfoCalculator
 
 Public Class FASTAReaderNotInitializedException
     Inherits System.ApplicationException
-    Public Overrides ReadOnly Property Message() As String
+    Public Overrides ReadOnly Property Message As String
         Get
             Return "The FASTAReader instance has not been properly initialized."
         End Get
@@ -47,7 +47,7 @@ Public Class FASTAReader
 
     End Sub
 
-    Protected ReadOnly Property LastErrorMessage() As String Implements IReadProteinImportFile.LastErrorMessage
+    Protected ReadOnly Property LastErrorMessage As String Implements IReadProteinImportFile.LastErrorMessage
         Get
             Return m_LastError
         End Get

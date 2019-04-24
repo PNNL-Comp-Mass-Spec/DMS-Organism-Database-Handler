@@ -1,5 +1,5 @@
 Public Interface IReadProteinImportFile
-    ReadOnly Property LastErrorMessage() As String
+    ReadOnly Property LastErrorMessage As String
 
     Event LoadStart(taskTitle As String)
     Event LoadEnd()
