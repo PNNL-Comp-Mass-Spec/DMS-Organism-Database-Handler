@@ -130,7 +130,7 @@ Friend Class clsAnnotationInfo
             End If
         End Sub
 
-        ReadOnly Property PrimaryName() As String
+        ReadOnly Property PrimaryName As String
             Get
                 Return Me.Names(0).ToString
             End Get

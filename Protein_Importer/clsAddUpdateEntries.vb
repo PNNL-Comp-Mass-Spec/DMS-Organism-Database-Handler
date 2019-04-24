@@ -172,7 +172,7 @@ Public Class clsAddUpdateEntries
         Get
             Return m_MaxProteinNameLength
         End Get
-        Set(value As Integer)
+        Set
             m_MaxProteinNameLength = value
         End Set
     End Property

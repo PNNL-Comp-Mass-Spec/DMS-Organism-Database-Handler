@@ -18,13 +18,13 @@ Friend Class clsFileCreationOptions
         m_TableGetter = New clsDBTask(m_PSConnectionString, True)
     End Sub
 
-    ReadOnly Property SequenceDirection() As IGetFASTAFromDMS.SequenceTypes
+    ReadOnly Property SequenceDirection As IGetFASTAFromDMS.SequenceTypes
         Get
             Return m_SeqDirection
         End Get
     End Property
 
-    ReadOnly Property FileFormatType() As IGetFASTAFromDMS.DatabaseFormatTypes
+    ReadOnly Property FileFormatType As IGetFASTAFromDMS.DatabaseFormatTypes
         Get
             Return m_FileType
         End Get

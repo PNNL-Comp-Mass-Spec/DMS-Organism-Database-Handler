@@ -59,7 +59,7 @@ Public Class clsGetFASTAFromDMSForward
     Event FileGenerationProgress(statusMsg As String, fractionDone As Double)
     Event FileGenerationStarted(taskMsg As String)
 
-    Property FullOutputPath() As String
+    Property FullOutputPath As String
         Get
             Return m_CurrentFullOutputPath
         End Get
@@ -69,7 +69,7 @@ Public Class clsGetFASTAFromDMSForward
     End Property
 
     ' Unused
-    'ReadOnly Property ArchivalName() As String
+    'ReadOnly Property ArchivalName As String
     '    Get
     '        Return m_CurrentArchiveFileName
     '    End Get

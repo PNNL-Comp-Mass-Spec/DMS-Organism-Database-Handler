@@ -20,11 +20,11 @@ Public Class clsGetFASTAFromDMSReversed
     ''' When false, they start with Reversed_
     ''' </summary>
     ''' <returns></returns>
-    Public Property UseXXX() As Boolean
+    Public Property UseXXX As Boolean
         Get
             Return m_UseXXX
         End Get
-        Set(value As Boolean)
+        Set
             m_UseXXX = True
         End Set
     End Property

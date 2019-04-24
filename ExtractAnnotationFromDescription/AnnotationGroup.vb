@@ -12,11 +12,11 @@ Friend Class AnnotationGroup
 
     Public Property AnnotationAuthorityID As Integer
 
-    Property XRefDelimiter() As String
+    Property XRefDelimiter As String
         Get
             Return Me.m_Delimiter
         End Get
-        Set(value As String)
+        Set
             Me.m_Delimiter = value
         End Set
     End Property

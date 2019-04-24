@@ -83,7 +83,6 @@ Public Class clsBatchUploadFromFileList
             m_Uploader.InitialSetup()
             m_Uploader.BatchUpload(uiList)
 
-
         End If
 
     End Sub
@@ -179,24 +178,16 @@ Public Class clsBatchUploadFromFileList
 
 
     Friend Structure FileListInfo
-        Private m_FileName As String
-        Private m_FullFilePath As String
-        Private m_Organism As String
-        Private m_OrganismID As Integer
-        Private m_NamingAuthorityID As Integer
-        Private m_AnnotationType As String
-        Private m_AnnotationTypeID As Integer
-
         Sub New(
             FileName As String,
             FullFilePath As String,
             OrganismName As String,
             OrganismID As Integer)
 
-            m_FileName = FileName
-            m_FullFilePath = FullFilePath
-            m_Organism = OrganismName
-            m_OrganismID = OrganismID
+            Me.FileName = FileName
+            Me.FullFilePath = FullFilePath
+            Me.OrganismName = OrganismName
+            Me.OrganismID = OrganismID
 
         End Sub
 
@@ -208,77 +199,29 @@ Public Class clsBatchUploadFromFileList
             AnnotationTypeID As Integer,
             NamingAuthorityID As Integer)
 
-            m_FileName = FileName
-            m_FullFilePath = FullFilePath
-            m_Organism = OrganismName
-            m_OrganismID = OrganismID
-            m_AnnotationTypeID = AnnotationTypeID
-            m_NamingAuthorityID = NamingAuthorityID
+            Me.FileName = FileName
+            Me.FullFilePath = FullFilePath
+            Me.OrganismName = OrganismName
+            Me.OrganismID = OrganismID
+            Me.AnnotationTypeID = AnnotationTypeID
+            Me.NamingAuthorityID = NamingAuthorityID
 
         End Sub
 
-        Property FileName() As String
-            Get
-                Return m_FileName
-            End Get
-            Set(Value As String)
-                m_FileName = Value
-            End Set
-        End Property
+        Property FileName As String
 
-        Property FullFilePath() As String
-            Get
-                Return m_FullFilePath
-            End Get
-            Set(Value As String)
-                m_FullFilePath = Value
-            End Set
-        End Property
+        Property FullFilePath As String
 
-        Property OrganismName() As String
-            Get
-                Return m_Organism
-            End Get
-            Set(Value As String)
-                m_Organism = Value
-            End Set
-        End Property
+        Property OrganismName As String
 
-        Property OrganismID() As Integer
-            Get
-                Return m_OrganismID
-            End Get
-            Set(Value As Integer)
-                m_OrganismID = Value
-            End Set
-        End Property
+        Property OrganismID As Integer
 
-        Property NamingAuthorityID() As Integer
-            Get
-                Return m_NamingAuthorityID
-            End Get
-            Set(Value As Integer)
-                m_NamingAuthorityID = Value
-            End Set
-        End Property
+        Property NamingAuthorityID As Integer
 
-        Property AnnotationTypeID() As Integer
-            Get
-                Return m_AnnotationTypeID
-            End Get
-            Set(Value As Integer)
-                m_AnnotationTypeID = Value
-            End Set
-        End Property
+        Property AnnotationTypeID As Integer
 
-        Property AnnotationType() As String
-            Get
-                Return m_AnnotationType
-            End Get
-            Set(Value As String)
-                m_AnnotationType = Value
-            End Set
-        End Property
+        Public Property AnnotationType As String
+
     End Structure
 
 End Class
