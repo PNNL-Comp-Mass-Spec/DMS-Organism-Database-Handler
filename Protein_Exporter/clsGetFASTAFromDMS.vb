@@ -45,6 +45,8 @@ Public Class clsGetFASTAFromDMS
     Protected WithEvents m_FileTools As FileTools
     Protected m_LastLockQueueWaitTimeLog As DateTime
 
+    Public Property DecoyProteinsUseXXX As Boolean = True
+
     Public ReadOnly Property ExporterComponent As clsGetFASTAFromDMSForward
         Get
             Return m_Getter
@@ -81,15 +83,17 @@ Public Class clsGetFASTAFromDMS
     ''' <param name="dbConnectionString"></param>
     ''' <param name="databaseFormatType"></param>
     ''' <param name="outputSequenceType"></param>
+    ''' <param name="decoyUsesXXX">When true, decoy proteins start with XXX_ instead of Reversed_</param>
     Public Sub New(
       dbConnectionString As String,
       databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
-      outputSequenceType As IGetFASTAFromDMS.SequenceTypes)
+      outputSequenceType As IGetFASTAFromDMS.SequenceTypes,
+      Optional decoyUsesXXX As Boolean = True)
 
         m_SHA1Provider = New SHA1Managed()
         m_PSConnectionString = dbConnectionString
 
-        ClassSelector(dbConnectionString, databaseFormatType, outputSequenceType)
+        ClassSelector(dbConnectionString, databaseFormatType, outputSequenceType, decoyUsesXXX)
 
         m_FileTools = New FileTools()
         RegisterEvents(m_FileTools)
@@ -99,7 +103,8 @@ Public Class clsGetFASTAFromDMS
     Private Sub ClassSelector(
       dbConnectionString As String,
       databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
-      outputSequenceType As IGetFASTAFromDMS.SequenceTypes)
+      outputSequenceType As IGetFASTAFromDMS.SequenceTypes,
+      decoyUsesXXX As Boolean)
 
         m_DatabaseFormatType = databaseFormatType
         m_OutputSequenceType = outputSequenceType
@@ -123,7 +128,8 @@ Public Class clsGetFASTAFromDMS
 
             Case IGetFASTAFromDMS.SequenceTypes.decoy
                 m_Getter = New clsGetFASTAFromDMSDecoy(
-                    dbConnectionString, databaseFormatType)
+                    dbConnectionString, databaseFormatType, decoyUsesXXX)
+
                 m_CollectionType = IArchiveOutputFiles.CollectionTypes.dynamic
 
             Case IGetFASTAFromDMS.SequenceTypes.decoyX
@@ -536,7 +542,7 @@ Public Class clsGetFASTAFromDMS
         ' We're finally ready to generate the .Fasta file
 
         ' Initialize the ClassSelector
-        ClassSelector(m_PSConnectionString, databaseFormatType, outputSequenceType)
+        ClassSelector(m_PSConnectionString, databaseFormatType, outputSequenceType, DecoyProteinsUseXXX)
 
         ' If more than one protein collection, then we're generating a dynamic protein collection
         If protCollectionList.Count > 1 Then
