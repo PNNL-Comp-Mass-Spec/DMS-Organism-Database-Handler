@@ -22,28 +22,25 @@ Public Class clsGetFASTAFromDMS
     Public Const LOCK_FILE_PROGRESS_TEXT As String = "Lockfile"
     Public Const HASHCHECK_SUFFIX As String = ".hashcheck"
 
-    Protected WithEvents m_Getter As clsGetFASTAFromDMSForward
-    Protected m_Archiver As IArchiveOutputFiles
-    Protected m_DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes
-    Protected m_OutputSequenceType As IGetFASTAFromDMS.SequenceTypes
-    Protected m_CollectionType As IArchiveOutputFiles.CollectionTypes
-    Protected m_FinalOutputPath As String
-    ' Unused: Protected m_ArchivalName As String
-    ' Unused: Protected m_CurrentFileProteinCount As Integer
+    Private WithEvents m_Getter As clsGetFASTAFromDMSForward
+    Private m_Archiver As IArchiveOutputFiles
+    Private m_DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes
+    Private m_OutputSequenceType As IGetFASTAFromDMS.SequenceTypes
+    Private m_CollectionType As IArchiveOutputFiles.CollectionTypes
+    Private m_FinalOutputPath As String
 
     ''' <summary>
     ''' Protein sequences database connection string
     ''' </summary>
     ''' <remarks>Empty string if offline and only planning to use ValidateMatchingHash</remarks>
-    Protected m_PSConnectionString As String
+    Private ReadOnly m_PSConnectionString As String
 
-    Protected m_ArchiveCollectionList As List(Of String)
-    Protected m_TableGetter As IGetSQLData
-    Protected m_SHA1Provider As SHA1Managed
-    Protected m_WaitingForLockFile As Boolean = False
+    Private m_ArchiveCollectionList As List(Of String)
+    Private m_TableGetter As IGetSQLData
+    Private ReadOnly m_SHA1Provider As SHA1Managed
 
-    Protected WithEvents m_FileTools As FileTools
-    Protected m_LastLockQueueWaitTimeLog As DateTime
+    Private WithEvents m_FileTools As FileTools
+    Private m_LastLockQueueWaitTimeLog As DateTime
 
     Public Property DecoyProteinsUseXXX As Boolean = True
 
@@ -70,7 +67,7 @@ Public Class clsGetFASTAFromDMS
     End Sub
 
     ''' <summary>
-    ''' Constructor when the Protein Sequences database is available
+    '''  Constructor that takes connection string, assumes file format FASTA and forward-only sequences
     ''' </summary>
     ''' <param name="dbConnectionString">Protein sequences database connection string</param>
     Public Sub New(dbConnectionString As String)
@@ -144,7 +141,7 @@ Public Class clsGetFASTAFromDMS
     End Sub
 
     ' Unused
-    'Protected Overridable Function GetCollectionTable(selectionSQL As String) As DataTable
+    'Private Overridable Function GetCollectionTable(selectionSQL As String) As DataTable
     '    If m_TableGetter Is Nothing Then
     '        m_TableGetter = New clsDBTask(m_PSConnectionString, True)
     '    End If
@@ -241,7 +238,7 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
-    Protected Function ExportLegacyFastaFile(
+    Private Function ExportLegacyFastaFile(
       legacyFASTAFileName As String,
       destinationFolderPath As String) As String
 
@@ -400,7 +397,7 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
-    Protected Function ExportLegacyFastaValidateHash(
+    Private Function ExportLegacyFastaValidateHash(
       finalFileFI As FileInfo,
       ByRef finalFileHash As String,
       blnForceRegenerateHash As Boolean) As Boolean
@@ -425,7 +422,7 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
-    Protected Function ExportProteinCollections(
+    Private Function ExportProteinCollections(
       protCollectionList As List(Of String),
       creationOptionsString As String,
       destinationFolderPath As String,
@@ -629,7 +626,7 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
-    Protected Function CreateLockStream(
+    Private Function CreateLockStream(
       destinationFolderPath As String,
       lockFileHash As String,
       proteinCollectionListOrLegacyFastaFileName As String) As FileStream
@@ -649,8 +646,6 @@ Public Class clsGetFASTAFromDMS
             Try
                 lockFi.Refresh()
                 If lockFi.Exists Then
-                    m_WaitingForLockFile = True
-
                     Dim LockTimeoutTime As DateTime = lockFi.LastWriteTimeUtc.AddMinutes(60)
                     Dim msg = LOCK_FILE_PROGRESS_TEXT & " found; waiting until it is deleted or until " & LockTimeoutTime.ToLocalTime().ToString() & ": " & lockFi.Name
                     OnDebugEvent(msg)
@@ -671,8 +666,6 @@ Public Class clsGetFASTAFromDMS
                         OnFileGenerationProgressUpdate(warningMsg, 0)
                         lockFi.Delete()
                     End If
-
-                    m_WaitingForLockFile = False
 
                 End If
 
@@ -710,7 +703,7 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
-    Protected Sub DeleteFASTAIndexFiles(ByRef fiFinalFastaFile As FileInfo)
+    Private Sub DeleteFASTAIndexFiles(ByRef fiFinalFastaFile As FileInfo)
 
         Try
             Dim strBaseName As String
@@ -755,7 +748,7 @@ Public Class clsGetFASTAFromDMS
 
     End Sub
 
-    Protected Sub DeleteFastaIndexFile(strFilePath As String)
+    Private Sub DeleteFastaIndexFile(strFilePath As String)
         Try
             File.Delete(strFilePath)
         Catch ex As Exception
@@ -763,7 +756,7 @@ Public Class clsGetFASTAFromDMS
         End Try
     End Sub
 
-    Protected Sub DeleteLockStream(destinationFolderPath As String, lockFileHash As String, lockStream As FileStream)
+    Private Sub DeleteLockStream(destinationFolderPath As String, lockFileHash As String, lockStream As FileStream)
 
         If Not lockStream Is Nothing Then
             lockStream.Close()
@@ -778,7 +771,7 @@ Public Class clsGetFASTAFromDMS
 
     End Sub
 
-    Protected Function GenerateAndStoreLegacyFileHash(strFastaFilePath As String) As String
+    Private Function GenerateAndStoreLegacyFileHash(strFastaFilePath As String) As String
 
         ' The database does not have a valid Authentication_Hash values for this .Fasta file; generate one now
         Dim crc32Hash = GenerateFileAuthenticationHash(strFastaFilePath)
@@ -791,10 +784,10 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
-    Protected Function LookupLegacyFastaFileDetails(
+    Private Function LookupLegacyFastaFileDetails(
       LegacyFASTAFileName As String,
-      <Out()> ByRef LegacyStaticFilePathOutput As String,
-      <Out()> ByRef crc32HashOutput As String) As Boolean
+      <Out> ByRef LegacyStaticFilePathOutput As String,
+      <Out> ByRef crc32HashOutput As String) As Boolean
 
         Dim legacyLocationsSQL As String
 
@@ -833,7 +826,7 @@ Public Class clsGetFASTAFromDMS
     '''   ID_004137_23AA5A07.fasta.23AA5A07.hashcheck
     '''   H_sapiens_Ensembl_v68_2013-01-08.fasta.DF687525.hashcheck
     ''' </remarks>
-    Protected Function GetHashFileValidationInfo(
+    Private Function GetHashFileValidationInfo(
       strFastaFilePath As String,
       crc32Hash As String,
       Optional hashcheckExtension As String = "") As FileInfo
@@ -861,7 +854,7 @@ Public Class clsGetFASTAFromDMS
     ''' <param name="strFastaFilePath"></param>
     ''' <param name="crc32Hash"></param>
     ''' <param name="hashcheckExtension">Hashcheck file extension; if an empty string, the default of .hashcheck is used</param>
-    Protected Sub UpdateHashValidationFile(
+    Private Sub UpdateHashValidationFile(
       strFastaFilePath As String,
       crc32Hash As String,
       Optional hashcheckExtension As String = "")
@@ -1047,13 +1040,13 @@ Public Class clsGetFASTAFromDMS
         Return m_Getter.FindIDByName(Path.GetFileNameWithoutExtension(proteinCollectionName))
     End Function
 
-    Protected Function GetProteinCollectionName(proteinCollectionID As Integer) As String
+    Private Function GetProteinCollectionName(proteinCollectionID As Integer) As String
         Return m_Getter.FindNameByID(proteinCollectionID)
     End Function
 
 #End Region
 
-    Protected Function RunSP_AddLegacyFileUploadRequest(legacyFilename As String, authenticationHash As String) As Integer
+    Private Function RunSP_AddLegacyFileUploadRequest(legacyFilename As String, authenticationHash As String) As Integer
 
         If String.IsNullOrWhiteSpace(m_PSConnectionString) Then
             Return 0
@@ -1082,7 +1075,7 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
-    Protected Function GenerateHash(sourceText As String) As String
+    Private Function GenerateHash(sourceText As String) As String
         ' Create an encoding object to ensure the encoding standard for the source text
         Dim encoding As New ASCIIEncoding()
 
