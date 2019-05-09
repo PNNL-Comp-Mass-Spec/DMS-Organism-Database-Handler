@@ -4,7 +4,7 @@ Imports PRISM
 Imports Protein_Exporter
 
 Module modMain
-    Public Const PROGRAM_DATE As String = "March 5, 2019"
+    Public Const PROGRAM_DATE As String = "May 9, 2019"
 
     Const m_DebugLevel As Integer = 4
     Const FASTA_GEN_TIMEOUT_INTERVAL_MINUTES As Integer = 70
@@ -30,7 +30,7 @@ Module modMain
 #Region "Event handlers"
 
     Private Sub m_FastaTools_DebugEvent(message As String) Handles m_FastaTools.DebugEvent
-        ConsoleMsgUtils.ShowDebug(message,)
+        ConsoleMsgUtils.ShowDebug(message)
     End Sub
 
     Private Sub m_FastaTools_ErrorEvent(message As String, ex As Exception) Handles m_FastaTools.ErrorEvent
