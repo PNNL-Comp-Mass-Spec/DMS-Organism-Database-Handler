@@ -36,7 +36,6 @@ Public Interface IUploadProteins
 
     Sub BatchUpload(fileInfoList As IEnumerable(Of UploadInfo))
 
-    Sub InitialSetup()
     Sub ResetErrorList()
 
     Sub SetValidationOptions(eValidationOptionName As eValidationOptionConstants, blnEnabled As Boolean)
@@ -86,18 +85,15 @@ End Interface
 Public Class clsPSUploadHandler
     Implements IUploadProteins
 
-    Protected m_PISConnectionString As String
     Protected m_PersistentTaskNum As Integer
     Protected m_NormalizedFASTAFilePath As String
     Protected m_ProteinCollectionsList As DataTable
 
-    Protected m_SQLAccess As IGetSQLData
+    Protected ReadOnly m_DatabaseAccessor As IGetSQLData
     Protected WithEvents m_Importer As IImportProteins
     Protected WithEvents m_Upload As IAddUpdateEntries
     Protected WithEvents m_Export As IGetFASTAFromDMS
     Protected WithEvents m_Validator As clsCustomValidateFastaFiles
-    Protected WithEvents m_Archiver As IArchiveOutputFiles
-
 
     Protected Event LoadStart(taskTitle As String) Implements IUploadProteins.LoadStart
     Protected Event LoadProgress(fractionDone As Double) Implements IUploadProteins.LoadProgress
@@ -192,31 +188,26 @@ Public Class clsPSUploadHandler
     End Sub
 
 
-    Public Sub New(PISConnectionString As String)
-        m_PISConnectionString = PISConnectionString
+    Public Sub New(psConnectionString As String)
+        m_DatabaseAccessor = New clsDBTask(psConnectionString, True)
 
         ' Reserve space for tracking up to 10 validation updates (expand later if needed)
         ReDim mValidationOptions(10)
-    End Sub
 
-    Protected Overridable Sub SetupUploadModule() Implements IUploadProteins.InitialSetup
-        m_SQLAccess = New clsDBTask(m_PISConnectionString, True)
-        m_Upload = New clsAddUpdateEntries(m_PISConnectionString)
-        m_Upload.Setup()
-        m_Export = New clsGetFASTAFromDMS(m_PISConnectionString,
-            IGetFASTAFromDMS.DatabaseFormatTypes.fasta, IGetFASTAFromDMS.SequenceTypes.forward)
+        m_Upload = New clsAddUpdateEntries(psConnectionString)
+
+        m_Export = New clsGetFASTAFromDMS(psConnectionString,
+                                          IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
+                                          IGetFASTAFromDMS.SequenceTypes.forward)
+
         m_Validator = New clsCustomValidateFastaFiles
-    End Sub
 
-    Protected Overridable Sub SetupImporterClass()
-        m_Importer = New clsImportHandler(m_PISConnectionString)
+        m_Importer = New clsImportHandler(m_DatabaseAccessor.ConnectionString)
     End Sub
 
     'fileInfoList hash -> key =
     Protected Sub ProteinBatchLoadCoordinator(
         fileInfoList As IEnumerable(Of IUploadProteins.UploadInfo)) Implements IUploadProteins.BatchUpload
-
-        SetupImporterClass()
 
         Dim upInfo As IUploadProteins.UploadInfo
         Dim fi As FileInfo
@@ -232,6 +223,8 @@ Public Class clsPSUploadHandler
         Dim errorLabel As String
         Dim errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)
 
+
+        Dim databaseAccessor = New clsDBTask(m_DatabaseAccessor.ConnectionString, True)
 
         For Each upInfo In fileInfoList
             'upInfo.OriginalFileInformation = upInfo.FileInformation
@@ -357,7 +350,7 @@ Public Class clsPSUploadHandler
                     Else
 
                         If upInfo.EncryptSequences AndAlso Not String.IsNullOrEmpty(upInfo.EncryptionPassphrase) Then
-                            m_Encryptor = New clsCollectionEncryptor(upInfo.EncryptionPassphrase, m_PISConnectionString)
+                            m_Encryptor = New clsCollectionEncryptor(upInfo.EncryptionPassphrase, databaseAccessor)
                             m_Encryptor.EncryptStorageCollectionSequences(tmpPS)
                             tmpPS.EncryptSequences = True
                             tmpPS.PassPhrase = upInfo.EncryptionPassphrase

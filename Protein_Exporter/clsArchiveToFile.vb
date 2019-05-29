@@ -5,6 +5,7 @@ Imports System.IO
 Imports System.Security.Cryptography
 Imports System.Text
 Imports Protein_Exporter.ExportProteinCollectionsIFC
+Imports TableManipulationBase
 
 Public Class clsArchiveToFile
     Inherits clsArchiveOutputFilesBase
@@ -17,13 +18,13 @@ Public Class clsArchiveToFile
     ''' <summary>
     ''' Constructor
     ''' </summary>
-    ''' <param name="psConnectionString"></param>
+    ''' <param name="databaseAccessor"></param>
     ''' <param name="exporterModule"></param>
-    Sub New(psConnectionString As String, ByRef exporterModule As clsGetFASTAFromDMS)
+    Sub New(databaseAccessor As IGetSQLData, exporterModule As clsGetFASTAFromDMS)
 
-        MyBase.New(psConnectionString, exporterModule)
+        MyBase.New(databaseAccessor, exporterModule)
 
-        Dim connectionStringCheck = psConnectionString.ToLower().Replace(" ", "")
+        Dim connectionStringCheck = databaseAccessor.ConnectionString.ToLower().Replace(" ", "")
 
         If connectionStringCheck.Contains("source=cbdms") Then
             m_BaseArchivePath = "\\cbdms\DMS_FASTA_File_Archive\"
@@ -48,8 +49,6 @@ Public Class clsArchiveToFile
 
         Dim ProteinCollectionsListFromDB As String
 
-        CheckTableGetterStatus()
-
         Dim ArchivedFileEntryID As Integer
 
         Dim archivePath As String
@@ -66,7 +65,7 @@ Public Class clsArchiveToFile
           "Archived_File_State_ID <> 3 " &
           "ORDER BY File_Modification_Date DESC"
 
-        Dim tmpTable As DataTable = m_TableGetter.GetTable(checkSQL)
+        Dim tmpTable As DataTable = m_DatabaseAccessor.GetTable(checkSQL)
         CollectionListHexHash = GenerateHash(proteinCollectionsList + "/" + creationOptionsString)
         If tmpTable.Rows.Count = 0 Then
             proteinCount = GetProteinCount(sourceFilePath)
@@ -81,7 +80,7 @@ Public Class clsArchiveToFile
               proteinCollectionID, creationOptionsString, sourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount,
               archivePath, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), archivedFileType), proteinCollectionsList, CollectionListHexHash)
 
-            tmpTable = m_TableGetter.GetTable(checkSQL)
+            tmpTable = m_DatabaseAccessor.GetTable(checkSQL)
 
         Else
             ' Archived file entry already exists
@@ -161,7 +160,7 @@ Public Class clsArchiveToFile
      collectionListHash As String,
      collectionListHexHash As String) As Integer
 
-        Dim sp_Save = New SqlCommand("UpdateFileArchiveEntryCollectionList", m_TableGetter.Connection) With {
+        Dim sp_Save = New SqlCommand("UpdateFileArchiveEntryCollectionList", m_DatabaseAccessor.Connection) With {
             .CommandType = CommandType.StoredProcedure
         }
 
@@ -201,7 +200,7 @@ Public Class clsArchiveToFile
      proteinCollectionsList As String,
      collectionListHexHash As String) As Integer
 
-        Dim sp_Save = New SqlCommand("AddOutputFileArchiveEntry", m_TableGetter.Connection) With {
+        Dim sp_Save = New SqlCommand("AddOutputFileArchiveEntry", m_DatabaseAccessor.Connection) With {
             .CommandType = CommandType.StoredProcedure
         }
 

@@ -3,8 +3,6 @@ Imports Protein_Exporter
 
 Public Interface IAddUpdateEntries
 
-    Sub Setup()
-
     Sub CompareProteinID(
         proteinCollection As Protein_Storage.IProteinStorage,
         selectedProteinList As List(Of String))
@@ -158,7 +156,7 @@ End Interface
 Public Class clsAddUpdateEntries
     Implements IAddUpdateEntries
 
-    Protected m_SQLAccess As TableManipulationBase.IGetSQLData
+    Protected ReadOnly m_DatabaseAccessor As TableManipulationBase.IGetSQLData
     Protected m_OrganismID As Integer
     Protected m_ProteinLengths As Hashtable
     Protected m_MaxProteinNameLength As Integer
@@ -173,7 +171,7 @@ Public Class clsAddUpdateEntries
             Return m_MaxProteinNameLength
         End Get
         Set
-            m_MaxProteinNameLength = value
+            m_MaxProteinNameLength = Value
         End Set
     End Property
 #End Region
@@ -199,16 +197,12 @@ Public Class clsAddUpdateEntries
 #End Region
 
     Public Sub New(PISConnectionString As String)
-        m_SQLAccess = New TableManipulationBase.clsDBTask(PISConnectionString, True)
+        m_DatabaseAccessor = New TableManipulationBase.clsDBTask(PISConnectionString, True)
         m_Hasher = New Security.Cryptography.SHA1Managed
     End Sub
 
     Public Sub CloseConnection()
-        m_SQLAccess.CloseConnection()
-    End Sub
-
-    Protected Sub Setup() Implements IAddUpdateEntries.Setup
-        ' No setup required
+        m_DatabaseAccessor.CloseConnection()
     End Sub
 
     ''' <summary>
@@ -596,7 +590,7 @@ Public Class clsAddUpdateEntries
 
         Dim sp_Save As SqlClient.SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("GetProteinCollectionState", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("GetProteinCollectionState", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -646,7 +640,7 @@ Public Class clsAddUpdateEntries
             EncryptionFlag = 1
         End If
 
-        sp_Save = New SqlClient.SqlCommand("AddProteinSequence", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("AddProteinSequence", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -719,7 +713,7 @@ Public Class clsAddUpdateEntries
 
         Dim sp_Save As SqlClient.SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("UpdateProteinSequenceInfo", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("UpdateProteinSequenceInfo", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -787,7 +781,7 @@ Public Class clsAddUpdateEntries
 
         Dim sp_Save As SqlClient.SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("AddUpdateProteinCollection", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("AddUpdateProteinCollection", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -890,7 +884,7 @@ Public Class clsAddUpdateEntries
 
         Dim sp_Save As SqlClient.SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("AddUpdateProteinCollectionMember_New", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("AddUpdateProteinCollectionMember_New", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -942,7 +936,7 @@ Public Class clsAddUpdateEntries
         Dim phraseHash As String = GenerateHash(Passphrase)
         Dim sp_Save As SqlClient.SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("AddUpdateEncryptionMetadata", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("AddUpdateEncryptionMetadata", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -986,7 +980,7 @@ Public Class clsAddUpdateEntries
 
         Dim sp_Save As SqlClient.SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("AddNamingAuthority", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("AddNamingAuthority", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -1030,7 +1024,7 @@ Public Class clsAddUpdateEntries
 
         Dim sp_Save As SqlClient.SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("AddAnnotationType", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("AddAnnotationType", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -1078,7 +1072,7 @@ Public Class clsAddUpdateEntries
 
         Dim sp_Save As SqlClient.SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("UpdateProteinCollectionState", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("UpdateProteinCollectionState", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -1121,7 +1115,7 @@ Public Class clsAddUpdateEntries
 
         Dim sp_Save As SqlClient.SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("DeleteProteinCollectionMembers", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("DeleteProteinCollectionMembers", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -1162,7 +1156,7 @@ Public Class clsAddUpdateEntries
 
         Dim sp_Save As SqlClient.SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("GetProteinCollectionMemberCount", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("GetProteinCollectionMemberCount", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -1201,7 +1195,7 @@ Public Class clsAddUpdateEntries
 
         If MaxProteinNameLength <= 0 Then MaxProteinNameLength = 32
 
-        sp_Save = New SqlClient.SqlCommand("AddProteinReference", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("AddProteinReference", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -1279,7 +1273,7 @@ Public Class clsAddUpdateEntries
 
         Dim sp_Save As SqlClient.SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("GetProteinCollectionID", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("GetProteinCollectionID", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -1314,7 +1308,7 @@ Public Class clsAddUpdateEntries
 
         Dim sp_Save As SqlClient.SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("AddCRC32FileAuthentication", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("AddCRC32FileAuthentication", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -1361,7 +1355,7 @@ Public Class clsAddUpdateEntries
 
         Dim sp_Save As SqlClient.SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("AddCollectionOrganismXref", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("AddCollectionOrganismXref", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -1407,7 +1401,7 @@ Public Class clsAddUpdateEntries
         tmpHash = Protein_Name + "_" + Description + "_" + Protein_ID.ToString
         Dim tmpGenSHA As String = GenerateHash(tmpHash.ToLower)
 
-        sp_Save = New SqlClient.SqlCommand("UpdateProteinNameHash", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("UpdateProteinNameHash", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -1448,7 +1442,7 @@ Public Class clsAddUpdateEntries
 
         Dim sp_Save As SqlClient.SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("UpdateProteinCollectionCounts", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("UpdateProteinCollectionCounts", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -1492,7 +1486,7 @@ Public Class clsAddUpdateEntries
         Dim sp_Save As SqlClient.SqlCommand
         Dim tmpGenSHA As String = GenerateHash(Protein_Sequence)
 
-        sp_Save = New SqlClient.SqlCommand("UpdateProteinSequenceHash", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("UpdateProteinSequenceHash", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -1533,7 +1527,7 @@ Public Class clsAddUpdateEntries
 
         Dim sp_Save As SqlClient.SqlCommand
 
-        sp_Save = New SqlClient.SqlCommand("GetProteinIDFromName", m_SQLAccess.Connection)
+        sp_Save = New SqlClient.SqlCommand("GetProteinIDFromName", m_DatabaseAccessor.Connection)
 
         sp_Save.CommandType = CommandType.StoredProcedure
 

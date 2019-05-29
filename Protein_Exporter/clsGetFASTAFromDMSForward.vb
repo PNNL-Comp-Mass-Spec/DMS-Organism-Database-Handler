@@ -11,7 +11,7 @@ Imports TableManipulationBase
 
 Public Class clsGetFASTAFromDMSForward
 
-    Protected m_TableGrabber As IGetSQLData
+    Protected ReadOnly m_DatabaseAccessor As IGetSQLData
     Protected WithEvents m_fileDumper As IExportProteins
     Protected m_AllCollections As Hashtable
     Protected m_OrganismList As Hashtable
@@ -31,15 +31,13 @@ Public Class clsGetFASTAFromDMSForward
     ''' <summary>
     ''' Constructor
     ''' </summary>
-    ''' <param name="dbConnectionString">Protein sequences database connection string</param>
+    ''' <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
     ''' <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
     Public Sub New(
-      dbConnectionString As String,
+      databaseAccessor As IGetSQLData,
       databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
 
-        Dim persistConnection = Not String.IsNullOrWhiteSpace(dbConnectionString)
-
-        m_TableGrabber = New clsDBTask(dbConnectionString, persistConnection)
+        m_DatabaseAccessor = databaseAccessor
         m_AllCollections = GetCollectionNameList()
         m_OrganismList = GetOrganismList()
 
@@ -53,7 +51,6 @@ Public Class clsGetFASTAFromDMSForward
         End Select
 
     End Sub
-
 
     Event FileGenerationCompleted(outputPath As String)
     Event FileGenerationProgress(statusMsg As String, fractionDone As Double)
@@ -153,14 +150,14 @@ Public Class clsGetFASTAFromDMSForward
                   "FROM V_Encrypted_Collection_Authorizations " &
                   "WHERE Login_Name = '" & user_ID & "'"
 
-                authorizationTable = m_TableGrabber.GetTable(authorizationSQL)
+                authorizationTable = m_DatabaseAccessor.GetTable(authorizationSQL)
                 authCheckRows = authorizationTable.Select("Protein_Collection_Name = '" & nameString & "' OR Protein_Collection_Name = 'Administrator'")
                 If authCheckRows.Length > 0 Then
                     tmpID = FindIDByName(nameString)
                     passPhraseSQL = "SELECT Passphrase " &
                      "FROM T_Encrypted_Collection_Passphrases " &
                      "WHERE Protein_Collection_ID = " & tmpID.ToString
-                    passPhraseTable = m_TableGrabber.GetTable(passPhraseSQL)
+                    passPhraseTable = m_DatabaseAccessor.GetTable(passPhraseSQL)
 
                     proteinCollectionPassphrases.Add(nameString, passPhraseTable.Rows(0).Item("Passphrase").ToString)
                 Else
@@ -216,7 +213,7 @@ Public Class clsGetFASTAFromDMSForward
             Dim lengthCheckSQL = "SELECT NumProteins FROM T_Protein_Collections " &
                                  "WHERE FileName = '" & ProteinCollectionName & "'"
 
-            Dim lengthCheckTable = m_TableGrabber.GetTable(lengthCheckSQL)
+            Dim lengthCheckTable = m_DatabaseAccessor.GetTable(lengthCheckSQL)
             Dim collectionLength As Integer
 
             If lengthCheckTable.Rows.Count > 0 Then
@@ -250,7 +247,7 @@ Public Class clsGetFASTAFromDMSForward
                      "ORDER BY Sorting_Index"
                 End If
 
-                collectionTable = m_TableGrabber.GetTable(collectionSQL)
+                collectionTable = m_DatabaseAccessor.GetTable(collectionSQL)
 
                 Dim passPhraseForCollection = ""
                 If proteinCollectionPassphrases.TryGetValue(trueName, passPhraseForCollection) Then
@@ -414,7 +411,7 @@ Public Class clsGetFASTAFromDMSForward
             RefreshCollectionCache()
         End If
 
-        Return m_TableGrabber.DataTableToHashtable(m_CollectionsCache, "Protein_Collection_ID", "FileName")
+        Return m_DatabaseAccessor.DataTableToHashtable(m_CollectionsCache, "Protein_Collection_ID", "FileName")
     End Function
 
     Function GetCollectionsByOrganism(OrganismID As Integer) As Hashtable
@@ -422,7 +419,7 @@ Public Class clsGetFASTAFromDMSForward
             RefreshCollectionCache()
         End If
 
-        Return m_TableGrabber.DataTableToHashtable(m_CollectionsCache, "Protein_Collection_ID", "FileName", "[Organism_ID] = " & OrganismID.ToString)
+        Return m_DatabaseAccessor.DataTableToHashtable(m_CollectionsCache, "Protein_Collection_ID", "FileName", "[Organism_ID] = " & OrganismID.ToString)
     End Function
 
     Function GetCollectionsByOrganismTable(OrganismID As Integer) As DataTable
@@ -443,7 +440,7 @@ Public Class clsGetFASTAFromDMSForward
             RefreshOrganismCache()
         End If
 
-        Return m_TableGrabber.DataTableToHashtable(m_OrganismCache, "Organism_ID", "Name")
+        Return m_DatabaseAccessor.DataTableToHashtable(m_OrganismCache, "Organism_ID", "Name")
     End Function
 
     Function GetOrganismListTable() As DataTable
@@ -455,19 +452,19 @@ Public Class clsGetFASTAFromDMSForward
     End Function
 
     Protected Sub RefreshCollectionCache()
-        If String.IsNullOrWhiteSpace(m_TableGrabber.ConnectionString) Then
+        If String.IsNullOrWhiteSpace(m_DatabaseAccessor.ConnectionString) Then
             m_CollectionsCache = New DataTable()
         Else
-            m_CollectionsCache = m_TableGrabber.GetTable(
+            m_CollectionsCache = m_DatabaseAccessor.GetTable(
                 "SELECT * FROM V_Protein_Collections_By_Organism ORDER BY Protein_Collection_ID")
         End If
     End Sub
 
     Protected Sub RefreshOrganismCache()
-        If String.IsNullOrWhiteSpace(m_TableGrabber.ConnectionString) Then
+        If String.IsNullOrWhiteSpace(m_DatabaseAccessor.ConnectionString) Then
             m_OrganismCache = New DataTable()
         Else
-            m_OrganismCache = m_TableGrabber.GetTable(
+            m_OrganismCache = m_DatabaseAccessor.GetTable(
                 "SELECT ID as Organism_ID, Short_Name as Name FROM V_Organism_Picker ORDER BY Organism_ID")
         End If
 

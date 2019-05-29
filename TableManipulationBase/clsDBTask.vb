@@ -1,4 +1,3 @@
-Imports System.Collections.Specialized
 Imports System.Data.SqlClient
 Imports System.Runtime.InteropServices
 
@@ -28,7 +27,7 @@ Public Interface IGetSQLData
     Sub OpenConnection(connString As String)
     Sub CloseConnection()
 
-    Property ConnectionString As String
+    ReadOnly Property ConnectionString As String
     ReadOnly Property Connected As Boolean
     ReadOnly Property Connection As SqlConnection
 
@@ -40,10 +39,8 @@ Public Class clsDBTask
 #Region "Member Variables"
 
     ' DB access
-    Protected m_connection_str As String
     Protected m_DBCn As SqlConnection
-    Protected m_error_list As New StringCollection
-    Protected m_PersistConnection As Boolean
+    Protected ReadOnly m_PersistConnection As Boolean
 
 #End Region
 
@@ -53,26 +50,23 @@ Public Class clsDBTask
     ''' <param name="connString"></param>
     ''' <param name="persistConnection"></param>
     Public Sub New(connString As String, Optional persistConnection As Boolean = False)
-        m_connection_str = connString
-        SetupNew(persistConnection)
-    End Sub
-
-    Private Sub SetupNew(persistConnection As Boolean)
+        ConnectionString = connString
         m_PersistConnection = persistConnection
+
         If m_PersistConnection Then
-            OpenConnection(m_connection_str)
+            OpenConnection(ConnectionString)
         Else
-            ' Nothing to do
+            ' Nothing to do; the connection will be opened later
         End If
     End Sub
 
 
     '------[for DB access]-----------------------------------------------------------
     Protected Sub OpenConnection() Implements IGetSQLData.OpenConnection
-        If m_connection_str = "" Then
+        If String.IsNullOrWhiteSpace(ConnectionString) Then
             Exit Sub
         End If
-        OpenConnection(m_connection_str)
+        OpenConnection(ConnectionString)
     End Sub
 
     Protected Sub OpenConnection(connString As String) Implements IGetSQLData.OpenConnection
@@ -125,14 +119,7 @@ Public Class clsDBTask
         End Get
     End Property
 
-    Protected Property ConnectionString As String Implements IGetSQLData.ConnectionString
-        Get
-            Return m_connection_str
-        End Get
-        Set
-            m_connection_str = Value
-        End Set
-    End Property
+    Protected ReadOnly Property ConnectionString As String Implements IGetSQLData.ConnectionString
 
     Protected ReadOnly Property Connection As SqlConnection Implements IGetSQLData.Connection
         Get

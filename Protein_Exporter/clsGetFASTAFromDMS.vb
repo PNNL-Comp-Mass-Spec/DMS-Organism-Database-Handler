@@ -29,14 +29,8 @@ Public Class clsGetFASTAFromDMS
     Private m_CollectionType As IArchiveOutputFiles.CollectionTypes
     Private m_FinalOutputPath As String
 
-    ''' <summary>
-    ''' Protein sequences database connection string
-    ''' </summary>
-    ''' <remarks>Empty string if offline and only planning to use ValidateMatchingHash</remarks>
-    Private ReadOnly m_PSConnectionString As String
-
     Private m_ArchiveCollectionList As List(Of String)
-    Private m_TableGetter As IGetSQLData
+    Private ReadOnly m_DatabaseAccessor As IGetSQLData
     Private ReadOnly m_SHA1Provider As SHA1Managed
 
     Private WithEvents m_FileTools As FileTools
@@ -77,7 +71,7 @@ Public Class clsGetFASTAFromDMS
     ''' <summary>
     ''' Constructor that takes connection string, database format type, and output sequence type
     ''' </summary>
-    ''' <param name="dbConnectionString"></param>
+    ''' <param name="dbConnectionString">Database connection string; empty string if offline and only planning to use ValidateMatchingHash</param>
     ''' <param name="databaseFormatType"></param>
     ''' <param name="outputSequenceType"></param>
     ''' <param name="decoyUsesXXX">When true, decoy proteins start with XXX_ instead of Reversed_</param>
@@ -88,9 +82,15 @@ Public Class clsGetFASTAFromDMS
       Optional decoyUsesXXX As Boolean = True)
 
         m_SHA1Provider = New SHA1Managed()
-        m_PSConnectionString = dbConnectionString
 
-        ClassSelector(dbConnectionString, databaseFormatType, outputSequenceType, decoyUsesXXX)
+        Dim persistConnection = Not String.IsNullOrWhiteSpace(dbConnectionString)
+        If String.IsNullOrWhiteSpace(dbConnectionString) Then
+            m_DatabaseAccessor = Nothing
+        Else
+            m_DatabaseAccessor = New clsDBTask(dbConnectionString, persistConnection)
+        End If
+
+        ClassSelector(databaseFormatType, outputSequenceType, decoyUsesXXX)
 
         m_FileTools = New FileTools()
         RegisterEvents(m_FileTools)
@@ -98,7 +98,6 @@ Public Class clsGetFASTAFromDMS
     End Sub
 
     Private Sub ClassSelector(
-      dbConnectionString As String,
       databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
       outputSequenceType As IGetFASTAFromDMS.SequenceTypes,
       decoyUsesXXX As Boolean)
@@ -110,43 +109,43 @@ Public Class clsGetFASTAFromDMS
 
             Case IGetFASTAFromDMS.SequenceTypes.forward
                 m_Getter = New clsGetFASTAFromDMSForward(
-                    dbConnectionString, databaseFormatType)
+                    m_DatabaseAccessor, databaseFormatType)
                 m_CollectionType = IArchiveOutputFiles.CollectionTypes.static
 
             Case IGetFASTAFromDMS.SequenceTypes.reversed
                 m_Getter = New clsGetFASTAFromDMSReversed(
-                    dbConnectionString, databaseFormatType)
+                    m_DatabaseAccessor, databaseFormatType)
                 m_CollectionType = IArchiveOutputFiles.CollectionTypes.dynamic
 
             Case IGetFASTAFromDMS.SequenceTypes.scrambled
                 m_Getter = New clsGetFASTAFromDMSScrambled(
-                    dbConnectionString, databaseFormatType)
+                    m_DatabaseAccessor, databaseFormatType)
                 m_CollectionType = IArchiveOutputFiles.CollectionTypes.dynamic
 
             Case IGetFASTAFromDMS.SequenceTypes.decoy
                 m_Getter = New clsGetFASTAFromDMSDecoy(
-                    dbConnectionString, databaseFormatType, decoyUsesXXX)
+                    m_DatabaseAccessor, databaseFormatType, decoyUsesXXX)
 
                 m_CollectionType = IArchiveOutputFiles.CollectionTypes.dynamic
 
             Case IGetFASTAFromDMS.SequenceTypes.decoyX
                 m_Getter = New clsGetFASTAFromDMSDecoyX(
-                    dbConnectionString, databaseFormatType)
+                    m_DatabaseAccessor, databaseFormatType)
                 m_CollectionType = IArchiveOutputFiles.CollectionTypes.dynamic
 
         End Select
 
-        m_Archiver = New clsArchiveToFile(dbConnectionString, Me)
+        m_Archiver = New clsArchiveToFile(m_DatabaseAccessor, Me)
 
     End Sub
 
     ' Unused
     'Private Overridable Function GetCollectionTable(selectionSQL As String) As DataTable
-    '    If m_TableGetter Is Nothing Then
-    '        m_TableGetter = New clsDBTask(m_PSConnectionString, True)
+    '    If m_DatabaseAccessor Is Nothing Then
+    '        m_DatabaseAccessor = New clsDBTask(m_PSConnectionString, True)
     '    End If
 
-    '    Return m_TableGetter.GetTable(selectionSQL)
+    '    Return m_DatabaseAccessor.GetTable(selectionSQL)
 
     'End Function
 
@@ -166,7 +165,7 @@ Public Class clsGetFASTAFromDMS
 
         Dim proteinCollectionName As String = GetProteinCollectionName(proteinCollectionID)
 
-        Dim creationOptionsHandler As New clsFileCreationOptions(m_PSConnectionString)
+        Dim creationOptionsHandler As New clsFileCreationOptions(m_DatabaseAccessor)
 
         Dim creationOptions As String = creationOptionsHandler.MakeCreationOptionsString(
          outputSequenceType, databaseFormatType)
@@ -196,12 +195,8 @@ Public Class clsGetFASTAFromDMS
         ' Returns the CRC32 hash of the exported file
         ' Returns nothing or "" if an error
 
-        Dim optionsParser = New clsFileCreationOptions(m_PSConnectionString)
+        Dim optionsParser = New clsFileCreationOptions(m_DatabaseAccessor)
         Dim cleanOptionsString As String
-
-        If m_TableGetter Is Nothing Then
-            m_TableGetter = New clsDBTask(m_PSConnectionString)
-        End If
 
         ' Trim any leading or trailing commas
         protCollectionList = protCollectionList.Trim(","c)
@@ -450,10 +445,6 @@ Public Class clsGetFASTAFromDMS
         Dim fileNameTable As DataTable
         Dim foundRow As DataRow
 
-        If m_TableGetter Is Nothing Then
-            m_TableGetter = New clsDBTask(m_PSConnectionString)
-        End If
-
         fileNameSql = "SELECT Archived_File_Path, Archived_File_ID, Authentication_Hash " &
           "FROM T_Archived_Output_Files " &
           "WHERE Collection_List_Hex_Hash = '" & filenameSha1Hash & "' AND " &
@@ -461,7 +452,7 @@ Public Class clsGetFASTAFromDMS
           "Archived_File_State_ID <> 3 " &
           "ORDER BY File_Modification_Date desc"
 
-        fileNameTable = m_TableGetter.GetTable(fileNameSql)
+        fileNameTable = m_DatabaseAccessor.GetTable(fileNameSql)
         If fileNameTable.Rows.Count >= 1 Then
             foundRow = fileNameTable.Rows(0)
             finalFileName = Path.GetFileName(CStr(foundRow.Item("Archived_File_Path")))
@@ -539,7 +530,7 @@ Public Class clsGetFASTAFromDMS
         ' We're finally ready to generate the .Fasta file
 
         ' Initialize the ClassSelector
-        ClassSelector(m_PSConnectionString, databaseFormatType, outputSequenceType, DecoyProteinsUseXXX)
+        ClassSelector(databaseFormatType, outputSequenceType, DecoyProteinsUseXXX)
 
         ' If more than one protein collection, then we're generating a dynamic protein collection
         If protCollectionList.Count > 1 Then
@@ -796,10 +787,7 @@ Public Class clsGetFASTAFromDMS
         ' Lookup the details for LegacyFASTAFileName in the database
         legacyLocationsSQL = "SELECT FileName, Full_Path, Authentication_Hash FROM V_Legacy_Static_File_Locations WHERE FileName = '" & LegacyFASTAFileName & "'"
 
-        If m_TableGetter Is Nothing Then
-            m_TableGetter = New clsDBTask(m_PSConnectionString)
-        End If
-        legacyStaticFileLocations = m_TableGetter.GetTable(legacyLocationsSQL)
+        legacyStaticFileLocations = m_DatabaseAccessor.GetTable(legacyLocationsSQL)
         If legacyStaticFileLocations.Rows.Count = 0 Then
             Dim msg = "Legacy fasta file " & LegacyFASTAFileName & " not found in V_Legacy_Static_File_Locations; unable to continue"
             OnErrorEvent(msg)
@@ -1048,11 +1036,11 @@ Public Class clsGetFASTAFromDMS
 
     Private Function RunSP_AddLegacyFileUploadRequest(legacyFilename As String, authenticationHash As String) As Integer
 
-        If String.IsNullOrWhiteSpace(m_PSConnectionString) Then
+        If m_DatabaseAccessor Is Nothing Then
             Return 0
         End If
 
-        Dim sp_Save = New SqlCommand("AddLegacyFileUploadRequest", m_TableGetter.Connection) With {
+        Dim sp_Save = New SqlCommand("AddLegacyFileUploadRequest", m_DatabaseAccessor.Connection) With {
             .CommandType = CommandType.StoredProcedure
         }
 
