@@ -89,7 +89,7 @@ Public Class clsDBTask
                 Try
                     m_DBCn.Open()
                     Exit While
-                Catch ex As SqlException
+                Catch ex As Exception
                     connectionAttempt += 1
                     If connectionAttempt > 6 Then
                         Throw New Exception(String.Format(
