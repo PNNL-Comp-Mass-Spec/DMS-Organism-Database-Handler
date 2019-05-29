@@ -22,6 +22,8 @@ Public Class clsGetFASTAFromDMS
     Public Const LOCK_FILE_PROGRESS_TEXT As String = "Lockfile"
     Public Const HASHCHECK_SUFFIX As String = ".hashcheck"
 
+    Private m_Disposed As Boolean = False
+
     Private WithEvents m_Getter As clsGetFASTAFromDMSForward
     Private m_Archiver As IArchiveOutputFiles
     Private m_DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes
@@ -393,7 +395,7 @@ Public Class clsGetFASTAFromDMS
     End Function
 
     Private Function ExportLegacyFastaValidateHash(
-      finalFileFI As FileInfo,
+      finalFileFI As FileSystemInfo,
       ByRef finalFileHash As String,
       blnForceRegenerateHash As Boolean) As Boolean
 
@@ -747,7 +749,7 @@ Public Class clsGetFASTAFromDMS
         End Try
     End Sub
 
-    Private Sub DeleteLockStream(destinationFolderPath As String, lockFileHash As String, lockStream As FileStream)
+    Private Sub DeleteLockStream(destinationFolderPath As String, lockFileHash As String, lockStream As Stream)
 
         If Not lockStream Is Nothing Then
             lockStream.Close()

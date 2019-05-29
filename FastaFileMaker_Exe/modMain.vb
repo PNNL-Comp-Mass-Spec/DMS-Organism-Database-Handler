@@ -4,7 +4,7 @@ Imports PRISM
 Imports Protein_Exporter
 
 Module modMain
-    Public Const PROGRAM_DATE As String = "March 5, 2019"
+    Public Const PROGRAM_DATE As String = "May 29, 2019"
 
     Const m_DebugLevel As Integer = 4
     Const FASTA_GEN_TIMEOUT_INTERVAL_MINUTES As Integer = 70
@@ -24,13 +24,13 @@ Module modMain
     Private mProteinCollectionList As String
     Private mCreationOpts As String
     Private mLegacyFasta As String
-    Private mDestFolder As String
+    Private mOutputDirectory As String
     Private mLogProteinFileDetails As Boolean
 
 #Region "Event handlers"
 
     Private Sub m_FastaTools_DebugEvent(message As String) Handles m_FastaTools.DebugEvent
-        ConsoleMsgUtils.ShowDebug(message,)
+        ConsoleMsgUtils.ShowDebug(message)
     End Sub
 
     Private Sub m_FastaTools_ErrorEvent(message As String, ex As Exception) Handles m_FastaTools.ErrorEvent
@@ -92,7 +92,7 @@ Module modMain
             mProteinCollectionList = String.Empty
             mCreationOpts = String.Empty
             mLegacyFasta = String.Empty
-            mDestFolder = String.Empty
+            mOutputDirectory = String.Empty
             mLogProteinFileDetails = False
 
             If commandLineParser.ParseCommandLine Then
@@ -110,7 +110,7 @@ Module modMain
                 'mProteinCollectionList = "Shewanella_2006-07-11"
                 'mCreationOpts = "seq_direction=forward,filetype=fasta"
                 'mLegacyFasta = "na"
-                'mDestFolder = "C:\DMS_Temp_Org"
+                'mOutputDirectory = "C:\DMS_Temp_Org"
                 'mLogProteinFileDetails = True
 
                 If mLegacyFasta.Length = 0 Then
@@ -121,8 +121,8 @@ Module modMain
                     mCreationOpts = DEFAULT_COLLECTION_OPTIONS
                 End If
 
-                If mDestFolder.Length = 0 Then
-                    mDestFolder = IO.Path.GetDirectoryName(Reflection.Assembly.GetExecutingAssembly().Location)
+                If mOutputDirectory.Length = 0 Then
+                    mOutputDirectory = IO.Path.GetDirectoryName(Reflection.Assembly.GetExecutingAssembly().Location)
                 End If
 
                 If mProteinCollectionList.IndexOf(","c) > 0 AndAlso
@@ -144,8 +144,9 @@ Module modMain
                     m_FastaToolsCnStr = proteinSeqsConnectionString
                 End If
 
-                TestExport(mProteinCollectionList, mCreationOpts, mLegacyFasta, mDestFolder, mLogProteinFileDetails)
+                TestExport(mProteinCollectionList, mCreationOpts, mLegacyFasta, mOutputDirectory, mLogProteinFileDetails)
 
+                Console.WriteLine("Destination directory: " & mOutputDirectory)
             End If
 
         Catch ex As Exception
@@ -180,9 +181,9 @@ Module modMain
                                       creationOpts As String,
                                       legacyFasta As String,
                                       crc32Hash As String,
-                                      destinationFolderPath As String,
+                                      destinationDirectoryPath As String,
                                       fastaFileName As String,
-                                      logFolderPath As String)
+                                      logDirectoryPath As String)
 
 
         ' Appends a new entry to the log file
@@ -196,8 +197,8 @@ Module modMain
             ' Create a new log file each day
             strLogFileName = "FastaFileMakerLog_" & DateTime.Now.ToString("yyyy-MM-dd") & ".txt"
 
-            If Not logFolderPath Is Nothing AndAlso logFolderPath.Length > 0 Then
-                strLogFilePath = IO.Path.Combine(logFolderPath, strLogFileName)
+            If Not logDirectoryPath Is Nothing AndAlso logDirectoryPath.Length > 0 Then
+                strLogFilePath = IO.Path.Combine(logDirectoryPath, strLogFileName)
             Else
                 strLogFilePath = String.Copy(strLogFileName)
             End If
@@ -223,8 +224,8 @@ Module modMain
             End If
 
             Dim fiFastaFile As IO.FileInfo
-            If Not destinationFolderPath Is Nothing AndAlso destinationFolderPath.Length > 0 Then
-                fiFastaFile = New IO.FileInfo(IO.Path.Combine(destinationFolderPath, fastaFileName))
+            If Not destinationDirectoryPath Is Nothing AndAlso destinationDirectoryPath.Length > 0 Then
+                fiFastaFile = New IO.FileInfo(IO.Path.Combine(destinationDirectoryPath, fastaFileName))
             Else
                 fiFastaFile = New IO.FileInfo(fastaFileName)
             End If
@@ -268,7 +269,7 @@ Module modMain
                     If .RetrieveValueForParameter("P", strValue) Then mProteinCollectionList = strValue
                     If .RetrieveValueForParameter("C", strValue) Then mCreationOpts = strValue
                     If .RetrieveValueForParameter("L", strValue) Then mLegacyFasta = strValue
-                    If .RetrieveValueForParameter("O", strValue) Then mDestFolder = strValue
+                    If .RetrieveValueForParameter("O", strValue) Then mOutputDirectory = strValue
 
                     If .RetrieveValueForParameter("D", strValue) Then mLogProteinFileDetails = True
 
@@ -349,7 +350,7 @@ Module modMain
     Public Function TestExport(proteinCollectionList As String,
                                creationOpts As String,
                                legacyFasta As String,
-                               destinationFolderPath As String,
+                               destinationDirectoryPath As String,
                                blnLogProteinFileDetails As Boolean) As Boolean
 
         Dim crc32Hash As String
@@ -375,7 +376,7 @@ Module modMain
         m_FastaGenStartTime = DateTime.UtcNow
         Try
             m_FastaTimer.Start()
-            crc32Hash = m_FastaTools.ExportFASTAFile(proteinCollectionList, creationOpts, legacyFasta, destinationFolderPath)
+            crc32Hash = m_FastaTools.ExportFASTAFile(proteinCollectionList, creationOpts, legacyFasta, destinationDirectoryPath)
         Catch Ex As Exception
             Console.WriteLine("clsAnalysisResources.CreateFastaFile(), Exception generating OrgDb file: " & Ex.Message)
             Console.WriteLine(StackTraceFormatter.GetExceptionStackTraceMultiLine(Ex))
@@ -401,7 +402,7 @@ Module modMain
         End If
 
         If blnLogProteinFileDetails Then
-            LogProteinFileDetails(proteinCollectionList, creationOpts, legacyFasta, crc32Hash, destinationFolderPath, m_FastaFileName, "")
+            LogProteinFileDetails(proteinCollectionList, creationOpts, legacyFasta, crc32Hash, destinationDirectoryPath, m_FastaFileName, "")
         End If
 
         Return True

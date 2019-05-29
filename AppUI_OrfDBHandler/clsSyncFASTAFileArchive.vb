@@ -16,8 +16,8 @@ Public Class clsSyncFASTAFileArchive
 
     Private WithEvents m_Exporter As clsGetFASTAFromDMS
 
-    Event SyncStart(StatusMsg As String)
-    Event SyncProgress(StatusMsg As String, fractionDone As Double)
+    Event SyncStart(statusMsg As String)
+    Event SyncProgress(statusMsg As String, fractionDone As Double)
     Event SyncComplete()
 
     Private m_CurrentStatusMsg As String
@@ -55,14 +55,8 @@ Public Class clsSyncFASTAFileArchive
             Me.m_TotalProteinsCount += CInt(dr.Item("NumProteins"))
         Next
 
-
-        Dim outputSequenceType As IGetFASTAFromDMS.SequenceTypes
-        outputSequenceType = IGetFASTAFromDMS.SequenceTypes.forward
-        Dim databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes
-        databaseFormatType = IGetFASTAFromDMS.DatabaseFormatTypes.fasta
-
-
-
+        Dim outputSequenceType = IGetFASTAFromDMS.SequenceTypes.forward
+        Dim databaseFormatType = IGetFASTAFromDMS.DatabaseFormatTypes.fasta
 
         Me.OnSyncStart("Synchronizing Archive Table with Collections Table")
 
@@ -112,7 +106,7 @@ Public Class clsSyncFASTAFileArchive
             Me.m_TotalProteinsCount += CInt(dr.Item("Numproteins"))
         Next
 
-        Dim starttime As DateTime
+        Dim startTime As DateTime
         Dim elapsedTime As TimeSpan
         Dim elapsedTimeSB As New StringBuilder
 
@@ -316,13 +310,13 @@ Public Class clsSyncFASTAFileArchive
 
             Dim tmpOrgID = CInt(collectionEntry.Item("Organism_ID"))
 
-            Dim legacyfoundrows = legacyTable.Select("FileName = '" & tmpCollectionName & ".fasta' AND Organism_ID = " & tmpOrgID)
-            If legacyfoundrows.Length > 0 Then
+            Dim legacyFoundRows = legacyTable.Select("FileName = '" & tmpCollectionName & ".fasta' AND Organism_ID = " & tmpOrgID)
+            If legacyFoundRows.Length > 0 Then
                 Dim getReferencesSQL = "SELECT * FROM V_Tmp_Member_Name_Lookup WHERE Protein_Collection_ID = " & tmpCollectionID.ToString &
                                     " AND Sorting_Index is NULL"
                 Dim referencesTable = Me.m_DatabaseAccessor.GetTable(getReferencesSQL)
                 If referencesTable.Rows.Count > 0 Then
-                    Dim legacyFileEntry = legacyfoundrows(0)
+                    Dim legacyFileEntry = legacyFoundRows(0)
                     Dim legacyFullPath = legacyFileEntry.Item("Full_Path").ToString
                     nameIndexHash = Me.GetProteinSortingIndices(legacyFullPath)
 
@@ -514,12 +508,12 @@ Public Class clsSyncFASTAFileArchive
 
     End Sub
 
-    Private Sub OnSyncStart(StatusMsg As String)
-        RaiseEvent SyncStart(StatusMsg)
+    Private Sub OnSyncStart(statusMsg As String)
+        RaiseEvent SyncStart(statusMsg)
     End Sub
 
-    Private Sub OnSyncProgressUpdate(StatusMsg As String, fractionDone As Double)
-        RaiseEvent SyncProgress(StatusMsg, fractionDone)
+    Private Sub OnSyncProgressUpdate(statusMsg As String, fractionDone As Double)
+        RaiseEvent SyncProgress(statusMsg, fractionDone)
     End Sub
 
     Private Sub OnSyncCompletion()
