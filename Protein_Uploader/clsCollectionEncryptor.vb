@@ -1,18 +1,15 @@
 Friend Class clsCollectionEncryptor
 
     Protected m_RijndaelEncryptor As Protein_Exporter.clsRijndaelEncryptionHandler
-    Shared m_TableGrabber As TableManipulationBase.IGetSQLData
+    Private ReadOnly m_DatabaseAccessor As TableManipulationBase.IGetSQLData
     Event EncryptionStart(taskMsg As String)
     Event EncryptionProgress(statusMsg As String, fractionDone As Double)
     Event EncryptionComplete()
 
-    Sub New(PassPhrase As String, PSConnectionString As String)
+    Sub New(PassPhrase As String, databaseAccessor As TableManipulationBase.IGetSQLData)
 
         m_RijndaelEncryptor = New Protein_Exporter.clsRijndaelEncryptionHandler(PassPhrase)
-
-        If clsCollectionEncryptor.m_TableGrabber Is Nothing Then
-            clsCollectionEncryptor.m_TableGrabber = New TableManipulationBase.clsDBTask(PSConnectionString, True)
-        End If
+        m_DatabaseAccessor = databaseAccessor
 
     End Sub
 

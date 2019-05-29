@@ -1,17 +1,23 @@
 Option Strict On
 
 Imports Protein_Exporter.ExportProteinCollectionsIFC
+Imports TableManipulationBase
 
 Public Class clsGetFASTAFromDMSReversed
     Inherits clsGetFASTAFromDMSForward
 
     Protected m_UseXXX As Boolean
 
+    ''' <summary>
+    ''' Constructor
+    ''' </summary>
+    ''' <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
+    ''' <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
     Public Sub New(
-        dbConnectionString As String,
+        databaseAccessor As IGetSQLData,
         databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
 
-        MyBase.New(dbConnectionString, databaseFormatType)
+        MyBase.New(databaseAccessor, databaseFormatType)
         m_Naming_Suffix = "_reversed"
     End Sub
 

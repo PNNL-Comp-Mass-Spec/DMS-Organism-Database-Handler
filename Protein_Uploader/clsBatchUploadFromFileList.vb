@@ -5,11 +5,10 @@ Imports TableManipulationBase
 
 Public Class clsBatchUploadFromFileList
 
-    Protected WithEvents m_Uploader As IUploadProteins
-    Protected m_TableGetter As IGetSQLData
+    Protected ReadOnly m_Uploader As IUploadProteins
+    Protected ReadOnly m_DatabaseAccessor As IGetSQLData
     Protected m_CurrentFileList As Hashtable
 
-    Protected m_PSConnectionString As String
 
     Protected m_AuthorityTable As DataTable
     Protected m_AnnotationTypeTable As DataTable
@@ -20,11 +19,16 @@ Public Class clsBatchUploadFromFileList
     Const DMS_Org_DB_Table_Name As String = "V_Legacy_Static_File_Locations"
     Const Protein_Collections_Table_Name As String = "T_Protein_Collections"
 
-    Sub New(PSConnectionString As String)
+    Sub New(psConnectionString As String)
 
-        m_PSConnectionString = PSConnectionString
-        m_Uploader = New clsPSUploadHandler(PSConnectionString)
-        m_TableGetter = New clsDBTask(PSConnectionString)
+        m_Uploader = New clsPSUploadHandler(psConnectionString)
+        AddHandler m_Uploader.BatchProgress, AddressOf OnTaskChange
+        AddHandler m_Uploader.LoadProgress, AddressOf OnProgressUpdate
+        AddHandler m_Uploader.LoadStart, AddressOf OnLoadStart
+        AddHandler m_Uploader.LoadEnd, AddressOf OnLoadEnd
+        AddHandler m_Uploader.LoadStart, AddressOf OnLoadStart
+
+        m_DatabaseAccessor = New clsDBTask(psConnectionString)
     End Sub
 
     Public Event ProgressUpdate(fractionDone As Double)
@@ -32,19 +36,19 @@ Public Class clsBatchUploadFromFileList
     Public Event LoadStart(taskTitle As String)
     Public Event LoadEnd()
 
-    Private Sub OnTaskChange(currentTaskTitle As String) Handles m_Uploader.BatchProgress
+    Private Sub OnTaskChange(currentTaskTitle As String)
         RaiseEvent TaskChange(currentTaskTitle)
     End Sub
 
-    Private Sub OnProgressUpdate(fractionDone As Double) Handles m_Uploader.LoadProgress
+    Private Sub OnProgressUpdate(fractionDone As Double)
         RaiseEvent ProgressUpdate(fractionDone)
     End Sub
 
-    Private Sub OnLoadStart(taskTitle As String) Handles m_Uploader.LoadStart
+    Private Sub OnLoadStart(taskTitle As String)
         RaiseEvent LoadStart(taskTitle)
     End Sub
 
-    Private Sub OnLoadEnd() Handles m_Uploader.LoadEnd
+    Private Sub OnLoadEnd()
         RaiseEvent LoadEnd()
     End Sub
 
@@ -72,15 +76,12 @@ Public Class clsBatchUploadFromFileList
 
         If r = DialogResult.OK Then
             fileCollection = m_BatchForm.SelectedFilesCollection
-            If m_Uploader Is Nothing Then
-                m_Uploader = New clsPSUploadHandler(m_PSConnectionString)
-            End If
+
             For Each fce In fileCollection.Values
                 ui = TransformToUploadInfo(fce)
                 uiList.Add(ui)
             Next
 
-            m_Uploader.InitialSetup()
             m_Uploader.BatchUpload(uiList)
 
         End If
@@ -89,17 +90,17 @@ Public Class clsBatchUploadFromFileList
 
     Protected Function GetAuthorityTable() As DataTable
         Const authSQL = "SELECT ID, Display_Name, Details FROM V_Authority_Picker"
-        Return m_TableGetter.GetTable(authSQL)
+        Return m_DatabaseAccessor.GetTable(authSQL)
     End Function
 
     Protected Function GetAnnotationTypeTable() As DataTable
         Const annoSQL = "SELECT ID, Display_Name, Details FROM V_Annotation_Type_Picker"
-        Return m_TableGetter.GetTable(annoSQL)
+        Return m_DatabaseAccessor.GetTable(annoSQL)
     End Function
 
     Protected Function GetOrganismsTable() As DataTable
         Const orgSQL = "SELECT ID, Short_Name, Display_Name, Organism_Name FROM V_Organism_Picker"
-        Return m_TableGetter.GetTable(orgSQL)
+        Return m_DatabaseAccessor.GetTable(orgSQL)
     End Function
 
     Private Function TransformToUploadInfo(fli As FileListInfo) As IUploadProteins.UploadInfo
@@ -114,7 +115,6 @@ Public Class clsBatchUploadFromFileList
     Protected Function GetDMSFileEntities() As Hashtable
         Dim fileList As New Hashtable
         Dim collectionList As New ArrayList
-        Dim fileTable As DataTable
 
         Dim dr As DataRow
 
@@ -129,9 +129,6 @@ Public Class clsBatchUploadFromFileList
 
         LoadedCollectionsSQL = "SELECT FileName, Full_Path, Organism_Name, Organism_ID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered"
 
-        If m_TableGetter Is Nothing Then
-            m_TableGetter = New clsDBTask(m_PSConnectionString)
-        End If
         fileTable = m_TableGetter.GetTable(LoadedCollectionsSQL)
 
         If m_CurrentFileList Is Nothing Then

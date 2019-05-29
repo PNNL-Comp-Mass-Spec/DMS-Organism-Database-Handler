@@ -3,20 +3,26 @@ Option Strict On
 Imports System.Collections.Generic
 Imports System.IO
 Imports Protein_Exporter.ExportProteinCollectionsIFC
+Imports TableManipulationBase
 
 Public Class clsGetFASTAFromDMSDecoy
     Inherits clsGetFASTAFromDMSForward
 
     Protected m_RevGenerator As clsGetFASTAFromDMSReversed
 
+    ''' <summary>
+    ''' Constructor
+    ''' </summary>
+    ''' <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
+    ''' <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
     Public Sub New(
-        dbConnectionString As String,
+        databaseAccessor As IGetSQLData,
         databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
-        decoyUsesXXX as boolean)
+        decoyUsesXXX As Boolean)
 
-        MyBase.New(dbConnectionString, databaseFormatType)
+        MyBase.New(databaseAccessor, databaseFormatType)
         m_RevGenerator = New clsGetFASTAFromDMSReversed(
-            dbConnectionString, databaseFormatType) With {
+            databaseAccessor, databaseFormatType) With {
             .UseXXX = decoyUsesXXX
             }
     End Sub

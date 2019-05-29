@@ -92,7 +92,7 @@ Public Class clsBulkFastaImporter
 #End Region
 
     Public Sub New()
-        MyBase.mFileDate = "March 5, 2019"
+        MyBase.mFileDate = "May 29, 2019"
         InitializeLocalVariables()
     End Sub
 
@@ -523,8 +523,6 @@ Public Class clsBulkFastaImporter
         Try
             ' Initialize the uploader
             m_UploadHandler = New clsPSUploadHandler(ProteinSeqsConnectionString)
-
-            m_UploadHandler.InitialSetup()
 
             m_UploadHandler.SetValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAllSymbolsInProteinNames, ValidationAllowAllSymbolsInProteinNames)
             m_UploadHandler.SetValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues, ValidationAllowAsterisks)

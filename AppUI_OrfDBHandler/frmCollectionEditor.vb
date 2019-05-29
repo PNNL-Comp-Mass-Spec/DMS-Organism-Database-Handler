@@ -761,7 +761,7 @@ Public Class frmCollectionEditor
 
 #End Region
 
-    Private Const PROGRAM_DATE As String = "March 5, 2019"
+    Private Const PROGRAM_DATE As String = "May 29, 2019"
 
     Private m_Organisms As DataTable
     Private m_ProteinCollections As DataTable
@@ -1077,7 +1077,6 @@ Public Class frmCollectionEditor
         Else
             m_UploadHandler = New clsPSUploadHandler(m_PSConnectionString)
         End If
-        m_UploadHandler.InitialSetup()
 
         pnlProgBar.Visible = True
 
@@ -1290,7 +1289,6 @@ Public Class frmCollectionEditor
 
                 If m_UploadHandler Is Nothing Then
                     m_UploadHandler = New clsPSUploadHandler(m_PSConnectionString)
-                    m_UploadHandler.InitialSetup()
                 End If
 
                 m_UploadHandler.UploadCollection(m_ImportHandler.CollectionMembers,

@@ -10,8 +10,7 @@ Public MustInherit Class clsArchiveOutputFilesBase
     Implements IArchiveOutputFiles
 
     Protected m_Exporter As clsGetFASTAFromDMSForward
-    Protected m_TableGetter As IGetSQLData
-    Protected m_PSConnectionString As String
+    Protected ReadOnly m_DatabaseAccessor As IGetSQLData
     Protected m_LastError As String
     ' Unused: Protected m_OutputSequenceType As IGetFASTAFromDMS.SequenceTypes
     Protected m_Archived_File_Name As String
@@ -22,15 +21,15 @@ Public MustInherit Class clsArchiveOutputFilesBase
     Protected Event OverallProgressUpdate(fractionDone As Double) Implements IArchiveOutputFiles.OverallProgressUpdate
     Protected Event ArchiveComplete(ArchivePath As String) Implements IArchiveOutputFiles.ArchiveComplete
 
+    ''' <summary>
+    ''' Constructor
+    ''' </summary>
+    ''' <param name="databaseAccessor"></param>
+    ''' <param name="exporterModule"></param>
+    Sub New(databaseAccessor As IGetSQLData, ByRef exporterModule As clsGetFASTAFromDMS)
+        m_DatabaseAccessor = databaseAccessor
 
-    Sub New(dbConnectionString As String, ByRef ExporterModule As clsGetFASTAFromDMS)
-
-        m_PSConnectionString = dbConnectionString
-
-        Dim persistConnection = Not String.IsNullOrWhiteSpace(dbConnectionString)
-
-        m_TableGetter = New clsDBTask(dbConnectionString, persistConnection)
-        m_Exporter = ExporterModule.ExporterComponent
+        m_Exporter = exporterModule.ExporterComponent
     End Sub
 
     Protected ReadOnly Property LastErrorMessage As String Implements IArchiveOutputFiles.LastErrorMessage
@@ -45,8 +44,7 @@ Public MustInherit Class clsArchiveOutputFilesBase
         End Get
     End Property
 
-
-    Protected Function ArchiveCollection(
+    Public Function ArchiveCollection(
         proteinCollectionID As Integer,
         archivedFileType As IArchiveOutputFiles.CollectionTypes,
         outputSequenceType As IGetFASTAFromDMS.SequenceTypes,
@@ -69,7 +67,7 @@ Public MustInherit Class clsArchiveOutputFilesBase
 
     End Function
 
-    Protected Function ArchiveCollection(
+    Public Function ArchiveCollection(
         proteinCollectionName As String,
         archivedFileType As IArchiveOutputFiles.CollectionTypes,
         outputSequenceType As IGetFASTAFromDMS.SequenceTypes,
@@ -123,12 +121,6 @@ Public MustInherit Class clsArchiveOutputFilesBase
 
     End Function
 
-    Protected Sub CheckTableGetterStatus()
-        If m_TableGetter Is Nothing Then
-            m_TableGetter = New clsDBTask(m_PSConnectionString, True)
-        End If
-    End Sub
-
     ' Unused
     'Protected Function CheckForExistingArchiveEntry(
     '    authentication_Hash As String,
@@ -144,7 +136,7 @@ Public MustInherit Class clsArchiveOutputFilesBase
     '                    "' AND " & "Creation_Options = '" & creationOptionsString & "'"
 
     '    Dim dt As DataTable
-    '    dt = m_TableGetter.GetTable(SQL)
+    '    dt = m_DatabaseAccessor.GetTable(SQL)
 
     '    If dt.Rows.Count > 0 Then
     '        m_Archived_File_Name = dt.Rows(0).Item("Archived_File_Path").ToString
@@ -186,7 +178,7 @@ Public MustInherit Class clsArchiveOutputFilesBase
         proteinCollectionID As Integer,
         archivedFileID As Integer) As Integer
 
-        Dim sp_Save = New SqlCommand("AddArchivedFileEntryXRef", m_TableGetter.Connection) With {
+        Dim sp_Save = New SqlCommand("AddArchivedFileEntryXRef", m_DatabaseAccessor.Connection) With {
             .CommandType = CommandType.StoredProcedure
         }
 

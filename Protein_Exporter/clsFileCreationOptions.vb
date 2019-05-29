@@ -6,16 +6,14 @@ Imports Protein_Exporter.ExportProteinCollectionsIFC
 Imports TableManipulationBase
 
 Friend Class clsFileCreationOptions
-    Private ReadOnly m_TableGetter As IGetSQLData
-    Private ReadOnly m_PSConnectionString As String
+    Private ReadOnly m_DatabaseAccessor As IGetSQLData
     Private m_SeqDirection As IGetFASTAFromDMS.SequenceTypes
     Private m_FileType As IGetFASTAFromDMS.DatabaseFormatTypes
     Private m_CreationValuesTable As DataTable
     Private m_KeywordTable As DataTable
 
-    Sub New(PSConnectionString As String)
-        m_PSConnectionString = PSConnectionString
-        m_TableGetter = New clsDBTask(m_PSConnectionString, True)
+    Sub New(databaseAccessor As IGetSQLData)
+        m_DatabaseAccessor = databaseAccessor
     End Sub
 
     ReadOnly Property SequenceDirection As IGetFASTAFromDMS.SequenceTypes
@@ -56,15 +54,15 @@ Friend Class clsFileCreationOptions
         creationValuesSQL = "SELECT Keyword, Value_String, String_Element FROM V_Creation_String_Lookup"
 
         If m_KeywordTable Is Nothing Then
-            m_KeywordTable = m_TableGetter.GetTable(keywordTableSQL)
+            m_KeywordTable = m_DatabaseAccessor.GetTable(keywordTableSQL)
         End If
 
         'If m_ValuesTable Is Nothing Then
-        '    m_ValuesTable = m_TableGetter.GetTable(valuesTableSQL)
+        '    m_ValuesTable = m_DatabaseAccessor.GetTable(valuesTableSQL)
         'End If
 
         If m_CreationValuesTable Is Nothing Then
-            m_CreationValuesTable = m_TableGetter.GetTable(creationValuesSQL)
+            m_CreationValuesTable = m_DatabaseAccessor.GetTable(creationValuesSQL)
         End If
 
         'optionsStringParser = New System.Text.RegularExpressions.Regex(
