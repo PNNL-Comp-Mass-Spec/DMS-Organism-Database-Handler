@@ -306,32 +306,35 @@ Module modMain
     Private Sub ShowProgramHelp()
 
         Try
+            Dim exeName = IO.Path.GetFileName(Reflection.Assembly.GetExecutingAssembly().Location)
 
-            Console.WriteLine("This program can export protein collection(s) from the DMS Protein_Sequences database to create a .Fasta file. ")
-            Console.WriteLine("Alternatively, you can specify a legacy .Fasta file name to retrieve")
+            Console.WriteLine(ConsoleMsgUtils.WrapParagraph(
+                "This program can export protein collection(s) from the DMS Protein_Sequences database to create a .Fasta file. " &
+                "Alternatively, you can specify a legacy .Fasta file name to retrieve"))
             Console.WriteLine()
             Console.WriteLine("Program syntax:")
-            Console.WriteLine("  " & IO.Path.GetFileName(Reflection.Assembly.GetExecutingAssembly().Location) &
-                                        " /P:ProteinCollectionList [/C:ProteinCollectionCreationOptions] [/O:OutputFolder] [/D]")
+            Console.WriteLine("  " & exeName & " /P:ProteinCollectionList [/C:ProteinCollectionCreationOptions] [/O:OutputDirectory] [/D]")
             Console.WriteLine("   or   ")
-            Console.WriteLine("  " & IO.Path.GetFileName(Reflection.Assembly.GetExecutingAssembly().Location) &
-                                        " /L:LegacyFastaFileName [/O:OutputFolder] [/D]")
+            Console.WriteLine("  " & exeName & " /L:LegacyFastaFileName [/O:OutputDirectory] [/D]")
             Console.WriteLine()
-            Console.WriteLine("To export one or more protein collections, specify the protein collection names as a comma separated list after the /P switch.")
-            Console.WriteLine("When exporting protein collections, use optional switch /C to change the protein collection export options.  The default is: " & DEFAULT_COLLECTION_OPTIONS)
+            Console.WriteLine(ConsoleMsgUtils.WrapParagraph(
+                "To export one or more protein collections, specify the protein collection names as a comma separated list after the /P switch. " &
+                "When exporting protein collections, use optional switch /C to change the protein collection export options. " &
+                "The default is: " & DEFAULT_COLLECTION_OPTIONS))
             Console.WriteLine()
             Console.WriteLine("To export a legacy fasta file, use /L, for example /L:FileName.fasta")
             Console.WriteLine()
-            Console.WriteLine("Optionally use /O to specify the output folder.")
-            Console.WriteLine("Optionally use /D to log the details of the protein collections, options, and resultant file to a log file.")
+            Console.WriteLine("Optionally use /O to specify the output directory.")
+            Console.WriteLine(ConsoleMsgUtils.WrapParagraph(
+                "Optionally use /D to log the details of the protein collections, options, and resultant file to a log file."))
             Console.WriteLine()
 
             Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2009")
             Console.WriteLine("Version: " & GetAppVersion(PROGRAM_DATE))
             Console.WriteLine()
 
-            Console.WriteLine("E-mail: matthew.monroe@pnl.gov or matt@alchemistmatt.com")
-            Console.WriteLine("Website: http://ncrr.pnl.gov/ or http://www.sysbio.org/resources/staff/")
+            Console.WriteLine("E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov")
+            Console.WriteLine("Website: https://omics.pnl.gov/ or https://panomics.pnnl.gov/")
             Console.WriteLine()
 
             Console.WriteLine("Licensed under the Apache License, Version 2.0; you may not use this file except in compliance with the License.  " &
