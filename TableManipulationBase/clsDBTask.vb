@@ -99,10 +99,15 @@ Public Class clsDBTask
     End Sub
 
     Protected Sub CloseConnection() Implements IGetSQLData.CloseConnection
-        If Not m_DBCn Is Nothing Then
-            m_DBCn.Close()
-            m_DBCn = Nothing
-        End If
+        Try
+            If Not m_DBCn Is Nothing AndAlso m_DBCn.State = ConnectionState.Open Then
+                m_DBCn.Close()
+                m_DBCn = Nothing
+            End If
+        Catch ex As Exception
+            ' Ignore errors here
+            Console.WriteLine("Warning, exception closing the database connection: " & ex.Message)
+        End Try
     End Sub
 
     Protected ReadOnly Property Connected As Boolean Implements IGetSQLData.Connected
