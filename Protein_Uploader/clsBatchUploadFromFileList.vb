@@ -129,28 +129,28 @@ Public Class clsBatchUploadFromFileList
 
         LoadedCollectionsSQL = "SELECT FileName, Full_Path, Organism_Name, Organism_ID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered"
 
-        fileTable = m_TableGetter.GetTable(LoadedCollectionsSQL)
+        Using fileTable As DataTable = m_DatabaseAccessor.GetTable(LoadedCollectionsSQL)
 
-        If m_CurrentFileList Is Nothing Then
-            m_CurrentFileList = New Hashtable
-        Else
-            m_CurrentFileList.Clear()
-        End If
-
-        For Each dr In fileTable.Rows
-            tmpFileName = dr.Item("FileName").ToString
-            tmpOrganismName = dr.Item("Organism_Name").ToString
-            tmpOrganismID = CInt(dr.Item("Organism_ID"))
-            tmpFullPath = dr.Item("Full_Path").ToString
-            tmpAnnTypeID = CInt(dr.Item("Annotation_Type_ID"))
-            tmpAuthTypeID = CInt(dr.Item("Authority_ID"))
-            If Not fileList.ContainsKey(tmpFileName) And Not collectionList.Contains(Path.GetFileNameWithoutExtension(tmpFileName)) Then
-                fileList.Add(tmpFileName, New FileListInfo(tmpFileName, tmpFullPath, tmpOrganismName, tmpOrganismID, tmpAnnTypeID, tmpAuthTypeID))
+            If m_CurrentFileList Is Nothing Then
+                m_CurrentFileList = New Hashtable
+            Else
+                m_CurrentFileList.Clear()
             End If
-        Next
 
-        fileTable.Clear()
-        fileTable = Nothing
+            For Each dr In fileTable.Rows
+                tmpFileName = dr.Item("FileName").ToString
+                tmpOrganismName = dr.Item("Organism_Name").ToString
+                tmpOrganismID = CInt(dr.Item("Organism_ID"))
+                tmpFullPath = dr.Item("Full_Path").ToString
+                tmpAnnTypeID = CInt(dr.Item("Annotation_Type_ID"))
+                tmpAuthTypeID = CInt(dr.Item("Authority_ID"))
+                If Not fileList.ContainsKey(tmpFileName) And Not collectionList.Contains(Path.GetFileNameWithoutExtension(tmpFileName)) Then
+                    fileList.Add(tmpFileName, New FileListInfo(tmpFileName, tmpFullPath, tmpOrganismName, tmpOrganismID, tmpAnnTypeID, tmpAuthTypeID))
+                End If
+            Next
+
+            fileTable.Clear()
+        End Using
 
         Return fileList
 
