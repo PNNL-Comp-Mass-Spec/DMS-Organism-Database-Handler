@@ -457,17 +457,16 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function GetProteinID(entry As Protein_Storage.IProteinStorageEntry, ByRef hitsTable As DataTable) As Integer
-        Dim testrow As DataRow
         Dim foundRows() As DataRow
         Dim tmpSeq As String
         Dim tmpProteinID As Integer
 
         foundRows = hitsTable.Select("[SHA1_Hash] = '" & entry.SHA1Hash & "'")
         If foundRows.Length > 0 Then
-            For Each testrow In foundRows
-                tmpSeq = CStr(testrow.Item("Sequence"))
+            For Each testRow As DataRow In foundRows
+                tmpSeq = CStr(testRow.Item("Sequence"))
                 If tmpSeq.Equals(entry.Sequence) Then
-                    tmpProteinID = CInt(testrow.Item("Protein_ID"))
+                    tmpProteinID = CInt(testRow.Item("Protein_ID"))
                 End If
             Next
         Else

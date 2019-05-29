@@ -35,7 +35,7 @@ Public Class frmTestingInterface
     Private components As System.ComponentModel.IContainer
 
     'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.  
+    'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
     Friend WithEvents txtTransFilePath As TextBox
     Friend WithEvents gbxTransTableImportTest As GroupBox
@@ -548,20 +548,20 @@ Public Class frmTestingInterface
 
     End Sub
 
-    Private Sub StartTask(StatusMsg As String) Handles m_Syncer.SyncStart, m_Exporter.FileGenerationStarted
+    Private Sub StartTask(statusMsg As String) Handles m_Syncer.SyncStart, m_Exporter.FileGenerationStarted
         Me.pgbAdminConsole.Visible = True
         Me.lblProgress.Visible = True
 
         Me.pgbAdminConsole.Value = 0
 
-        Me.m_TaskMessage = StatusMsg
+        Me.m_TaskMessage = statusMsg
         Me.lblProgress.Text = Me.m_TaskMessage
         Application.DoEvents()
 
     End Sub
 
-    Private Sub UpdateProgress(StatusMsg As String, fractionDone As Double) Handles m_Syncer.SyncProgress, m_Exporter.FileGenerationProgress
-        Me.m_ProgressMessage = StatusMsg
+    Private Sub UpdateProgress(statusMsg As String, fractionDone As Double) Handles m_Syncer.SyncProgress, m_Exporter.FileGenerationProgress
+        Me.m_ProgressMessage = statusMsg
         Dim percentComplete = CInt(fractionDone * 100)
         If fractionDone > 0 Then
             Me.pgbAdminConsole.Value = CInt(fractionDone * 100)

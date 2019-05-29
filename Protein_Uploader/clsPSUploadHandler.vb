@@ -121,8 +121,8 @@ Public Class clsPSUploadHandler
             Return mMaximumProteinNameLength
         End Get
         Set
-            mMaximumProteinNameLength = value
-            m_Upload.MaximumProteinNameLength = value
+            mMaximumProteinNameLength = Value
+            m_Upload.MaximumProteinNameLength = Value
         End Set
     End Property
 
