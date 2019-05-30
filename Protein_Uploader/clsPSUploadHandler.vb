@@ -223,7 +223,6 @@ Public Class clsPSUploadHandler
         Dim errorLabel As String
         Dim errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)
 
-
         Dim databaseAccessor = New clsDBTask(m_DatabaseAccessor.ConnectionString, True)
 
         For Each upInfo In fileInfoList
