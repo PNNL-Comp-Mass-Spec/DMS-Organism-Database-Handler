@@ -30,6 +30,7 @@ Public Interface IGetSQLData
     ReadOnly Property ConnectionString As String
     ReadOnly Property Connected As Boolean
     ReadOnly Property Connection As SqlConnection
+    Property ShowTraceMessages As Boolean
 
 End Interface
 
@@ -49,9 +50,10 @@ Public Class clsDBTask
     ''' </summary>
     ''' <param name="connString"></param>
     ''' <param name="persistConnection"></param>
-    Public Sub New(connString As String, Optional persistConnection As Boolean = False)
+    Public Sub New(connString As String, Optional persistConnection As Boolean = False, Optional enableTraceMessages As Boolean = False)
         ConnectionString = connString
         m_PersistConnection = persistConnection
+        ShowTraceMessages = enableTraceMessages
 
         If m_PersistConnection Then
             OpenConnection(ConnectionString)
@@ -72,7 +74,10 @@ Public Class clsDBTask
     Protected Sub OpenConnection(connString As String) Implements IGetSQLData.OpenConnection
         Const MAX_ATTEMPTS = 6
 
+        ShowTrace("Opening a database connection, connection string: " & connString)
+
         If m_DBCn Is Nothing Then
+            ShowTrace("Instantiating a new instance of SqlConnection")
             m_DBCn = New SqlConnection(connString)
         End If
 
@@ -81,6 +86,7 @@ Public Class clsDBTask
             Dim connectionAttempt = 1
             While connectionAttempt <= MAX_ATTEMPTS
                 Try
+                    ShowTrace("Calling m_DBCn.Open")
                     m_DBCn.Open()
                     Exit While
                 Catch ex As Exception
@@ -91,10 +97,17 @@ Public Class clsDBTask
                             MAX_ATTEMPTS, connString, ex.Message))
                     End If
 
+                    ShowTrace("Exception opening the connection: " & ex.Message)
+
                     Threading.Thread.Sleep(3000 * connectionAttempt)
+
+                    ShowTrace("Closing connection and trying again")
                     m_DBCn.Close()
                 End Try
             End While
+        Else
+            ShowTrace("The database connection is already open")
+
         End If
     End Sub
 
@@ -244,7 +257,6 @@ Public Class clsDBTask
 
     End Function
 
-
     Protected Function DataTableToComplexHashTable(
         dt As DataTable,
         keyFieldName As String,
@@ -272,5 +284,12 @@ Public Class clsDBTask
 
     End Function
 
+    Private Sub ShowTrace(message As String)
+        If Not ShowTraceMessages Then Exit Sub
+
+        Console.WriteLine("  " & message)
+    End Sub
+
+    Public Property ShowTraceMessages As Boolean Implements IGetSQLData.ShowTraceMessages
 
 End Class

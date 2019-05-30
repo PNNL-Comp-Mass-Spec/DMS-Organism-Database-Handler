@@ -89,7 +89,7 @@ Public Class clsGetFASTAFromDMS
         If String.IsNullOrWhiteSpace(dbConnectionString) Then
             m_DatabaseAccessor = Nothing
         Else
-            m_DatabaseAccessor = New clsDBTask(dbConnectionString, persistConnection)
+            m_DatabaseAccessor = New clsDBTask(dbConnectionString, persistConnection, True)
         End If
 
         ClassSelector(databaseFormatType, outputSequenceType, decoyUsesXXX)
