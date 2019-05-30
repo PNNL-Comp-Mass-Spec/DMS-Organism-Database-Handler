@@ -16,58 +16,58 @@ Public Class clsAddAnnotationType
 
     ReadOnly Property TypeName As String
         Get
-            Return Me.m_TypeName
+            Return m_TypeName
         End Get
     End Property
 
     ReadOnly Property Description As String
         Get
-            Return Me.m_Description
+            Return m_Description
         End Get
     End Property
 
     ReadOnly Property AnnotationExample As String
         Get
-            Return Me.m_Example
+            Return m_Example
         End Get
     End Property
 
     ReadOnly Property AuthorityID As Integer
         Get
-            Return Me.m_AuthID
+            Return m_AuthID
         End Get
     End Property
 
     ReadOnly Property DisplayName As String
         Get
-            Return GetDisplayName(Me.m_AuthID, Me.m_TypeName)
+            Return GetDisplayName(m_AuthID, m_TypeName)
         End Get
     End Property
 
     ReadOnly Property EntryExists As Boolean
         Get
-            Return Me.m_EntryExists
+            Return m_EntryExists
         End Get
     End Property
 
     WriteOnly Property FormLocation As Point
         Set
-            Me.m_FormLocation = Value
+            m_FormLocation = Value
         End Set
     End Property
 
 
     Sub New(PSConnectionString As String)
-        Me.m_ConnectionString = PSConnectionString
+        m_ConnectionString = PSConnectionString
 
-        Me.m_AuthAdd = New clsAddNamingAuthority(Me.m_ConnectionString)
-        Me.m_Authorities = Me.m_AuthAdd.AuthoritiesTable
+        m_AuthAdd = New clsAddNamingAuthority(m_ConnectionString)
+        m_Authorities = m_AuthAdd.AuthoritiesTable
 
     End Sub
 
     Private Function GetDisplayName(authID As Integer, authTypeName As String) As String
         Dim authName As String
-        Dim foundRows = Me.m_Authorities.Select("ID = " & authID).ToList()
+        Dim foundRows = m_Authorities.Select("ID = " & authID).ToList()
 
         If (foundRows.Count > 0) Then
             authName = foundRows(0).Item("Display_Name").ToString()
@@ -82,48 +82,48 @@ Public Class clsAddAnnotationType
 
         Dim frmAnn As New frmAddAnnotationType
         Dim annTypeID As Integer
-        If Me.m_SPRunner Is Nothing Then
-            Me.m_SPRunner = New clsAddUpdateEntries(Me.m_ConnectionString)
+        If m_SPRunner Is Nothing Then
+            m_SPRunner = New clsAddUpdateEntries(m_ConnectionString)
         End If
 
-        If Me.m_AuthAdd Is Nothing Then
-            Me.m_AuthAdd = New clsAddNamingAuthority(Me.m_ConnectionString)
+        If m_AuthAdd Is Nothing Then
+            m_AuthAdd = New clsAddNamingAuthority(m_ConnectionString)
         End If
 
-        frmAnn.AuthorityTable = Me.m_Authorities
-        frmAnn.ConnectionString = Me.m_ConnectionString
-        frmAnn.DesktopLocation = Me.m_FormLocation
+        frmAnn.AuthorityTable = m_Authorities
+        frmAnn.ConnectionString = m_ConnectionString
+        frmAnn.DesktopLocation = m_FormLocation
         Dim r As DialogResult = frmAnn.ShowDialog
         Dim authNames() As DataRow
         Dim authName As String
 
 
         If r = DialogResult.OK Then
-            Me.m_TypeName = frmAnn.TypeName
-            Me.m_Description = frmAnn.Description
-            Me.m_Example = frmAnn.Example
-            Me.m_AuthID = frmAnn.AuthorityID
+            m_TypeName = frmAnn.TypeName
+            m_Description = frmAnn.Description
+            m_Example = frmAnn.Example
+            m_AuthID = frmAnn.AuthorityID
 
-            annTypeID = Me.m_SPRunner.AddAnnotationType(
-                 Me.m_TypeName, Me.m_Description, Me.m_Example, Me.m_AuthID)
+            annTypeID = m_SPRunner.AddAnnotationType(
+                 m_TypeName, m_Description, m_Example, m_AuthID)
 
             If annTypeID < 0 Then
-                authNames = Me.m_Authorities.Select("Authority_ID = " & Me.m_AuthID.ToString)
+                authNames = m_Authorities.Select("Authority_ID = " & m_AuthID.ToString)
                 authName = authNames(0).Item("Name").ToString
                 MessageBox.Show(
-                    "An entry called '" + Me.m_TypeName + "' for '" & authName & "' already exists in the Annotation Types table",
+                    "An entry called '" + m_TypeName + "' for '" & authName & "' already exists in the Annotation Types table",
                     "Entry already exists!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2)
-                Me.m_EntryExists = True
+                m_EntryExists = True
                 annTypeID = -annTypeID
             Else
-                Me.m_EntryExists = False
+                m_EntryExists = False
             End If
         Else
             annTypeID = 0
-            Me.m_EntryExists = True
+            m_EntryExists = True
         End If
 
-        Me.m_SPRunner = Nothing
+        m_SPRunner = Nothing
 
         Return annTypeID
 
