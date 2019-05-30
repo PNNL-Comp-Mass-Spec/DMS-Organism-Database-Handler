@@ -112,8 +112,15 @@ Public Class clsSyncFASTAFileArchive
 
         Dim tmpPath As String = Path.GetTempPath
 
+        Dim connectionString As String
+        If m_DatabaseAccessor Is Nothing OrElse String.IsNullOrWhiteSpace(m_DatabaseAccessor.ConnectionString) Then
+            connectionString = String.Empty
+        Else
+            connectionString = m_DatabaseAccessor.ConnectionString
+        End If
+
         Me.m_Exporter = New clsGetFASTAFromDMS(
-            m_DatabaseAccessor.ConnectionString, IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
+            connectionString, IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
             IGetFASTAFromDMS.SequenceTypes.forward)
 
         Dim creationOptionsString As String
