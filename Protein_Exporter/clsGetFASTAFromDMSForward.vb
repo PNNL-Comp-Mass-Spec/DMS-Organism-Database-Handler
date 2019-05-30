@@ -407,6 +407,10 @@ Public Class clsGetFASTAFromDMSForward
     'End Function
 
     Function GetCollectionNameList() As Hashtable 'Implements IGetFASTAFromDMS.GetAllCollections
+        If m_DatabaseAccessor Is Nothing Then
+            Return New Hashtable
+        End If
+
         If m_CollectionsCache Is Nothing Then
             RefreshCollectionCache()
         End If
@@ -415,6 +419,10 @@ Public Class clsGetFASTAFromDMSForward
     End Function
 
     Function GetCollectionsByOrganism(OrganismID As Integer) As Hashtable
+        If m_DatabaseAccessor Is Nothing Then
+            Return New Hashtable
+        End If
+
         If m_CollectionsCache Is Nothing Then
             RefreshCollectionCache()
         End If
@@ -436,6 +444,10 @@ Public Class clsGetFASTAFromDMSForward
     End Function
 
     Function GetOrganismList() As Hashtable
+        If m_DatabaseAccessor Is Nothing Then
+            Return New Hashtable
+        End If
+
         If m_OrganismCache Is Nothing Then
             RefreshOrganismCache()
         End If
@@ -444,6 +456,10 @@ Public Class clsGetFASTAFromDMSForward
     End Function
 
     Function GetOrganismListTable() As DataTable
+        If m_DatabaseAccessor Is Nothing Then
+            Return New DataTable
+        End If
+
         If m_OrganismCache Is Nothing Then
             RefreshOrganismCache()
         End If
@@ -452,7 +468,7 @@ Public Class clsGetFASTAFromDMSForward
     End Function
 
     Protected Sub RefreshCollectionCache()
-        If String.IsNullOrWhiteSpace(m_DatabaseAccessor.ConnectionString) Then
+        If m_DatabaseAccessor Is Nothing OrElse String.IsNullOrWhiteSpace(m_DatabaseAccessor.ConnectionString) Then
             m_CollectionsCache = New DataTable()
         Else
             m_CollectionsCache = m_DatabaseAccessor.GetTable(
@@ -461,7 +477,7 @@ Public Class clsGetFASTAFromDMSForward
     End Sub
 
     Protected Sub RefreshOrganismCache()
-        If String.IsNullOrWhiteSpace(m_DatabaseAccessor.ConnectionString) Then
+        If m_DatabaseAccessor Is Nothing OrElse String.IsNullOrWhiteSpace(m_DatabaseAccessor.ConnectionString) Then
             m_OrganismCache = New DataTable()
         Else
             m_OrganismCache = m_DatabaseAccessor.GetTable(

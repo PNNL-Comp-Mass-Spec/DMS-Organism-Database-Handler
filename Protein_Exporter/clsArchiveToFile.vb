@@ -24,12 +24,16 @@ Public Class clsArchiveToFile
 
         MyBase.New(databaseAccessor, exporterModule)
 
-        Dim connectionStringCheck = databaseAccessor.ConnectionString.ToLower().Replace(" ", "")
-
-        If connectionStringCheck.Contains("source=cbdms") Then
-            m_BaseArchivePath = "\\cbdms\DMS_FASTA_File_Archive\"
-        Else
+        If databaseAccessor Is Nothing Then
             m_BaseArchivePath = DEFAULT_BASE_ARCHIVE_PATH
+        Else
+            Dim connectionStringCheck = databaseAccessor.ConnectionString.ToLower().Replace(" ", "")
+
+            If connectionStringCheck.Contains("source=cbdms") Then
+                m_BaseArchivePath = "\\cbdms\DMS_FASTA_File_Archive\"
+            Else
+                m_BaseArchivePath = DEFAULT_BASE_ARCHIVE_PATH
+            End If
         End If
 
         m_SHA1Provider = New SHA1Managed()
