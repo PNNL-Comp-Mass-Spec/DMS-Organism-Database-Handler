@@ -22,8 +22,6 @@ Public Class clsGetFASTAFromDMS
     Public Const LOCK_FILE_PROGRESS_TEXT As String = "Lockfile"
     Public Const HASHCHECK_SUFFIX As String = ".hashcheck"
 
-    Private m_Disposed As Boolean = False
-
     Private WithEvents m_Getter As clsGetFASTAFromDMSForward
     Private m_Archiver As IArchiveOutputFiles
     Private m_DatabaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes

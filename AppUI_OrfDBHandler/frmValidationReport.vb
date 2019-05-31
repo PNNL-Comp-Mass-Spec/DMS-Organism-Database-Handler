@@ -469,8 +469,7 @@ Public Class frmValidationReport
             cboFileListErrors.BeginUpdate()
 
             For Each item In contents
-                Dim errorCount = item.Value.Count
-                cboFileListErrors.Items.Add(item.Key) '.ToString & " (" & errorCount & " Errors)")
+                cboFileListErrors.Items.Add(item.Key)
             Next
 
             cboFileListErrors.EndUpdate()
@@ -494,8 +493,7 @@ Public Class frmValidationReport
             cboFileListWarnings.BeginUpdate()
 
             For Each item In contents
-                Dim warningCount = item.Value.Count
-                cboFileListWarnings.Items.Add(item.Key) '.ToString & " (" & warningCount & " Errors)")
+                cboFileListWarnings.Items.Add(item.Key)
             Next
 
             cboFileListWarnings.EndUpdate()

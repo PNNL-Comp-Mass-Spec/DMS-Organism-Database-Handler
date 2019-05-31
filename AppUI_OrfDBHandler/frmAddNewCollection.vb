@@ -404,24 +404,6 @@ Public Class frmAddNewCollection
 
     End Sub
 
-    Protected Function MakeStandinDatabase() As DataTable
-        Dim tmpTable As New DataTable
-        Dim dr As DataRow
-        With tmpTable.Columns
-            .Add("Display_Name", Type.GetType("System.String"))
-            .Add("ID", Type.GetType("System.Int32"))
-        End With
-
-        dr = tmpTable.NewRow
-        dr.Item("Display_Name") = " -- Determined from Existing Collection(s) --"
-        dr.Item("ID") = 0
-        tmpTable.Rows.Add(dr)
-
-        Return tmpTable
-    End Function
-
-
-
 #Region " Event Handlers "
 
     Private Sub txtCollectionName_Leave(sender As Object, e As EventArgs) Handles txtCollectionName.Leave
