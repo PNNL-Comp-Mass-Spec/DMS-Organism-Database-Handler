@@ -29,7 +29,7 @@ Public Class frmCollectionStateEditor
     Private components As System.ComponentModel.IContainer
 
     'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.  
+    'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
     Friend WithEvents lvwCollections As ListView
     Friend WithEvents lblCollectionsListView As Label
@@ -225,29 +225,29 @@ Public Class frmCollectionStateEditor
         If txtLiveSearch.Text.Length = 0 Then
             txtLiveSearch.ForeColor = SystemColors.InactiveCaption
             txtLiveSearch.Text = "Search"
-            Me.m_SearchActive = False
+            m_SearchActive = False
             SearchTimer.Stop()
-            Me.m_Handler.FillListView(Me.lvwCollections)
+            m_Handler.FillListView(lvwCollections)
         End If
     End Sub
 
 #End Region
 
     Friend Sub TimerHandler(sender As Object, e As ElapsedEventArgs) Handles SearchTimer.Elapsed
-        Me.m_Handler.FillFilteredListView(Me.lvwCollections, Me.txtLiveSearch.Text)
+        m_Handler.FillFilteredListView(lvwCollections, txtLiveSearch.Text)
     End Sub
 
 #Region " Form Event Handlers"
 
     Private Sub frmCollectionStateEditor_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Me.m_Handler = New clsCollectionStatePickerHandler(Me.m_PSConnectionString)
-        Me.m_StatesTable = Me.m_Handler.GetStates()
+        m_Handler = New clsCollectionStatePickerHandler(m_PSConnectionString)
+        m_StatesTable = m_Handler.GetStates()
 
         RemoveHandler cboStateChanger.SelectedIndexChanged, AddressOf cboStateChanger_SelectedIndexChanged
 
-        With Me.cboStateChanger
+        With cboStateChanger
             .BeginUpdate()
-            .DataSource = Me.m_StatesTable
+            .DataSource = m_StatesTable
             .DisplayMember = "State"
             .ValueMember = "ID"
             .EndUpdate()
@@ -255,32 +255,32 @@ Public Class frmCollectionStateEditor
 
         AddHandler cboStateChanger.SelectedIndexChanged, AddressOf cboStateChanger_SelectedIndexChanged
 
-        Me.cboStateChanger.SelectedValue = Me.m_SelectedNewStateID
+        cboStateChanger.SelectedValue = m_SelectedNewStateID
 
-        Me.m_Handler.FillListView(Me.lvwCollections)
+        m_Handler.FillListView(lvwCollections)
     End Sub
 
     Private Sub cboStateChanger_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboStateChanger.SelectedIndexChanged
         Dim cbo = DirectCast(sender, ComboBox)
-        Me.m_SelectedNewStateID = CInt(cbo.SelectedValue)
+        m_SelectedNewStateID = CInt(cbo.SelectedValue)
     End Sub
 
     Private Sub cmdStateChanger_Click(sender As Object, e As EventArgs) Handles cmdStateChanger.Click
         Dim al As New ArrayList
         Dim item As ListViewItem
 
-        For Each item In Me.lvwCollections.SelectedItems
+        For Each item In lvwCollections.SelectedItems
             al.Add(item.Tag)
         Next
 
-        Me.m_Handler.ChangeSelectedCollectionStates(Me.m_SelectedNewStateID, al)
+        m_Handler.ChangeSelectedCollectionStates(m_SelectedNewStateID, al)
 
-        Me.m_Handler.ForceIDTableReload = True
+        m_Handler.ForceIDTableReload = True
 
-        If Me.m_SearchActive Then
-            Me.m_Handler.FillFilteredListView(Me.lvwCollections, Me.txtLiveSearch.Text)
+        If m_SearchActive Then
+            m_Handler.FillFilteredListView(lvwCollections, txtLiveSearch.Text)
         Else
-            Me.m_Handler.FillListView(Me.lvwCollections)
+            m_Handler.FillListView(lvwCollections)
         End If
 
     End Sub
@@ -301,7 +301,7 @@ Public Class frmCollectionStateEditor
         End If
 
         'Perform sort
-        Me.lvwCollections.ListViewItemSorter = New ListViewItemComparer(e.Column, m_SortOrderAsc)
+        lvwCollections.ListViewItemSorter = New ListViewItemComparer(e.Column, m_SortOrderAsc)
     End Sub
 
     Private Class ListViewItemComparer

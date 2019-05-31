@@ -13,7 +13,7 @@ Public Class clsFilePreviewHandler
 
     Sub New()
 
-        Me.m_frmPreview = New frmFilePreview
+        m_frmPreview = New frmFilePreview
 
     End Sub
 
@@ -21,64 +21,64 @@ Public Class clsFilePreviewHandler
         filePath As String,
         lineCount As Integer)
 
-        If Me.m_Loader Is Nothing Then
-            Me.m_Loader = New FASTAReader
+        If m_Loader Is Nothing Then
+            m_Loader = New FASTAReader
         End If
 
-        Me.m_Proteins = Me.m_Loader.GetProteinEntries(filePath, lineCount)
+        m_Proteins = m_Loader.GetProteinEntries(filePath, lineCount)
 
         Dim li As ListViewItem
 
         Dim enumProteins = m_Proteins.GetEnumerator()
-        Me.m_frmPreview.lvwPreview.BeginUpdate()
-        Me.m_frmPreview.lvwPreview.Items.Clear()
+        m_frmPreview.lvwPreview.BeginUpdate()
+        m_frmPreview.lvwPreview.Items.Clear()
 
         While enumProteins.MoveNext()
             Dim protein = enumProteins.Current.Value
             li = New ListViewItem(protein.Reference)
             li.SubItems.Add(protein.Description)
-            Me.m_frmPreview.lvwPreview.Items.Add(li)
+            m_frmPreview.lvwPreview.Items.Add(li)
         End While
 
-        Me.m_frmPreview.lvwPreview.EndUpdate()
+        m_frmPreview.lvwPreview.EndUpdate()
     End Sub
 
     Private Sub FillPreview(lineCount As Integer) Handles m_frmPreview.RefreshRequest
-        Me.GetProteins(Me.m_currentFilePath, lineCount)
+        GetProteins(m_currentFilePath, lineCount)
     End Sub
 
-    Sub ShowPreview(filePath As String, horizPos As Integer, vertPos As Integer, height As Integer)
-        Me.m_currentFilePath = filePath
-        If Me.m_frmPreview Is Nothing Then
-            Me.m_frmPreview = New frmFilePreview
+    Sub ShowPreview(filePath As String, horizontalPos As Integer, verticalPos As Integer, height As Integer)
+        m_currentFilePath = filePath
+        If m_frmPreview Is Nothing Then
+            m_frmPreview = New frmFilePreview
         End If
-        With Me.m_frmPreview
-            .DesktopLocation = New Point(horizPos, vertPos)
+        With m_frmPreview
+            .DesktopLocation = New Point(horizontalPos, verticalPos)
             .Height = height
             .WindowName = "Preview of: " & Path.GetFileName(filePath)
-            If Me.m_frmPreview.Visible = False Then
+            If m_frmPreview.Visible = False Then
                 .Show()
             Else
-                Me.FillPreview(CInt(Me.m_frmPreview.txtLineCount.Text))
+                FillPreview(CInt(m_frmPreview.txtLineCount.Text))
             End If
         End With
         RaiseEvent FormStatus(True)
     End Sub
 
     Sub CloseForm()
-        Me.m_frmPreview.Close()
+        m_frmPreview.Close()
     End Sub
 
     Protected Overrides Sub Finalize()
         MyBase.Finalize()
-        Me.m_Proteins = Nothing
-        Me.m_Loader = Nothing
-        Me.m_frmPreview = Nothing
+        m_Proteins = Nothing
+        m_Loader = Nothing
+        m_frmPreview = Nothing
     End Sub
 
     Sub OnFormClose() Handles m_frmPreview.FormClosing
         RaiseEvent FormStatus(False)
-        Me.m_frmPreview = Nothing
+        m_frmPreview = Nothing
     End Sub
 
 End Class

@@ -31,7 +31,7 @@ Public Class frmAddNamingAuthority
     Private components As System.ComponentModel.IContainer
 
     'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.  
+    'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
     Friend WithEvents lblAuthShortName As Label
     Friend WithEvents txtAuthName As TextBox
@@ -164,59 +164,59 @@ Public Class frmAddNamingAuthority
 
     Property ShortName As String
         Get
-            Return Me.m_ShortName
+            Return m_ShortName
         End Get
         Set
-            Me.m_ShortName = Value
+            m_ShortName = Value
         End Set
     End Property
 
     Property FullName As String
         Get
-            Return Me.m_FullName
+            Return m_FullName
         End Get
         Set
-            Me.m_FullName = Value
+            m_FullName = Value
         End Set
     End Property
 
     Property WebAddress As String
         Get
-            Return Me.m_WebAddress
+            Return m_WebAddress
         End Get
         Set
-            Me.m_WebAddress = Value
+            m_WebAddress = Value
         End Set
     End Property
 
 #End Region
 
     Private Sub frmAddNamingAuthority_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        If Not Me.m_ShortName Is Nothing Then
-            Me.txtAuthName.Text = Me.m_ShortName
+        If Not m_ShortName Is Nothing Then
+            txtAuthName.Text = m_ShortName
         End If
 
-        If Not Me.m_FullName Is Nothing Then
-            Me.txtAuthFullName.Text = Me.m_FullName
+        If Not m_FullName Is Nothing Then
+            txtAuthFullName.Text = m_FullName
         End If
 
-        If Not Me.m_WebAddress Is Nothing Then
-            Me.txtAuthWeb.Text = Me.m_WebAddress
+        If Not m_WebAddress Is Nothing Then
+            txtAuthWeb.Text = m_WebAddress
         End If
 
     End Sub
 
     Private Sub cmdOK_Click(sender As Object, e As EventArgs) Handles cmdOK.Click
-        Me.m_ShortName = Me.txtAuthName.Text
-        Me.m_FullName = Me.txtAuthFullName.Text
-        Me.m_WebAddress = Me.txtAuthWeb.Text
+        m_ShortName = txtAuthName.Text
+        m_FullName = txtAuthFullName.Text
+        m_WebAddress = txtAuthWeb.Text
 
-        Me.DialogResult = DialogResult.OK
+        DialogResult = DialogResult.OK
         Me.Close()
     End Sub
 
     Private Sub cmdCancel_Click(sender As Object, e As EventArgs) Handles cmdCancel.Click
-        Me.DialogResult = DialogResult.Cancel
+        DialogResult = DialogResult.Cancel
         Me.Close()
     End Sub
 
@@ -251,10 +251,9 @@ Public Class frmAddNamingAuthority
         Return rawAddress
     End Function
 
-
     Private Sub txtAuthWeb_Validating(sender As Object, e As CancelEventArgs) Handles txtAuthWeb.Validating
-        Dim txt As TextBox = DirectCast(sender, TextBox)
-        Dim tmpAddress As String = Me.ValidateWebAddressFormat(txt.Text)
+        Dim txt = DirectCast(sender, TextBox)
+        Dim tmpAddress As String = ValidateWebAddressFormat(txt.Text)
         txt.Text = tmpAddress
     End Sub
 End Class

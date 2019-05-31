@@ -30,7 +30,7 @@ Public Class frmFilePreview
     Private components As System.ComponentModel.IContainer
 
     'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.  
+    'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
     Friend WithEvents lblLineCount As Label
     Friend WithEvents txtLineCount As TextBox
@@ -162,43 +162,43 @@ Public Class frmFilePreview
     End Property
 
     Private Sub cmdRefresh_Click(sender As Object, e As EventArgs) Handles cmdRefresh.Click
-        RaiseEvent RefreshRequest(Me.m_currentLineCount)
-        If Me.cmdRefresh.Enabled = True Then
-            Me.cmdRefresh.Enabled = False
+        RaiseEvent RefreshRequest(m_currentLineCount)
+        If cmdRefresh.Enabled = True Then
+            cmdRefresh.Enabled = False
         End If
     End Sub
 
     Private Sub txtLineCount_Validating(sender As Object, e As CancelEventArgs) Handles txtLineCount.Validating
         Dim value As Integer
         Dim m As Match
-        Dim countText As String = Me.txtLineCount.Text
+        Dim countText As String = txtLineCount.Text
 
         If validationRegex.IsMatch(CInt(countText).ToString) Then
             m = validationRegex.Match(CInt(countText).ToString)
             value = CInt(m.Groups(0).Value)
-            Me.txtLineCount.Text = value.ToString
-            Me.m_currentLineCount = value
-            If Me.cmdRefresh.Enabled = False Then
-                Me.cmdRefresh.Enabled = True
+            txtLineCount.Text = value.ToString
+            m_currentLineCount = value
+            If cmdRefresh.Enabled = False Then
+                cmdRefresh.Enabled = True
             End If
         Else
-            Me.txtLineCount.Text = Me.m_currentLineCount.ToString
+            txtLineCount.Text = m_currentLineCount.ToString
             e.Cancel = True
         End If
 
     End Sub
 
     Private Sub frmFilePreview_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Me.txtLineCount.Text = Me.m_currentLineCount.ToString
-        RaiseEvent RefreshRequest(Me.m_currentLineCount)
+        txtLineCount.Text = m_currentLineCount.ToString
+        RaiseEvent RefreshRequest(m_currentLineCount)
     End Sub
 
     Private Sub txtLineCount_TextChanged(sender As Object, e As EventArgs) Handles txtLineCount.TextChanged
-        Dim countText As String = Me.txtLineCount.Text
+        Dim countText As String = txtLineCount.Text
         If validationRegex.IsMatch(countText) Then
-            Me.cmdRefresh.Enabled = True
+            cmdRefresh.Enabled = True
         Else
-            Me.cmdRefresh.Enabled = False
+            cmdRefresh.Enabled = False
         End If
     End Sub
 

@@ -15,92 +15,92 @@ Public Class clsAddNamingAuthority
 
     ReadOnly Property ShortName As String
         Get
-            Return Me.m_shortName
+            Return m_shortName
         End Get
     End Property
 
     ReadOnly Property FullName As String
         Get
-            Return Me.m_fullName
+            Return m_fullName
         End Get
     End Property
 
     ReadOnly Property WebAddress As String
         Get
-            Return Me.m_webAddress
+            Return m_webAddress
         End Get
     End Property
 
     ReadOnly Property EntryExists As Boolean
         Get
-            Return Me.m_EntryExists
+            Return m_EntryExists
         End Get
     End Property
 
     ReadOnly Property AuthoritiesTable As DataTable
         Get
-            Return Me.m_AuthorityTable
+            Return m_AuthorityTable
         End Get
     End Property
 
     WriteOnly Property FormLocation As Point
         Set
-            Me.m_FormLocation = Value
+            m_FormLocation = Value
         End Set
     End Property
 
 
     Sub New(PSConnectionString As String)
-        Me.m_ConnectionString = PSConnectionString
-        Me.m_AuthorityTable = Me.GetAuthoritiesList()
+        m_ConnectionString = PSConnectionString
+        m_AuthorityTable = GetAuthoritiesList()
     End Sub
 
 
     Function AddNamingAuthority() As Integer
 
         Dim frmAuth As New frmAddNamingAuthority
-        frmAuth.DesktopLocation = Me.m_FormLocation
+        frmAuth.DesktopLocation = m_FormLocation
         Dim authID As Integer
-        If Me.m_SPRunner Is Nothing Then
-            Me.m_SPRunner = New clsAddUpdateEntries(Me.m_ConnectionString)
+        If m_SPRunner Is Nothing Then
+            m_SPRunner = New clsAddUpdateEntries(m_ConnectionString)
         End If
 
         Dim r As DialogResult = frmAuth.ShowDialog
 
 
         If r = DialogResult.OK Then
-            Me.m_shortName = frmAuth.ShortName
-            Me.m_fullName = frmAuth.FullName
-            Me.m_webAddress = frmAuth.WebAddress
+            m_shortName = frmAuth.ShortName
+            m_fullName = frmAuth.FullName
+            m_webAddress = frmAuth.WebAddress
 
-            authID = Me.m_SPRunner.AddNamingAuthority(Me.m_shortName, Me.m_fullName, Me.m_webAddress)
+            authID = m_SPRunner.AddNamingAuthority(m_shortName, m_fullName, m_webAddress)
             If authID < 0 Then
 
                 MessageBox.Show(
-                    "An entry for '" + Me.m_shortName + "' already exists in the Authorities table",
+                    "An entry for '" + m_shortName + "' already exists in the Authorities table",
                     "Entry already exists!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2)
-                Me.m_EntryExists = True
+                m_EntryExists = True
                 authID = -authID
             Else
-                Me.m_EntryExists = False
+                m_EntryExists = False
             End If
         Else
             authID = -1
         End If
 
-        Me.m_SPRunner = Nothing
+        m_SPRunner = Nothing
 
         Return authID
 
     End Function
 
     Private Function GetAuthoritiesList() As DataTable
-        If Me.m_Importer Is Nothing Then
-            Me.m_Importer = New clsImportHandler(Me.m_ConnectionString)
+        If m_Importer Is Nothing Then
+            m_Importer = New clsImportHandler(m_ConnectionString)
         End If
 
         Dim tmpAuthTable As DataTable
-        tmpAuthTable = Me.m_Importer.LoadAuthorities
+        tmpAuthTable = m_Importer.LoadAuthorities
 
         Return tmpAuthTable
 
