@@ -1,7 +1,6 @@
 Imports System.IO
 Imports NucleotideTranslator
 Imports Protein_Exporter
-Imports Protein_Exporter.ExportProteinCollectionsIFC
 Imports Protein_Importer
 Imports Protein_Uploader
 Imports TranslationTableImport
@@ -322,12 +321,12 @@ Public Class frmTestingInterface
 
 #End Region
 
-    Private WithEvents importer As IImportProteins
+    Private WithEvents importer As clsImportHandler
     Private collectionList As DataTable
     Private m_LastOutputDirectory As String = "D:\outbox\output_test\"
     Private m_AppPath As String = Application.ExecutablePath
     Protected WithEvents m_Syncer As clsSyncFASTAFileArchive
-    Protected WithEvents m_Exporter As IGetFASTAFromDMS
+    Protected WithEvents m_Exporter As clsGetFASTAFromDMS
     Protected m_FullOutputPath As String
 
     Private m_TaskMessage As String
@@ -348,19 +347,19 @@ Public Class frmTestingInterface
     End Sub
 
     Private Sub cmdLoadTT_Click(sender As Object, e As EventArgs) Handles cmdLoadTT.Click
-        Dim transhandler As ITransTableImport
+        Dim transhandler as clsTransTableHandler
         transhandler = New clsTransTableHandler(txtConnString.Text)
         transhandler.GetAllTranslationTableEntries(txtTransFilePath.Text)
     End Sub
 
     Private Sub cmdLoadFF_Click(sender As Object, e As EventArgs) Handles cmdLoadFF.Click
-        Dim importHandler As IImportProteins = New clsImportHandler(txtConnString.Text)
+        Dim importHandler = New clsImportHandler(txtConnString.Text)
 
         'importHandler.LoadProteins(txtFASTAFilePath.Text, "", Protein_Importer.IImportProteins.ProteinImportFileTypes.FASTA, 4, 1)
 
         'Dim FASTAHandler As Protein_Importer.IReadFASTA
         ''FASTAHandler = New Protein_Importer.FASTAReader
-        'Dim sqlData As TableManipulationBase.IGetSQLData
+        'Dim sqlData As TableManipulationBase.clsDBTask
         'sqlData = New TableManipulationBase.clsDBTask(txtConnString.Text, True)
 
 
@@ -414,10 +413,9 @@ Public Class frmTestingInterface
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
-        Dim trans As ITranslateNucleotides =
-            New clsTranslateNucleotides(txtConnString.Text)
+        Dim trans = New clsTranslateNucleotides(txtConnString.Text)
 
-        trans.LoadMatrix(1)
+        trans.LoadTransMatrix(1)
     End Sub
 
     Private Sub cmdExportFASTA_Click(sender As Object, e As EventArgs) Handles cmdExportFASTA.Click

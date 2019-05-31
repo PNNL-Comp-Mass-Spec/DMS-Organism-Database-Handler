@@ -77,6 +77,10 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TableManipulationBase\TableManipulationBase.vbproj">
+      <Project>{15939683-d5b9-4784-9e16-89b0c059d3c8}</Project>
+      <Name>TableManipulationBase</Name>
+    </ProjectReference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -100,14 +104,8 @@
       <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
     </ProjectReference>
     <ProjectReference Include="..\SequenceInfoCalculator\SequenceInfoCalculator.vbproj">
+      <Project>{99c5d78c-00da-49a5-bac8-19adfe95fabe}</Project>
       <Name>SequenceInfoCalculator</Name>
-      <Project>{99C5D78C-00DA-49A5-BAC8-19ADFE95FABE}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\TableManipulationBase\TableManipulationBase.vbproj">
-      <Name>TableManipulationBase</Name>
-      <Project>{15939683-D5B9-4784-9E16-89B0C059D3C8}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -131,9 +129,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FASTAReader.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IReadProteinImportFile.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TinySeqXMLReader.vb">

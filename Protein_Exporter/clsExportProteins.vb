@@ -2,11 +2,9 @@ Option Strict On
 
 Imports System.Collections.Generic
 Imports System.IO
-Imports Protein_Exporter.ExportProteinCollectionsIFC
 Imports Protein_Storage
 
 Public MustInherit Class clsExportProteins
-    Implements IExportProteins
 
     Protected m_ExportComponent As clsGetFASTAFromDMSForward
 
@@ -14,9 +12,9 @@ Public MustInherit Class clsExportProteins
         m_ExportComponent = exportComponent
     End Sub
 
-    Protected Event ExportStart(taskTitle As String) Implements IExportProteins.ExportStart
-    Protected Event ExportProgress(statusMsg As String, fractionDone As Double) Implements IExportProteins.ExportProgress
-    Protected Event ExportEnd() Implements IExportProteins.ExportEnd
+    Public Event ExportStart(taskTitle As String)
+    Public Event ExportProgress(statusMsg As String, fractionDone As Double)
+    Public Event ExportEnd()
 
     ''' <summary>
     ''' Export the proteins to the given file
@@ -26,11 +24,11 @@ Public MustInherit Class clsExportProteins
     ''' <param name="selectedProteinList"></param>
     ''' <returns></returns>
     Protected Function Export(
-      proteins As IProteinStorage,
+      proteins As clsProteinStorage,
       ByRef destinationPath As String,
-      selectedProteinList As List(Of String)) As String Implements IExportProteins.Export
+      selectedProteinList As List(Of String)) As String
 
-        Dim tmpProteinsList As IProteinStorage
+        Dim tmpProteinsList As clsProteinStorage
 
         tmpProteinsList = New clsProteinStorage(Path.GetFileNameWithoutExtension(destinationPath))
 
@@ -48,9 +46,9 @@ Public MustInherit Class clsExportProteins
     ''' <param name="proteins"></param>
     ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
     ''' <returns></returns>
-    Protected MustOverride Function Export(
-      proteins As IProteinStorage,
-      ByRef destinationPath As String) As String Implements IExportProteins.Export
+    Public MustOverride Function Export(
+      proteins As clsProteinStorage,
+      ByRef destinationPath As String) As String
 
     ''' <summary>
     ''' Export the proteins to the given file
@@ -58,9 +56,9 @@ Public MustInherit Class clsExportProteins
     ''' <param name="proteinTables"></param>
     ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
     ''' <returns></returns>
-    Protected MustOverride Function Export(
+    Public MustOverride Function Export(
       proteinTables As DataSet,
-      ByRef destinationPath As String) As String Implements IExportProteins.Export
+      ByRef destinationPath As String) As String
 
     ''' <summary>
     ''' Export the proteins to the given file
@@ -68,9 +66,9 @@ Public MustInherit Class clsExportProteins
     ''' <param name="proteinTable"></param>
     ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
     ''' <returns></returns>
-    Protected MustOverride Function Export(
+    Public MustOverride Function Export(
       proteinTable As DataTable,
-      ByRef destinationPath As String) As String Implements IExportProteins.Export
+      ByRef destinationPath As String) As String
 
     Protected Sub OnExportStart(taskTitle As String)
         RaiseEvent ExportStart(taskTitle)
@@ -99,7 +97,16 @@ Public MustInherit Class clsExportProteins
     ''' </summary>
     ''' <param name="fullFilePath"></param>
     ''' <returns>File hash</returns>
-    Protected Function GetFileHash(fullFilePath As String) As String Implements IExportProteins.GenerateFileAuthenticationHash
+    Protected Function GetFileHash(fullFilePath As String) As String
+        Return GenerateFileAuthenticationHash(fullFilePath)
+    End Function
+
+    ''' <summary>
+    ''' Compute the CRC32 hash for the file
+    ''' </summary>
+    ''' <param name="fullFilePath"></param>
+    ''' <returns>File hash</returns>
+    Public Function GenerateFileAuthenticationHash(fullFilePath As String) As String
 
         Dim fi As New FileInfo(fullFilePath)
 

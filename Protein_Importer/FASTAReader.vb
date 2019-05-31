@@ -14,7 +14,6 @@ Public Class FASTAReaderNotInitializedException
 End Class
 
 Public Class FASTAReader
-    Implements IReadProteinImportFile
 
     Private m_FASTAFilePath As String
     Private m_initialized As Boolean = False
@@ -34,9 +33,9 @@ Public Class FASTAReader
 
 #Region " Events "
 
-    Protected Event LoadStart(taskTitle As String) Implements IReadProteinImportFile.LoadStart
-    Protected Event LoadEnd() Implements IReadProteinImportFile.LoadEnd
-    Protected Event LoadProgress(fractionDone As Double) Implements IReadProteinImportFile.LoadProgress
+    Public Event LoadStart(taskTitle As String)
+    Public Event LoadEnd()
+    Public Event LoadProgress(fractionDone As Double)
 
 #End Region
 
@@ -47,35 +46,44 @@ Public Class FASTAReader
 
     End Sub
 
-    Protected ReadOnly Property LastErrorMessage As String Implements IReadProteinImportFile.LastErrorMessage
+    Public ReadOnly Property LastErrorMessage As String
         Get
             Return m_LastError
         End Get
     End Property
 
-    Protected Function LoadFASTAFile(FilePath As String) As Protein_Storage.IProteinStorage Implements IReadProteinImportFile.GetProteinEntries
-        Return LoadFASTAFile(FilePath, -1)
+    Public Function GetProteinEntries(filePath As String) As Protein_Storage.clsProteinStorage
+        Return LoadFASTAFile(filePath, -1)
     End Function
 
-    Protected Function LoadFASTAFile(FilePath As String, NumRecordsToLoad As Integer) As Protein_Storage.IProteinStorage Implements IReadProteinImportFile.GetProteinEntries
+    Public Function GetProteinEntries(filePath As String, numRecordsToLoad As Integer) As Protein_Storage.clsProteinStorage
+        Return LoadFASTAFile(filePath, numRecordsToLoad)
+    End Function
+
+
+    Public Function LoadFASTAFile(filePath As String) As Protein_Storage.clsProteinStorage
+        Return LoadFASTAFile(filePath, -1)
+    End Function
+
+    Public Function LoadFASTAFile(filePath As String, numRecordsToLoad As Integer) As Protein_Storage.clsProteinStorage
 
         Dim fileLength As Integer
         Dim currPos As Integer = 0
 
-        Dim fastaContents As Protein_Storage.IProteinStorage = New Protein_Storage.clsProteinStorage(FilePath)
+        Dim fastaContents As Protein_Storage.clsProteinStorage = New Protein_Storage.clsProteinStorage(filePath)
 
         Dim strORFTemp As String = String.Empty
         Dim strDescTemp As String = String.Empty
         Dim strSeqTemp As String = String.Empty
         Dim descMatch As System.Text.RegularExpressions.Match
 
-        Dim seqInfo As ICalculateSeqInfo = New SequenceInfoCalculator.SequenceInfoCalculator
+        Dim seqInfo = New SequenceInfoCalculator.SequenceInfoCalculator
 
         Dim recordCount As Integer
 
-        m_FASTAFilePath = FilePath
+        m_FASTAFilePath = filePath
 
-        Dim lineEndCharCount As Integer = LineEndCharacterCount(FilePath)
+        Dim lineEndCharCount As Integer = LineEndCharacterCount(filePath)
 
         Try
 
@@ -120,7 +128,7 @@ Public Class FASTAReader
                         Else
                             strSeqTemp &= s
                         End If
-                        If NumRecordsToLoad > 0 And recordCount >= NumRecordsToLoad - 1 Then
+                        If numRecordsToLoad > 0 And recordCount >= numRecordsToLoad - 1 Then
                             Exit Do
                         End If
                         currPos += s.Length + lineEndCharCount
@@ -157,7 +165,7 @@ Public Class FASTAReader
 
     End Function
 
-    Protected Function LineEndCharacterCount(FilePath As String) As Integer
+    Protected Function LineEndCharacterCount(filePath As String) As Integer
 
         Dim fi = New FileInfo(m_FASTAFilePath)
         If (fi.Exists) Then

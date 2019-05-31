@@ -1,41 +1,7 @@
 Imports System.Data.SqlClient
 Imports System.Runtime.InteropServices
 
-Public Interface IGetSQLData
-
-    Function GetTable(selectSQL As String) As DataTable
-
-    Function GetTable(
-        selectSQL As String,
-        <Out> ByRef dataAdapter As SqlDataAdapter) As DataTable
-
-    Function GetTableTemplate(tableName As String) As DataTable
-
-    Function DataTableToHashtable(
-        dt As DataTable,
-        keyFieldName As String,
-        valueFieldName As String,
-        Optional filterString As String = "") As Hashtable
-
-    Function DataTableToComplexHashtable(
-        dt As DataTable,
-        keyFieldName As String,
-        valueFieldName As String,
-        Optional filterString As String = "") As Hashtable
-
-    Sub OpenConnection()
-    Sub OpenConnection(connString As String)
-    Sub CloseConnection()
-
-    ReadOnly Property ConnectionString As String
-    ReadOnly Property Connected As Boolean
-    ReadOnly Property Connection As SqlConnection
-    Property ShowTraceMessages As Boolean
-
-End Interface
-
 Public Class clsDBTask
-    Implements IGetSQLData
 
 #Region "Member Variables"
 
@@ -64,14 +30,14 @@ Public Class clsDBTask
 
 
     '------[for DB access]-----------------------------------------------------------
-    Protected Sub OpenConnection() Implements IGetSQLData.OpenConnection
+    Protected Sub OpenConnection()
         If String.IsNullOrWhiteSpace(ConnectionString) Then
             Exit Sub
         End If
         OpenConnection(ConnectionString)
     End Sub
 
-    Protected Sub OpenConnection(connString As String) Implements IGetSQLData.OpenConnection
+    Protected Sub OpenConnection(connString As String)
         Const MAX_ATTEMPTS = 6
 
         ShowTrace("Opening a database connection, connection string: " & connString)
@@ -111,7 +77,7 @@ Public Class clsDBTask
         End If
     End Sub
 
-    Protected Sub CloseConnection() Implements IGetSQLData.CloseConnection
+    Public Sub CloseConnection()
         Try
             If Not m_DBCn Is Nothing AndAlso m_DBCn.State = ConnectionState.Open Then
                 m_DBCn.Close()
@@ -123,7 +89,7 @@ Public Class clsDBTask
         End Try
     End Sub
 
-    Protected ReadOnly Property Connected As Boolean Implements IGetSQLData.Connected
+    Public ReadOnly Property Connected As Boolean
         Get
             If m_DBCn Is Nothing Then
                 Return False
@@ -137,9 +103,9 @@ Public Class clsDBTask
         End Get
     End Property
 
-    Protected ReadOnly Property ConnectionString As String Implements IGetSQLData.ConnectionString
+    Public ReadOnly Property ConnectionString As String
 
-    Protected ReadOnly Property Connection As SqlConnection Implements IGetSQLData.Connection
+    Public ReadOnly Property Connection As SqlConnection
         Get
             If Connected Then
                 Return m_DBCn
@@ -150,14 +116,14 @@ Public Class clsDBTask
         End Get
     End Property
 
-    Protected Function GetTableTemplate(tableName As String) As DataTable Implements IGetSQLData.GetTableTemplate
+    Public Function GetTableTemplate(tableName As String) As DataTable
         Dim sql As String = "SELECT * FROM " & tableName & " WHERE 1=0"
         Return GetTable(sql)
     End Function
 
-    Protected Function GetTable(
+    Public Function GetTable(
         selectSQL As String,
-        <Out> ByRef dataAdapter As SqlDataAdapter) As DataTable Implements IGetSQLData.GetTable
+        <Out> ByRef dataAdapter As SqlDataAdapter) As DataTable
 
         Const MAX_ATTEMPTS = 6
         Const COMMAND_TIMEOUT_SECONDS = 600
@@ -203,7 +169,7 @@ Public Class clsDBTask
 
     End Function
 
-    Protected Function GetTable(selectSQL As String) As DataTable Implements IGetSQLData.GetTable
+    Public Function GetTable(selectSQL As String) As DataTable
         Dim dataAdapter As SqlDataAdapter = Nothing
 
         Dim tmpTable As DataTable = GetTable(selectSQL, dataAdapter)
@@ -237,11 +203,11 @@ Public Class clsDBTask
 
     End Sub
 
-    Protected Function DataTableToHashTable(
+    Public Function DataTableToHashTable(
       dt As DataTable,
       keyFieldName As String,
       valueFieldName As String,
-      Optional filterString As String = "") As Hashtable Implements IGetSQLData.DataTableToHashtable
+      Optional filterString As String = "") As Hashtable
 
         Dim foundRows() As DataRow = dt.Select(filterString)
         Dim ht As New Hashtable(foundRows.Length)
@@ -261,7 +227,7 @@ Public Class clsDBTask
         dt As DataTable,
         keyFieldName As String,
         valueFieldName As String,
-        Optional filterString As String = "") As Hashtable Implements IGetSQLData.DataTableToComplexHashtable
+        Optional filterString As String = "") As Hashtable
 
         Dim dr As DataRow
         Dim foundRows() As DataRow = dt.Select(filterString)
@@ -290,6 +256,6 @@ Public Class clsDBTask
         Console.WriteLine("  " & message)
     End Sub
 
-    Public Property ShowTraceMessages As Boolean Implements IGetSQLData.ShowTraceMessages
+    Public Property ShowTraceMessages As Boolean
 
 End Class

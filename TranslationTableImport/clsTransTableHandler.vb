@@ -1,10 +1,5 @@
 Imports System.Collections.Generic
 
-Public Interface ITransTableImport
-    Function GetAllTranslationTableEntries(ASN1_FilePath As String) As DataTable
-
-End Interface
-
 '* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 '
 '  Handles importation/searching/etc. of ASN.1 Formatted Genetic Code Tables from NCBI
@@ -30,7 +25,6 @@ End Interface
 
 
 Public Class clsTransTableHandler
-    Implements ITransTableImport
 
     Private m_Translation_Entries As DataTable
     Private m_Translation_Tables As DataTable
@@ -42,7 +36,7 @@ Public Class clsTransTableHandler
         m_ConnectionString = PIS_ConnectionString
     End Sub
 
-    Friend Function GetAllTranslationTableEntries(FilePath As String) As DataTable Implements ITransTableImport.GetAllTranslationTableEntries
+    Public Function GetAllTranslationTableEntries(FilePath As String) As DataTable
         ScanFileForEntries(FilePath)
 
         ' Not implemented
@@ -60,7 +54,7 @@ Public Class clsTransTableHandler
 
 
 
-        Dim dba As TableManipulationBase.IGetSQLData
+        Dim dba As TableManipulationBase.clsDBTask
 
         dba = New TableManipulationBase.clsDBTask(m_ConnectionString, True)
 
@@ -114,7 +108,7 @@ Public Class clsTransTableHandler
     End Sub
 
     Private Sub SyncLocalToDMS()
-        Dim dba As TableManipulationBase.IGetSQLData = New TableManipulationBase.clsDBTask(m_ConnectionString)
+        Dim dba As TableManipulationBase.clsDBTask = New TableManipulationBase.clsDBTask(m_ConnectionString)
 
         Dim dmsDA = New SqlClient.SqlDataAdapter("SELECT * FROM " & clsTransTableHandler.EntriesTableName, dba.Connection)
         Dim dmsCB = New SqlClient.SqlCommandBuilder(dmsDA)

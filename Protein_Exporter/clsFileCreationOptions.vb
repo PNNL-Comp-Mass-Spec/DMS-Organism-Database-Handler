@@ -2,27 +2,26 @@ Option Strict On
 
 Imports System.Text
 Imports System.Text.RegularExpressions
-Imports Protein_Exporter.ExportProteinCollectionsIFC
 Imports TableManipulationBase
 
 Friend Class clsFileCreationOptions
-    Private ReadOnly m_DatabaseAccessor As IGetSQLData
-    Private m_SeqDirection As IGetFASTAFromDMS.SequenceTypes
-    Private m_FileType As IGetFASTAFromDMS.DatabaseFormatTypes
+    Private ReadOnly m_DatabaseAccessor As clsDBTask
+    Private m_SeqDirection As clsGetFASTAFromDMS.SequenceTypes
+    Private m_FileType As clsGetFASTAFromDMS.DatabaseFormatTypes
     Private m_CreationValuesTable As DataTable
     Private m_KeywordTable As DataTable
 
-    Sub New(databaseAccessor As IGetSQLData)
+    Sub New(databaseAccessor As clsDBTask)
         m_DatabaseAccessor = databaseAccessor
     End Sub
 
-    ReadOnly Property SequenceDirection As IGetFASTAFromDMS.SequenceTypes
+    ReadOnly Property SequenceDirection As clsGetFASTAFromDMS.SequenceTypes
         Get
             Return m_SeqDirection
         End Get
     End Property
 
-    ReadOnly Property FileFormatType As IGetFASTAFromDMS.DatabaseFormatTypes
+    ReadOnly Property FileFormatType As clsGetFASTAFromDMS.DatabaseFormatTypes
         Get
             Return m_FileType
         End Get
@@ -124,12 +123,12 @@ Friend Class clsFileCreationOptions
 
             Select Case tmpKeyword
                 Case "seq_direction"
-                    m_SeqDirection = DirectCast([Enum].Parse(GetType(IGetFASTAFromDMS.SequenceTypes), tmpValue),
-                        IGetFASTAFromDMS.SequenceTypes)
+                    m_SeqDirection = DirectCast([Enum].Parse(GetType(clsGetFASTAFromDMS.SequenceTypes), tmpValue),
+                        clsGetFASTAFromDMS.SequenceTypes)
 
                 Case "filetype"
-                    m_FileType = DirectCast([Enum].Parse(GetType(IGetFASTAFromDMS.DatabaseFormatTypes), tmpValue),
-                        IGetFASTAFromDMS.DatabaseFormatTypes)
+                    m_FileType = DirectCast([Enum].Parse(GetType(clsGetFASTAFromDMS.DatabaseFormatTypes), tmpValue),
+                        clsGetFASTAFromDMS.DatabaseFormatTypes)
             End Select
 
             With cleanOptionsString
@@ -145,8 +144,8 @@ Friend Class clsFileCreationOptions
     End Function
 
     Function MakeCreationOptionsString(
-        seqDirection As IGetFASTAFromDMS.SequenceTypes,
-        databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes) As String
+        seqDirection As clsGetFASTAFromDMS.SequenceTypes,
+        databaseFormatType As clsGetFASTAFromDMS.DatabaseFormatTypes) As String
 
         Dim creationOptionsSB As New StringBuilder
 

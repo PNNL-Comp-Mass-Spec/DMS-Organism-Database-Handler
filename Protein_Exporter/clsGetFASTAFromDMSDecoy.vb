@@ -2,7 +2,6 @@ Option Strict On
 
 Imports System.Collections.Generic
 Imports System.IO
-Imports Protein_Exporter.ExportProteinCollectionsIFC
 Imports TableManipulationBase
 
 Public Class clsGetFASTAFromDMSDecoy
@@ -16,8 +15,8 @@ Public Class clsGetFASTAFromDMSDecoy
     ''' <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
     ''' <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
     Public Sub New(
-        databaseAccessor As IGetSQLData,
-        databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes,
+        databaseAccessor As clsDBTask,
+        databaseFormatType As clsGetFASTAFromDMS.DatabaseFormatTypes,
         decoyUsesXXX As Boolean)
 
         MyBase.New(databaseAccessor, databaseFormatType)

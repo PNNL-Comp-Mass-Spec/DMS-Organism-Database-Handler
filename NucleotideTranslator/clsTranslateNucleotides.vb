@@ -1,28 +1,16 @@
-Public Interface ITranslateNucleotides
-
-    Function LoadMatrix(TranslationTableID As Integer) As ArrayList
-    Function LoadNucleotidePositionsFromFile(filePath As String) As Integer
-
-End Interface
-
 Public Class clsTranslateNucleotides
-    Implements ITranslateNucleotides
 
     Protected m_TranslationMatrix As ArrayList
-    Protected m_GetSQLData As TableManipulationBase.IGetSQLData
+    Protected m_GetSQLData As TableManipulationBase.clsDBTask
 
     Protected m_TranTableListName As String = "T_DNA_Translation_Tables"
     Protected m_TransTableMembersName As String = "T_DNA_Translation_Table_Members"
 
-
-
     Public Sub New(DMSConnectionString As String)
         Me.m_GetSQLData = New TableManipulationBase.clsDBTask(DMSConnectionString)
-
-
     End Sub
 
-    Protected Function LoadTransMatrix(TranslationTableID As Integer) As ArrayList Implements ITranslateNucleotides.LoadMatrix
+    Public Function LoadTransMatrix(TranslationTableID As Integer) As ArrayList
 
         Dim BaseArray() As Char = "ATGC".ToCharArray
         Dim base_1 As Char
@@ -67,7 +55,7 @@ Public Class clsTranslateNucleotides
         Return PrimaryList
     End Function
 
-    Protected Function LoadNucPositions(filePath As String) As Integer Implements ITranslateNucleotides.LoadNucleotidePositionsFromFile
+    Protected Function LoadNucPositions(filePath As String) As Integer
 
     End Function
 

@@ -4,8 +4,8 @@ Imports Protein_Storage
 
 Public Class clsFilePreviewHandler
 
-    Private m_Proteins As IProteinStorage
-    Private m_Loader As IReadProteinImportFile
+    Private m_Proteins As clsProteinStorage
+    Private m_Loader As FASTAReader
     Private m_currentFilePath As String
     Private WithEvents m_frmPreview As frmFilePreview
 

@@ -6,13 +6,12 @@ Imports System.Linq
 Imports System.Security.Principal
 Imports System.Text
 Imports System.Text.RegularExpressions
-Imports Protein_Exporter.ExportProteinCollectionsIFC
 Imports TableManipulationBase
 
 Public Class clsGetFASTAFromDMSForward
 
-    Protected ReadOnly m_DatabaseAccessor As IGetSQLData
-    Protected WithEvents m_fileDumper As IExportProteins
+    Protected ReadOnly m_DatabaseAccessor As clsDBTask
+    Protected WithEvents m_fileDumper As clsExportProteins
     Protected m_AllCollections As Hashtable
     Protected m_OrganismList As Hashtable
 
@@ -34,18 +33,18 @@ Public Class clsGetFASTAFromDMSForward
     ''' <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
     ''' <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
     Public Sub New(
-      databaseAccessor As IGetSQLData,
-      databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
+      databaseAccessor As clsDBTask,
+      databaseFormatType As clsGetFASTAFromDMS.DatabaseFormatTypes)
 
         m_DatabaseAccessor = databaseAccessor
         m_AllCollections = GetCollectionNameList()
         m_OrganismList = GetOrganismList()
 
         Select Case databaseFormatType
-            Case IGetFASTAFromDMS.DatabaseFormatTypes.fasta
+            Case clsGetFASTAFromDMS.DatabaseFormatTypes.fasta
                 m_fileDumper = New clsExportProteinsFASTA(Me)
                 m_Extension = ".fasta"
-            Case IGetFASTAFromDMS.DatabaseFormatTypes.fastapro
+            Case clsGetFASTAFromDMS.DatabaseFormatTypes.fastapro
                 m_fileDumper = New clsExportProteinsXTFASTA(Me)
                 m_Extension = ".fasta.pro"
         End Select

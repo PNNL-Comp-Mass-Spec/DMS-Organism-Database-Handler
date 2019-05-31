@@ -10,7 +10,7 @@ Friend Class clsExtractFromFlatfile
     Private m_AnnotationStorage As AnnotationStorage
     Private m_firstLine As String
     Private ReadOnly m_PSConnectionString As String
-    Private m_Uploader As Protein_Importer.IAddUpdateEntries
+    Private m_Uploader As Protein_Importer.clsAddUpdateEntries
     Private m_ProteinIDLookup As Dictionary(Of String, Integer)
 
     Private m_MaxProteinNameLength As Integer = 32
@@ -20,7 +20,7 @@ Friend Class clsExtractFromFlatfile
         Me.m_Authorities = AuthorityList
         Me.m_PSConnectionString = PSConnectionString
     End Sub
-    
+
     ReadOnly Property FileContents As List(Of Hashtable)
         Get
             Return Me.m_FileContents
@@ -265,7 +265,7 @@ Friend Class clsExtractFromFlatfile
 
             End If
         Next
-        
+
     End Sub
 
     Private Function GetProteinIDsForPrimaryReferences(PrimaryReferences As SortedSet(Of String)) As Dictionary(Of String, Integer)
@@ -276,7 +276,7 @@ Friend Class clsExtractFromFlatfile
         If Me.m_Uploader Is Nothing Then
             Me.m_Uploader = New Protein_Importer.clsAddUpdateEntries(Me.m_PSConnectionString)
         End If
-        
+
         For Each name In PrimaryReferences
             If Not ht.ContainsKey(name) Then
                 If Me.m_ProteinIDLookup.ContainsKey(name) Then

@@ -157,15 +157,6 @@
     <Compile Include="CRC32.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExportProteinCollectionsIFC.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IArchiveOutputFiles.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IExportProteins.vb">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="My Project\" />
