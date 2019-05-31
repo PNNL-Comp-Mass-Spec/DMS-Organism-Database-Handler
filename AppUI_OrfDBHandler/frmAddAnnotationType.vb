@@ -27,7 +27,7 @@ Public Class frmAddAnnotationType
     Private components As System.ComponentModel.IContainer
 
     'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.  
+    'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
     Friend WithEvents cmdCancel As Button
     Friend WithEvents cmdOK As Button
@@ -187,91 +187,87 @@ Public Class frmAddAnnotationType
 
     Property TypeName As String
         Get
-            Return Me.m_TypeName
+            Return m_TypeName
         End Get
         Set
-            Me.m_TypeName = Value
+            m_TypeName = Value
         End Set
     End Property
 
     Property Description As String
         Get
-            Return Me.m_Description
+            Return m_Description
         End Get
         Set
-            Me.m_Description = Value
+            m_Description = Value
         End Set
     End Property
 
     Property Example As String
         Get
-            Return Me.m_Example
+            Return m_Example
         End Get
         Set
-            Me.m_Example = Value
+            m_Example = Value
         End Set
     End Property
 
     Property AuthorityID As Integer
         Get
-            Return Me.m_AuthID
+            Return m_AuthID
         End Get
         Set
-            Me.m_AuthID = Value
+            m_AuthID = Value
         End Set
     End Property
 
     WriteOnly Property ConnectionString As String
         Set
-            Me.m_PSConnectionString = Value
+            m_PSConnectionString = Value
         End Set
     End Property
 
     WriteOnly Property AuthorityTable As DataTable
         Set
-            Me.m_AuthoritiesTable = Value
+            m_AuthoritiesTable = Value
         End Set
     End Property
 
 #End Region
 
     Private Sub frmAddAnnotationType_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        If Not Me.m_TypeName Is Nothing Then
-            Me.txtAnnTypeName.Text = Me.m_TypeName
+        If Not m_TypeName Is Nothing Then
+            txtAnnTypeName.Text = m_TypeName
         End If
 
-        If Not Me.m_Description Is Nothing Then
-            Me.txtDescription.Text = Me.m_Description
+        If Not m_Description Is Nothing Then
+            txtDescription.Text = m_Description
         End If
 
-        If Not Me.m_Example Is Nothing Then
-            Me.txtTypeExample.Text = Me.m_Example
+        If Not m_Example Is Nothing Then
+            txtTypeExample.Text = m_Example
         End If
 
-        Me.LoadAuthoritiesList()
+        LoadAuthoritiesList()
 
-        If Me.m_AuthID > 0 Then
-            Me.cboAuthorityName.SelectedValue = Me.m_AuthID
-            Me.cboAuthorityName.Select()
+        If m_AuthID > 0 Then
+            cboAuthorityName.SelectedValue = m_AuthID
+            cboAuthorityName.Select()
         End If
-
 
     End Sub
 
     Private Sub LoadAuthoritiesList()
 
-        'If Me.m_au Then
         RemoveHandler cboAuthorityName.SelectedIndexChanged, AddressOf cboAuthorityName_SelectedIndexChanged
 
-        Dim dr As DataRow = Me.m_AuthoritiesTable.NewRow
+        Dim dr As DataRow = m_AuthoritiesTable.NewRow
 
         With dr
             .Item("ID") = -2
             .Item("Display_Name") = "Add New Naming Authority..."
             .Item("Details") = "Brings up a dialog box to allow adding a naming authority to the list"
         End With
-
-
 
         Dim pk1(0) As DataColumn
         pk1(0) = m_AuthoritiesTable.Columns("ID")
@@ -284,9 +280,8 @@ Public Class frmAddAnnotationType
 
         m_AuthoritiesTable.Rows.Add(dr)
 
-
-        With Me.cboAuthorityName
-            .DataSource = Me.m_AuthoritiesTable
+        With cboAuthorityName
+            .DataSource = m_AuthoritiesTable
             .DisplayMember = "Display_Name"
             .ValueMember = "ID"
         End With
@@ -295,23 +290,23 @@ Public Class frmAddAnnotationType
     End Sub
 
     Private Sub cmdOK_Click(sender As Object, e As EventArgs) Handles cmdOK.Click
-        Me.m_TypeName = Me.txtAnnTypeName.Text
-        Me.m_Description = Me.txtDescription.Text
-        Me.m_Example = Me.txtTypeExample.Text
-        Me.m_AuthID = CInt(Me.cboAuthorityName.SelectedValue)
+        m_TypeName = txtAnnTypeName.Text
+        m_Description = txtDescription.Text
+        m_Example = txtTypeExample.Text
+        m_AuthID = CInt(cboAuthorityName.SelectedValue)
 
-        Me.DialogResult = DialogResult.OK
-        Me.Close()
+        DialogResult = DialogResult.OK
+        Close()
     End Sub
 
     Private Sub cmdCancel_Click(sender As Object, e As EventArgs) Handles cmdCancel.Click
-        Me.DialogResult = DialogResult.Cancel
-        Me.Close()
+        DialogResult = DialogResult.Cancel
+        Close()
     End Sub
 
     'Private Sub txtAuthWeb_Validating(sender As System.Object, e As System.ComponentModel.CancelEventArgs) Handles txtTypeExample.Validating
     '    Dim txt As TextBox = DirectCast(sender, TextBox)
-    '    Dim tmpAddress As String = Me.ValidateWebAddressFormat(txt.Text)
+    '    Dim tmpAddress As String = ValidateWebAddressFormat(txt.Text)
     '    txt.Text = tmpAddress
     'End Sub
 
@@ -319,24 +314,24 @@ Public Class frmAddAnnotationType
         Dim cbo = DirectCast(sender, ComboBox)
 
         If cbo.SelectedValue.GetType Is Type.GetType("System.Int32") Then
-            Me.m_AuthID = CInt(cbo.SelectedValue)
+            m_AuthID = CInt(cbo.SelectedValue)
         Else
-            'Me.m_SelectedAuthorityID = 0
+            'm_SelectedAuthorityID = 0
         End If
 
         Dim tmpAuthID As Integer
 
 
-        If Me.m_AuthID = -2 Then
+        If m_AuthID = -2 Then
             'Bring up addition dialog
-            Dim AuthAdd As New clsAddNamingAuthority(Me.m_PSConnectionString)
+            Dim AuthAdd As New clsAddNamingAuthority(m_PSConnectionString)
             AuthAdd.FormLocation = New Point(Me.Left + 20, Me.Top + 30)
             tmpAuthID = AuthAdd.AddNamingAuthority
 
             If Not AuthAdd.EntryExists And tmpAuthID > 0 Then
 
                 Dim dr As DataRow
-                dr = Me.m_AuthoritiesTable.NewRow
+                dr = m_AuthoritiesTable.NewRow
 
                 With dr
                     .Item("ID") = tmpAuthID
@@ -344,25 +339,22 @@ Public Class frmAddAnnotationType
                     .Item("Details") = AuthAdd.FullName
                 End With
 
-                Me.m_AuthoritiesTable.Rows.Add(dr)
-                Me.m_AuthoritiesTable.AcceptChanges()
-                Me.LoadAuthoritiesList()
-                Me.m_AuthID = tmpAuthID
+                m_AuthoritiesTable.Rows.Add(dr)
+                m_AuthoritiesTable.AcceptChanges()
+                LoadAuthoritiesList()
+                m_AuthID = tmpAuthID
             End If
-            Me.cboAuthorityName.SelectedValue = tmpAuthID
-
-            'Me.cboAuthorityName.SelectedIndex = 
-            AuthAdd = Nothing
+            cboAuthorityName.SelectedValue = tmpAuthID
 
         End If
 
 
-        'If Me.lvwSelectedFiles.SelectedItems.Count > 0 Then
+        'If lvwSelectedFiles.SelectedItems.Count > 0 Then
         '    Dim li As ListViewItem
-        '    For Each li In Me.lvwSelectedFiles.SelectedItems
-        '        tmpUpInfo = DirectCast(Me.m_SelectedFileList.Item(li.SubItems(3).Text), Protein_Uploader.IUploadProteins.UploadInfo)
-        '        Me.m_SelectedFileList.Item(li.SubItems(3).Text) =
-        '            New Protein_Uploader.IUploadProteins.UploadInfo(tmpUpInfo.FileInformation, Me.m_SelectedOrganismID, tmpUpInfo.AuthorityID)
+        '    For Each li In lvwSelectedFiles.SelectedItems
+        '        tmpUpInfo = DirectCast(m_SelectedFileList.Item(li.SubItems(3).Text), Protein_Uploader.IUploadProteins.UploadInfo)
+        '        m_SelectedFileList.Item(li.SubItems(3).Text) =
+        '            New Protein_Uploader.IUploadProteins.UploadInfo(tmpUpInfo.FileInformation, m_SelectedOrganismID, tmpUpInfo.AuthorityID)
         '        li.SubItems(2).Text = cbo.Text
         '    Next
         'End If

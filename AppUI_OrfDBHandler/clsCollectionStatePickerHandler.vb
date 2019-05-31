@@ -8,14 +8,14 @@ Public Class clsCollectionStatePickerHandler
     Private ReadOnly m_SPAccess As IAddUpdateEntries
 
     Public Sub New(PSConnectionString As String)
-        Me.m_GetTables = New clsDBTask(PSConnectionString)
-        Me.m_SPAccess = New clsAddUpdateEntries(PSConnectionString)
-        Me.m_forceReload = True
+        m_GetTables = New clsDBTask(PSConnectionString)
+        m_SPAccess = New clsAddUpdateEntries(PSConnectionString)
+        m_forceReload = True
     End Sub
 
     WriteOnly Property ForceIDTableReload As Boolean
         Set
-            Me.m_forceReload = Value
+            m_forceReload = Value
         End Set
     End Property
 
@@ -24,7 +24,7 @@ Public Class clsCollectionStatePickerHandler
         Dim ID As Integer
 
         For Each ID In selectedCollectionIDList
-            Me.m_SPAccess.UpdateProteinCollectionState(ID, newStateID)
+            m_SPAccess.UpdateProteinCollectionState(ID, newStateID)
         Next
     End Sub
 
@@ -71,28 +71,28 @@ Public Class clsCollectionStatePickerHandler
         lvw.EndUpdate()
     End Sub
 
-    Sub FillListView(ListViewToFill As ListView)
-        Me.FillFilteredListView(ListViewToFill, "")
+    Sub FillListView(listViewToFill As ListView)
+        FillFilteredListView(listViewToFill, "")
     End Sub
 
-    Sub FillFilteredListView(ListViewToFill As ListView, FilterString As String)
-        ListViewToFill.Items.Clear()
-        If Me.m_forceReload Then
-            Me.m_ListViewData = Me.GetCollectionTable()
-            Me.m_forceReload = False
+    Sub FillFilteredListView(listViewToFill As ListView, FilterString As String)
+        listViewToFill.Items.Clear()
+        If m_forceReload Then
+            m_ListViewData = GetCollectionTable()
+            m_forceReload = False
         End If
-        SetupPickerListView(ListViewToFill, Me.m_ListViewData, FilterString)
+        SetupPickerListView(listViewToFill, m_ListViewData, FilterString)
     End Sub
 
     Function GetCollectionTable() As DataTable
         Dim SQL = "SELECT * FROM V_Collection_State_Picker ORDER BY [Name]"
-        Dim cTable As DataTable = Me.m_GetTables.GetTable(SQL)
+        Dim cTable As DataTable = m_GetTables.GetTable(SQL)
         Return cTable
     End Function
 
     Function GetStates() As DataTable
         Dim SQL As String = "SELECT State, Collection_State_ID as ID " & "FROM T_Protein_Collection_States ORDER BY Collection_State_ID"
-        Dim sTable As DataTable = Me.m_GetTables.GetTable(SQL)
+        Dim sTable As DataTable = m_GetTables.GetTable(SQL)
 
         Return sTable
     End Function

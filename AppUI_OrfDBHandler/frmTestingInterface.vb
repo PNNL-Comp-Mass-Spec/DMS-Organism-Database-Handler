@@ -337,9 +337,9 @@ Public Class frmTestingInterface
     'Private exporter As ExportCollectionsFromDMS.IExportCollectionsFromDMS
 
     Private Sub frmTestingInterface_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        importer = New clsImportHandler(Me.txtConnString.Text)
+        importer = New clsImportHandler(txtConnString.Text)
         collectionList = importer.LoadProteinCollections()
-        With Me.cboCollectionsList
+        With cboCollectionsList
             .DataSource = collectionList
             .DisplayMember = "Display"
             .ValueMember = "Protein_Collection_ID"
@@ -349,19 +349,19 @@ Public Class frmTestingInterface
 
     Private Sub cmdLoadTT_Click(sender As Object, e As EventArgs) Handles cmdLoadTT.Click
         Dim transhandler As ITransTableImport
-        transhandler = New clsTransTableHandler(Me.txtConnString.Text)
-        transhandler.GetAllTranslationTableEntries(Me.txtTransFilePath.Text)
+        transhandler = New clsTransTableHandler(txtConnString.Text)
+        transhandler.GetAllTranslationTableEntries(txtTransFilePath.Text)
     End Sub
 
     Private Sub cmdLoadFF_Click(sender As Object, e As EventArgs) Handles cmdLoadFF.Click
-        Dim importHandler As IImportProteins = New clsImportHandler(Me.txtConnString.Text)
+        Dim importHandler As IImportProteins = New clsImportHandler(txtConnString.Text)
 
-        'importHandler.LoadProteins(Me.txtFASTAFilePath.Text, "", Protein_Importer.IImportProteins.ProteinImportFileTypes.FASTA, 4, 1)
+        'importHandler.LoadProteins(txtFASTAFilePath.Text, "", Protein_Importer.IImportProteins.ProteinImportFileTypes.FASTA, 4, 1)
 
         'Dim FASTAHandler As Protein_Importer.IReadFASTA
         ''FASTAHandler = New Protein_Importer.FASTAReader
         'Dim sqlData As TableManipulationBase.IGetSQLData
-        'sqlData = New TableManipulationBase.clsDBTask(Me.txtConnString.Text, True)
+        'sqlData = New TableManipulationBase.clsDBTask(txtConnString.Text, True)
 
 
 
@@ -372,7 +372,7 @@ Public Class frmTestingInterface
 
         'FASTAHandler.ProteinTable = sqlData.GetTable(SQL, dmsDA, dmsCB)
 
-        'FASTAHandler.GetProteinEntries(Me.txtFASTAFilePath.Text)
+        'FASTAHandler.GetProteinEntries(txtFASTAFilePath.Text)
 
         'Dim dr As DataRow
         'For Each dr In FASTAHandler.ProteinTable
@@ -404,9 +404,9 @@ Public Class frmTestingInterface
         If OpenDialog.ShowDialog = DialogResult.OK Then
             newFilePath = OpenDialog.FileName
             If proxy.Name.ToString = "cmdBrowseTT" Then
-                Me.txtTransFilePath.Text = newFilePath
+                txtTransFilePath.Text = newFilePath
             ElseIf proxy.Name.ToString = "cmdBrowseFF" Then
-                Me.txtFASTAFilePath.Text = newFilePath
+                txtFASTAFilePath.Text = newFilePath
             End If
 
 
@@ -415,7 +415,7 @@ Public Class frmTestingInterface
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
         Dim trans As ITranslateNucleotides =
-            New clsTranslateNucleotides(Me.txtConnString.Text)
+            New clsTranslateNucleotides(txtConnString.Text)
 
         trans.LoadMatrix(1)
     End Sub
@@ -430,71 +430,71 @@ Public Class frmTestingInterface
         'Dim tmpNameList As New ArrayList
 
         'sd.DefaultExt = ".fasta"
-        'sd.FileName = Me.cboCollectionsList.Text + ".fasta"
+        'sd.FileName = cboCollectionsList.Text + ".fasta"
 
-        sd.SelectedPath = Me.m_LastOutputDirectory
+        sd.SelectedPath = m_LastOutputDirectory
 
         r = sd.ShowDialog
 
 
         If r = DialogResult.OK Then
             filePath = sd.SelectedPath
-            Me.m_LastOutputDirectory = filePath
+            m_LastOutputDirectory = filePath
 
-            'tmpNameList.Add(Me.cboCollectionsList.Text.ToString)
-            'exporter = New Protein_Exporter.clsGetFASTAFromDMS(Me.txtConnString.Text, Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.FASTA, Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward_sequence)
+            'tmpNameList.Add(cboCollectionsList.Text.ToString)
+            'exporter = New Protein_Exporter.clsGetFASTAFromDMS(txtConnString.Text, Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.FASTA, Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward_sequence)
             'exporter = New Protein_Exporter.clsGetFASTAFromDMS(
-            '    Me.txtConnString.Text,
+            '    txtConnString.Text,
             '    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.FASTA,
-            '    Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)) + "_scrambled.fasta")
+            '    GetCollectionName(CInt(cboCollectionsList.SelectedValue)) + "_scrambled.fasta")
 
-            'Me.m_Exporter = New Protein_Exporter.clsGetFASTAFromDMS(
-            '    Me.txtConnString.Text,
+            'm_Exporter = New Protein_Exporter.clsGetFASTAFromDMS(
+            '    txtConnString.Text,
             '    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
             '    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward)
-            Me.m_Exporter = New clsGetFASTAFromDMS(Me.txtConnString.Text)
+            m_Exporter = New clsGetFASTAFromDMS(txtConnString.Text)
 
             'True Legacy fasta file
-            'fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "HCMV_2003+H_sapiens_IPI_2005-04-04.fasta", filePath)
+            'fingerprint = m_Exporter.ExportFASTAFile("na", "na", "HCMV_2003+H_sapiens_IPI_2005-04-04.fasta", filePath)
 
             'Legacy fasta file with existing protein collection
-            'fingerprint = Me.m_Exporter.ExportFASTAFile("Shewanella_2003-12-19", "seq_direction=forward,filetype=fasta", "Shewanella_2003-12-19.fasta", filePath)
+            'fingerprint = m_Exporter.ExportFASTAFile("Shewanella_2003-12-19", "seq_direction=forward,filetype=fasta", "Shewanella_2003-12-19.fasta", filePath)
 
             'Legacy fasta file with existing protein collection
-            'fingerprint = Me.m_Exporter.ExportFASTAFile("M_Musculus_2007-10-24_IPI,Y_pestis_CO92_2006-05-22,Y_pestis_PestoidesF_2006-05-23,Y_pseudotuberculosis_All_2005-08-25", "seq_direction=forward,filetype=fasta", "na", filePath)
+            'fingerprint = m_Exporter.ExportFASTAFile("M_Musculus_2007-10-24_IPI,Y_pestis_CO92_2006-05-22,Y_pestis_PestoidesF_2006-05-23,Y_pseudotuberculosis_All_2005-08-25", "seq_direction=forward,filetype=fasta", "na", filePath)
 
             'Legacy fasta file with existing protein collection
-            'fingerprint = Me.m_Exporter.ExportFASTAFile("H_sapiens_IPI_2008-02-07", "seq_direction=decoy", "na", filePath)
+            'fingerprint = m_Exporter.ExportFASTAFile("H_sapiens_IPI_2008-02-07", "seq_direction=decoy", "na", filePath)
 
             'Legacy fasta file with existing protein collection
-            'fingerprint = Me.m_Exporter.ExportFASTAFile("na", "na", "Shewanella_2003-12-19.fasta", filePath)
-            Me.m_Exporter.ExportFASTAFile("na", "na", "GOs_Surface_Sargasso_Meso_2009-02-11_24.fasta", filePath)
+            'fingerprint = m_Exporter.ExportFASTAFile("na", "na", "Shewanella_2003-12-19.fasta", filePath)
+            m_Exporter.ExportFASTAFile("na", "na", "GOs_Surface_Sargasso_Meso_2009-02-11_24.fasta", filePath)
 
             'Collection of existing collections
-            'fingerprint = Me.m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=forward,filetype=fasta", "", filePath)
-            Me.m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=reversed,filetype=fasta", "", filePath)
+            'fingerprint = m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=forward,filetype=fasta", "", filePath)
+            m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=reversed,filetype=fasta", "", filePath)
 
-            'fingerprint = Me.m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=decoy,filetype=fasta", "", filePath)
-            Me.m_Exporter.ExportFASTAFile("SAR116_RBH_AA_012809", "seq_direction=forward,filetype=fasta", "", filePath)
+            'fingerprint = m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=decoy,filetype=fasta", "", filePath)
+            m_Exporter.ExportFASTAFile("SAR116_RBH_AA_012809", "seq_direction=forward,filetype=fasta", "", filePath)
 
-            Me.m_Exporter.ExportFASTAFile("Phycomyces_blakesleeanus_v2_filtered_2009-12-16", "seq_direction=forward,filetype=fasta", "", filePath)
+            m_Exporter.ExportFASTAFile("Phycomyces_blakesleeanus_v2_filtered_2009-12-16", "seq_direction=forward,filetype=fasta", "", filePath)
 
             'Protein collection from cbo exported forward
-            'fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=forward,filetype=fasta", "na", filePath)
+            'fingerprint = m_Exporter.ExportFASTAFile(GetCollectionName(CInt(cboCollectionsList.SelectedValue)), "seq_direction=forward,filetype=fasta", "na", filePath)
 
             'Protein Collection from cbo exported reversed
-            ' fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=reversed,filetype=fasta", "na", filePath)
+            ' fingerprint = m_Exporter.ExportFASTAFile(GetCollectionName(CInt(cboCollectionsList.SelectedValue)), "seq_direction=reversed,filetype=fasta", "na", filePath)
 
             'Protein Collection from cbo exported scrambled
-            ' fingerprint = Me.m_Exporter.ExportFASTAFile(Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)), "seq_direction=scrambled,filetype=fasta", "na", filePath)
+            ' fingerprint = m_Exporter.ExportFASTAFile(GetCollectionName(CInt(cboCollectionsList.SelectedValue)), "seq_direction=scrambled,filetype=fasta", "na", filePath)
 
-            'fingerprint = exporter.ExportFASTAFile(CInt(Me.cboCollectionsList.SelectedValue), filePath)
-            'exporter = New ExportCollectionsFromDMS.clsExportCollectionsFromDMS(Me.txtConnString.Text, ExportCollectionsFromDMS.IExportCollectionsFromDMS.ExportClasses.clsExportProteinsXTFASTA)
-            'fingerprint = exporter.Export(CInt(Me.cboCollectionsList.SelectedValue), filePath)
+            'fingerprint = exporter.ExportFASTAFile(CInt(cboCollectionsList.SelectedValue), filePath)
+            'exporter = New ExportCollectionsFromDMS.clsExportCollectionsFromDMS(txtConnString.Text, ExportCollectionsFromDMS.IExportCollectionsFromDMS.ExportClasses.clsExportProteinsXTFASTA)
+            'fingerprint = exporter.Export(CInt(cboCollectionsList.SelectedValue), filePath)
 
 
-            'outputFI = New System.IO.FileInfo(Me.m_FullOutputPath)
-            'destPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(outputFI.FullName), Me.GetCollectionName(CInt(Me.cboCollectionsList.SelectedValue)) + ".fasta")
+            'outputFI = New System.IO.FileInfo(m_FullOutputPath)
+            'destPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(outputFI.FullName), GetCollectionName(CInt(cboCollectionsList.SelectedValue)) + ".fasta")
             'destFI = New System.IO.FileInfo(destPath)
             'If destFI.Exists Then
             '    destFI.Delete()
@@ -506,13 +506,13 @@ Public Class frmTestingInterface
 
     Private Function GetCollectionName(ProteinCollectionID As Integer) As String
         Dim foundRows() As DataRow
-        foundRows = Me.collectionList.Select("Protein_Collection_ID = " & ProteinCollectionID.ToString)
+        foundRows = collectionList.Select("Protein_Collection_ID = " & ProteinCollectionID.ToString)
         Return foundRows(0).Item("FileName").ToString
     End Function
 
     Private Sub cmdBatchLoadDMS_Click(sender As Object, e As EventArgs)
         Dim fileBatcher As clsBatchUploadFromFileList =
-            New clsBatchUploadFromFileList(Me.txtConnString.Text)
+            New clsBatchUploadFromFileList(txtConnString.Text)
         fileBatcher.UploadBatch()
     End Sub
 
@@ -522,8 +522,8 @@ Public Class frmTestingInterface
 
     Private Sub cmdUpdateArchiveTables_Click(sender As Object, e As EventArgs) Handles cmdUpdateArchiveTables.Click
 
-        If Me.m_Syncer Is Nothing Then
-            Me.m_Syncer = New clsSyncFASTAFileArchive(Me.txtConnString.Text)
+        If m_Syncer Is Nothing Then
+            m_Syncer = New clsSyncFASTAFileArchive(txtConnString.Text)
         End If
 
 
@@ -542,50 +542,50 @@ Public Class frmTestingInterface
 
         'Dim errorCode As Integer
 
-        'errorCode = Me.m_Syncer.SyncCollectionsAndArchiveTables(outputPath)
-        Me.m_Syncer.UpdateSHA1Hashes()
+        'errorCode = m_Syncer.SyncCollectionsAndArchiveTables(outputPath)
+        m_Syncer.UpdateSHA1Hashes()
 
 
     End Sub
 
     Private Sub StartTask(statusMsg As String) Handles m_Syncer.SyncStart, m_Exporter.FileGenerationStarted
-        Me.pgbAdminConsole.Visible = True
-        Me.lblProgress.Visible = True
+        pgbAdminConsole.Visible = True
+        lblProgress.Visible = True
 
-        Me.pgbAdminConsole.Value = 0
+        pgbAdminConsole.Value = 0
 
-        Me.m_TaskMessage = statusMsg
-        Me.lblProgress.Text = Me.m_TaskMessage
+        m_TaskMessage = statusMsg
+        lblProgress.Text = m_TaskMessage
         Application.DoEvents()
 
     End Sub
 
     Private Sub UpdateProgress(statusMsg As String, fractionDone As Double) Handles m_Syncer.SyncProgress, m_Exporter.FileGenerationProgress
-        Me.m_ProgressMessage = statusMsg
+        m_ProgressMessage = statusMsg
         Dim percentComplete = CInt(fractionDone * 100)
         If fractionDone > 0 Then
-            Me.pgbAdminConsole.Value = CInt(fractionDone * 100)
-            Me.lblProgress.Text = Me.m_TaskMessage & " (" & percentComplete & "% completed): " & Me.m_ProgressMessage
+            pgbAdminConsole.Value = CInt(fractionDone * 100)
+            lblProgress.Text = m_TaskMessage & " (" & percentComplete & "% completed): " & m_ProgressMessage
         Else
-            Me.lblProgress.Text = Me.m_TaskMessage & ": " & Me.m_ProgressMessage
+            lblProgress.Text = m_TaskMessage & ": " & m_ProgressMessage
         End If
         Application.DoEvents()
     End Sub
 
     Private Sub CompletedTask() Handles m_Syncer.SyncComplete
-        Me.pgbAdminConsole.Visible = False
-        Me.lblProgress.Text = ""
-        Me.lblProgress.Visible = False
+        pgbAdminConsole.Visible = False
+        lblProgress.Text = ""
+        lblProgress.Visible = False
     End Sub
 
     Private Sub CompletedTask(fullOutputPath As String) Handles m_Exporter.FileGenerationCompleted
-        Me.pgbAdminConsole.Visible = False
-        Me.lblProgress.Text =
+        pgbAdminConsole.Visible = False
+        lblProgress.Text =
             "Wrote " +
             Path.GetFileName(fullOutputPath) +
             " to " + Path.GetDirectoryName(fullOutputPath)
-        Me.lblProgress.Visible = True
-        Me.m_FullOutputPath = fullOutputPath
+        lblProgress.Visible = True
+        m_FullOutputPath = fullOutputPath
     End Sub
 
 End Class

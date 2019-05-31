@@ -27,7 +27,7 @@ Public Class frmAddNewCollection
     Private components As System.ComponentModel.IContainer
 
     'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.  
+    'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
     Friend WithEvents gbxMetaData As GroupBox
     Friend WithEvents txtCollectionName As TextBox
@@ -283,35 +283,32 @@ Public Class frmAddNewCollection
     Protected m_Local_File As Boolean
 
     Private Sub frmAddNewCollection_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        If Me.IsLocalFile Then
-            Me.cboAuthorityPicker.Enabled = True
-            Me.cboOrganismPicker.Enabled = True
-            'Me.txtCollectionName.Visible = False
-            Me.txtCollectionName.Text = Me.m_CollectionName
+        If IsLocalFile Then
+            cboAuthorityPicker.Enabled = True
+            cboOrganismPicker.Enabled = True
+            'txtCollectionName.Visible = False
+            txtCollectionName.Text = m_CollectionName
 
-            Me.m_Organisms.Rows(0).Item("Display_Name") = " -- Select an Organism --"
-            Me.m_Organisms.Rows(0).Item("ID") = 0
-            Me.m_Organisms.AcceptChanges()
+            m_Organisms.Rows(0).Item("Display_Name") = " -- Select an Organism --"
+            m_Organisms.Rows(0).Item("ID") = 0
+            m_Organisms.AcceptChanges()
 
-            Me.BindToCombo(Me.cboAuthorityPicker, Me.m_AnnotationTypes, "Display_Name", "ID")
-            Me.BindToCombo(Me.cboOrganismPicker, Me.m_Organisms, "Display_Name", "ID")
-            'Me.cboOrganismPicker.Items.RemoveAt(0)
-            Me.cboOrganismPicker.SelectedValue = 1
+            BindToCombo(cboAuthorityPicker, m_AnnotationTypes, "Display_Name", "ID")
+            BindToCombo(cboOrganismPicker, m_Organisms, "Display_Name", "ID")
+            'cboOrganismPicker.Items.RemoveAt(0)
+            cboOrganismPicker.SelectedValue = 1
             AddHandler cboOrganismPicker.SelectedIndexChanged, AddressOf cboOrganismPicker_SelectedIndexChanged
             AddHandler cboAuthorityPicker.SelectedIndexChanged, AddressOf cboAuthorityPicker_SelectedIndexChanged
 
         Else
-            'Me.m_StandinTable = Me.MakeStandinDatabase
-            Me.txtCollectionName.Visible = True
-            Me.txtCollectionName.Text = Me.m_CollectionName
-            'Me.BindToCombo(Me.cboOrganismPicker, Me.m_StandinTable, "Display_Name", "ID")
-            Me.BindToCombo(Me.cboOrganismPicker, Me.m_Organisms, "Display_Name", "ID")
-            Me.cboOrganismPicker.SelectedValue = Me.m_OrganismID
-            'Me.BindToCombo(Me.cboAuthorityPicker, Me.m_StandinTable, "Display_Name", "ID")
-            Me.BindToCombo(Me.cboAuthorityPicker, Me.m_AnnotationTypes, "Display_Name", "ID")
-            Me.cboAuthorityPicker.SelectedValue = Me.m_AnnotationTypeID
-            Me.cboAuthorityPicker.Enabled = False
-            Me.cboOrganismPicker.Enabled = False
+            txtCollectionName.Visible = True
+            txtCollectionName.Text = m_CollectionName
+            BindToCombo(cboOrganismPicker, m_Organisms, "Display_Name", "ID")
+            cboOrganismPicker.SelectedValue = m_OrganismID
+            BindToCombo(cboAuthorityPicker, m_AnnotationTypes, "Display_Name", "ID")
+            cboAuthorityPicker.SelectedValue = m_AnnotationTypeID
+            cboAuthorityPicker.Enabled = False
+            cboOrganismPicker.Enabled = False
 
         End If
 
@@ -321,67 +318,67 @@ Public Class frmAddNewCollection
 
     Friend Property IsLocalFile As Boolean
         Get
-            Return Me.m_Local_File
+            Return m_Local_File
         End Get
         Set
-            Me.m_Local_File = Value
+            m_Local_File = Value
         End Set
     End Property
 
     Friend Property CollectionName As String
         Get
-            Return Me.m_CollectionName
+            Return m_CollectionName
         End Get
         Set
-            Me.m_CollectionName = Value
+            m_CollectionName = Value
         End Set
     End Property
 
     Friend Property CollectionDescription As String
         Get
-            Return Me.m_Description
+            Return m_Description
         End Get
         Set
-            Me.m_Description = Value
+            m_Description = Value
         End Set
     End Property
 
     Friend Property CollectionSource As String
         Get
-            Return Me.m_CollectionSource
+            Return m_CollectionSource
         End Get
         Set
-            Me.m_CollectionSource = Value
+            m_CollectionSource = Value
         End Set
     End Property
 
     Friend WriteOnly Property OrganismList As DataTable
         Set
-            Me.m_Organisms = Value
+            m_Organisms = Value
         End Set
     End Property
 
     Friend WriteOnly Property AnnotationTypes As DataTable
         Set
-            Me.m_AnnotationTypes = Value
+            m_AnnotationTypes = Value
         End Set
     End Property
 
     Friend Property OrganismID As Integer
         Get
-            Return Me.m_OrganismID
+            Return m_OrganismID
         End Get
         Set
-            Me.m_OrganismID = Value
+            m_OrganismID = Value
         End Set
     End Property
 
     Friend Property AnnotationTypeID As Integer
         Get
-            Return Me.m_AnnotationTypeID
+            Return m_AnnotationTypeID
         End Get
         Set
-            Me.m_AnnotationTypeID = Value
+            m_AnnotationTypeID = Value
         End Set
     End Property
 
@@ -428,21 +425,21 @@ Public Class frmAddNewCollection
 #Region " Event Handlers "
 
     Private Sub txtCollectionName_Leave(sender As Object, e As EventArgs) Handles txtCollectionName.Leave
-        Me.m_CollectionName = Me.txtCollectionName.Text
+        m_CollectionName = txtCollectionName.Text
     End Sub
 
     Private Sub cboOrganismPicker_SelectedIndexChanged(sender As Object, e As EventArgs)
-        Me.m_OrganismID = CInt(Me.cboOrganismPicker.SelectedValue)
-        If Me.m_OrganismID = 0 Then
-            Me.cmdOK.Enabled = False
+        m_OrganismID = CInt(cboOrganismPicker.SelectedValue)
+        If m_OrganismID = 0 Then
+            cmdOK.Enabled = False
         Else
-            Me.cmdOK.Enabled = True
+            cmdOK.Enabled = True
         End If
 
     End Sub
 
     Private Sub cboAuthorityPicker_SelectedIndexChanged(sender As Object, e As EventArgs)
-        Me.m_AnnotationTypeID = CInt(Me.cboAuthorityPicker.SelectedValue)
+        m_AnnotationTypeID = CInt(cboAuthorityPicker.SelectedValue)
     End Sub
 
     Private Sub cmdAddOrganism_Click(sender As Object, e As EventArgs) Handles cmdAddOrganism.Click
@@ -454,17 +451,17 @@ Public Class frmAddNewCollection
     End Sub
 
     Private Sub cmdOK_Click(sender As Object, e As EventArgs) Handles cmdOK.Click
-        Me.m_CollectionName = Me.txtCollectionName.Text
-        Me.m_Description = Me.txtDescription.Text
-        Me.m_CollectionSource = Me.txtSource.Text
-        Me.m_OrganismID = CInt(Me.cboOrganismPicker.SelectedValue)
-        Me.m_AnnotationTypeID = CInt(Me.cboAuthorityPicker.SelectedValue)
+        m_CollectionName = txtCollectionName.Text
+        m_Description = txtDescription.Text
+        m_CollectionSource = txtSource.Text
+        m_OrganismID = CInt(cboOrganismPicker.SelectedValue)
+        m_AnnotationTypeID = CInt(cboAuthorityPicker.SelectedValue)
     End Sub
 
     Private Sub cmdCancel_Click(sender As Object, e As EventArgs) Handles cmdCancel.Click
-        Me.m_CollectionName = Nothing
-        Me.m_OrganismID = Nothing
-        Me.m_AnnotationTypeID = Nothing
+        m_CollectionName = Nothing
+        m_OrganismID = Nothing
+        m_AnnotationTypeID = Nothing
     End Sub
 
 
