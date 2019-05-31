@@ -4,7 +4,7 @@ Public Class DataListViewHandler
         m_LVW = listViewToFill
     End Sub
 
-    Private m_LVW As ListView
+    Private ReadOnly m_LVW As ListView
 
     Public Sub Load(listTable As DataTable)
         FillListView(m_LVW, listTable)
