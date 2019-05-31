@@ -456,7 +456,7 @@ Public Class clsAddUpdateEntries
 
     End Function
 
-    Protected Function GetProteinID(entry As Protein_Storage.IProteinStorageEntry, ByRef hitsTable As DataTable) As Integer
+    Protected Function GetProteinID(entry As Protein_Storage.IProteinStorageEntry, hitsTable As DataTable) As Integer
         Dim foundRows() As DataRow
         Dim tmpSeq As String
         Dim tmpProteinID As Integer

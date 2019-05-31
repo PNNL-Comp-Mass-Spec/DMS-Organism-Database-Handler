@@ -1745,7 +1745,7 @@ Public Class frmCollectionEditor
 
     End Sub
 
-    Private Function SummarizeErrors(ByRef errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) As Dictionary(Of String, Integer)
+    Private Function SummarizeErrors(errorCollection As IReadOnlyCollection(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) As Dictionary(Of String, Integer)
 
         ' Keys are error messages, values are the number of times the error was reported
         Dim errorSummary As New Dictionary(Of String, Integer)

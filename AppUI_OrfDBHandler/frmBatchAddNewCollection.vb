@@ -1158,7 +1158,7 @@ Public Class frmBatchAddNewCollection
         Next
     End Sub
 
-    Private Sub SelectComboBoxItemByName(ByRef objComboBox As ComboBox, strValue As String, intDataColumnIndexToCheck As Integer)
+    Private Sub SelectComboBoxItemByName(objComboBox As ComboBox, strValue As String, intDataColumnIndexToCheck As Integer)
         ' Look for strValue in a combobox that has a data table attached via the .DataSource property
         ' If the value is found, then the given item in the combobox is selected
 

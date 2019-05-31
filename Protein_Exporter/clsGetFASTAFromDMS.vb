@@ -696,7 +696,7 @@ Public Class clsGetFASTAFromDMS
 
     End Function
 
-    Private Sub DeleteFASTAIndexFiles(ByRef fiFinalFastaFile As FileInfo)
+    Private Sub DeleteFASTAIndexFiles(fiFinalFastaFile As FileInfo)
 
         Try
             Dim strBaseName As String
