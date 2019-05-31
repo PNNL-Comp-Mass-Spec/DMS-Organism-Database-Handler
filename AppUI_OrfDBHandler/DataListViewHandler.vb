@@ -6,8 +6,8 @@ Public Class DataListViewHandler
     Public Event NumberLoadedStatus(FilteredCount As Integer, TotalCount As Integer)
 
 
-    Public Sub New(ByRef ListViewToFill As ListView)
-        Me.m_LVW = ListViewToFill
+    Public Sub New(listViewToFill As ListView)
+        m_LVW = listViewToFill
     End Sub
 
     Private m_LVW As ListView
@@ -21,7 +21,7 @@ Public Class DataListViewHandler
     End Sub
 
     Private Sub SetupPickerListView(
-        ByRef lvw As ListView,
+        lvw As ListView,
         dt As DataTable,
         Optional filterCriteria As String = "")
 
@@ -68,17 +68,17 @@ Public Class DataListViewHandler
     End Sub
 
     Protected Sub FillListView(
-        ByRef ListViewToFill As ListView,
-        ListData As DataTable)
+        listViewToFill As ListView,
+        listData As DataTable)
 
         ListViewToFill.Items.Clear()
         SetupPickerListView(ListViewToFill, ListData)
     End Sub
 
     Protected Sub FillFilteredListView(
-        ByRef ListViewToFill As ListView,
-        ListData As DataTable,
-        FilterString As String)
+        listViewToFill As ListView,
+        listData As DataTable,
+        filterString As String)
 
         ListViewToFill.Items.Clear()
         SetupPickerListView(ListViewToFill, ListData, FilterString)

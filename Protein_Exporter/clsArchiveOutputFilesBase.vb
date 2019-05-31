@@ -26,7 +26,7 @@ Public MustInherit Class clsArchiveOutputFilesBase
     ''' </summary>
     ''' <param name="databaseAccessor"></param>
     ''' <param name="exporterModule"></param>
-    Sub New(databaseAccessor As IGetSQLData, ByRef exporterModule As clsGetFASTAFromDMS)
+    Sub New(databaseAccessor As IGetSQLData, exporterModule As clsGetFASTAFromDMS)
         m_DatabaseAccessor = databaseAccessor
 
         m_Exporter = exporterModule.ExporterComponent

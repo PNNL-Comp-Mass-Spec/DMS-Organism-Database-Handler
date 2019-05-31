@@ -13,7 +13,7 @@ Friend Class clsCollectionEncryptor
 
     End Sub
 
-    Sub EncryptStorageCollectionSequences(ByRef StorageCollection As Protein_Storage.IProteinStorage)
+    Sub EncryptStorageCollectionSequences(storageCollection As Protein_Storage.IProteinStorage)
 
         Dim e = StorageCollection.GetEnumerator
 

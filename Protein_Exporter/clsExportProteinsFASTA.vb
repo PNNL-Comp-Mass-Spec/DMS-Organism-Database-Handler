@@ -11,8 +11,8 @@ Public Class clsExportProteinsFASTA
 
     Private ReadOnly m_seqLineLength As Integer = 60
 
-    Public Sub New(ByRef ExportComponent As clsGetFASTAFromDMSForward)
-        MyBase.New(ExportComponent)
+    Public Sub New(exportComponent As clsGetFASTAFromDMSForward)
+        MyBase.New(exportComponent)
 
     End Sub
 
