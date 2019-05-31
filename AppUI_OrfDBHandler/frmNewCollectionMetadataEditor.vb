@@ -22,7 +22,7 @@
         Me.DialogResult = DialogResult.Cancel
         Me.Close()
     End Sub
-    
+
     Private Sub cmdOk_Click(sender As Object, e As EventArgs) Handles cmdOk.Click
         Me.DialogResult = DialogResult.OK
         Me.Close()

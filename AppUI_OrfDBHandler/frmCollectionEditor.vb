@@ -1622,7 +1622,6 @@ Public Class frmCollectionEditor
 #Region " Progress Event Handlers "
     Private Sub ImportStartHandler(taskTitle As String) Handles _
         m_ImportHandler.LoadStart,
-        m_SourceListViewHandler.LoadStart,
         m_UploadHandler.LoadStart,
         m_Syncer.SyncStart
         ' m_fileBatcher.LoadStart
@@ -1638,7 +1637,6 @@ Public Class frmCollectionEditor
 
     Private Sub ImportProgressHandler(fractionDone As Double) Handles _
         m_ImportHandler.LoadProgress,
-        m_SourceListViewHandler.LoadProgress,
         m_UploadHandler.LoadProgress
         ' m_fileBatcher.ProgressUpdate
 
@@ -1657,7 +1655,6 @@ Public Class frmCollectionEditor
 
     Private Sub ImportEndHandler() Handles _
         m_ImportHandler.LoadEnd,
-        m_SourceListViewHandler.LoadEnd,
         m_UploadHandler.LoadEnd,
         m_Syncer.SyncComplete
         ' m_fileBatcher.LoadEnd
@@ -1695,10 +1692,6 @@ Public Class frmCollectionEditor
         m_BatchLoadCurrentCount += 1
         lblBatchProgress.Text = status & " (File " & m_BatchLoadCurrentCount.ToString & " of " & m_BatchLoadTotalCount & ")"
         Application.DoEvents()
-    End Sub
-
-    Private Sub FilteredLoadCountHandler(FilteredCount As Integer, TotalCount As Integer) Handles m_SourceListViewHandler.NumberLoadedStatus
-        lblSearchCount.Text = FilteredCount.ToString & " / " & TotalCount.ToString
     End Sub
 
     Private Sub ValidFASTAUploadHandler(
