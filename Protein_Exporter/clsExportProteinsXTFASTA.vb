@@ -16,16 +16,19 @@ Public Class clsExportProteinsXTFASTA
 
     Const HEADER_STRING As String = "xbang-pro-fasta-format"
 
-
+    ''' <summary>
+    ''' Export the proteins to the given file
+    ''' </summary>
+    ''' <param name="proteins"></param>
+    ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
+    ''' <returns></returns>
     Protected Overloads Overrides Function Export(
-      Proteins As IProteinStorage,
+      proteins As IProteinStorage,
       ByRef destinationPath As String) As String
 
         Const REQUIRED_SIZE_MB = 150
 
-        Dim buffer(HEADER_STRING.Length) As Byte
-
-        buffer = Encoding.Default.GetBytes(HEADER_STRING)
+        Dim buffer = Encoding.Default.GetBytes(HEADER_STRING)
 
         ReDim Preserve buffer(255)
 
@@ -56,12 +59,12 @@ Public Class clsExportProteinsXTFASTA
 
             OnExportStart("Writing to X!Tandem formatted FASTA File")
 
-            Dim counterMax As Integer = Proteins.ProteinCount
+            Dim counterMax As Integer = proteins.ProteinCount
             Dim counter As Integer
 
             Dim proteinArray As New SortedSet(Of String)
 
-            Dim proteinEnum = Proteins.GetEnumerator
+            Dim proteinEnum = proteins.GetEnumerator
 
             While proteinEnum.MoveNext()
                 proteinArray.Add(proteinEnum.Current.Key)
@@ -80,7 +83,7 @@ Public Class clsExportProteinsXTFASTA
 
             For Each tmpName In proteinArray
                 OnExportStart("Writing: " + tmpName)
-                tmpPC = Proteins.GetProtein(tmpName)
+                tmpPC = proteins.GetProtein(tmpName)
                 tmpSeq = tmpPC.Sequence
 
                 counter += 1
@@ -94,23 +97,23 @@ Public Class clsExportProteinsXTFASTA
 
                 Array.Clear(buffer, 0, 4)
                 tmpNum = tmpName.Length + 1
-                buffer = ConvIntegertoByteArray(tmpNum, 4)
+                buffer = ConvIntegerToByteArray(tmpNum, 4)
                 Array.Reverse(buffer)
 
                 bw.Write(buffer)
                 buffer = encoding.GetBytes(tmpName)
                 bw.Write(buffer)
-                bw.Write(ConvIntegertoByteArray(0, 1))
+                bw.Write(ConvIntegerToByteArray(0, 1))
 
                 Array.Clear(buffer, 0, 4)
                 tmpNum = proteinLength + 1
-                buffer = ConvIntegertoByteArray(tmpNum, 4)
+                buffer = ConvIntegerToByteArray(tmpNum, 4)
                 Array.Reverse(buffer)
 
                 bw.Write(buffer)
                 buffer = encoding.GetBytes(tmpSeq)
                 bw.Write(buffer)
-                bw.Write(ConvIntegertoByteArray(0, 1))
+                bw.Write(ConvIntegerToByteArray(0, 1))
 
 
             Next
@@ -125,15 +128,19 @@ Public Class clsExportProteinsXTFASTA
 
     End Function
 
+    ''' <summary>
+    ''' Export the proteins to the given file
+    ''' </summary>
+    ''' <param name="proteinTables"></param>
+    ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
+    ''' <returns></returns>
     Protected Overloads Overrides Function Export(
-      ProteinTables As DataSet,
+      proteinTables As DataSet,
       ByRef destinationPath As String) As String
 
         Const REQUIRED_SIZE_MB = 150
 
-        Dim buffer(HEADER_STRING.Length) As Byte
-
-        buffer = Encoding.Default.GetBytes(HEADER_STRING)
+        Dim buffer = Encoding.Default.GetBytes(HEADER_STRING)
 
         ReDim Preserve buffer(255)
 
@@ -175,7 +182,7 @@ Public Class clsExportProteinsXTFASTA
             Dim counterMax As Integer ' = ProteinTable.Rows.Count
             Dim counter As Integer
 
-            For Each proteinTable In ProteinTables.Tables
+            For Each proteinTable In proteinTables.Tables
                 OnExportStart("Writing: " + proteinTable.TableName)
                 counterMax = proteinTable.Rows.Count
                 foundRows = proteinTable.Select("", "Name")
@@ -208,23 +215,23 @@ Public Class clsExportProteinsXTFASTA
 
                     Array.Clear(buffer, 0, 4)
                     tmpNum = tmpName.Length + 1
-                    buffer = ConvIntegertoByteArray(tmpNum, 4)
+                    buffer = ConvIntegerToByteArray(tmpNum, 4)
                     Array.Reverse(buffer)
 
                     bw.Write(buffer)
                     buffer = encoding.GetBytes(tmpName)
                     bw.Write(buffer)
-                    bw.Write(ConvIntegertoByteArray(0, 1))
+                    bw.Write(ConvIntegerToByteArray(0, 1))
 
                     Array.Clear(buffer, 0, 4)
                     tmpNum = proteinLength + 1
-                    buffer = ConvIntegertoByteArray(tmpNum, 4)
+                    buffer = ConvIntegerToByteArray(tmpNum, 4)
                     Array.Reverse(buffer)
 
                     bw.Write(buffer)
                     buffer = encoding.GetBytes(tmpSeq)
                     bw.Write(buffer)
-                    bw.Write(ConvIntegertoByteArray(0, 1))
+                    bw.Write(ConvIntegerToByteArray(0, 1))
 
 
                 Next
@@ -240,8 +247,14 @@ Public Class clsExportProteinsXTFASTA
 
     End Function
 
+    ''' <summary>
+    ''' Export the proteins to the given file
+    ''' </summary>
+    ''' <param name="proteinTable"></param>
+    ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
+    ''' <returns></returns>
     Protected Overloads Overrides Function Export(
-      ProteinTable As DataTable,
+      proteinTable As DataTable,
       ByRef destinationPath As String) As String
 
         ' Not implemented for this class
@@ -249,7 +262,7 @@ Public Class clsExportProteinsXTFASTA
 
     End Function
 
-    Friend Function ConvIntegertoByteArray(n As Long, lg As Integer) As Byte()
+    Friend Function ConvIntegerToByteArray(n As Long, lg As Integer) As Byte()
         'converts an integer to a byte array of length lg
         Dim m = New Byte(lg - 1) {}
         Dim i, k As Integer
@@ -263,7 +276,7 @@ Public Class clsExportProteinsXTFASTA
         Return m
     End Function
 
-    Public Function ConvByteArraytoInteger(b As Byte(), Optional ln As Integer = 0, Optional sidx As Integer = 0) As Long
+    Public Function ConvByteArrayToInteger(b As Byte(), Optional ln As Integer = 0, Optional sidx As Integer = 0) As Long
         Dim i As Integer
         Dim j, k As Long
         If ln = 0 Then ln = UBound(b) + 1

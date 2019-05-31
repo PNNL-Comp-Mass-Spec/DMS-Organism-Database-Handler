@@ -724,7 +724,7 @@ Public Class frmBatchAddNewCollection
     Private Function CollectionsTableToList(dt As DataTable) As Dictionary(Of Integer, String)
         Dim collectionInfo As New Dictionary(Of Integer, String)(dt.Rows.Count)
         Dim dr As DataRow
-        Dim foundrows() As DataRow = dt.Select("", "Protein_Collection_ID")
+        Dim foundRows() As DataRow = dt.Select("", "Protein_Collection_ID")
         Dim tmpID As Integer
         Dim tmpName As String
 
@@ -778,7 +778,7 @@ Public Class frmBatchAddNewCollection
 #Region " UI Loading Functions "
 
     ''' <summary>
-    ''' Populate the top Listview with fasta files in the selected folder
+    ''' Populate the top ListView with fasta files in the selected folder
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub LoadListView()

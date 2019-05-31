@@ -351,8 +351,8 @@ Public Class clsSyncFASTAFileArchive
 
     End Sub
 
-    Private Function GetProteinSortingIndices(FilePath As String) As Dictionary(Of String, Integer)
-        Dim fi = New FileInfo(FilePath)
+    Private Function GetProteinSortingIndices(filePath As String) As Dictionary(Of String, Integer)
+        Dim fi = New FileInfo(filePath)
         Dim tr As TextReader
         Dim s As String
         Dim nameRegex As Regex
@@ -403,7 +403,7 @@ Public Class clsSyncFASTAFileArchive
 
         Dim tmpProteinCount = CInt(dr.Item("TableRowCount"))
 
-        Dim startcount As Integer
+        Dim startCount As Integer
 
         Dim proteinSelectSQL As String
 
@@ -411,11 +411,11 @@ Public Class clsSyncFASTAFileArchive
 
         While tmpRowCount > 0
             proteinList.Clear()
-            startcount = counter
+            startCount = counter
             counter = counter + 10000
 
             proteinSelectSQL = "SELECT Protein_ID, Sequence FROM T_Proteins " &
-                "WHERE Protein_ID <= " + counter.ToString + " AND Protein_ID > " + startcount.ToString
+                "WHERE Protein_ID <= " + counter.ToString + " AND Protein_ID > " + startCount.ToString()
 
             'proteinSelectSQL = "SELECT Protein_ID, Sequence FROM T_Proteins " &
             '                    "WHERE Protein_ID = 285130"
@@ -439,13 +439,12 @@ Public Class clsSyncFASTAFileArchive
     End Sub
 
     Public Sub RefreshNameHashes()
-        Dim TotalNameCount As Integer
-        Dim NameCountSQL = "SELECT TOP 1 Reference_ID FROM T_Protein_Names ORDER BY Reference_ID DESC"
-        Dim tmptable As DataTable
+        Dim totalNameCount As Integer
+        Dim nameCountSQL = "SELECT TOP 1 Reference_ID FROM T_Protein_Names ORDER BY Reference_ID DESC"
         Dim dr As DataRow
 
-        tmptable = Me.m_DatabaseAccessor.GetTable(NameCountSQL)
-        TotalNameCount = CInt(tmptable.Rows(0).Item("Reference_ID"))
+        Dim nameCountResults = m_DatabaseAccessor.GetTable(nameCountSQL)
+        totalNameCount = CInt(nameCountResults.Rows(0).Item("Reference_ID"))
 
         Dim tmpRefID As Integer
         Dim tmpProteinName As String
@@ -456,15 +455,15 @@ Public Class clsSyncFASTAFileArchive
 
         Dim startIndex = 0
         Dim counter As Integer
-        Dim stepvalue = 10000
+        Dim stepValue = 10000
 
-        If TotalNameCount <= stepvalue Then
-            stepvalue = TotalNameCount
+        If totalNameCount <= stepValue Then
+            stepValue = totalNameCount
         End If
         OnSyncStart("Updating Name Hashes")
 
-        For counter = stepvalue To TotalNameCount + stepvalue Step stepvalue
-            If counter >= TotalNameCount - stepvalue Then
+        For counter = stepValue To totalNameCount + stepValue Step stepValue
+            If counter >= totalNameCount - stepValue Then
                 Debug.WriteLine("")
             End If
             rowRetrievalSQL = "SELECT Reference_ID, Name, Description, Protein_ID " &
@@ -473,9 +472,9 @@ Public Class clsSyncFASTAFileArchive
                               "ORDER BY Reference_ID"
 
             'Protein_Name(+"_" + Description + "_" + ProteinID.ToString)
-            tmptable = Me.m_DatabaseAccessor.GetTable(rowRetrievalSQL)
-            If tmptable.Rows.Count > 0 Then
-                For Each dr In tmptable.Rows
+            Dim proteinListResults = m_DatabaseAccessor.GetTable(rowRetrievalSQL)
+            If proteinListResults.Rows.Count > 0 Then
+                For Each dr In proteinListResults.Rows
                     tmpRefID = DirectCast(dr.Item("Reference_ID"), Integer)
                     tmpProteinName = dr.Item("Name").ToString
                     tmpDescription = dr.Item("Description").ToString
@@ -498,12 +497,12 @@ Public Class clsSyncFASTAFileArchive
 
     End Sub
 
-    Private Sub UpdateProteinSequenceInfo(Proteins As Dictionary(Of Integer, String))
+    Private Sub UpdateProteinSequenceInfo(proteins As Dictionary(Of Integer, String))
 
         Dim si = New SequenceInfoCalculator.SequenceInfoCalculator
 
-        For Each proteinID In Proteins.Keys
-            Dim sequence = Proteins.Item(proteinID)
+        For Each proteinID In proteins.Keys
+            Dim sequence = proteins.Item(proteinID)
             si.CalculateSequenceInfo(sequence)
             m_Importer.UpdateProteinSequenceInfo(
                 proteinID, sequence, sequence.Length,
@@ -525,7 +524,7 @@ Public Class clsSyncFASTAFileArchive
         RaiseEvent SyncComplete()
     End Sub
 
-    Private Sub m_Exporter_FileGenerationCompleted(FullOutputPath As String) Handles m_Exporter.FileGenerationCompleted
-        m_GeneratedFastaFilePath = FullOutputPath
+    Private Sub m_Exporter_FileGenerationCompleted(fullOutputPath As String) Handles m_Exporter.FileGenerationCompleted
+        m_GeneratedFastaFilePath = fullOutputPath
     End Sub
 End Class

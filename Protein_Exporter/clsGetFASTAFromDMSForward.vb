@@ -418,7 +418,7 @@ Public Class clsGetFASTAFromDMSForward
         Return m_DatabaseAccessor.DataTableToHashtable(m_CollectionsCache, "Protein_Collection_ID", "FileName")
     End Function
 
-    Function GetCollectionsByOrganism(OrganismID As Integer) As Hashtable
+    Function GetCollectionsByOrganism(organismID As Integer) As Hashtable
         If m_DatabaseAccessor Is Nothing Then
             Return New Hashtable
         End If
@@ -427,14 +427,14 @@ Public Class clsGetFASTAFromDMSForward
             RefreshCollectionCache()
         End If
 
-        Return m_DatabaseAccessor.DataTableToHashtable(m_CollectionsCache, "Protein_Collection_ID", "FileName", "[Organism_ID] = " & OrganismID.ToString)
+        Return m_DatabaseAccessor.DataTableToHashtable(m_CollectionsCache, "Protein_Collection_ID", "FileName", "[Organism_ID] = " & organismID.ToString)
     End Function
 
-    Function GetCollectionsByOrganismTable(OrganismID As Integer) As DataTable
+    Function GetCollectionsByOrganismTable(organismID As Integer) As DataTable
         Dim tmpTable As DataTable = m_CollectionsCache.Clone
 
         Dim dr As DataRow
-        Dim foundRows() As DataRow = m_CollectionsCache.Select("[Organism_ID] = " & OrganismID.ToString)
+        Dim foundRows() As DataRow = m_CollectionsCache.Select("[Organism_ID] = " & organismID.ToString)
 
         For Each dr In foundRows
             tmpTable.ImportRow(dr)
@@ -486,19 +486,19 @@ Public Class clsGetFASTAFromDMSForward
 
     End Sub
 
-    Function FindIDByName(CollectionName As String) As Integer
-        If CollectionName.Length = 0 Then
+    Function FindIDByName(collectionName As String) As Integer
+        If collectionName.Length = 0 Then
             Return 0
         End If
         'Dim dr As DataRow
         Dim foundRows() As DataRow
 
         ' Make sure there are no leading or trailing spaces
-        CollectionName = CollectionName.Trim()
-        foundRows = m_CollectionsCache.Select("[FileName] = '" & CollectionName & "'")
+        collectionName = collectionName.Trim()
+        foundRows = m_CollectionsCache.Select("[FileName] = '" & collectionName & "'")
         If foundRows.Length = 0 Then
             RefreshCollectionCache()
-            foundRows = m_CollectionsCache.Select("[FileName] = '" & CollectionName & "'")
+            foundRows = m_CollectionsCache.Select("[FileName] = '" & collectionName & "'")
         End If
         Dim id As Integer
         Try
@@ -509,12 +509,12 @@ Public Class clsGetFASTAFromDMSForward
         Return id
     End Function
 
-    Function FindNameByID(CollectionID As Integer) As String
-        Dim foundRows = m_CollectionsCache.Select("Protein_Collection_ID = " & CollectionID.ToString).ToList()
+    Function FindNameByID(collectionID As Integer) As String
+        Dim foundRows = m_CollectionsCache.Select("Protein_Collection_ID = " & collectionID.ToString).ToList()
 
         If foundRows.Count = 0 Then
             RefreshCollectionCache()
-            foundRows = m_CollectionsCache.Select("Protein_Collection_ID = " & CollectionID.ToString).ToList()
+            foundRows = m_CollectionsCache.Select("Protein_Collection_ID = " & collectionID.ToString).ToList()
         End If
 
         If foundRows.Count > 0 Then
@@ -539,19 +539,19 @@ Public Class clsGetFASTAFromDMSForward
     ''' </summary>
     ''' <param name="fullFilePath"></param>
     ''' <returns>File hash</returns>
-    Function GetFileHash(FullFilePath As String) As String
+    Function GetFileHash(fullFilePath As String) As String
 
-        Return m_fileDumper.GenerateFileAuthenticationHash(FullFilePath)
+        Return m_fileDumper.GenerateFileAuthenticationHash(fullFilePath)
 
     End Function
 
-    Function GetStoredHash(ProteinCollectionName As String) As String
-        Dim foundRows() As DataRow = m_CollectionsCache.Select("[FileName] = '" & ProteinCollectionName & "'")
+    Function GetStoredHash(proteinCollectionName As String) As String
+        Dim foundRows() As DataRow = m_CollectionsCache.Select("[FileName] = '" & proteinCollectionName & "'")
         Return CStr(foundRows(0).Item("Authentication_Hash"))
     End Function
 
-    Function GetStoredHash(ProteinCollectionID As Integer) As String
-        Dim ProteinCollectionName = CStr(m_AllCollections.Item(ProteinCollectionID))
+    Function GetStoredHash(proteinCollectionID As Integer) As String
+        Dim ProteinCollectionName = CStr(m_AllCollections.Item(proteinCollectionID))
         Return GetStoredHash(ProteinCollectionName)
     End Function
 

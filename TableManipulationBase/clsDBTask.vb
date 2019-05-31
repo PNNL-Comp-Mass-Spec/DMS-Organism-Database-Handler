@@ -7,7 +7,7 @@ Public Interface IGetSQLData
 
     Function GetTable(
         selectSQL As String,
-        <Out> ByRef SQLDataAdapter As SqlDataAdapter) As DataTable
+        <Out> ByRef dataAdapter As SqlDataAdapter) As DataTable
 
     Function GetTableTemplate(tableName As String) As DataTable
 
@@ -157,7 +157,7 @@ Public Class clsDBTask
 
     Protected Function GetTable(
         selectSQL As String,
-        <Out> ByRef SQLDataAdapter As SqlDataAdapter) As DataTable Implements IGetSQLData.GetTable
+        <Out> ByRef dataAdapter As SqlDataAdapter) As DataTable Implements IGetSQLData.GetTable
 
         Const MAX_ATTEMPTS = 6
         Const COMMAND_TIMEOUT_SECONDS = 600
@@ -173,7 +173,7 @@ Public Class clsDBTask
 
         If Connected = True Then
 
-            SQLDataAdapter = New SqlDataAdapter With {
+            dataAdapter = New SqlDataAdapter With {
                 .SelectCommand = cmd
             }
 
@@ -181,7 +181,7 @@ Public Class clsDBTask
             While connectionAttempt <= MAX_ATTEMPTS
 
                 Try
-                    SQLDataAdapter.Fill(tmpIDTable)
+                    dataAdapter.Fill(tmpIDTable)
                     Exit While
                 Catch ex As Exception
                     connectionAttempt += 1
@@ -195,7 +195,7 @@ Public Class clsDBTask
 
             If Not m_PersistConnection Then CloseConnection()
         Else
-            SQLDataAdapter = Nothing
+            dataAdapter = Nothing
             tmpIDTable = Nothing
         End If
 
@@ -204,11 +204,11 @@ Public Class clsDBTask
     End Function
 
     Protected Function GetTable(selectSQL As String) As DataTable Implements IGetSQLData.GetTable
-        Dim tmpDA As SqlDataAdapter = Nothing
+        Dim dataAdapter As SqlDataAdapter = Nothing
 
-        Dim tmpTable As DataTable = GetTable(selectSQL, tmpDA)
+        Dim tmpTable As DataTable = GetTable(selectSQL, dataAdapter)
 
-        tmpDA.Dispose()
+        dataAdapter.Dispose()
 
         Return tmpTable
 

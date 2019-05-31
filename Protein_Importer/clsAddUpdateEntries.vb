@@ -7,31 +7,31 @@ Public Interface IAddUpdateEntries
         proteinCollection As Protein_Storage.IProteinStorage,
         selectedProteinList As List(Of String))
 
-    Function GetProteinCollectionID(FilePath As String) As Integer
+    Function GetProteinCollectionID(filePath As String) As Integer
 
     ''' <summary>
     ''' Deletes the proteins for the given protein collection in preparation for re-uploading the proteins
     ''' </summary>
     ''' <param name="ProteinCollectionID"></param>
     ''' <remarks></remarks>
-    Sub DeleteProteinCollectionMembers(ProteinCollectionID As Integer, NumProteins As Integer)
+    Sub DeleteProteinCollectionMembers(proteinCollectionID As Integer, NumProteins As Integer)
 
     Sub UpdateProteinCollectionMembers(
-        ProteinCollectionID As Integer,
+        proteinCollectionID As Integer,
         proteinCollection As Protein_Storage.IProteinStorage,
         selectedProteinList As List(Of String),
         numProteinsExpected As Integer,
         numResiduesExpected As Integer)
 
-    Function GetProteinCollectionMemberCount(ProteinCollectionID As Integer) As Integer
+    Function GetProteinCollectionMemberCount(proteinCollectionID As Integer) As Integer
 
     Function AddProteinReference(
-        ProteinName As String,
-        Description As String,
-        OrganismID As Integer,
-        AuthorityID As Integer,
-        ProteinID As Integer,
-        MaxProteinNameLength As Integer) As Integer
+        proteinName As String,
+        description As String,
+        organismID As Integer,
+        authorityID As Integer,
+        proteinID As Integer,
+        maxProteinNameLength As Integer) As Integer
 
 
     Sub UpdateProteinNames(
@@ -41,89 +41,88 @@ Public Interface IAddUpdateEntries
             authorityID As Integer)
 
     Function AddProteinCollectionMember(
-        ReferenceID As Integer,
-        ProteinID As Integer,
-        Sorting_Index As Integer,
-        ProteinCollectionID As Integer) As Integer
+        referenceID As Integer,
+        proteinID As Integer,
+        sorting_Index As Integer,
+        proteinCollectionID As Integer) As Integer
 
     Function UpdateProteinCollectionMember(
-        ReferenceID As Integer,
-        ProteinID As Integer,
-        Sorting_Index As Integer,
-        ProteinCollectionID As Integer) As Integer
+        referenceID As Integer,
+        proteinID As Integer,
+        sorting_Index As Integer,
+        proteinCollectionID As Integer) As Integer
 
 
     Function AddAuthenticationHash(
-        ProteinCollectionID As Integer,
-        AuthenticationHash As String,
+        proteinCollectionID As Integer,
+        authenticationHash As String,
         numProteins As Integer,
         totalResidues As Integer) As Integer
 
     Function AddNamingAuthority(
-        ShortName As String,
-        FullName As String,
-        WebAddress As String) As Integer
+        shortName As String,
+        fullName As String,
+        webAddress As String) As Integer
 
     Function AddAnnotationType(
-        TypeName As String,
-        Description As String,
-        Example As String,
-        AuthorityID As Integer) As Integer
+        typeName As String,
+        description As String,
+        example As String,
+        authorityID As Integer) As Integer
 
     Function AddCollectionOrganismXref(
-        ProteinCollectionID As Integer,
-        OrganismID As Integer) As Integer
+        proteinCollectionID As Integer,
+        organismID As Integer) As Integer
 
     Function GetProteinIDFromName(
-        ProteinName As String) As Integer
+        proteinName As String) As Integer
 
     Function MakeNewProteinCollection(
-        FileName As String,
-        Description As String,
+        fileName As String,
+        description As String,
         collectionSource As String,
-        CollectionType As CollectionTypes,
-        AnnotationTypeID As Integer,
-        NumProteins As Integer,
-        NumResidues As Integer) As Integer
+        collectionType As CollectionTypes,
+        annotationTypeID As Integer,
+        numProteins As Integer,
+        numResidues As Integer) As Integer
 
     Function UpdateEncryptionMetadata(
-        ProteinCollectionID As Integer,
-        PassPhrase As String) As Integer
+        proteinCollectionID As Integer,
+        passPhrase As String) As Integer
 
     Function GetTotalResidueCount(
         proteinCollection As Protein_Storage.IProteinStorage,
         selectedProteinList As List(Of String)) As Integer
 
     Function UpdateProteinCollectionState(
-        ProteinCollectionID As Integer,
-        CollectionStateID As Integer) As Integer
+        proteinCollectionID As Integer,
+        collectionStateID As Integer) As Integer
 
     Function UpdateProteinNameHash(
-        ReferenceID As Integer,
-        ProteinName As String,
-        Description As String,
-        ProteinID As Integer) As Integer
+        referenceID As Integer,
+        proteinName As String,
+        description As String,
+        proteinID As Integer) As Integer
 
     Function UpdateProteinSequenceHash(
-        ProteinID As Integer,
-        ProteinSequence As String) As Integer
-
+        proteinID As Integer,
+        proteinSequence As String) As Integer
 
     Function UpdateProteinSequenceInfo(
-        ProteinID As Integer,
-        Sequence As String,
-        Length As Integer,
-        MolecularFormula As String,
-        MonoisotopicMass As Double,
-        AverageMass As Double,
-        SHA1Hash As String) As Integer
+        proteinID As Integer,
+        sequence As String,
+        length As Integer,
+        molecularFormula As String,
+        monoisotopicMass As Double,
+        averageMass As Double,
+        sha1Hash As String) As Integer
 
 
     Function GetProteinCollectionState(
-        ProteinCollectionID As Integer) As String
+        proteinCollectionID As Integer) As String
 
     Function GenerateArbitraryHash(
-        SourceText As String) As String
+        sourceText As String) As String
 
     Property MaximumProteinNameLength As Integer
 
@@ -361,98 +360,97 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function UpdateProteinSequenceInfo(
-        ProteinID As Integer,
-        Sequence As String,
-        Length As Integer,
-        MolecularFormula As String,
-        MonoisotopicMass As Double,
-        AverageMass As Double,
-        SHA1Hash As String) As Integer Implements IAddUpdateEntries.UpdateProteinSequenceInfo
+      proteinID As Integer,
+      sequence As String,
+      length As Integer,
+      molecularFormula As String,
+      monoisotopicMass As Double,
+      averageMass As Double,
+      sha1Hash As String) As Integer Implements IAddUpdateEntries.UpdateProteinSequenceInfo
 
         RunSP_UpdateProteinSequenceInfo(
-            ProteinID,
-            Sequence,
-            Length,
-            MolecularFormula,
-            MonoisotopicMass,
-            AverageMass,
-            SHA1Hash)
+            proteinID,
+            sequence,
+            length,
+            molecularFormula,
+            monoisotopicMass,
+            averageMass,
+            sha1Hash)
 
 
         Return 0
     End Function
 
     Protected Function AddNamingAuthority(
-        ShortName As String,
-        FullName As String,
-        WebAddress As String) As Integer Implements IAddUpdateEntries.AddNamingAuthority
+      shortName As String,
+      fullName As String,
+      webAddress As String) As Integer Implements IAddUpdateEntries.AddNamingAuthority
 
         Dim tmpAuthID As Integer
 
         tmpAuthID = RunSP_AddNamingAuthority(
-            ShortName,
-            FullName,
-            WebAddress)
+            shortName,
+            fullName,
+            webAddress)
 
         Return tmpAuthID
 
     End Function
 
     Protected Function AddAnnotationType(
-        TypeName As String,
-        Description As String,
-        Example As String,
-        AuthorityID As Integer) As Integer Implements IAddUpdateEntries.AddAnnotationType
+        typeName As String,
+        description As String,
+        example As String,
+        authorityID As Integer) As Integer Implements IAddUpdateEntries.AddAnnotationType
 
         Dim tmpAnnTypeID As Integer
 
         tmpAnnTypeID = RunSP_AddAnnotationType(
-            TypeName, Description, Example, AuthorityID)
+            typeName, description, example, authorityID)
 
         Return tmpAnnTypeID
 
     End Function
 
     Protected Function MakeNewProteinCollection(
-        FileName As String,
-        Description As String,
-        collectionSource As String,
-        CollectionType As IAddUpdateEntries.CollectionTypes,
-        AnnotationTypeID As Integer,
-        NumProteins As Integer,
-        NumResidues As Integer) As Integer Implements IAddUpdateEntries.MakeNewProteinCollection
+      fileName As String,
+      description As String,
+      collectionSource As String,
+      collectionType As IAddUpdateEntries.CollectionTypes,
+      annotationTypeID As Integer,
+      numProteins As Integer,
+      numResidues As Integer) As Integer Implements IAddUpdateEntries.MakeNewProteinCollection
 
         Dim tmpProteinCollectionID As Integer
 
         tmpProteinCollectionID = RunSP_AddUpdateProteinCollection(
-            FileName, Description, collectionSource, CollectionType, IAddUpdateEntries.CollectionStates.NewEntry,
-            AnnotationTypeID, NumProteins, NumResidues, IAddUpdateEntries.SPModes.add)
+            fileName, description, collectionSource, collectionType, IAddUpdateEntries.CollectionStates.NewEntry,
+            annotationTypeID, numProteins, numResidues, IAddUpdateEntries.SPModes.add)
 
         Return tmpProteinCollectionID
 
     End Function
 
     Protected Function UpdateEncryptionMetadata(
-        ProteinCollectionID As Integer,
-        Passphrase As String) As Integer Implements IAddUpdateEntries.UpdateEncryptionMetadata
+      proteinCollectionID As Integer,
+      passphrase As String) As Integer Implements IAddUpdateEntries.UpdateEncryptionMetadata
 
 
-        Return RunSP_AddUpdateEncryptionMetadata(Passphrase, ProteinCollectionID)
+        Return RunSP_AddUpdateEncryptionMetadata(passphrase, proteinCollectionID)
 
     End Function
 
     Protected Function UpdateProteinCollectionState(
-        ProteinCollectionID As Integer,
-        CollectionStateID As Integer) As Integer Implements IAddUpdateEntries.UpdateProteinCollectionState
+      proteinCollectionID As Integer,
+      collectionStateID As Integer) As Integer Implements IAddUpdateEntries.UpdateProteinCollectionState
 
-        Return RunSP_UpdateProteinCollectionStates(ProteinCollectionID, CollectionStateID)
+        Return RunSP_UpdateProteinCollectionStates(proteinCollectionID, collectionStateID)
 
     End Function
 
-    Protected Function GetProteinCollectionState(
-        ProteinCollectionID As Integer) As String Implements IAddUpdateEntries.GetProteinCollectionState
+    Protected Function GetProteinCollectionState(proteinCollectionID As Integer) As String Implements IAddUpdateEntries.GetProteinCollectionState
 
-        Return RunSP_GetProteinCollectionState(ProteinCollectionID)
+        Return RunSP_GetProteinCollectionState(proteinCollectionID)
 
     End Function
 
@@ -477,8 +475,8 @@ Public Class clsAddUpdateEntries
 
     End Function
 
-    Protected Function GetProteinIDFromName(ProteinName As String) As Integer Implements IAddUpdateEntries.GetProteinIDFromName
-        Return RunSP_GetProteinIDFromName(ProteinName)
+    Protected Function GetProteinIDFromName(proteinName As String) As Integer Implements IAddUpdateEntries.GetProteinIDFromName
+        Return RunSP_GetProteinIDFromName(proteinName)
     End Function
 
     ''' <summary>
@@ -490,100 +488,100 @@ Public Class clsAddUpdateEntries
         RunSP_DeleteProteinCollectionMembers(proteinCollectionID, numProteins)
     End Sub
 
-    Protected Function GetProteinCollectionID(FilePath As String) As Integer Implements IAddUpdateEntries.GetProteinCollectionID
-        Return RunSP_GetProteinCollectionID(IO.Path.GetFileNameWithoutExtension(FilePath))
+    Protected Function GetProteinCollectionID(filePath As String) As Integer Implements IAddUpdateEntries.GetProteinCollectionID
+        Return RunSP_GetProteinCollectionID(IO.Path.GetFileNameWithoutExtension(filePath))
     End Function
 
-    Protected Function CountProteinCollectionMembers(ProteinCollectionID As Integer) As Integer Implements IAddUpdateEntries.GetProteinCollectionMemberCount
-        Return RunSP_GetProteinCollectionMemberCount(ProteinCollectionID)
+    Protected Function CountProteinCollectionMembers(proteinCollectionID As Integer) As Integer Implements IAddUpdateEntries.GetProteinCollectionMemberCount
+        Return RunSP_GetProteinCollectionMemberCount(proteinCollectionID)
     End Function
 
-    Protected Function AddCollectionOrganismXref(ProteinCollectionID As Integer, OrganismID As Integer) As Integer Implements IAddUpdateEntries.AddCollectionOrganismXref
-        Return RunSP_AddCollectionOrganismXref(ProteinCollectionID, OrganismID)
+    Protected Function AddCollectionOrganismXref(proteinCollectionID As Integer, OrganismID As Integer) As Integer Implements IAddUpdateEntries.AddCollectionOrganismXref
+        Return RunSP_AddCollectionOrganismXref(proteinCollectionID, OrganismID)
     End Function
 
     Protected Function AddProteinCollectionMember(
-        ReferenceID As Integer,
-        ProteinID As Integer,
-        Sorting_Index As Integer,
-        ProteinCollectionID As Integer) As Integer Implements IAddUpdateEntries.AddProteinCollectionMember
+        referenceID As Integer,
+        proteinID As Integer,
+        sorting_Index As Integer,
+        proteinCollectionID As Integer) As Integer Implements IAddUpdateEntries.AddProteinCollectionMember
 
-        Return RunSP_AddProteinCollectionMember(ReferenceID, ProteinID, Sorting_Index, ProteinCollectionID)
+        Return RunSP_AddProteinCollectionMember(referenceID, proteinID, sorting_Index, proteinCollectionID)
     End Function
 
     Protected Function UpdateProteinCollectionMember(
-        ReferenceID As Integer,
-        ProteinID As Integer,
-        Sorting_Index As Integer,
-        ProteinCollectionID As Integer) As Integer Implements IAddUpdateEntries.UpdateProteinCollectionMember
+        referenceID As Integer,
+        proteinID As Integer,
+        sorting_Index As Integer,
+        proteinCollectionID As Integer) As Integer Implements IAddUpdateEntries.UpdateProteinCollectionMember
 
-        Return RunSP_UpdateProteinCollectionMember(ReferenceID, ProteinID, Sorting_Index, ProteinCollectionID)
+        Return RunSP_UpdateProteinCollectionMember(referenceID, proteinID, sorting_Index, proteinCollectionID)
 
     End Function
 
     Protected Function AddProteinReference(
-     ProteinName As String,
-     Description As String,
-     OrganismID As Integer,
-     AuthorityID As Integer,
-     ProteinID As Integer,
-     MaxProteinNameLength As Integer) As Integer Implements IAddUpdateEntries.AddProteinReference
+      proteinName As String,
+      description As String,
+      organismID As Integer,
+      authorityID As Integer,
+      proteinID As Integer,
+      maxProteinNameLength As Integer) As Integer Implements IAddUpdateEntries.AddProteinReference
 
         Dim ref_ID As Integer
 
-        ref_ID = (RunSP_AddProteinReference(ProteinName, Description, OrganismID, AuthorityID, ProteinID, MaxProteinNameLength))
+        ref_ID = (RunSP_AddProteinReference(proteinName, description, organismID, authorityID, proteinID, maxProteinNameLength))
         Return ref_ID
 
     End Function
 
     Protected Function AddFileAuthenticationHash(
-        ProteinCollectionID As Integer,
-        AuthenticationHash As String,
-        numProteins As Integer,
-        totalResidues As Integer) As Integer Implements IAddUpdateEntries.AddAuthenticationHash
+      proteinCollectionID As Integer,
+      authenticationHash As String,
+      numProteins As Integer,
+      totalResidues As Integer) As Integer Implements IAddUpdateEntries.AddAuthenticationHash
 
-        Return RunSP_AddCRC32FileAuthentication(ProteinCollectionID, AuthenticationHash, numProteins, totalResidues)
+        Return RunSP_AddCRC32FileAuthentication(proteinCollectionID, authenticationHash, numProteins, totalResidues)
 
     End Function
 
     Protected Function UpdateProteinNameHash(
-        ReferenceID As Integer,
-        ProteinName As String,
-        Description As String,
-        ProteinID As Integer) As Integer Implements IAddUpdateEntries.UpdateProteinNameHash
+      referenceID As Integer,
+      proteinName As String,
+      description As String,
+      proteinID As Integer) As Integer Implements IAddUpdateEntries.UpdateProteinNameHash
 
-        Return RunSP_UpdateProteinNameHash(ReferenceID, ProteinName, Description, ProteinID)
+        Return RunSP_UpdateProteinNameHash(referenceID, proteinName, description, proteinID)
     End Function
 
     Protected Function UpdateProteinSequenceHash(
-        ProteinID As Integer,
-        ProteinSequence As String) As Integer Implements IAddUpdateEntries.UpdateProteinSequenceHash
+      proteinID As Integer,
+      proteinSequence As String) As Integer Implements IAddUpdateEntries.UpdateProteinSequenceHash
 
-        Return RunSP_UpdateProteinSequenceHash(ProteinID, ProteinSequence)
+        Return RunSP_UpdateProteinSequenceHash(proteinID, proteinSequence)
 
     End Function
 
-    Protected Function GenerateHash(SourceText As String) As String Implements IAddUpdateEntries.GenerateArbitraryHash
+    Protected Function GenerateHash(sourceText As String) As String Implements IAddUpdateEntries.GenerateArbitraryHash
         'Create an encoding object to ensure the encoding standard for the source text
-        Dim Ue As New Text.ASCIIEncoding
+        Dim encoding As New Text.ASCIIEncoding
 
         'Retrieve a byte array based on the source text
-        Dim ByteSourceText() As Byte = Ue.GetBytes(SourceText)
+        Dim byteSourceText() As Byte = encoding.GetBytes(sourceText)
 
         'Compute the hash value from the source
-        Dim SHA1_hash() As Byte = m_Hasher.ComputeHash(ByteSourceText)
+        Dim sha1_hash() As Byte = m_Hasher.ComputeHash(byteSourceText)
 
         'And convert it to String format for return
-        Dim SHA1string As String = clsRijndaelEncryptionHandler.ToHexString(SHA1_hash)
+        Dim sha1string As String = clsRijndaelEncryptionHandler.ToHexString(sha1_hash)
 
-        Return SHA1string
+        Return sha1string
     End Function
 
 
 #Region " Stored Procedure Access "
 
     Protected Function RunSP_GetProteinCollectionState(
-        ProteinCollectionID As Integer) As String
+        proteinCollectionID As Integer) As String
 
         Dim StateName As String
 
@@ -616,27 +614,27 @@ Public Class clsAddUpdateEntries
         'Get return value
         ' Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
-        StateName = CStr(sp_Save.Parameters("@State_Name").Value)
+        Dim stateName = CStr(sp_Save.Parameters("@State_Name").Value)
 
-        Return StateName
+        Return stateName
 
 
     End Function
 
     Protected Function RunSP_AddProteinSequence(
-        Sequence As String,
-        Length As Integer,
-        MolecularFormula As String,
-        MonoisotopicMass As Double,
-        AverageMass As Double,
-        SHA1_Hash As String,
-        IsEncrypted As Boolean,
-        mode As IAddUpdateEntries.SPModes) As Integer
+      sequence As String,
+      length As Integer,
+      molecularFormula As String,
+      monoisotopicMass As Double,
+      averageMass As Double,
+      sha1_Hash As String,
+      isEncrypted As Boolean,
+      mode As IAddUpdateEntries.SPModes) As Integer
 
         Dim sp_Save As SqlClient.SqlCommand
-        Dim EncryptionFlag = 0
-        If IsEncrypted Then
-            EncryptionFlag = 1
+        Dim encryptionFlag = 0
+        If isEncrypted Then
+            encryptionFlag = 1
         End If
 
         sp_Save = New SqlClient.SqlCommand("AddProteinSequence", m_DatabaseAccessor.Connection)
@@ -700,16 +698,7 @@ Public Class clsAddUpdateEntries
 
     End Function
 
-
     Protected Function RunSP_UpdateProteinSequenceInfo(
-        ProteinID As Integer,
-        Sequence As String,
-        Length As Integer,
-        MolecularFormula As String,
-        MonoisotopicMass As Double,
-        AverageMass As Double,
-        SHA1_Hash As String) As Integer
-
         Dim sp_Save As SqlClient.SqlCommand
 
         sp_Save = New SqlClient.SqlCommand("UpdateProteinSequenceInfo", m_DatabaseAccessor.Connection)
@@ -747,6 +736,13 @@ Public Class clsAddUpdateEntries
         myParam = sp_Save.Parameters.Add("@average_mass", SqlDbType.Float, 8)
         myParam.Direction = ParameterDirection.Input
         myParam.Value = AverageMass
+      proteinID As Integer,
+      sequence As String,
+      length As Integer,
+      molecularFormula As String,
+      monoisotopicMass As Double,
+      averageMass As Double,
+      sha1_Hash As String) As Integer
 
         myParam = sp_Save.Parameters.Add("@sha1_hash", SqlDbType.VarChar, 40)
         myParam.Direction = ParameterDirection.Input
@@ -766,18 +762,7 @@ Public Class clsAddUpdateEntries
 
     End Function
 
-
     Protected Function RunSP_AddUpdateProteinCollection(
-        FileName As String,
-        Description As String,
-        collectionSource As String,
-        collectionType As IAddUpdateEntries.CollectionTypes,
-        collectionState As IAddUpdateEntries.CollectionStates,
-        annotationTypeID As Integer,
-        numProteins As Integer,
-        numResidues As Integer,
-        mode As IAddUpdateEntries.SPModes) As Integer
-
         Dim sp_Save As SqlClient.SqlCommand
 
         sp_Save = New SqlClient.SqlCommand("AddUpdateProteinCollection", m_DatabaseAccessor.Connection)
@@ -830,6 +815,15 @@ Public Class clsAddUpdateEntries
 
         myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 512)
         myParam.Direction = ParameterDirection.Output
+      fileName As String,
+      description As String,
+      collectionSource As String,
+      collectionType As IAddUpdateEntries.CollectionTypes,
+      collectionState As IAddUpdateEntries.CollectionStates,
+      annotationTypeID As Integer,
+      numProteins As Integer,
+      numResidues As Integer,
+      mode As IAddUpdateEntries.SPModes) As Integer
 
 
         'Execute the sp
@@ -861,26 +855,22 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function RunSP_AddProteinCollectionMember(
-      Reference_ID As Integer, Protein_ID As Integer,
-      SortingIndex As Integer, Protein_Collection_ID As Integer) As Integer
+      reference_ID As Integer, Protein_ID As Integer,
+      sortingIndex As Integer, Protein_Collection_ID As Integer) As Integer
 
-        Return RunSP_AddUpdateProteinCollectionMember(Reference_ID, Protein_ID, SortingIndex, Protein_Collection_ID, "Add")
+        Return RunSP_AddUpdateProteinCollectionMember(reference_ID, Protein_ID, sortingIndex, Protein_Collection_ID, "Add")
 
     End Function
 
     Protected Function RunSP_UpdateProteinCollectionMember(
-      Reference_ID As Integer, Protein_ID As Integer,
-      SortingIndex As Integer, Protein_Collection_ID As Integer) As Integer
+      reference_ID As Integer, Protein_ID As Integer,
+      sortingIndex As Integer, Protein_Collection_ID As Integer) As Integer
 
-        Return RunSP_AddUpdateProteinCollectionMember(Reference_ID, Protein_ID, SortingIndex, Protein_Collection_ID, "Update")
+        Return RunSP_AddUpdateProteinCollectionMember(reference_ID, Protein_ID, sortingIndex, Protein_Collection_ID, "Update")
 
     End Function
 
     Protected Function RunSP_AddUpdateProteinCollectionMember(
-      Reference_ID As Integer, Protein_ID As Integer,
-      SortingIndex As Integer, Protein_Collection_ID As Integer,
-      Mode As String) As Integer
-
         Dim sp_Save As SqlClient.SqlCommand
 
         sp_Save = New SqlClient.SqlCommand("AddUpdateProteinCollectionMember_New", m_DatabaseAccessor.Connection)
@@ -910,6 +900,9 @@ Public Class clsAddUpdateEntries
         myParam = sp_Save.Parameters.Add("@protein_collection_ID", SqlDbType.Int)
         myParam.Direction = ParameterDirection.Input
         myParam.Value = Protein_Collection_ID
+      reference_ID As Integer, Protein_ID As Integer,
+      sortingIndex As Integer, Protein_Collection_ID As Integer,
+      mode As String) As Integer
 
         myParam = sp_Save.Parameters.Add("@mode", SqlDbType.VarChar, 10)
         myParam.Direction = ParameterDirection.Input
@@ -930,14 +923,13 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function RunSP_AddUpdateEncryptionMetadata(
-        Passphrase As String, Protein_Collection_ID As Integer) As Integer
-
-        Dim phraseHash As String = GenerateHash(Passphrase)
         Dim sp_Save As SqlClient.SqlCommand
 
         sp_Save = New SqlClient.SqlCommand("AddUpdateEncryptionMetadata", m_DatabaseAccessor.Connection)
+        passphrase As String, protein_Collection_ID As Integer) As Integer
 
         sp_Save.CommandType = CommandType.StoredProcedure
+        Dim phraseHash As String = GenerateHash(passphrase)
 
         'Define parameters
         Dim myParam As SqlClient.SqlParameter
@@ -974,9 +966,6 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function RunSP_AddNamingAuthority(
-        ShortName As String, FullName As String,
-        WebAddress As String) As Integer
-
         Dim sp_Save As SqlClient.SqlCommand
 
         sp_Save = New SqlClient.SqlCommand("AddNamingAuthority", m_DatabaseAccessor.Connection)
@@ -998,6 +987,9 @@ Public Class clsAddUpdateEntries
         myParam = sp_Save.Parameters.Add("@description", SqlDbType.VarChar, 128)
         myParam.Direction = ParameterDirection.Input
         myParam.Value = FullName
+      shortName As String,
+      fullName As String,
+      webAddress As String) As Integer
 
         myParam = sp_Save.Parameters.Add("@web_address", SqlDbType.VarChar, 128)
         myParam.Direction = ParameterDirection.Input
@@ -1018,9 +1010,6 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function RunSP_AddAnnotationType(
-        TypeName As String, Description As String,
-        Example As String, AuthID As Integer) As Integer
-
         Dim sp_Save As SqlClient.SqlCommand
 
         sp_Save = New SqlClient.SqlCommand("AddAnnotationType", m_DatabaseAccessor.Connection)
@@ -1046,6 +1035,10 @@ Public Class clsAddUpdateEntries
         myParam = sp_Save.Parameters.Add("@example", SqlDbType.VarChar, 128)
         myParam.Direction = ParameterDirection.Input
         myParam.Value = Example
+      typeName As String,
+      description As String,
+      example As String,
+      authorityID As Integer) As Integer
 
         myParam = sp_Save.Parameters.Add("@authID", SqlDbType.Int)
         myParam.Direction = ParameterDirection.Input
@@ -1066,8 +1059,8 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function RunSP_UpdateProteinCollectionStates(
-        Protein_Collection_ID As Integer,
-        Collection_State_ID As Integer) As Integer
+      proteinCollectionID As Integer,
+      collectionStateID As Integer) As Integer
 
         Dim sp_Save As SqlClient.SqlCommand
 
@@ -1150,10 +1143,8 @@ Public Class clsAddUpdateEntries
 
     End Function
 
-    Protected Function RunSP_GetProteinCollectionMemberCount(
-        Protein_Collection_ID As Integer) As Integer
-
         Dim sp_Save As SqlClient.SqlCommand
+    Protected Function RunSP_GetProteinCollectionMemberCount(proteinCollectionID As Integer) As Integer
 
         sp_Save = New SqlClient.SqlCommand("GetProteinCollectionMemberCount", m_DatabaseAccessor.Connection)
 
@@ -1182,17 +1173,17 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function RunSP_AddProteinReference(
-     Protein_Name As String,
-     Description As String,
-     OrganismID As Integer,
-     AuthorityID As Integer,
-     ProteinID As Integer,
-     MaxProteinNameLength As Integer) As Integer
+      protein_Name As String,
+      description As String,
+      organismID As Integer,
+      authorityID As Integer,
+      proteinID As Integer,
+      maxProteinNameLength As Integer) As Integer
 
         Dim sp_Save As SqlClient.SqlCommand
         Dim hashableString As String
 
-        If MaxProteinNameLength <= 0 Then MaxProteinNameLength = 32
+        If maxProteinNameLength <= 0 Then maxProteinNameLength = 32
 
         sp_Save = New SqlClient.SqlCommand("AddProteinReference", m_DatabaseAccessor.Connection)
 
@@ -1267,10 +1258,7 @@ Public Class clsAddUpdateEntries
 
     End Function
 
-    Protected Function RunSP_GetProteinCollectionID(
-        FileName As String) As Integer
-
-        Dim sp_Save As SqlClient.SqlCommand
+    Protected Function RunSP_GetProteinCollectionID(fileName As String) As Integer
 
         sp_Save = New SqlClient.SqlCommand("GetProteinCollectionID", m_DatabaseAccessor.Connection)
 
@@ -1300,8 +1288,8 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function RunSP_AddCRC32FileAuthentication(
-      Protein_Collection_ID As Integer,
-      AuthenticationHash As String,
+      protein_Collection_ID As Integer,
+      authenticationHash As String,
       numProteins As Integer,
       totalResidueCount As Integer) As Integer
 
@@ -1349,9 +1337,6 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function RunSP_AddCollectionOrganismXref(
-        Protein_Collection_ID As Integer,
-        OrganismID As Integer) As Integer
-
         Dim sp_Save As SqlClient.SqlCommand
 
         sp_Save = New SqlClient.SqlCommand("AddCollectionOrganismXref", m_DatabaseAccessor.Connection)
@@ -1369,6 +1354,8 @@ Public Class clsAddUpdateEntries
         myParam = sp_Save.Parameters.Add("@Protein_Collection_ID", SqlDbType.Int)
         myParam.Direction = ParameterDirection.Input
         myParam.Value = Protein_Collection_ID
+      protein_Collection_ID As Integer,
+      organismID As Integer) As Integer
 
         myParam = sp_Save.Parameters.Add("@Organism_ID", SqlDbType.Int)
         myParam.Direction = ParameterDirection.Input
@@ -1389,10 +1376,10 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function RunSP_UpdateProteinNameHash(
-        Reference_ID As Integer,
-        Protein_Name As String,
-        Description As String,
-        Protein_ID As Integer) As Integer
+      reference_ID As Integer,
+      protein_Name As String,
+      description As String,
+      protein_ID As Integer) As Integer
 
         Dim tmpHash As String
 
@@ -1437,11 +1424,10 @@ Public Class clsAddUpdateEntries
     Protected Function RunSP_UpdateProteinCollectionCounts(
       numProteins As Integer,
       numResidues As Integer,
-      ProteinCollectionID As Integer) As Integer
-
         Dim sp_Save As SqlClient.SqlCommand
 
         sp_Save = New SqlClient.SqlCommand("UpdateProteinCollectionCounts", m_DatabaseAccessor.Connection)
+      proteinCollectionID As Integer) As Integer
 
         sp_Save.CommandType = CommandType.StoredProcedure
 
@@ -1479,9 +1465,6 @@ Public Class clsAddUpdateEntries
 
 
     Protected Function RunSP_UpdateProteinSequenceHash(
-        Protein_ID As Integer,
-        Protein_Sequence As String) As Integer
-
         Dim sp_Save As SqlClient.SqlCommand
         Dim tmpGenSHA As String = GenerateHash(Protein_Sequence)
 
@@ -1495,6 +1478,8 @@ Public Class clsAddUpdateEntries
         'Define parameter for sp's return value
         myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
         myParam.Direction = ParameterDirection.ReturnValue
+      proteinID As Integer,
+      proteinSequence As String) As Integer
 
         'Define parameters for the sp's arguments
         myParam = sp_Save.Parameters.Add("@Protein_ID", SqlDbType.Int)
@@ -1519,10 +1504,8 @@ Public Class clsAddUpdateEntries
 
     End Function
 
+    Protected Function RunSP_GetProteinIDFromName(proteinName As String) As Integer
 
-
-    Protected Function RunSP_GetProteinIDFromName(
-        ProteinName As String) As Integer
 
         Dim sp_Save As SqlClient.SqlCommand
 

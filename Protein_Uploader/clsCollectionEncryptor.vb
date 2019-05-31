@@ -15,11 +15,11 @@ Friend Class clsCollectionEncryptor
 
     Sub EncryptStorageCollectionSequences(storageCollection As Protein_Storage.IProteinStorage)
 
-        Dim e = StorageCollection.GetEnumerator
+        Dim e = storageCollection.GetEnumerator
 
         OnEncryptionStart("Encrypting Sequences")
         Dim counter = 0
-        Dim counterMax As Integer = StorageCollection.ProteinCount
+        Dim counterMax As Integer = storageCollection.ProteinCount
         Dim EventTriggerThresh As Integer
 
         If counterMax <= 50 Then

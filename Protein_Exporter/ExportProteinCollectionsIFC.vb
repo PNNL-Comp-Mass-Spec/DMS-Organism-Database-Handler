@@ -11,35 +11,60 @@ Namespace ExportProteinCollectionsIFC
         Event ExportProgress(statusMsg As String, fractionDone As Double)
         Event ExportEnd()
 
+        ''' <summary>
+        ''' Export the proteins to the given file
+        ''' </summary>
+        ''' <param name="proteins"></param>
+        ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
+        ''' <param name="selectedProteinList"></param>
+        ''' <returns></returns>
         Function Export(
-            Proteins As IProteinStorage,
+            proteins As IProteinStorage,
             ByRef destinationPath As String,
-            SelectedProteinList As List(Of String)) As String
+            selectedProteinList As List(Of String)) As String
 
+        ''' <summary>
+        ''' Export the proteins to the given file
+        ''' </summary>
+        ''' <param name="proteins"></param>
+        ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
+        ''' <returns></returns>
         Function Export(
-            Proteins As IProteinStorage,
+            proteins As IProteinStorage,
             ByRef destinationPath As String) As String
 
+        ''' <summary>
+        ''' Export the proteins to the given file
+        ''' </summary>
+        ''' <param name="proteinTables"></param>
+        ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
+        ''' <returns></returns>
         Function Export(
-            ProteinTables As DataSet,
+            proteinTables As DataSet,
             ByRef destinationPath As String) As String
 
+        ''' <summary>
+        ''' Export the proteins to the given file
+        ''' </summary>
+        ''' <param name="proteinTable"></param>
+        ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
+        ''' <returns></returns>
         Function Export(
-            ProteinTable As DataTable,
-            ByRef destintationPath As String) As String
+            proteinTable As DataTable,
+            ByRef destinationPath As String) As String
 
-        Function GenerateFileAuthenticationHash(FullFilePath As String) As String
+        Function GenerateFileAuthenticationHash(fullFilePath As String) As String
 
     End Interface
 
     Public Interface IGetFASTAFromDMS
 
         Function GetOrganismList() As Hashtable
-        Function GetCollectionsByOrganism(OrganismID As Integer) As Hashtable
+        Function GetCollectionsByOrganism(organismID As Integer) As Hashtable
         Function GetAllCollections() As Hashtable
 
         Function GetOrganismListTable() As DataTable
-        Function GetCollectionsByOrganismTable(OrganismID As Integer) As DataTable
+        Function GetCollectionsByOrganismTable(organismID As Integer) As DataTable
 
         Function ExportFASTAFile(
             proteinCollectionID As Integer,
@@ -53,10 +78,10 @@ Namespace ExportProteinCollectionsIFC
             legacyFASTAFileName As String,
             destinationFolderPath As String) As String
 
-        Function GenerateFileAuthenticationHash(FullFilePath As String) As String
-        Function GetStoredFileAuthenticationHash(ProteinCollectionName As String) As String
-        Function GetStoredFileAuthenticationHash(ProteinCollectionID As Integer) As String
-        Function GetProteinCollectionID(ProteinCollectionName As String) As Integer
+        Function GenerateFileAuthenticationHash(fullFilePath As String) As String
+        Function GetStoredFileAuthenticationHash(proteinCollectionName As String) As String
+        Function GetStoredFileAuthenticationHash(proteinCollectionID As Integer) As String
+        Function GetProteinCollectionID(proteinCollectionName As String) As Integer
 
         Event FileGenerationStarted(taskMsg As String)
         Event FileGenerationProgress(statusMsg As String, fractionDone As Double)
