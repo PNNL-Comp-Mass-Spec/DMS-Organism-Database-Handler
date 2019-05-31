@@ -583,30 +583,18 @@ Public Class clsAddUpdateEntries
     Protected Function RunSP_GetProteinCollectionState(
         proteinCollectionID As Integer) As String
 
-        Dim StateName As String
+        Dim sp_Save = New SqlClient.SqlCommand("GetProteinCollectionState", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
 
-        Dim sp_Save As SqlClient.SqlCommand
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
-        sp_Save = New SqlClient.SqlCommand("GetProteinCollectionState", m_DatabaseAccessor.Connection)
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int).Value = proteinCollectionID
 
-        sp_Save.CommandType = CommandType.StoredProcedure
-
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
-
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
-
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = ProteinCollectionID
-
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@State_Name", SqlDbType.VarChar, 32)
-        myParam.Direction = ParameterDirection.Output
-
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@State_Name", SqlDbType.VarChar, 32).Direction = ParameterDirection.Output
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -631,62 +619,30 @@ Public Class clsAddUpdateEntries
       isEncrypted As Boolean,
       mode As IAddUpdateEntries.SPModes) As Integer
 
-        Dim sp_Save As SqlClient.SqlCommand
         Dim encryptionFlag = 0
         If isEncrypted Then
             encryptionFlag = 1
         End If
 
-        sp_Save = New SqlClient.SqlCommand("AddProteinSequence", m_DatabaseAccessor.Connection)
+        ' Use a 5 minute timeout
+        Dim sp_Save = New SqlClient.SqlCommand("AddProteinSequence", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure,
+            .CommandTimeout = 300
+        }
 
-        sp_Save.CommandType = CommandType.StoredProcedure
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
-        ' Increase the timeout to 5 minutes
-        sp_Save.CommandTimeout = 300
-
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
-
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
-
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@sequence", SqlDbType.Text)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Sequence
-
-        myParam = sp_Save.Parameters.Add("@length", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Length
-
-        myParam = sp_Save.Parameters.Add("@molecular_formula", SqlDbType.VarChar, 128)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = MolecularFormula
-
-        myParam = sp_Save.Parameters.Add("@monoisotopic_mass", SqlDbType.Float, 8)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = MonoisotopicMass
-
-        myParam = sp_Save.Parameters.Add("@average_mass", SqlDbType.Float, 8)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = AverageMass
-
-        myParam = sp_Save.Parameters.Add("@sha1_hash", SqlDbType.VarChar, 40)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = SHA1_Hash
-
-        myParam = sp_Save.Parameters.Add("@is_encrypted", SqlDbType.TinyInt)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = EncryptionFlag
-
-        myParam = sp_Save.Parameters.Add("@mode", SqlDbType.VarChar, 12)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = mode.ToString
-
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
-        myParam.Direction = ParameterDirection.Output
-
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@sequence", SqlDbType.Text).Value = sequence
+        sp_Save.Parameters.Add("@length", SqlDbType.Int).Value = length
+        sp_Save.Parameters.Add("@molecular_formula", SqlDbType.VarChar, 128).Value = molecularFormula
+        sp_Save.Parameters.Add("@monoisotopic_mass", SqlDbType.Float, 8).Value = monoisotopicMass
+        sp_Save.Parameters.Add("@average_mass", SqlDbType.Float, 8).Value = averageMass
+        sp_Save.Parameters.Add("@sha1_hash", SqlDbType.VarChar, 40).Value = sha1_Hash
+        sp_Save.Parameters.Add("@is_encrypted", SqlDbType.TinyInt).Value = encryptionFlag
+        sp_Save.Parameters.Add("@mode", SqlDbType.VarChar, 12).Value = mode.ToString
+        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -699,43 +655,6 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function RunSP_UpdateProteinSequenceInfo(
-        Dim sp_Save As SqlClient.SqlCommand
-
-        sp_Save = New SqlClient.SqlCommand("UpdateProteinSequenceInfo", m_DatabaseAccessor.Connection)
-
-        sp_Save.CommandType = CommandType.StoredProcedure
-
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
-
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
-
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@Protein_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = ProteinID
-
-        myParam = sp_Save.Parameters.Add("@sequence", SqlDbType.Text)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Sequence
-
-        myParam = sp_Save.Parameters.Add("@length", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Length
-
-        myParam = sp_Save.Parameters.Add("@molecular_formula", SqlDbType.VarChar, 128)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = MolecularFormula
-
-        myParam = sp_Save.Parameters.Add("@monoisotopic_mass", SqlDbType.Float, 8)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = MonoisotopicMass
-
-        myParam = sp_Save.Parameters.Add("@average_mass", SqlDbType.Float, 8)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = AverageMass
       proteinID As Integer,
       sequence As String,
       length As Integer,
@@ -744,13 +663,22 @@ Public Class clsAddUpdateEntries
       averageMass As Double,
       sha1_Hash As String) As Integer
 
-        myParam = sp_Save.Parameters.Add("@sha1_hash", SqlDbType.VarChar, 40)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = SHA1_Hash
+        Dim sp_Save = New SqlClient.SqlCommand("UpdateProteinSequenceInfo", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
 
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
-        myParam.Direction = ParameterDirection.Output
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@Protein_ID", SqlDbType.Int).Value = proteinID
+        sp_Save.Parameters.Add("@sequence", SqlDbType.Text).Value = sequence
+        sp_Save.Parameters.Add("@length", SqlDbType.Int).Value = length
+        sp_Save.Parameters.Add("@molecular_formula", SqlDbType.VarChar, 128).Value = molecularFormula
+        sp_Save.Parameters.Add("@monoisotopic_mass", SqlDbType.Float, 8).Value = monoisotopicMass
+        sp_Save.Parameters.Add("@average_mass", SqlDbType.Float, 8).Value = averageMass
+        sp_Save.Parameters.Add("@sha1_hash", SqlDbType.VarChar, 40).Value = sha1_Hash
+        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -763,58 +691,6 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function RunSP_AddUpdateProteinCollection(
-        Dim sp_Save As SqlClient.SqlCommand
-
-        sp_Save = New SqlClient.SqlCommand("AddUpdateProteinCollection", m_DatabaseAccessor.Connection)
-
-        sp_Save.CommandType = CommandType.StoredProcedure
-
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
-
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
-
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@fileName", SqlDbType.VarChar, 128)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = FileName
-
-        myParam = sp_Save.Parameters.Add("@Description", SqlDbType.VarChar, 900)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Description
-
-        myParam = sp_Save.Parameters.Add("@collectionSource", SqlDbType.VarChar, 900)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = collectionSource
-
-        myParam = sp_Save.Parameters.Add("@collection_type", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = CInt(collectionType)
-
-        myParam = sp_Save.Parameters.Add("@collection_state", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = CInt(collectionState)
-
-        myParam = sp_Save.Parameters.Add("@primary_annotation_type_id", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = CInt(annotationTypeID)
-
-        myParam = sp_Save.Parameters.Add("@numProteins", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = numProteins
-
-        myParam = sp_Save.Parameters.Add("@numResidues", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = numResidues
-
-        myParam = sp_Save.Parameters.Add("@mode", SqlDbType.VarChar, 12)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = mode.ToString
-
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 512)
-        myParam.Direction = ParameterDirection.Output
       fileName As String,
       description As String,
       collectionSource As String,
@@ -825,6 +701,24 @@ Public Class clsAddUpdateEntries
       numResidues As Integer,
       mode As IAddUpdateEntries.SPModes) As Integer
 
+        Dim sp_Save = New SqlClient.SqlCommand("AddUpdateProteinCollection", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
+
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@fileName", SqlDbType.VarChar, 128).Value = fileName
+        sp_Save.Parameters.Add("@Description", SqlDbType.VarChar, 900).Value = description
+        sp_Save.Parameters.Add("@collectionSource", SqlDbType.VarChar, 900).Value = collectionSource
+        sp_Save.Parameters.Add("@collection_type", SqlDbType.Int).Value = CInt(collectionType)
+        sp_Save.Parameters.Add("@collection_state", SqlDbType.Int).Value = CInt(collectionState)
+        sp_Save.Parameters.Add("@primary_annotation_type_id", SqlDbType.Int).Value = CInt(annotationTypeID)
+        sp_Save.Parameters.Add("@numProteins", SqlDbType.Int).Value = numProteins
+        sp_Save.Parameters.Add("@numResidues", SqlDbType.Int).Value = numResidues
+        sp_Save.Parameters.Add("@mode", SqlDbType.VarChar, 12).Value = mode.ToString
+        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 512).Direction = ParameterDirection.Output
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -871,46 +765,24 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function RunSP_AddUpdateProteinCollectionMember(
-        Dim sp_Save As SqlClient.SqlCommand
-
-        sp_Save = New SqlClient.SqlCommand("AddUpdateProteinCollectionMember_New", m_DatabaseAccessor.Connection)
-
-        sp_Save.CommandType = CommandType.StoredProcedure
-
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
-
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
-
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@reference_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Reference_ID
-
-        myParam = sp_Save.Parameters.Add("@protein_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Protein_ID
-
-        myParam = sp_Save.Parameters.Add("@sorting_index", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = SortingIndex
-
-        myParam = sp_Save.Parameters.Add("@protein_collection_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Protein_Collection_ID
       reference_ID As Integer, Protein_ID As Integer,
       sortingIndex As Integer, Protein_Collection_ID As Integer,
       mode As String) As Integer
 
-        myParam = sp_Save.Parameters.Add("@mode", SqlDbType.VarChar, 10)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Mode
+        Dim sp_Save = New SqlClient.SqlCommand("AddUpdateProteinCollectionMember_New", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
 
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
-        myParam.Direction = ParameterDirection.Output
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@reference_ID", SqlDbType.Int).Value = reference_ID
+        sp_Save.Parameters.Add("@protein_ID", SqlDbType.Int).Value = Protein_ID
+        sp_Save.Parameters.Add("@sorting_index", SqlDbType.Int).Value = sortingIndex
+        sp_Save.Parameters.Add("@protein_collection_ID", SqlDbType.Int).Value = Protein_Collection_ID
+        sp_Save.Parameters.Add("@mode", SqlDbType.VarChar, 10).Value = mode
+        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -923,37 +795,22 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function RunSP_AddUpdateEncryptionMetadata(
-        Dim sp_Save As SqlClient.SqlCommand
-
-        sp_Save = New SqlClient.SqlCommand("AddUpdateEncryptionMetadata", m_DatabaseAccessor.Connection)
         passphrase As String, protein_Collection_ID As Integer) As Integer
 
-        sp_Save.CommandType = CommandType.StoredProcedure
         Dim phraseHash As String = GenerateHash(passphrase)
 
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
+        Dim sp_Save = New SqlClient.SqlCommand("AddUpdateEncryptionMetadata", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
 
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@Protein_Collection_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Protein_Collection_ID
-
-        myParam = sp_Save.Parameters.Add("@Encryption_Passphrase", SqlDbType.VarChar, 64)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Passphrase
-
-        myParam = sp_Save.Parameters.Add("@Passphrase_SHA1_Hash", SqlDbType.VarChar, 40)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = phraseHash
-
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
-        myParam.Direction = ParameterDirection.Output
-
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@Protein_Collection_ID", SqlDbType.Int).Value = protein_Collection_ID
+        sp_Save.Parameters.Add("@Encryption_Passphrase", SqlDbType.VarChar, 64).Value = passphrase
+        sp_Save.Parameters.Add("@Passphrase_SHA1_Hash", SqlDbType.VarChar, 40).Value = phraseHash
+        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -966,38 +823,22 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function RunSP_AddNamingAuthority(
-        Dim sp_Save As SqlClient.SqlCommand
-
-        sp_Save = New SqlClient.SqlCommand("AddNamingAuthority", m_DatabaseAccessor.Connection)
-
-        sp_Save.CommandType = CommandType.StoredProcedure
-
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
-
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
-
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@name", SqlDbType.VarChar, 64)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = ShortName
-
-        myParam = sp_Save.Parameters.Add("@description", SqlDbType.VarChar, 128)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = FullName
       shortName As String,
       fullName As String,
       webAddress As String) As Integer
 
-        myParam = sp_Save.Parameters.Add("@web_address", SqlDbType.VarChar, 128)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = WebAddress
+        Dim sp_Save = New SqlClient.SqlCommand("AddNamingAuthority", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
 
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
-        myParam.Direction = ParameterDirection.Output
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@name", SqlDbType.VarChar, 64).Value = shortName
+        sp_Save.Parameters.Add("@description", SqlDbType.VarChar, 128).Value = fullName
+        sp_Save.Parameters.Add("@web_address", SqlDbType.VarChar, 128).Value = webAddress
+        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -1010,43 +851,24 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function RunSP_AddAnnotationType(
-        Dim sp_Save As SqlClient.SqlCommand
-
-        sp_Save = New SqlClient.SqlCommand("AddAnnotationType", m_DatabaseAccessor.Connection)
-
-        sp_Save.CommandType = CommandType.StoredProcedure
-
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
-
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
-
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@name", SqlDbType.VarChar, 64)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = TypeName
-
-        myParam = sp_Save.Parameters.Add("@description", SqlDbType.VarChar, 128)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Description
-
-        myParam = sp_Save.Parameters.Add("@example", SqlDbType.VarChar, 128)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Example
       typeName As String,
       description As String,
       example As String,
       authorityID As Integer) As Integer
 
-        myParam = sp_Save.Parameters.Add("@authID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = AuthID
+        Dim sp_Save = New SqlClient.SqlCommand("AddAnnotationType", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
 
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
-        myParam.Direction = ParameterDirection.Output
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@name", SqlDbType.VarChar, 64).Value = typeName
+        sp_Save.Parameters.Add("@description", SqlDbType.VarChar, 128).Value = description
+        sp_Save.Parameters.Add("@example", SqlDbType.VarChar, 128).Value = example
+        sp_Save.Parameters.Add("@authID", SqlDbType.Int).Value = authorityID
+        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -1062,30 +884,17 @@ Public Class clsAddUpdateEntries
       proteinCollectionID As Integer,
       collectionStateID As Integer) As Integer
 
-        Dim sp_Save As SqlClient.SqlCommand
+        Dim sp_Save = New SqlClient.SqlCommand("UpdateProteinCollectionState", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
 
-        sp_Save = New SqlClient.SqlCommand("UpdateProteinCollectionState", m_DatabaseAccessor.Connection)
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
-        sp_Save.CommandType = CommandType.StoredProcedure
-
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
-
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
-
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@protein_collection_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Protein_Collection_ID
-
-        myParam = sp_Save.Parameters.Add("@state_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Collection_State_ID
-
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
-        myParam.Direction = ParameterDirection.Output
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@protein_collection_ID", SqlDbType.Int).Value = proteinCollectionID
+        sp_Save.Parameters.Add("@state_ID", SqlDbType.Int).Value = collectionStateID
+        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -1105,33 +914,19 @@ Public Class clsAddUpdateEntries
     ''' <remarks>NumResidues in T_Protein_Collections is set to 0</remarks>
     Protected Function RunSP_DeleteProteinCollectionMembers(proteinCollectionID As Integer, numProteinsForReLoad As Integer) As Integer
 
-        Dim sp_Save As SqlClient.SqlCommand
+        ' Use a 10 minute timeout
+        Dim sp_Save = New SqlClient.SqlCommand("DeleteProteinCollectionMembers", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure,
+            .CommandTimeout = 600
+        }
 
-        sp_Save = New SqlClient.SqlCommand("DeleteProteinCollectionMembers", m_DatabaseAccessor.Connection)
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
-        sp_Save.CommandType = CommandType.StoredProcedure
-
-        ' Increase the timeout to 10 minutes
-        sp_Save.CommandTimeout = 600
-
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
-
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
-
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = proteinCollectionID
-
-        myParam = sp_Save.Parameters.Add("@NumProteinsForReLoad", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = numProteinsForReLoad
-
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
-        myParam.Direction = ParameterDirection.Output
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int).Value = proteinCollectionID
+        sp_Save.Parameters.Add("@NumProteinsForReLoad", SqlDbType.Int).Value = numProteinsForReLoad
+        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -1143,24 +938,17 @@ Public Class clsAddUpdateEntries
 
     End Function
 
-        Dim sp_Save As SqlClient.SqlCommand
     Protected Function RunSP_GetProteinCollectionMemberCount(proteinCollectionID As Integer) As Integer
 
-        sp_Save = New SqlClient.SqlCommand("GetProteinCollectionMemberCount", m_DatabaseAccessor.Connection)
+        Dim sp_Save = New SqlClient.SqlCommand("GetProteinCollectionMemberCount", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
 
-        sp_Save.CommandType = CommandType.StoredProcedure
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
-
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
-
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Protein_Collection_ID
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int).Value = proteinCollectionID
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -1180,55 +968,34 @@ Public Class clsAddUpdateEntries
       proteinID As Integer,
       maxProteinNameLength As Integer) As Integer
 
-        Dim sp_Save As SqlClient.SqlCommand
         Dim hashableString As String
 
         If maxProteinNameLength <= 0 Then maxProteinNameLength = 32
 
-        sp_Save = New SqlClient.SqlCommand("AddProteinReference", m_DatabaseAccessor.Connection)
+        Dim sp_Save = New SqlClient.SqlCommand("AddProteinReference", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
 
-        sp_Save.CommandType = CommandType.StoredProcedure
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
-
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
-
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@name", SqlDbType.VarChar, 128)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Protein_Name
-
-        myParam = sp_Save.Parameters.Add("@description", SqlDbType.VarChar, 900)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Description
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@name", SqlDbType.VarChar, 128).Value = protein_Name
+        sp_Save.Parameters.Add("@description", SqlDbType.VarChar, 900).Value = description
 
         'TODO (org fix) Remove this reference and fix associated Sproc
         'myParam = sp_Save.Parameters.Add("@organism_ID", SqlDbType.Int)
         'myParam.Direction = ParameterDirection.Input
         'myParam.Value = OrganismID
 
-        myParam = sp_Save.Parameters.Add("@authority_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = AuthorityID
+        sp_Save.Parameters.Add("@authority_ID", SqlDbType.Int).Value = authorityID
+        sp_Save.Parameters.Add("@protein_ID", SqlDbType.Int).Value = proteinID
 
-        myParam = sp_Save.Parameters.Add("@protein_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = ProteinID
+        hashableString = protein_Name + "_" + description + "_" + proteinID.ToString
+        sp_Save.Parameters.Add("@nameDescHash", SqlDbType.VarChar, 40).Value = GenerateHash(hashableString.ToLower())
 
-        myParam = sp_Save.Parameters.Add("@nameDescHash", SqlDbType.VarChar, 40)
-        myParam.Direction = ParameterDirection.Input
-        hashableString = Protein_Name + "_" + Description + "_" + ProteinID.ToString
-        myParam.Value = GenerateHash(hashableString.ToLower)
-
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
-        myParam.Direction = ParameterDirection.Output
-
-        myParam = sp_Save.Parameters.Add("@MaxProteinNameLength", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = MaxProteinNameLength
+        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
+        sp_Save.Parameters.Add("@MaxProteinNameLength", SqlDbType.Int).Value = maxProteinNameLength
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -1260,21 +1027,15 @@ Public Class clsAddUpdateEntries
 
     Protected Function RunSP_GetProteinCollectionID(fileName As String) As Integer
 
-        sp_Save = New SqlClient.SqlCommand("GetProteinCollectionID", m_DatabaseAccessor.Connection)
+        Dim sp_Save = New SqlClient.SqlCommand("GetProteinCollectionID", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
 
-        sp_Save.CommandType = CommandType.StoredProcedure
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
-
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
-
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@fileName", SqlDbType.VarChar, 128)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = FileName
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@fileName", SqlDbType.VarChar, 128).Value = fileName
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -1293,38 +1054,19 @@ Public Class clsAddUpdateEntries
       numProteins As Integer,
       totalResidueCount As Integer) As Integer
 
-        Dim sp_Save As SqlClient.SqlCommand
+        Dim sp_Save = New SqlClient.SqlCommand("AddCRC32FileAuthentication", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
 
-        sp_Save = New SqlClient.SqlCommand("AddCRC32FileAuthentication", m_DatabaseAccessor.Connection)
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
-        sp_Save.CommandType = CommandType.StoredProcedure
-
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
-
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
-
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Protein_Collection_ID
-
-        myParam = sp_Save.Parameters.Add("@CRC32FileHash", SqlDbType.VarChar, 40)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = AuthenticationHash
-
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
-        myParam.Direction = ParameterDirection.Output
-
-        myParam = sp_Save.Parameters.Add("@numProteins", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = numProteins
-
-        myParam = sp_Save.Parameters.Add("@totalResidueCount", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = totalResidueCount
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int).Value = protein_Collection_ID
+        sp_Save.Parameters.Add("@CRC32FileHash", SqlDbType.VarChar, 40).Value = authenticationHash
+        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
+        sp_Save.Parameters.Add("@numProteins", SqlDbType.Int).Value = numProteins
+        sp_Save.Parameters.Add("@totalResidueCount", SqlDbType.Int).Value = totalResidueCount
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -1337,33 +1079,20 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function RunSP_AddCollectionOrganismXref(
-        Dim sp_Save As SqlClient.SqlCommand
-
-        sp_Save = New SqlClient.SqlCommand("AddCollectionOrganismXref", m_DatabaseAccessor.Connection)
-
-        sp_Save.CommandType = CommandType.StoredProcedure
-
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
-
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
-
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@Protein_Collection_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Protein_Collection_ID
       protein_Collection_ID As Integer,
       organismID As Integer) As Integer
 
-        myParam = sp_Save.Parameters.Add("@Organism_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = OrganismID
+        Dim sp_Save = New SqlClient.SqlCommand("AddCollectionOrganismXref", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
 
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
-        myParam.Direction = ParameterDirection.Output
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@Protein_Collection_ID", SqlDbType.Int).Value = protein_Collection_ID
+        sp_Save.Parameters.Add("@Organism_ID", SqlDbType.Int).Value = organismID
+        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -1383,33 +1112,20 @@ Public Class clsAddUpdateEntries
 
         Dim tmpHash As String
 
-        Dim sp_Save As SqlClient.SqlCommand
-        tmpHash = Protein_Name + "_" + Description + "_" + Protein_ID.ToString
+        tmpHash = protein_Name + "_" + description + "_" + protein_ID.ToString
         Dim tmpGenSHA As String = GenerateHash(tmpHash.ToLower)
 
-        sp_Save = New SqlClient.SqlCommand("UpdateProteinNameHash", m_DatabaseAccessor.Connection)
+        Dim sp_Save = New SqlClient.SqlCommand("UpdateProteinNameHash", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
 
-        sp_Save.CommandType = CommandType.StoredProcedure
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
-
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
-
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@Reference_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Reference_ID
-
-        myParam = sp_Save.Parameters.Add("@SHA1Hash", SqlDbType.VarChar, 40)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = tmpGenSHA
-
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
-        myParam.Direction = ParameterDirection.Output
-
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@Reference_ID", SqlDbType.Int).Value = reference_ID
+        sp_Save.Parameters.Add("@SHA1Hash", SqlDbType.VarChar, 40).Value = tmpGenSHA
+        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -1424,35 +1140,20 @@ Public Class clsAddUpdateEntries
     Protected Function RunSP_UpdateProteinCollectionCounts(
       numProteins As Integer,
       numResidues As Integer,
-        Dim sp_Save As SqlClient.SqlCommand
-
-        sp_Save = New SqlClient.SqlCommand("UpdateProteinCollectionCounts", m_DatabaseAccessor.Connection)
       proteinCollectionID As Integer) As Integer
 
-        sp_Save.CommandType = CommandType.StoredProcedure
+        Dim sp_Save = New SqlClient.SqlCommand("UpdateProteinCollectionCounts", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
 
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
-
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = ProteinCollectionID
-
-        myParam = sp_Save.Parameters.Add("@NumProteins", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = numProteins
-
-        myParam = sp_Save.Parameters.Add("@NumResidues", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = numResidues
-
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
-        myParam.Direction = ParameterDirection.Output
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int).Value = proteinCollectionID
+        sp_Save.Parameters.Add("@NumProteins", SqlDbType.Int).Value = numProteins
+        sp_Save.Parameters.Add("@NumResidues", SqlDbType.Int).Value = numResidues
+        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -1465,34 +1166,22 @@ Public Class clsAddUpdateEntries
 
 
     Protected Function RunSP_UpdateProteinSequenceHash(
-        Dim sp_Save As SqlClient.SqlCommand
-        Dim tmpGenSHA As String = GenerateHash(Protein_Sequence)
-
-        sp_Save = New SqlClient.SqlCommand("UpdateProteinSequenceHash", m_DatabaseAccessor.Connection)
-
-        sp_Save.CommandType = CommandType.StoredProcedure
-
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
-
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
       proteinID As Integer,
       proteinSequence As String) As Integer
 
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@Protein_ID", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = Protein_ID
+        Dim tmpGenSHA As String = GenerateHash(proteinSequence)
 
-        myParam = sp_Save.Parameters.Add("@SHA1Hash", SqlDbType.VarChar, 40)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = tmpGenSHA
+        Dim sp_Save = New SqlClient.SqlCommand("UpdateProteinSequenceHash", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
 
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
-        myParam.Direction = ParameterDirection.Output
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@Protein_ID", SqlDbType.Int).Value = proteinID
+        sp_Save.Parameters.Add("@SHA1Hash", SqlDbType.VarChar, 40).Value = tmpGenSHA
+        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
@@ -1506,24 +1195,15 @@ Public Class clsAddUpdateEntries
 
     Protected Function RunSP_GetProteinIDFromName(proteinName As String) As Integer
 
+        Dim sp_Save = New SqlClient.SqlCommand("GetProteinIDFromName", m_DatabaseAccessor.Connection) With {
+            .CommandType = CommandType.StoredProcedure
+        }
 
-        Dim sp_Save As SqlClient.SqlCommand
+        'Define parameter for procedure's return value
+        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
-        sp_Save = New SqlClient.SqlCommand("GetProteinIDFromName", m_DatabaseAccessor.Connection)
-
-        sp_Save.CommandType = CommandType.StoredProcedure
-
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
-
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
-
-        'Define parameters for the sp's arguments
-        myParam = sp_Save.Parameters.Add("@name", SqlDbType.VarChar, 128)
-        myParam.Direction = ParameterDirection.Input
-        myParam.Value = ProteinName
+        'Define parameters for the procedure's arguments
+        sp_Save.Parameters.Add("@name", SqlDbType.VarChar, 128).Value = proteinName
 
         'Execute the sp
         sp_Save.ExecuteNonQuery()
