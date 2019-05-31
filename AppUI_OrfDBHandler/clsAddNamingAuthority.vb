@@ -3,13 +3,13 @@ Imports Protein_Importer
 Public Class clsAddNamingAuthority
 
     Protected ReadOnly m_ConnectionString As String
-    Protected m_SPRunner As IAddUpdateEntries
+    Protected m_SPRunner As clsAddUpdateEntries
 
     Protected m_shortName As String
     Protected m_fullName As String
     Protected m_webAddress As String
     Protected m_EntryExists As Boolean = False
-    Protected m_Importer As IImportProteins
+    Protected m_Importer As clsImportHandler
     Protected ReadOnly m_AuthorityTable As DataTable
     Protected m_FormLocation As Point
 
@@ -100,7 +100,7 @@ Public Class clsAddNamingAuthority
         End If
 
         Dim tmpAuthTable As DataTable
-        tmpAuthTable = m_Importer.LoadAuthorities
+        tmpAuthTable = m_Importer.LoadAuthorities()
 
         Return tmpAuthTable
 

@@ -106,12 +106,6 @@
     <Compile Include="clsProteinStorageEntry.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IProteinStorage.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IProteinStorageEntry.vb">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="My Project\" />

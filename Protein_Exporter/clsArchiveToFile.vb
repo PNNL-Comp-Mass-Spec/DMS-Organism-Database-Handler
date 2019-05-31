@@ -4,7 +4,6 @@ Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Security.Cryptography
 Imports System.Text
-Imports Protein_Exporter.ExportProteinCollectionsIFC
 Imports TableManipulationBase
 
 Public Class clsArchiveToFile
@@ -20,7 +19,7 @@ Public Class clsArchiveToFile
     ''' </summary>
     ''' <param name="databaseAccessor"></param>
     ''' <param name="exporterModule"></param>
-    Sub New(databaseAccessor As IGetSQLData, exporterModule As clsGetFASTAFromDMS)
+    Sub New(databaseAccessor As clsDBTask, exporterModule As clsGetFASTAFromDMS)
 
         MyBase.New(databaseAccessor, exporterModule)
 
@@ -44,8 +43,8 @@ Public Class clsArchiveToFile
      sourceFilePath As String,
      creationOptionsString As String,
      sourceAuthenticationHash As String,
-     outputSequenceType As IGetFASTAFromDMS.SequenceTypes,
-     archivedFileType As IArchiveOutputFiles.CollectionTypes,
+     outputSequenceType As clsGetFASTAFromDMS.SequenceTypes,
+     archivedFileType As clsArchiveOutputFilesBase.CollectionTypes,
      proteinCollectionsList As String) As Integer
 
         Dim CollectionListHexHash As String
@@ -82,7 +81,7 @@ Public Class clsArchiveToFile
 
             ArchivedFileEntryID = RunSP_AddOutputFileArchiveEntry(
               proteinCollectionID, creationOptionsString, sourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount,
-              archivePath, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), archivedFileType), proteinCollectionsList, CollectionListHexHash)
+              archivePath, [Enum].GetName(GetType(clsArchiveOutputFilesBase.CollectionTypes), archivedFileType), proteinCollectionsList, CollectionListHexHash)
 
             tmpTable = m_DatabaseAccessor.GetTable(checkSQL)
 
@@ -146,12 +145,12 @@ Public Class clsArchiveToFile
      proteinCollectionID As Integer,
      fileDate As DateTime,
      authentication_Hash As String,
-     archivedFileType As IArchiveOutputFiles.CollectionTypes,
-     outputSequenceType As IGetFASTAFromDMS.SequenceTypes) As String
+     archivedFileType As clsArchiveOutputFilesBase.CollectionTypes,
+     outputSequenceType As clsGetFASTAFromDMS.SequenceTypes) As String
 
         Dim pathString As String
-        pathString = Path.Combine(m_BaseArchivePath, [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), archivedFileType))
-        pathString = Path.Combine(pathString, [Enum].GetName(GetType(IGetFASTAFromDMS.SequenceTypes), outputSequenceType))
+        pathString = Path.Combine(m_BaseArchivePath, [Enum].GetName(GetType(clsArchiveOutputFilesBase.CollectionTypes), archivedFileType))
+        pathString = Path.Combine(pathString, [Enum].GetName(GetType(clsGetFASTAFromDMS.SequenceTypes), outputSequenceType))
         pathString = Path.Combine(pathString, "ID_00000_" + authentication_Hash + Path.GetExtension(sourceFilePath))
 
         Return pathString

@@ -4,21 +4,8 @@ Imports System.Security.Cryptography
 Imports System.Text
 Imports TableManipulationBase
 
-Public Interface ICalculateSeqInfo
-    Sub CalculateSequenceInfo(Sequence As String)
-    Function GenerateSequenceHash(Sequence As String) As String
-
-    ReadOnly Property MonoIsotopicMass As Double
-    ReadOnly Property AverageMass As Double
-    ReadOnly Property SequenceLength As Integer
-    ReadOnly Property MolecularFormula As String
-    ReadOnly Property SHA1Hash As String
-
-End Interface
-
-
 Public Class SequenceInfoCalculator
-    Implements ICalculateSeqInfo
+
     Friend Shared m_AminoAcids As Hashtable
 
     Private m_MonoIsotopicMass As Double
@@ -44,31 +31,31 @@ Public Class SequenceInfoCalculator
 
 #Region " Ken's Added Properties "
 
-    Public ReadOnly Property MonoIsotopicMass As Double Implements ICalculateSeqInfo.MonoIsotopicMass
+    Public ReadOnly Property MonoIsotopicMass As Double
         Get
             Return m_MonoIsotopicMass
         End Get
     End Property
 
-    Public ReadOnly Property AverageMass As Double Implements ICalculateSeqInfo.AverageMass
+    Public ReadOnly Property AverageMass As Double
         Get
             Return m_AverageMass
         End Get
     End Property
 
-    Public ReadOnly Property SequenceLength As Integer Implements ICalculateSeqInfo.SequenceLength
+    Public ReadOnly Property SequenceLength As Integer
         Get
             Return m_Length
         End Get
     End Property
 
-    Public ReadOnly Property MolecularFormula As String Implements ICalculateSeqInfo.MolecularFormula
+    Public ReadOnly Property MolecularFormula As String
         Get
             Return m_MolFormula
         End Get
     End Property
 
-    Public ReadOnly Property SHA1Hash As String Implements ICalculateSeqInfo.SHA1Hash
+    Public ReadOnly Property SHA1Hash As String
         Get
             Return m_SHA1Hash
         End Get
@@ -77,7 +64,7 @@ Public Class SequenceInfoCalculator
 
 #End Region
 
-    Public Sub CalculateSequenceInfo(Sequence As String) Implements ICalculateSeqInfo.CalculateSequenceInfo
+    Public Sub CalculateSequenceInfo(Sequence As String)
         Dim tmpSeqInfo As SequenceInfo
         tmpSeqInfo = SequenceInfo(Sequence)
         m_MonoIsotopicMass = tmpSeqInfo.MonoisotopicMass
@@ -108,7 +95,7 @@ Public Class SequenceInfoCalculator
         Return result
     End Function
 
-    Protected Function GenerateHash(SourceText As String) As String Implements ICalculateSeqInfo.GenerateSequenceHash
+    Public Function GenerateHash(SourceText As String) As String
         'Create an encoding object to ensure the encoding standard for the source text
         Dim Ue As New ASCIIEncoding()
 
@@ -126,7 +113,7 @@ Public Class SequenceInfoCalculator
 
     Private Sub InitializeFromDMS()
         m_AminoAcids = New Hashtable(30)
-        Dim getSQL As IGetSQLData
+        Dim getSQL As clsDBTask
 
         Dim tmpSLC As String
         Dim tmpDesc As String

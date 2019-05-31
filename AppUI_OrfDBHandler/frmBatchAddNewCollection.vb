@@ -533,10 +533,10 @@ Public Class frmBatchAddNewCollection
     ''' </summary>
     Private m_FileList As Dictionary(Of String, FileInfo)
 
-    Private m_CheckedFileList As List(Of IUploadProteins.UploadInfo)
+    Private m_CheckedFileList As List(Of Protein_Uploader.clsPSUploadHandler.UploadInfo)
 
     ' Keys are file paths, values are UploadInfo objects
-    Private m_SelectedFileList As Dictionary(Of String, IUploadProteins.UploadInfo)
+    Private m_SelectedFileList As Dictionary(Of String, Protein_Uploader.clsPSUploadHandler.UploadInfo)
 
     Private ReadOnly m_OrganismList As DataTable
     Private ReadOnly m_OrganismListSorted As DataView
@@ -585,7 +585,7 @@ Public Class frmBatchAddNewCollection
 #End Region
 
 #Region " Properties "
-    ReadOnly Property FileList As List(Of IUploadProteins.UploadInfo)
+    ReadOnly Property FileList As List(Of clsPSUploadHandler.UploadInfo)
         Get
             Return m_CheckedFileList
         End Get
@@ -707,7 +707,7 @@ Public Class frmBatchAddNewCollection
             m_FileList = New Dictionary(Of String, FileInfo)
         End If
 
-        m_CheckedFileList = New List(Of IUploadProteins.UploadInfo)
+        m_CheckedFileList = New List(Of clsPSUploadHandler.UploadInfo)
         LoadOrganismPicker(cboOrganismSelect, m_OrganismListSorted)
         LoadAnnotationTypePicker(cboAnnotationTypePicker, m_AnnotationTypeList)
         cmdUploadChecked.Enabled = False
@@ -728,7 +728,7 @@ Public Class frmBatchAddNewCollection
         Dim tmpID As Integer
         Dim tmpName As String
 
-        For Each dr In foundrows
+        For Each dr In foundRows
             tmpID = DirectCast(dr.Item("Protein_Collection_ID"), Integer)
             tmpName = dr.Item("FileName").ToString()
             If Not collectionInfo.ContainsKey(tmpID) Then
@@ -929,13 +929,13 @@ Public Class frmBatchAddNewCollection
 
         Try
             If m_SelectedFileList Is Nothing Then
-                m_SelectedFileList = New Dictionary(Of String, IUploadProteins.UploadInfo)(StringComparer.CurrentCultureIgnoreCase)
+                m_SelectedFileList = New Dictionary(Of String, clsPSUploadHandler.UploadInfo)(StringComparer.CurrentCultureIgnoreCase)
             End If
 
             For Each li As ListViewItem In lvwFolderContents.SelectedItems
                 Dim fastaFilePath = GetFolderContentsColumn(li, eFolderContentsColumn.FilePath)
 
-                Dim upInfo = New IUploadProteins.UploadInfo() With {
+                Dim upInfo = New clsPSUploadHandler.UploadInfo() With {
                     .FileInformation = m_FileList.Item(fastaFilePath),
                     .OrganismID = DirectCast(cboOrganismSelect.SelectedValue, Integer),
                     .AnnotationTypeID = DirectCast(cboAnnotationTypePicker.SelectedValue, Integer),
@@ -1317,7 +1317,7 @@ Public Class frmBatchAddNewCollection
 
     Private Sub cboAnnotationTypePicker_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboAnnotationTypePicker.SelectedIndexChanged
         Dim cbo = DirectCast(sender, ComboBox)
-        Dim tmpUpInfo As IUploadProteins.UploadInfo
+        Dim tmpUpInfo As clsPSUploadHandler.UploadInfo
 
         If cboAnnotationTypePicker.SelectedValue.GetType Is Type.GetType("System.Int32") Then
             m_SelectedAnnotationTypeID = CInt(cboAnnotationTypePicker.SelectedValue)
@@ -1367,7 +1367,7 @@ Public Class frmBatchAddNewCollection
                 tmpUpInfo = m_SelectedFileList.Item(fastaFilePath)
 
                 m_SelectedFileList.Item(fastaFilePath) =
-                    New IUploadProteins.UploadInfo(
+                    New clsPSUploadHandler.UploadInfo(
                         tmpUpInfo.FileInformation,
                         m_SelectedOrganismID,
                         m_SelectedAnnotationTypeID)
@@ -1391,12 +1391,12 @@ Public Class frmBatchAddNewCollection
 
         CheckTransferEnable()
 
-        'Dim tmpUpInfo As Protein_Uploader.IUploadProteins.UploadInfo
+        'Dim tmpUpInfo As Protein_Uploader.clsPSUploadHandler.UploadInfo
         'If lvwSelectedFiles.SelectedItems.Count > 0 Then
         '    Dim li As ListViewItem
         '    For Each li In lvwSelectedFiles.SelectedItems
         '        Dim fastaFilePath = li.SubItems(eSelectedFileColumn.FilePath).Text
-        '        tmpUpInfo = DirectCast(m_SelectedFileList.Item(fastaFilePath), Protein_Uploader.IUploadProteins.UploadInfo)
+        '        tmpUpInfo = DirectCast(m_SelectedFileList.Item(fastaFilePath), Protein_Uploader.clsPSUploadHandler.UploadInfo)
         '        If encryptSequences Then
         '            tmpUpInfo.EncryptSequences = True
         '            tmpUpInfo.EncryptionPassphrase = passPhraseForm.Passphrase

@@ -1,7 +1,6 @@
 Option Strict On
 
 Imports System.Text
-Imports Protein_Exporter.ExportProteinCollectionsIFC
 Imports TableManipulationBase
 
 Public Class clsGetFASTAFromDMSScrambled
@@ -15,8 +14,8 @@ Public Class clsGetFASTAFromDMSScrambled
     ''' <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
     ''' <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
     Public Sub New(
-        databaseAccessor As IGetSQLData,
-        databaseFormatType As IGetFASTAFromDMS.DatabaseFormatTypes)
+        databaseAccessor As clsDBTask,
+        databaseFormatType As clsGetFASTAFromDMS.DatabaseFormatTypes)
 
         MyBase.New(databaseAccessor, databaseFormatType)
 

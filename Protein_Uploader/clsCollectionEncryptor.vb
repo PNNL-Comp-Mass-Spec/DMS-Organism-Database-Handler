@@ -1,19 +1,19 @@
 Friend Class clsCollectionEncryptor
 
     Protected m_RijndaelEncryptor As Protein_Exporter.clsRijndaelEncryptionHandler
-    Private ReadOnly m_DatabaseAccessor As TableManipulationBase.IGetSQLData
+    Private ReadOnly m_DatabaseAccessor As TableManipulationBase.clsDBTask
     Event EncryptionStart(taskMsg As String)
     Event EncryptionProgress(statusMsg As String, fractionDone As Double)
     Event EncryptionComplete()
 
-    Sub New(PassPhrase As String, databaseAccessor As TableManipulationBase.IGetSQLData)
+    Sub New(PassPhrase As String, databaseAccessor As TableManipulationBase.clsDBTask)
 
         m_RijndaelEncryptor = New Protein_Exporter.clsRijndaelEncryptionHandler(PassPhrase)
         m_DatabaseAccessor = databaseAccessor
 
     End Sub
 
-    Sub EncryptStorageCollectionSequences(storageCollection As Protein_Storage.IProteinStorage)
+    Sub EncryptStorageCollectionSequences(storageCollection As Protein_Storage.clsProteinStorage)
 
         Dim e = storageCollection.GetEnumerator
 

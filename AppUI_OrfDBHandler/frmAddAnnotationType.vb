@@ -352,9 +352,9 @@ Public Class frmAddAnnotationType
         'If lvwSelectedFiles.SelectedItems.Count > 0 Then
         '    Dim li As ListViewItem
         '    For Each li In lvwSelectedFiles.SelectedItems
-        '        tmpUpInfo = DirectCast(m_SelectedFileList.Item(li.SubItems(3).Text), Protein_Uploader.IUploadProteins.UploadInfo)
+        '        tmpUpInfo = DirectCast(m_SelectedFileList.Item(li.SubItems(3).Text), Protein_Uploader.clsPSUploadHandler.UploadInfo)
         '        m_SelectedFileList.Item(li.SubItems(3).Text) =
-        '            New Protein_Uploader.IUploadProteins.UploadInfo(tmpUpInfo.FileInformation, m_SelectedOrganismID, tmpUpInfo.AuthorityID)
+        '            New Protein_Uploader.clsPSUploadHandler.UploadInfo(tmpUpInfo.FileInformation, m_SelectedOrganismID, tmpUpInfo.AuthorityID)
         '        li.SubItems(2).Text = cbo.Text
         '    Next
         'End If

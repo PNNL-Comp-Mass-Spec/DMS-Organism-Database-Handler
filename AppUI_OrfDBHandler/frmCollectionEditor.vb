@@ -781,8 +781,8 @@ Public Class frmCollectionEditor
     Private m_LastValueForAllowDash As Boolean = False
     Private m_LastValueForMaxProteinNameLength As Integer = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
 
-    Private WithEvents m_ImportHandler As IImportProteins
-    Private WithEvents m_UploadHandler As IUploadProteins
+    Private WithEvents m_ImportHandler As clsImportHandler
+    Private WithEvents m_UploadHandler As clsPSUploadHandler
     Private WithEvents m_SourceListViewHandler As DataListViewHandler
     ' Unused: Private WithEvents m_fileBatcher As clsBatchUploadFromFileList
 
@@ -817,7 +817,7 @@ Public Class frmCollectionEditor
     ''' Keys are FASTA file paths
     ''' Values are upload info
     ''' </summary>
-    Private m_ValidUploadsList As Dictionary(Of String, IUploadProteins.UploadInfo)
+    Private m_ValidUploadsList As Dictionary(Of String, clsPSUploadHandler.UploadInfo)
 
     Private WithEvents m_Syncer As clsSyncFASTAFileArchive
 
@@ -1012,7 +1012,7 @@ Public Class frmCollectionEditor
             m_LastBatchULDirectoryPath,
             m_CachedFileDescriptions)
 
-        Dim tmpSelectedFileList As List(Of IUploadProteins.UploadInfo)
+        Dim tmpSelectedFileList As List(Of clsPSUploadHandler.UploadInfo)
 
         lblBatchProgress.Text = ""
 
@@ -1081,9 +1081,9 @@ Public Class frmCollectionEditor
         pnlProgBar.Visible = True
 
         Try
-            m_UploadHandler.SetValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAllSymbolsInProteinNames, frmBatchUpload.ValidationAllowAllSymbolsInProteinNames)
-            m_UploadHandler.SetValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues, frmBatchUpload.ValidationAllowAsterisks)
-            m_UploadHandler.SetValidationOptions(IUploadProteins.eValidationOptionConstants.AllowDashInResidues, frmBatchUpload.ValidationAllowDash)
+            m_UploadHandler.SetValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowAllSymbolsInProteinNames, frmBatchUpload.ValidationAllowAllSymbolsInProteinNames)
+            m_UploadHandler.SetValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowAsterisksInResidues, frmBatchUpload.ValidationAllowAsterisks)
+            m_UploadHandler.SetValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowDashInResidues, frmBatchUpload.ValidationAllowDash)
 
             m_UploadHandler.MaximumProteinNameLength = frmBatchUpload.ValidationMaxProteinNameLength
 
@@ -1295,7 +1295,7 @@ Public Class frmCollectionEditor
                     tmpSelectedProteinList, frmAddCollection.CollectionName,
                     frmAddCollection.CollectionDescription,
                     frmAddCollection.CollectionSource,
-                    IAddUpdateEntries.CollectionTypes.prot_original_source,
+                    clsAddUpdateEntries.CollectionTypes.prot_original_source,
                     tmpOrganismID, tmpAnnotationTypeID)
 
                 RefreshCollectionList()
@@ -1317,7 +1317,7 @@ Public Class frmCollectionEditor
     '    Dim fileType As Protein_Importer.IImportProteins.ProteinImportFileTypes
     '    Dim SelectedSavePath As String
     '    Dim tmpSelectedProteinList As ArrayList
-    '    Dim tmpProteinCollection As Protein_Storage.IProteinStorage
+    '    Dim tmpProteinCollection As Protein_Storage.clsProteinStorage
     '    Dim tmpProteinReference As String
 
     '    With SaveDialog
@@ -1696,10 +1696,10 @@ Public Class frmCollectionEditor
 
     Private Sub ValidFASTAUploadHandler(
         FASTAFilePath As String,
-        UploadInfo As IUploadProteins.UploadInfo) Handles m_UploadHandler.ValidFASTAFileLoaded
+        UploadInfo As clsPSUploadHandler.UploadInfo) Handles m_UploadHandler.ValidFASTAFileLoaded
 
         If m_ValidUploadsList Is Nothing Then
-            m_ValidUploadsList = New Dictionary(Of String, IUploadProteins.UploadInfo)
+            m_ValidUploadsList = New Dictionary(Of String, clsPSUploadHandler.UploadInfo)
         End If
 
         m_ValidUploadsList.Add(FASTAFilePath, UploadInfo)

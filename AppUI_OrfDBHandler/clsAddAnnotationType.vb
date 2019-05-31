@@ -3,7 +3,7 @@ Imports Protein_Importer
 
 Public Class clsAddAnnotationType
     Protected m_ConnectionString As String
-    Protected m_SPRunner As IAddUpdateEntries
+    Protected m_SPRunner As clsAddUpdateEntries
 
     Protected m_TypeName As String
     Protected m_Description As String

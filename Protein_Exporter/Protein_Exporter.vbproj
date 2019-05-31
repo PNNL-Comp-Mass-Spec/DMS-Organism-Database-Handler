@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
@@ -149,15 +149,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CRC32.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExportProteinCollectionsIFC.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IArchiveOutputFiles.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IExportProteins.vb">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

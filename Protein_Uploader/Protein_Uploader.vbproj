@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
@@ -88,9 +88,6 @@
     <Reference Include="Protein_Importer">
       <HintPath>..\Release_DLL\Protein_Importer.dll</HintPath>
     </Reference>
-    <Reference Include="Protein_Storage">
-      <HintPath>..\Release_DLL\Protein_Storage.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -149,6 +146,12 @@
     <PackageReference Include="PRISM-Library">
       <Version>2.5.20</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Protein_Storage\Protein_Storage.vbproj">
+      <Project>{77b1cddc-23d8-4408-8ca3-6fa8a31a975a}</Project>
+      <Name>Protein_Storage</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>

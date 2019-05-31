@@ -6,7 +6,7 @@ End Interface
 
 Friend Class clsGetAnnotationsFromDB
     Private m_ConnectionString As String
-    Private m_DatabaseHelper As TableManipulationBase.IGetSQLData
+    Private m_DatabaseHelper As TableManipulationBase.clsDBTask
     Private m_AnnotationCollection As clsAnnotationInfo
 
     Sub New(PSConnectionString As String)

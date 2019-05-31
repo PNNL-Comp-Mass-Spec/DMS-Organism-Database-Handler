@@ -47,7 +47,7 @@ Public Class clsBulkFastaImporter
 
 #Region "Classwide Variables"
 
-    Protected WithEvents m_UploadHandler As IUploadProteins
+    Protected WithEvents m_UploadHandler As clsPSUploadHandler
 
     ''' <summary>
     ''' Organism info, where keys are organism name and values are organism ID
@@ -502,7 +502,7 @@ Public Class clsBulkFastaImporter
 
     Public Function UploadFastaFileList(sourceFileList As List(Of udtFastaFileInfoType)) As Boolean
 
-        Dim fileInfoList = New List(Of IUploadProteins.UploadInfo)
+        Dim fileInfoList = New List(Of clsPSUploadHandler.UploadInfo)
 
         For Each sourceFile In sourceFileList
             Dim fiSourceFile = New FileInfo(sourceFile.FilePath)
@@ -511,7 +511,7 @@ Public Class clsBulkFastaImporter
                 Continue For
             End If
 
-            Dim upInfo = New IUploadProteins.UploadInfo(fiSourceFile, sourceFile.OrganismID, sourceFile.AuthID)
+            Dim upInfo = New clsPSUploadHandler.UploadInfo(fiSourceFile, sourceFile.OrganismID, sourceFile.AuthID)
             fileInfoList.Add(upInfo)
         Next
 
@@ -519,15 +519,15 @@ Public Class clsBulkFastaImporter
 
     End Function
 
-    Public Function UploadFastaFileList(fileInfoList As List(Of IUploadProteins.UploadInfo)) As Boolean
+    Public Function UploadFastaFileList(fileInfoList As List(Of clsPSUploadHandler.UploadInfo)) As Boolean
 
         Try
             ' Initialize the uploader
             m_UploadHandler = New clsPSUploadHandler(ProteinSeqsConnectionString)
 
-            m_UploadHandler.SetValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAllSymbolsInProteinNames, ValidationAllowAllSymbolsInProteinNames)
-            m_UploadHandler.SetValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues, ValidationAllowAsterisks)
-            m_UploadHandler.SetValidationOptions(IUploadProteins.eValidationOptionConstants.AllowDashInResidues, ValidationAllowDash)
+            m_UploadHandler.SetValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowAllSymbolsInProteinNames, ValidationAllowAllSymbolsInProteinNames)
+            m_UploadHandler.SetValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowAsterisksInResidues, ValidationAllowAsterisks)
+            m_UploadHandler.SetValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowDashInResidues, ValidationAllowDash)
             m_UploadHandler.MaximumProteinNameLength = ValidationMaxProteinNameLength
 
         Catch ex As Exception
@@ -577,7 +577,7 @@ Public Class clsBulkFastaImporter
 
     End Sub
 
-    Private Sub m_UploadHandler_FASTAValidationComplete(fastaFilePath As String, uploadInfo As IUploadProteins.UploadInfo) Handles m_UploadHandler.FASTAValidationComplete
+    Private Sub m_UploadHandler_FASTAValidationComplete(fastaFilePath As String, uploadInfo As clsPSUploadHandler.UploadInfo) Handles m_UploadHandler.FASTAValidationComplete
         ShowMessage("Validated " & fastaFilePath)
         ShowMessage("  ... ProteinCount: " & uploadInfo.ProteinCount)
 
@@ -623,7 +623,7 @@ Public Class clsBulkFastaImporter
 
     End Sub
 
-    Private Sub m_UploadHandler_ValidFASTAFileLoaded(fastaFilePath As String, uploadData As IUploadProteins.UploadInfo) Handles m_UploadHandler.ValidFASTAFileLoaded
+    Private Sub m_UploadHandler_ValidFASTAFileLoaded(fastaFilePath As String, uploadData As clsPSUploadHandler.UploadInfo) Handles m_UploadHandler.ValidFASTAFileLoaded
         ShowMessage("Uploaded " & fastaFilePath)
         ShowMessage("  ... ProteinCount: " & uploadData.ProteinCount)
 

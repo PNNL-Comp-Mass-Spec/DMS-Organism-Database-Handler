@@ -1,32 +1,31 @@
 Imports System.Collections.Generic
 
 Public Class clsProteinStorageEntry
-    Implements IProteinStorageEntry
 
     Public Sub New(
-        Reference As String,
-        Description As String,
-        Sequence As String,
-        Length As Integer,
-        MonoisotopicMass As Double,
-        AverageMass As Double,
-        MolecularFormula As String,
-        AuthenticationHash As String,
-        SortingIndex As Integer)
+        reference As String,
+        description As String,
+        sequence As String,
+        length As Integer,
+        monoisotopicMass As Double,
+        averageMass As Double,
+        molecularFormula As String,
+        authenticationHash As String,
+        sortingIndex As Integer)
 
-        If String.IsNullOrWhiteSpace(Reference) Then
+        If String.IsNullOrWhiteSpace(reference) Then
             Throw New Exception("Reference name cannot be empty")
         End If
 
-        m_Reference = Reference
-        m_Description = Description
-        m_Sequence = Sequence
-        m_MonoMass = MonoisotopicMass
-        m_AvgMass = AverageMass
-        m_Length = Length
-        m_MolecularFormula = MolecularFormula
-        m_AuthHash = AuthenticationHash
-        m_SortCount = SortingIndex
+        m_Reference = reference
+        m_Description = description
+        m_Sequence = sequence
+        m_MonoMass = monoisotopicMass
+        m_AvgMass = averageMass
+        m_Length = length
+        m_MolecularFormula = molecularFormula
+        m_AuthHash = authenticationHash
+        m_SortCount = sortingIndex
 
         m_Protein_ID = 0
 
@@ -51,13 +50,13 @@ Public Class clsProteinStorageEntry
 
     Protected m_IsEncrypted As Boolean = False
 
-    Protected ReadOnly Property Reference As String Implements IProteinStorageEntry.Reference
+    Public ReadOnly Property Reference As String
         Get
             Return m_Reference
         End Get
     End Property
 
-    Protected Property AlternateReference As String Implements IProteinStorageEntry.AlternateReference
+    Protected Property AlternateReference As String
         Get
             Return m_AlternateReference
         End Get
@@ -70,19 +69,19 @@ Public Class clsProteinStorageEntry
         End Set
     End Property
 
-    Protected ReadOnly Property HasAlternateReference As Boolean Implements IProteinStorageEntry.HasAlternateReferences
+    Public ReadOnly Property HasAlternateReference As Boolean
         Get
             Return Not m_AlternateReference Is Nothing
         End Get
     End Property
 
-    Protected ReadOnly Property Description As String Implements IProteinStorageEntry.Description
+    Public ReadOnly Property Description As String
         Get
             Return m_Description
         End Get
     End Property
 
-    Protected Property Sequence As String Implements IProteinStorageEntry.Sequence
+    Public Property Sequence As String
         Get
             Return m_Sequence
         End Get
@@ -91,7 +90,7 @@ Public Class clsProteinStorageEntry
         End Set
     End Property
 
-    Protected Property IsEncrypted As Boolean Implements IProteinStorageEntry.IsEncrypted
+    Public Property IsEncrypted As Boolean
         Get
             Return m_IsEncrypted
         End Get
@@ -100,31 +99,31 @@ Public Class clsProteinStorageEntry
         End Set
     End Property
 
-    Protected ReadOnly Property MonoisotopicMass As Double Implements IProteinStorageEntry.MonoisotopicMass
+    Public ReadOnly Property MonoisotopicMass As Double
         Get
             Return m_MonoMass
         End Get
     End Property
 
-    Protected ReadOnly Property AverageMass As Double Implements IProteinStorageEntry.AverageMass
+    Public ReadOnly Property AverageMass As Double
         Get
             Return m_AvgMass
         End Get
     End Property
 
-    Protected ReadOnly Property Length As Integer Implements IProteinStorageEntry.Length
+    Public ReadOnly Property Length As Integer
         Get
             Return m_Length
         End Get
     End Property
 
-    Protected ReadOnly Property MolecularFormula As String Implements IProteinStorageEntry.MolecularFormula
+    Public ReadOnly Property MolecularFormula As String
         Get
             Return m_MolecularFormula
         End Get
     End Property
 
-    Protected Property SHA1Hash As String Implements IProteinStorageEntry.SHA1Hash
+    Public Property SHA1Hash As String
         Get
             Return m_AuthHash
         End Get
@@ -133,7 +132,7 @@ Public Class clsProteinStorageEntry
         End Set
     End Property
 
-    Public Property Protein_ID As Integer Implements IProteinStorageEntry.Protein_ID
+    Public Property Protein_ID As Integer
         Get
             Return m_Protein_ID
         End Get
@@ -142,7 +141,7 @@ Public Class clsProteinStorageEntry
         End Set
     End Property
 
-    Protected Property Reference_ID As Integer Implements IProteinStorageEntry.Reference_ID
+    Public Property Reference_ID As Integer
         Get
             Return m_Reference_ID
         End Get
@@ -151,7 +150,7 @@ Public Class clsProteinStorageEntry
         End Set
     End Property
 
-    Protected Property Member_ID As Integer Implements IProteinStorageEntry.Member_ID
+    Public Property Member_ID As Integer
         Get
             Return m_Member_ID
         End Get
@@ -160,7 +159,7 @@ Public Class clsProteinStorageEntry
         End Set
     End Property
 
-    Protected Property Authority_ID As Integer Implements IProteinStorageEntry.Authority_ID
+    Public Property Authority_ID As Integer
         Get
             Return m_Authority_ID
         End Get
@@ -169,7 +168,7 @@ Public Class clsProteinStorageEntry
         End Set
     End Property
 
-    Protected Property SortingIndex As Integer Implements IProteinStorageEntry.SortingIndex
+    Public Property SortingIndex As Integer
         Get
             Return m_SortCount
         End Get
@@ -178,20 +177,20 @@ Public Class clsProteinStorageEntry
         End Set
     End Property
 
-    Protected ReadOnly Property NameXRefs As List(Of String) Implements IProteinStorageEntry.NameXRefs
+    Public ReadOnly Property NameXRefs As List(Of String)
         Get
             Return m_XRefList
         End Get
     End Property
 
-    Protected Sub AddXRef(newReference As String) Implements IProteinStorageEntry.AddXRef
+    Public Sub AddXRef(newReference As String)
         If m_XRefList Is Nothing Then
             m_XRefList = New List(Of String)
         End If
         m_XRefList.Add(newReference)
     End Sub
 
-    Protected Sub ChangeReferenceName(newName As String) Implements IProteinStorageEntry.SetReferenceName
+    Public Sub SetReferenceName(newName As String)
         If String.IsNullOrWhiteSpace(newName) Then
             Throw New Exception("New protein name cannot be empty")
         End If

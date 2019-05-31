@@ -5,8 +5,8 @@ Imports TableManipulationBase
 
 Public Class clsBatchUploadFromFileList
 
-    Protected ReadOnly m_Uploader As IUploadProteins
-    Protected ReadOnly m_DatabaseAccessor As IGetSQLData
+    Protected ReadOnly m_Uploader As clsPSUploadHandler
+    Protected ReadOnly m_DatabaseAccessor As clsDBTask
     Protected m_CurrentFileList As Hashtable
 
 
@@ -57,8 +57,8 @@ Public Class clsBatchUploadFromFileList
         Dim fileCollection As Hashtable
         Dim fce As FileListInfo
 
-        Dim ui As IUploadProteins.UploadInfo
-        Dim uiList = New List(Of IUploadProteins.UploadInfo)
+        Dim ui As clsPSUploadHandler.UploadInfo
+        Dim uiList = New List(Of clsPSUploadHandler.UploadInfo)
 
         m_AnnotationTypeTable = GetAnnotationTypeTable()
         m_AuthorityTable = GetAuthorityTable()
@@ -103,10 +103,10 @@ Public Class clsBatchUploadFromFileList
         Return m_DatabaseAccessor.GetTable(orgSQL)
     End Function
 
-    Private Function TransformToUploadInfo(fli As FileListInfo) As IUploadProteins.UploadInfo
+    Private Function TransformToUploadInfo(fli As FileListInfo) As clsPSUploadHandler.UploadInfo
 
         Dim fi = New FileInfo(fli.FullFilePath)
-        Dim ui As New IUploadProteins.UploadInfo(fi, fli.OrganismID, fli.AnnotationTypeID)
+        Dim ui As New clsPSUploadHandler.UploadInfo(fi, fli.OrganismID, fli.AnnotationTypeID)
 
         Return ui
 
@@ -158,12 +158,12 @@ Public Class clsBatchUploadFromFileList
 
     Protected Function UploadSelectedFiles(fileNameList As Hashtable) As Integer
 
-        Dim upInfoContainer As IUploadProteins.UploadInfo
+        Dim upInfoContainer As clsPSUploadHandler.UploadInfo
         Dim fli As FileListInfo
-        Dim selectedFileList = New List(Of IUploadProteins.UploadInfo)
+        Dim selectedFileList = New List(Of clsPSUploadHandler.UploadInfo)
 
         For Each fli In fileNameList.Values
-            upInfoContainer = New IUploadProteins.UploadInfo(
+            upInfoContainer = New clsPSUploadHandler.UploadInfo(
                 New FileInfo(fli.FullFilePath),
                 fli.OrganismID, fli.NamingAuthorityID)
             selectedFileList.Add(upInfoContainer)

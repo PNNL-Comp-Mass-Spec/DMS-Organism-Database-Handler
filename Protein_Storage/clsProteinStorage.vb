@@ -2,22 +2,22 @@
 Imports System.Collections.Generic
 
 Public Class clsProteinStorage
-    Implements IProteinStorage
 
-    Private ReadOnly m_Proteins As Dictionary(Of String, IProteinStorageEntry)
-    Private m_ResidueCount As Integer
-    Private m_ProteinNames As SortedSet(Of String)
-    Private m_PassPhrase As String
+    ''' <summary>
+    ''' Keys are Protein_Name
+    ''' </summary>
+    Protected ReadOnly m_Proteins As Dictionary(Of String, clsProteinStorageEntry)
+    Protected m_ResidueCount As Integer
+    Protected ReadOnly m_ProteinNames As SortedSet(Of String)
+    Protected m_PassPhrase As String
 
     Public Sub New(fastaFileName As String)
         FileName = fastaFileName
-        m_Proteins = New Dictionary(Of String, IProteinStorageEntry)
+        m_Proteins = New Dictionary(Of String, clsProteinStorageEntry)
+        m_ProteinNames = New SortedSet(Of String)
     End Sub
 
-    Protected Sub AddProtein(proteinEntry As IProteinStorageEntry) Implements IProteinStorage.AddProtein
-        If m_ProteinNames Is Nothing Then
-            m_ProteinNames = New SortedSet(Of String)
-        End If
+    Public Overridable Sub AddProtein(proteinEntry As clsProteinStorageEntry)
 
         If Not m_Proteins.ContainsKey(proteinEntry.Reference) Then
             m_Proteins.Add(proteinEntry.Reference, proteinEntry)
@@ -30,44 +30,44 @@ Public Class clsProteinStorage
         End If
     End Sub
 
-    Protected Property FileName As String Implements IProteinStorage.FileName
+    Protected Property FileName As String
 
-    Protected Function GetProtein(Reference As String) As Protein_Storage.IProteinStorageEntry Implements IProteinStorage.GetProtein
+    Public Function GetProtein(reference As String) As clsProteinStorageEntry
 
-        Dim proteinEntry As IProteinStorageEntry = Nothing
+        Dim proteinEntry As clsProteinStorageEntry = Nothing
 
-        If m_Proteins.TryGetValue(Reference, proteinEntry) Then
+        If m_Proteins.TryGetValue(reference, proteinEntry) Then
             Return proteinEntry
         Else
             Return Nothing
         End If
     End Function
 
-    Protected Function SortedProteinNameList() As SortedSet(Of String) Implements IProteinStorage.GetSortedProteinNames
+    Public Function GetSortedProteinNames() As SortedSet(Of String)
         Return m_ProteinNames
     End Function
 
-    Protected Sub ClearProteins() Implements IProteinStorage.ClearProteinEntries
+    Public Overridable Sub ClearProteinEntries()
         m_ResidueCount = 0
         m_Proteins.Clear()
         m_ProteinNames.Clear()
     End Sub
 
-    Protected ReadOnly Property TotalResidueCount As Integer Implements IProteinStorage.TotalResidueCount
+    Public ReadOnly Property TotalResidueCount As Integer
         Get
             Return m_ResidueCount
         End Get
     End Property
 
-    Protected ReadOnly Property ProteinCount As Integer Implements IProteinStorage.ProteinCount
+    Public ReadOnly Property ProteinCount As Integer
         Get
             Return m_Proteins.Count()
         End Get
     End Property
 
-    Protected Property EncryptSequences As Boolean Implements IProteinStorage.EncryptSequences
+    Public Property EncryptSequences As Boolean
 
-    Protected Property PassPhrase As String Implements IProteinStorage.PassPhrase
+    Public Property PassPhrase As String
         Get
             If EncryptSequences Then
                 Return m_PassPhrase
@@ -80,7 +80,7 @@ Public Class clsProteinStorage
         End Set
     End Property
 
-    Protected Function m_GetEnumerator() As Dictionary(Of String, IProteinStorageEntry).Enumerator Implements IProteinStorage.GetEnumerator
+    Public Function GetEnumerator() As Dictionary(Of String, clsProteinStorageEntry).Enumerator
         Return m_Proteins.GetEnumerator
     End Function
 

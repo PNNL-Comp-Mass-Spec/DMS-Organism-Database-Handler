@@ -23,8 +23,8 @@ Public Class clsExportProteinsFASTA
     ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Protected Overloads Overrides Function Export(
-      proteins As IProteinStorage,
+    Public Overloads Overrides Function Export(
+      proteins As clsProteinStorage,
       ByRef destinationPath As String) As String
 
         Const REQUIRED_SIZE_MB = 150
@@ -52,7 +52,7 @@ Public Class clsExportProteinsFASTA
             Dim tmpName As String
             Dim tmpDesc As String
             Dim seqLine As String
-            Dim tmpPC As IProteinStorageEntry
+            Dim tmpPC As clsProteinStorageEntry
             Dim tmpAltNames As String = String.Empty
 
             OnExportStart("Writing to FASTA File")
@@ -98,7 +98,7 @@ Public Class clsExportProteinsFASTA
 
         End Using
 
-        Dim fingerprint As String = GetFileHash(destinationPath)
+        Dim fingerprint As String = GenerateFileAuthenticationHash(destinationPath)
 
         Dim fi = New FileInfo(destinationPath)
 
@@ -129,7 +129,7 @@ Public Class clsExportProteinsFASTA
     ''' <param name="proteinTables"></param>
     ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
     ''' <returns></returns>
-    Protected Overloads Overrides Function Export(
+    Public Overloads Overrides Function Export(
       proteinTables As DataSet,
       ByRef destinationPath As String) As String
 
@@ -147,7 +147,7 @@ Public Class clsExportProteinsFASTA
     ''' <param name="proteinTable"></param>
     ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
     ''' <returns></returns>
-    Protected Overloads Overrides Function Export(
+    Public Overloads Overrides Function Export(
       proteinTable As DataTable,
       ByRef destinationPath As String) As String
 
@@ -238,7 +238,7 @@ Public Class clsExportProteinsFASTA
     ''' <param name="destinationPath">File path to finalize; will get updated with the new name that includes the fingerprint</param>
     ''' <returns>Fingerprint, e.g. 9B916A8B</returns>
     Function FinalizeFile(ByRef destinationPath As String) As String
-        Dim fingerprint As String = GetFileHash(destinationPath)
+        Dim fingerprint As String = GenerateFileAuthenticationHash(destinationPath)
 
         Dim fi = New FileInfo(destinationPath)
 

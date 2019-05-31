@@ -2,47 +2,20 @@ Imports System.Collections.Generic
 Imports System.IO
 Imports System.Windows.Forms
 Imports Protein_Exporter
-Imports Protein_Exporter.ExportProteinCollectionsIFC
 Imports Protein_Importer
 Imports Protein_Storage
 Imports TableManipulationBase
 Imports ValidateFastaFile
 
-Public Interface IUploadProteins
+Public Class clsPSUploadHandler
 
-    Enum eValidationOptionConstants As Integer
+    Public Enum eValidationOptionConstants As Integer
         AllowAsterisksInResidues = 0
         AllowDashInResidues = 1
         AllowAllSymbolsInProteinNames = 2
     End Enum
 
-    Function UploadCollection(
-        fileContents As IProteinStorage,
-        selectedProteins As List(Of String),
-        collectionName As String,
-        description As String,
-        collectionSource As String,
-        collectionType As IAddUpdateEntries.CollectionTypes,
-        organismID As Integer,
-        annotationTypeID As Integer) As Integer
-
-    Function UploadCollection(
-        fileContents As IProteinStorage,
-        filepath As String,
-        organismID As Integer,
-        annotationTypeID As Integer,
-        description As String,
-        source As String) As Integer
-
-    Sub BatchUpload(fileInfoList As IEnumerable(Of UploadInfo))
-
-    Sub ResetErrorList()
-
-    Sub SetValidationOptions(eValidationOptionName As eValidationOptionConstants, blnEnabled As Boolean)
-
-    Property MaximumProteinNameLength As Integer
-
-    Structure UploadInfo
+    Public Structure UploadInfo
         Public Sub New(inputFile As FileInfo, orgId As Integer, annotTypeID As Integer)
             FileInformation = inputFile
             OrganismID = orgId
@@ -69,42 +42,26 @@ Public Interface IUploadProteins
         Public EncryptionPassphrase As String
     End Structure
 
-    Event LoadStart(taskTitle As String)
-    Event LoadProgress(fractionDone As Double)
-    Event LoadEnd()
-    Event BatchProgress(status As String)
-    Event ValidationProgress(taskTitle As String, fractionDone As Double)
-    Event ValidFASTAFileLoaded(fastaFilePath As String, uploadData As UploadInfo)
-    Event InvalidFASTAFile(fastaFilePath As String, errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
-    Event FASTAFileWarnings(fastaFilePath As String, warningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
-    Event FASTAValidationComplete(fastaFilePath As String, uploadInfo As UploadInfo)
-    Event WroteLineEndNormalizedFASTA(newFilePath As String)
-End Interface
-
-
-Public Class clsPSUploadHandler
-    Implements IUploadProteins
-
     Protected m_PersistentTaskNum As Integer
     Protected m_NormalizedFASTAFilePath As String
     Protected m_ProteinCollectionsList As DataTable
 
-    Protected ReadOnly m_DatabaseAccessor As IGetSQLData
-    Protected WithEvents m_Importer As IImportProteins
-    Protected WithEvents m_Upload As IAddUpdateEntries
-    Protected WithEvents m_Export As IGetFASTAFromDMS
+    Protected ReadOnly m_DatabaseAccessor As clsDBTask
+    Protected WithEvents m_Importer As clsImportHandler
+    Protected WithEvents m_Upload As clsAddUpdateEntries
+    Protected WithEvents m_Export As clsGetFASTAFromDMS
     Protected WithEvents m_Validator As clsCustomValidateFastaFiles
 
-    Protected Event LoadStart(taskTitle As String) Implements IUploadProteins.LoadStart
-    Protected Event LoadProgress(fractionDone As Double) Implements IUploadProteins.LoadProgress
-    Protected Event LoadEnd() Implements IUploadProteins.LoadEnd
-    Protected Event BatchProgress(status As String) Implements IUploadProteins.BatchProgress
-    Protected Event ValidationProgress(taskTitle As String, fractionDone As Double) Implements IUploadProteins.ValidationProgress
-    Protected Event ValidFASTAFileLoaded(fastaFilePath As String, uploadData As IUploadProteins.UploadInfo) Implements IUploadProteins.ValidFASTAFileLoaded
-    Protected Event InvalidFASTAFile(fastaFilePath As String, errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) Implements IUploadProteins.InvalidFASTAFile
-    Protected Event FASTAFileWarnings(fastaFilePath As String, warningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) Implements IUploadProteins.FASTAFileWarnings
-    Protected Event FASTAValidationComplete(fastaFilePath As String, uploadInfo As IUploadProteins.UploadInfo) Implements IUploadProteins.FASTAValidationComplete
-    Protected Event WroteLineEndNormalizedFASTA(newFilePath As String) Implements IUploadProteins.WroteLineEndNormalizedFASTA
+    Public Event LoadStart(taskTitle As String)
+    Public Event LoadProgress(fractionDone As Double)
+    Public Event LoadEnd()
+    Public Event BatchProgress(status As String)
+    Public Event ValidationProgress(taskTitle As String, fractionDone As Double)
+    Public Event ValidFASTAFileLoaded(fastaFilePath As String, uploadData As UploadInfo)
+    Public Event InvalidFASTAFile(fastaFilePath As String, errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
+    Public Event FASTAFileWarnings(fastaFilePath As String, warningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
+    Public Event FASTAValidationComplete(fastaFilePath As String, uploadInfo As UploadInfo)
+    Public Event WroteLineEndNormalizedFASTA(newFilePath As String)
 
 
     Protected m_ExportedProteinCount As Integer
@@ -116,7 +73,7 @@ Public Class clsPSUploadHandler
     ' If eValidationOptionConstants gets more than 10 entries, then this array will need to be expanded
     Protected mValidationOptions() As Boolean
 
-    Public Property MaximumProteinNameLength As Integer Implements IUploadProteins.MaximumProteinNameLength
+    Public Property MaximumProteinNameLength As Integer
         Get
             Return mMaximumProteinNameLength
         End Get
@@ -126,7 +83,7 @@ Public Class clsPSUploadHandler
         End Set
     End Property
 
-    Private Sub ResetErrorList() Implements IUploadProteins.ResetErrorList
+    Public Sub ResetErrorList()
         m_Validator.ClearErrorList()
     End Sub
 
@@ -146,7 +103,7 @@ Public Class clsPSUploadHandler
         RaiseEvent BatchProgress(status)
     End Sub
 
-    Private Sub OnFileValidationComplete(fastaFilePath As String, uploadInfo As IUploadProteins.UploadInfo)
+    Private Sub OnFileValidationComplete(fastaFilePath As String, uploadInfo As UploadInfo)
         RaiseEvent FASTAValidationComplete(fastaFilePath, uploadInfo)
     End Sub
 
@@ -183,10 +140,9 @@ Public Class clsPSUploadHandler
         RaiseEvent InvalidFASTAFile(fastaFilePath, errorCollection)
     End Sub
 
-    Private Sub OnValidFASTAFileUpload(fastaFilePath As String, uploadData As IUploadProteins.UploadInfo)
+    Private Sub OnValidFASTAFileUpload(fastaFilePath As String, uploadData As UploadInfo)
         RaiseEvent ValidFASTAFileLoaded(fastaFilePath, uploadData)
     End Sub
-
 
     Public Sub New(psConnectionString As String)
         m_DatabaseAccessor = New clsDBTask(psConnectionString, True)
@@ -197,8 +153,8 @@ Public Class clsPSUploadHandler
         m_Upload = New clsAddUpdateEntries(psConnectionString)
 
         m_Export = New clsGetFASTAFromDMS(psConnectionString,
-                                          IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
-                                          IGetFASTAFromDMS.SequenceTypes.forward)
+                                          clsGetFASTAFromDMS.DatabaseFormatTypes.fasta,
+                                          clsGetFASTAFromDMS.SequenceTypes.forward)
 
         m_Validator = New clsCustomValidateFastaFiles
 
@@ -206,12 +162,12 @@ Public Class clsPSUploadHandler
     End Sub
 
     'fileInfoList hash -> key =
-    Protected Sub ProteinBatchLoadCoordinator(
-        fileInfoList As IEnumerable(Of IUploadProteins.UploadInfo)) Implements IUploadProteins.BatchUpload
+    Public Sub BatchUpload(
+        fileInfoList As IEnumerable(Of UploadInfo))
 
-        Dim upInfo As IUploadProteins.UploadInfo
+        Dim upInfo As UploadInfo
         Dim fi As FileInfo
-        Dim tmpPS As IProteinStorage
+        Dim tmpPS As clsProteinStorage
         Dim tmpFileName As String
         Dim blnFileValidated As Boolean
         Dim collectionState As String
@@ -230,23 +186,23 @@ Public Class clsPSUploadHandler
             fi = upInfo.FileInformation
 
             ' Configure the validator to possibly allow asterisks in the residues
-            m_Validator.OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowAllSymbolsInProteinNames) = mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAllSymbolsInProteinNames)
+            m_Validator.OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowAllSymbolsInProteinNames) = mValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowAllSymbolsInProteinNames)
 
             ' Configure the validator to possibly allow asterisks in the residues
-            m_Validator.OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowAsteriskInResidues) = mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues)
+            m_Validator.OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowAsteriskInResidues) = mValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowAsterisksInResidues)
 
             ' Configure the validator to possibly allow dashes in the residues
-            m_Validator.OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowDashInResidues) = mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowDashInResidues)
+            m_Validator.OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowDashInResidues) = mValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowDashInResidues)
 
             ' Configure the additional validation options
             m_Validator.SetValidationOptions(clsCustomValidateFastaFiles.eValidationOptionConstants.AllowAllSymbolsInProteinNames,
-                                                mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAllSymbolsInProteinNames))
+                                                mValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowAllSymbolsInProteinNames))
 
             m_Validator.SetValidationOptions(clsCustomValidateFastaFiles.eValidationOptionConstants.AllowAsterisksInResidues,
-                                                mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowAsterisksInResidues))
+                                                mValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowAsterisksInResidues))
 
             m_Validator.SetValidationOptions(clsCustomValidateFastaFiles.eValidationOptionConstants.AllowDashInResidues,
-                                                mValidationOptions(IUploadProteins.eValidationOptionConstants.AllowDashInResidues))
+                                                mValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowDashInResidues))
 
             ' Update the default rules (important if AllowAsteriskInResidues = True or AllowDashInResidues = True)
             m_Validator.SetDefaultRules()
@@ -373,15 +329,15 @@ Public Class clsPSUploadHandler
 
     End Sub
 
-    Protected Function CollectionUploadCoordinator(
-        fileContents As IProteinStorage,
+    Public Function UploadCollection(
+        fileContents As clsProteinStorage,
         selectedProteins As List(Of String),
         filepath As String,
         description As String,
         collectionSource As String,
-        collectionType As IAddUpdateEntries.CollectionTypes,
+        collectionType As clsAddUpdateEntries.CollectionTypes,
         organismID As Integer,
-        annotationTypeID As Integer) As Integer Implements IUploadProteins.UploadCollection
+        annotationTypeID As Integer) As Integer
 
         Dim XrefID As Integer
 
@@ -449,7 +405,7 @@ Public Class clsPSUploadHandler
 
         Dim fingerprint As String
         OnLoadStart("Generating Hash fingerprint")
-        fingerprint = m_Export.ExportFASTAFile(collectionID, tmpFileName, IGetFASTAFromDMS.DatabaseFormatTypes.fasta, IGetFASTAFromDMS.SequenceTypes.forward)
+        fingerprint = m_Export.ExportFASTAFile(collectionID, tmpFileName, clsGetFASTAFromDMS.DatabaseFormatTypes.fasta, clsGetFASTAFromDMS.SequenceTypes.forward)
         OnLoadEnd()
 
         OnLoadStart("Storing fingerprint in T_Protein_Collections")
@@ -461,16 +417,16 @@ Public Class clsPSUploadHandler
     End Function
 
     Protected Function CollectionBatchUploadCoordinator(
-        fileContents As IProteinStorage,
+        fileContents As clsProteinStorage,
         filepath As String,
         organismID As Integer,
         annotationTypeID As Integer,
         description As String,
-        source As String) As Integer Implements IUploadProteins.UploadCollection
+        source As String) As Integer
 
         Dim selectedList As New List(Of String)
 
-        Dim counter As Dictionary(Of String, IProteinStorageEntry).Enumerator = fileContents.GetEnumerator
+        Dim counter As Dictionary(Of String, clsProteinStorageEntry).Enumerator = fileContents.GetEnumerator
 
         While counter.MoveNext()
             selectedList.Add(counter.Current.Value.Reference)
@@ -478,13 +434,13 @@ Public Class clsPSUploadHandler
 
         selectedList.Sort()
 
-        Return CollectionUploadCoordinator(
+        Return UploadCollection(
             fileContents, selectedList, filepath, description, source,
-            IAddUpdateEntries.CollectionTypes.prot_original_source, organismID, annotationTypeID)
+            clsAddUpdateEntries.CollectionTypes.prot_original_source, organismID, annotationTypeID)
 
     End Function
 
-    Public Sub SetValidationOptions(eValidationOptionName As IUploadProteins.eValidationOptionConstants, blnEnabled As Boolean) Implements IUploadProteins.SetValidationOptions
+    Public Sub SetValidationOptions(eValidationOptionName As clsPSUploadHandler.eValidationOptionConstants, blnEnabled As Boolean)
         mValidationOptions(eValidationOptionName) = blnEnabled
     End Sub
 

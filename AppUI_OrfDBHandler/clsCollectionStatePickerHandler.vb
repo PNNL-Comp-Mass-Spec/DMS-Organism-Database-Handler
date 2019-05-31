@@ -4,8 +4,8 @@ Imports TableManipulationBase
 Public Class clsCollectionStatePickerHandler
     Private m_forceReload As Boolean = False
     Private m_ListViewData As DataTable
-    Private ReadOnly m_GetTables As IGetSQLData
-    Private ReadOnly m_SPAccess As IAddUpdateEntries
+    Private ReadOnly m_GetTables As clsDBTask
+    Private ReadOnly m_SPAccess As clsAddUpdateEntries
 
     Public Sub New(PSConnectionString As String)
         m_GetTables = New clsDBTask(PSConnectionString)

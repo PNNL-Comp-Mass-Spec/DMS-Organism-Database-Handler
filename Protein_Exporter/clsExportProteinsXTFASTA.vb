@@ -22,8 +22,8 @@ Public Class clsExportProteinsXTFASTA
     ''' <param name="proteins"></param>
     ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
     ''' <returns></returns>
-    Protected Overloads Overrides Function Export(
-      proteins As IProteinStorage,
+    Public Overloads Overrides Function Export(
+      proteins As clsProteinStorage,
       ByRef destinationPath As String) As String
 
         Const REQUIRED_SIZE_MB = 150
@@ -54,7 +54,7 @@ Public Class clsExportProteinsXTFASTA
 
             Dim tmpSeq As String
             Dim tmpName As String
-            Dim tmpPC As IProteinStorageEntry
+            Dim tmpPC As clsProteinStorageEntry
             Dim tmpNum As Int32
 
             OnExportStart("Writing to X!Tandem formatted FASTA File")
@@ -120,7 +120,7 @@ Public Class clsExportProteinsXTFASTA
 
         End Using
 
-        Dim fingerprint As String = GetFileHash(destinationPath)
+        Dim fingerprint As String = GenerateFileAuthenticationHash(destinationPath)
 
         OnExportEnd()
 
@@ -134,7 +134,7 @@ Public Class clsExportProteinsXTFASTA
     ''' <param name="proteinTables"></param>
     ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
     ''' <returns></returns>
-    Protected Overloads Overrides Function Export(
+    Public Overloads Overrides Function Export(
       proteinTables As DataSet,
       ByRef destinationPath As String) As String
 
@@ -239,7 +239,7 @@ Public Class clsExportProteinsXTFASTA
 
         End Using
 
-        Dim fingerprint As String = GetFileHash(destinationPath)
+        Dim fingerprint As String = GenerateFileAuthenticationHash(destinationPath)
 
         OnExportEnd()
 
@@ -253,7 +253,7 @@ Public Class clsExportProteinsXTFASTA
     ''' <param name="proteinTable"></param>
     ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
     ''' <returns></returns>
-    Protected Overloads Overrides Function Export(
+    Public Overloads Overrides Function Export(
       proteinTable As DataTable,
       ByRef destinationPath As String) As String
 

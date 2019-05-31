@@ -4,15 +4,14 @@ Imports System.Text
 Imports System.Text.RegularExpressions
 Imports ProteinFileReader
 Imports Protein_Exporter
-Imports Protein_Exporter.ExportProteinCollectionsIFC
 Imports Protein_Importer
 Imports TableManipulationBase
 
 Public Class clsSyncFASTAFileArchive
 
     ' Private m_FileArchiver As IArchiveOutputFiles
-    Private ReadOnly m_DatabaseAccessor As IGetSQLData
-    Private ReadOnly m_Importer As IAddUpdateEntries
+    Private ReadOnly m_DatabaseAccessor As clsDBTask
+    Private ReadOnly m_Importer As clsAddUpdateEntries
 
     Private WithEvents m_Exporter As clsGetFASTAFromDMS
 
@@ -55,8 +54,8 @@ Public Class clsSyncFASTAFileArchive
             m_TotalProteinsCount += CInt(dr.Item("NumProteins"))
         Next
 
-        Dim outputSequenceType = IGetFASTAFromDMS.SequenceTypes.forward
-        Dim databaseFormatType = IGetFASTAFromDMS.DatabaseFormatTypes.fasta
+        Dim outputSequenceType = clsGetFASTAFromDMS.SequenceTypes.forward
+        Dim databaseFormatType = clsGetFASTAFromDMS.DatabaseFormatTypes.fasta
 
         OnSyncStart("Synchronizing Archive Table with Collections Table")
 
@@ -72,7 +71,7 @@ Public Class clsSyncFASTAFileArchive
 
             fileArchiver.ArchiveCollection(
                 proteinCollectionID,
-                IArchiveOutputFiles.CollectionTypes.static,
+                clsArchiveOutputFilesBase.CollectionTypes.static,
                 outputSequenceType, databaseFormatType, sourceFilePath, CreationOptionsString, SHA1, proteinCollectionList)
 
         Next
@@ -120,8 +119,8 @@ Public Class clsSyncFASTAFileArchive
         End If
 
         m_Exporter = New clsGetFASTAFromDMS(
-            connectionString, IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
-            IGetFASTAFromDMS.SequenceTypes.forward)
+            connectionString, clsGetFASTAFromDMS.DatabaseFormatTypes.fasta,
+            clsGetFASTAFromDMS.SequenceTypes.forward)
 
         Dim creationOptionsString As String
         creationOptionsString = "seq_direction=forward,filetype=fasta"
@@ -137,7 +136,7 @@ Public Class clsSyncFASTAFileArchive
             m_GeneratedFastaFilePath = String.Empty
 
             elapsedTimeSB.Remove(0, elapsedTimeSB.Length)
-            elapsedTime = DateTime.UtcNow.Subtract(starttime)
+            elapsedTime = DateTime.UtcNow.Subtract(startTime)
             If elapsedTime.Minutes < 1 And elapsedTime.Hours = 0 Then
                 elapsedTimeSB.Append("less than ")
             Else
@@ -169,8 +168,8 @@ Public Class clsSyncFASTAFileArchive
             'Debug.WriteLine("Start: " & tmpFilename & ": " & starttime.ToLongTimeString)
 
             tmpGenSHA = m_Exporter.ExportFASTAFile(tmpID, tmpPath,
-                IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
-                IGetFASTAFromDMS.SequenceTypes.forward)
+                clsGetFASTAFromDMS.DatabaseFormatTypes.fasta,
+                clsGetFASTAFromDMS.SequenceTypes.forward)
 
             If Not tmpStoredSHA.Equals(tmpGenSHA) Then
                 Dim currentFastaProteinCount = 0
@@ -188,9 +187,9 @@ Public Class clsSyncFASTAFileArchive
 
             fileArchiver.ArchiveCollection(
                 tmpID,
-                IArchiveOutputFiles.CollectionTypes.static,
-                IGetFASTAFromDMS.SequenceTypes.forward,
-                IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
+                clsArchiveOutputFilesBase.CollectionTypes.static,
+                clsGetFASTAFromDMS.SequenceTypes.forward,
+                clsGetFASTAFromDMS.DatabaseFormatTypes.fasta,
                 tmpFullPath, creationOptionsString, tmpGenSHA, "")
             'ArchiveCollection(
             '    tmpID,
