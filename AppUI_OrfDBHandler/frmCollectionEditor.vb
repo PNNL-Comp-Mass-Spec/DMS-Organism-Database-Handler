@@ -1669,8 +1669,8 @@ Public Class frmCollectionEditor
         Application.DoEvents()
     End Sub
 
-    Private Sub CollectionLoadHandler(CollectionTable As DataTable) Handles m_ImportHandler.CollectionLoadComplete
-        m_ProteinCollections = CollectionTable
+    Private Sub CollectionLoadHandler(collectionTable As DataTable) Handles m_ImportHandler.CollectionLoadComplete
+        m_ProteinCollections = collectionTable
         If m_Organisms Is Nothing Then
             m_Organisms = m_ImportHandler.LoadOrganisms
         End If
@@ -1691,9 +1691,9 @@ Public Class frmCollectionEditor
 
     End Sub
 
-    Private Sub BatchImportProgressHandler(Status As String) Handles m_UploadHandler.BatchProgress  ', m_fileBatcher.TaskChange
+    Private Sub BatchImportProgressHandler(status As String) Handles m_UploadHandler.BatchProgress  ', m_fileBatcher.TaskChange
         m_BatchLoadCurrentCount += 1
-        lblBatchProgress.Text = Status & " (File " & m_BatchLoadCurrentCount.ToString & " of " & m_BatchLoadTotalCount & ")"
+        lblBatchProgress.Text = status & " (File " & m_BatchLoadCurrentCount.ToString & " of " & m_BatchLoadTotalCount & ")"
         Application.DoEvents()
     End Sub
 

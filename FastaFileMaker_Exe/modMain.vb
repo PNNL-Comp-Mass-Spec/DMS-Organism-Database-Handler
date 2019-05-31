@@ -48,9 +48,9 @@ Module modMain
     Private Sub m_FastaTools_FileGenerationStarted(taskMsg As String) Handles m_FastaTools.FileGenerationStarted
     End Sub
 
-    Private Sub m_FastaTools_FileGenerationCompleted(FullOutputPath As String) Handles m_FastaTools.FileGenerationCompleted
+    Private Sub m_FastaTools_FileGenerationCompleted(fullOutputPath As String) Handles m_FastaTools.FileGenerationCompleted
 
-        m_FastaFileName = IO.Path.GetFileName(FullOutputPath)  'Get the name of the fasta file that was generated
+        m_FastaFileName = IO.Path.GetFileName(fullOutputPath)  'Get the name of the fasta file that was generated
         m_GenerationComplete = True     'Set the completion flag
 
     End Sub
@@ -155,8 +155,8 @@ Module modMain
 
     End Sub
 
-    Private Function GetAppVersion(strProgramDate As String) As String
-        Return Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() & " (" & strProgramDate & ")"
+    Private Function GetAppVersion(programDate As String) As String
+        Return Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() & " (" & programDate & ")"
     End Function
 
     Private Function GetHumanReadableTimeInterval(dtInterval As TimeSpan) As String

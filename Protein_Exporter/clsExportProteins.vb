@@ -18,35 +18,58 @@ Public MustInherit Class clsExportProteins
     Protected Event ExportProgress(statusMsg As String, fractionDone As Double) Implements IExportProteins.ExportProgress
     Protected Event ExportEnd() Implements IExportProteins.ExportEnd
 
+    ''' <summary>
+    ''' Export the proteins to the given file
+    ''' </summary>
+    ''' <param name="proteins"></param>
+    ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
+    ''' <param name="selectedProteinList"></param>
+    ''' <returns></returns>
     Protected Function Export(
-      Proteins As IProteinStorage,
+      proteins As IProteinStorage,
       ByRef destinationPath As String,
-      SelectedProteinList As List(Of String)) As String Implements IExportProteins.Export
+      selectedProteinList As List(Of String)) As String Implements IExportProteins.Export
 
         Dim tmpProteinsList As IProteinStorage
 
         tmpProteinsList = New clsProteinStorage(Path.GetFileNameWithoutExtension(destinationPath))
 
-        Dim Reference As String
-
-        For Each Reference In SelectedProteinList
-            tmpProteinsList.AddProtein(Proteins.GetProtein(Reference))
+        For Each reference In selectedProteinList
+            tmpProteinsList.AddProtein(proteins.GetProtein(reference))
         Next
 
         Return Export(tmpProteinsList, destinationPath)
 
     End Function
 
+    ''' <summary>
+    ''' Export the proteins to the given file
+    ''' </summary>
+    ''' <param name="proteins"></param>
+    ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
+    ''' <returns></returns>
     Protected MustOverride Function Export(
-      Proteins As IProteinStorage,
+      proteins As IProteinStorage,
       ByRef destinationPath As String) As String Implements IExportProteins.Export
 
+    ''' <summary>
+    ''' Export the proteins to the given file
+    ''' </summary>
+    ''' <param name="proteinTables"></param>
+    ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
+    ''' <returns></returns>
     Protected MustOverride Function Export(
-      ProteinTables As DataSet,
+      proteinTables As DataSet,
       ByRef destinationPath As String) As String Implements IExportProteins.Export
 
+    ''' <summary>
+    ''' Export the proteins to the given file
+    ''' </summary>
+    ''' <param name="proteinTable"></param>
+    ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
+    ''' <returns></returns>
     Protected MustOverride Function Export(
-      ProteinTable As DataTable,
+      proteinTable As DataTable,
       ByRef destinationPath As String) As String Implements IExportProteins.Export
 
     Protected Sub OnExportStart(taskTitle As String)

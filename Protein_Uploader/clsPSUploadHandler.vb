@@ -19,7 +19,7 @@ Public Interface IUploadProteins
     Function UploadCollection(
         fileContents As IProteinStorage,
         selectedProteins As List(Of String),
-        CollectionName As String,
+        collectionName As String,
         description As String,
         collectionSource As String,
         collectionType As IAddUpdateEntries.CollectionTypes,
@@ -43,10 +43,10 @@ Public Interface IUploadProteins
     Property MaximumProteinNameLength As Integer
 
     Structure UploadInfo
-        Public Sub New(FileInformation As FileInfo, OrgID As Integer, AnnotTypeID As Integer)
-            FileInformation = FileInformation
-            OrganismID = OrgID
-            AnnotationTypeID = AnnotTypeID
+        Public Sub New(inputFile As FileInfo, orgId As Integer, annotTypeID As Integer)
+            FileInformation = inputFile
+            OrganismID = orgId
+            AnnotationTypeID = annotTypeID
             EncryptionPassphrase = String.Empty
             Description = String.Empty
             Source = String.Empty
@@ -74,10 +74,10 @@ Public Interface IUploadProteins
     Event LoadEnd()
     Event BatchProgress(status As String)
     Event ValidationProgress(taskTitle As String, fractionDone As Double)
-    Event ValidFASTAFileLoaded(FASTAFilePath As String, UploadData As UploadInfo)
-    Event InvalidFASTAFile(FASTAFilePath As String, errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
-    Event FASTAFileWarnings(FASTAFilePath As String, warningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
-    Event FASTAValidationComplete(FASTAFilePath As String, UploadInfo As UploadInfo)
+    Event ValidFASTAFileLoaded(fastaFilePath As String, uploadData As UploadInfo)
+    Event InvalidFASTAFile(fastaFilePath As String, errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
+    Event FASTAFileWarnings(fastaFilePath As String, warningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
+    Event FASTAValidationComplete(fastaFilePath As String, uploadInfo As UploadInfo)
     Event WroteLineEndNormalizedFASTA(newFilePath As String)
 End Interface
 
@@ -100,10 +100,10 @@ Public Class clsPSUploadHandler
     Protected Event LoadEnd() Implements IUploadProteins.LoadEnd
     Protected Event BatchProgress(status As String) Implements IUploadProteins.BatchProgress
     Protected Event ValidationProgress(taskTitle As String, fractionDone As Double) Implements IUploadProteins.ValidationProgress
-    Protected Event ValidFASTAFileLoaded(FASTAFilePath As String, UploadData As IUploadProteins.UploadInfo) Implements IUploadProteins.ValidFASTAFileLoaded
-    Protected Event InvalidFASTAFile(FASTAFilePath As String, errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) Implements IUploadProteins.InvalidFASTAFile
-    Protected Event FASTAFileWarnings(FASTAFilePath As String, warningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) Implements IUploadProteins.FASTAFileWarnings
-    Protected Event FASTAValidationComplete(FASTAFilePath As String, UploadInfo As IUploadProteins.UploadInfo) Implements IUploadProteins.FASTAValidationComplete
+    Protected Event ValidFASTAFileLoaded(fastaFilePath As String, uploadData As IUploadProteins.UploadInfo) Implements IUploadProteins.ValidFASTAFileLoaded
+    Protected Event InvalidFASTAFile(fastaFilePath As String, errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) Implements IUploadProteins.InvalidFASTAFile
+    Protected Event FASTAFileWarnings(fastaFilePath As String, warningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) Implements IUploadProteins.FASTAFileWarnings
+    Protected Event FASTAValidationComplete(fastaFilePath As String, uploadInfo As IUploadProteins.UploadInfo) Implements IUploadProteins.FASTAValidationComplete
     Protected Event WroteLineEndNormalizedFASTA(newFilePath As String) Implements IUploadProteins.WroteLineEndNormalizedFASTA
 
 
@@ -146,8 +146,8 @@ Public Class clsPSUploadHandler
         RaiseEvent BatchProgress(status)
     End Sub
 
-    Private Sub OnFileValidationComplete(FASTAFilePath As String, UploadInfo As IUploadProteins.UploadInfo)
-        RaiseEvent FASTAValidationComplete(FASTAFilePath, UploadInfo)
+    Private Sub OnFileValidationComplete(fastaFilePath As String, uploadInfo As IUploadProteins.UploadInfo)
+        RaiseEvent FASTAValidationComplete(fastaFilePath, uploadInfo)
     End Sub
 
     Private Sub LoadStartHandler(taskTitle As String) Handles m_Upload.LoadStart, m_Importer.LoadStart
@@ -175,16 +175,16 @@ Public Class clsPSUploadHandler
         RaiseEvent WroteLineEndNormalizedFASTA(newFASTAFilePath)
     End Sub
 
-    Private Sub OnFASTAFileWarnings(FASTAFilePath As String, warningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
-        RaiseEvent FASTAFileWarnings(FASTAFilePath, warningCollection)
+    Private Sub OnFASTAFileWarnings(fastaFilePath As String, warningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
+        RaiseEvent FASTAFileWarnings(fastaFilePath, warningCollection)
     End Sub
 
-    Private Sub OnInvalidFASTAFile(FASTAFilePath As String, errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
-        RaiseEvent InvalidFASTAFile(FASTAFilePath, errorCollection)
+    Private Sub OnInvalidFASTAFile(fastaFilePath As String, errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
+        RaiseEvent InvalidFASTAFile(fastaFilePath, errorCollection)
     End Sub
 
-    Private Sub OnValidFASTAFileUpload(FASTAFilePath As String, UploadData As IUploadProteins.UploadInfo)
-        RaiseEvent ValidFASTAFileLoaded(FASTAFilePath, UploadData)
+    Private Sub OnValidFASTAFileUpload(fastaFilePath As String, uploadData As IUploadProteins.UploadInfo)
+        RaiseEvent ValidFASTAFileLoaded(fastaFilePath, uploadData)
     End Sub
 
 
@@ -488,7 +488,7 @@ Public Class clsPSUploadHandler
         mValidationOptions(eValidationOptionName) = blnEnabled
     End Sub
 
-    Private Sub m_Export_FileGenerationCompleted(FullOutputPath As String) Handles m_Export.FileGenerationCompleted
+    Private Sub m_Export_FileGenerationCompleted(fullOutputPath As String) Handles m_Export.FileGenerationCompleted
 
     End Sub
 

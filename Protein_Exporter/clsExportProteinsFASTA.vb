@@ -24,7 +24,7 @@ Public Class clsExportProteinsFASTA
     ''' <returns></returns>
     ''' <remarks></remarks>
     Protected Overloads Overrides Function Export(
-      Proteins As IProteinStorage,
+      proteins As IProteinStorage,
       ByRef destinationPath As String) As String
 
         Const REQUIRED_SIZE_MB = 150
@@ -43,7 +43,7 @@ Public Class clsExportProteinsFASTA
             Throw New IOException("Unable to save FASTA file at " & destinationPath & ". " & errorMessage)
         End If
 
-        Using sw = New StreamWriter(destinationPath)
+        Using writer = New StreamWriter(destinationPath)
 
             Dim proteinPosition As Integer
             Dim proteinLength As Integer
@@ -57,7 +57,7 @@ Public Class clsExportProteinsFASTA
 
             OnExportStart("Writing to FASTA File")
 
-            Dim counterMax As Integer = Proteins.ProteinCount
+            Dim counterMax As Integer = proteins.ProteinCount
             Dim counter As Integer
             Dim hexCodeFinder = New Regex("[\x00-\x1F\x7F-\xFF]", RegexOptions.Compiled)
 
@@ -69,13 +69,13 @@ Public Class clsExportProteinsFASTA
                 EventTriggerThresh = CInt(counterMax / 25)
             End If
 
-            Dim nameList = Proteins.GetSortedProteinNames
+            Dim nameList = proteins.GetSortedProteinNames
 
             For Each tmpName In nameList
 
                 OnExportStart("Writing: " + tmpName)
 
-                tmpPC = Proteins.GetProtein(tmpName)
+                tmpPC = proteins.GetProtein(tmpName)
                 tmpSeq = tmpPC.Sequence
 
                 counter += 1
@@ -88,11 +88,11 @@ Public Class clsExportProteinsFASTA
                 tmpDesc = hexCodeFinder.Replace(tmpPC.Description, " ")
 
 
-                sw.WriteLine((">" & tmpPC.Reference & " " & tmpDesc & tmpAltNames).Trim())
+                writer.WriteLine((">" & tmpPC.Reference & " " & tmpDesc & tmpAltNames).Trim())
 
                 For proteinPosition = 1 To proteinLength Step m_seqLineLength
                     seqLine = Mid(tmpSeq, proteinPosition, m_seqLineLength)
-                    sw.WriteLine(seqLine)
+                    writer.WriteLine(seqLine)
                 Next
             Next
 
@@ -123,26 +123,36 @@ Public Class clsExportProteinsFASTA
 
     End Function
 
+    ''' <summary>
+    ''' Export the proteins to the given file
+    ''' </summary>
+    ''' <param name="proteinTables"></param>
+    ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
+    ''' <returns></returns>
     Protected Overloads Overrides Function Export(
-      ProteinTables As DataSet,
+      proteinTables As DataSet,
       ByRef destinationPath As String) As String
 
-        Dim ProteinTable As DataTable
-
-        For Each ProteinTable In ProteinTables.Tables
-            WriteFromDataTable(ProteinTable, destinationPath)
+        For Each proteinTable As DataTable In proteinTables.Tables
+            WriteFromDataTable(proteinTable, destinationPath)
         Next
 
         Return FinalizeFile(destinationPath)
 
     End Function
 
+    ''' <summary>
+    ''' Export the proteins to the given file
+    ''' </summary>
+    ''' <param name="proteinTable"></param>
+    ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
+    ''' <returns></returns>
     Protected Overloads Overrides Function Export(
-      ProteinTable As DataTable,
+      proteinTable As DataTable,
       ByRef destinationPath As String) As String
 
-        If ProteinTable.Rows.Count > 0 Then
-            WriteFromDataTable(ProteinTable, destinationPath)
+        If proteinTable.Rows.Count > 0 Then
+            WriteFromDataTable(proteinTable, destinationPath)
         Else
             Return FinalizeFile(destinationPath)
         End If
@@ -222,6 +232,11 @@ Public Class clsExportProteinsFASTA
 
     End Function
 
+    ''' <summary>
+    ''' Rename the file to include the fingerprint
+    ''' </summary>
+    ''' <param name="destinationPath">File path to finalize; will get updated with the new name that includes the fingerprint</param>
+    ''' <returns>Fingerprint, e.g. 9B916A8B</returns>
     Function FinalizeFile(ByRef destinationPath As String) As String
         Dim fingerprint As String = GetFileHash(destinationPath)
 

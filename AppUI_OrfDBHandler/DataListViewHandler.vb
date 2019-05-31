@@ -12,12 +12,12 @@ Public Class DataListViewHandler
 
     Private m_LVW As ListView
 
-    Public Sub Load(ListTable As DataTable)
-        Me.FillListView(Me.m_LVW, ListTable)
+    Public Sub Load(listTable As DataTable)
+        FillListView(m_LVW, listTable)
     End Sub
 
-    Public Sub Load(ListTable As DataTable, QuickFilterCriteria As String)
-        Me.FillFilteredListView(Me.m_LVW, ListTable, QuickFilterCriteria)
+    Public Sub Load(listTable As DataTable, quickFilterCriteria As String)
+        FillFilteredListView(m_LVW, listTable, quickFilterCriteria)
     End Sub
 
     Private Sub SetupPickerListView(
@@ -71,8 +71,8 @@ Public Class DataListViewHandler
         listViewToFill As ListView,
         listData As DataTable)
 
-        ListViewToFill.Items.Clear()
-        SetupPickerListView(ListViewToFill, ListData)
+        listViewToFill.Items.Clear()
+        SetupPickerListView(listViewToFill, listData)
     End Sub
 
     Protected Sub FillFilteredListView(
@@ -80,8 +80,8 @@ Public Class DataListViewHandler
         listData As DataTable,
         filterString As String)
 
-        ListViewToFill.Items.Clear()
-        SetupPickerListView(ListViewToFill, ListData, FilterString)
+        listViewToFill.Items.Clear()
+        SetupPickerListView(listViewToFill, listData, filterString)
     End Sub
 
 End Class

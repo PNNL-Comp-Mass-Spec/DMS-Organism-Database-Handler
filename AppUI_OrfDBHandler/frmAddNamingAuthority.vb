@@ -225,7 +225,7 @@ Public Class frmAddNamingAuthority
     Function ValidateWebAddressFormat(rawAddress As String) As String
         Dim m As Match
         Dim r1 As New Regex("(?:([^:/?#]+):)?(?://([^/?#]*))?([^?#]*)(?:\?([^#]*))?")  'Match with specific page noted
-        Dim newaddress As String
+        Dim newAddress As String
         Dim newAddressSB As New StringBuilder
 
         If r1.IsMatch(rawAddress) Then
@@ -241,9 +241,9 @@ Public Class frmAddNamingAuthority
             End If
             newAddressSB.Append(m.Groups(4).Value)
 
-            newaddress = newAddressSB.ToString
+            newAddress = newAddressSB.ToString
 
-            Return newaddress
+            Return newAddress
 
 
         End If

@@ -397,7 +397,7 @@ Public Class clsGetFASTAFromDMS
     Private Function ExportLegacyFastaValidateHash(
       finalFileFI As FileSystemInfo,
       ByRef finalFileHash As String,
-      blnForceRegenerateHash As Boolean) As Boolean
+      forceRegenerateHash As Boolean) As Boolean
 
         If String.IsNullOrEmpty(finalFileHash) Then
             finalFileHash = GenerateAndStoreLegacyFileHash(finalFileFI.FullName)
@@ -410,7 +410,7 @@ Public Class clsGetFASTAFromDMS
             ' ValidateMatchingHash will use GenerateFileAuthenticationHash() to generate a hash for the given file
             ' Since this can be time consuming, we only do this every 48 hours
             ' If the generated hash does not match the expected hash (finalFileHash) then we will re-generate the .fasta file
-            If ValidateMatchingHash(finalFileFI.FullName, finalFileHash, 48, blnForceRegenerateHash) Then
+            If ValidateMatchingHash(finalFileFI.FullName, finalFileHash, 48, forceRegenerateHash) Then
                 Return True
             End If
         End If
@@ -764,22 +764,22 @@ Public Class clsGetFASTAFromDMS
 
     End Sub
 
-    Private Function GenerateAndStoreLegacyFileHash(strFastaFilePath As String) As String
+    Private Function GenerateAndStoreLegacyFileHash(fastaFilePath As String) As String
 
         ' The database does not have a valid Authentication_Hash values for this .Fasta file; generate one now
-        Dim crc32Hash = GenerateFileAuthenticationHash(strFastaFilePath)
+        Dim crc32Hash = GenerateFileAuthenticationHash(fastaFilePath)
 
         ' Add an entry to T_Legacy_File_Upload_Requests
         ' Also store the CRC32 hash for future use
-        RunSP_AddLegacyFileUploadRequest(Path.GetFileName(strFastaFilePath), crc32Hash)
+        RunSP_AddLegacyFileUploadRequest(Path.GetFileName(fastaFilePath), crc32Hash)
 
         Return crc32Hash
 
     End Function
 
     Private Function LookupLegacyFastaFileDetails(
-      LegacyFASTAFileName As String,
-      <Out> ByRef LegacyStaticFilePathOutput As String,
+      legacyFASTAFileName As String,
+      <Out> ByRef legacyStaticFilePathOutput As String,
       <Out> ByRef crc32HashOutput As String) As Boolean
 
         Dim legacyLocationsSQL As String
@@ -787,16 +787,16 @@ Public Class clsGetFASTAFromDMS
         Dim legacyStaticFileLocations As DataTable
 
         ' Lookup the details for LegacyFASTAFileName in the database
-        legacyLocationsSQL = "SELECT FileName, Full_Path, Authentication_Hash FROM V_Legacy_Static_File_Locations WHERE FileName = '" & LegacyFASTAFileName & "'"
+        legacyLocationsSQL = "SELECT FileName, Full_Path, Authentication_Hash FROM V_Legacy_Static_File_Locations WHERE FileName = '" & legacyFASTAFileName & "'"
 
         legacyStaticFileLocations = m_DatabaseAccessor.GetTable(legacyLocationsSQL)
         If legacyStaticFileLocations.Rows.Count = 0 Then
-            Dim msg = "Legacy fasta file " & LegacyFASTAFileName & " not found in V_Legacy_Static_File_Locations; unable to continue"
+            Dim msg = "Legacy fasta file " & legacyFASTAFileName & " not found in V_Legacy_Static_File_Locations; unable to continue"
             OnErrorEvent(msg)
             Throw New Exception(msg)
         End If
 
-        LegacyStaticFilePathOutput = legacyStaticFileLocations.Rows(0).Item("Full_Path").ToString
+        legacyStaticFilePathOutput = legacyStaticFileLocations.Rows(0).Item("Full_Path").ToString
         crc32HashOutput = legacyStaticFileLocations.Rows(0).Item("Authentication_Hash").ToString
         If crc32HashOutput Is Nothing Then crc32HashOutput = String.Empty
 
@@ -861,15 +861,15 @@ Public Class clsGetFASTAFromDMS
 
     ''' <summary>
     ''' Validates that the hash of a .fasta file matches the expected hash value
-    ''' If the actual hash differs and if blnForceRegenerateHash=True, then this strExpectedHash get updated
-    ''' blnForceRegenerateHash should be set to True only when processing legacy fasta files that have been newly copied to this computer
+    ''' If the actual hash differs and if forceRegenerateHash=True, then this strExpectedHash get updated
+    ''' forceRegenerateHash should be set to True only when processing legacy fasta files that have been newly copied to this computer
     ''' </summary>
     ''' <param name="fastaFilePath">Fasta file to check</param>
-    ''' <param name="expectedHash">Expected CRC32 hash; updated if incorrect and blnForceRegenerateHash is true</param>
+    ''' <param name="expectedHash">Expected CRC32 hash; updated if incorrect and forceRegenerateHash is true</param>
     ''' <param name="retryHoldoffHours">Time between re-generating the hash value for an existing file</param>
     ''' <param name="forceRegenerateHash">Re-generate the hash</param>
     ''' <param name="hashcheckExtension">Hashcheck file extension; if an empty string, the default of .hashcheck is used</param>
-    ''' <returns>True if the hash values match, or if blnForceRegenerateHash=True</returns>
+    ''' <returns>True if the hash values match, or if forceRegenerateHash=True</returns>
     ''' <remarks>Public method because the Analysis Manager uses this class when running offline jobs</remarks>
     Public Function ValidateMatchingHash(
       fastaFilePath As String,
@@ -948,28 +948,27 @@ Public Class clsGetFASTAFromDMS
     ''' </summary>
     ''' <param name="FinalOutputPath"></param>
     ''' <remarks></remarks>
-    Private Sub OnTaskCompletion(FinalOutputPath As String)
-        RaiseEvent FileGenerationCompleted(FinalOutputPath)
+    Private Sub OnTaskCompletion(finalOutputPath As String)
+        RaiseEvent FileGenerationCompleted(finalOutputPath)
     End Sub
 
-
-    Private Sub m_FileTools_WaitingForLockQueue(SourceFilePath As String, TargetFilePath As String, MBBacklogSource As Integer, MBBacklogTarget As Integer) Handles m_FileTools.WaitingForLockQueue
+    Private Sub m_FileTools_WaitingForLockQueue(sourceFilePath As String, targetFilePath As String, sourceBacklogMB As Integer, targetBacklogMB As Integer) Handles m_FileTools.WaitingForLockQueue
         Dim strServers As String
 
         If DateTime.UtcNow.Subtract(m_LastLockQueueWaitTimeLog).TotalSeconds >= 30 Then
             m_LastLockQueueWaitTimeLog = DateTime.UtcNow
             Console.WriteLine("Waiting for lockfile queue to fall below threshold to fall below threshold (Protein_Exporter); " +
-                              "SourceBacklog=" & MBBacklogSource & " MB, " +
-                              "TargetBacklog=" & MBBacklogTarget & " MB, " +
-                              "Source=" & SourceFilePath & ", " +
-                              "Target=" & TargetFilePath)
+                              "SourceBacklog=" & sourceBacklogMB & " MB, " +
+                              "TargetBacklog=" & targetBacklogMB & " MB, " +
+                              "Source=" & sourceFilePath & ", " +
+                              "Target=" & targetFilePath)
 
-            If MBBacklogSource > 0 AndAlso MBBacklogTarget > 0 Then
-                strServers = m_FileTools.GetServerShareBase(SourceFilePath) & " and " & m_FileTools.GetServerShareBase(TargetFilePath)
-            ElseIf MBBacklogTarget > 0 Then
-                strServers = m_FileTools.GetServerShareBase(TargetFilePath)
+            If sourceBacklogMB > 0 AndAlso targetBacklogMB > 0 Then
+                strServers = m_FileTools.GetServerShareBase(sourceFilePath) & " and " & m_FileTools.GetServerShareBase(targetFilePath)
+            ElseIf targetBacklogMB > 0 Then
+                strServers = m_FileTools.GetServerShareBase(targetFilePath)
             Else
-                strServers = m_FileTools.GetServerShareBase(SourceFilePath)
+                strServers = m_FileTools.GetServerShareBase(sourceFilePath)
             End If
 
             Dim msg = "Waiting for lockfile queue on " & strServers & " to fall below threshold"

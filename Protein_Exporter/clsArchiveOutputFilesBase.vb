@@ -16,10 +16,10 @@ Public MustInherit Class clsArchiveOutputFilesBase
     Protected m_Archived_File_Name As String
 
     Protected Event ArchiveStart() Implements IArchiveOutputFiles.ArchiveStart
-    Protected Event SubTaskStart(TaskDescription As String) Implements IArchiveOutputFiles.SubTaskStart
+    Protected Event SubTaskStart(taskDescription As String) Implements IArchiveOutputFiles.SubTaskStart
     Protected Event SubTaskProgressUpdate(fractionDone As Double) Implements IArchiveOutputFiles.SubTaskProgressUpdate
     Protected Event OverallProgressUpdate(fractionDone As Double) Implements IArchiveOutputFiles.OverallProgressUpdate
-    Protected Event ArchiveComplete(ArchivePath As String) Implements IArchiveOutputFiles.ArchiveComplete
+    Protected Event ArchiveComplete(archivePath As String) Implements IArchiveOutputFiles.ArchiveComplete
 
     ''' <summary>
     ''' Constructor
@@ -100,8 +100,7 @@ Public MustInherit Class clsArchiveOutputFilesBase
         archivedFileType As IArchiveOutputFiles.CollectionTypes, ProteinCollectionsList As String) As Integer
 
     Protected Function GetProteinCount(sourceFilePath As String) As Integer
-        Dim idLineRegex As Regex
-        idLineRegex = New Regex("^>.+", RegexOptions.Compiled)
+        Dim idLineRegex = New Regex("^>.+", RegexOptions.Compiled)
 
         Dim fi = New FileInfo(sourceFilePath)
         Dim counter = 0
@@ -170,8 +169,8 @@ Public MustInherit Class clsArchiveOutputFilesBase
     '    Return m_Exporter.GetStoredHash(ProteinCollectionID)
     'End Function
 
-    Protected Function GetProteinCollectionID(ProteinCollectionName As String) As Integer
-        Return m_Exporter.FindIDByName(ProteinCollectionName)
+    Protected Function GetProteinCollectionID(proteinCollectionName As String) As Integer
+        Return m_Exporter.FindIDByName(proteinCollectionName)
     End Function
 
     Protected Function RunSP_AddArchivedFileEntryXRef(

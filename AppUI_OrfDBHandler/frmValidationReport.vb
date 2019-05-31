@@ -388,12 +388,12 @@ Public Class frmValidationReport
 
     Private Sub HandleErrorOrWarningListSelectedIndexChanged(
       selectedItemText As String,
-      objListview As ListView,
+      objListView As ListView,
       itemListByFile As IReadOnlyDictionary(Of String, List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)),
       summarizedItemList As IReadOnlyDictionary(Of String, Dictionary(Of String, Integer)),
       itemCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
 
-        objListview.Items.Clear()
+        objListView.Items.Clear()
         If Not itemListByFile Is Nothing AndAlso itemListByFile.Count > 0 Then
             Dim itemList As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended) = Nothing
 
@@ -408,7 +408,7 @@ Public Class frmValidationReport
             Dim itemSummary As Dictionary(Of String, Integer) = Nothing
 
             If summarizedItemList.TryGetValue(selectedItemText, itemSummary) Then
-                FillErrorOrWarningListView(objListview, itemSummary)
+                FillErrorOrWarningListView(objListView, itemSummary)
             End If
 
         End If
@@ -452,9 +452,9 @@ Public Class frmValidationReport
     End Property
 
     Private Function GetOrganismName(organismID As Integer) As String
-        Dim foundrows() As DataRow
+        Dim foundRows() As DataRow
 
-        foundrows = m_Organisms.Select("ID = " & organismID.ToString)
+        foundRows = m_Organisms.Select("ID = " & organismID.ToString)
 
         Return foundrows(0).Item("Display_Name").ToString
 
@@ -510,22 +510,22 @@ Public Class frmValidationReport
 
     End Sub
 
-    Private Sub FillErrorOrWarningListView(objListview As ListView, itemSummary As Dictionary(Of String, Integer))
+    Private Sub FillErrorOrWarningListView(objListView As ListView, itemSummary As Dictionary(Of String, Integer))
         Dim li As ListViewItem
 
         If Not itemSummary Is Nothing Then
 
-            objListview.BeginUpdate()
-            objListview.Items.Clear()
+            objListView.BeginUpdate()
+            objListView.Items.Clear()
 
             For Each item In itemSummary
 
                 li = New ListViewItem(item.Value.ToString())
                 li.SubItems.Add(item.Key)
-                objListview.Items.Add(li)
+                objListView.Items.Add(li)
             Next
 
-            objListview.EndUpdate()
+            objListView.EndUpdate()
         End If
     End Sub
 

@@ -466,11 +466,11 @@ Public Class clsBulkFastaImporter
 
     End Function
 
-    Public Overrides Function ProcessFile(strInputFilePath As String, strOutputFolderPath As String, strParameterFilePath As String, blnResetErrorCode As Boolean) As Boolean
+    Public Overrides Function ProcessFile(inputFilePath As String, outputDirectoryPath As String, parameterFilePath As String, resetErrorCode As Boolean) As Boolean
         Try
             Dim sourceFileList As List(Of udtFastaFileInfoType)
 
-            sourceFileList = ParseFastaInfoFile(strInputFilePath)
+            sourceFileList = ParseFastaInfoFile(inputFilePath)
 
             If sourceFileList.Count = 0 Then Return False
 
@@ -484,13 +484,14 @@ Public Class clsBulkFastaImporter
 
     End Function
 
-    Public Function UploadFastaFile(fastaFilePath As String, orgID As Integer, authID As Integer) As Boolean
+    Public Function UploadFastaFile(fastaFilePath As String, organismID As Integer, authID As Integer) As Boolean
         Dim sourceFileList = New List(Of udtFastaFileInfoType)
 
-        Dim udtFastaFileInfo = New udtFastaFileInfoType
-        udtFastaFileInfo.FilePath = fastaFilePath
-        udtFastaFileInfo.OrganismID = orgID
-        udtFastaFileInfo.AuthID = authID
+        Dim udtFastaFileInfo = New udtFastaFileInfoType With {
+            .FilePath = fastaFilePath,
+            .OrganismID = organismID,
+            .AuthID = authID
+        }
 
         sourceFileList.Add(udtFastaFileInfo)
 
@@ -565,7 +566,7 @@ Public Class clsBulkFastaImporter
         End If
     End Sub
 
-    Private Sub m_UploadHandler_FASTAFileWarnings(FASTAFilePath As String, warningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) Handles m_UploadHandler.FASTAFileWarnings
+    Private Sub m_UploadHandler_FASTAFileWarnings(fastaFilePath As String, warningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) Handles m_UploadHandler.FASTAFileWarnings
         Try
             For Each item In warningCollection
                 ShowMessage("  ... Warning: " & item.MessageText & ": " & item.ProteinName)
@@ -576,13 +577,13 @@ Public Class clsBulkFastaImporter
 
     End Sub
 
-    Private Sub m_UploadHandler_FASTAValidationComplete(FASTAFilePath As String, UploadInfo As IUploadProteins.UploadInfo) Handles m_UploadHandler.FASTAValidationComplete
-        ShowMessage("Validated " & FASTAFilePath)
-        ShowMessage("  ... ProteinCount: " & UploadInfo.ProteinCount)
+    Private Sub m_UploadHandler_FASTAValidationComplete(fastaFilePath As String, uploadInfo As IUploadProteins.UploadInfo) Handles m_UploadHandler.FASTAValidationComplete
+        ShowMessage("Validated " & fastaFilePath)
+        ShowMessage("  ... ProteinCount: " & uploadInfo.ProteinCount)
 
         Try
-            If Not UploadInfo.ErrorList Is Nothing AndAlso UploadInfo.ErrorList.Count > 0 Then
-                ShowMessage("  ... Error count: " & UploadInfo.ErrorList.Count)
+            If Not uploadInfo.ErrorList Is Nothing AndAlso uploadInfo.ErrorList.Count > 0 Then
+                ShowMessage("  ... Error count: " & uploadInfo.ErrorList.Count)
             End If
         Catch ex As Exception
             Console.WriteLine("Exception examining UploadInfo.ErrorList: " & ex.Message)
@@ -590,8 +591,8 @@ Public Class clsBulkFastaImporter
 
     End Sub
 
-    Private Sub m_UploadHandler_InvalidFASTAFile(FASTAFilePath As String, errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) Handles m_UploadHandler.InvalidFASTAFile
-        ShowWarning("Invalid fasta file: " & FASTAFilePath)
+    Private Sub m_UploadHandler_InvalidFASTAFile(fastaFilePath As String, errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)) Handles m_UploadHandler.InvalidFASTAFile
+        ShowWarning("Invalid fasta file: " & fastaFilePath)
 
         Try
             For Each item In errorCollection
@@ -622,13 +623,13 @@ Public Class clsBulkFastaImporter
 
     End Sub
 
-    Private Sub m_UploadHandler_ValidFASTAFileLoaded(FASTAFilePath As String, UploadData As IUploadProteins.UploadInfo) Handles m_UploadHandler.ValidFASTAFileLoaded
-        ShowMessage("Uploaded " & FASTAFilePath)
-        ShowMessage("  ... ProteinCount: " & UploadData.ProteinCount)
+    Private Sub m_UploadHandler_ValidFASTAFileLoaded(fastaFilePath As String, uploadData As IUploadProteins.UploadInfo) Handles m_UploadHandler.ValidFASTAFileLoaded
+        ShowMessage("Uploaded " & fastaFilePath)
+        ShowMessage("  ... ProteinCount: " & uploadData.ProteinCount)
 
         Try
-            If Not UploadData.ErrorList Is Nothing AndAlso UploadData.ErrorList.Count > 0 Then
-                ShowMessage("  ... Error count: " & UploadData.ErrorList.Count)
+            If Not uploadData.ErrorList Is Nothing AndAlso uploadData.ErrorList.Count > 0 Then
+                ShowMessage("  ... Error count: " & uploadData.ErrorList.Count)
             End If
         Catch ex As Exception
             Console.WriteLine("Exception examining UploadData.ErrorList: " & ex.Message)
