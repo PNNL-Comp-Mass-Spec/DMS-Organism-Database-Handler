@@ -29,6 +29,9 @@ echo.
 echo Copying the CBDMS installer to \\cbdms\DMS_Programs
 xcopy ..\Installer\Output\PRISMSeq_Uploader_CBDMS_Installer.exe \\cbdms\DMS_Programs\_Installers /d /y
 
+echo Copying the CBDMS executable to \\cbdms\DMS_Programs\PRISMSeq_Uploader
+xcopy Debug_CBDMS_GUI\* \\cbdms\DMS_Programs\PRISMSeq_Uploader /d /y
+
 echo.
 echo Copying DLLs to the AnalysisManager
 xcopy Debug\Protein_Exporter.dll ..\..\..\DataMining\DMS_Managers\Analysis_Manager\AM_Common /d /y
