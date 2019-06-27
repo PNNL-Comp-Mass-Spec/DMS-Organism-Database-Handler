@@ -1,3 +1,4 @@
+Imports System.Collections.Generic
 Imports System.Data.SqlClient
 Imports System.Runtime.InteropServices
 
@@ -203,53 +204,50 @@ Public Class clsDBTask
 
     End Sub
 
-    Public Function DataTableToHashTable(
+    Public Function DataTableToDictionary(
       dt As DataTable,
       keyFieldName As String,
       valueFieldName As String,
-      Optional filterString As String = "") As Hashtable
+      Optional filterString As String = "") As Dictionary(Of String, String)
 
         Dim foundRows() As DataRow = dt.Select(filterString)
-        Dim ht As New Hashtable(foundRows.Length)
+        Dim dataDictionary = New Dictionary(Of String, String)(foundRows.Length)
 
         For Each dr In foundRows
             Dim key = dr.Item(keyFieldName).ToString()
-            If Not ht.Contains(key) Then
-                ht.Add(key, dr.Item(valueFieldName).ToString())
+            If Not dataDictionary.ContainsKey(key) Then
+                dataDictionary.Add(key, dr.Item(valueFieldName).ToString())
             End If
         Next
 
-        Return ht
+        Return dataDictionary
 
     End Function
 
-    Protected Function DataTableToComplexHashTable(
-        dt As DataTable,
-        keyFieldName As String,
-        valueFieldName As String,
-        Optional filterString As String = "") As Hashtable
+    Public Function DataTableToDictionaryIntegerKeys(
+      dt As DataTable,
+      keyFieldName As String,
+      valueFieldName As String,
+      Optional filterString As String = "") As Dictionary(Of Integer, String)
 
-        Dim dr As DataRow
         Dim foundRows() As DataRow = dt.Select(filterString)
-        Dim ht As New Hashtable(foundRows.Length)
-        Dim al As ArrayList
-        Dim key As String
+        Dim dataDictionary = New Dictionary(Of Integer, String)(foundRows.Length)
 
         For Each dr In foundRows
-            key = dr.Item(keyFieldName).ToString
-            If ht.Contains(key) Then
-                al = DirectCast(ht(key), ArrayList)
-            Else
-                al = New ArrayList
+            Dim key = dr.Item(keyFieldName).ToString()
+            Dim keyValue As Integer
+            If Not Integer.TryParse(key, keyValue) Then
+                Continue For
             End If
-            al.Add(dr.Item(valueFieldName).ToString)
-            ht(key) = al
+
+            If Not dataDictionary.ContainsKey(keyValue) Then
+                dataDictionary.Add(keyValue, dr.Item(valueFieldName).ToString())
+            End If
         Next
 
-        Return ht
+        Return dataDictionary
 
     End Function
-
     Private Sub ShowTrace(message As String)
         If Not ShowTraceMessages Then Exit Sub
 

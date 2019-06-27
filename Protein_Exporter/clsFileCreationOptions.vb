@@ -1,5 +1,6 @@
 Option Strict On
 
+Imports System.Collections.Generic
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports TableManipulationBase
@@ -26,12 +27,13 @@ Friend Class clsFileCreationOptions
             Return m_FileType
         End Get
     End Property
+
     'Options string looks like... "seq_direction=forward;filetype=fasta"
     Function ExtractOptions(optionsString As String) As String
         Dim keywordTableSQL As String
         'Dim valuesTableSQL As String
         Dim creationValuesSQL As String
-        Dim optionsHash As New Hashtable
+        Dim optionsHash As New Dictionary(Of String, String)
         Dim mCollection As MatchCollection
         Dim m As Match
         Dim optionsStringParser As Regex
@@ -106,7 +108,7 @@ Friend Class clsFileCreationOptions
 
         Next
 
-        'parse hashtable into canonical options string for return
+        ' Parse dictionary into canonical options string for return
         foundRows = m_KeywordTable.Select("", "Keyword_ID ASC")
         For Each dr In foundRows
             If cleanOptionsString.ToString.Length > 0 Then

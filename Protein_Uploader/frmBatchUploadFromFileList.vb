@@ -1,3 +1,7 @@
+Imports System.Collections.Generic
+Imports System.ComponentModel
+Imports System.IO
+Imports System.Reflection
 Imports System.Windows.Forms
 
 Public Class frmBatchUploadFromFileList
@@ -5,9 +9,8 @@ Public Class frmBatchUploadFromFileList
 
     Private ReadOnly m_AnnotationTypeList As DataTable
     Private ReadOnly m_OrganismList As DataTable
-    Private m_SelectedFilesCollection As Hashtable
     Private Const m_SaveFileName As String = "FASTAFile_NamingAuth_XRef.txt"
-    Private ReadOnly m_SavePath As String = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly.Location)
+    Private ReadOnly m_SavePath As String = Path.GetDirectoryName(Assembly.GetEntryAssembly.Location)
 
 
 #Region " Windows Form Designer generated code "
@@ -209,7 +212,7 @@ Public Class frmBatchUploadFromFileList
 
 #End Region
 
-    Private Sub frmBatchUploadFromFileList_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+    Private Sub frmBatchUploadFromFileList_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Me.PopulateDropDowns()
         If Not Me.FileCollection Is Nothing Then
             'Me.LoadFileNamingAuthorities()
@@ -217,34 +220,32 @@ Public Class frmBatchUploadFromFileList
         End If
     End Sub
 
-    Private Sub frmBatchUploadFromFileList_Closing(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles MyBase.Closing
+    Private Sub frmBatchUploadFromFileList_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
         Me.SaveFileNamingAuthorities()
 
     End Sub
 
-    Property FileCollection As Hashtable
+    Property FileCollection As Dictionary(Of String, clsBatchUploadFromFileList.FileListInfo)
 
     Private Sub SaveFileNamingAuthorities()
-        Dim saveFilePath As String = System.IO.Path.Combine(Me.m_SavePath, m_SaveFileName)
-        Dim sw As System.IO.StreamWriter
-        Dim fi As System.IO.FileInfo = New System.IO.FileInfo(saveFilePath)
+        Dim saveFilePath As String = Path.Combine(Me.m_SavePath, m_SaveFileName)
+
+        Dim fi = New FileInfo(saveFilePath)
         If fi.Exists Then
             fi.Delete()
         End If
-        sw = New System.IO.StreamWriter(System.IO.Path.Combine(Me.m_SavePath, m_SaveFileName))
 
-        Dim fli As clsBatchUploadFromFileList.FileListInfo
+        Using writer = New StreamWriter(Path.Combine(Me.m_SavePath, m_SaveFileName))
+            For Each fli In Me.FileCollection.Values
+                If fli.AnnotationTypeID > 0 Then
+                    writer.Write(fli.FileName)
+                    writer.Write(ControlChars.Tab)
+                    writer.Write(fli.AnnotationTypeID.ToString)
+                    writer.Flush()
+                End If
+            Next
 
-        For Each fli In Me.FileCollection.Values
-            If fli.AnnotationTypeID > 0 Then
-                sw.Write(fli.FileName)
-                sw.Write(ControlChars.Tab)
-                sw.Write(fli.AnnotationTypeID.ToString)
-                sw.Flush()
-            End If
-        Next
-
-        sw.Close()
+        End Using
 
     End Sub
 
@@ -281,8 +282,8 @@ Public Class frmBatchUploadFromFileList
     'End Sub
 
     Private Sub LoadFileNamingAuthorities()
-        Dim loadFilePath As String = System.IO.Path.Combine(Me.m_SavePath, m_SaveFileName)
-        Dim fi As System.IO.FileInfo = New System.IO.FileInfo(loadFilePath)
+        Dim loadFilePath As String = Path.Combine(Me.m_SavePath, m_SaveFileName)
+        Dim fi As FileInfo = New FileInfo(loadFilePath)
         'Dim tr As System.IO.TextReader
         'Dim s As String
 
@@ -313,12 +314,8 @@ Public Class frmBatchUploadFromFileList
 
 
     End Sub
-    
-    ReadOnly Property SelectedFilesCollection As Hashtable
-        Get
-            Return Me.m_SelectedFilesCollection
-        End Get
-    End Property
+
+    ReadOnly Property SelectedFilesCollection As Dictionary(Of String, clsBatchUploadFromFileList.FileListInfo) = New Dictionary(Of String, clsBatchUploadFromFileList.FileListInfo)(StringComparer.OrdinalIgnoreCase)
 
     Private Sub PopulateDropDowns()
 
@@ -369,8 +366,6 @@ Public Class frmBatchUploadFromFileList
     End Sub
 
     Sub PopulateListView()
-        Dim fli As clsBatchUploadFromFileList.FileListInfo
-        Dim li As ListViewItem
         Dim foundRows() As DataRow
 
         RemoveHandler lvwFiles.SelectedIndexChanged, AddressOf lvwFiles_SelectedIndexChanged
@@ -378,8 +373,9 @@ Public Class frmBatchUploadFromFileList
         If Me.FileCollection.Count > 0 Then
             Me.lvwFiles.BeginUpdate()
             For Each fli In Me.FileCollection.Values
-                li = New ListViewItem
-                li.Text = fli.FileName
+                Dim li = New ListViewItem With {
+                    .Text = fli.FileName
+                }
                 li.SubItems.Add(fli.FullFilePath)
                 li.SubItems.Add(fli.OrganismName)
                 If fli.AnnotationTypeID > 0 Then
@@ -399,18 +395,12 @@ Public Class frmBatchUploadFromFileList
     End Sub
 
     Private Function BuildSelectedFilesList() As Integer
-        If Me.m_SelectedFilesCollection Is Nothing Then
-            Me.m_SelectedFilesCollection = New Hashtable
-        Else
-            Me.m_SelectedFilesCollection.Clear()
-        End If
+        Me.SelectedFilesCollection.Clear()
 
         Dim li As ListViewItem
 
         For Each li In Me.lvwFiles.CheckedItems
-            Me.m_SelectedFilesCollection.Add(
-                li.Text,
-                DirectCast(Me.FileCollection.Item(li.Text), clsBatchUploadFromFileList.FileListInfo))
+            Me.SelectedFilesCollection.Add(li.Text, FileCollection.Item(li.Text))
         Next
 
         Return Me.lvwFiles.CheckedItems.Count
@@ -447,8 +437,7 @@ Public Class frmBatchUploadFromFileList
         If Me.lvwFiles.SelectedItems.Count > 0 Then
             For Each li In Me.lvwFiles.SelectedItems
                 li.SubItems(2).Text = cbo.Text
-                fli = DirectCast(Me.FileCollection.Item(li.Text),
-                    clsBatchUploadFromFileList.FileListInfo)
+                fli = FileCollection.Item(li.Text)
                 fli.NamingAuthorityID = CInt(cbo.SelectedValue)
                 Me.FileCollection.Item(li.Text) = fli
             Next
@@ -463,8 +452,7 @@ Public Class frmBatchUploadFromFileList
         If Me.lvwFiles.SelectedItems.Count > 0 Then
             For Each li In Me.lvwFiles.SelectedItems
                 li.SubItems(3).Text = cbo.Text
-                fli = DirectCast(Me.FileCollection.Item(li.Text),
-                    clsBatchUploadFromFileList.FileListInfo)
+                fli = FileCollection.Item(li.Text)
                 fli.AnnotationTypeID = CInt(cbo.SelectedValue)
                 Me.FileCollection.Item(li.Text) = fli
             Next
@@ -481,7 +469,7 @@ Public Class frmBatchUploadFromFileList
             Exit Sub
         ElseIf Me.lvwFiles.SelectedItems.Count = 1 Then
             li = Me.lvwFiles.SelectedItems(0)
-            fli = DirectCast(Me.FileCollection.Item(li.Text), clsBatchUploadFromFileList.FileListInfo)
+            fli = FileCollection.Item(li.Text)
             If fli.AnnotationTypeID > 0 Then
                 Me.cboAnnotationType.SelectedValue = fli.AnnotationTypeID
             End If

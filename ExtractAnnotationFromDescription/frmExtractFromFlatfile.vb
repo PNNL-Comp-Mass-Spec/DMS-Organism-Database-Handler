@@ -3,7 +3,7 @@ Public Class frmExtractFromFlatfile
 
 #Region " Windows Form Designer generated code "
 
-    Public Sub New(AuthorityList As Hashtable, PSConnectionString As String)
+    Public Sub New(AuthorityList As Dictionary(Of String, String), PSConnectionString As String)
         MyBase.New()
         Me.m_AuthorityList = AuthorityList
         Me.m_PSConnectionString = PSConnectionString
@@ -28,7 +28,7 @@ Public Class frmExtractFromFlatfile
     Private components As System.ComponentModel.IContainer
 
     'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.  
+    'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
     Friend WithEvents lblNewNames As System.Windows.Forms.Label
     'Friend WithEvents lvwNewNames As System.Windows.Forms.ListView
@@ -214,14 +214,14 @@ Public Class frmExtractFromFlatfile
 #End Region
 
     Private m_UseHeaderInfo As Boolean = False
-    Private m_Extract As clsExtractFromFlatfile
-    Private m_AuthorityList As Hashtable
+    Private m_Extract As clsExtractFromFlatFile
+    Private m_AuthorityList As Dictionary(Of String, String)
     Private m_CurrentAuthorityID As Integer
     Private m_CurrentGroupID As Integer
     Private m_PSConnectionString As String
 
     Private Sub frmExtractFromFlatfile_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
-        Me.m_Extract = New clsExtractFromFlatfile(Me.m_AuthorityList, Me.m_PSConnectionString)
+        Me.m_Extract = New clsExtractFromFlatFile(Me.m_AuthorityList, Me.m_PSConnectionString)
         Dim openFrm As New System.Windows.Forms.OpenFileDialog
         Dim r As System.Windows.Forms.DialogResult
         Dim filePath As String
@@ -285,18 +285,18 @@ Public Class frmExtractFromFlatfile
 
     Private Sub RefreshRawFileListViewHeaders()
 
-        Dim columnCollection As Hashtable = Me.m_Extract.ColumnNames
+        Dim columnCollection As Dictionary(Of Integer, String) = Me.m_Extract.ColumnNames
 
-        Dim columncount As Integer = columnCollection.Count
+        Dim columnCount As Integer = columnCollection.Count
         Dim columnNumber As Integer
-        For columnNumber = 1 To columncount
-            Me.lvwProteins.Columns.Item(columnNumber - 1).Text = columnCollection.Item(columnNumber).ToString
+        For columnNumber = 1 To columnCount
+            Me.lvwProteins.Columns.Item(columnNumber - 1).Text = columnCollection.Item(columnNumber)
         Next
 
         If Me.m_UseHeaderInfo Then
             Me.lvwProteins.Items.RemoveAt(0)
         Else
-            Me.lvwProteins.Items.Insert(0, Me.m_Extract.HashToListViewItem(DirectCast(Me.m_Extract.FileContents(0), Hashtable), 1))
+            Me.lvwProteins.Items.Insert(0, Me.m_Extract.DataLineToListViewItem(m_Extract.FileContents(0), 1))
         End If
 
     End Sub
@@ -318,19 +318,20 @@ Public Class frmExtractFromFlatfile
         Me.lvwProteins.Clear()
 
         'Create Columns
-        Dim columnCollection As Hashtable = Me.m_Extract.ColumnNames
+        Dim columnCollection As Dictionary(Of Integer, String) = Me.m_Extract.ColumnNames
+
         Dim columnCount As Integer = columnCollection.Count
         Dim columnNumber As Integer
         For columnNumber = 1 To columnCount
             Dim ch = New System.Windows.Forms.ColumnHeader
-            ch.Text = columnCollection.Item(columnNumber).ToString
+            ch.Text = columnCollection.Item(columnNumber)
             ch.Width = 70
             Me.lvwProteins.Columns.Add(ch)
         Next
 
         For lineCount = 0 To maxIndex
             Dim lineHash = fc.Item(lineCount)
-            Dim lvItem = Me.m_Extract.HashToListViewItem(lineHash, lineCount)
+            Dim lvItem = Me.m_Extract.DataLineToListViewItem(lineHash, lineCount)
 
             'lvItem = New System.Windows.Forms.ListViewItem((lineCount + 1).ToString)
             'columnCount = lineHash.Count
@@ -374,15 +375,16 @@ Public Class frmExtractFromFlatfile
 
     Private Sub LoadAuthorityCombobox(
         cbo As System.Windows.Forms.ComboBox,
-        authList As Hashtable)
+        authorityList As Dictionary(Of String, String))
 
         Dim a As New ArrayList
-        Dim memberEnum = authList.GetEnumerator
 
         cbo.BeginUpdate()
-        While memberEnum.MoveNext()
-            a.Add(New AuthorityContainer(memberEnum.Value.ToString, CInt(memberEnum.Key)))
-        End While
+        For Each item In authorityList
+            Dim authorityName = item.Value.ToString()
+            Dim authorityId = CInt(item.Key)
+            a.Add(New AuthorityContainer(authorityName, authorityId))
+        Next
 
         a.Sort(New AuthorityContainerComparer)
 
@@ -405,10 +407,10 @@ Public Class frmExtractFromFlatfile
     End Sub
 
     Private Class AuthorityContainer
-        Sub New(AuthorityName As String, AuthorityID As Integer)
+        Sub New(authName As String, authId As Integer)
 
-            Me.AuthorityID = AuthorityID
-            Me.AuthorityName = AuthorityName
+            Me.AuthorityID = authId
+            Me.AuthorityName = authName
         End Sub
 
         Public ReadOnly Property AuthorityName As String

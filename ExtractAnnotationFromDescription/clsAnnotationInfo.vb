@@ -1,25 +1,26 @@
+<Obsolete("Unused")>
 Friend Class clsAnnotationInfo
 
-    Private ReadOnly m_AnnotationDetails As Hashtable
+    Private ReadOnly m_AnnotationDetails As Dictionary(Of Integer, AnnotationDetails)
 
     Private m_AuthorityLookup As NameLookups
     Private m_AnnotationGroupLookup As NameLookups
 
     Sub New()
 
-        Me.m_AnnotationDetails = New Hashtable
-        Me.m_AuthorityLookup = New NameLookups
-        Me.m_AnnotationGroupLookup = New NameLookups
+        Me.m_AnnotationDetails = New Dictionary(Of Integer, AnnotationDetails)
+        Me.m_AuthorityLookup = New NameLookups()
+        Me.m_AnnotationGroupLookup = New NameLookups()
     End Sub
-    
-    Sub AddPrimaryAnnotation(ProteinID As Integer,
-        protName As String, Description As String,
-        refID As Integer, NamingAuthorityID As Integer)
 
-        Me.m_AnnotationDetails.Add(ProteinID,
+    Sub AddPrimaryAnnotation(proteinID As Integer,
+        protName As String, description As String,
+        refID As Integer, namingAuthorityID As Integer)
+
+        Me.m_AnnotationDetails.Add(proteinID,
             New AnnotationDetails(
-                protName, Description, refID,
-                ProteinID))
+                protName, description, refID,
+                proteinID))
     End Sub
 
 
@@ -31,7 +32,7 @@ Friend Class clsAnnotationInfo
 
         Dim tmpDetails As AnnotationDetails
 
-        tmpDetails = DirectCast(Me.m_AnnotationDetails(ProteinID.ToString), AnnotationDetails)
+        tmpDetails = m_AnnotationDetails(ProteinID)
         tmpDetails.AddNewName(AnnotationGroupID, NewName)
 
     End Sub
@@ -57,8 +58,8 @@ Friend Class clsAnnotationInfo
         ProteinID As Integer,
         AnnotationGroupCode As Integer) As String
         Get
-            Dim details = DirectCast(Me.m_AnnotationDetails.Item(ProteinID.ToString), AnnotationDetails)
-            Return details.Name(AnnotationGroupCode).ToString
+            Dim details = m_AnnotationDetails.Item(ProteinID)
+            Return details.Name(AnnotationGroupCode)
         End Get
     End Property
 
@@ -66,7 +67,7 @@ Friend Class clsAnnotationInfo
         ProteinID As Integer,
         AnnotationGroupCode As Integer) As Integer
         Get
-            Dim details = DirectCast(Me.m_AnnotationDetails.Item(ProteinID.ToString), AnnotationDetails)
+            Dim details = m_AnnotationDetails.Item(ProteinID)
             Return details.ReferenceID
         End Get
     End Property
@@ -78,24 +79,24 @@ Friend Class clsAnnotationInfo
     End Property
 
     Structure NameLookups
-        Private Names As Hashtable
+        Private Names As Dictionary(Of Integer, String)
 
         Sub AddName(
             ID As Integer,
             Name As String)
 
             If Names Is Nothing Then
-                Names = New Hashtable
+                Names = New Dictionary(Of Integer, String)
             End If
 
             Names.Add(ID, Name)
         End Sub
 
         Function GetName(ID As Integer) As String
-            If Me.Names.Contains(ID) Then
-                Return Me.Names.Item(ID.ToString).ToString
+            If Me.Names.ContainsKey(ID) Then
+                Return Me.Names(ID)
             Else
-                Return ""
+                Return String.Empty
             End If
         End Function
 
@@ -107,7 +108,8 @@ Friend Class clsAnnotationInfo
         Friend ProteinID As Integer
         Friend NamingAuthorityID As Integer
 
-        Friend Names As Hashtable
+        Friend Names As Dictionary(Of Integer, String)
+
         'Key is AnnotationGroupID, Value is Name
 
         Sub New(
@@ -120,13 +122,13 @@ Friend Class clsAnnotationInfo
             Me.ReferenceID = ReferenceID
             Me.ProteinID = ProteinID
 
-            Me.Names = New Hashtable
+            Me.Names = New Dictionary(Of Integer, String)
             Me.Names.Add(0, PrimaryName)
         End Sub
 
-        Sub AddNewName(AnnotationGroup As Integer, annotationName As String)
-            If Not Me.Names.Contains(annotationName) Then
-                Me.Names.Add(AnnotationGroup, annotationName)
+        Sub AddNewName(annotationGroupId As Integer, annotationName As String)
+            If Not Me.Names.ContainsValue(annotationName) Then
+                Me.Names.Add(annotationGroupId, annotationName)
             End If
         End Sub
 
@@ -136,9 +138,9 @@ Friend Class clsAnnotationInfo
             End Get
         End Property
 
-        ReadOnly Property Name(AnnotationGroupCode As Integer) As String
+        ReadOnly Property Name(annotationGroupCode As Integer) As String
             Get
-                Return Me.Names(AnnotationGroupCode).ToString
+                Return Me.Names(annotationGroupCode)
             End Get
         End Property
 

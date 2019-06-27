@@ -1,12 +1,13 @@
 Option Strict On
 
+Imports System.Collections.Generic
 Imports System.Security.Cryptography
 Imports System.Text
 Imports TableManipulationBase
 
 Public Class SequenceInfoCalculator
 
-    Friend Shared m_AminoAcids As Hashtable
+    Friend Shared m_AminoAcids As Dictionary(Of String, AminoAcidInfo)
 
     Private m_MonoIsotopicMass As Double
     Private m_AverageMass As Double
@@ -61,7 +62,6 @@ Public Class SequenceInfoCalculator
         End Get
     End Property
 
-
 #End Region
 
     Public Sub CalculateSequenceInfo(Sequence As String)
@@ -84,7 +84,7 @@ Public Class SequenceInfoCalculator
         aaString = sequence.ToCharArray
 
         For Each aa In aaString
-            aaInfo = DirectCast(m_AminoAcids.Item(aa.ToString), AminoAcidInfo)
+            aaInfo = m_AminoAcids.Item(aa.ToString())
             If (aaInfo) Is Nothing Then
                 result.AddSequenceInfo(New SequenceInfo(aaString, "Not Found, adding input", 0, 0, 0, 0, 0, 0, 0))
             Else
@@ -112,7 +112,7 @@ Public Class SequenceInfoCalculator
     End Function
 
     Private Sub InitializeFromDMS()
-        m_AminoAcids = New Hashtable(30)
+        m_AminoAcids = New Dictionary(Of String, AminoAcidInfo)(30)
 
         Dim getSQL = New clsDBTask(m_DMSConnectionString)
 
