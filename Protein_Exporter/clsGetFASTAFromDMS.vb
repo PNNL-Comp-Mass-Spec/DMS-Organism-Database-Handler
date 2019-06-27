@@ -934,7 +934,7 @@ Public Class clsGetFASTAFromDMS
     End Function
 
     Function GetProteinCollectionID(proteinCollectionName As String) As Integer
-        Return m_Getter.FindIDByName(Path.GetFileNameWithoutExtension(proteinCollectionName))
+        Return m_Getter.FindIDByName(proteinCollectionName)
     End Function
 
     Private Function GetProteinCollectionName(proteinCollectionID As Integer) As String

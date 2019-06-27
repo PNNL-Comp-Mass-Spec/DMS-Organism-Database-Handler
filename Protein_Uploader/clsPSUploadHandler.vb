@@ -156,7 +156,7 @@ Public Class clsPSUploadHandler
                                           clsGetFASTAFromDMS.DatabaseFormatTypes.fasta,
                                           clsGetFASTAFromDMS.SequenceTypes.forward)
 
-        m_Validator = New clsCustomValidateFastaFiles
+        m_Validator = New clsCustomValidateFastaFiles()
 
         m_Importer = New clsImportHandler(m_DatabaseAccessor.ConnectionString)
     End Sub
@@ -241,11 +241,15 @@ Public Class clsPSUploadHandler
                     upInfo.FileInformation = New FileInfo(m_NormalizedFASTAFilePath)
                 End If
             End If
-            tmpFileName = Path.GetFileNameWithoutExtension(fi.FullName)
 
-            collectionID = m_Upload.GetProteinCollectionID(tmpFileName)
-            If collectionID > 0 Then
-                collectionState = m_Upload.GetProteinCollectionState(collectionID)
+            Dim proteinCollectionName = Path.GetFileNameWithoutExtension(currentFile.Name)
+
+            Dim existingCollectionID = m_Upload.GetProteinCollectionID(proteinCollectionName)
+            If existingCollectionID > 0 Then
+                Dim collectionState = m_Upload.GetProteinCollectionState(existingCollectionID)
+
+                Dim logMessageIfCancelled As String
+                Dim logLabelIfCancelled As String
 
                 If collectionState = "New" Or collectionState = "Provisional" Then
                     Dim warningMessage = "The Collection '" & proteinCollectionName & "' has been declared '" &
@@ -345,22 +349,31 @@ Public Class clsPSUploadHandler
         Dim numProteins = selectedProteins.Count
         Dim numResidues = m_Upload.GetTotalResidueCount(fileContents, selectedProteins)
 
-        If collectionID = 0 Then
+        Dim collectionID As Integer
+
+        If existingCollectionID <= 0 Then
 
             ' Note that we're storing 0 for NumResidues at this time
             ' That value will be updated later after all of the proteins have been added
-            collectionID = m_Upload.MakeNewProteinCollection(
-                              Path.GetFileNameWithoutExtension(filepath), description,
-                              collectionSource, collectionType, annotationTypeID, numProteins, 0)
+            Dim newCollectionId = m_Upload.MakeNewProteinCollection(
+                proteinCollectionName, description,
+                collectionSource, collectionType,
+                annotationTypeID, numProteins, 0)
 
-            If collectionID = 0 Then
+            If newCollectionId <= 0 Then
                 ' Error making the new protein collection
+                MsgBox(String.Format(
+                    "MakeNewProteinCollection was unable to create a new protein collection named {0}; the Collection ID returned was {1}",
+                    proteinCollectionName, newCollectionId))
+                Return -1
             End If
 
+            collectionID = newCollectionId
         Else
             ' Make sure there are no proteins defined for this protein collection
             ' In addition, this will update NumResidues to be 0
-            m_Upload.DeleteProteinCollectionMembers(collectionID, numProteins)
+            m_Upload.DeleteProteinCollectionMembers(existingCollectionID, numProteins)
+            collectionID = existingCollectionID
         End If
 
         'task 2b - Compare file to existing sequences and upload new sequences to T_Proteins

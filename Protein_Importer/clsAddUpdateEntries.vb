@@ -356,8 +356,8 @@ Public Class clsAddUpdateEntries
         RunSP_DeleteProteinCollectionMembers(proteinCollectionID, numProteins)
     End Sub
 
-    Public Function GetProteinCollectionID(filePath As String) As Integer
-        Return RunSP_GetProteinCollectionID(IO.Path.GetFileNameWithoutExtension(filePath))
+    Public Function GetProteinCollectionID(proteinCollectionName As String) As Integer
+        Return RunSP_GetProteinCollectionID(proteinCollectionName)
     End Function
 
     Public Function CountProteinCollectionMembers(proteinCollectionID As Integer) As Integer
@@ -837,8 +837,6 @@ Public Class clsAddUpdateEntries
       proteinID As Integer,
       maxProteinNameLength As Integer) As Integer
 
-        Dim hashableString As String
-
         If maxProteinNameLength <= 0 Then maxProteinNameLength = 32
 
         Dim sp_Save = New SqlClient.SqlCommand("AddProteinReference", m_DatabaseAccessor.Connection) With {
@@ -852,7 +850,7 @@ Public Class clsAddUpdateEntries
         sp_Save.Parameters.Add("@name", SqlDbType.VarChar, 128).Value = protein_Name
         sp_Save.Parameters.Add("@description", SqlDbType.VarChar, 900).Value = description
 
-        'TODO (org fix) Remove this reference and fix associated Sproc
+        'TODO (org fix) Remove this reference and fix associated stored procedure
         'myParam = sp_Save.Parameters.Add("@organism_ID", SqlDbType.Int)
         'myParam.Direction = ParameterDirection.Input
         'myParam.Value = OrganismID
@@ -894,22 +892,23 @@ Public Class clsAddUpdateEntries
 
     End Function
 
-    Protected Function RunSP_GetProteinCollectionID(fileName As String) As Integer
+    Protected Function RunSP_GetProteinCollectionID(proteinCollectionName As String) As Integer
 
         Dim sp_Save = New SqlClient.SqlCommand("GetProteinCollectionID", m_DatabaseAccessor.Connection) With {
             .CommandType = CommandType.StoredProcedure
         }
 
-        'Define parameter for procedure's return value
+        ' Define parameter for procedure's return value
         sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@fileName", SqlDbType.VarChar, 128).Value = fileName
+        ' Define parameters for the procedure's arguments
+        ' Note that the @fileName parameter is actually the protein collection name; not the original .fasta file name
+        sp_Save.Parameters.Add("@fileName", SqlDbType.VarChar, 128).Value = proteinCollectionName
 
-        'Execute the sp
+        ' Execute the sp
         sp_Save.ExecuteNonQuery()
 
-        'Get return value
+        ' Get return value
         Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         Return ret
