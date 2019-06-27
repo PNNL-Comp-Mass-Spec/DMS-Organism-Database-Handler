@@ -12,8 +12,14 @@ Public Class clsGetFASTAFromDMSForward
 
     Protected ReadOnly m_DatabaseAccessor As clsDBTask
     Protected WithEvents m_fileDumper As clsExportProteins
-    Protected m_AllCollections As Hashtable
-    Protected m_OrganismList As Hashtable
+
+    ''' <summary>
+    ''' Keys are protein collection IDs
+    ''' Values are filename
+    ''' </summary>
+    Protected m_AllCollections As Dictionary(Of Integer, String)
+
+    Protected m_OrganismList As Dictionary(Of String, String)
 
     Protected m_CurrentFullOutputPath As String
     Friend m_CurrentFileProteinCount As Integer
@@ -405,28 +411,28 @@ Public Class clsGetFASTAFromDMSForward
     '    Return GetPrimaryAuthorityID(proteinCollectionID)
     'End Function
 
-    Function GetCollectionNameList() As Hashtable 'Implements IGetFASTAFromDMS.GetAllCollections
+    Function GetCollectionNameList() As Dictionary(Of Integer, String)
         If m_DatabaseAccessor Is Nothing Then
-            Return New Hashtable
+            Return New Dictionary(Of Integer, String)
         End If
 
         If m_CollectionsCache Is Nothing Then
             RefreshCollectionCache()
         End If
 
-        Return m_DatabaseAccessor.DataTableToHashtable(m_CollectionsCache, "Protein_Collection_ID", "FileName")
+        Return m_DatabaseAccessor.DataTableToDictionaryIntegerKeys(m_CollectionsCache, "Protein_Collection_ID", "FileName")
     End Function
 
-    Function GetCollectionsByOrganism(organismID As Integer) As Hashtable
+    Function GetCollectionsByOrganism(organismID As Integer) As Dictionary(Of String, String)
         If m_DatabaseAccessor Is Nothing Then
-            Return New Hashtable
+            Return New Dictionary(Of String, String)
         End If
 
         If m_CollectionsCache Is Nothing Then
             RefreshCollectionCache()
         End If
 
-        Return m_DatabaseAccessor.DataTableToHashtable(m_CollectionsCache, "Protein_Collection_ID", "FileName", "[Organism_ID] = " & organismID.ToString)
+        Return m_DatabaseAccessor.DataTableToDictionary(m_CollectionsCache, "Protein_Collection_ID", "FileName", "[Organism_ID] = " & organismID.ToString)
     End Function
 
     Function GetCollectionsByOrganismTable(organismID As Integer) As DataTable
@@ -442,16 +448,16 @@ Public Class clsGetFASTAFromDMSForward
         Return tmpTable
     End Function
 
-    Function GetOrganismList() As Hashtable
+    Function GetOrganismList() As Dictionary(Of String, String)
         If m_DatabaseAccessor Is Nothing Then
-            Return New Hashtable
+            Return New Dictionary(Of String, String)
         End If
 
         If m_OrganismCache Is Nothing Then
             RefreshOrganismCache()
         End If
 
-        Return m_DatabaseAccessor.DataTableToHashtable(m_OrganismCache, "Organism_ID", "Name")
+        Return m_DatabaseAccessor.DataTableToDictionary(m_OrganismCache, "Organism_ID", "Name")
     End Function
 
     Function GetOrganismListTable() As DataTable

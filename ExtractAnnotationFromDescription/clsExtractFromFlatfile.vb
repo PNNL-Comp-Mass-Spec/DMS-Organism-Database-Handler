@@ -1,12 +1,21 @@
-Imports System.Collections.Generic
 Imports System.IO
 
-Friend Class clsExtractFromFlatfile
+Friend Class clsExtractFromFlatFile
 
     Private m_FilePath As String
-    Private m_FileContents As List(Of Hashtable)
-    Private m_ColumnNameLookup As Hashtable
-    Private ReadOnly m_Authorities As Hashtable
+
+    ''' <summary>
+    ''' Each entry in this list is a dictionary where keys are column name (1-based) and values are the value for that column
+    ''' </summary>
+    Private m_FileContents As List(Of Dictionary(Of Integer, String))
+
+    ''' <summary>
+    ''' Keys are column number (starting at 1)
+    ''' Values are column names
+    ''' </summary>
+    Private m_ColumnNameLookup As Dictionary(Of Integer, String)
+
+    Private ReadOnly m_Authorities As Dictionary(Of String, String)
     Private m_AnnotationStorage As AnnotationStorage
     Private m_firstLine As String
     Private ReadOnly m_PSConnectionString As String
@@ -16,12 +25,12 @@ Friend Class clsExtractFromFlatfile
     Private m_MaxProteinNameLength As Integer = 32
 
     'AuthorityLookupHash key = AuthorityID, value = AuthorityName
-    Sub New(AuthorityList As Hashtable, PSConnectionString As String)
+    Sub New(AuthorityList As Dictionary(Of String, String), PSConnectionString As String)
         Me.m_Authorities = AuthorityList
         Me.m_PSConnectionString = PSConnectionString
     End Sub
 
-    ReadOnly Property FileContents As List(Of Hashtable)
+    ReadOnly Property FileContents As List(Of Dictionary(Of Integer, String))
         Get
             Return Me.m_FileContents
         End Get
@@ -33,7 +42,11 @@ Friend Class clsExtractFromFlatfile
         End Get
     End Property
 
-    ReadOnly Property ColumnNames As Hashtable
+    ''' <summary>
+    ''' Keys are column number (starting at 1)
+    ''' Values are column names
+    ''' </summary>
+    ReadOnly Property ColumnNames As Dictionary(Of Integer, String)
         Get
             Return Me.m_ColumnNameLookup
         End Get
@@ -44,84 +57,80 @@ Friend Class clsExtractFromFlatfile
       delimiter As String,
       useContentsAsColumnNames As Boolean)
 
-        Dim lineHash As Hashtable
-        Dim columnNumber As Integer
-        Dim columnName As String
-        Me.m_AnnotationStorage = New AnnotationStorage
+        Me.m_AnnotationStorage = New AnnotationStorage()
 
-        lineHash = Me.StringToHash(entryLine, delimiter)
+        ' In dictionary valuesByColumnId:
+        '  Keys are column number (starting at 1)
+        '  Values are column names
+        Dim valuesByColumnId = Me.GetLineValuesByColumnId(entryLine, delimiter)
 
         If Me.m_ColumnNameLookup Is Nothing Then
-            Me.m_ColumnNameLookup = New Hashtable(lineHash.Count)
+            Me.m_ColumnNameLookup = New Dictionary(Of Integer, String)(valuesByColumnId.Count)
+        Else
+            Me.m_ColumnNameLookup.Clear()
         End If
 
-        Me.m_ColumnNameLookup.Clear()
         Me.m_AnnotationStorage.ClearAnnotationGroups()
 
-        For columnNumber = 1 To lineHash.Count
+        For columnNumber = 1 To valuesByColumnId.Count
 
+            Dim columnName As String
             If useContentsAsColumnNames Then
-                columnName = lineHash(columnNumber).ToString
-                'Me.m_ColumnNameLookup.Add(columnNumber, )
+                columnName = valuesByColumnId(columnNumber)
             Else
                 columnName = "Column_" & Format(columnNumber, "00")
-                'Me.m_ColumnNameLookup.Add(columnNumber, )
             End If
+
             Me.m_ColumnNameLookup.Add(columnNumber, columnName)
             Me.m_AnnotationStorage.AddAnnotationGroup(columnNumber, columnName)
         Next
 
-
-
     End Sub
 
-    Private Function StringToHash(
+    Private Function GetLineValuesByColumnId(
         entryLine As String,
-        delimiter As String) As Hashtable
+        delimiter As String) As Dictionary(Of Integer, String)
 
-        Dim lineEntries() As String
-        Dim lineEntry As String
-        Dim lineHash As Hashtable
-        Dim columnID As Integer
+        Dim lineEntries = entryLine.Split(delimiter.ToCharArray)
+        Dim valuesByColumnId = New Dictionary(Of Integer, String)(lineEntries.Length)
 
-        lineEntries = entryLine.Split(delimiter.ToCharArray)
-        lineHash = New Hashtable(lineEntries.Length)
+        For columnID = 1 To lineEntries.Length
+            Dim lineEntry = lineEntries(columnID - 1)
 
-        For Each lineEntry In lineEntries
-            columnID += 1
             If lineEntry.Trim(" "c).Length > 0 Then
-                lineHash.Add(columnID, lineEntry)
+                valuesByColumnId.Add(columnID, lineEntry)
             Else
-                lineHash.Add(columnID, "---")
+                valuesByColumnId.Add(columnID, "---")
             End If
+
         Next
 
-        Return lineHash
+        Return valuesByColumnId
 
     End Function
 
-    Function HashToListViewItem(
-        lineHash As Hashtable,
+    Function DataLineToListViewItem(
+        dataLine As Dictionary(Of Integer, String),
         lineCount As Integer) As System.Windows.Forms.ListViewItem
 
         Dim lvItem As System.Windows.Forms.ListViewItem
-        Dim columnCount As Integer = lineHash.Count
-        Dim columnNumber As Integer
-        Dim item As String
+        Dim columnCount As Integer = dataLine.Count
+
         Dim maxColumnCount As Integer = Me.ColumnNames.Count
 
         Dim blankColumnCount As Integer
 
-        lvItem = New System.Windows.Forms.ListViewItem(lineHash.Item(1).ToString)
+        lvItem = New System.Windows.Forms.ListViewItem(dataLine.Item(1))
         For columnNumber = 2 To columnCount
 
-            item = lineHash.Item(columnNumber).ToString
-            If item.Length > 0 Then
-                lvItem.SubItems.Add(lineHash.Item(columnNumber).ToString)
+            Dim dataValue = dataLine.Item(columnNumber)
+            If dataValue.Length > 0 Then
+                lvItem.SubItems.Add(dataValue)
             Else
                 lvItem.SubItems.Add("---")
             End If
         Next
+
         blankColumnCount = maxColumnCount - columnCount
         If blankColumnCount > 0 Then
             For columnNumber = 1 To blankColumnCount
@@ -145,71 +154,59 @@ Friend Class clsExtractFromFlatfile
     Function LoadFile(
         filePath As String,
         delimiter As String,
-        UseHeaderLineInfo As Boolean) As Integer
+        useHeaderLineInfo As Boolean) As Integer
 
-        Dim fi As New System.IO.FileInfo(filePath)
-        Dim tr As TextReader = fi.OpenText
-        Dim entryLine As String
-        Dim lineHash As Hashtable
+        Dim inputFile As New System.IO.FileInfo(filePath)
 
-        Me.m_FileContents = New List(Of Hashtable)
+        Me.m_FileContents = New List(Of Dictionary(Of Integer, String))
 
-        entryLine = tr.ReadLine
-        Me.m_firstLine = entryLine
+        Using reader = New StreamReader(New FileStream(inputFile.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
 
-        While Not entryLine Is Nothing
-            lineHash = Me.StringToHash(entryLine, delimiter)
-            Me.m_FileContents.Add(lineHash)
-            entryLine = tr.ReadLine
-        End While
+            Dim firstLineStored = False
+            While Not reader.EndOfStream
+                Dim entryLine = reader.ReadLine()
+                If Not firstLineStored Then
+                    Me.m_firstLine = entryLine
+                    firstLineStored = True
+                End If
+
+                Dim valuesByColumnId = Me.GetLineValuesByColumnId(entryLine, delimiter)
+                Me.m_FileContents.Add(valuesByColumnId)
+
+            End While
+        End Using
 
         'Get Column names if possible
-        Me.ExtractGroupsFromLine(Me.m_firstLine, delimiter, UseHeaderLineInfo)
-
-        tr.Close()
-        tr = Nothing
-        fi = Nothing
+        Me.ExtractGroupsFromLine(Me.m_firstLine, delimiter, useHeaderLineInfo)
 
         Return Me.m_FileContents.Count
     End Function
 
-    'PrimaryReferenceNameColumnID is the number of the column with the name to use as primary
-    'AuthorityHash is a hashtable with columnID (number), and authorityID for that column
+    ''' <summary>
+    '''
+    ''' </summary>
+    ''' <param name="primaryReferenceNameColumnID">The number of the column with the name to use as primary</param>
+    ''' <param name="authorityHash">Dictionary with columnID (number), and authority name for that column</param>
     Sub ParseLoadedFile(
-        PrimaryReferenceNameColumnID As Integer,
-        AuthorityHash As Hashtable)
+        primaryReferenceNameColumnID As Integer,
+        authorityHash As Dictionary(Of String, String))
 
+        For Each dataLine In Me.m_FileContents
+            Dim primaryRef = dataLine(primaryReferenceNameColumnID)
 
-        'Me.m_AnnotationStorage = New AnnotationStorage
-
-        Dim columnNumber As Integer
-
-        Dim primaryRef As String
-
-        'For columnNumber = 1 To Me.m_ColumnNameLookup.Count
-        '    Me.m_AnnotationStorage.AddAnnotationGroup(
-        '        columnNumber,
-        '        Me.m_ColumnNameLookup(columnNumber.ToString).ToString)
-        'Next
-
-        Dim lineHash As Hashtable
-
-        For Each lineHash In Me.m_FileContents
-            primaryRef = lineHash(PrimaryReferenceNameColumnID).ToString
-
-            For columnNumber = 1 To lineHash.Count
-                If Not columnNumber.Equals(PrimaryReferenceNameColumnID) And
-                    Not lineHash.Item(columnNumber).Equals("---") Then
+            For columnNumber = 1 To dataLine.Count
+                If Not columnNumber.Equals(primaryReferenceNameColumnID) And
+                    Not dataLine.Item(columnNumber).Equals("---") Then
                     Me.m_AnnotationStorage.AddAnnotation(
                         columnNumber, primaryRef,
-                        lineHash.Item(columnNumber).ToString)
+                        dataLine.Item(columnNumber))
                 End If
             Next
         Next
     End Sub
 
     Function LookupAuthorityName(AuthorityID As Integer) As String
-        Return Me.m_Authorities.Item(AuthorityID.ToString).ToString
+        Return Me.m_Authorities.Item(AuthorityID.ToString())
     End Function
 
     Function GetListViewItemForGroup(
@@ -219,12 +216,12 @@ Friend Class clsExtractFromFlatfile
         With li.SubItems
             .Add(Me.m_AnnotationStorage.GroupName(GroupID))
             If Me.m_AnnotationStorage.AnnotationAuthorityID(GroupID) > 0 Then
-                .Add(Me.m_Authorities.Item(Me.m_AnnotationStorage.AnnotationAuthorityID(GroupID).ToString).ToString)
+                .Add(Me.m_Authorities.Item(Me.m_AnnotationStorage.AnnotationAuthorityID(GroupID).ToString).ToString())
             Else
                 .Add("-- None Selected --")
             End If
             If Not Me.m_AnnotationStorage.Delimiter(GroupID) Is Nothing Then
-                .Add(Me.m_AnnotationStorage.Delimiter(GroupID).ToString)
+                .Add(Me.m_AnnotationStorage.Delimiter(GroupID).ToString())
             Else
                 .Add(" ")
             End If
@@ -268,7 +265,7 @@ Friend Class clsExtractFromFlatfile
 
     End Sub
 
-    Private Function GetProteinIDsForPrimaryReferences(PrimaryReferences As SortedSet(Of String)) As Dictionary(Of String, Integer)
+    Private Function GetProteinIDsForPrimaryReferences(PrimaryReferences As IReadOnlyCollection(Of String)) As Dictionary(Of String, Integer)
         Dim name As String
         Dim ht As New Dictionary(Of String, Integer)(PrimaryReferences.Count)
         Dim id As Integer

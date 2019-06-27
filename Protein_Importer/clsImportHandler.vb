@@ -1,5 +1,6 @@
 Option Strict On
 
+Imports System.Collections.Generic
 Imports System.Windows.Forms
 Imports Protein_Storage
 
@@ -29,7 +30,7 @@ Public Class clsImportHandler
     Protected m_FileContents As clsProteinStorage
     Protected m_CollectionsList As DataTable
 
-    Protected m_AuthoritiesList As Hashtable
+    Protected m_AuthoritiesList As Dictionary(Of String, String)
     Protected m_AuthoritiesTable As DataTable
 
     Public Event LoadStart(taskTitle As String)
@@ -51,7 +52,7 @@ Public Class clsImportHandler
         End Get
     End Property
 
-    Public ReadOnly Property Authorities As Hashtable
+    Public ReadOnly Property Authorities As Dictionary(Of String, String)
         Get
             Return m_AuthoritiesList
         End Get
@@ -189,7 +190,7 @@ Public Class clsImportHandler
         tmpAnnTypeTable.Rows.InsertAt(dr, 0)
 
         tmpAnnTypeTable.AcceptChanges()
-        m_AuthoritiesList = m_SQLAccess.DataTableToHashTable(tmpAnnTypeTable, "ID", "Display_Name")
+        m_AuthoritiesList = m_SQLAccess.DataTableToDictionary(tmpAnnTypeTable, "ID", "Display_Name")
         m_AuthoritiesTable = tmpAnnTypeTable.Copy
 
         Return tmpAnnTypeTable
@@ -210,7 +211,7 @@ Public Class clsImportHandler
         tmpAuthTable.Rows.InsertAt(dr, 0)
 
         tmpAuthTable.AcceptChanges()
-        m_AuthoritiesList = m_SQLAccess.DataTableToHashTable(tmpAuthTable, "ID", "Display_Name")
+        m_AuthoritiesList = m_SQLAccess.DataTableToDictionary(tmpAuthTable, "ID", "Display_Name")
 
         Return tmpAuthTable
     End Function

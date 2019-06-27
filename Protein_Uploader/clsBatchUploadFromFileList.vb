@@ -7,8 +7,7 @@ Public Class clsBatchUploadFromFileList
 
     Protected ReadOnly m_Uploader As clsPSUploadHandler
     Protected ReadOnly m_DatabaseAccessor As clsDBTask
-    Protected m_CurrentFileList As Hashtable
-
+    Protected m_CurrentFileList As Dictionary(Of String, FileListInfo)
 
     Protected m_AuthorityTable As DataTable
     Protected m_AnnotationTypeTable As DataTable
@@ -54,10 +53,6 @@ Public Class clsBatchUploadFromFileList
 
     Sub UploadBatch()
 
-        Dim fileCollection As Hashtable
-        Dim fce As FileListInfo
-
-        Dim ui As clsPSUploadHandler.UploadInfo
         Dim uiList = New List(Of clsPSUploadHandler.UploadInfo)
 
         m_AnnotationTypeTable = GetAnnotationTypeTable()
@@ -75,10 +70,10 @@ Public Class clsBatchUploadFromFileList
         r = m_BatchForm.ShowDialog()
 
         If r = DialogResult.OK Then
-            fileCollection = m_BatchForm.SelectedFilesCollection
+            Dim fileCollection = m_BatchForm.SelectedFilesCollection
 
             For Each fce In fileCollection.Values
-                ui = TransformToUploadInfo(fce)
+                Dim ui = TransformToUploadInfo(fce)
                 uiList.Add(ui)
             Next
 
@@ -106,46 +101,51 @@ Public Class clsBatchUploadFromFileList
     Private Function TransformToUploadInfo(fli As FileListInfo) As clsPSUploadHandler.UploadInfo
 
         Dim fi = New FileInfo(fli.FullFilePath)
-        Dim ui As New clsPSUploadHandler.UploadInfo(fi, fli.OrganismID, fli.AnnotationTypeID)
+        Dim ui = New clsPSUploadHandler.UploadInfo(fi, fli.OrganismID, fli.AnnotationTypeID)
 
         Return ui
 
     End Function
 
-    Protected Function GetDMSFileEntities() As Hashtable
-        Dim fileList As New Hashtable
-        Dim collectionList As New ArrayList
+    Protected Function GetDMSFileEntities() As Dictionary(Of String, FileListInfo)
+        Dim fileList = New Dictionary(Of String, FileListInfo)(StringComparer.OrdinalIgnoreCase)
 
-        Dim dr As DataRow
+        Dim collectionList = New SortedSet(Of String)(StringComparer.OrdinalIgnoreCase)
 
-        Dim LoadedCollectionsSQL As String
+        'Dim dr As DataRow
 
-        Dim tmpFileName As String
-        Dim tmpOrganismName As String
-        Dim tmpOrganismID As Integer
-        Dim tmpFullPath As String
-        Dim tmpAnnTypeID As Integer
-        Dim tmpAuthTypeID As Integer
+        'Dim LoadedCollectionsSQL As String
 
-        LoadedCollectionsSQL = "SELECT FileName, Full_Path, Organism_Name, Organism_ID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered"
+        'Dim tmpFileName As String
+        'Dim tmpOrganismName As String
+        'Dim tmpOrganismID As Integer
+        'Dim tmpFullPath As String
+        'Dim tmpAnnTypeID As Integer
+        'Dim tmpAuthTypeID As Integer
 
-        Using fileTable As DataTable = m_DatabaseAccessor.GetTable(LoadedCollectionsSQL)
+        Dim loadedCollectionsSQL = "SELECT FileName, Full_Path, Organism_Name, Organism_ID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered"
+
+        Using fileTable As DataTable = m_DatabaseAccessor.GetTable(loadedCollectionsSQL)
 
             If m_CurrentFileList Is Nothing Then
-                m_CurrentFileList = New Hashtable
+                m_CurrentFileList = New Dictionary(Of String, FileListInfo)
             Else
                 m_CurrentFileList.Clear()
             End If
 
-            For Each dr In fileTable.Rows
-                tmpFileName = dr.Item("FileName").ToString
-                tmpOrganismName = dr.Item("Organism_Name").ToString
-                tmpOrganismID = CInt(dr.Item("Organism_ID"))
-                tmpFullPath = dr.Item("Full_Path").ToString
-                tmpAnnTypeID = CInt(dr.Item("Annotation_Type_ID"))
-                tmpAuthTypeID = CInt(dr.Item("Authority_ID"))
-                If Not fileList.ContainsKey(tmpFileName) And Not collectionList.Contains(Path.GetFileNameWithoutExtension(tmpFileName)) Then
-                    fileList.Add(tmpFileName, New FileListInfo(tmpFileName, tmpFullPath, tmpOrganismName, tmpOrganismID, tmpAnnTypeID, tmpAuthTypeID))
+            For Each dr As DataRow In fileTable.Rows
+                Dim fileName = dr.Item("FileName").ToString
+                Dim organismName = dr.Item("Organism_Name").ToString
+                Dim organismID = CInt(dr.Item("Organism_ID"))
+                Dim fullPath = dr.Item("Full_Path").ToString
+                Dim annotationTypeID = CInt(dr.Item("Annotation_Type_ID"))
+                Dim authorityTypeID = CInt(dr.Item("Authority_ID"))
+
+                Dim baseName = Path.GetFileNameWithoutExtension(fileName)
+
+                If Not fileList.ContainsKey(fileName) And Not collectionList.Contains(baseName) Then
+                    fileList.Add(fileName,
+                                 New FileListInfo(fileName, fullPath, organismName, organismID, annotationTypeID, authorityTypeID))
                 End If
             Next
 
@@ -156,16 +156,13 @@ Public Class clsBatchUploadFromFileList
 
     End Function
 
-    Protected Function UploadSelectedFiles(fileNameList As Hashtable) As Integer
+    Protected Function UploadSelectedFiles(fileNameList As Dictionary(Of String, FileListInfo)) As Integer
 
-        Dim upInfoContainer As clsPSUploadHandler.UploadInfo
-        Dim fli As FileListInfo
         Dim selectedFileList = New List(Of clsPSUploadHandler.UploadInfo)
 
         For Each fli In fileNameList.Values
-            upInfoContainer = New clsPSUploadHandler.UploadInfo(
-                New FileInfo(fli.FullFilePath),
-                fli.OrganismID, fli.NamingAuthorityID)
+            Dim upInfoContainer = New clsPSUploadHandler.UploadInfo(
+                New FileInfo(fli.FullFilePath), fli.OrganismID, fli.NamingAuthorityID)
             selectedFileList.Add(upInfoContainer)
         Next
 
@@ -173,8 +170,7 @@ Public Class clsBatchUploadFromFileList
 
     End Function
 
-
-    Friend Structure FileListInfo
+    Public Structure FileListInfo
         Sub New(
             FileName As String,
             FullFilePath As String,

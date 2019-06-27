@@ -905,11 +905,11 @@ Public Class clsGetFASTAFromDMS
         Return m_Getter.GetFileHash(fullFilePath)
     End Function
 
-    Function GetAllCollections() As Hashtable
+    Function GetAllCollections() As Dictionary(Of Integer, String)
         Return m_Getter.GetCollectionNameList
     End Function
 
-    Function GetCollectionsByOrganism(organismID As Integer) As Hashtable
+    Function GetCollectionsByOrganism(organismID As Integer) As Dictionary(Of String, String)
         Return m_Getter.GetCollectionsByOrganism(organismID)
     End Function
 
@@ -917,7 +917,7 @@ Public Class clsGetFASTAFromDMS
         Return m_Getter.GetCollectionsByOrganismTable(organismID)
     End Function
 
-    Function GetOrganismList() As Hashtable
+    Function GetOrganismList() As Dictionary(Of String, String)
         Return m_Getter.GetOrganismList
     End Function
 
