@@ -13,7 +13,6 @@ Public Class clsExportProteinsFASTA
 
     Public Sub New(exportComponent As clsGetFASTAFromDMSForward)
         MyBase.New(exportComponent)
-
     End Sub
 
     ''' <summary>
