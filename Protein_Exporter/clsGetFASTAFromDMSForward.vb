@@ -495,7 +495,7 @@ Public Class clsGetFASTAFromDMSForward
         If collectionName.Length = 0 Then
             Return 0
         End If
-        'Dim dr As DataRow
+        
         Dim foundRows() As DataRow
 
         ' Make sure there are no leading or trailing spaces
@@ -505,6 +505,7 @@ Public Class clsGetFASTAFromDMSForward
             RefreshCollectionCache()
             foundRows = m_CollectionsCache.Select("[FileName] = '" & collectionName & "'")
         End If
+
         Dim id As Integer
         Try
             id = CInt(foundRows(0).Item("Protein_Collection_ID"))
