@@ -11,7 +11,7 @@ Imports ValidateFastaFile
 ''' </summary>
 Module modMain
 
-    Public Const PROGRAM_DATE As String = "May 31, 2019"
+    Public Const PROGRAM_DATE As String = "June 26, 2019"
 
     Private mInputFilePath As String
     Private mPreviewMode As Boolean
