@@ -25,14 +25,12 @@ Public Class clsPSUploadHandler
             Source = String.Empty
         End Sub
         Public FileInformation As FileInfo
-        Public OriginalFileInformation As FileInfo
         Public OrganismID As Integer
         Public Description As String
         Public Source As String
         Public AnnotationTypeID As Integer
         Public ProteinCount As Integer
         Public ErrorList As List(Of String)
-        Public SummarizedErrors As Hashtable
         Public ExportedProteinCount As Integer
 
         ' <Obsolete("No longer supported")>
@@ -42,9 +40,7 @@ Public Class clsPSUploadHandler
         Public EncryptionPassphrase As String
     End Structure
 
-    Protected m_PersistentTaskNum As Integer
     Protected m_NormalizedFASTAFilePath As String
-    Protected m_ProteinCollectionsList As DataTable
 
     Protected ReadOnly m_DatabaseAccessor As clsDBTask
     Protected WithEvents m_Importer As clsImportHandler
@@ -64,7 +60,6 @@ Public Class clsPSUploadHandler
     Public Event WroteLineEndNormalizedFASTA(newFilePath As String)
 
 
-    Protected m_ExportedProteinCount As Integer
     Protected mMaximumProteinNameLength As Integer = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
 
     Private WithEvents m_Encryptor As clsCollectionEncryptor

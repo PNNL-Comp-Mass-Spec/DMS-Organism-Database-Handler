@@ -5,32 +5,32 @@ Public Class clsAddUpdateEntries
 
     Public Enum SPModes
         add
-        update
+        'Unused: update
     End Enum
 
     Public Enum CollectionStates
         NewEntry = 1
-        Provisional = 2
-        Production = 3
-        Historical = 4
+        'Unused: Provisional = 2
+        'Unused: Production = 3
+        'Unused: Historical = 4
     End Enum
 
     Public Enum CollectionTypes
         prot_original_source = 1
-        modified_source = 2
-        runtime_combined_collection = 3
-        loadtime_combined_collection = 4
-        nuc_original_source = 5
+        'Unused: modified_source = 2
+        'Unused: runtime_combined_collection = 3
+        'Unused: loadtime_combined_collection = 4
+        'Unused: nuc_original_source = 5
     End Enum
 
     Protected ReadOnly m_DatabaseAccessor As TableManipulationBase.clsDBTask
-    Protected m_OrganismID As Integer
-    Protected m_ProteinLengths As Hashtable
+    'Unused: Protected m_OrganismID As Integer
+    'Unused: Protected m_ProteinLengths As Hashtable
     Protected m_MaxProteinNameLength As Integer
 
     Protected m_Hasher As Security.Cryptography.SHA1Managed
-    Protected ProteinHashThread As Threading.Thread
-    Protected ReferenceHashThread As Threading.Thread
+    'Unused: Protected ProteinHashThread As Threading.Thread
+    'Unused: Protected ReferenceHashThread As Threading.Thread
 
 #Region "Properties"
     Public Property MaximumProteinNameLength As Integer

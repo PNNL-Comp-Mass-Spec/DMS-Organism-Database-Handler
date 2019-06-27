@@ -18,16 +18,8 @@ End Class
 Public Class FASTAReader
 
     Private m_FASTAFilePath As String
-    Private m_initialized As Boolean = False
 
     Private m_LastError As String
-    Private m_DefaultNameField As String = "Name"
-    Private m_DefaultDescField As String = "Description"
-    Private m_DefaultSeqField As String = "Sequence"
-    Private m_DefaultLenField As String = "Length"
-    Private m_MolFormField As String = "Molecular_Formula"
-    Private m_MonoMassField As String = "Monoisotopic_Mass"
-    Private m_AvgMassField As String = "Average_Mass"
     Private ReadOnly m_DescLineRegEx As Regex
     Private ReadOnly m_NoDescLineRegEx As Regex
     Private ReadOnly m_DescLineMatcher As Regex

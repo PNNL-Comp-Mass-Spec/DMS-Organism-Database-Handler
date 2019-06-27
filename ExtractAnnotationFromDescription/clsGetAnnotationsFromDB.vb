@@ -2,8 +2,7 @@ Friend Interface IGetAnnotationsFromDB
 
 End Interface
 
-
-
+<Obsolete("Unused")>
 Friend Class clsGetAnnotationsFromDB
     Private m_ConnectionString As String
     Private m_DatabaseHelper As TableManipulationBase.clsDBTask
