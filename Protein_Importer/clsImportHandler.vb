@@ -26,7 +26,7 @@ Public Class clsImportHandler
     Const PositionTable As String = "T_Position_Info"
     Const CollectionProteinMap As String = "V_Protein_Collections_By_Organism"
 
-    Protected m_FileContents As Protein_Storage.clsProteinStorage
+    Protected m_FileContents As clsProteinStorage
     Protected m_CollectionsList As DataTable
 
     Protected m_AuthoritiesList As Hashtable

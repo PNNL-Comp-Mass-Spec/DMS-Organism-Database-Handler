@@ -417,7 +417,7 @@ Public Class frmBatchUploadFromFileList
 
     End Function
 
-    Private Sub cmdUploadFiles_Click(sender As System.Object, e As System.EventArgs) Handles cmdUploadFiles.Click
+    Private Sub cmdUploadFiles_Click(sender As Object, e As EventArgs) Handles cmdUploadFiles.Click
 
         Dim selectedCount As Integer = Me.BuildSelectedFilesList()
         If selectedCount > 0 Then
@@ -425,21 +425,21 @@ Public Class frmBatchUploadFromFileList
         End If
     End Sub
 
-    Private Sub cmdCheckAll_Click(sender As System.Object, e As System.EventArgs) Handles cmdCheckAll.Click
+    Private Sub cmdCheckAll_Click(sender As Object, e As EventArgs) Handles cmdCheckAll.Click
         Dim li As ListViewItem
         For Each li In Me.lvwFiles.Items
             li.Checked = True
         Next
     End Sub
 
-    Private Sub cmdUncheckAll_Click(sender As System.Object, e As System.EventArgs) Handles cmdUncheckAll.Click
+    Private Sub cmdUncheckAll_Click(sender As Object, e As EventArgs) Handles cmdUncheckAll.Click
         Dim li As ListViewItem
         For Each li In Me.lvwFiles.Items
             li.Checked = False
         Next
     End Sub
 
-    Private Sub cboOrganismPicker_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cboOrganismPicker.SelectedIndexChanged
+    Private Sub cboOrganismPicker_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboOrganismPicker.SelectedIndexChanged
         Dim cbo As ComboBox = DirectCast(sender, ComboBox)
         Dim li As ListViewItem
         Dim fli As clsBatchUploadFromFileList.FileListInfo
@@ -455,7 +455,7 @@ Public Class frmBatchUploadFromFileList
         End If
     End Sub
 
-    Private Sub cboAnnotationType_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cboAnnotationType.SelectedIndexChanged
+    Private Sub cboAnnotationType_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboAnnotationType.SelectedIndexChanged
         Dim cbo As ComboBox = DirectCast(sender, ComboBox)
         Dim li As ListViewItem
         Dim fli As clsBatchUploadFromFileList.FileListInfo
@@ -471,7 +471,7 @@ Public Class frmBatchUploadFromFileList
         End If
     End Sub
 
-    Private Sub lvwFiles_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lvwFiles.SelectedIndexChanged
+    Private Sub lvwFiles_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lvwFiles.SelectedIndexChanged
         Dim fli As clsBatchUploadFromFileList.FileListInfo
         Dim li As ListViewItem
 
@@ -489,7 +489,7 @@ Public Class frmBatchUploadFromFileList
                 Me.cboOrganismPicker.SelectedValue = fli.OrganismID
             End If
             If fli.FullFilePath.Length > 0 Then
-                Me.txtFilePath.Text = System.IO.Path.GetDirectoryName(fli.FullFilePath)
+                Me.txtFilePath.Text = Path.GetDirectoryName(fli.FullFilePath)
             End If
         ElseIf Me.lvwFiles.SelectedItems.Count > 1 Then
             Me.cboAnnotationType.SelectedValue = 0

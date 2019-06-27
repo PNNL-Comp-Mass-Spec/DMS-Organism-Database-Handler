@@ -590,17 +590,17 @@ Public Class frmValidationReport
             Exit Sub
         End If
 
-        Using sw = New StreamWriter(New FileStream(SelectedSavePath, FileMode.Create, FileAccess.Write, FileShare.Read))
+        Using writer = New StreamWriter(New FileStream(SelectedSavePath, FileMode.Create, FileAccess.Write, FileShare.Read))
 
 
-            sw.WriteLine("Protein Name" & ControlChars.Tab &
-                     "Line Number" & ControlChars.Tab &
-                     "Message Type" & ControlChars.Tab &
-                     "Message")
+            writer.WriteLine("Protein Name" & ControlChars.Tab &
+                             "Line Number" & ControlChars.Tab &
+                             "Message Type" & ControlChars.Tab &
+                             "Message")
 
             If Not errorList Is Nothing AndAlso errorList.Count > 0 Then
                 For Each errorDetail In errorList
-                    sw.WriteLine(
+                    writer.WriteLine(
                         errorDetail.ProteinName & ControlChars.Tab &
                         errorDetail.LineNumber & ControlChars.Tab &
                         errorDetail.Type & ControlChars.Tab &
@@ -610,7 +610,7 @@ Public Class frmValidationReport
                 Next
             End If
 
-            sw.WriteLine("")
+            writer.WriteLine()
 
         End Using
 

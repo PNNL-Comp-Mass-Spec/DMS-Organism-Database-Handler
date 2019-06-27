@@ -281,7 +281,7 @@ Public Class clsAddUpdateEntries
     End Function
 
     Public Function MakeNewProteinCollection(
-      fileName As String,
+      proteinCollectionName As String,
       description As String,
       collectionSource As String,
       collectionType As CollectionTypes,
@@ -292,7 +292,7 @@ Public Class clsAddUpdateEntries
         Dim tmpProteinCollectionID As Integer
 
         tmpProteinCollectionID = RunSP_AddUpdateProteinCollection(
-            fileName, description, collectionSource, collectionType, CollectionStates.NewEntry,
+            proteinCollectionName, description, collectionSource, collectionType, CollectionStates.NewEntry,
             annotationTypeID, numProteins, numResidues, SPModes.add)
 
         Return tmpProteinCollectionID
@@ -559,7 +559,7 @@ Public Class clsAddUpdateEntries
     End Function
 
     Protected Function RunSP_AddUpdateProteinCollection(
-      fileName As String,
+      proteinCollectionName As String,
       description As String,
       collectionSource As String,
       collectionType As CollectionTypes,
@@ -573,11 +573,12 @@ Public Class clsAddUpdateEntries
             .CommandType = CommandType.StoredProcedure
         }
 
-        'Define parameter for procedure's return value
+        ' Define parameter for procedure's return value
         sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@fileName", SqlDbType.VarChar, 128).Value = fileName
+        ' Define parameters for the procedure's arguments
+        ' Note that the @fileName parameter is actually the protein collection name; not the original .fasta file name
+        sp_Save.Parameters.Add("@fileName", SqlDbType.VarChar, 128).Value = proteinCollectionName
         sp_Save.Parameters.Add("@Description", SqlDbType.VarChar, 900).Value = description
         sp_Save.Parameters.Add("@collectionSource", SqlDbType.VarChar, 900).Value = collectionSource
         sp_Save.Parameters.Add("@collection_type", SqlDbType.Int).Value = CInt(collectionType)
@@ -588,10 +589,10 @@ Public Class clsAddUpdateEntries
         sp_Save.Parameters.Add("@mode", SqlDbType.VarChar, 12).Value = mode.ToString
         sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 512).Direction = ParameterDirection.Output
 
-        'Execute the sp
+        ' Execute the sp
         sp_Save.ExecuteNonQuery()
 
-        'Get return value
+        ' Get return value
         Dim ret = CInt(sp_Save.Parameters("@Return").Value)
 
         If ret = 0 Then
@@ -859,8 +860,8 @@ Public Class clsAddUpdateEntries
         sp_Save.Parameters.Add("@authority_ID", SqlDbType.Int).Value = authorityID
         sp_Save.Parameters.Add("@protein_ID", SqlDbType.Int).Value = proteinID
 
-        hashableString = protein_Name + "_" + description + "_" + proteinID.ToString
-        sp_Save.Parameters.Add("@nameDescHash", SqlDbType.VarChar, 40).Value = GenerateHash(hashableString.ToLower())
+        Dim textToHash = protein_Name + "_" + description + "_" + proteinID.ToString
+        sp_Save.Parameters.Add("@nameDescHash", SqlDbType.VarChar, 40).Value = GenerateHash(textToHash.ToLower())
 
         sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
         sp_Save.Parameters.Add("@MaxProteinNameLength", SqlDbType.Int).Value = maxProteinNameLength
