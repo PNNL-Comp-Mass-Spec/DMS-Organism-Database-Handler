@@ -113,19 +113,8 @@ Public Class SequenceInfoCalculator
 
     Private Sub InitializeFromDMS()
         m_AminoAcids = New Hashtable(30)
-        Dim getSQL As clsDBTask
 
-        Dim tmpSLC As String
-        Dim tmpDesc As String
-        Dim tmpNumC As Integer
-        Dim tmpNumH As Integer
-        Dim tmpNumO As Integer
-        Dim tmpNumN As Integer
-        Dim tmpNumS As Integer
-        Dim tmpMM As Double
-        Dim tmpAM As Double
-
-        getSQL = New clsDBTask(m_DMSConnectionString)
+        Dim getSQL = New clsDBTask(m_DMSConnectionString)
 
         Dim sqlString = "SELECT * FROM T_Residues WHERE [Num_C] > 0"
         Dim tmpAATable As DataTable = getSQL.GetTable(sqlString)
@@ -133,17 +122,17 @@ Public Class SequenceInfoCalculator
         Dim dr As DataRow
 
         For Each dr In tmpAATable.Rows
-            tmpSLC = CType(dr.Item("Residue_Symbol"), String)
-            tmpDesc = CType(dr.Item("Description"), String)
-            tmpNumC = CInt(dr.Item("Num_C"))
-            tmpNumH = CInt(dr.Item("Num_H"))
-            tmpNumO = CInt(dr.Item("Num_O"))
-            tmpNumN = CInt(dr.Item("Num_N"))
-            tmpNumS = CInt(dr.Item("Num_S"))
-            tmpMM = CDbl(dr.Item("Monoisotopic_Mass"))
-            tmpAM = CDbl(dr.Item("Average_Mass"))
+            Dim singleLetterSymbol = CType(dr.Item("Residue_Symbol"), String)
+            Dim description = CType(dr.Item("Description"), String)
+            Dim countC = CInt(dr.Item("Num_C"))
+            Dim countH = CInt(dr.Item("Num_H"))
+            Dim countN = CInt(dr.Item("Num_N"))
+            Dim countO = CInt(dr.Item("Num_O"))
+            Dim countS = CInt(dr.Item("Num_S"))
+            Dim monoMass = CDbl(dr.Item("Monoisotopic_Mass"))
+            Dim avgMass = CDbl(dr.Item("Average_Mass"))
 
-            AddAminoAcid(New AminoAcidInfo(tmpSLC, tmpDesc, tmpNumC, tmpNumH, tmpNumN, tmpNumO, tmpNumS, tmpAM, tmpMM))
+            AddAminoAcid(New AminoAcidInfo(singleLetterSymbol, description, countC, countH, countN, countO, countS, avgMass, monoMass))
         Next
 
 
@@ -153,7 +142,7 @@ Public Class SequenceInfoCalculator
         m_AminoAcids.Add(aa.Symbol, aa)
     End Sub
 
-    Private Class AminoAcidInfo
+    Friend Class AminoAcidInfo
         Inherits SequenceInfo
 
         Public Sub New(seq As String, name As String,

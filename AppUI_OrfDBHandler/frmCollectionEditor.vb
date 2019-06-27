@@ -761,7 +761,7 @@ Public Class frmCollectionEditor
 
 #End Region
 
-    Private Const PROGRAM_DATE As String = "May 31, 2019"
+    Private Const PROGRAM_DATE As String = "June 26, 2019"
 
     Private m_Organisms As DataTable
     Private m_ProteinCollections As DataTable
@@ -1258,56 +1258,58 @@ Public Class frmCollectionEditor
     End Sub
 
     Private Sub cmdSaveDestCollection_Click(sender As Object, e As EventArgs) Handles cmdSaveDestCollection.Click
-        Dim resultReturn As DialogResult
+        'Dim resultReturn As DialogResult
 
-        Dim frmAddCollection As New frmAddNewCollection
-        Dim tmpOrganismID As Integer
-        Dim tmpAnnotationTypeID As Integer
-        Dim tmpSelectedProteinList As List(Of String)
+        'Dim frmAddCollection As New frmAddNewCollection
+        'Dim tmpOrganismID As Integer
+        'Dim tmpAnnotationTypeID As Integer
+        'Dim tmpSelectedProteinList As List(Of String)
 
-        If lvwDestination.Items.Count > 0 Then
+        If lvwDestination.Items.Count <= 0 Then
+            m_UploadHandler = Nothing
+            Return
+        End If
 
-            With frmAddCollection
-                .CollectionName = Path.GetFileNameWithoutExtension(m_SelectedFilePath)
-                .IsLocalFile = m_LocalFileLoaded
-                .AnnotationTypes = m_AnnotationTypes
-                .OrganismList = m_Organisms
-                .OrganismID = m_SelectedOrganismID
+        Dim frmAddCollection As New frmAddNewCollection With {
+                .CollectionName = Path.GetFileNameWithoutExtension(m_SelectedFilePath),
+                .IsLocalFile = m_LocalFileLoaded,
+                .AnnotationTypes = m_AnnotationTypes,
+                .OrganismList = m_Organisms,
+                .OrganismID = m_SelectedOrganismID,
                 .AnnotationTypeID = m_SelectedAnnotationTypeID
-            End With
+        }
 
-            resultReturn = frmAddCollection.ShowDialog
+        Dim eResult = frmAddCollection.ShowDialog
 
-            If resultReturn = DialogResult.OK Then
-                cboCollectionPicker.Enabled = True
-                cboOrganismFilter.Enabled = True
+        If eResult = DialogResult.OK Then
+            cboCollectionPicker.Enabled = True
+            cboOrganismFilter.Enabled = True
 
-                tmpOrganismID = frmAddCollection.OrganismID
-                tmpAnnotationTypeID = frmAddCollection.AnnotationTypeID
+            Dim tmpOrganismID = frmAddCollection.OrganismID
+            Dim tmpAnnotationTypeID = frmAddCollection.AnnotationTypeID
 
-                tmpSelectedProteinList = ScanDestinationCollectionWindow(lvwDestination)
+            Dim tmpSelectedProteinList = ScanDestinationCollectionWindow(lvwDestination)
 
-                If m_UploadHandler Is Nothing Then
-                    m_UploadHandler = New clsPSUploadHandler(m_PSConnectionString)
-                End If
-
-                m_UploadHandler.UploadCollection(m_ImportHandler.CollectionMembers,
-                    tmpSelectedProteinList, frmAddCollection.CollectionName,
-                    frmAddCollection.CollectionDescription,
-                    frmAddCollection.CollectionSource,
-                    clsAddUpdateEntries.CollectionTypes.prot_original_source,
-                    tmpOrganismID, tmpAnnotationTypeID)
-
-                RefreshCollectionList()
-
-                ClearFromDestinationCollectionWindow(lvwDestination, True)
-
-                cboOrganismFilter.Enabled = True
-                cboCollectionPicker.Enabled = True
-                cboOrganismFilter.SelectedValue = tmpOrganismID
+            If m_UploadHandler Is Nothing Then
+                m_UploadHandler = New clsPSUploadHandler(m_PSConnectionString)
             End If
 
+            m_UploadHandler.UploadCollection(m_ImportHandler.CollectionMembers, tmpSelectedProteinList,
+                                             frmAddCollection.CollectionName, frmAddCollection.CollectionDescription,
+                                             frmAddCollection.CollectionSource,
+                                             clsAddUpdateEntries.CollectionTypes.prot_original_source, tmpOrganismID,
+                                             tmpAnnotationTypeID)
+
+            RefreshCollectionList()
+
+            ClearFromDestinationCollectionWindow(lvwDestination, True)
+
+            cboOrganismFilter.Enabled = True
+            cboCollectionPicker.Enabled = True
+            cboOrganismFilter.SelectedValue = tmpOrganismID
         End If
+
+
         m_UploadHandler = Nothing
     End Sub
 

@@ -165,44 +165,32 @@ Public Class clsPSUploadHandler
     Public Sub BatchUpload(
         fileInfoList As IEnumerable(Of UploadInfo))
 
-        Dim upInfo As UploadInfo
-        Dim fi As FileInfo
-        Dim tmpPS As clsProteinStorage
-        Dim tmpFileName As String
-        Dim blnFileValidated As Boolean
-        Dim collectionState As String
-        Dim collectionID As Integer
-        Dim mboxText As String
-        Dim mboxHeader As String
-        Dim dboxResult As DialogResult
-        Dim errorText As String
-        Dim errorLabel As String
-        Dim errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)
+        Dim eResult As DialogResult
 
         Dim databaseAccessor = New clsDBTask(m_DatabaseAccessor.ConnectionString, True)
 
         For Each upInfo In fileInfoList
             'upInfo.OriginalFileInformation = upInfo.FileInformation
-            fi = upInfo.FileInformation
+            Dim currentFile = upInfo.FileInformation
 
             ' Configure the validator to possibly allow asterisks in the residues
-            m_Validator.OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowAllSymbolsInProteinNames) = mValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowAllSymbolsInProteinNames)
+            m_Validator.OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowAllSymbolsInProteinNames) = mValidationOptions(eValidationOptionConstants.AllowAllSymbolsInProteinNames)
 
             ' Configure the validator to possibly allow asterisks in the residues
-            m_Validator.OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowAsteriskInResidues) = mValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowAsterisksInResidues)
+            m_Validator.OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowAsteriskInResidues) = mValidationOptions(eValidationOptionConstants.AllowAsterisksInResidues)
 
             ' Configure the validator to possibly allow dashes in the residues
-            m_Validator.OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowDashInResidues) = mValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowDashInResidues)
+            m_Validator.OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowDashInResidues) = mValidationOptions(eValidationOptionConstants.AllowDashInResidues)
 
             ' Configure the additional validation options
             m_Validator.SetValidationOptions(clsCustomValidateFastaFiles.eValidationOptionConstants.AllowAllSymbolsInProteinNames,
-                                                mValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowAllSymbolsInProteinNames))
+                                                mValidationOptions(eValidationOptionConstants.AllowAllSymbolsInProteinNames))
 
             m_Validator.SetValidationOptions(clsCustomValidateFastaFiles.eValidationOptionConstants.AllowAsterisksInResidues,
-                                                mValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowAsterisksInResidues))
+                                                mValidationOptions(eValidationOptionConstants.AllowAsterisksInResidues))
 
             m_Validator.SetValidationOptions(clsCustomValidateFastaFiles.eValidationOptionConstants.AllowDashInResidues,
-                                                mValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowDashInResidues))
+                                                mValidationOptions(eValidationOptionConstants.AllowDashInResidues))
 
             ' Update the default rules (important if AllowAsteriskInResidues = True or AllowDashInResidues = True)
             m_Validator.SetDefaultRules()
@@ -218,41 +206,39 @@ Public Class clsPSUploadHandler
 
             ' Validate the fasta file (send full path)
             ' This function returns True if the file is successfully processed (even if it has errors)
-            blnFileValidated = m_Validator.StartValidateFASTAFile(fi.FullName)
+            Dim fileValidated = m_Validator.StartValidateFASTAFile(currentFile.FullName)
 
             OnLoadEnd()
 
-            If Not blnFileValidated Then
+            If Not fileValidated Then
                 Console.WriteLine("--------------------------------------------------------------")
                 Console.WriteLine("Warning: Skipping protein collection due to validation error")
-                Console.WriteLine(fi.FullName)
+                Console.WriteLine(currentFile.FullName)
                 Console.WriteLine("--------------------------------------------------------------")
                 Continue For
             End If
 
-            If m_Validator.FASTAFileHasWarnings(fi.Name) Then
+            If m_Validator.FASTAFileHasWarnings(currentFile.Name) Then
                 ' If any warnings were cached, return them with the OnFASTAFileWarnings event
-                OnFASTAFileWarnings(fi.FullName, m_Validator.RecordedFASTAFileWarnings(fi.Name))
+                OnFASTAFileWarnings(currentFile.FullName, m_Validator.RecordedFASTAFileWarnings(currentFile.Name))
             End If
 
             ' Now check whether or not any errors were found for the file
-            If Not m_Validator.FASTAFileValid(fi.Name) Then
+            If Not m_Validator.FASTAFileValid(currentFile.Name) Then
                 ' Errors were found; return the error collection with the InvalidFASTAFile event
-                OnInvalidFASTAFile(fi.FullName, m_Validator.RecordedFASTAFileErrors(fi.Name))
+                OnInvalidFASTAFile(currentFile.FullName, m_Validator.RecordedFASTAFileErrors(currentFile.Name))
 
                 Console.WriteLine("--------------------------------------------------------------")
                 Console.WriteLine("Warning: Skipping protein collection because validation failed")
-                Console.WriteLine(fi.FullName)
+                Console.WriteLine(currentFile.FullName)
                 Console.WriteLine("--------------------------------------------------------------")
                 Continue For
             End If
 
-            OnBatchProgressUpdate("Loading: " & fi.Name)
+            OnBatchProgressUpdate("Loading: " & currentFile.Name)
             If Not m_NormalizedFASTAFilePath Is Nothing Then
-                If fi.FullName <> m_NormalizedFASTAFilePath Then
+                If currentFile.FullName <> m_NormalizedFASTAFilePath Then
                     upInfo.FileInformation = New FileInfo(m_NormalizedFASTAFilePath)
-                    'tmpFileName = System.IO.Path.GetFileNameWithoutExtension(m_NormalizedFASTAFilePath)
-                Else
                 End If
             End If
             tmpFileName = Path.GetFileNameWithoutExtension(fi.FullName)
@@ -262,64 +248,66 @@ Public Class clsPSUploadHandler
                 collectionState = m_Upload.GetProteinCollectionState(collectionID)
 
                 If collectionState = "New" Or collectionState = "Provisional" Then
-                    mboxText = "The Collection '" & tmpFileName & "' has been declared '" &
+                    Dim warningMessage = "The Collection '" & proteinCollectionName & "' has been declared '" &
                                collectionState & "'. Are you sure you want to replace its contents?"
-                    mboxHeader = "Confirm Replacement"
-                    errorText = "Collection was in State '" & collectionState & "' and was not changed"
-                    errorLabel = "Warning"
 
-                    dboxResult = MessageBox.Show(
-                        mboxText,
-                        mboxHeader,
+                    logMessageIfCancelled = "Collection was in State '" & collectionState & "' and was not changed"
+                    logLabelIfCancelled = "Warning"
+
+                    eResult = MessageBox.Show(
+                        warningMessage,
+                        "Confirm Replacement",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Stop,
                         MessageBoxDefaultButton.Button2)
                 Else
-                    errorText = "Collections in State '" & collectionState & "' cannot be changed or deleted"
-                    errorLabel = "Error"
-                    dboxResult = DialogResult.No
+                    logMessageIfCancelled = "Collections in State '" & collectionState & "' cannot be changed or deleted"
+                    logLabelIfCancelled = "Error"
+                    eResult = DialogResult.No
                 End If
 
-                If dboxResult = DialogResult.No Then
-                    errorCollection = New List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)
-                    errorCollection.Add(New clsCustomValidateFastaFiles.udtErrorInfoExtended(
-                        0, " N/A ", errorText, "", errorLabel))
-                    OnInvalidFASTAFile(tmpFileName, errorCollection)
+                If eResult = DialogResult.No Then
+                    Dim errorCollection = New List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended) From {
+                        New clsCustomValidateFastaFiles.udtErrorInfoExtended(
+                        0, " N/A ", logMessageIfCancelled, "", logLabelIfCancelled)
+                    }
+                    OnInvalidFASTAFile(currentFile.FullName, errorCollection)
 
                 End If
             Else
-                dboxResult = DialogResult.Yes
+                eResult = DialogResult.Yes
             End If
 
-            If dboxResult = DialogResult.Yes Then
-                tmpPS = m_Importer.LoadProteinsForBatch(upInfo.FileInformation.FullName, upInfo.OrganismID, upInfo.AnnotationTypeID)
-                If Not tmpPS Is Nothing Then
-                    If tmpPS.ProteinCount = 0 Then
+            If eResult = DialogResult.Yes Then
+                Dim proteinStorage = m_Importer.LoadProteinsForBatch(upInfo.FileInformation.FullName, upInfo.OrganismID, upInfo.AnnotationTypeID)
+                If Not proteinStorage Is Nothing Then
+                    If proteinStorage.ProteinCount = 0 Then
                         ' No proteins
 
-                        errorCollection = New List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended)
-                        errorCollection.Add(New clsCustomValidateFastaFiles.udtErrorInfoExtended(
-                            0, " N/A ", "No valid proteins were loaded from the .Fasta file", "", "Error"))
+                        Dim errorCollection = New List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended) From {
+                            New clsCustomValidateFastaFiles.udtErrorInfoExtended(
+                            0, " N/A ", "No valid proteins were loaded from the .Fasta file", "", "Error")
+                        }
 
                         OnInvalidFASTAFile(upInfo.FileInformation.FullName, errorCollection)
                     Else
 
                         If upInfo.EncryptSequences AndAlso Not String.IsNullOrEmpty(upInfo.EncryptionPassphrase) Then
                             m_Encryptor = New clsCollectionEncryptor(upInfo.EncryptionPassphrase, databaseAccessor)
-                            m_Encryptor.EncryptStorageCollectionSequences(tmpPS)
-                            tmpPS.EncryptSequences = True
-                            tmpPS.PassPhrase = upInfo.EncryptionPassphrase
+                            m_Encryptor.EncryptStorageCollectionSequences(proteinStorage)
+                            proteinStorage.EncryptSequences = True
+                            proteinStorage.PassPhrase = upInfo.EncryptionPassphrase
                         End If
 
-                        upInfo.ProteinCount = tmpPS.ProteinCount
-                        CollectionBatchUploadCoordinator(tmpPS, tmpFileName, upInfo.OrganismID, upInfo.AnnotationTypeID, upInfo.Description, upInfo.Source)
+                        upInfo.ProteinCount = proteinStorage.ProteinCount
+                        CollectionBatchUploadCoordinator(proteinStorage, currentFile.FullName, upInfo.OrganismID, upInfo.AnnotationTypeID, upInfo.Description, upInfo.Source)
                         'upInfo.ExportedProteinCount = m_Export.ExportedProteinCount
                         OnValidFASTAFileUpload(upInfo.FileInformation.FullName, upInfo)
-                        tmpPS.ClearProteinEntries()
+                        proteinStorage.ClearProteinEntries()
 
                     End If
                 Else
-                    OnInvalidFASTAFile(upInfo.FileInformation.FullName, m_Validator.RecordedFASTAFileErrors(fi.FullName))
+                    OnInvalidFASTAFile(upInfo.FileInformation.FullName, m_Validator.RecordedFASTAFileErrors(currentFile.FullName))
                 End If
             End If
 
@@ -342,9 +330,11 @@ Public Class clsPSUploadHandler
         Dim XrefID As Integer
 
         'task 2a - Get Protein_Collection_ID or make a new one
-        Dim collectionID = m_Upload.GetProteinCollectionID(filepath)
 
-        Dim collectionState = m_Upload.GetProteinCollectionState(collectionID)
+        Dim proteinCollectionName = Path.GetFileNameWithoutExtension(filepath)
+        Dim existingCollectionID = m_Upload.GetProteinCollectionID(proteinCollectionName)
+
+        Dim collectionState = m_Upload.GetProteinCollectionState(existingCollectionID)
 
         If collectionState <> "Unknown" And
            collectionState <> "New" And
@@ -440,7 +430,7 @@ Public Class clsPSUploadHandler
 
     End Function
 
-    Public Sub SetValidationOptions(eValidationOptionName As clsPSUploadHandler.eValidationOptionConstants, blnEnabled As Boolean)
+    Public Sub SetValidationOptions(eValidationOptionName As eValidationOptionConstants, blnEnabled As Boolean)
         mValidationOptions(eValidationOptionName) = blnEnabled
     End Sub
 

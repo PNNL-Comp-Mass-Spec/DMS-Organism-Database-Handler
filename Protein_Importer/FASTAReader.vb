@@ -2,10 +2,12 @@ Option Strict Off
 
 Imports System
 Imports System.IO
+Imports System.Text.RegularExpressions
+Imports Protein_Storage
 Imports SequenceInfoCalculator
 
 Public Class FASTAReaderNotInitializedException
-    Inherits System.ApplicationException
+    Inherits ApplicationException
     Public Overrides ReadOnly Property Message As String
         Get
             Return "The FASTAReader instance has not been properly initialized."
@@ -19,10 +21,6 @@ Public Class FASTAReader
     Private m_initialized As Boolean = False
 
     Private m_LastError As String
-    Private ReadOnly m_DescLineRegEx As System.Text.RegularExpressions.Regex
-    Private ReadOnly m_NoDescLineRegEx As System.Text.RegularExpressions.Regex
-    Private ReadOnly m_DescLineMatcher As System.Text.RegularExpressions.Regex
-
     Private m_DefaultNameField As String = "Name"
     Private m_DefaultDescField As String = "Description"
     Private m_DefaultSeqField As String = "Sequence"
@@ -30,6 +28,9 @@ Public Class FASTAReader
     Private m_MolFormField As String = "Molecular_Formula"
     Private m_MonoMassField As String = "Monoisotopic_Mass"
     Private m_AvgMassField As String = "Average_Mass"
+    Private ReadOnly m_DescLineRegEx As Regex
+    Private ReadOnly m_NoDescLineRegEx As Regex
+    Private ReadOnly m_DescLineMatcher As Regex
 
 #Region " Events "
 
@@ -40,9 +41,9 @@ Public Class FASTAReader
 #End Region
 
     Public Sub New()
-        m_DescLineMatcher = New System.Text.RegularExpressions.Regex("^\>.+$")
-        m_DescLineRegEx = New System.Text.RegularExpressions.Regex("^\>(?<name>\S+)\s+(?<description>.*)$")
-        m_NoDescLineRegEx = New System.Text.RegularExpressions.Regex("^\>(?<name>\S+)$")
+        m_DescLineMatcher = New Regex("^\>.+$")
+        m_DescLineRegEx = New Regex("^\>(?<name>\S+)\s+(?<description>.*)$")
+        m_NoDescLineRegEx = New Regex("^\>(?<name>\S+)$")
 
     End Sub
 
@@ -52,30 +53,29 @@ Public Class FASTAReader
         End Get
     End Property
 
-    Public Function GetProteinEntries(filePath As String) As Protein_Storage.clsProteinStorage
+    Public Function GetProteinEntries(filePath As String) As clsProteinStorage
         Return LoadFASTAFile(filePath, -1)
     End Function
 
-    Public Function GetProteinEntries(filePath As String, numRecordsToLoad As Integer) As Protein_Storage.clsProteinStorage
+    Public Function GetProteinEntries(filePath As String, numRecordsToLoad As Integer) As clsProteinStorage
         Return LoadFASTAFile(filePath, numRecordsToLoad)
     End Function
 
-
-    Public Function LoadFASTAFile(filePath As String) As Protein_Storage.clsProteinStorage
+    Public Function LoadFASTAFile(filePath As String) As clsProteinStorage
         Return LoadFASTAFile(filePath, -1)
     End Function
 
-    Public Function LoadFASTAFile(filePath As String, numRecordsToLoad As Integer) As Protein_Storage.clsProteinStorage
+    Public Function LoadFASTAFile(filePath As String, numRecordsToLoad As Integer) As clsProteinStorage
 
         Dim fileLength As Integer
         Dim currPos As Integer = 0
 
-        Dim fastaContents As Protein_Storage.clsProteinStorage = New Protein_Storage.clsProteinStorage(filePath)
+        Dim fastaContents As clsProteinStorage = New clsProteinStorage(filePath)
 
         Dim strORFTemp As String = String.Empty
         Dim strDescTemp As String = String.Empty
         Dim strSeqTemp As String = String.Empty
-        Dim descMatch As System.Text.RegularExpressions.Match
+        Dim descMatch As Match
 
         Dim seqInfo = New SequenceInfoCalculator.SequenceInfoCalculator
 
@@ -106,7 +106,7 @@ Public Class FASTAReader
                                 If recordCount Mod 100 = 0 Then
                                     RaiseEvent LoadProgress(CSng(currPos / fileLength))     'trigger pgb update every 10th record
                                 End If
-                                fastaContents.AddProtein(New Protein_Storage.clsProteinStorageEntry(
+                                fastaContents.AddProtein(New clsProteinStorageEntry(
                                  strORFTemp, strDescTemp, strSeqTemp, seqInfo.SequenceLength,
                                  seqInfo.MonoIsotopicMass, seqInfo.AverageMass,
                                  seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount))
@@ -144,7 +144,7 @@ Public Class FASTAReader
                     seqInfo.CalculateSequenceInfo(strSeqTemp)
                     recordCount += 1
 
-                    fastaContents.AddProtein(New Protein_Storage.clsProteinStorageEntry(
+                    fastaContents.AddProtein(New clsProteinStorageEntry(
                      strORFTemp, strDescTemp, strSeqTemp, seqInfo.SequenceLength,
                      seqInfo.MonoIsotopicMass, seqInfo.AverageMass,
                      seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount))
@@ -171,14 +171,14 @@ Public Class FASTAReader
         If (fi.Exists) Then
             Using fileReader = New StreamReader(New FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 While Not fileReader.EndOfStream
-                    Dim testcode = fileReader.Read()
-                    If testcode = 10 OrElse testcode = 13 Then
+                    Dim testCode = fileReader.Read()
+                    If testCode = 10 OrElse testCode = 13 Then
                         If fileReader.EndOfStream Then
                             Return 1
                         End If
 
-                        Dim testcode2 = fileReader.Read()
-                        If testcode2 = 10 Or testcode2 = 13 Then
+                        Dim testCode2 = fileReader.Read()
+                        If testCode2 = 10 Or testCode2 = 13 Then
                             Return 2
                         Else
                             Return 1
