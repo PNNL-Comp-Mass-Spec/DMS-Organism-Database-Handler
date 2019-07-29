@@ -265,7 +265,7 @@ Friend Class clsExtractFromFlatFile
 
     End Sub
 
-    Private Function GetProteinIDsForPrimaryReferences(PrimaryReferences As IReadOnlyCollection(Of String)) As Dictionary(Of String, Integer)
+    Private Function GetProteinIDsForPrimaryReferences(PrimaryReferences As ICollection(Of String)) As Dictionary(Of String, Integer)
         Dim name As String
         Dim ht As New Dictionary(Of String, Integer)(PrimaryReferences.Count)
         Dim id As Integer
