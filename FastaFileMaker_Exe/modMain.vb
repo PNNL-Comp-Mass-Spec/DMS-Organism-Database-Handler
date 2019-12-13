@@ -4,7 +4,7 @@ Imports PRISM
 Imports Protein_Exporter
 
 Module modMain
-    Public Const PROGRAM_DATE As String = "June 29, 2019"
+    Public Const PROGRAM_DATE As String = "December 13, 2019"
 
     Const m_DebugLevel As Integer = 4
     Const FASTA_GEN_TIMEOUT_INTERVAL_MINUTES As Integer = 70

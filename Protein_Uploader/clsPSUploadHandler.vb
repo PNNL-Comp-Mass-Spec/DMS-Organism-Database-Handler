@@ -24,6 +24,7 @@ Public Class clsPSUploadHandler
             Description = String.Empty
             Source = String.Empty
         End Sub
+
         Public FileInformation As FileInfo
         Public OrganismID As Integer
         Public Description As String
