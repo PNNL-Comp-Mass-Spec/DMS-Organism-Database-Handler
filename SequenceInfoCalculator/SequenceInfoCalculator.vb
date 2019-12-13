@@ -76,23 +76,34 @@ Public Class SequenceInfoCalculator
     End Sub
 
     Protected Function SequenceInfo(sequence As String, Optional description As String = "") As SequenceInfo
-        Dim result = New SequenceInfo("", description, 0, 0, 0, 0, 0, 0.0, 0.0)
+        Dim result = New SequenceInfo(String.Empty, description)
 
-        Dim aaInfo As AminoAcidInfo
-        Dim aaString() As Char
-        Dim aa As Char
-        aaString = sequence.ToCharArray
+        Dim aaString() As Char = sequence.ToCharArray
 
-        For Each aa In aaString
-            aaInfo = m_AminoAcids.Item(aa.ToString())
-            If (aaInfo) Is Nothing Then
-                result.AddSequenceInfo(New SequenceInfo(aaString, "Not Found, adding input", 0, 0, 0, 0, 0, 0, 0))
+        Try
+            For Each aa As Char In aaString
+                Dim aaInfo As AminoAcidInfo = Nothing
+
+                If Not m_AminoAcids.TryGetValue(aa.ToString(), aaInfo) Then
+                    result.AddSequenceInfo(New SequenceInfo(aa, "Not Found, adding input"))
+                Else
+                    result.AddSequenceInfo(aaInfo)
+                End If
+            Next
+
+            Return result
+
+        Catch ex As Exception
+            Dim sequenceExcerpt As String
+            If sequence.Length <= 20 Then
+                sequenceExcerpt = sequence
             Else
-                result.AddSequenceInfo(aaInfo)
+                sequenceExcerpt = sequence.Substring(0, 20) & "..."
             End If
-        Next
 
-        Return result
+            Throw New Exception("Error parsing " & sequenceExcerpt & ": " & ex.Message, ex)
+        End Try
+
     End Function
 
     Public Function GenerateHash(SourceText As String) As String
