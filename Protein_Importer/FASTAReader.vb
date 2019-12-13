@@ -1,19 +1,8 @@
 Option Strict Off
 
-Imports System
 Imports System.IO
 Imports System.Text.RegularExpressions
 Imports Protein_Storage
-Imports SequenceInfoCalculator
-
-Public Class FASTAReaderNotInitializedException
-    Inherits ApplicationException
-    Public Overrides ReadOnly Property Message As String
-        Get
-            Return "The FASTAReader instance has not been properly initialized."
-        End Get
-    End Property
-End Class
 
 Public Class FASTAReader
 
