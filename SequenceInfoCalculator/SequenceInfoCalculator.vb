@@ -196,6 +196,27 @@ Public Class SequenceInfo
     Private m_Average_Mass As Double
     Private m_Monoisotopic_Mass As Double
 
+    ''' <summary>
+    ''' Constructor
+    ''' </summary>
+    ''' <param name="seq"></param>
+    ''' <param name="seqName"></param>
+    Public Sub New(seq As String, seqName As String)
+        Me.New(seq, seqName, 0, 0, 0, 0, 0, 0.0, 0.0)
+    End Sub
+
+    ''' <summary>
+    ''' Constructor
+    ''' </summary>
+    ''' <param name="seq"></param>
+    ''' <param name="seqName"></param>
+    ''' <param name="C_Count"></param>
+    ''' <param name="H_Count"></param>
+    ''' <param name="N_Count"></param>
+    ''' <param name="O_Count"></param>
+    ''' <param name="S_Count"></param>
+    ''' <param name="average"></param>
+    ''' <param name="monoisotopic"></param>
     Public Sub New(seq As String, seqName As String,
                    C_Count As Integer, H_Count As Integer, N_Count As Integer, O_Count As Integer, S_Count As Integer,
                    average As Double, monoisotopic As Double)
