@@ -21,11 +21,13 @@ Public Class FASTAReader
 
 #End Region
 
+    ''' <summary>
+    ''' Constructor
+    ''' </summary>
     Public Sub New()
         m_DescLineMatcher = New Regex("^\>.+$")
         m_DescLineRegEx = New Regex("^\>(?<name>\S+)\s+(?<description>.*)$")
         m_NoDescLineRegEx = New Regex("^\>(?<name>\S+)$")
-
     End Sub
 
     Public ReadOnly Property LastErrorMessage As String
