@@ -9,7 +9,7 @@ Public Class SequenceInfoCalculator
 
     Friend Shared m_AminoAcids As Dictionary(Of String, AminoAcidInfo)
 
-    Private m_MonoIsotopicMass As Double
+    Private m_MonoisotopicMass As Double
     Private m_AverageMass As Double
     Private m_Length As Integer
     Private m_MolFormula As String
@@ -32,9 +32,9 @@ Public Class SequenceInfoCalculator
 
 #Region " Ken's Added Properties "
 
-    Public ReadOnly Property MonoIsotopicMass As Double
+    Public ReadOnly Property MonoisotopicMass As Double
         Get
-            Return m_MonoIsotopicMass
+            Return m_MonoisotopicMass
         End Get
     End Property
 
@@ -64,15 +64,13 @@ Public Class SequenceInfoCalculator
 
 #End Region
 
-    Public Sub CalculateSequenceInfo(Sequence As String)
-        Dim tmpSeqInfo As SequenceInfo
-        tmpSeqInfo = SequenceInfo(Sequence)
-        m_MonoIsotopicMass = tmpSeqInfo.MonoisotopicMass
+    Public Sub CalculateSequenceInfo(sequence As String)
+        Dim tmpSeqInfo = SequenceInfo(sequence)
+        m_MonoisotopicMass = tmpSeqInfo.MonoisotopicMass
         m_AverageMass = tmpSeqInfo.AverageMass
         m_MolFormula = tmpSeqInfo.MolecularFormula
-        m_Length = Sequence.Length
-        m_SHA1Hash = GenerateHash(Sequence)
-
+        m_Length = sequence.Length
+        m_SHA1Hash = GenerateHash(sequence)
     End Sub
 
     Protected Function SequenceInfo(sequence As String, Optional description As String = "") As SequenceInfo
@@ -187,7 +185,6 @@ Public Class SequenceInfoCalculator
 
 End Class
 
-
 Public Class SequenceInfo
     Private m_invalidated As Boolean = False
     Private m_sequence As String
@@ -200,8 +197,8 @@ Public Class SequenceInfo
     Private m_Monoisotopic_Mass As Double
 
     Public Sub New(seq As String, seqName As String,
-                    C_Count As Integer, H_Count As Integer, N_Count As Integer, O_Count As Integer, S_Count As Integer,
-                    average As Double, monoisotopic As Double)
+                   C_Count As Integer, H_Count As Integer, N_Count As Integer, O_Count As Integer, S_Count As Integer,
+                   average As Double, monoisotopic As Double)
 
         m_sequence = seq
         Name = seqName

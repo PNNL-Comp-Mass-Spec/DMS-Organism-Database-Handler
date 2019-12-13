@@ -505,7 +505,7 @@ Public Class clsSyncFASTAFileArchive
             si.CalculateSequenceInfo(sequence)
             m_Importer.UpdateProteinSequenceInfo(
                 proteinID, sequence, sequence.Length,
-                si.MolecularFormula, si.MonoIsotopicMass,
+                si.MolecularFormula, si.MonoisotopicMass,
                 si.AverageMass, si.SHA1Hash)
         Next
 

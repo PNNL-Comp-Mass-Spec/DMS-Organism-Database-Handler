@@ -60,13 +60,13 @@ Public Class FASTAReader
     Public Function LoadFASTAFile(filePath As String, numRecordsToLoad As Integer) As clsProteinStorage
 
         Dim fileLength As Integer
-        Dim currPos As Integer = 0
+        Dim currentPosition = 0
 
-        Dim fastaContents As clsProteinStorage = New clsProteinStorage(filePath)
+        Dim fastaContents = New clsProteinStorage(filePath)
 
-        Dim strORFTemp As String = String.Empty
-        Dim strDescTemp As String = String.Empty
-        Dim strSeqTemp As String = String.Empty
+        Dim reference As String = String.Empty
+        Dim description As String = String.Empty
+        Dim sequence As String = String.Empty
         Dim descMatch As Match
 
         Dim seqInfo = New SequenceInfoCalculator.SequenceInfoCalculator
@@ -92,38 +92,38 @@ Public Class FASTAReader
                     Do While Not s Is Nothing
                         If m_DescLineMatcher.IsMatch(s) Then
                             'DescriptionLine, new record
-                            If currPos > 0 Then 'dump current record
-                                seqInfo.CalculateSequenceInfo(strSeqTemp)
+                            If currentPosition > 0 Then 'dump current record
+                                seqInfo.CalculateSequenceInfo(sequence)
                                 recordCount += 1
                                 If recordCount Mod 100 = 0 Then
-                                    RaiseEvent LoadProgress(CSng(currPos / fileLength))     'trigger pgb update every 10th record
+                                    RaiseEvent LoadProgress(CSng(currentPosition / fileLength))     'trigger pgb update every 10th record
                                 End If
                                 fastaContents.AddProtein(New clsProteinStorageEntry(
-                                 strORFTemp, strDescTemp, strSeqTemp, seqInfo.SequenceLength,
-                                 seqInfo.MonoIsotopicMass, seqInfo.AverageMass,
+                                 reference, description, sequence, seqInfo.SequenceLength,
+                                 seqInfo.MonoisotopicMass, seqInfo.AverageMass,
                                  seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount))
                             End If
 
-                            strORFTemp = ""
-                            strDescTemp = ""
-                            strSeqTemp = ""
+                            reference = String.Empty
+                            description = String.Empty
+                            sequence = String.Empty
 
                             If m_DescLineRegEx.IsMatch(s) Then
                                 descMatch = m_DescLineRegEx.Match(s)
-                                strORFTemp = descMatch.Groups("name").Value
-                                strDescTemp = descMatch.Groups("description").Value
+                                reference = descMatch.Groups("name").Value
+                                description = descMatch.Groups("description").Value
                             ElseIf m_NoDescLineRegEx.IsMatch(s) Then
                                 descMatch = m_NoDescLineRegEx.Match(s)
-                                strORFTemp = descMatch.Groups(1).Value
-                                strDescTemp = ""
+                                reference = descMatch.Groups(1).Value
+                                description = String.Empty
                             End If
                         Else
-                            strSeqTemp &= s
+                            sequence &= s
                         End If
                         If numRecordsToLoad > 0 And recordCount >= numRecordsToLoad - 1 Then
                             Exit Do
                         End If
-                        currPos += s.Length + lineEndCharCount
+                        currentPosition += s.Length + lineEndCharCount
 
                         If fileReader.EndOfStream Then
                             Exit Do
@@ -133,13 +133,13 @@ Public Class FASTAReader
                     Loop
 
                     'dump the last record
-                    seqInfo.CalculateSequenceInfo(strSeqTemp)
+                    seqInfo.CalculateSequenceInfo(sequence)
                     recordCount += 1
 
                     fastaContents.AddProtein(New clsProteinStorageEntry(
-                     strORFTemp, strDescTemp, strSeqTemp, seqInfo.SequenceLength,
-                     seqInfo.MonoIsotopicMass, seqInfo.AverageMass,
-                     seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount))
+                        reference, description, sequence, seqInfo.SequenceLength,
+                        seqInfo.MonoisotopicMass, seqInfo.AverageMass,
+                        seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount))
 
                     RaiseEvent LoadEnd()
 
@@ -147,10 +147,9 @@ Public Class FASTAReader
 
             End If
 
-        Catch e As Exception
-            ' Exception occurred
-            ' For safety, we will clear fastaContents
-            m_LastError = e.Message
+        Catch ex As Exception
+            Dim stackTrace = PRISM.StackTraceFormatter.GetExceptionStackTrace(ex)
+            m_LastError = ex.Message & "; " & stackTrace
         End Try
 
         Return fastaContents

@@ -72,19 +72,20 @@ Public Class clsImportHandler
         Dim fastaContents As Protein_Storage.clsProteinStorage
         fastaContents = m_Importer.GetProteinEntries(filePath)
 
-        Dim strErrorMessage As String = m_Importer.LastErrorMessage()
+        Dim errorMessage As String = m_Importer.LastErrorMessage()
 
-        If Not strErrorMessage Is Nothing AndAlso strErrorMessage.Length > 0 Then
-            Dim intProteinsLoaded As Integer
+        If Not String.IsNullOrWhiteSpace(errorMessage) Then
+            Dim proteinsLoaded As Integer
 
             Try
                 If Not fastaContents Is Nothing Then
-                    intProteinsLoaded = fastaContents.ProteinCount
+                    proteinsLoaded = fastaContents.ProteinCount
                 End If
             Catch ex As Exception
                 ' Ignore errors here
             End Try
-            MessageBox.Show("GetProteinEntries returned an error after loading " & intProteinsLoaded.ToString & " proteins: " & strErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+
+            MessageBox.Show("GetProteinEntries returned an error after loading " & proteinsLoaded & " proteins: " & errorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
 
             fastaContents.ClearProteinEntries()
         End If
