@@ -45,7 +45,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -108,10 +108,6 @@
     <Reference Include="NucleotideTranslator, Version=1.0.6301.20791, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Release_DLL\NucleotideTranslator.dll</HintPath>
-    </Reference>
-    <Reference Include="ProteinFileReader, Version=1.2.5371.24645, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Shared Libraries\ProteinFileReader.dll</HintPath>
     </Reference>
     <Reference Include="Protein_Exporter">
       <HintPath>..\Release_DLL\Protein_Exporter.dll</HintPath>
@@ -322,6 +318,8 @@
   <ItemGroup>
     <PackageReference Include="PRISM-Library">
       <Version>2.5.33</Version>
+    <PackageReference Include="ProteinFileReader">
+      <Version>1.3.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
