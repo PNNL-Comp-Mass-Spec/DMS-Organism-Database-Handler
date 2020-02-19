@@ -50,8 +50,8 @@ Public Class clsAddNamingAuthority
     End Property
 
 
-    Sub New(PSConnectionString As String)
-        m_ConnectionString = PSConnectionString
+    Sub New(psConnectionString As String)
+        m_ConnectionString = psConnectionString
         m_AuthorityTable = GetAuthoritiesList()
     End Sub
 

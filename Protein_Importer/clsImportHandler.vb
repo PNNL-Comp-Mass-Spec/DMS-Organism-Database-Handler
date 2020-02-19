@@ -39,10 +39,8 @@ Public Class clsImportHandler
     Public Event LoadEnd()
     Public Event CollectionLoadComplete(CollectionsTable As DataTable)
 
-
-    Public Sub New(PISConnectionString As String)
-        m_SQLAccess = New TableManipulationBase.clsDBTask(PISConnectionString, True)
-        m_PISConnectionString = PISConnectionString
+    Public Sub New(psConnectionString As String)
+        m_SQLAccess = New TableManipulationBase.clsDBTask(psConnectionString)
         m_Importer = New FASTAReader
         m_CollectionsList = LoadProteinCollectionNames()
     End Sub
@@ -125,14 +123,13 @@ Public Class clsImportHandler
     Public Function LoadAnnotationTypes(
         proteinCollectionID As Integer) As DataTable
 
-        Dim AnnTypeIDSQL As String
-        AnnTypeIDSQL =
+        Dim sqlQuery =
             "SELECT Annotation_Type_ID " &
             "FROM V_Protein_Collection_Authority " &
             "WHERE Protein_Collection_ID = " & proteinCollectionID.ToString
 
         Dim tmpAnnTypeIDTable As DataTable
-        tmpAnnTypeIDTable = m_SQLAccess.GetTable(AnnTypeIDSQL)
+        tmpAnnTypeIDTable = m_SQLAccess.GetTable(sqlQuery)
 
         Dim dr As DataRow
         Dim authIDSB As New System.Text.StringBuilder
@@ -263,11 +260,11 @@ Public Class clsImportHandler
 
     Protected Function LoadProteinCollections(Organism_ID As Integer) As DataTable
 
-        Dim PCSQL = "SELECT FileName, Protein_Collection_ID, Organism_ID, Authority_ID, Display, Authentication_Hash" &
-                              " FROM V_Protein_Collections_By_Organism" &
-                              " WHERE Organism_ID = " & Organism_ID &
-                              " ORDER BY [FileName]"
-        Dim tmpPCTable As DataTable = m_SQLAccess.GetTable(PCSQL)
+        Dim sqlQuery = "SELECT FileName, Protein_Collection_ID, Organism_ID, Authority_ID, Display, Authentication_Hash" &
+                       " FROM V_Protein_Collections_By_Organism" &
+                       " WHERE Organism_ID = " & Organism_ID &
+                       " ORDER BY FileName"
+        Dim tmpPCTable As DataTable = m_SQLAccess.GetTable(sqlQuery)
 
         Dim dr As DataRow = tmpPCTable.NewRow
 
@@ -314,21 +311,22 @@ Public Class clsImportHandler
 
         End If
 
-        Dim MemberSQL As String =
+        Dim sqlQuery As String =
             "SELECT * From V_Protein_Storage_Entry_Import " &
-            "WHERE [Protein_Collection_ID] = " & collectionID.ToString & " " &
-                "AND Annotation_Type_ID = " & authorityID.ToString & " " &
-                "ORDER BY [Name]"
-        Return LoadCollectionMembers(MemberSQL)
+            "WHERE Protein_Collection_ID = " & collectionID & " " &
+                "AND Annotation_Type_ID = " & authorityID & " " &
+                "ORDER BY Name"
+        Return LoadCollectionMembers(sqlQuery)
     End Function
 
     Public Function LoadCollectionMembersByName(
         collectionName As String,
         authorityID As Integer) As DataTable
 
-        Dim GetIDSQL As String = "SELECT Protein_Collection_ID, Primary_Annotation_Type_ID " &
-            "FROM T_Protein_Collections " &
-            "WHERE [FileName] = " & collectionName & " ORDER BY [Name]"
+        Dim sqlQuery As String =
+                "SELECT Protein_Collection_ID, Primary_Annotation_Type_ID " &
+                "FROM T_Protein_Collections " &
+                "WHERE FileName = " & collectionName & " ORDER BY Name"
 
         Dim tmpTable As DataTable = m_SQLAccess.GetTable(sqlQuery)
         Dim foundRow As DataRow = tmpTable.Rows(0)

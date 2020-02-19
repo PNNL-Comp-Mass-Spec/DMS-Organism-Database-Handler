@@ -7,9 +7,9 @@ Public Class clsCollectionStatePickerHandler
     Private ReadOnly m_GetTables As clsDBTask
     Private ReadOnly m_SPAccess As clsAddUpdateEntries
 
-    Public Sub New(PSConnectionString As String)
-        m_GetTables = New clsDBTask(PSConnectionString)
-        m_SPAccess = New clsAddUpdateEntries(PSConnectionString)
+    Public Sub New(psConnectionString As String)
+        m_GetTables = New clsDBTask(psConnectionString)
+        m_SPAccess = New clsAddUpdateEntries(psConnectionString)
         m_forceReload = True
     End Sub
 

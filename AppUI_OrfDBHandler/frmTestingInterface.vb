@@ -347,9 +347,8 @@ Public Class frmTestingInterface
     End Sub
 
     Private Sub cmdLoadTT_Click(sender As Object, e As EventArgs) Handles cmdLoadTT.Click
-        Dim transhandler as clsTransTableHandler
-        transhandler = New clsTransTableHandler(txtConnString.Text)
-        transhandler.GetAllTranslationTableEntries(txtTransFilePath.Text)
+        Dim transHandler = New clsTransTableHandler(txtConnString.Text)
+        transHandler.GetAllTranslationTableEntries(txtTransFilePath.Text)
     End Sub
 
     Private Sub cmdLoadFF_Click(sender As Object, e As EventArgs) Handles cmdLoadFF.Click

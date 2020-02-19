@@ -112,27 +112,31 @@ Public Class clsBulkFastaImporter
         InitializeLocalVariables()
     End Sub
 
+    ''' <summary>
+    ''' Get the error message, or an empty string if no error
+    ''' </summary>
+    ''' <returns></returns>
     Public Overrides Function GetErrorMessage() As String
-        ' Returns "" if no error
-
-        Dim strErrorMessage As String
+        Dim errorMessage As String
 
         If MyBase.ErrorCode = ProcessFilesErrorCodes.LocalizedError Or
            MyBase.ErrorCode = ProcessFilesErrorCodes.NoError Then
             Select Case mLocalErrorCode
                 Case eBulkImporterErrorCodes.NoError
-                    strErrorMessage = ""
+                    errorMessage = ""
+                Case eBulkImporterErrorCodes.DatabaseError
+                    errorMessage = "Database query error"
                 Case eBulkImporterErrorCodes.UnspecifiedError
-                    strErrorMessage = "Unspecified localized error"
+                    errorMessage = "Unspecified localized error"
                 Case Else
                     ' This shouldn't happen
-                    strErrorMessage = "Unknown error state"
+                    errorMessage = "Unknown error state"
             End Select
         Else
-            strErrorMessage = MyBase.GetBaseClassErrorMessage()
+            errorMessage = MyBase.GetBaseClassErrorMessage()
         End If
 
-        Return strErrorMessage
+        Return errorMessage
     End Function
 
     Protected Sub InitializeLocalVariables()

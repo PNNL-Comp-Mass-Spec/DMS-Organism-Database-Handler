@@ -16,10 +16,10 @@ Public Class clsPSUploadHandler
     End Enum
 
     Public Structure UploadInfo
-        Public Sub New(inputFile As FileInfo, orgId As Integer, annotTypeID As Integer)
+        Public Sub New(inputFile As FileInfo, orgId As Integer, annotationType As Integer)
             FileInformation = inputFile
             OrganismID = orgId
-            AnnotationTypeID = annotTypeID
+            AnnotationTypeID = annotationType
             EncryptionPassphrase = String.Empty
             Description = String.Empty
             Source = String.Empty

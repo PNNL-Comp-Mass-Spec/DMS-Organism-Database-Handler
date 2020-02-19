@@ -25,9 +25,9 @@ Friend Class clsExtractFromFlatFile
     Private m_MaxProteinNameLength As Integer = 32
 
     'AuthorityLookupHash key = AuthorityID, value = AuthorityName
-    Sub New(AuthorityList As Dictionary(Of String, String), PSConnectionString As String)
+    Sub New(AuthorityList As Dictionary(Of String, String), psConnectionString As String)
         Me.m_Authorities = AuthorityList
-        Me.m_PSConnectionString = PSConnectionString
+        Me.m_PSConnectionString = psConnectionString
     End Sub
 
     ReadOnly Property FileContents As List(Of Dictionary(Of Integer, String))

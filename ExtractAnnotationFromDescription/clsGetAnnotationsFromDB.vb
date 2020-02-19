@@ -1,15 +1,16 @@
+Imports PRISM
+
 Friend Interface IGetAnnotationsFromDB
 
 End Interface
 
 <Obsolete("Unused")>
 Friend Class clsGetAnnotationsFromDB
-    Private m_ConnectionString As String
+    Private ReadOnly m_ConnectionString As String
     Private m_DatabaseHelper As TableManipulationBase.clsDBTask
-    Private m_AnnotationCollection As clsAnnotationInfo
 
-    Sub New(PSConnectionString As String)
-        Me.m_ConnectionString = PSConnectionString
+    Sub New(psConnectionString As String)
+        Me.m_ConnectionString = psConnectionString
     End Sub
 
     Function GetAnnotationDetails(ProteinCollectionID As Integer) As clsAnnotationInfo

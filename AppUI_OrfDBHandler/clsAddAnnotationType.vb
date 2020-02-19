@@ -57,8 +57,8 @@ Public Class clsAddAnnotationType
     End Property
 
 
-    Sub New(PSConnectionString As String)
-        m_ConnectionString = PSConnectionString
+    Sub New(psConnectionString As String)
+        m_ConnectionString = psConnectionString
 
         m_AuthAdd = New clsAddNamingAuthority(m_ConnectionString)
         m_Authorities = m_AuthAdd.AuthoritiesTable

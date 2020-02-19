@@ -3,10 +3,10 @@ Public Class frmExtractFromFlatfile
 
 #Region " Windows Form Designer generated code "
 
-    Public Sub New(AuthorityList As Dictionary(Of String, String), PSConnectionString As String)
+    Public Sub New(AuthorityList As Dictionary(Of String, String), psConnectionString As String)
         MyBase.New()
         Me.m_AuthorityList = AuthorityList
-        Me.m_PSConnectionString = PSConnectionString
+        Me.m_PSConnectionString = psConnectionString
         'This call is required by the Windows Form Designer.
         InitializeComponent()
 
@@ -423,15 +423,15 @@ Public Class frmExtractFromFlatfile
         Implements IComparer
 
         Function Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
-            Dim Auth_1 = DirectCast(x, AuthorityContainer)
-            Dim Auth_2 = DirectCast(y, AuthorityContainer)
+            Dim auth_1 = DirectCast(x, AuthorityContainer)
+            Dim auth_2 = DirectCast(y, AuthorityContainer)
 
-            Dim Reference_1 As String = Auth_1.AuthorityName
-            Dim Reference_2 As String = Auth_2.AuthorityName
+            Dim reference_1 As String = auth_1.AuthorityName
+            Dim reference_2 As String = auth_2.AuthorityName
 
-            If Reference_1 > Reference_2 Then
+            If reference_1 > reference_2 Then
                 Return 1
-            ElseIf Reference_1 < Reference_2 Then
+            ElseIf reference_1 < reference_2 Then
                 Return -1
             Else
                 Return 0
