@@ -15,18 +15,17 @@ Public Class clsImportHandler
     Protected m_SQLAccess As TableManipulationBase.clsDBTask
     Protected WithEvents m_Importer As FASTAReader
 
-    Protected m_PISConnectionString As String
-    'Protected m_ucProgress As ProgressBar.ucProgress
     Protected m_PersistentTaskNum As Integer
 
     Protected m_SPError As String
 
-    Const ProteinCollectionsTable As String = "T_Protein_Collections"
-    Const ProteinsTable As String = "T_Proteins"
-    Const MembersTable As String = "T_Protein_Collection_Members"
-    Const NamesTable As String = "T_Protein_Names"
-    Const PositionTable As String = "T_Position_Info"
-    Const CollectionProteinMap As String = "V_Protein_Collections_By_Organism"
+    ' Unused constants
+    'Const ProteinCollectionsTable As String = "T_Protein_Collections"
+    'Const ProteinsTable As String = "T_Proteins"
+    'Const MembersTable As String = "T_Protein_Collection_Members"
+    'Const NamesTable As String = "T_Protein_Names"
+    'Const PositionTable As String = "T_Position_Info"
+    'Const CollectionProteinMap As String = "V_Protein_Collections_By_Organism"
 
     Protected m_FileContents As clsProteinStorage
     Protected m_CollectionsList As DataTable
@@ -445,9 +444,7 @@ Public Class clsImportHandler
     End Function
 
     Public Function LoadProteinsForBatch(
-        FullFilePath As String,
-        SelectedOrganismID As Integer,
-        SelectedAuthorityID As Integer) As Protein_Storage.clsProteinStorage
+        fullFilePath As String) As clsProteinStorage
 
         Dim ps As clsProteinStorage = LoadFASTA(fullFilePath)
 

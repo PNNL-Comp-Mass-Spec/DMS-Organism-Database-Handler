@@ -75,8 +75,7 @@ Public Class clsArchiveToFile
             proteinCount = GetProteinCount(sourceFilePath)
 
             archivePath = GenerateArchivePath(
-              sourceFilePath, proteinCollectionID,
-              fi.LastWriteTime,
+              sourceFilePath,
               sourceAuthenticationHash,
               archivedFileType, outputSequenceType)
 
@@ -143,8 +142,6 @@ Public Class clsArchiveToFile
 
     Protected Function GenerateArchivePath(
      sourceFilePath As String,
-     proteinCollectionID As Integer,
-     fileDate As DateTime,
      authentication_Hash As String,
      archivedFileType As clsArchiveOutputFilesBase.CollectionTypes,
      outputSequenceType As clsGetFASTAFromDMS.SequenceTypes) As String

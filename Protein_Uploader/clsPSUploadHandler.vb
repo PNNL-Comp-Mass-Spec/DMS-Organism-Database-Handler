@@ -279,7 +279,7 @@ Public Class clsPSUploadHandler
             End If
 
             If eResult = DialogResult.Yes Then
-                Dim proteinStorage = m_Importer.LoadProteinsForBatch(upInfo.FileInformation.FullName, upInfo.OrganismID, upInfo.AnnotationTypeID)
+                Dim proteinStorage = m_Importer.LoadProteinsForBatch(upInfo.FileInformation.FullName)
                 If Not proteinStorage Is Nothing Then
                     If proteinStorage.ProteinCount = 0 Then
                         ' No proteins
