@@ -135,9 +135,6 @@
     <Compile Include="clsGetAnnotationsFromDB.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsRegexExtract.vb">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="frmExtractFromFlatfile.vb">
       <SubType>Form</SubType>
     </Compile>
