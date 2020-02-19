@@ -109,6 +109,11 @@
   <ItemGroup>
     <Folder Include="My Project\" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="PRISM-DatabaseUtils">
+      <Version>1.0.6</Version>
+    </PackageReference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
     <PreBuildEvent>if not exist "$(ProjectDir)..\Release_DLL" (mkdir "$(ProjectDir)..\Release_DLL")</PreBuildEvent>

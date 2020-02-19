@@ -1,7 +1,6 @@
 Option Strict On
 
 Imports System.Collections.Generic
-Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Linq
 Imports System.Runtime.InteropServices
@@ -10,6 +9,7 @@ Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports PRISM
+Imports PRISMDatabaseUtils
 Imports PRISMWin
 Imports TableManipulationBase
 
@@ -89,11 +89,11 @@ Public Class clsGetFASTAFromDMS
 
         m_SHA1Provider = New SHA1Managed()
 
-        Dim persistConnection = Not String.IsNullOrWhiteSpace(dbConnectionString)
         If String.IsNullOrWhiteSpace(dbConnectionString) Then
             m_DatabaseAccessor = Nothing
         Else
-            m_DatabaseAccessor = New clsDBTask(dbConnectionString, persistConnection, True)
+            m_DatabaseAccessor = New clsDBTask(dbConnectionString)
+            RegisterEvents(m_DatabaseAccessor)
         End If
 
         ClassSelector(databaseFormatType, outputSequenceType, decoyUsesXXX)
@@ -949,26 +949,26 @@ Public Class clsGetFASTAFromDMS
             Return 0
         End If
 
-        Dim sp_Save = New SqlCommand("AddLegacyFileUploadRequest", m_DatabaseAccessor.Connection) With {
-                .CommandType = CommandType.StoredProcedure
-                }
+        Dim dbTools = m_DatabaseAccessor.DBTools
 
-        ' Define parameters
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim cmdSave = dbTools.CreateCommand("AddLegacyFileUploadRequest", CommandType.StoredProcedure)
 
-        sp_Save.Parameters.Add("@legacy_File_name", SqlDbType.VarChar, 128).Value = legacyFilename
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@legacy_File_name", SqlType.VarChar, 128).Value = legacyFilename
+        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256).Direction = ParameterDirection.Output
+        dbTools.AddParameter(cmdSave, "@AuthenticationHash", SqlType.VarChar, 8).Value = authenticationHash
 
-        sp_Save.Parameters.Add("@AuthenticationHash", SqlDbType.VarChar, 8).Value = authenticationHash
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
-
-        'Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
+
     End Function
 
     Private Function GenerateHash(sourceText As String) As String

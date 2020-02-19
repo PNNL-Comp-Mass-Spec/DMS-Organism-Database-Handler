@@ -13,98 +13,69 @@ Friend Class clsGetAnnotationsFromDB
     End Sub
 
     Function GetAnnotationDetails(ProteinCollectionID As Integer) As clsAnnotationInfo
-        Me.m_DatabaseHelper = New TableManipulationBase.clsDBTask(Me.m_ConnectionString, True)
-
-        Dim CollectionName As String = String.Empty
-
-
-        Dim SQLStatement As String
-        Dim dr As DataRow
-        Dim foundrows() As DataRow
-
-        Dim tmpRefID As Integer
-        Dim tmpName As String
-        Dim tmpDesc As String
-        Dim tmpProtID As Integer
-        Dim tmpNameAuthID As Integer
+        Me.m_DatabaseHelper = New TableManipulationBase.clsDBTask(m_ConnectionString)
 
         ' FYI: The constructor for clsAnnotationInfo() doesn't use CollectionName or ProteinCollectionID at present
         Dim info As New clsAnnotationInfo()
 
-        Dim tmpNameTable As DataTable
-        Dim tmpAuthorityTable As DataTable
-        Dim tmpAnnotationGroupTable As DataTable
-        Dim tmpAnnotationTable As DataTable
-
         'Get Protein Collection Name
-        SQLStatement = "SELECT TOP 1 Name FROM V_Collection_Picker " &
-                            "WHERE ID = " & ProteinCollectionID
-        tmpNameTable = Me.m_DatabaseHelper.GetTable(SQLStatement)
-        CollectionName = tmpNameTable.Rows(0).Item("Name").ToString
+        Dim sqlQuery1 = "SELECT TOP 1 Name FROM V_Collection_Picker " &
+                       "WHERE ID = " & ProteinCollectionID
+        Dim nameLookupTable = Me.m_DatabaseHelper.GetTable(sqlQuery1)
 
-        tmpNameTable.Clear()
-        tmpNameTable = Nothing
+        ' ReSharper disable once UnusedVariable
+        Dim collectionName = nameLookupTable.Rows(0).Item("Name").ToString()
 
         'Get Naming Authority Lookup
 
-        SQLStatement = "SELECT Authority_ID, Name FROM T_Naming_Authorities"
-        tmpAuthorityTable = Me.m_DatabaseHelper.GetTable(SQLStatement)
+        Dim sqlQuery2 = "SELECT Authority_ID, Name FROM T_Naming_Authorities"
+        Dim authorityLookupTable = Me.m_DatabaseHelper.GetTable(sqlQuery2)
 
-        foundrows = tmpAuthorityTable.Select("")
-        For Each dr In foundrows
-            info.AddAuthorityNameToLookup(DirectCast(dr.Item("Authority_ID"), Int32),
-                DirectCast(dr.Item("Name"), String))
+        Dim authorityLookupRows = authorityLookupTable.Select("")
+        For Each dr As DataRow In authorityLookupRows
+            info.AddAuthorityNameToLookup(
+                DBTools.GetInteger(dr.Item("Authority_ID")),
+                DBTools.GetString(dr.Item("Name")))
         Next
-
-        tmpAuthorityTable.Clear()
-        tmpAuthorityTable = Nothing
 
 
         'Get Annotation Group Information
 
-        SQLStatement = "SELECT Annotation_Group, Authority_ID " &
-            "FROM T_Annotation_Groups " &
-            "WHERE Protein_Collection_ID = " & ProteinCollectionID.ToString
+        Dim sqlQuery3 = "SELECT Annotation_Group, Authority_ID " &
+                        "FROM T_Annotation_Groups " &
+                        "WHERE Protein_Collection_ID = " & ProteinCollectionID.ToString
 
-        tmpAnnotationGroupTable = Me.m_DatabaseHelper.GetTable(SQLStatement)
+        Dim annotationGroupLookup = Me.m_DatabaseHelper.GetTable(sqlQuery3)
 
-        For Each dr In tmpAnnotationGroupTable.Rows
+        For Each dr As DataRow In annotationGroupLookup.Rows
             info.AddAnnotationGroupLookup(
-                DirectCast(dr.Item("Annotation_Group"), Int32),
-                DirectCast(dr.Item("Authority_ID"), Int32))
+                DBTools.GetInteger(dr.Item("Annotation_Group")),
+                DBTools.GetInteger(dr.Item("Authority_ID")))
         Next
-
 
 
         'Get Collection Member Primary Information
 
         'Get Reference_ID, Name, Description, Protein_ID, Protein_Collection_ID,
         '   Authority_ID, Annotation_Group_ID
-        SQLStatement = "SELECT * FROM V_Protein_Collection_Members " &
+        Dim sqlQuery4 = "SELECT * FROM V_Protein_Collection_Members " &
             "WHERE Protein_Collection_ID = " & ProteinCollectionID.ToString &
             " AND Annotation_Group_ID = 0"
-        tmpAnnotationTable = Me.m_DatabaseHelper.GetTable(SQLStatement)
+        Dim annotationTableLookup = Me.m_DatabaseHelper.GetTable(sqlQuery4)
 
+        Dim annotationTableRows = annotationTableLookup.Select("")
 
-        foundrows = tmpAnnotationTable.Select("")
-
-        For Each dr In foundrows
-            tmpRefID = DirectCast(dr.Item("Reference_ID"), Int32)
-            tmpName = DirectCast(dr.Item("Name"), String)
-            tmpDesc = DirectCast(dr.Item("Description"), String)
-            tmpProtID = DirectCast(dr.Item("Protein_ID"), Int32)
-            tmpNameAuthID = DirectCast(dr.Item("Annotation_Type_ID"), Int32)
+        For Each dr As DataRow In annotationTableRows
+            Dim tmpRefID = DBTools.GetInteger(dr.Item("Reference_ID"))
+            Dim tmpName = DBTools.GetString(dr.Item("Name"))
+            Dim tmpDesc = DBTools.GetString(dr.Item("Description"))
+            Dim tmpProtID = DBTools.GetInteger(dr.Item("Protein_ID"))
+            Dim tmpNameAuthID = DBTools.GetInteger(dr.Item("Annotation_Type_ID"))
 
             info.AddPrimaryAnnotation(
                 tmpProtID, tmpName, tmpDesc, tmpRefID, tmpNameAuthID)
         Next
 
-        tmpAnnotationTable.Clear()
-        tmpAnnotationTable = Nothing
-
-
-        'Get Additional Annotations
-        SQLStatement = "SELECT "
 
         Return info
 

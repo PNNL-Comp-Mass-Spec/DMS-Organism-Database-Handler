@@ -1,4 +1,5 @@
 Imports System.Collections.Generic
+Imports PRISMDatabaseUtils
 Imports Protein_Exporter
 
 Public Class clsAddUpdateEntries
@@ -64,12 +65,13 @@ Public Class clsAddUpdateEntries
 #End Region
 
     Public Sub New(PISConnectionString As String)
-        m_DatabaseAccessor = New TableManipulationBase.clsDBTask(PISConnectionString, True)
+        m_DatabaseAccessor = New TableManipulationBase.clsDBTask(PISConnectionString)
         m_Hasher = New Security.Cryptography.SHA1Managed
     End Sub
 
+    <Obsolete("No longer used")>
     Public Sub CloseConnection()
-        m_DatabaseAccessor.CloseConnection()
+
     End Sub
 
     ''' <summary>
@@ -451,29 +453,27 @@ Public Class clsAddUpdateEntries
     Protected Function RunSP_GetProteinCollectionState(
         proteinCollectionID As Integer) As String
 
-        Dim sp_Save = New SqlClient.SqlCommand("GetProteinCollectionState", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
+        Dim dbTools = m_DatabaseAccessor.DBTools
 
-        'Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim cmdSave = dbTools.CreateCommand("GetProteinCollectionState", CommandType.StoredProcedure)
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int).Value = proteinCollectionID
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@State_Name", SqlDbType.VarChar, 32).Direction = ParameterDirection.Output
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@Collection_ID", SqlType.Int).Value = proteinCollectionID
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
+        Dim stateNameParam = dbTools.AddParameter(cmdSave, "@State_Name", SqlType.VarChar, 32, ParameterDirection.Output)
 
-        'Get return value
-        ' Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
 
-        Dim stateName = CStr(sp_Save.Parameters("@State_Name").Value)
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
+
+        Dim stateName = dbTools.GetString(stateNameParam.Value)
 
         Return stateName
-
 
     End Function
 
@@ -492,31 +492,32 @@ Public Class clsAddUpdateEntries
             encryptionFlag = 1
         End If
 
+        Dim dbTools = m_DatabaseAccessor.DBTools
+
+        Dim cmdSave = dbTools.CreateCommand("AddProteinSequence", CommandType.StoredProcedure)
+
         ' Use a 5 minute timeout
-        Dim sp_Save = New SqlClient.SqlCommand("AddProteinSequence", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure,
-            .CommandTimeout = 300
-        }
+        cmdSave.CommandTimeout = 300
 
-        'Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@sequence", SqlDbType.Text).Value = sequence
-        sp_Save.Parameters.Add("@length", SqlDbType.Int).Value = length
-        sp_Save.Parameters.Add("@molecular_formula", SqlDbType.VarChar, 128).Value = molecularFormula
-        sp_Save.Parameters.Add("@monoisotopic_mass", SqlDbType.Float, 8).Value = monoisotopicMass
-        sp_Save.Parameters.Add("@average_mass", SqlDbType.Float, 8).Value = averageMass
-        sp_Save.Parameters.Add("@sha1_hash", SqlDbType.VarChar, 40).Value = sha1_Hash
-        sp_Save.Parameters.Add("@is_encrypted", SqlDbType.TinyInt).Value = encryptionFlag
-        sp_Save.Parameters.Add("@mode", SqlDbType.VarChar, 12).Value = mode.ToString
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@sequence", SqlType.Text).Value = sequence
+        dbTools.AddParameter(cmdSave, "@length", SqlType.Int).Value = length
+        dbTools.AddParameter(cmdSave, "@molecular_formula", SqlType.VarChar, 128).Value = molecularFormula
+        dbTools.AddParameter(cmdSave, "@monoisotopic_mass", SqlType.Float, 8).Value = monoisotopicMass
+        dbTools.AddParameter(cmdSave, "@average_mass", SqlType.Float, 8).Value = averageMass
+        dbTools.AddParameter(cmdSave, "@sha1_hash", SqlType.VarChar, 40).Value = sha1_Hash
+        dbTools.AddParameter(cmdSave, "@is_encrypted", SqlType.TinyInt).Value = encryptionFlag
+        dbTools.AddParameter(cmdSave, "@mode", SqlType.VarChar, 12).Value = mode.ToString
+        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output)
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
 
-        'Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
 
@@ -531,28 +532,28 @@ Public Class clsAddUpdateEntries
       averageMass As Double,
       sha1_Hash As String) As Integer
 
-        Dim sp_Save = New SqlClient.SqlCommand("UpdateProteinSequenceInfo", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
+        Dim dbTools = m_DatabaseAccessor.DBTools
 
-        'Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim cmdSave = dbTools.CreateCommand("UpdateProteinSequenceInfo", CommandType.StoredProcedure)
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@Protein_ID", SqlDbType.Int).Value = proteinID
-        sp_Save.Parameters.Add("@sequence", SqlDbType.Text).Value = sequence
-        sp_Save.Parameters.Add("@length", SqlDbType.Int).Value = length
-        sp_Save.Parameters.Add("@molecular_formula", SqlDbType.VarChar, 128).Value = molecularFormula
-        sp_Save.Parameters.Add("@monoisotopic_mass", SqlDbType.Float, 8).Value = monoisotopicMass
-        sp_Save.Parameters.Add("@average_mass", SqlDbType.Float, 8).Value = averageMass
-        sp_Save.Parameters.Add("@sha1_hash", SqlDbType.VarChar, 40).Value = sha1_Hash
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@Protein_ID", SqlType.Int).Value = proteinID
+        dbTools.AddParameter(cmdSave, "@sequence", SqlType.Text).Value = sequence
+        dbTools.AddParameter(cmdSave, "@length", SqlType.Int).Value = length
+        dbTools.AddParameter(cmdSave, "@molecular_formula", SqlType.VarChar, 128).Value = molecularFormula
+        dbTools.AddParameter(cmdSave, "@monoisotopic_mass", SqlType.Float, 8).Value = monoisotopicMass
+        dbTools.AddParameter(cmdSave, "@average_mass", SqlType.Float, 8).Value = averageMass
+        dbTools.AddParameter(cmdSave, "@sha1_hash", SqlType.VarChar, 40).Value = sha1_Hash
+        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output)
 
-        'Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
+
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
 
@@ -569,46 +570,43 @@ Public Class clsAddUpdateEntries
       numResidues As Integer,
       mode As SPModes) As Integer
 
-        Dim sp_Save = New SqlClient.SqlCommand("AddUpdateProteinCollection", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
+        Dim dbTools = m_DatabaseAccessor.DBTools
+
+        Dim cmdSave = dbTools.CreateCommand("AddUpdateProteinCollection", CommandType.StoredProcedure)
 
         ' Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
         ' Define parameters for the procedure's arguments
         ' Note that the @fileName parameter is actually the protein collection name; not the original .fasta file name
-        sp_Save.Parameters.Add("@fileName", SqlDbType.VarChar, 128).Value = proteinCollectionName
-        sp_Save.Parameters.Add("@Description", SqlDbType.VarChar, 900).Value = description
-        sp_Save.Parameters.Add("@collectionSource", SqlDbType.VarChar, 900).Value = collectionSource
-        sp_Save.Parameters.Add("@collection_type", SqlDbType.Int).Value = CInt(collectionType)
-        sp_Save.Parameters.Add("@collection_state", SqlDbType.Int).Value = CInt(collectionState)
-        sp_Save.Parameters.Add("@primary_annotation_type_id", SqlDbType.Int).Value = CInt(annotationTypeID)
-        sp_Save.Parameters.Add("@numProteins", SqlDbType.Int).Value = numProteins
-        sp_Save.Parameters.Add("@numResidues", SqlDbType.Int).Value = numResidues
-        sp_Save.Parameters.Add("@mode", SqlDbType.VarChar, 12).Value = mode.ToString
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 512).Direction = ParameterDirection.Output
+        dbTools.AddParameter(cmdSave, "@fileName", SqlType.VarChar, 128).Value = proteinCollectionName
+        dbTools.AddParameter(cmdSave, "@Description", SqlType.VarChar, 900).Value = description
+        dbTools.AddParameter(cmdSave, "@collectionSource", SqlType.VarChar, 900).Value = collectionSource
+        dbTools.AddParameter(cmdSave, "@collection_type", SqlType.Int).Value = CInt(collectionType)
+        dbTools.AddParameter(cmdSave, "@collection_state", SqlType.Int).Value = CInt(collectionState)
+        dbTools.AddParameter(cmdSave, "@primary_annotation_type_id", SqlType.Int).Value = CInt(annotationTypeID)
+        dbTools.AddParameter(cmdSave, "@numProteins", SqlType.Int).Value = numProteins
+        dbTools.AddParameter(cmdSave, "@numResidues", SqlType.Int).Value = numResidues
+        dbTools.AddParameter(cmdSave, "@mode", SqlType.VarChar, 12).Value = mode.ToString
+        Dim messageParam = dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 512, ParameterDirection.Output)
 
         ' Execute the sp
-        sp_Save.ExecuteNonQuery()
+        dbTools.ExecuteSP(cmdSave)
 
         ' Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         If ret = 0 Then
             ' A zero was returned for the protein collection ID; this indicates and error
             ' Raise an exception
 
-            Dim Message As String
-            Dim SPMsg As String
+            Dim msg = "AddUpdateProteinCollection returned 0 for the Protein Collection ID"
 
-            Message = "AddUpdateProteinCollection returned 0 for the Protein Collection ID"
+            Dim spMsg = dbTools.GetString(messageParam.Value)
 
-            SPMsg = CStr(sp_Save.Parameters("@Message").Value)
+            If Not String.IsNullOrEmpty(SPMsg) Then msg &= "; " & SPMsg
 
-            If Not String.IsNullOrEmpty(SPMsg) Then Message &= "; " & SPMsg
-
-            Throw New ConstraintException(Message)
+            Throw New ConstraintException(msg)
 
         End If
 
@@ -638,26 +636,26 @@ Public Class clsAddUpdateEntries
       sortingIndex As Integer, Protein_Collection_ID As Integer,
       mode As String) As Integer
 
-        Dim sp_Save = New SqlClient.SqlCommand("AddUpdateProteinCollectionMember_New", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
+        Dim dbTools = m_DatabaseAccessor.DBTools
 
-        'Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim cmdSave = dbTools.CreateCommand("AddUpdateProteinCollectionMember_New", CommandType.StoredProcedure)
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@reference_ID", SqlDbType.Int).Value = reference_ID
-        sp_Save.Parameters.Add("@protein_ID", SqlDbType.Int).Value = Protein_ID
-        sp_Save.Parameters.Add("@sorting_index", SqlDbType.Int).Value = sortingIndex
-        sp_Save.Parameters.Add("@protein_collection_ID", SqlDbType.Int).Value = Protein_Collection_ID
-        sp_Save.Parameters.Add("@mode", SqlDbType.VarChar, 10).Value = mode
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@reference_ID", SqlType.Int).Value = reference_ID
+        dbTools.AddParameter(cmdSave, "@protein_ID", SqlType.Int).Value = Protein_ID
+        dbTools.AddParameter(cmdSave, "@sorting_index", SqlType.Int).Value = sortingIndex
+        dbTools.AddParameter(cmdSave, "@protein_collection_ID", SqlType.Int).Value = Protein_Collection_ID
+        dbTools.AddParameter(cmdSave, "@mode", SqlType.VarChar, 10).Value = mode
+        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output)
 
-        'Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
+
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
 
@@ -668,24 +666,24 @@ Public Class clsAddUpdateEntries
 
         Dim phraseHash As String = GenerateHash(passphrase)
 
-        Dim sp_Save = New SqlClient.SqlCommand("AddUpdateEncryptionMetadata", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
+        Dim dbTools = m_DatabaseAccessor.DBTools
 
-        'Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim cmdSave = dbTools.CreateCommand("AddUpdateEncryptionMetadata", CommandType.StoredProcedure)
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@Protein_Collection_ID", SqlDbType.Int).Value = protein_Collection_ID
-        sp_Save.Parameters.Add("@Encryption_Passphrase", SqlDbType.VarChar, 64).Value = passphrase
-        sp_Save.Parameters.Add("@Passphrase_SHA1_Hash", SqlDbType.VarChar, 40).Value = phraseHash
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@Protein_Collection_ID", SqlType.Int).Value = protein_Collection_ID
+        dbTools.AddParameter(cmdSave, "@Encryption_Passphrase", SqlType.VarChar, 64).Value = passphrase
+        dbTools.AddParameter(cmdSave, "@Passphrase_SHA1_Hash", SqlType.VarChar, 40).Value = phraseHash
+        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output)
 
-        'Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
+
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
 
@@ -696,24 +694,24 @@ Public Class clsAddUpdateEntries
       fullName As String,
       webAddress As String) As Integer
 
-        Dim sp_Save = New SqlClient.SqlCommand("AddNamingAuthority", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
+        Dim dbTools = m_DatabaseAccessor.DBTools
 
-        'Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim cmdSave = dbTools.CreateCommand("AddNamingAuthority", CommandType.StoredProcedure)
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@name", SqlDbType.VarChar, 64).Value = shortName
-        sp_Save.Parameters.Add("@description", SqlDbType.VarChar, 128).Value = fullName
-        sp_Save.Parameters.Add("@web_address", SqlDbType.VarChar, 128).Value = webAddress
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@name", SqlType.VarChar, 64).Value = shortName
+        dbTools.AddParameter(cmdSave, "@description", SqlType.VarChar, 128).Value = fullName
+        dbTools.AddParameter(cmdSave, "@web_address", SqlType.VarChar, 128).Value = webAddress
+        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output)
 
-        'Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
+
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
 
@@ -725,25 +723,25 @@ Public Class clsAddUpdateEntries
       example As String,
       authorityID As Integer) As Integer
 
-        Dim sp_Save = New SqlClient.SqlCommand("AddAnnotationType", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
+        Dim dbTools = m_DatabaseAccessor.DBTools
 
-        'Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim cmdSave = dbTools.CreateCommand("AddAnnotationType", CommandType.StoredProcedure)
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@name", SqlDbType.VarChar, 64).Value = typeName
-        sp_Save.Parameters.Add("@description", SqlDbType.VarChar, 128).Value = description
-        sp_Save.Parameters.Add("@example", SqlDbType.VarChar, 128).Value = example
-        sp_Save.Parameters.Add("@authID", SqlDbType.Int).Value = authorityID
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@name", SqlType.VarChar, 64).Value = typeName
+        dbTools.AddParameter(cmdSave, "@description", SqlType.VarChar, 128).Value = description
+        dbTools.AddParameter(cmdSave, "@example", SqlType.VarChar, 128).Value = example
+        dbTools.AddParameter(cmdSave, "@authID", SqlType.Int).Value = authorityID
+        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output)
 
-        'Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
+
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
 
@@ -753,23 +751,23 @@ Public Class clsAddUpdateEntries
       proteinCollectionID As Integer,
       collectionStateID As Integer) As Integer
 
-        Dim sp_Save = New SqlClient.SqlCommand("UpdateProteinCollectionState", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
+        Dim dbTools = m_DatabaseAccessor.DBTools
 
-        'Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim cmdSave = dbTools.CreateCommand("UpdateProteinCollectionState", CommandType.StoredProcedure)
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@protein_collection_ID", SqlDbType.Int).Value = proteinCollectionID
-        sp_Save.Parameters.Add("@state_ID", SqlDbType.Int).Value = collectionStateID
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@protein_collection_ID", SqlType.Int).Value = proteinCollectionID
+        dbTools.AddParameter(cmdSave, "@state_ID", SqlType.Int).Value = collectionStateID
+        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output)
 
-        'Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
+
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
 
@@ -783,25 +781,26 @@ Public Class clsAddUpdateEntries
     ''' <remarks>NumResidues in T_Protein_Collections is set to 0</remarks>
     Protected Function RunSP_DeleteProteinCollectionMembers(proteinCollectionID As Integer, numProteinsForReLoad As Integer) As Integer
 
+        Dim dbTools = m_DatabaseAccessor.DBTools
+
+        Dim cmdSave = dbTools.CreateCommand("DeleteProteinCollectionMembers", CommandType.StoredProcedure)
+
         ' Use a 10 minute timeout
-        Dim sp_Save = New SqlClient.SqlCommand("DeleteProteinCollectionMembers", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure,
-            .CommandTimeout = 600
-        }
+        cmdSave.CommandTimeout = 600
 
-        'Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int).Value = proteinCollectionID
-        sp_Save.Parameters.Add("@NumProteinsForReLoad", SqlDbType.Int).Value = numProteinsForReLoad
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@Collection_ID", SqlType.Int).Value = proteinCollectionID
+        dbTools.AddParameter(cmdSave, "@NumProteinsForReLoad", SqlType.Int).Value = numProteinsForReLoad
+        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output)
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
 
-        'Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
 
@@ -809,21 +808,21 @@ Public Class clsAddUpdateEntries
 
     Protected Function RunSP_GetProteinCollectionMemberCount(proteinCollectionID As Integer) As Integer
 
-        Dim sp_Save = New SqlClient.SqlCommand("GetProteinCollectionMemberCount", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
+        Dim dbTools = m_DatabaseAccessor.DBTools
 
-        'Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim cmdSave = dbTools.CreateCommand("GetProteinCollectionMemberCount", CommandType.StoredProcedure)
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int).Value = proteinCollectionID
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@Collection_ID", SqlType.Int).Value = proteinCollectionID
 
-        'Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
+
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
 
@@ -839,51 +838,48 @@ Public Class clsAddUpdateEntries
 
         If maxProteinNameLength <= 0 Then maxProteinNameLength = 32
 
-        Dim sp_Save = New SqlClient.SqlCommand("AddProteinReference", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
+        Dim dbTools = m_DatabaseAccessor.DBTools
 
-        'Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim cmdSave = dbTools.CreateCommand("AddProteinReference", CommandType.StoredProcedure)
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@name", SqlDbType.VarChar, 128).Value = protein_Name
-        sp_Save.Parameters.Add("@description", SqlDbType.VarChar, 900).Value = description
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
+
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@name", SqlType.VarChar, 128).Value = protein_Name
+        dbTools.AddParameter(cmdSave, "@description", SqlType.VarChar, 900).Value = description
 
         'TODO (org fix) Remove this reference and fix associated stored procedure
-        'myParam = sp_Save.Parameters.Add("@organism_ID", SqlDbType.Int)
+        'myParam = dbTools.AddParameter(cmdSave, "@organism_ID", SqlType.Int)
         'myParam.Direction = ParameterDirection.Input
         'myParam.Value = OrganismID
 
-        sp_Save.Parameters.Add("@authority_ID", SqlDbType.Int).Value = authorityID
-        sp_Save.Parameters.Add("@protein_ID", SqlDbType.Int).Value = proteinID
+        dbTools.AddParameter(cmdSave, "@authority_ID", SqlType.Int).Value = authorityID
+        dbTools.AddParameter(cmdSave, "@protein_ID", SqlType.Int).Value = proteinID
 
         Dim textToHash = protein_Name + "_" + description + "_" + proteinID.ToString
-        sp_Save.Parameters.Add("@nameDescHash", SqlDbType.VarChar, 40).Value = GenerateHash(textToHash.ToLower())
+        dbTools.AddParameter(cmdSave, "@nameDescHash", SqlType.VarChar, 40).Value = GenerateHash(textToHash.ToLower())
 
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
-        sp_Save.Parameters.Add("@MaxProteinNameLength", SqlDbType.Int).Value = maxProteinNameLength
+        Dim messageParam = dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output)
+        dbTools.AddParameter(cmdSave, "@MaxProteinNameLength", SqlType.Int).Value = maxProteinNameLength
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
 
-        'Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         If ret = 0 Then
-            ' A zero was returned for the protein reference ID; this indicates and error
+            ' A zero was returned for the protein reference ID; this indicates an error
             ' Raise an exception
 
-            Dim Message As String
-            Dim SPMsg As String
+            Dim msg = "AddProteinReference returned 0"
 
-            Message = "AddProteinReference returned 0"
+            Dim spMsg = dbTools.GetString(messageParam.Value)
 
-            SPMsg = CStr(sp_Save.Parameters("@Message").Value)
+            If Not String.IsNullOrEmpty(spMsg) Then msg &= "; " & spMsg
 
-            If Not String.IsNullOrEmpty(SPMsg) Then Message &= "; " & SPMsg
-
-            Throw New ConstraintException(Message)
+            Throw New ConstraintException(msg)
 
         End If
 
@@ -894,22 +890,22 @@ Public Class clsAddUpdateEntries
 
     Protected Function RunSP_GetProteinCollectionID(proteinCollectionName As String) As Integer
 
-        Dim sp_Save = New SqlClient.SqlCommand("GetProteinCollectionID", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
+        Dim dbTools = m_DatabaseAccessor.DBTools
+
+        Dim cmdSave = dbTools.CreateCommand("GetProteinCollectionID", CommandType.StoredProcedure)
 
         ' Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
         ' Define parameters for the procedure's arguments
         ' Note that the @fileName parameter is actually the protein collection name; not the original .fasta file name
-        sp_Save.Parameters.Add("@fileName", SqlDbType.VarChar, 128).Value = proteinCollectionName
+        dbTools.AddParameter(cmdSave, "@fileName", SqlType.VarChar, 128).Value = proteinCollectionName
 
         ' Execute the sp
-        sp_Save.ExecuteNonQuery()
+        dbTools.ExecuteSP(cmdSave)
 
         ' Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
 
@@ -922,25 +918,25 @@ Public Class clsAddUpdateEntries
       numProteins As Integer,
       totalResidueCount As Integer) As Integer
 
-        Dim sp_Save = New SqlClient.SqlCommand("AddCRC32FileAuthentication", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
+        Dim dbTools = m_DatabaseAccessor.DBTools
 
-        'Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim cmdSave = dbTools.CreateCommand("AddCRC32FileAuthentication", CommandType.StoredProcedure)
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int).Value = protein_Collection_ID
-        sp_Save.Parameters.Add("@CRC32FileHash", SqlDbType.VarChar, 40).Value = authenticationHash
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
-        sp_Save.Parameters.Add("@numProteins", SqlDbType.Int).Value = numProteins
-        sp_Save.Parameters.Add("@totalResidueCount", SqlDbType.Int).Value = totalResidueCount
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@Collection_ID", SqlType.Int).Value = protein_Collection_ID
+        dbTools.AddParameter(cmdSave, "@CRC32FileHash", SqlType.VarChar, 40).Value = authenticationHash
+        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output)
+        dbTools.AddParameter(cmdSave, "@numProteins", SqlType.Int).Value = numProteins
+        dbTools.AddParameter(cmdSave, "@totalResidueCount", SqlType.Int).Value = totalResidueCount
 
-        'Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
+
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
 
@@ -950,23 +946,23 @@ Public Class clsAddUpdateEntries
       protein_Collection_ID As Integer,
       organismID As Integer) As Integer
 
-        Dim sp_Save = New SqlClient.SqlCommand("AddCollectionOrganismXref", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
+        Dim dbTools = m_DatabaseAccessor.DBTools
 
-        'Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim cmdSave = dbTools.CreateCommand("AddCollectionOrganismXref", CommandType.StoredProcedure)
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@Protein_Collection_ID", SqlDbType.Int).Value = protein_Collection_ID
-        sp_Save.Parameters.Add("@Organism_ID", SqlDbType.Int).Value = organismID
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@Protein_Collection_ID", SqlType.Int).Value = protein_Collection_ID
+        dbTools.AddParameter(cmdSave, "@Organism_ID", SqlType.Int).Value = organismID
+        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output)
 
-        'Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
+
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
 
@@ -983,23 +979,23 @@ Public Class clsAddUpdateEntries
         tmpHash = protein_Name + "_" + description + "_" + protein_ID.ToString
         Dim tmpGenSHA As String = GenerateHash(tmpHash.ToLower)
 
-        Dim sp_Save = New SqlClient.SqlCommand("UpdateProteinNameHash", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
+        Dim dbTools = m_DatabaseAccessor.DBTools
 
-        'Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim cmdSave = dbTools.CreateCommand("UpdateProteinNameHash", CommandType.StoredProcedure)
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@Reference_ID", SqlDbType.Int).Value = reference_ID
-        sp_Save.Parameters.Add("@SHA1Hash", SqlDbType.VarChar, 40).Value = tmpGenSHA
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@Reference_ID", SqlType.Int).Value = reference_ID
+        dbTools.AddParameter(cmdSave, "@SHA1Hash", SqlType.VarChar, 40).Value = tmpGenSHA
+        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output)
 
-        'Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
+
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
 
@@ -1010,24 +1006,24 @@ Public Class clsAddUpdateEntries
       numResidues As Integer,
       proteinCollectionID As Integer) As Integer
 
-        Dim sp_Save = New SqlClient.SqlCommand("UpdateProteinCollectionCounts", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
+        Dim dbTools = m_DatabaseAccessor.DBTools
 
-        'Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim cmdSave = dbTools.CreateCommand("UpdateProteinCollectionCounts", CommandType.StoredProcedure)
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int).Value = proteinCollectionID
-        sp_Save.Parameters.Add("@NumProteins", SqlDbType.Int).Value = numProteins
-        sp_Save.Parameters.Add("@NumResidues", SqlDbType.Int).Value = numResidues
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@Collection_ID", SqlType.Int).Value = proteinCollectionID
+        dbTools.AddParameter(cmdSave, "@NumProteins", SqlType.Int).Value = numProteins
+        dbTools.AddParameter(cmdSave, "@NumResidues", SqlType.Int).Value = numResidues
+        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output)
 
-        'Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
+
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
     End Function
@@ -1039,23 +1035,23 @@ Public Class clsAddUpdateEntries
 
         Dim tmpGenSHA As String = GenerateHash(proteinSequence)
 
-        Dim sp_Save = New SqlClient.SqlCommand("UpdateProteinSequenceHash", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
+        Dim dbTools = m_DatabaseAccessor.DBTools
 
-        'Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim cmdSave = dbTools.CreateCommand("UpdateProteinSequenceHash", CommandType.StoredProcedure)
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@Protein_ID", SqlDbType.Int).Value = proteinID
-        sp_Save.Parameters.Add("@SHA1Hash", SqlDbType.VarChar, 40).Value = tmpGenSHA
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@Protein_ID", SqlType.Int).Value = proteinID
+        dbTools.AddParameter(cmdSave, "@SHA1Hash", SqlType.VarChar, 40).Value = tmpGenSHA
+        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output)
 
-        'Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
+
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
 
@@ -1063,21 +1059,21 @@ Public Class clsAddUpdateEntries
 
     Protected Function RunSP_GetProteinIDFromName(proteinName As String) As Integer
 
-        Dim sp_Save = New SqlClient.SqlCommand("GetProteinIDFromName", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
+        Dim dbTools = m_DatabaseAccessor.DBTools
 
-        'Define parameter for procedure's return value
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim cmdSave = dbTools.CreateCommand("GetProteinIDFromName", CommandType.StoredProcedure)
 
-        'Define parameters for the procedure's arguments
-        sp_Save.Parameters.Add("@name", SqlDbType.VarChar, 128).Value = proteinName
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@name", SqlType.VarChar, 128).Value = proteinName
 
-        'Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
+
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
 

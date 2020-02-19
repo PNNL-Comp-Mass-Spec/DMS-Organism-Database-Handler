@@ -4,6 +4,7 @@ Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Security.Cryptography
 Imports System.Text
+Imports PRISMDatabaseUtils
 Imports TableManipulationBase
 
 Public Class clsArchiveToFile
@@ -163,29 +164,26 @@ Public Class clsArchiveToFile
      collectionListHash As String,
      collectionListHexHash As String) As Integer
 
-        Dim sp_Save = New SqlCommand("UpdateFileArchiveEntryCollectionList", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
 
-        ' Define parameters
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim dbTools = m_DatabaseAccessor.DBTools
 
-        sp_Save.Parameters.Add("@Archived_File_Entry_ID", SqlDbType.Int).Value = archivedFileEntryID
+        Dim cmdSave = dbTools.CreateCommand("UpdateFileArchiveEntryCollectionList", CommandType.StoredProcedure)
 
-        sp_Save.Parameters.Add("@ProteinCollectionList", SqlDbType.VarChar, 8000).Value = proteinCollectionsList
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        sp_Save.Parameters.Add("@SHA1Hash", SqlDbType.VarChar, 28).Value = collectionListHash
-
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 512).Direction = ParameterDirection.Output
-
-        sp_Save.Parameters.Add("@CollectionListHexHash", SqlDbType.VarChar, 128).Value = collectionListHexHash
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@Archived_File_Entry_ID", SqlType.Int).Value = archivedFileEntryID
+        dbTools.AddParameter(cmdSave, "@ProteinCollectionList", SqlType.VarChar, 8000).Value = proteinCollectionsList
+        dbTools.AddParameter(cmdSave, "@SHA1Hash", SqlType.VarChar, 28).Value = collectionListHash
+        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 512).Direction = ParameterDirection.Output
+        dbTools.AddParameter(cmdSave, "@CollectionListHexHash", SqlType.VarChar, 128).Value = collectionListHexHash
 
         ' Execute the sp
-        sp_Save.ExecuteNonQuery()
-
+        dbTools.ExecuteSP(cmdSave)
 
         ' Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
 
@@ -203,44 +201,33 @@ Public Class clsArchiveToFile
      proteinCollectionsList As String,
      collectionListHexHash As String) As Integer
 
-        Dim sp_Save = New SqlCommand("AddOutputFileArchiveEntry", m_DatabaseAccessor.Connection) With {
-            .CommandType = CommandType.StoredProcedure
-        }
+        Dim dbTools = m_DatabaseAccessor.DBTools
 
-        ' Define parameters
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
+        Dim cmdSave = dbTools.CreateCommand("AddOutputFileArchiveEntry", CommandType.StoredProcedure)
 
-        sp_Save.Parameters.Add("@protein_collection_ID", SqlDbType.Int).Value = proteinCollectionID
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        sp_Save.Parameters.Add("@crc32_authentication", SqlDbType.VarChar, 40).Value = authentication_Hash
-
-        sp_Save.Parameters.Add("@file_modification_date", SqlDbType.DateTime).Value = fileModificationDate
-
-        sp_Save.Parameters.Add("@file_size", SqlDbType.BigInt).Value = outputFileSize
-
-        sp_Save.Parameters.Add("@protein_count", SqlDbType.Int).Value = proteinCount
-
-        sp_Save.Parameters.Add("@archived_file_type", SqlDbType.VarChar, 64).Value = archivedFileType
-
-        sp_Save.Parameters.Add("@creation_options", SqlDbType.VarChar, 250).Value = creationOptionsString
-
-        sp_Save.Parameters.Add("@protein_collection_string", SqlDbType.VarChar, 8000).Value = proteinCollectionsList
-
-        sp_Save.Parameters.Add("@collection_string_hash", SqlDbType.VarChar, 40).Value = collectionListHexHash
-
-        sp_Save.Parameters.Add("@archived_file_path", SqlDbType.VarChar, 250).Value = archivedFileFullPath
-
-        ' sp_Save.Parameters.Add("@output_sequence_type", SqlDbType.VarChar, 64).Value = OutputSequenceType
-
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 512).Direction = ParameterDirection.Output
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@protein_collection_ID", SqlType.Int).Value = proteinCollectionID
+        dbTools.AddParameter(cmdSave, "@crc32_authentication", SqlType.VarChar, 40).Value = authentication_Hash
+        dbTools.AddParameter(cmdSave, "@file_modification_date", SqlType.DateTime).Value = fileModificationDate
+        dbTools.AddParameter(cmdSave, "@file_size", SqlType.BigInt).Value = outputFileSize
+        dbTools.AddParameter(cmdSave, "@protein_count", SqlType.Int).Value = proteinCount
+        dbTools.AddParameter(cmdSave, "@archived_file_type", SqlType.VarChar, 64).Value = archivedFileType
+        dbTools.AddParameter(cmdSave, "@creation_options", SqlType.VarChar, 250).Value = creationOptionsString
+        dbTools.AddParameter(cmdSave, "@protein_collection_string", SqlType.VarChar, 8000).Value = proteinCollectionsList
+        dbTools.AddParameter(cmdSave, "@collection_string_hash", SqlType.VarChar, 40).Value = collectionListHexHash
+        dbTools.AddParameter(cmdSave, "@archived_file_path", SqlType.VarChar, 250).Value = archivedFileFullPath
+        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 512).Direction = ParameterDirection.Output
 
         ' Execute the sp
-        sp_Save.ExecuteNonQuery()
+        dbTools.ExecuteSP(cmdSave)
 
         m_Archived_File_Name = archivedFileFullPath
 
         ' Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
 

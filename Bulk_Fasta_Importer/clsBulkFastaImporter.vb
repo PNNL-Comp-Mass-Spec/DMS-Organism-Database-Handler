@@ -14,9 +14,9 @@
 ' in compliance with the License.  You may obtain a copy of the License at
 ' http://www.apache.org/licenses/LICENSE-2.0
 
-Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Runtime.InteropServices
+Imports PRISMDatabaseUtils
 Imports Protein_Uploader
 Imports ValidateFastaFile
 
@@ -27,10 +27,10 @@ Public Class clsBulkFastaImporter
 
     Public Const DMS_CONNECTION_STRING As String = "Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI;"
     Public Const PROTEINSEQS_CONNECTION_STRING As String = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
-    Protected Const QUERY_TIMEOUT_SECONDS As Integer = 20
 
     Enum eBulkImporterErrorCodes
         NoError = 0
+        DatabaseError = 1
         UnspecifiedError = -1
     End Enum
 
@@ -68,21 +68,25 @@ Public Class clsBulkFastaImporter
     Private mProteinCollectionInfo As Dictionary(Of String, Integer)
 
     Private mDatabaseDataLoaded As Boolean
+    Private mDbToolsDMS As IDBTools
+    Private mDbToolsProteinSeqs As IDBTools
+
     Private mAnnotationViewInfoShown As Boolean
     Private mOrganismViewInfoShown As Boolean
 
     Private mLastProgressTime As DateTime
 
     Private mLocalErrorCode As eBulkImporterErrorCodes
+
 #End Region
 
 #Region "Properties"
 
-    Public Property DMSConnectionString As String
+    Public ReadOnly Property DMSConnectionString As String
 
     Public Property PreviewMode As Boolean
 
-    Public Property ProteinSeqsConnectionString As String
+    Public ReadOnly Property ProteinSeqsConnectionString As String
 
     Public Property ValidationAllowAllSymbolsInProteinNames As Boolean
     Public Property ValidationAllowAsterisks As Boolean
@@ -91,8 +95,20 @@ Public Class clsBulkFastaImporter
 
 #End Region
 
-    Public Sub New()
-        MyBase.mFileDate = "December 13, 2019"
+    Public Sub New(dmsConnString As String, proteinSeqsConnString As String)
+        MyBase.mFileDate = "February 18, 2020"
+
+        If String.IsNullOrWhiteSpace(dmsConnString) Then
+            dmsConnString = DMS_CONNECTION_STRING
+        End If
+
+        If String.IsNullOrWhiteSpace(proteinSeqsConnString) Then
+            proteinSeqsConnString = PROTEINSEQS_CONNECTION_STRING
+        End If
+
+        DMSConnectionString = dmsConnString
+        ProteinSeqsConnectionString = proteinSeqsConnString
+
         InitializeLocalVariables()
     End Sub
 
@@ -129,8 +145,12 @@ Public Class clsBulkFastaImporter
         mLocalErrorCode = eBulkImporterErrorCodes.NoError
         mLastProgressTime = DateTime.UtcNow()
 
-        DMSConnectionString = DMS_CONNECTION_STRING
-        ProteinSeqsConnectionString = PROTEINSEQS_CONNECTION_STRING
+        mDbToolsDMS = DbToolsFactory.GetDBTools(DMS_CONNECTION_STRING)
+        RegisterEvents(mDbToolsDMS)
+
+        mDbToolsProteinSeqs = DbToolsFactory.GetDBTools(PROTEINSEQS_CONNECTION_STRING)
+        RegisterEvents(mDbToolsProteinSeqs)
+
         ValidationAllowAllSymbolsInProteinNames = False
         ValidationAllowAsterisks = True
         ValidationAllowDash = True
@@ -272,25 +292,22 @@ Public Class clsBulkFastaImporter
 
             mAnnotationTypeInfo.Clear()
 
-            Using cn = New SqlConnection(ProteinSeqsConnectionString)
-                cn.Open()
+            Dim cmd = mDbToolsProteinSeqs.CreateCommand(sqlQuery)
 
-                Using cmd = New SqlCommand(sqlQuery, cn)
+            Dim queryResults As DataTable = Nothing
+            Dim success = mDbToolsProteinSeqs.GetQueryResultsDataTable(cmd, queryResults)
 
-                    cmd.CommandTimeout = QUERY_TIMEOUT_SECONDS
+            If Not success Then
+                ReportDatabaseError("Error obtaining data from V_Annotation_Type_Picker using GetQueryResultsDataTable")
+                Return False
+            End If
 
-                    Using dbReader = cmd.ExecuteReader()
-                        While dbReader.Read
-                            Dim annotationTypeID = dbReader.GetInt32(0)
-                            Dim annotationTypeName = dbReader.GetString(1)
+            For Each resultRow As DataRow In queryResults.Rows()
+                Dim annotationTypeID = mDbToolsDMS.GetInteger(resultRow.Item(0))
+                Dim annotationTypeName = mDbToolsDMS.GetString(resultRow.Item(1))
 
-                            mAnnotationTypeInfo.Add(annotationTypeName, annotationTypeID)
-                        End While
-                    End Using
-
-                End Using
-
-            End Using
+                mAnnotationTypeInfo.Add(annotationTypeName, annotationTypeID)
+            Next
 
             Return True
 
@@ -307,25 +324,22 @@ Public Class clsBulkFastaImporter
 
             mOrganismInfo.Clear()
 
-            Using cn = New SqlConnection(DMSConnectionString)
-                cn.Open()
+            Dim cmd = mDbToolsDMS.CreateCommand(sqlQuery)
 
-                Using cmd = New SqlCommand(sqlQuery, cn)
+            Dim queryResults As DataTable = Nothing
+            Dim success = mDbToolsDMS.GetQueryResultsDataTable(cmd, queryResults)
 
-                    cmd.CommandTimeout = QUERY_TIMEOUT_SECONDS
+            If Not success Then
+                ReportDatabaseError("Error obtaining data from V_Organism_Export using GetQueryResultsDataTable")
+                Return False
+            End If
 
-                    Using dbReader = cmd.ExecuteReader()
-                        While dbReader.Read
-                            Dim organismID = dbReader.GetInt32(0)
-                            Dim organismName = dbReader.GetString(1)
+            For Each resultRow As DataRow In queryResults.Rows()
+                Dim organismID = mDbToolsDMS.GetInteger(resultRow.Item(0))
+                Dim organismName = mDbToolsDMS.GetString(resultRow.Item(1))
 
-                            mOrganismInfo.Add(organismName, organismID)
-                        End While
-                    End Using
-
-                End Using
-
-            End Using
+                mOrganismInfo.Add(organismName, organismID)
+            Next
 
             Return True
 
@@ -343,28 +357,24 @@ Public Class clsBulkFastaImporter
 
             mProteinCollectionInfo.Clear()
 
-            Using cn = New SqlConnection(ProteinSeqsConnectionString)
-                cn.Open()
+            Dim cmd = mDbToolsProteinSeqs.CreateCommand(sqlQuery)
 
-                Using cmd = New SqlCommand(sqlQuery, cn)
+            Dim queryResults As DataTable = Nothing
+            Dim success = mDbToolsProteinSeqs.GetQueryResultsDataTable(cmd, queryResults)
 
-                    cmd.CommandTimeout = QUERY_TIMEOUT_SECONDS
+            If Not success Then
+                ReportDatabaseError("Error obtaining data from V_Protein_Collection_List_Export using GetQueryResultsDataTable")
+                Return False
+            End If
 
-                    Using dbReader = cmd.ExecuteReader()
-                        While dbReader.Read
-                            Dim proteinCollectionID = dbReader.GetInt32(0)
-                            Dim proteinCollectionName = dbReader.GetString(1)
+            For Each resultRow As DataRow In queryResults.Rows()
+                Dim proteinCollectionID = mDbToolsDMS.GetInteger(resultRow.Item(0))
+                Dim proteinCollectionName = mDbToolsDMS.GetString(resultRow.Item(1))
 
-                            If Not mProteinCollectionInfo.ContainsKey(proteinCollectionName) Then
-                                mProteinCollectionInfo.Add(proteinCollectionName, proteinCollectionID)
-                            End If
-
-                        End While
-                    End Using
-
-                End Using
-
-            End Using
+                If Not mProteinCollectionInfo.ContainsKey(proteinCollectionName) Then
+                    mProteinCollectionInfo.Add(proteinCollectionName, proteinCollectionID)
+                End If
+            Next
 
             Return True
 

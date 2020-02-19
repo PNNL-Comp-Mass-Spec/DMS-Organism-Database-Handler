@@ -52,32 +52,21 @@ Public Class clsTransTableHandler
         Dim tmpLineCache As String
         Dim checkString As String
 
+        Dim dba = New TableManipulationBase.clsDBTask(m_ConnectionString)
 
+        Dim sqlQuery1 As String = "SELECT * FROM " & EntriesTableName
+        m_Translation_Entries = dba.GetTable(sqlQuery1)
 
-        Dim dba As TableManipulationBase.clsDBTask
+        Dim sqlQuery2 As String = "SELECT * FROM " & IDTableName
+        m_Translation_Tables = dba.GetTable(sqlQuery2)
 
-        dba = New TableManipulationBase.clsDBTask(m_ConnectionString, True)
-
-        Dim EntrySQL As String = "SELECT * FROM " & EntriesTableName
-        Dim entryDA = New SqlClient.SqlDataAdapter(EntrySQL, dba.Connection)
-
-        m_Translation_Entries = dba.GetTable(EntrySQL, entryDA)
-
-
-        Dim idSQL As String = "SELECT * FROM " & IDTableName
-        Dim idDA = New SqlClient.SqlDataAdapter(idSQL, dba.Connection)
-
-        m_Translation_Tables = dba.GetTable(idSQL, idDA)
-
-
-        'Try
         fi = New IO.FileInfo(filePath)
+
         If (fi.Exists) Then
             tr = fi.OpenText
             tmpLineCache = tr.ReadLine
 
             'Get table format
-
 
             Do While Not tmpLineCache Is Nothing
                 checkString = Left(tmpLineCache, 2)
@@ -90,8 +79,13 @@ Public Class clsTransTableHandler
                             entryLine = tr.ReadLine
                         Loop
                         ProcessTranslationEntry(rawEntry)
-                        entryDA.Update(m_Translation_Entries)
-                        idDA.Update(m_Translation_Tables)
+
+                        ' These two statements used a DataAdapter object to synchronize data in m_Translation_Entries and m_Translation_Tables with tables in the database
+                        ' With the update of clsDBTask to use DbToolsFactory in February 2020, the DataAdapter functionality is no longer enabled
+
+                        Console.WriteLine("Skipping: entryDA.Update(m_Translation_Entries)")
+                        Console.WriteLine("Skipping: idDA.Update(m_Translation_Tables)")
+
                     End If
                     tmpLineCache = tr.ReadLine
                 Else
@@ -100,25 +94,15 @@ Public Class clsTransTableHandler
             Loop
         End If
 
-
-        'Catch ex As Exception
-
-        'End Try
-
     End Sub
 
+    <Obsolete("Unused")>
     Private Sub SyncLocalToDMS()
-        Dim dba As TableManipulationBase.clsDBTask = New TableManipulationBase.clsDBTask(m_ConnectionString)
+        Dim dba = New TableManipulationBase.clsDBTask(m_ConnectionString)
 
-        Dim dmsDA = New SqlClient.SqlDataAdapter("SELECT * FROM " & clsTransTableHandler.EntriesTableName, dba.Connection)
-        Dim dmsCB = New SqlClient.SqlCommandBuilder(dmsDA)
+        Dim sqlQuery = "SELECT * FROM " & clsTransTableHandler.EntriesTableName
 
-        dmsCB.QuotePrefix = "["
-        dmsCB.QuoteSuffix = "]"
-
-        Dim dmsDS = New DataSet
-
-        dmsDA.Fill(dmsDS, clsTransTableHandler.EntriesTableName)
+        Dim entriesTable = dba.GetTable(sqlQuery)
 
     End Sub
 

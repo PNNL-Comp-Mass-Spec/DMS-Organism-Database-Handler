@@ -141,7 +141,7 @@ Public Class clsPSUploadHandler
     End Sub
 
     Public Sub New(psConnectionString As String)
-        m_DatabaseAccessor = New clsDBTask(psConnectionString, True)
+        m_DatabaseAccessor = New clsDBTask(psConnectionString)
 
         ' Reserve space for tracking up to 10 validation updates (expand later if needed)
         ReDim mValidationOptions(10)
@@ -163,7 +163,7 @@ Public Class clsPSUploadHandler
 
         Dim eResult As DialogResult
 
-        Dim databaseAccessor = New clsDBTask(m_DatabaseAccessor.ConnectionString, True)
+        Dim databaseAccessor = New clsDBTask(m_DatabaseAccessor.ConnectionString)
 
         For Each upInfo In fileInfoList
             'upInfo.OriginalFileInformation = upInfo.FileInformation

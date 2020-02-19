@@ -2,6 +2,7 @@ Imports System.IO
 Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
+Imports PRISMDatabaseUtils
 Imports ProteinFileReader
 Imports Protein_Exporter
 Imports Protein_Importer
@@ -27,12 +28,12 @@ Public Class clsSyncFASTAFileArchive
 
     Public Sub New(psConnectionString As String)
 
-        m_DatabaseAccessor = New clsDBTask(psConnectionString, True)
+        m_DatabaseAccessor = New clsDBTask(psConnectionString)
         m_Importer = New clsAddUpdateEntries(psConnectionString)
 
     End Sub
 
-    Public Function SyncCollectionsAndArchiveTables(OutputPath As String) As Integer
+    Public Function SyncCollectionsAndArchiveTables(outputPath As String) As Integer
         Dim sql =
                 "SELECT Protein_Collection_ID, FileName, Authentication_Hash, DateModified, Collection_Type_ID, NumProteins " &
                 "FROM V_Missing_Archive_Entries"
@@ -65,7 +66,7 @@ Public Class clsSyncFASTAFileArchive
             OnSyncProgressUpdate("Processing - '" & dr.Item("FileName").ToString & "'", CDbl(currentCollectionProteinCount / totalProteinsCount))
             currentCollectionProteinCount = CInt(dr.Item("NumProteins"))
             proteinCollectionID = CInt(dr.Item("Protein_Collection_ID"))
-            sourceFilePath = Path.Combine(OutputPath, dr.Item("FileName").ToString & ".fasta")
+            sourceFilePath = Path.Combine(outputPath, dr.Item("FileName").ToString & ".fasta")
             SHA1 = dr.Item("Authentication_Hash").ToString
 
 
@@ -165,7 +166,7 @@ Public Class clsSyncFASTAFileArchive
                 CDbl(m_CurrentProteinCount / m_TotalProteinsCount))
 
             tmpFullPath = Path.Combine(tmpPath, tmpFilename & ".fasta")
-            'Debug.WriteLine("Start: " & tmpFilename & ": " & starttime.ToLongTimeString)
+            'Debug.WriteLine("Start: " & tmpFilename & ": " & startTime.ToLongTimeString)
 
             tmpGenSHA = m_Exporter.ExportFASTAFile(tmpID, tmpPath,
                 clsGetFASTAFromDMS.DatabaseFormatTypes.fasta,
@@ -221,12 +222,14 @@ Public Class clsSyncFASTAFileArchive
 
         '    dt = m_DatabaseAccessor.GetTable(sql)
 
+        '    Dim dbTools = m_DatabaseAccessor.DBTools
+
         '    For Each dr In dt.Rows
         '        counter += 1
-        '        tmpRefID = DirectCast(dr.Item("Reference_ID"), Integer)
-        '        tmpName = dr.Item("Name").ToString
-        '        tmpFingerprint = dr.Item("Reference_Fingerprint").ToString
-        '        tmpProtID = DirectCast(dr.Item("Protein_ID"), Integer)
+        '        tmpRefID = dbTools.GetInteger(dr.Item("Reference_ID"))
+        '        tmpName = dbTools.GetString(dr.Item("Name"))
+        '        tmpFingerprint = dbTools.GetString(dr.Item("Reference_Fingerprint"))
+        '        tmpProtID = dbTools.GetInteger(dr.Item("Protein_ID"))
 
         '        'tmpGenSHA = m_Importer.GenerateArbitraryHash(tmpName + tmpProtID.ToString)
         '        errorCode = m_Importer.UpdateProteinNameHash(tmpRefID, tmpName, tmpProtID)
@@ -247,8 +250,8 @@ Public Class clsSyncFASTAFileArchive
 
         '    For Each dr In dt.Rows
         '        counter += 1
-        '        tmpProtID = DirectCast(dr.Item("Protein_ID"), Integer)
-        '        tmpSeq = dr.Item("Sequence").ToString
+        '        tmpProtID = dbTools.GetInteger(dr.Item("Protein_ID"))
+        '        tmpSeq = dbTools.GetString(dr.Item("Sequence"))
 
         '        errorCode = m_Importer.UpdateProteinSequenceHash(tmpProtID, tmpSeq)
 
@@ -306,6 +309,8 @@ Public Class clsSyncFASTAFileArchive
 
         Dim nameIndexHash As Dictionary(Of String, Integer)
 
+        Dim dbTools = m_DatabaseAccessor.DBTools
+
         For Each collectionEntry As DataRow In collectionTable.Rows
             Dim tmpCollectionName = collectionEntry.Item("FileName").ToString
             Dim tmpCollectionID = CInt(collectionEntry.Item("Protein_Collection_ID"))
@@ -326,9 +331,9 @@ Public Class clsSyncFASTAFileArchive
                     nameIndexHash = GetProteinSortingIndices(legacyFullPath)
 
                     For Each referenceEntry As DataRow In referencesTable.Rows
-                        Dim tmpRefID = DirectCast(referenceEntry.Item("Reference_ID"), Integer)
-                        Dim tmpProteinID = DirectCast(referenceEntry.Item("Protein_ID"), Integer)
-                        Dim tmpRefName = referenceEntry.Item("Name").ToString
+                        Dim tmpRefID = dbTools.GetInteger(referenceEntry.Item("Reference_ID"))
+                        Dim tmpProteinID = dbTools.GetInteger(referenceEntry.Item("Protein_ID"))
+                        Dim tmpRefName = dbTools.GetString(referenceEntry.Item("Name"))
 
                         'Try
                         Dim tmpSortingIndex = nameIndexHash.Item(tmpRefName.ToLower())
@@ -450,8 +455,6 @@ Public Class clsSyncFASTAFileArchive
         Dim tmpDescription As String
         Dim tmpProteinID As Integer
 
-        Dim rowRetrievalSQL As String
-
         Dim startIndex = 0
         Dim counter As Integer
         Dim stepValue = 10000
@@ -461,23 +464,25 @@ Public Class clsSyncFASTAFileArchive
         End If
         OnSyncStart("Updating Name Hashes")
 
+        Dim dbTools = m_DatabaseAccessor.DBTools
+
         For counter = stepValue To totalNameCount + stepValue Step stepValue
             If counter >= totalNameCount - stepValue Then
                 Debug.WriteLine("")
             End If
-            rowRetrievalSQL = "SELECT Reference_ID, Name, Description, Protein_ID " &
-                              "FROM T_Protein_Names " &
-                              "WHERE Reference_ID > " & startIndex & " and Reference_ID <= " & counter &
-                              "ORDER BY Reference_ID"
+            Dim rowRetrievalSQL = "SELECT Reference_ID, Name, Description, Protein_ID " &
+                                  "FROM T_Protein_Names " &
+                                  "WHERE Reference_ID > " & startIndex & " and Reference_ID <= " & counter &
+                                  "ORDER BY Reference_ID"
 
             'Protein_Name(+"_" + Description + "_" + ProteinID.ToString)
             Dim proteinListResults = m_DatabaseAccessor.GetTable(rowRetrievalSQL)
             If proteinListResults.Rows.Count > 0 Then
                 For Each dr In proteinListResults.Rows
-                    tmpRefID = DirectCast(dr.Item("Reference_ID"), Integer)
-                    tmpProteinName = dr.Item("Name").ToString
-                    tmpDescription = dr.Item("Description").ToString
-                    tmpProteinID = DirectCast(dr.Item("Protein_ID"), Integer)
+                    tmpRefID = dbTools.GetInteger(dr.Item("Reference_ID"))
+                    tmpProteinName = dbTools.GetString(dr.Item("Name"))
+                    tmpDescription = dbTools.GetString(dr.Item("Description"))
+                    tmpProteinID = dbTools.GetInteger(dr.Item("Protein_ID"))
 
                     m_Importer.UpdateProteinNameHash(
                         tmpRefID,

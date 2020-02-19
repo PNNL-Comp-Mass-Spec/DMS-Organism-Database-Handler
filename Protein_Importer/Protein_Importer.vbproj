@@ -139,8 +139,11 @@
     <Folder Include="My Project\" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="PRISM-DatabaseUtils">
+      <Version>1.0.6</Version>
+    </PackageReference>
     <PackageReference Include="PRISM-Library">
-      <Version>2.5.33</Version>
+      <Version>2.6.1</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />

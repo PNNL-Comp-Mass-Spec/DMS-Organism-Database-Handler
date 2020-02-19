@@ -1,6 +1,7 @@
 Imports System.ComponentModel
 Imports System.IO
 Imports System.Linq
+Imports PRISMDatabaseUtils
 Imports Protein_Uploader
 Imports Raccoom.Windows.Forms
 Imports ValidateFastaFile
@@ -722,14 +723,14 @@ Public Class frmBatchAddNewCollection
 #Region " Directory Loading "
 
     Private Function CollectionsTableToList(dt As DataTable) As Dictionary(Of Integer, String)
+
         Dim collectionInfo As New Dictionary(Of Integer, String)(dt.Rows.Count)
-        Dim dr As DataRow
         Dim foundRows() As DataRow = dt.Select("", "Protein_Collection_ID")
         Dim tmpID As Integer
         Dim tmpName As String
 
-        For Each dr In foundRows
-            tmpID = DirectCast(dr.Item("Protein_Collection_ID"), Integer)
+        For Each dr As DataRow In foundRows
+            tmpID = DatabaseUtilsExtensions.GetInteger(Nothing, dr.Item("Protein_Collection_ID"))
             tmpName = dr.Item("FileName").ToString()
             If Not collectionInfo.ContainsKey(tmpID) Then
                 collectionInfo.Add(tmpID, tmpName)

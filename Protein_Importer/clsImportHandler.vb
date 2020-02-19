@@ -2,6 +2,7 @@ Option Strict On
 
 Imports System.Collections.Generic
 Imports System.Windows.Forms
+Imports PRISMDatabaseUtils
 Imports Protein_Storage
 
 Public Class clsImportHandler
@@ -61,7 +62,7 @@ Public Class clsImportHandler
     Protected Function GetCollectionNameFromID(ProteinCollectionID As Integer) As String
         Dim foundRows() As DataRow = m_CollectionsList.Select("Protein_Collection_ID = " & CStr(ProteinCollectionID))
         Dim dr As DataRow = foundRows(0)
-        Dim collectionName = CStr(dr.Item("FileName"))
+        Dim collectionName = m_SQLAccess.DBTools.GetString(dr.Item("FileName"))
 
         Return collectionName
     End Function
@@ -309,7 +310,7 @@ Public Class clsImportHandler
 
         If authorityID <= 0 Then
             Dim foundRows = m_CollectionsList.Select("Protein_Collection_ID = " & collectionID)
-            authorityID = CInt(foundRows(0).Item("Authority_ID"))
+            authorityID = m_SQLAccess.DBTools.GetInteger(foundRows(0).Item("Authority_ID"))
 
         End If
 
@@ -329,10 +330,10 @@ Public Class clsImportHandler
             "FROM T_Protein_Collections " &
             "WHERE [FileName] = " & collectionName & " ORDER BY [Name]"
 
-        Dim tmpTable As DataTable = m_SQLAccess.GetTable(GetIDSQL)
+        Dim tmpTable As DataTable = m_SQLAccess.GetTable(sqlQuery)
         Dim foundRow As DataRow = tmpTable.Rows(0)
-        Dim collectionID As Integer = DirectCast(foundRow.Item("Protein_Collection_ID"), Int32)
-        'Dim authorityID As Integer = DirectCast(foundRow.Item("Primary_Authority_ID"), Int32)
+        Dim collectionID = m_SQLAccess.DBTools.GetInteger(foundRow.Item("Protein_Collection_ID"))
+        'Dim authorityID = m_SQLAccess.dbTools.GetInteger(foundRow.Item("Primary_Authority_ID"))
 
         Return LoadCollectionMembersByID(collectionID, authorityID)
 
@@ -363,22 +364,29 @@ Public Class clsImportHandler
             triggerCount = 1
         End If
 
+        Dim dbTools = m_SQLAccess.DBTools
+
         For Each dr As DataRow In proteinCollectionMembers
-            Dim ce = New Protein_Storage.clsProteinStorageEntry(
-                dr.Item("Name").ToString,
-                dr.Item("Description").ToString,
-                dr.Item("Sequence").ToString,
-                DirectCast(dr.Item("Length"), Int32),
-                DirectCast(dr.Item("Monoisotopic_Mass"), Double),
-                DirectCast(dr.Item("Average_Mass"), Double),
-                dr.Item("Molecular_Formula").ToString,
-                dr.Item("SHA1_Hash").ToString, counter)
+
+            dbTools.GetInteger(dr.Item("Authority_ID"))
+
+
+            Dim ce = New clsProteinStorageEntry(
+                dbTools.GetString(dr.Item("Name")),
+                dbTools.GetString(dr.Item("Description")),
+                dbTools.GetString(dr.Item("Sequence")),
+                dbTools.GetInteger(dr.Item("Length")),
+                dbTools.GetDouble(dr.Item("Monoisotopic_Mass")),
+                dbTools.GetDouble(dr.Item("Average_Mass")),
+                dbTools.GetString(dr.Item("Molecular_Formula")),
+                dbTools.GetString(dr.Item("SHA1_Hash")),
+                counter)
 
             If counter Mod triggerCount > 0 Then
                 Task_LoadProgress(CSng(counter / proteinCount))
             End If
 
-            ce.Protein_ID = DirectCast(dr.Item("Protein_ID"), Int32)
+            ce.Protein_ID = dbTools.GetInteger(dr.Item("Protein_ID"))
             tmpPS.AddProtein(ce)
             counter += 1
         Next
@@ -481,29 +489,23 @@ Public Class clsImportHandler
 #Region " Stored Procedure Access "
     Protected Function RunSP_UpdateProteinCollectionsByOrganism() As Integer
 
-        Dim sp_Save As SqlClient.SqlCommand
+        Dim dbTools = m_SQLAccess.DBTools
 
-        sp_Save = New SqlClient.SqlCommand("UpdateProteinCollectionsByOrganism",
-            m_SQLAccess.Connection)
+        Dim cmdSave = dbTools.CreateCommand("UpdateProteinCollectionsByOrganism", CommandType.StoredProcedure)
 
-        sp_Save.CommandType = CommandType.StoredProcedure
+        ' Define parameters
 
-        'Define parameters
-        Dim myParam As SqlClient.SqlParameter
+        ' Define parameter for procedure's return value
+        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        'Define parameter for sp's return value
-        myParam = sp_Save.Parameters.Add("@Return", SqlDbType.Int)
-        myParam.Direction = ParameterDirection.ReturnValue
+        ' Define parameters for the procedure's arguments
+        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output)
 
-        myParam = sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 256)
-        myParam.Direction = ParameterDirection.Output
+        ' Execute the sp
+        dbTools.ExecuteSP(cmdSave)
 
-
-        'Execute the sp
-        sp_Save.ExecuteNonQuery()
-
-        'Get return value
-        Dim ret As Integer = CInt(sp_Save.Parameters("@Return").Value)
+        ' Get return value
+        Dim ret = dbTools.GetInteger(returnParam.Value)
 
         Return ret
 

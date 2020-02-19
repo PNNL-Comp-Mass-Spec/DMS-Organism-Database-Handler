@@ -1,8 +1,8 @@
 Option Strict On
 
-Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Text.RegularExpressions
+Imports PRISMDatabaseUtils
 Imports TableManipulationBase
 
 Public MustInherit Class clsArchiveOutputFilesBase
@@ -134,26 +134,26 @@ Public MustInherit Class clsArchiveOutputFilesBase
 
     Protected Function RunSP_AddArchivedFileEntryXRef(proteinCollectionID As Integer, archivedFileID As Integer) As Integer
 
-        Dim sp_Save = New SqlCommand("AddArchivedFileEntryXRef", m_DatabaseAccessor.Connection) With {
-                .CommandType = CommandType.StoredProcedure
-                }
+        Dim dbTools = m_DatabaseAccessor.DBTools
+
+        Dim cmdSave = dbTools.CreateCommand("AddArchivedFileEntryXRef", CommandType.StoredProcedure)
 
         ' Define parameters
-        sp_Save.Parameters.Add("@Return", SqlDbType.Int).Direction = ParameterDirection.ReturnValue
 
-        sp_Save.Parameters.Add("@Collection_ID", SqlDbType.Int).Value = proteinCollectionID
+        dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
 
-        sp_Save.Parameters.Add("@Archived_File_ID", SqlDbType.Int).Value = archivedFileID
+        dbTools.AddParameter(cmdSave, "@Collection_ID", SqlType.Int).Value = proteinCollectionID
 
-        sp_Save.Parameters.Add("@message", SqlDbType.VarChar, 250).Direction = ParameterDirection.Output
+        dbTools.AddParameter(cmdSave, "@Archived_File_ID", SqlType.Int).Value = archivedFileID
+
+        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 250, ParameterDirection.Output)
+
+        Dim errorMessage As String = String.Empty
 
         ' Execute the sp
-        sp_Save.ExecuteNonQuery()
+        Dim returnValue = dbTools.ExecuteSP(cmdSave, errorMessage)
 
-        ' Get return value
-        Dim ret = CInt(sp_Save.Parameters("@Return").Value)
-
-        Return ret
+        Return returnValue
     End Function
 
     Protected Sub OnArchiveStart()
