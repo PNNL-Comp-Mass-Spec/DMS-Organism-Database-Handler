@@ -498,6 +498,13 @@ Public Class clsBulkFastaImporter
 
     End Function
 
+    Private Sub ReportDatabaseError(errorMessage As String)
+        mLocalErrorCode = eBulkImporterErrorCodes.DatabaseError
+        SetBaseClassErrorCode(ProcessFilesErrorCodes.LocalizedError)
+        ShowErrorMessage(errorMessage)
+    End Sub
+
+    <Obsolete("Unused")>
     Public Function UploadFastaFile(fastaFilePath As String, organismID As Integer, authID As Integer) As Boolean
         Dim sourceFileList = New List(Of udtFastaFileInfoType)
 

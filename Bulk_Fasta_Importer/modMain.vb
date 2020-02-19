@@ -51,53 +51,46 @@ Module modMain
                commandLineParser.ParameterCount + commandLineParser.NonSwitchParameterCount = 0 OrElse
                mInputFilePath.Length = 0 Then
                 ShowProgramHelp()
-                returnCode = -1
-            Else
-
-                Dim fastaImporter = New clsBulkFastaImporter With {
-                    .PreviewMode = mPreviewMode,
-                    .ValidationMaxProteinNameLength = mMaxProteinNameLength
-                }
-
-                AddHandler fastaImporter.ProgressUpdate, AddressOf BulkImporter_ProgressChanged
-                AddHandler fastaImporter.ProgressReset, AddressOf BulkImporter_ProgressReset
-
-                ' Data Source=proteinseqs;Initial Catalog=Protein_Sequences
-                Dim proteinSeqsConnectionString = My.Settings.ProteinSeqsDBConnectStr
-                Dim dmsConnectionString = My.Settings.DMSConnectStr
-
-                If Not String.IsNullOrWhiteSpace(proteinSeqsConnectionString) Then
-                    fastaImporter.ProteinSeqsConnectionString = proteinSeqsConnectionString
-                End If
-
-                If Not String.IsNullOrWhiteSpace(dmsConnectionString) Then
-                    fastaImporter.DMSConnectionString = dmsConnectionString
-                End If
-
-                fastaImporter.LogMessagesToFile = mLogMessagesToFile
-                If Not String.IsNullOrEmpty(mLogFilePath) Then fastaImporter.LogFilePath = mLogFilePath
-
-                Dim outputFolderNamePlaceholder As String = String.Empty
-                Dim paramFilePathPlaceholder As String = String.Empty
-
-                If fastaImporter.ProcessFilesWildcard(mInputFilePath, outputFolderNamePlaceholder, paramFilePathPlaceholder) Then
-                    returnCode = 0
-                Else
-                    returnCode = fastaImporter.ErrorCode
-                    If returnCode <> 0 AndAlso Not mQuietMode Then
-                        Console.WriteLine("Error while processing: " & fastaImporter.GetErrorMessage())
-                    End If
-                End If
-
-                DisplayProgressPercent(mLastProgressReportValue, True)
+                Return -1
             End If
+
+            ' Data Source=proteinseqs;Initial Catalog=Protein_Sequences
+            Dim proteinSeqsConnectionString = My.Settings.ProteinSeqsDBConnectStr
+
+            ' Data Source=dms5;Initial Catalog=Protein_Sequences
+            Dim dmsConnectionString = My.Settings.DMSConnectStr
+
+            Dim fastaImporter = New clsBulkFastaImporter(dmsConnectionString, proteinSeqsConnectionString) With {
+                .PreviewMode = mPreviewMode,
+                .ValidationMaxProteinNameLength = mMaxProteinNameLength
+            }
+
+            AddHandler fastaImporter.ProgressUpdate, AddressOf BulkImporter_ProgressChanged
+            AddHandler fastaImporter.ProgressReset, AddressOf BulkImporter_ProgressReset
+
+            fastaImporter.LogMessagesToFile = mLogMessagesToFile
+            If Not String.IsNullOrEmpty(mLogFilePath) Then fastaImporter.LogFilePath = mLogFilePath
+
+            Dim outputFolderNamePlaceholder As String = String.Empty
+            Dim paramFilePathPlaceholder As String = String.Empty
+
+            If fastaImporter.ProcessFilesWildcard(mInputFilePath, outputFolderNamePlaceholder, paramFilePathPlaceholder) Then
+                returnCode = 0
+            Else
+                returnCode = fastaImporter.ErrorCode
+                If returnCode <> 0 AndAlso Not mQuietMode Then
+                    Console.WriteLine("Error while processing: " & fastaImporter.GetErrorMessage())
+                End If
+            End If
+
+            DisplayProgressPercent(mLastProgressReportValue, True)
+
+            Return returnCode
 
         Catch ex As Exception
             ShowErrorMessage("Error occurred in modMain->Main: " & ControlChars.NewLine & ex.Message)
-            returnCode = -1
+            Return -1
         End Try
-
-        Return returnCode
 
     End Function
 
