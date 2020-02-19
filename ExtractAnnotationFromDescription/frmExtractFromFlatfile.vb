@@ -261,7 +261,7 @@ Public Class frmExtractFromFlatfile
     End Sub
 
     Private Sub lvwNewNames_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lvwNewNames.SelectedIndexChanged
-        Dim lvw As System.Windows.Forms.ListView = DirectCast(sender, System.Windows.Forms.ListView)
+        Dim lvw = DirectCast(sender, System.Windows.Forms.ListView)
         If lvw.SelectedItems.Count > 0 Then
             Me.m_CurrentGroupID = CInt(lvw.SelectedItems(0).Text)
             Me.cboNamingAuthority.SelectedValue = CInt(lvw.SelectedItems(0).Tag)
@@ -271,8 +271,8 @@ Public Class frmExtractFromFlatfile
     End Sub
 
     Private Sub chkUseHeader_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkUseHeader.CheckedChanged
-        Dim chk As System.Windows.Forms.CheckBox =
-            DirectCast(sender, System.Windows.Forms.CheckBox)
+        Dim chk = DirectCast(sender, System.Windows.Forms.CheckBox)
+
         If chk.CheckState = System.Windows.Forms.CheckState.Checked Then
             Me.m_UseHeaderInfo = True
         Else

@@ -45,8 +45,8 @@ Public Class clsTransTableHandler
 
     Private Sub ScanFileForEntries(filePath As String)
         'Look through a given ASN.1 file and scan for translation table entries
-        Dim fi As System.IO.FileInfo
-        Dim tr As System.IO.TextReader
+        Dim fi As IO.FileInfo
+        Dim tr As IO.TextReader
         Dim rawEntry As List(Of String)
         Dim entryLine As String
         Dim tmpLineCache As String
@@ -107,7 +107,7 @@ Public Class clsTransTableHandler
     End Sub
 
 
-    Private Sub ProcessTranslationEntry(rawEntryCollection As List(Of String))
+    Private Sub ProcessTranslationEntry(rawEntryCollection As IEnumerable(Of String))
         Dim id As Integer
         Dim AAList As String = String.Empty
         Dim StartList As String = String.Empty

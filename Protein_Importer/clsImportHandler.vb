@@ -45,7 +45,7 @@ Public Class clsImportHandler
         m_CollectionsList = LoadProteinCollectionNames()
     End Sub
 
-    Public ReadOnly Property CollectionMembers As Protein_Storage.clsProteinStorage
+    Public ReadOnly Property CollectionMembers As clsProteinStorage
         Get
             Return m_FileContents
         End Get
@@ -65,10 +65,10 @@ Public Class clsImportHandler
         Return collectionName
     End Function
 
-    Protected Function LoadFASTA(filePath As String) As Protein_Storage.clsProteinStorage
+    Protected Function LoadFASTA(filePath As String) As clsProteinStorage
 
         'check for existence of current file
-        Dim fastaContents As Protein_Storage.clsProteinStorage
+        Dim fastaContents As clsProteinStorage
         fastaContents = m_Importer.GetProteinEntries(filePath)
 
         Dim errorMessage As String = m_Importer.LastErrorMessage()
@@ -415,7 +415,7 @@ Public Class clsImportHandler
             Return Nothing
         End If
 
-        proteinCount = CInt(m_FileContents.ProteinCount)
+        proteinCount = m_FileContents.ProteinCount
         If proteinCount > 20 Then
             triggerCount = CInt(proteinCount / 20)
         Else
@@ -449,7 +449,7 @@ Public Class clsImportHandler
         SelectedOrganismID As Integer,
         SelectedAuthorityID As Integer) As Protein_Storage.clsProteinStorage
 
-        Dim ps As Protein_Storage.clsProteinStorage = LoadFASTA(FullFilePath)
+        Dim ps As clsProteinStorage = LoadFASTA(fullFilePath)
 
         Return ps
     End Function

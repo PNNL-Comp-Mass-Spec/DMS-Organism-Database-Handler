@@ -430,7 +430,7 @@ Public Class frmBatchUploadFromFileList
     End Sub
 
     Private Sub cboOrganismPicker_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboOrganismPicker.SelectedIndexChanged
-        Dim cbo As ComboBox = DirectCast(sender, ComboBox)
+        Dim cbo = DirectCast(sender, ComboBox)
         Dim li As ListViewItem
         Dim fli As clsBatchUploadFromFileList.FileListInfo
 
@@ -445,7 +445,7 @@ Public Class frmBatchUploadFromFileList
     End Sub
 
     Private Sub cboAnnotationType_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboAnnotationType.SelectedIndexChanged
-        Dim cbo As ComboBox = DirectCast(sender, ComboBox)
+        Dim cbo = DirectCast(sender, ComboBox)
         Dim li As ListViewItem
         Dim fli As clsBatchUploadFromFileList.FileListInfo
 
