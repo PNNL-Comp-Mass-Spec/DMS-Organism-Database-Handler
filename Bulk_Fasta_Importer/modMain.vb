@@ -11,7 +11,7 @@ Imports ValidateFastaFile
 ''' </summary>
 Module modMain
 
-    Public Const PROGRAM_DATE As String = "December 13, 2019"
+    Public Const PROGRAM_DATE As String = "February 18, 2020"
 
     Private mInputFilePath As String
     Private mPreviewMode As Boolean
@@ -193,7 +193,7 @@ Module modMain
             Console.WriteLine("Version: " & GetAppVersion())
             Console.WriteLine()
 
-            Console.WriteLine("E-mail: matthew.monroe@pnnl.gov or matt@alchemistmatt.com")
+            Console.WriteLine("E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov")
             Console.WriteLine("Website: http://panomics.pnnl.gov/ or http://omics.pnl.gov")
             Console.WriteLine()
 

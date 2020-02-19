@@ -6,7 +6,7 @@
 ' Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
 ' Program started October 10, 2014
 
-' E-mail: matthew.monroe@pnnl.gov or matt@alchemistmatt.com
+' E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
 ' Website: http://panomics.pnnl.gov/ or http://omics.pnl.gov
 ' -------------------------------------------------------------------------------
 '

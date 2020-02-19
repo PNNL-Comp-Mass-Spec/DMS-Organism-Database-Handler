@@ -761,7 +761,7 @@ Public Class frmCollectionEditor
 
 #End Region
 
-    Private Const PROGRAM_DATE As String = "December 13, 2019"
+    Private Const PROGRAM_DATE As String = "February 18, 2020"
 
     Private m_Organisms As DataTable
     Private m_ProteinCollections As DataTable
@@ -773,6 +773,10 @@ Public Class frmCollectionEditor
     Private m_SelectedFilePath As String
     Private m_SelectedCollectionID As Integer
     Private m_LastBatchULDirectoryPath As String
+
+    ''' <summary>
+    ''' Protein sequences database connection string
+    ''' </summary>
     Private m_PSConnectionString As String = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
 
     Private m_LastSelectedOrganism As String = ""

@@ -454,7 +454,7 @@ Public Class clsImportHandler
 
 #Region " Event Handlers "
 
-    'handles loadstart event for fasta importer module
+    ' Handles the LoadStart event for the fasta importer module
     Protected Sub Task_LoadStart(taskTitle As String) Handles m_Importer.LoadStart
         'm_PersistentTaskNum += 1
         RaiseEvent LoadStart(taskTitle)
