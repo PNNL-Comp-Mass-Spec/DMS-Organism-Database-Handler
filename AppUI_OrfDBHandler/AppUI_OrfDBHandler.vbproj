@@ -175,22 +175,19 @@
     <Compile Include="AssemblyInfo.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsAddAnnotationType.vb">
+    <Compile Include="AddAnnotationType.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsAddNamingAuthority.vb">
+    <Compile Include="AddNamingAuthority.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsCollectionStatePickerHandler.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsFilePreviewHandler.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsSyncFASTAFileArchive.vb">
+    <Compile Include="CollectionStatePickerHandler.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataListViewHandler.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FilePreviewHandler.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="frmAddAnnotationType.vb">
@@ -225,6 +222,9 @@
     </Compile>
     <Compile Include="frmValidationReport.vb">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SyncFASTAFileArchive.vb">
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>

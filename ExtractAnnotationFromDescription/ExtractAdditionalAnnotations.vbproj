@@ -117,6 +117,9 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnnotationInfo.vb">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="AnnotationGroup.vb">
       <SubType>Code</SubType>
     </Compile>
@@ -126,13 +129,7 @@
     <Compile Include="AssemblyInfo.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsAnnotationInfo.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsExtractFromFlatfile.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsGetAnnotationsFromDB.vb">
+    <Compile Include="ExtractFromFlatfile.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="frmExtractFromFlatfile.vb">
@@ -140,6 +137,9 @@
     </Compile>
     <Compile Include="frmRegexSpecifyFromDescription.vb">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GetAnnotationsFromDB.vb">
+      <SubType>Code</SubType>
     </Compile>
     <EmbeddedResource Include="frmExtractFromFlatfile.resx">
       <DependentUpon>frmExtractFromFlatfile.vb</DependentUpon>

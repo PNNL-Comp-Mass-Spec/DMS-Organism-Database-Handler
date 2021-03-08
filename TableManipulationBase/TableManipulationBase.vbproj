@@ -101,7 +101,7 @@
     <Compile Include="AssemblyInfo.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsDBTask.vb">
+    <Compile Include="DBTask.vb">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

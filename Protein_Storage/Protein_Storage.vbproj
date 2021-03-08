@@ -97,13 +97,13 @@
     <Compile Include="AssemblyInfo.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsProteinStorage.vb">
+    <Compile Include="ProteinStorage.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsProteinStorageDMS.vb">
+    <Compile Include="ProteinStorageDMS.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsProteinStorageEntry.vb">
+    <Compile Include="ProteinStorageEntry.vb">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

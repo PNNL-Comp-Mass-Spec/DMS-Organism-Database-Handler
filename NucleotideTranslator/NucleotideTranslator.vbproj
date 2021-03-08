@@ -113,10 +113,10 @@
     <Compile Include="AssemblyInfo.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsTranslateNucleotides.vb">
+    <Compile Include="TranslateNucleotides.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsTranslationEntry.vb">
+    <Compile Include="TranslationEntry.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="frmNucTransGUI.vb">

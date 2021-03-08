@@ -122,13 +122,13 @@
     <Compile Include="AssemblyInfo.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsBatchUploadFromFileList.vb">
+    <Compile Include="BatchUploadFromFileList.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsCollectionEncryptor.vb">
+    <Compile Include="CollectionEncryptor.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsPSUploadHandler.vb">
+    <Compile Include="PSUploadHandler.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="frmBatchUploadFromFileList.vb">

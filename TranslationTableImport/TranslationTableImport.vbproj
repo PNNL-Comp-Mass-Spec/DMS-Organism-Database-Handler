@@ -102,7 +102,7 @@
     <Compile Include="AssemblyInfo.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsTransTableHandler.vb">
+    <Compile Include="TransTableHandler.vb">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

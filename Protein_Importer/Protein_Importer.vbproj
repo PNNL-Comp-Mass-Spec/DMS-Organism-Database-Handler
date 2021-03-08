@@ -119,13 +119,13 @@
     <Compile Include="AssemblyInfo.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsAddUpdateEntries.vb">
+    <Compile Include="AddUpdateEntries.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsImportAnnotations.vb">
+    <Compile Include="ImportAnnotations.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsImportHandler.vb">
+    <Compile Include="ImportHandler.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FASTAReader.vb">

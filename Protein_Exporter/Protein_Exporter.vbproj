@@ -108,47 +108,47 @@
     <Compile Include="AssemblyInfo.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsArchiveOutputFilesBase.vb">
+    <Compile Include="ArchiveOutputFilesBase.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsArchiveToFile.vb">
+    <Compile Include="ArchiveToFile.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsArchiveToSubversion.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsExportProteins.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsExportProteinsFASTA.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsExportProteinsXTFASTA.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsFileCreationOptions.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsGetFASTAFromDMS.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsGetFASTAFromDMSDecoy.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsGetFASTAFromDMSDecoyX.vb" />
-    <Compile Include="clsGetFASTAFromDMSForward.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsGetFASTAFromDMSReversed.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsGetFASTAFromDMSScrambled.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsRijndaelEncryptionHandler.vb">
+    <Compile Include="ArchiveToSubversion.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CRC32.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExportProteins.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExportProteinsFASTA.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExportProteinsXTFASTA.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FileCreationOptions.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GetFASTAFromDMS.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GetFASTAFromDMSDecoy.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GetFASTAFromDMSDecoyX.vb" />
+    <Compile Include="GetFASTAFromDMSForward.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GetFASTAFromDMSReversed.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GetFASTAFromDMSScrambled.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RijndaelEncryptionHandler.vb">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
