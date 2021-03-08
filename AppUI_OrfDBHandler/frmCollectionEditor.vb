@@ -785,10 +785,10 @@ Public Class frmCollectionEditor
     Private m_LastValueForAllowDash As Boolean = False
     Private m_LastValueForMaxProteinNameLength As Integer = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
 
-    Private WithEvents m_ImportHandler As clsImportHandler
-    Private WithEvents m_UploadHandler As clsPSUploadHandler
+    Private WithEvents m_ImportHandler As ImportHandler
+    Private WithEvents m_UploadHandler As PSUploadHandler
     Private WithEvents m_SourceListViewHandler As DataListViewHandler
-    ' Unused: Private WithEvents m_fileBatcher As clsBatchUploadFromFileList
+    ' Unused: Private WithEvents m_fileBatcher As BatchUploadFromFileList
 
     Private m_LocalFileLoaded As Boolean
 
@@ -821,9 +821,9 @@ Public Class frmCollectionEditor
     ''' Keys are FASTA file paths
     ''' Values are upload info
     ''' </summary>
-    Private m_ValidUploadsList As Dictionary(Of String, clsPSUploadHandler.UploadInfo)
+    Private m_ValidUploadsList As Dictionary(Of String, PSUploadHandler.UploadInfo)
 
-    Private WithEvents m_Syncer As clsSyncFASTAFileArchive
+    Private WithEvents m_Syncer As SyncFASTAFileArchive
 
     Private ReadOnly m_EncryptSequences As Boolean = False
 
@@ -850,7 +850,7 @@ Public Class frmCollectionEditor
 
         UpdateServerNameLabel()
 
-        m_ImportHandler = New clsImportHandler(m_PSConnectionString)
+        m_ImportHandler = New ImportHandler(m_PSConnectionString)
         'mnuToolsFBatchUpload.Enabled = False
 
         lblBatchProgress.Text = "Fetching Organism and Collection Lists..."
@@ -1016,7 +1016,7 @@ Public Class frmCollectionEditor
             m_LastBatchULDirectoryPath,
             m_CachedFileDescriptions)
 
-        Dim tmpSelectedFileList As List(Of clsPSUploadHandler.UploadInfo)
+        Dim tmpSelectedFileList As List(Of PSUploadHandler.UploadInfo)
 
         lblBatchProgress.Text = ""
 
@@ -1077,17 +1077,17 @@ Public Class frmCollectionEditor
         m_BatchLoadTotalCount = tmpSelectedFileList.Count
 
         If m_EncryptSequences Then
-            m_UploadHandler = New clsPSUploadHandler(m_PSConnectionString)
+            m_UploadHandler = New PSUploadHandler(m_PSConnectionString)
         Else
-            m_UploadHandler = New clsPSUploadHandler(m_PSConnectionString)
+            m_UploadHandler = New PSUploadHandler(m_PSConnectionString)
         End If
 
         pnlProgBar.Visible = True
 
         Try
-            m_UploadHandler.SetValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowAllSymbolsInProteinNames, frmBatchUpload.ValidationAllowAllSymbolsInProteinNames)
-            m_UploadHandler.SetValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowAsterisksInResidues, frmBatchUpload.ValidationAllowAsterisks)
-            m_UploadHandler.SetValidationOptions(clsPSUploadHandler.eValidationOptionConstants.AllowDashInResidues, frmBatchUpload.ValidationAllowDash)
+            m_UploadHandler.SetValidationOptions(PSUploadHandler.eValidationOptionConstants.AllowAllSymbolsInProteinNames, frmBatchUpload.ValidationAllowAllSymbolsInProteinNames)
+            m_UploadHandler.SetValidationOptions(PSUploadHandler.eValidationOptionConstants.AllowAsterisksInResidues, frmBatchUpload.ValidationAllowAsterisks)
+            m_UploadHandler.SetValidationOptions(PSUploadHandler.eValidationOptionConstants.AllowDashInResidues, frmBatchUpload.ValidationAllowDash)
 
             m_UploadHandler.MaximumProteinNameLength = frmBatchUpload.ValidationMaxProteinNameLength
 
@@ -1229,7 +1229,7 @@ Public Class frmCollectionEditor
             m_SelectedAnnotationTypeID = CInt(foundRows(0).Item("Authority_ID"))
             'ElseIf m_SelectedAuthorityID = -2 Then
             '    'Bring up addition dialog
-            '    Dim AuthAdd As New clsAddNamingAuthority(m_PSConnectionString)
+            '    Dim AuthAdd As New AddNamingAuthority(m_PSConnectionString)
             '    tmpAuthID = AuthAdd.AddNamingAuthority
             '    m_Authorities = m_ImportHandler.LoadAuthorities()
             '    BindAuthorityListToControl(m_Authorities)
@@ -1295,13 +1295,13 @@ Public Class frmCollectionEditor
             Dim tmpSelectedProteinList = ScanDestinationCollectionWindow(lvwDestination)
 
             If m_UploadHandler Is Nothing Then
-                m_UploadHandler = New clsPSUploadHandler(m_PSConnectionString)
+                m_UploadHandler = New PSUploadHandler(m_PSConnectionString)
             End If
 
             m_UploadHandler.UploadCollection(m_ImportHandler.CollectionMembers, tmpSelectedProteinList,
                                              frmAddCollection.CollectionName, frmAddCollection.CollectionDescription,
                                              frmAddCollection.CollectionSource,
-                                             clsAddUpdateEntries.CollectionTypes.prot_original_source, tmpOrganismID,
+                                             AddUpdateEntries.CollectionTypes.prot_original_source, tmpOrganismID,
                                              tmpAnnotationTypeID)
 
             RefreshCollectionList()
@@ -1323,7 +1323,7 @@ Public Class frmCollectionEditor
     '    Dim fileType As Protein_Importer.IImportProteins.ProteinImportFileTypes
     '    Dim SelectedSavePath As String
     '    Dim tmpSelectedProteinList As ArrayList
-    '    Dim tmpProteinCollection As Protein_Storage.clsProteinStorage
+    '    Dim tmpProteinCollection As Protein_Storage.ProteinStorage
     '    Dim tmpProteinReference As String
 
     '    With SaveDialog
@@ -1349,12 +1349,12 @@ Public Class frmCollectionEditor
     '    End If
 
     '    If fileType = Protein_Importer.IImportProteins.ProteinImportFileTypes.FASTA Then
-    '        m_ProteinExporter = New Protein_Exporter.clsExportProteinsFASTA
+    '        m_ProteinExporter = New Protein_Exporter.ExportProteinsFASTA
     '    Else
     '        Exit Sub
     '    End If
 
-    '    tmpProteinCollection = New Protein_Storage.clsProteinStorage(SelectedSavePath)
+    '    tmpProteinCollection = New Protein_Storage.ProteinStorage(SelectedSavePath)
 
     '    tmpSelectedProteinList = ScanDestinationCollectionWindow(lvwDestination)
 
@@ -1580,7 +1580,7 @@ Public Class frmCollectionEditor
     ' Unused
     'Private Sub mnuToolsFBatchUpload_Click(sender As Object, e As EventArgs)
     '    'Steal this to use with file-directed loading
-    '    m_fileBatcher = New clsBatchUploadFromFileList(m_PSConnectionString)
+    '    m_fileBatcher = New BatchUploadFromFileList(m_PSConnectionString)
     '    m_fileBatcher.UploadBatch()
     'End Sub
 
@@ -1602,7 +1602,7 @@ Public Class frmCollectionEditor
     '    Dim outputPath As String
 
     '    If m_Syncer Is Nothing Then
-    '        m_Syncer = New clsSyncFASTAFileArchive(m_PSConnectionString)
+    '        m_Syncer = New SyncFASTAFileArchive(m_PSConnectionString)
     '    End If
 
 
@@ -1702,10 +1702,10 @@ Public Class frmCollectionEditor
 
     Private Sub ValidFASTAUploadHandler(
         FASTAFilePath As String,
-        UploadInfo As clsPSUploadHandler.UploadInfo) Handles m_UploadHandler.ValidFASTAFileLoaded
+        UploadInfo As PSUploadHandler.UploadInfo) Handles m_UploadHandler.ValidFASTAFileLoaded
 
         If m_ValidUploadsList Is Nothing Then
-            m_ValidUploadsList = New Dictionary(Of String, clsPSUploadHandler.UploadInfo)
+            m_ValidUploadsList = New Dictionary(Of String, PSUploadHandler.UploadInfo)
         End If
 
         m_ValidUploadsList.Add(FASTAFilePath, UploadInfo)
@@ -1785,7 +1785,7 @@ Public Class frmCollectionEditor
 
     Private Sub mnuAdminUpdateZeroedMasses_Click(sender As Object, e As EventArgs) Handles mnuAdminUpdateZeroedMasses.Click
         If m_Syncer Is Nothing Then
-            m_Syncer = New clsSyncFASTAFileArchive(m_PSConnectionString)
+            m_Syncer = New SyncFASTAFileArchive(m_PSConnectionString)
         End If
 
         m_Syncer.CorrectMasses()
@@ -1793,7 +1793,7 @@ Public Class frmCollectionEditor
 
     Private Sub mnuAdminNameHashRefresh_Click(sender As Object, e As EventArgs) Handles mnuAdminNameHashRefresh.Click
         If m_Syncer Is Nothing Then
-            m_Syncer = New clsSyncFASTAFileArchive(m_PSConnectionString)
+            m_Syncer = New SyncFASTAFileArchive(m_PSConnectionString)
         End If
 
         m_Syncer.RefreshNameHashes()
@@ -1826,7 +1826,7 @@ Public Class frmCollectionEditor
 
     Private Sub MenuItem6_Click(sender As Object, e As EventArgs) Handles mnuAdminFixArchivePaths.Click
         If m_Syncer Is Nothing Then
-            m_Syncer = New clsSyncFASTAFileArchive(m_PSConnectionString)
+            m_Syncer = New SyncFASTAFileArchive(m_PSConnectionString)
         End If
 
         m_Syncer.FixArchivedFilePaths()
@@ -1835,7 +1835,7 @@ Public Class frmCollectionEditor
 
     Private Sub MenuItem8_Click(sender As Object, e As EventArgs) Handles mnuAdminAddSortingIndexes.Click
         If m_Syncer Is Nothing Then
-            m_Syncer = New clsSyncFASTAFileArchive(m_PSConnectionString)
+            m_Syncer = New SyncFASTAFileArchive(m_PSConnectionString)
         End If
         m_Syncer.AddSortingIndices()
     End Sub

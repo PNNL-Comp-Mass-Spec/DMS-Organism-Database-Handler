@@ -1,6 +1,6 @@
 Imports System.Collections.Generic
 
-Public Class clsProteinStorageEntry
+Public Class ProteinStorageEntry
 
     Public Sub New(
         reference As String,

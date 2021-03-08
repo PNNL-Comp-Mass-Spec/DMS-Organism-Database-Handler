@@ -1,6 +1,6 @@
 Imports System.IO
 
-Friend Class clsExtractFromFlatFile
+Friend Class ExtractFromFlatFile
 
     Private m_FilePath As String
 
@@ -19,7 +19,7 @@ Friend Class clsExtractFromFlatFile
     Private m_AnnotationStorage As AnnotationStorage
     Private m_firstLine As String
     Private ReadOnly m_PSConnectionString As String
-    Private m_Uploader As Protein_Importer.clsAddUpdateEntries
+    Private m_Uploader As Protein_Importer.AddUpdateEntries
     Private m_ProteinIDLookup As Dictionary(Of String, Integer)
 
     Private m_MaxProteinNameLength As Integer = 32
@@ -239,7 +239,7 @@ Friend Class clsExtractFromFlatFile
     Sub UploadNewNames(PrimaryReferenceNameColumnID As Integer)
         Me.ParseLoadedFile(PrimaryReferenceNameColumnID, Me.m_Authorities)
         If Me.m_Uploader Is Nothing Then
-            Me.m_Uploader = New Protein_Importer.clsAddUpdateEntries(Me.m_PSConnectionString)
+            Me.m_Uploader = New Protein_Importer.AddUpdateEntries(Me.m_PSConnectionString)
         End If
 
         Dim groupCount As Integer = Me.m_AnnotationStorage.GroupCount
@@ -271,7 +271,7 @@ Friend Class clsExtractFromFlatFile
         Dim id As Integer
 
         If Me.m_Uploader Is Nothing Then
-            Me.m_Uploader = New Protein_Importer.clsAddUpdateEntries(Me.m_PSConnectionString)
+            Me.m_Uploader = New Protein_Importer.AddUpdateEntries(Me.m_PSConnectionString)
         End If
 
         For Each name In PrimaryReferences

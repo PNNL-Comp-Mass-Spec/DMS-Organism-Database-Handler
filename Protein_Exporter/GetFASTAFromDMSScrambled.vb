@@ -3,8 +3,8 @@ Option Strict On
 Imports System.Text
 Imports TableManipulationBase
 
-Public Class clsGetFASTAFromDMSScrambled
-    Inherits clsGetFASTAFromDMSForward
+Public Class GetFASTAFromDMSScrambled
+    Inherits GetFASTAFromDMSForward
 
     Private m_RndNumGen As Random
 
@@ -14,8 +14,8 @@ Public Class clsGetFASTAFromDMSScrambled
     ''' <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
     ''' <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
     Public Sub New(
-        databaseAccessor As clsDBTask,
-        databaseFormatType As clsGetFASTAFromDMS.DatabaseFormatTypes)
+        databaseAccessor As DBTask,
+        databaseFormatType As GetFASTAFromDMS.DatabaseFormatTypes)
 
         MyBase.New(databaseAccessor, databaseFormatType)
 

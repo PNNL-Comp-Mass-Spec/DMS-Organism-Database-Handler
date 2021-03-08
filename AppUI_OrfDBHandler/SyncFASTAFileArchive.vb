@@ -8,13 +8,13 @@ Imports Protein_Exporter
 Imports Protein_Importer
 Imports TableManipulationBase
 
-Public Class clsSyncFASTAFileArchive
+Public Class SyncFASTAFileArchive
 
     ' Private m_FileArchiver As IArchiveOutputFiles
-    Private ReadOnly m_DatabaseAccessor As clsDBTask
-    Private ReadOnly m_Importer As clsAddUpdateEntries
+    Private ReadOnly m_DatabaseAccessor As DBTask
+    Private ReadOnly m_Importer As AddUpdateEntries
 
-    Private WithEvents m_Exporter As clsGetFASTAFromDMS
+    Private WithEvents m_Exporter As GetFASTAFromDMS
 
     Event SyncStart(statusMsg As String)
     Event SyncProgress(statusMsg As String, fractionDone As Double)
@@ -28,8 +28,8 @@ Public Class clsSyncFASTAFileArchive
 
     Public Sub New(psConnectionString As String)
 
-        m_DatabaseAccessor = New clsDBTask(psConnectionString)
-        m_Importer = New clsAddUpdateEntries(psConnectionString)
+        m_DatabaseAccessor = New DBTask(psConnectionString)
+        m_Importer = New AddUpdateEntries(psConnectionString)
 
     End Sub
 
@@ -55,12 +55,12 @@ Public Class clsSyncFASTAFileArchive
             m_TotalProteinsCount += CInt(dr.Item("NumProteins"))
         Next
 
-        Dim outputSequenceType = clsGetFASTAFromDMS.SequenceTypes.forward
-        Dim databaseFormatType = clsGetFASTAFromDMS.DatabaseFormatTypes.fasta
+        Dim outputSequenceType = GetFASTAFromDMS.SequenceTypes.forward
+        Dim databaseFormatType = GetFASTAFromDMS.DatabaseFormatTypes.fasta
 
         OnSyncStart("Synchronizing Archive Table with Collections Table")
 
-        Dim fileArchiver = New clsArchiveToFile(m_DatabaseAccessor, m_Exporter)
+        Dim fileArchiver = New ArchiveToFile(m_DatabaseAccessor, m_Exporter)
 
         For Each dr In dt.Rows
             OnSyncProgressUpdate("Processing - '" & dr.Item("FileName").ToString & "'", CDbl(currentCollectionProteinCount / totalProteinsCount))
@@ -72,7 +72,7 @@ Public Class clsSyncFASTAFileArchive
 
             fileArchiver.ArchiveCollection(
                 proteinCollectionID,
-                clsArchiveOutputFilesBase.CollectionTypes.static,
+                ArchiveOutputFilesBase.CollectionTypes.static,
                 outputSequenceType, databaseFormatType, sourceFilePath, CreationOptionsString, SHA1, proteinCollectionList)
 
         Next
@@ -119,16 +119,16 @@ Public Class clsSyncFASTAFileArchive
             connectionString = m_DatabaseAccessor.ConnectionString
         End If
 
-        m_Exporter = New clsGetFASTAFromDMS(
-            connectionString, clsGetFASTAFromDMS.DatabaseFormatTypes.fasta,
-            clsGetFASTAFromDMS.SequenceTypes.forward)
+        m_Exporter = New GetFASTAFromDMS(
+            connectionString, GetFASTAFromDMS.DatabaseFormatTypes.fasta,
+            GetFASTAFromDMS.SequenceTypes.forward)
 
         Dim creationOptionsString As String
         creationOptionsString = "seq_direction=forward,filetype=fasta"
         OnSyncStart("Updating Collections and Archive Entries")
         startTime = DateTime.UtcNow
 
-        Dim fileArchiver = New clsArchiveToFile(m_DatabaseAccessor, m_Exporter)
+        Dim fileArchiver = New ArchiveToFile(m_DatabaseAccessor, m_Exporter)
 
         For Each dr In dt.Rows
             tmpID = CInt(dr.Item("Protein_Collection_ID"))
@@ -169,8 +169,8 @@ Public Class clsSyncFASTAFileArchive
             'Debug.WriteLine("Start: " & tmpFilename & ": " & startTime.ToLongTimeString)
 
             tmpGenSHA = m_Exporter.ExportFASTAFile(tmpID, tmpPath,
-                clsGetFASTAFromDMS.DatabaseFormatTypes.fasta,
-                clsGetFASTAFromDMS.SequenceTypes.forward)
+                GetFASTAFromDMS.DatabaseFormatTypes.fasta,
+                GetFASTAFromDMS.SequenceTypes.forward)
 
             If Not tmpStoredSHA.Equals(tmpGenSHA) Then
                 Dim currentFastaProteinCount = 0
@@ -188,9 +188,9 @@ Public Class clsSyncFASTAFileArchive
 
             fileArchiver.ArchiveCollection(
                 tmpID,
-                clsArchiveOutputFilesBase.CollectionTypes.static,
-                clsGetFASTAFromDMS.SequenceTypes.forward,
-                clsGetFASTAFromDMS.DatabaseFormatTypes.fasta,
+                ArchiveOutputFilesBase.CollectionTypes.static,
+                GetFASTAFromDMS.SequenceTypes.forward,
+                GetFASTAFromDMS.DatabaseFormatTypes.fasta,
                 tmpFullPath, creationOptionsString, tmpGenSHA, "")
             'ArchiveCollection(
             '    tmpID,

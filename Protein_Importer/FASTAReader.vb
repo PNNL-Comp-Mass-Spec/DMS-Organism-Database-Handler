@@ -36,24 +36,24 @@ Public Class FASTAReader
         End Get
     End Property
 
-    Public Function GetProteinEntries(filePath As String) As clsProteinStorage
+    Public Function GetProteinEntries(filePath As String) As ProteinStorage
         Return LoadFASTAFile(filePath, -1)
     End Function
 
-    Public Function GetProteinEntries(filePath As String, numRecordsToLoad As Integer) As clsProteinStorage
+    Public Function GetProteinEntries(filePath As String, numRecordsToLoad As Integer) As ProteinStorage
         Return LoadFASTAFile(filePath, numRecordsToLoad)
     End Function
 
-    Public Function LoadFASTAFile(filePath As String) As clsProteinStorage
+    Public Function LoadFASTAFile(filePath As String) As ProteinStorage
         Return LoadFASTAFile(filePath, -1)
     End Function
 
-    Public Function LoadFASTAFile(filePath As String, numRecordsToLoad As Integer) As clsProteinStorage
+    Public Function LoadFASTAFile(filePath As String, numRecordsToLoad As Integer) As ProteinStorage
 
         Dim fileLength As Integer
         Dim currentPosition = 0
 
-        Dim fastaContents = New clsProteinStorage(filePath)
+        Dim fastaContents = New ProteinStorage(filePath)
 
         Dim reference As String = String.Empty
         Dim description As String = String.Empty
@@ -89,7 +89,7 @@ Public Class FASTAReader
                                 If recordCount Mod 100 = 0 Then
                                     RaiseEvent LoadProgress(CSng(currentPosition / fileLength))     'trigger pgb update every 10th record
                                 End If
-                                fastaContents.AddProtein(New clsProteinStorageEntry(
+                                fastaContents.AddProtein(New ProteinStorageEntry(
                                  reference, description, sequence, seqInfo.SequenceLength,
                                  seqInfo.MonoisotopicMass, seqInfo.AverageMass,
                                  seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount))
@@ -127,7 +127,7 @@ Public Class FASTAReader
                     seqInfo.CalculateSequenceInfo(sequence)
                     recordCount += 1
 
-                    fastaContents.AddProtein(New clsProteinStorageEntry(
+                    fastaContents.AddProtein(New ProteinStorageEntry(
                         reference, description, sequence, seqInfo.SequenceLength,
                         seqInfo.MonoisotopicMass, seqInfo.AverageMass,
                         seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount))

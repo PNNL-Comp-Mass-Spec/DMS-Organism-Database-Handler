@@ -1,5 +1,5 @@
 <Obsolete("Unused")>
-Friend Class clsAnnotationInfo
+Friend Class AnnotationInfo
 
     Private ReadOnly m_AnnotationDetails As Dictionary(Of Integer, AnnotationDetails)
 

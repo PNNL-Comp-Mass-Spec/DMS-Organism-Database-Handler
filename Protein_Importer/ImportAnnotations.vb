@@ -8,7 +8,7 @@ Public Interface IImportAnnotations
 
 End Interface
 
-Public MustInherit Class clsImportAnnotationsBase
+Public MustInherit Class ImportAnnotationsBase
 
     Public Sub New()
 

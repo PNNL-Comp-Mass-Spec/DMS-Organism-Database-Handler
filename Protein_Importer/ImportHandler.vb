@@ -5,14 +5,14 @@ Imports System.Windows.Forms
 Imports PRISMDatabaseUtils
 Imports Protein_Storage
 
-Public Class clsImportHandler
+Public Class ImportHandler
 
     Public Enum ProteinImportFileTypes
         FASTA
         Access
     End Enum
 
-    Protected m_SQLAccess As TableManipulationBase.clsDBTask
+    Protected m_SQLAccess As TableManipulationBase.DBTask
     Protected WithEvents m_Importer As FASTAReader
 
     Protected m_PersistentTaskNum As Integer
@@ -27,7 +27,7 @@ Public Class clsImportHandler
     'Const PositionTable As String = "T_Position_Info"
     'Const CollectionProteinMap As String = "V_Protein_Collections_By_Organism"
 
-    Protected m_FileContents As clsProteinStorage
+    Protected m_FileContents As ProteinStorage
     Protected m_CollectionsList As DataTable
 
     Protected m_AuthoritiesList As Dictionary(Of String, String)
@@ -39,12 +39,12 @@ Public Class clsImportHandler
     Public Event CollectionLoadComplete(CollectionsTable As DataTable)
 
     Public Sub New(psConnectionString As String)
-        m_SQLAccess = New TableManipulationBase.clsDBTask(psConnectionString)
+        m_SQLAccess = New TableManipulationBase.DBTask(psConnectionString)
         m_Importer = New FASTAReader
         m_CollectionsList = LoadProteinCollectionNames()
     End Sub
 
-    Public ReadOnly Property CollectionMembers As clsProteinStorage
+    Public ReadOnly Property CollectionMembers As ProteinStorage
         Get
             Return m_FileContents
         End Get
@@ -64,10 +64,10 @@ Public Class clsImportHandler
         Return collectionName
     End Function
 
-    Protected Function LoadFASTA(filePath As String) As clsProteinStorage
+    Protected Function LoadFASTA(filePath As String) As ProteinStorage
 
         'check for existence of current file
-        Dim fastaContents As clsProteinStorage
+        Dim fastaContents As ProteinStorage
         fastaContents = m_Importer.GetProteinEntries(filePath)
 
         Dim errorMessage As String = m_Importer.LastErrorMessage()
@@ -345,8 +345,8 @@ Public Class clsImportHandler
 
     End Function
 
-    Protected Function LoadProteinInfo(proteinCollectionMembers() As DataRow) As Protein_Storage.clsProteinStorage
-        Dim tmpPS = New Protein_Storage.clsProteinStorageDMS("")
+    Protected Function LoadProteinInfo(proteinCollectionMembers() As DataRow) As Protein_Storage.ProteinStorage
+        Dim tmpPS = New Protein_Storage.ProteinStorageDMS("")
         Dim proteinCount As Integer
         Dim triggerCount As Integer
         Dim counter As Integer
@@ -368,7 +368,7 @@ Public Class clsImportHandler
             dbTools.GetInteger(dr.Item("Authority_ID"))
 
 
-            Dim ce = New clsProteinStorageEntry(
+            Dim ce = New ProteinStorageEntry(
                 dbTools.GetString(dr.Item("Name")),
                 dbTools.GetString(dr.Item("Description")),
                 dbTools.GetString(dr.Item("Sequence")),
@@ -388,7 +388,7 @@ Public Class clsImportHandler
             counter += 1
         Next
 
-        Return CType(tmpPS, clsProteinStorage)
+        Return CType(tmpPS, ProteinStorage)
 
     End Function
 
@@ -444,9 +444,9 @@ Public Class clsImportHandler
     End Function
 
     Public Function LoadProteinsForBatch(
-        fullFilePath As String) As clsProteinStorage
+        fullFilePath As String) As ProteinStorage
 
-        Dim ps As clsProteinStorage = LoadFASTA(fullFilePath)
+        Dim ps As ProteinStorage = LoadFASTA(fullFilePath)
 
         Return ps
     End Function

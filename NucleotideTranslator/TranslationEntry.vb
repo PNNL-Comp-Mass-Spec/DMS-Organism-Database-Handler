@@ -1,4 +1,4 @@
-Friend Class clsTranslationEntry
+Friend Class TranslationEntry
 
 
     Protected m_Base As String

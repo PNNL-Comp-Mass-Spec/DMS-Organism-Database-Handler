@@ -8,10 +8,10 @@ Imports System.Text
 Imports System.Text.RegularExpressions
 Imports TableManipulationBase
 
-Public Class clsGetFASTAFromDMSForward
+Public Class GetFASTAFromDMSForward
 
-    Protected ReadOnly m_DatabaseAccessor As clsDBTask
-    Protected WithEvents m_fileDumper As clsExportProteins
+    Protected ReadOnly m_DatabaseAccessor As DBTask
+    Protected WithEvents m_fileDumper As ExportProteins
 
     ''' <summary>
     ''' Keys are protein collection IDs
@@ -31,7 +31,7 @@ Public Class clsGetFASTAFromDMSForward
     Protected m_Naming_Suffix As String = "_forward"
     Protected m_Extension As String = ""
 
-    Protected m_RijndaelDecryption As clsRijndaelEncryptionHandler
+    Protected m_RijndaelDecryption As RijndaelEncryptionHandler
 
     ''' <summary>
     ''' Constructor
@@ -39,19 +39,19 @@ Public Class clsGetFASTAFromDMSForward
     ''' <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
     ''' <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
     Public Sub New(
-      databaseAccessor As clsDBTask,
-      databaseFormatType As clsGetFASTAFromDMS.DatabaseFormatTypes)
+      databaseAccessor As DBTask,
+      databaseFormatType As GetFASTAFromDMS.DatabaseFormatTypes)
 
         m_DatabaseAccessor = databaseAccessor
         m_AllCollections = GetCollectionNameList()
         m_OrganismList = GetOrganismList()
 
         Select Case databaseFormatType
-            Case clsGetFASTAFromDMS.DatabaseFormatTypes.fasta
-                m_fileDumper = New clsExportProteinsFASTA(Me)
+            Case GetFASTAFromDMS.DatabaseFormatTypes.fasta
+                m_fileDumper = New ExportProteinsFASTA(Me)
                 m_Extension = ".fasta"
-            Case clsGetFASTAFromDMS.DatabaseFormatTypes.fastapro
-                m_fileDumper = New clsExportProteinsXTFASTA(Me)
+            Case GetFASTAFromDMS.DatabaseFormatTypes.fastapro
+                m_fileDumper = New ExportProteinsXTFASTA(Me)
                 m_Extension = ".fasta.pro"
         End Select
 
@@ -257,7 +257,7 @@ Public Class clsGetFASTAFromDMSForward
                 Dim passPhraseForCollection = ""
                 If proteinCollectionPassphrases.TryGetValue(trueName, passPhraseForCollection) Then
 
-                    m_RijndaelDecryption = New clsRijndaelEncryptionHandler(passPhraseForCollection)
+                    m_RijndaelDecryption = New RijndaelEncryptionHandler(passPhraseForCollection)
                     For Each decryptionRow In collectionTable.Rows
                         cipherSeq = decryptionRow.Item("Sequence").ToString()
                         clearSeq = m_RijndaelDecryption.Decrypt(cipherSeq)
@@ -495,7 +495,7 @@ Public Class clsGetFASTAFromDMSForward
         If collectionName.Length = 0 Then
             Return 0
         End If
-        
+
         Dim foundRows() As DataRow
 
         ' Make sure there are no leading or trailing spaces

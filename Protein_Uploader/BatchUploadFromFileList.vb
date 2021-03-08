@@ -3,10 +3,10 @@ Imports System.IO
 Imports System.Windows.Forms
 Imports TableManipulationBase
 
-Public Class clsBatchUploadFromFileList
+Public Class BatchUploadFromFileList
 
-    Protected ReadOnly m_Uploader As clsPSUploadHandler
-    Protected ReadOnly m_DatabaseAccessor As clsDBTask
+    Protected ReadOnly m_Uploader As PSUploadHandler
+    Protected ReadOnly m_DatabaseAccessor As DBTask
     Protected m_CurrentFileList As Dictionary(Of String, FileListInfo)
 
     Protected m_AuthorityTable As DataTable
@@ -20,14 +20,14 @@ Public Class clsBatchUploadFromFileList
 
     Sub New(psConnectionString As String)
 
-        m_Uploader = New clsPSUploadHandler(psConnectionString)
+        m_Uploader = New PSUploadHandler(psConnectionString)
         AddHandler m_Uploader.BatchProgress, AddressOf OnTaskChange
         AddHandler m_Uploader.LoadProgress, AddressOf OnProgressUpdate
         AddHandler m_Uploader.LoadStart, AddressOf OnLoadStart
         AddHandler m_Uploader.LoadEnd, AddressOf OnLoadEnd
         AddHandler m_Uploader.LoadStart, AddressOf OnLoadStart
 
-        m_DatabaseAccessor = New clsDBTask(psConnectionString)
+        m_DatabaseAccessor = New DBTask(psConnectionString)
     End Sub
 
     Public Event ProgressUpdate(fractionDone As Double)
@@ -53,7 +53,7 @@ Public Class clsBatchUploadFromFileList
 
     Sub UploadBatch()
 
-        Dim uiList = New List(Of clsPSUploadHandler.UploadInfo)
+        Dim uiList = New List(Of PSUploadHandler.UploadInfo)
 
         m_AnnotationTypeTable = GetAnnotationTypeTable()
         m_AuthorityTable = GetAuthorityTable()
@@ -98,10 +98,10 @@ Public Class clsBatchUploadFromFileList
         Return m_DatabaseAccessor.GetTable(orgSQL)
     End Function
 
-    Private Function TransformToUploadInfo(fli As FileListInfo) As clsPSUploadHandler.UploadInfo
+    Private Function TransformToUploadInfo(fli As FileListInfo) As PSUploadHandler.UploadInfo
 
         Dim fi = New FileInfo(fli.FullFilePath)
-        Dim ui = New clsPSUploadHandler.UploadInfo(fi, fli.OrganismID, fli.AnnotationTypeID)
+        Dim ui = New PSUploadHandler.UploadInfo(fi, fli.OrganismID, fli.AnnotationTypeID)
 
         Return ui
 
@@ -158,10 +158,10 @@ Public Class clsBatchUploadFromFileList
 
     Protected Function UploadSelectedFiles(fileNameList As Dictionary(Of String, FileListInfo)) As Integer
 
-        Dim selectedFileList = New List(Of clsPSUploadHandler.UploadInfo)
+        Dim selectedFileList = New List(Of PSUploadHandler.UploadInfo)
 
         For Each fli In fileNameList.Values
-            Dim upInfoContainer = New clsPSUploadHandler.UploadInfo(
+            Dim upInfoContainer = New PSUploadHandler.UploadInfo(
                 New FileInfo(fli.FullFilePath), fli.OrganismID, fli.NamingAuthorityID)
             selectedFileList.Add(upInfoContainer)
         Next

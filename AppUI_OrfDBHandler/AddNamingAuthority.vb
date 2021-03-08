@@ -1,15 +1,15 @@
 Imports Protein_Importer
 
-Public Class clsAddNamingAuthority
+Public Class AddNamingAuthority
 
     Protected ReadOnly m_ConnectionString As String
-    Protected m_SPRunner As clsAddUpdateEntries
+    Protected m_SPRunner As AddUpdateEntries
 
     Protected m_shortName As String
     Protected m_fullName As String
     Protected m_webAddress As String
     Protected m_EntryExists As Boolean = False
-    Protected m_Importer As clsImportHandler
+    Protected m_Importer As ImportHandler
     Protected ReadOnly m_AuthorityTable As DataTable
     Protected m_FormLocation As Point
 
@@ -62,7 +62,7 @@ Public Class clsAddNamingAuthority
         frmAuth.DesktopLocation = m_FormLocation
         Dim authID As Integer
         If m_SPRunner Is Nothing Then
-            m_SPRunner = New clsAddUpdateEntries(m_ConnectionString)
+            m_SPRunner = New AddUpdateEntries(m_ConnectionString)
         End If
 
         Dim r As DialogResult = frmAuth.ShowDialog
@@ -96,7 +96,7 @@ Public Class clsAddNamingAuthority
 
     Private Function GetAuthoritiesList() As DataTable
         If m_Importer Is Nothing Then
-            m_Importer = New clsImportHandler(m_ConnectionString)
+            m_Importer = New ImportHandler(m_ConnectionString)
         End If
 
         Dim tmpAuthTable As DataTable

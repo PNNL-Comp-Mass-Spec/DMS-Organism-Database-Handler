@@ -10,7 +10,7 @@ Module modMain
     Const FASTA_GEN_TIMEOUT_INTERVAL_MINUTES As Integer = 70
     Const DEFAULT_COLLECTION_OPTIONS As String = "seq_direction=forward,filetype=fasta"
 
-    Private WithEvents m_FastaTools As clsGetFASTAFromDMS
+    Private WithEvents m_FastaTools As GetFASTAFromDMS
 
     Private m_FastaToolsCnStr As String = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;"
     Private m_message As String
@@ -365,7 +365,7 @@ Module modMain
                 Console.WriteLine("clsAnalysisResources.CreateFastaFile(), " & m_message)
                 Return False
             End If
-            m_FastaTools = New clsGetFASTAFromDMS(m_FastaToolsCnStr)
+            m_FastaTools = New GetFASTAFromDMS(m_FastaToolsCnStr)
         End If
 
         m_FastaTimer = New Timers.Timer

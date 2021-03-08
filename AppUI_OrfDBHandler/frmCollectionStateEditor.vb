@@ -197,7 +197,7 @@ Public Class frmCollectionStateEditor
 #End Region
     Friend WithEvents SearchTimer As New Timer(2000)
     Private m_SearchActive As Boolean = False
-    Private m_Handler As clsCollectionStatePickerHandler
+    Private m_Handler As CollectionStatePickerHandler
     Private ReadOnly m_PSConnectionString As String
     Private m_StatesTable As DataTable
     Private m_SelectedNewStateID As Integer = 1
@@ -240,7 +240,7 @@ Public Class frmCollectionStateEditor
 #Region " Form Event Handlers"
 
     Private Sub frmCollectionStateEditor_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        m_Handler = New clsCollectionStatePickerHandler(m_PSConnectionString)
+        m_Handler = New CollectionStatePickerHandler(m_PSConnectionString)
         m_StatesTable = m_Handler.GetStates()
 
         RemoveHandler cboStateChanger.SelectedIndexChanged, AddressOf cboStateChanger_SelectedIndexChanged

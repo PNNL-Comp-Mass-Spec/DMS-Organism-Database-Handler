@@ -1,23 +1,23 @@
 
 Imports System.Collections.Generic
 
-Public Class clsProteinStorage
+Public Class ProteinStorage
 
     ''' <summary>
     ''' Keys are Protein_Name
     ''' </summary>
-    Protected ReadOnly m_Proteins As Dictionary(Of String, clsProteinStorageEntry)
+    Protected ReadOnly m_Proteins As Dictionary(Of String, ProteinStorageEntry)
     Protected m_ResidueCount As Integer
     Protected ReadOnly m_ProteinNames As SortedSet(Of String)
     Protected m_PassPhrase As String
 
     Public Sub New(fastaFileName As String)
         FileName = fastaFileName
-        m_Proteins = New Dictionary(Of String, clsProteinStorageEntry)
+        m_Proteins = New Dictionary(Of String, ProteinStorageEntry)
         m_ProteinNames = New SortedSet(Of String)
     End Sub
 
-    Public Overridable Sub AddProtein(proteinEntry As clsProteinStorageEntry)
+    Public Overridable Sub AddProtein(proteinEntry As ProteinStorageEntry)
 
         If Not m_Proteins.ContainsKey(proteinEntry.Reference) Then
             m_Proteins.Add(proteinEntry.Reference, proteinEntry)
@@ -32,9 +32,9 @@ Public Class clsProteinStorage
 
     Protected Property FileName As String
 
-    Public Function GetProtein(reference As String) As clsProteinStorageEntry
+    Public Function GetProtein(reference As String) As ProteinStorageEntry
 
-        Dim proteinEntry As clsProteinStorageEntry = Nothing
+        Dim proteinEntry As ProteinStorageEntry = Nothing
 
         If m_Proteins.TryGetValue(reference, proteinEntry) Then
             Return proteinEntry
@@ -80,7 +80,7 @@ Public Class clsProteinStorage
         End Set
     End Property
 
-    Public Function GetEnumerator() As Dictionary(Of String, clsProteinStorageEntry).Enumerator
+    Public Function GetEnumerator() As Dictionary(Of String, ProteinStorageEntry).Enumerator
         Return m_Proteins.GetEnumerator
     End Function
 

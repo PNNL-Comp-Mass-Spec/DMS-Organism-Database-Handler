@@ -321,7 +321,7 @@ Public Class frmValidationReport
     ''' <summary>
     ''' Keys are fasta file paths, values are upload info
     ''' </summary>
-    Private m_FileValidList As Dictionary(Of String, clsPSUploadHandler.UploadInfo)
+    Private m_FileValidList As Dictionary(Of String, PSUploadHandler.UploadInfo)
 
     ''' <summary>
     ''' Keys are fasta file names, values are dictionaries of error messages, tracking the count of each error
@@ -439,7 +439,7 @@ Public Class frmValidationReport
         End Set
     End Property
 
-    Friend WriteOnly Property FileValidList As Dictionary(Of String, clsPSUploadHandler.UploadInfo)
+    Friend WriteOnly Property FileValidList As Dictionary(Of String, PSUploadHandler.UploadInfo)
         Set
             m_FileValidList = Value
         End Set
@@ -530,7 +530,7 @@ Public Class frmValidationReport
     Private Sub FillValidListView()
 
         If m_FileValidList Is Nothing Then
-            m_FileValidList = New Dictionary(Of String, clsPSUploadHandler.UploadInfo)
+            m_FileValidList = New Dictionary(Of String, PSUploadHandler.UploadInfo)
         End If
 
         If m_FileValidList.Count = 0 Then

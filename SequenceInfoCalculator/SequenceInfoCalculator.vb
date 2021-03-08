@@ -123,7 +123,7 @@ Public Class SequenceInfoCalculator
     Private Sub InitializeFromDMS()
         m_AminoAcids = New Dictionary(Of String, AminoAcidInfo)(30)
 
-        Dim getSQL = New clsDBTask(m_DMSConnectionString)
+        Dim getSQL = New DBTask(m_DMSConnectionString)
 
         Dim sqlString = "SELECT * FROM T_Residues WHERE [Num_C] > 0"
         Dim tmpAATable As DataTable = getSQL.GetTable(sqlString)

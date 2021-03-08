@@ -1,15 +1,15 @@
 Imports Protein_Importer
 Imports TableManipulationBase
 
-Public Class clsCollectionStatePickerHandler
+Public Class CollectionStatePickerHandler
     Private m_forceReload As Boolean = False
     Private m_ListViewData As DataTable
-    Private ReadOnly m_GetTables As clsDBTask
-    Private ReadOnly m_SPAccess As clsAddUpdateEntries
+    Private ReadOnly m_GetTables As DBTask
+    Private ReadOnly m_SPAccess As AddUpdateEntries
 
     Public Sub New(psConnectionString As String)
-        m_GetTables = New clsDBTask(psConnectionString)
-        m_SPAccess = New clsAddUpdateEntries(psConnectionString)
+        m_GetTables = New DBTask(psConnectionString)
+        m_SPAccess = New AddUpdateEntries(psConnectionString)
         m_forceReload = True
     End Sub
 

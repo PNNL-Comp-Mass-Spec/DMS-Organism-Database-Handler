@@ -214,14 +214,14 @@ Public Class frmExtractFromFlatfile
 #End Region
 
     Private m_UseHeaderInfo As Boolean = False
-    Private m_Extract As clsExtractFromFlatFile
+    Private m_Extract As ExtractFromFlatFile
     Private m_AuthorityList As Dictionary(Of String, String)
     Private m_CurrentAuthorityID As Integer
     Private m_CurrentGroupID As Integer
     Private m_PSConnectionString As String
 
     Private Sub frmExtractFromFlatfile_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
-        Me.m_Extract = New clsExtractFromFlatFile(Me.m_AuthorityList, Me.m_PSConnectionString)
+        Me.m_Extract = New ExtractFromFlatFile(Me.m_AuthorityList, Me.m_PSConnectionString)
         Dim openFrm As New System.Windows.Forms.OpenFileDialog
         Dim r As System.Windows.Forms.DialogResult
         Dim filePath As String

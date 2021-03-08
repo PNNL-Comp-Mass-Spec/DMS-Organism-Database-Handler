@@ -5,16 +5,16 @@ Imports System.Text.RegularExpressions
 Imports PRISMDatabaseUtils
 Imports TableManipulationBase
 
-Public MustInherit Class clsArchiveOutputFilesBase
+Public MustInherit Class ArchiveOutputFilesBase
     Public Enum CollectionTypes
         [static] = 1
         dynamic = 2
     End Enum
 
-    Protected m_Exporter As clsGetFASTAFromDMSForward
-    Protected ReadOnly m_DatabaseAccessor As clsDBTask
+    Protected m_Exporter As GetFASTAFromDMSForward
+    Protected ReadOnly m_DatabaseAccessor As DBTask
     Protected m_LastError As String
-    ' Unused: Protected m_OutputSequenceType As clsGetFASTAFromDMS.SequenceTypes
+    ' Unused: Protected m_OutputSequenceType As GetFASTAFromDMS.SequenceTypes
     Protected m_Archived_File_Name As String
 
     Protected Event ArchiveStart()
@@ -28,7 +28,7 @@ Public MustInherit Class clsArchiveOutputFilesBase
     ''' </summary>
     ''' <param name="databaseAccessor"></param>
     ''' <param name="exporterModule"></param>
-    Sub New(databaseAccessor As clsDBTask, exporterModule As clsGetFASTAFromDMS)
+    Sub New(databaseAccessor As DBTask, exporterModule As GetFASTAFromDMS)
         m_DatabaseAccessor = databaseAccessor
 
         m_Exporter = exporterModule.ExporterComponent
@@ -46,21 +46,21 @@ Public MustInherit Class clsArchiveOutputFilesBase
         End Get
     End Property
 
-    Public Function ArchiveCollection(proteinCollectionID As Integer, archivedFileType As CollectionTypes, outputSequenceType As clsGetFASTAFromDMS.SequenceTypes, databaseFormatType As clsGetFASTAFromDMS.DatabaseFormatTypes, sourceFilePath As String, creationOptionsString As String, authentication_Hash As String, proteinCollectionList As String) As Integer
+    Public Function ArchiveCollection(proteinCollectionID As Integer, archivedFileType As CollectionTypes, outputSequenceType As GetFASTAFromDMS.SequenceTypes, databaseFormatType As GetFASTAFromDMS.DatabaseFormatTypes, sourceFilePath As String, creationOptionsString As String, authentication_Hash As String, proteinCollectionList As String) As Integer
 
         OnArchiveStart()
 
         Return DispositionFile(proteinCollectionID, sourceFilePath, creationOptionsString, authentication_Hash, outputSequenceType, archivedFileType, proteinCollectionList)
     End Function
 
-    Public Function ArchiveCollection(proteinCollectionName As String, archivedFileType As CollectionTypes, outputSequenceType As clsGetFASTAFromDMS.SequenceTypes, databaseFormatType As clsGetFASTAFromDMS.DatabaseFormatTypes, sourceFilePath As String, creationOptionsString As String, authentication_Hash As String, proteinCollectionList As String) As Integer
+    Public Function ArchiveCollection(proteinCollectionName As String, archivedFileType As CollectionTypes, outputSequenceType As GetFASTAFromDMS.SequenceTypes, databaseFormatType As GetFASTAFromDMS.DatabaseFormatTypes, sourceFilePath As String, creationOptionsString As String, authentication_Hash As String, proteinCollectionList As String) As Integer
 
         Dim proteinCollectionID As Integer = GetProteinCollectionID(proteinCollectionName)
 
         Return ArchiveCollection(proteinCollectionID, archivedFileType, outputSequenceType, databaseFormatType, sourceFilePath, creationOptionsString, authentication_Hash, proteinCollectionList)
     End Function
 
-    Protected MustOverride Function DispositionFile(proteinCollectionID As Integer, sourceFilePath As String, creationOptionsString As String, sourceAuthenticationHash As String, outputSequenceType As clsGetFASTAFromDMS.SequenceTypes, archivedFileType As clsArchiveOutputFilesBase.CollectionTypes, ProteinCollectionsList As String) As Integer
+    Protected MustOverride Function DispositionFile(proteinCollectionID As Integer, sourceFilePath As String, creationOptionsString As String, sourceAuthenticationHash As String, outputSequenceType As GetFASTAFromDMS.SequenceTypes, archivedFileType As ArchiveOutputFilesBase.CollectionTypes, ProteinCollectionsList As String) As Integer
 
     Protected Function GetProteinCount(sourceFilePath As String) As Integer
         Dim idLineRegex = New Regex("^>.+", RegexOptions.Compiled)

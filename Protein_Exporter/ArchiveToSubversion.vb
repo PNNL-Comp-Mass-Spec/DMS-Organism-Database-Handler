@@ -1,5 +1,5 @@
-Public Class clsArchiveToSubversion
-    'Inherits clsArchiveOutputFilesBase
+Public Class ArchiveToSubversion
+    'Inherits ArchiveOutputFilesBase
 
 
     'Protected Overrides Function ArchiveChangedCollection(

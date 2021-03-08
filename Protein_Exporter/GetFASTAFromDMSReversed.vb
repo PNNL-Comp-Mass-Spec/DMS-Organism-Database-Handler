@@ -2,8 +2,8 @@ Option Strict On
 
 Imports TableManipulationBase
 
-Public Class clsGetFASTAFromDMSReversed
-    Inherits clsGetFASTAFromDMSForward
+Public Class GetFASTAFromDMSReversed
+    Inherits GetFASTAFromDMSForward
 
     Protected m_UseXXX As Boolean
 
@@ -13,8 +13,8 @@ Public Class clsGetFASTAFromDMSReversed
     ''' <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
     ''' <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
     Public Sub New(
-        databaseAccessor As clsDBTask,
-        databaseFormatType As clsGetFASTAFromDMS.DatabaseFormatTypes)
+        databaseAccessor As DBTask,
+        databaseFormatType As GetFASTAFromDMS.DatabaseFormatTypes)
 
         MyBase.New(databaseAccessor, databaseFormatType)
         m_Naming_Suffix = "_reversed"

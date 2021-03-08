@@ -4,11 +4,11 @@ Imports System.Collections.Generic
 Imports System.IO
 Imports Protein_Storage
 
-Public MustInherit Class clsExportProteins
+Public MustInherit Class ExportProteins
 
-    Protected m_ExportComponent As clsGetFASTAFromDMSForward
+    Protected m_ExportComponent As GetFASTAFromDMSForward
 
-    Public Sub New(exportComponent As clsGetFASTAFromDMSForward)
+    Public Sub New(exportComponent As GetFASTAFromDMSForward)
         m_ExportComponent = exportComponent
     End Sub
 
@@ -24,13 +24,13 @@ Public MustInherit Class clsExportProteins
     ''' <param name="selectedProteinList"></param>
     ''' <returns></returns>
     Protected Function Export(
-      proteins As clsProteinStorage,
+      proteins As ProteinStorage,
       ByRef destinationPath As String,
       selectedProteinList As List(Of String)) As String
 
-        Dim tmpProteinsList As clsProteinStorage
+        Dim tmpProteinsList As ProteinStorage
 
-        tmpProteinsList = New clsProteinStorage(Path.GetFileNameWithoutExtension(destinationPath))
+        tmpProteinsList = New ProteinStorage(Path.GetFileNameWithoutExtension(destinationPath))
 
         For Each reference In selectedProteinList
             tmpProteinsList.AddProtein(proteins.GetProtein(reference))
@@ -47,7 +47,7 @@ Public MustInherit Class clsExportProteins
     ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
     ''' <returns></returns>
     Public MustOverride Function Export(
-      proteins As clsProteinStorage,
+      proteins As ProteinStorage,
       ByRef destinationPath As String) As String
 
     ''' <summary>
@@ -140,7 +140,7 @@ Public MustInherit Class clsExportProteins
     '    Using f = fi.OpenRead()
 
     '        Dim tmpHash = md5Gen.ComputeHash(f)
-    '        Dim md5String As String = clsRijndaelEncryptionHandler.ToHexString(tmpHash)
+    '        Dim md5String As String = RijndaelEncryptionHandler.ToHexString(tmpHash)
     '        Return md5String
 
     '    End Using

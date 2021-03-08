@@ -1,8 +1,8 @@
 
 Imports System.Collections.Generic
 
-Public Class clsProteinStorageDMS
-    Inherits clsProteinStorage
+Public Class ProteinStorageDMS
+    Inherits ProteinStorage
 
     Private ReadOnly m_UniqueProteinIDList As Dictionary(Of Integer, SortedSet(Of String))        'Protein_ID, Protein_Name
 
@@ -12,7 +12,7 @@ Public Class clsProteinStorageDMS
         m_UniqueProteinIDList = New Dictionary(Of Integer, SortedSet(Of String))
     End Sub
 
-    Public Overrides Sub AddProtein(proteinEntry As clsProteinStorageEntry)
+    Public Overrides Sub AddProtein(proteinEntry As ProteinStorageEntry)
 
         Dim proteinName As String
         Dim proteinEntryID As Integer = proteinEntry.Protein_ID

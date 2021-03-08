@@ -225,7 +225,7 @@ Public Class frmBatchUploadFromFileList
 
     End Sub
 
-    Property FileCollection As Dictionary(Of String, clsBatchUploadFromFileList.FileListInfo)
+    Property FileCollection As Dictionary(Of String, BatchUploadFromFileList.FileListInfo)
 
     Private Sub SaveFileNamingAuthorities()
         Dim saveFilePath As String = Path.Combine(Me.m_SavePath, m_SaveFileName)
@@ -259,7 +259,7 @@ Public Class frmBatchUploadFromFileList
     '    Dim tmpAnnotationID As Integer
     '    Dim fields() As String
 
-    '    Dim fli As clsBatchUploadFromFileList.FileListInfo
+    '    Dim fli As BatchUploadFromFileList.FileListInfo
 
     '    If fi.Exists And Not Me.m_FileCollection Is Nothing Then
     '        tr = fi.OpenText
@@ -269,7 +269,7 @@ Public Class frmBatchUploadFromFileList
     '            tmpFileName = fields(0)
     '            tmpAnnotationID = CInt(fields(1))
     '            If tmpAnnotationID > 0 Then
-    '                fli = DirectCast(Me.m_FileCollection.Item(tmpFileName), clsBatchUploadFromFileList.FileListInfo)
+    '                fli = DirectCast(Me.m_FileCollection.Item(tmpFileName), BatchUploadFromFileList.FileListInfo)
     '                fli.AnnotationTypeID = tmpAnnotationID
     '                Me.m_FileCollection(tmpFileName) = fli
     '            End If
@@ -291,7 +291,7 @@ Public Class frmBatchUploadFromFileList
         'Dim tmpAnnotationID As Integer
         'Dim fields() As String
 
-        'Dim fli As clsBatchUploadFromFileList.FileListInfo
+        'Dim fli As BatchUploadFromFileList.FileListInfo
 
         'If fi.Exists And Not Me.m_FileCollection Is Nothing Then
         '    tr = fi.OpenText
@@ -301,7 +301,7 @@ Public Class frmBatchUploadFromFileList
         '        tmpFileName = fields(0)
         '        tmpAnnotationID = CInt(fields(1))
         '        If tmpAnnotationID > 0 Then
-        '            fli = DirectCast(Me.m_FileCollection.Item(tmpFileName), clsBatchUploadFromFileList.FileListInfo)
+        '            fli = DirectCast(Me.m_FileCollection.Item(tmpFileName), BatchUploadFromFileList.FileListInfo)
         '            fli.AnnotationTypeID = tmpAnnotationID
         '            Me.m_FileCollection(tmpFileName) = fli
         '        End If
@@ -315,7 +315,7 @@ Public Class frmBatchUploadFromFileList
 
     End Sub
 
-    ReadOnly Property SelectedFilesCollection As Dictionary(Of String, clsBatchUploadFromFileList.FileListInfo) = New Dictionary(Of String, clsBatchUploadFromFileList.FileListInfo)(StringComparer.OrdinalIgnoreCase)
+    ReadOnly Property SelectedFilesCollection As Dictionary(Of String, BatchUploadFromFileList.FileListInfo) = New Dictionary(Of String, BatchUploadFromFileList.FileListInfo)(StringComparer.OrdinalIgnoreCase)
 
     Private Sub PopulateDropDowns()
 
@@ -432,7 +432,7 @@ Public Class frmBatchUploadFromFileList
     Private Sub cboOrganismPicker_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboOrganismPicker.SelectedIndexChanged
         Dim cbo = DirectCast(sender, ComboBox)
         Dim li As ListViewItem
-        Dim fli As clsBatchUploadFromFileList.FileListInfo
+        Dim fli As BatchUploadFromFileList.FileListInfo
 
         If Me.lvwFiles.SelectedItems.Count > 0 Then
             For Each li In Me.lvwFiles.SelectedItems
@@ -447,7 +447,7 @@ Public Class frmBatchUploadFromFileList
     Private Sub cboAnnotationType_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboAnnotationType.SelectedIndexChanged
         Dim cbo = DirectCast(sender, ComboBox)
         Dim li As ListViewItem
-        Dim fli As clsBatchUploadFromFileList.FileListInfo
+        Dim fli As BatchUploadFromFileList.FileListInfo
 
         If Me.lvwFiles.SelectedItems.Count > 0 Then
             For Each li In Me.lvwFiles.SelectedItems
@@ -460,7 +460,7 @@ Public Class frmBatchUploadFromFileList
     End Sub
 
     Private Sub lvwFiles_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lvwFiles.SelectedIndexChanged
-        Dim fli As clsBatchUploadFromFileList.FileListInfo
+        Dim fli As BatchUploadFromFileList.FileListInfo
         Dim li As ListViewItem
 
         RemoveHandler cboAnnotationType.SelectedIndexChanged, AddressOf cboAnnotationType_SelectedIndexChanged

@@ -60,7 +60,7 @@ Module modMain
             ' Data Source=dms5;Initial Catalog=Protein_Sequences
             Dim dmsConnectionString = My.Settings.DMSConnectStr
 
-            Dim fastaImporter = New clsBulkFastaImporter(dmsConnectionString, proteinSeqsConnectionString) With {
+            Dim fastaImporter = New BulkFastaImporter(dmsConnectionString, proteinSeqsConnectionString) With {
                 .PreviewMode = mPreviewMode,
                 .ValidationMaxProteinNameLength = mMaxProteinNameLength
             }

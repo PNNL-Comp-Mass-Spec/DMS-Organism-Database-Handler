@@ -2,7 +2,7 @@ Imports System.Collections.Generic
 Imports PRISMDatabaseUtils
 Imports Protein_Exporter
 
-Public Class clsAddUpdateEntries
+Public Class AddUpdateEntries
 
     Public Enum SPModes
         add
@@ -24,7 +24,7 @@ Public Class clsAddUpdateEntries
         'Unused: nuc_original_source = 5
     End Enum
 
-    Protected ReadOnly m_DatabaseAccessor As TableManipulationBase.clsDBTask
+    Protected ReadOnly m_DatabaseAccessor As TableManipulationBase.DBTask
     'Unused: Protected m_OrganismID As Integer
     'Unused: Protected m_ProteinLengths As Hashtable
     Protected m_MaxProteinNameLength As Integer
@@ -65,7 +65,7 @@ Public Class clsAddUpdateEntries
 #End Region
 
     Public Sub New(PISConnectionString As String)
-        m_DatabaseAccessor = New TableManipulationBase.clsDBTask(PISConnectionString)
+        m_DatabaseAccessor = New TableManipulationBase.DBTask(PISConnectionString)
         m_Hasher = New Security.Cryptography.SHA1Managed
     End Sub
 
@@ -77,16 +77,16 @@ Public Class clsAddUpdateEntries
     ''' <summary>
     ''' Checks for the existence of protein sequences in the T_Proteins table
     ''' Gets Protein_ID if located, makes a new entry if not
-    ''' Updates Protein_ID field in clsProteinStorageEntry instance
+    ''' Updates Protein_ID field in ProteinStorageEntry instance
     ''' </summary>
     ''' <param name="pc"></param>
     ''' <param name="selectedProteinList"></param>
     ''' <remarks></remarks>
     Public Sub CompareProteinID(
-        pc As Protein_Storage.clsProteinStorage,
+        pc As Protein_Storage.ProteinStorage,
         selectedProteinList As List(Of String))
 
-        Dim tmpPC As Protein_Storage.clsProteinStorageEntry
+        Dim tmpPC As Protein_Storage.ProteinStorageEntry
 
         Dim s As String
 
@@ -120,13 +120,13 @@ Public Class clsAddUpdateEntries
     End Sub
 
     Public Sub UpdateProteinNames(
-        pc As Protein_Storage.clsProteinStorage,
+        pc As Protein_Storage.ProteinStorage,
         selectedProteinList As List(Of String),
         organismID As Integer,
         authorityID As Integer)
 
         OnLoadStart("Storing Protein Names and Descriptions specific to this protein collection")
-        Dim tmpPC As Protein_Storage.clsProteinStorageEntry
+        Dim tmpPC As Protein_Storage.ProteinStorageEntry
         Dim counter As Integer
         Dim counterMax As Integer = selectedProteinList.Count
         Dim s As String
@@ -155,7 +155,7 @@ Public Class clsAddUpdateEntries
 
     Public Sub UpdateProteinCollectionMembers(
         ProteinCollectionID As Integer,
-        pc As Protein_Storage.clsProteinStorage,
+        pc As Protein_Storage.ProteinStorage,
         selectedProteinList As List(Of String),
         numProteinsExpected As Integer,
         numResiduesExpected As Integer)
@@ -177,7 +177,7 @@ Public Class clsAddUpdateEntries
         Dim numResiduesActual As Integer
 
         For Each s In selectedProteinList
-            Dim tmpPC As Protein_Storage.clsProteinStorageEntry = pc.GetProtein(s)
+            Dim tmpPC As Protein_Storage.ProteinStorageEntry = pc.GetProtein(s)
             numProteinsActual += 1
             If (numProteinsActual Mod EventTriggerThresh) = 0 Then
                 OnProgressUpdate(CDbl(numProteinsActual / counterMax))
@@ -195,11 +195,11 @@ Public Class clsAddUpdateEntries
     End Sub
 
     Public Function GetTotalResidueCount(
-      proteinCollection As Protein_Storage.clsProteinStorage,
+      proteinCollection As Protein_Storage.ProteinStorage,
       selectedProteinList As List(Of String)) As Integer
         Dim s As String
         Dim totalLength As Integer
-        Dim tmpPC As Protein_Storage.clsProteinStorageEntry
+        Dim tmpPC As Protein_Storage.ProteinStorageEntry
 
         For Each s In selectedProteinList
             tmpPC = proteinCollection.GetProtein(s)
@@ -210,7 +210,7 @@ Public Class clsAddUpdateEntries
     End Function
 
 
-    Protected Function AddProteinSequence(protein As Protein_Storage.clsProteinStorageEntry) As Integer
+    Protected Function AddProteinSequence(protein As Protein_Storage.ProteinStorageEntry) As Integer
         Dim protein_id As Integer
 
         With protein
@@ -324,7 +324,7 @@ Public Class clsAddUpdateEntries
 
     End Function
 
-    Protected Function GetProteinID(entry As Protein_Storage.clsProteinStorageEntry, hitsTable As DataTable) As Integer
+    Protected Function GetProteinID(entry As Protein_Storage.ProteinStorageEntry, hitsTable As DataTable) As Integer
         Dim foundRows() As DataRow
         Dim tmpSeq As String
         Dim tmpProteinID As Integer
@@ -442,7 +442,7 @@ Public Class clsAddUpdateEntries
         Dim sha1_hash() As Byte = m_Hasher.ComputeHash(byteSourceText)
 
         'And convert it to String format for return
-        Dim sha1string As String = clsRijndaelEncryptionHandler.ToHexString(sha1_hash)
+        Dim sha1string As String = RijndaelEncryptionHandler.ToHexString(sha1_hash)
 
         Return sha1string
     End Function
@@ -485,7 +485,7 @@ Public Class clsAddUpdateEntries
       averageMass As Double,
       sha1_Hash As String,
       isEncrypted As Boolean,
-      mode As clsAddUpdateEntries.SPModes) As Integer
+      mode As AddUpdateEntries.SPModes) As Integer
 
         Dim encryptionFlag = 0
         If isEncrypted Then

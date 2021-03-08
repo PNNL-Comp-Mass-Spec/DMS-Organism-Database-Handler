@@ -2,7 +2,7 @@ Imports System.Collections.Generic
 Imports PRISM
 Imports PRISMDatabaseUtils
 
-Public Class clsDBTask
+Public Class DBTask
     Inherits EventNotifier
 
 #Region "Member Variables"

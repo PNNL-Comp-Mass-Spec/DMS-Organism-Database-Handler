@@ -1,16 +1,16 @@
 Imports System.Linq
 Imports Protein_Importer
 
-Public Class clsAddAnnotationType
+Public Class AddAnnotationType
     Protected m_ConnectionString As String
-    Protected m_SPRunner As clsAddUpdateEntries
+    Protected m_SPRunner As AddUpdateEntries
 
     Protected m_TypeName As String
     Protected m_Description As String
     Protected m_Example As String
     Protected m_AuthID As Integer
     Protected m_EntryExists As Boolean = False
-    Protected m_AuthAdd As clsAddNamingAuthority
+    Protected m_AuthAdd As AddNamingAuthority
     Protected m_Authorities As DataTable
     Protected m_FormLocation As Point
 
@@ -60,7 +60,7 @@ Public Class clsAddAnnotationType
     Sub New(psConnectionString As String)
         m_ConnectionString = psConnectionString
 
-        m_AuthAdd = New clsAddNamingAuthority(m_ConnectionString)
+        m_AuthAdd = New AddNamingAuthority(m_ConnectionString)
         m_Authorities = m_AuthAdd.AuthoritiesTable
 
     End Sub
@@ -83,11 +83,11 @@ Public Class clsAddAnnotationType
         Dim frmAnn As New frmAddAnnotationType
         Dim annTypeID As Integer
         If m_SPRunner Is Nothing Then
-            m_SPRunner = New clsAddUpdateEntries(m_ConnectionString)
+            m_SPRunner = New AddUpdateEntries(m_ConnectionString)
         End If
 
         If m_AuthAdd Is Nothing Then
-            m_AuthAdd = New clsAddNamingAuthority(m_ConnectionString)
+            m_AuthAdd = New AddNamingAuthority(m_ConnectionString)
         End If
 
         frmAnn.AuthorityTable = m_Authorities

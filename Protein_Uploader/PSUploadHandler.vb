@@ -7,7 +7,7 @@ Imports Protein_Storage
 Imports TableManipulationBase
 Imports ValidateFastaFile
 
-Public Class clsPSUploadHandler
+Public Class PSUploadHandler
 
     Public Enum eValidationOptionConstants As Integer
         AllowAsterisksInResidues = 0
@@ -43,10 +43,10 @@ Public Class clsPSUploadHandler
 
     Protected m_NormalizedFASTAFilePath As String
 
-    Protected ReadOnly m_DatabaseAccessor As clsDBTask
-    Protected WithEvents m_Importer As clsImportHandler
-    Protected WithEvents m_Upload As clsAddUpdateEntries
-    Protected WithEvents m_Export As clsGetFASTAFromDMS
+    Protected ReadOnly m_DatabaseAccessor As DBTask
+    Protected WithEvents m_Importer As ImportHandler
+    Protected WithEvents m_Upload As AddUpdateEntries
+    Protected WithEvents m_Export As GetFASTAFromDMS
     Protected WithEvents m_Validator As clsCustomValidateFastaFiles
 
     Public Event LoadStart(taskTitle As String)
@@ -63,7 +63,7 @@ Public Class clsPSUploadHandler
 
     Protected mMaximumProteinNameLength As Integer = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
 
-    Private WithEvents m_Encryptor As clsCollectionEncryptor
+    Private WithEvents m_Encryptor As CollectionEncryptor
 
     ' Note: this array gets initialized with space for 10 items
     ' If eValidationOptionConstants gets more than 10 entries, then this array will need to be expanded
@@ -141,20 +141,20 @@ Public Class clsPSUploadHandler
     End Sub
 
     Public Sub New(psConnectionString As String)
-        m_DatabaseAccessor = New clsDBTask(psConnectionString)
+        m_DatabaseAccessor = New DBTask(psConnectionString)
 
         ' Reserve space for tracking up to 10 validation updates (expand later if needed)
         ReDim mValidationOptions(10)
 
-        m_Upload = New clsAddUpdateEntries(psConnectionString)
+        m_Upload = New AddUpdateEntries(psConnectionString)
 
-        m_Export = New clsGetFASTAFromDMS(psConnectionString,
-                                          clsGetFASTAFromDMS.DatabaseFormatTypes.fasta,
-                                          clsGetFASTAFromDMS.SequenceTypes.forward)
+        m_Export = New GetFASTAFromDMS(psConnectionString,
+                                          GetFASTAFromDMS.DatabaseFormatTypes.fasta,
+                                          GetFASTAFromDMS.SequenceTypes.forward)
 
         m_Validator = New clsCustomValidateFastaFiles()
 
-        m_Importer = New clsImportHandler(m_DatabaseAccessor.ConnectionString)
+        m_Importer = New ImportHandler(m_DatabaseAccessor.ConnectionString)
     End Sub
 
     'fileInfoList hash -> key =
@@ -163,7 +163,7 @@ Public Class clsPSUploadHandler
 
         Dim eResult As DialogResult
 
-        Dim databaseAccessor = New clsDBTask(m_DatabaseAccessor.ConnectionString)
+        Dim databaseAccessor = New DBTask(m_DatabaseAccessor.ConnectionString)
 
         For Each upInfo In fileInfoList
             'upInfo.OriginalFileInformation = upInfo.FileInformation
@@ -293,7 +293,7 @@ Public Class clsPSUploadHandler
                     Else
 
                         If upInfo.EncryptSequences AndAlso Not String.IsNullOrEmpty(upInfo.EncryptionPassphrase) Then
-                            m_Encryptor = New clsCollectionEncryptor(upInfo.EncryptionPassphrase, databaseAccessor)
+                            m_Encryptor = New CollectionEncryptor(upInfo.EncryptionPassphrase, databaseAccessor)
                             m_Encryptor.EncryptStorageCollectionSequences(proteinStorage)
                             proteinStorage.EncryptSequences = True
                             proteinStorage.PassPhrase = upInfo.EncryptionPassphrase
@@ -318,12 +318,12 @@ Public Class clsPSUploadHandler
     End Sub
 
     Public Function UploadCollection(
-        fileContents As clsProteinStorage,
+        fileContents As ProteinStorage,
         selectedProteins As List(Of String),
         filepath As String,
         description As String,
         collectionSource As String,
-        collectionType As clsAddUpdateEntries.CollectionTypes,
+        collectionType As AddUpdateEntries.CollectionTypes,
         organismID As Integer,
         annotationTypeID As Integer) As Integer
 
@@ -404,7 +404,7 @@ Public Class clsPSUploadHandler
 
         Dim fingerprint As String
         OnLoadStart("Generating Hash fingerprint")
-        fingerprint = m_Export.ExportFASTAFile(collectionID, tmpFileName, clsGetFASTAFromDMS.DatabaseFormatTypes.fasta, clsGetFASTAFromDMS.SequenceTypes.forward)
+        fingerprint = m_Export.ExportFASTAFile(collectionID, tmpFileName, GetFASTAFromDMS.DatabaseFormatTypes.fasta, GetFASTAFromDMS.SequenceTypes.forward)
         OnLoadEnd()
 
         OnLoadStart("Storing fingerprint in T_Protein_Collections")
@@ -416,7 +416,7 @@ Public Class clsPSUploadHandler
     End Function
 
     Protected Function CollectionBatchUploadCoordinator(
-        fileContents As clsProteinStorage,
+        fileContents As ProteinStorage,
         filepath As String,
         organismID As Integer,
         annotationTypeID As Integer,
@@ -425,7 +425,7 @@ Public Class clsPSUploadHandler
 
         Dim selectedList As New List(Of String)
 
-        Dim counter As Dictionary(Of String, clsProteinStorageEntry).Enumerator = fileContents.GetEnumerator
+        Dim counter As Dictionary(Of String, ProteinStorageEntry).Enumerator = fileContents.GetEnumerator
 
         While counter.MoveNext()
             selectedList.Add(counter.Current.Value.Reference)
@@ -435,7 +435,7 @@ Public Class clsPSUploadHandler
 
         Return UploadCollection(
             fileContents, selectedList, filepath, description, source,
-            clsAddUpdateEntries.CollectionTypes.prot_original_source, organismID, annotationTypeID)
+            AddUpdateEntries.CollectionTypes.prot_original_source, organismID, annotationTypeID)
 
     End Function
 

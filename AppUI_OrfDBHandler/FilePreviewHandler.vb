@@ -2,9 +2,9 @@ Imports System.IO
 Imports Protein_Importer
 Imports Protein_Storage
 
-Public Class clsFilePreviewHandler
+Public Class FilePreviewHandler
 
-    Private m_Proteins As clsProteinStorage
+    Private m_Proteins As ProteinStorage
     Private m_Loader As FASTAReader
     Private m_currentFilePath As String
     Private WithEvents m_frmPreview As frmFilePreview

@@ -6,12 +6,12 @@ Imports PRISM
 Imports PRISMWin
 Imports Protein_Storage
 
-Public Class clsExportProteinsFASTA
-    Inherits clsExportProteins
+Public Class ExportProteinsFASTA
+    Inherits ExportProteins
 
     Private ReadOnly m_seqLineLength As Integer = 60
 
-    Public Sub New(exportComponent As clsGetFASTAFromDMSForward)
+    Public Sub New(exportComponent As GetFASTAFromDMSForward)
         MyBase.New(exportComponent)
     End Sub
 
@@ -23,7 +23,7 @@ Public Class clsExportProteinsFASTA
     ''' <returns></returns>
     ''' <remarks></remarks>
     Public Overloads Overrides Function Export(
-      proteins As clsProteinStorage,
+      proteins As ProteinStorage,
       ByRef destinationPath As String) As String
 
         Const REQUIRED_SIZE_MB = 150
@@ -51,7 +51,7 @@ Public Class clsExportProteinsFASTA
             Dim tmpName As String
             Dim tmpDesc As String
             Dim seqLine As String
-            Dim tmpPC As clsProteinStorageEntry
+            Dim tmpPC As ProteinStorageEntry
             Dim tmpAltNames As String = String.Empty
 
             OnExportStart("Writing to FASTA File")

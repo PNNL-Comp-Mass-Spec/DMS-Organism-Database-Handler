@@ -13,7 +13,7 @@ Imports PRISMDatabaseUtils
 Imports PRISMWin
 Imports TableManipulationBase
 
-Public Class clsGetFASTAFromDMS
+Public Class GetFASTAFromDMS
     Inherits EventNotifier
 
     Public Enum SequenceTypes
@@ -32,15 +32,15 @@ Public Class clsGetFASTAFromDMS
     Public Const LOCK_FILE_PROGRESS_TEXT As String = "Lockfile"
     Public Const HASHCHECK_SUFFIX As String = ".hashcheck"
 
-    Private WithEvents m_Getter As clsGetFASTAFromDMSForward
-    Private m_Archiver As clsArchiveOutputFilesBase
+    Private WithEvents m_Getter As GetFASTAFromDMSForward
+    Private m_Archiver As ArchiveOutputFilesBase
     Private m_DatabaseFormatType As DatabaseFormatTypes
     Private m_OutputSequenceType As SequenceTypes
-    Private m_CollectionType As clsArchiveOutputFilesBase.CollectionTypes
+    Private m_CollectionType As ArchiveOutputFilesBase.CollectionTypes
     Private m_FinalOutputPath As String
 
     Private m_ArchiveCollectionList As List(Of String)
-    Private ReadOnly m_DatabaseAccessor As clsDBTask
+    Private ReadOnly m_DatabaseAccessor As DBTask
     Private ReadOnly m_SHA1Provider As SHA1Managed
 
     Private WithEvents m_FileTools As FileTools
@@ -48,7 +48,7 @@ Public Class clsGetFASTAFromDMS
 
     Public Property DecoyProteinsUseXXX As Boolean = True
 
-    Public ReadOnly Property ExporterComponent As clsGetFASTAFromDMSForward
+    Public ReadOnly Property ExporterComponent As GetFASTAFromDMSForward
         Get
             Return m_Getter
         End Get
@@ -92,7 +92,7 @@ Public Class clsGetFASTAFromDMS
         If String.IsNullOrWhiteSpace(dbConnectionString) Then
             m_DatabaseAccessor = Nothing
         Else
-            m_DatabaseAccessor = New clsDBTask(dbConnectionString)
+            m_DatabaseAccessor = New DBTask(dbConnectionString)
             RegisterEvents(m_DatabaseAccessor)
         End If
 
@@ -110,35 +110,35 @@ Public Class clsGetFASTAFromDMS
         Select Case outputSequenceType
 
             Case SequenceTypes.forward
-                m_Getter = New clsGetFASTAFromDMSForward(m_DatabaseAccessor, databaseFormatType)
-                m_CollectionType = clsArchiveOutputFilesBase.CollectionTypes.static
+                m_Getter = New GetFASTAFromDMSForward(m_DatabaseAccessor, databaseFormatType)
+                m_CollectionType = ArchiveOutputFilesBase.CollectionTypes.static
 
             Case SequenceTypes.reversed
-                m_Getter = New clsGetFASTAFromDMSReversed(m_DatabaseAccessor, databaseFormatType)
-                m_CollectionType = clsArchiveOutputFilesBase.CollectionTypes.dynamic
+                m_Getter = New GetFASTAFromDMSReversed(m_DatabaseAccessor, databaseFormatType)
+                m_CollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic
 
             Case SequenceTypes.scrambled
-                m_Getter = New clsGetFASTAFromDMSScrambled(m_DatabaseAccessor, databaseFormatType)
-                m_CollectionType = clsArchiveOutputFilesBase.CollectionTypes.dynamic
+                m_Getter = New GetFASTAFromDMSScrambled(m_DatabaseAccessor, databaseFormatType)
+                m_CollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic
 
             Case SequenceTypes.decoy
-                m_Getter = New clsGetFASTAFromDMSDecoy(m_DatabaseAccessor, databaseFormatType, decoyUsesXXX)
+                m_Getter = New GetFASTAFromDMSDecoy(m_DatabaseAccessor, databaseFormatType, decoyUsesXXX)
 
-                m_CollectionType = clsArchiveOutputFilesBase.CollectionTypes.dynamic
+                m_CollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic
 
             Case SequenceTypes.decoyX
-                m_Getter = New clsGetFASTAFromDMSDecoyX(m_DatabaseAccessor, databaseFormatType)
-                m_CollectionType = clsArchiveOutputFilesBase.CollectionTypes.dynamic
+                m_Getter = New GetFASTAFromDMSDecoyX(m_DatabaseAccessor, databaseFormatType)
+                m_CollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic
 
         End Select
 
-        m_Archiver = New clsArchiveToFile(m_DatabaseAccessor, Me)
+        m_Archiver = New ArchiveToFile(m_DatabaseAccessor, Me)
     End Sub
 
     ' Unused
     'Private Overridable Function GetCollectionTable(selectionSQL As String) As DataTable
     '    If m_DatabaseAccessor Is Nothing Then
-    '        m_DatabaseAccessor = New clsDBTask(m_PSConnectionString, True)
+    '        m_DatabaseAccessor = New DBTask(m_PSConnectionString, True)
     '    End If
 
     '    Return m_DatabaseAccessor.GetTable(selectionSQL)
@@ -157,7 +157,7 @@ Public Class clsGetFASTAFromDMS
 
         Dim proteinCollectionName As String = GetProteinCollectionName(proteinCollectionID)
 
-        Dim creationOptionsHandler As New clsFileCreationOptions(m_DatabaseAccessor)
+        Dim creationOptionsHandler As New FileCreationOptions(m_DatabaseAccessor)
 
         Dim creationOptions As String = creationOptionsHandler.MakeCreationOptionsString(outputSequenceType, databaseFormatType)
 
@@ -181,7 +181,7 @@ Public Class clsGetFASTAFromDMS
         ' Returns the CRC32 hash of the exported file
         ' Returns nothing or "" if an error
 
-        Dim optionsParser = New clsFileCreationOptions(m_DatabaseAccessor)
+        Dim optionsParser = New FileCreationOptions(m_DatabaseAccessor)
         Dim cleanOptionsString As String
 
         ' Trim any leading or trailing commas
@@ -489,7 +489,7 @@ Public Class clsGetFASTAFromDMS
 
         ' If more than one protein collection, then we're generating a dynamic protein collection
         If protCollectionList.Count > 1 Then
-            m_CollectionType = clsArchiveOutputFilesBase.CollectionTypes.dynamic
+            m_CollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic
         End If
 
         Dim crc32Hash As String

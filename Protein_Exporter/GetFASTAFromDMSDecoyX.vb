@@ -3,8 +3,8 @@ Option Strict On
 
 Imports TableManipulationBase
 
-Public Class clsGetFASTAFromDMSDecoyX
-    Inherits clsGetFASTAFromDMSDecoy
+Public Class GetFASTAFromDMSDecoyX
+    Inherits GetFASTAFromDMSDecoy
 
     Private Const DECOY_PROTEINS_USE_XXX As Boolean = True
 
@@ -14,12 +14,12 @@ Public Class clsGetFASTAFromDMSDecoyX
     ''' <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
     ''' <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
     Public Sub New(
-        databaseAccessor As clsDBTask,
-        databaseFormatType As clsGetFASTAFromDMS.DatabaseFormatTypes)
+        databaseAccessor As DBTask,
+        databaseFormatType As GetFASTAFromDMS.DatabaseFormatTypes)
 
         MyBase.New(databaseAccessor, databaseFormatType, DECOY_PROTEINS_USE_XXX)
 
-        m_RevGenerator = New clsGetFASTAFromDMSReversed(
+        m_RevGenerator = New GetFASTAFromDMSReversed(
             databaseAccessor, databaseFormatType) With {
             .UseXXX = DECOY_PROTEINS_USE_XXX
             }

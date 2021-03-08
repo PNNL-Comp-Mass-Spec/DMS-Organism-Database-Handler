@@ -321,12 +321,12 @@ Public Class frmTestingInterface
 
 #End Region
 
-    Private WithEvents importer As clsImportHandler
+    Private WithEvents importer As ImportHandler
     Private collectionList As DataTable
     Private m_LastOutputDirectory As String = "D:\outbox\output_test\"
     Private m_AppPath As String = Application.ExecutablePath
-    Protected WithEvents m_Syncer As clsSyncFASTAFileArchive
-    Protected WithEvents m_Exporter As clsGetFASTAFromDMS
+    Protected WithEvents m_Syncer As SyncFASTAFileArchive
+    Protected WithEvents m_Exporter As GetFASTAFromDMS
     Protected m_FullOutputPath As String
 
     Private m_TaskMessage As String
@@ -336,7 +336,7 @@ Public Class frmTestingInterface
     'Private exporter As ExportCollectionsFromDMS.IExportCollectionsFromDMS
 
     Private Sub frmTestingInterface_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        importer = New clsImportHandler(txtConnString.Text)
+        importer = New ImportHandler(txtConnString.Text)
         collectionList = importer.LoadProteinCollections()
         With cboCollectionsList
             .DataSource = collectionList
@@ -347,19 +347,19 @@ Public Class frmTestingInterface
     End Sub
 
     Private Sub cmdLoadTT_Click(sender As Object, e As EventArgs) Handles cmdLoadTT.Click
-        Dim transHandler = New clsTransTableHandler(txtConnString.Text)
+        Dim transHandler = New TransTableHandler(txtConnString.Text)
         transHandler.GetAllTranslationTableEntries(txtTransFilePath.Text)
     End Sub
 
     Private Sub cmdLoadFF_Click(sender As Object, e As EventArgs) Handles cmdLoadFF.Click
-        Dim importHandler = New clsImportHandler(txtConnString.Text)
+        Dim importHandler = New ImportHandler(txtConnString.Text)
 
         'importHandler.LoadProteins(txtFASTAFilePath.Text, "", Protein_Importer.IImportProteins.ProteinImportFileTypes.FASTA, 4, 1)
 
         'Dim FASTAHandler As Protein_Importer.IReadFASTA
         ''FASTAHandler = New Protein_Importer.FASTAReader
-        'Dim sqlData As TableManipulationBase.clsDBTask
-        'sqlData = New TableManipulationBase.clsDBTask(txtConnString.Text, True)
+        'Dim sqlData As TableManipulationBase.DBTask
+        'sqlData = New TableManipulationBase.DBTask(txtConnString.Text, True)
 
 
 
@@ -412,7 +412,7 @@ Public Class frmTestingInterface
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
-        Dim trans = New clsTranslateNucleotides(txtConnString.Text)
+        Dim trans = New TranslateNucleotides(txtConnString.Text)
 
         trans.LoadTransMatrix(1)
     End Sub
@@ -439,17 +439,17 @@ Public Class frmTestingInterface
             m_LastOutputDirectory = filePath
 
             'tmpNameList.Add(cboCollectionsList.Text.ToString)
-            'exporter = New Protein_Exporter.clsGetFASTAFromDMS(txtConnString.Text, Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.FASTA, Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward_sequence)
-            'exporter = New Protein_Exporter.clsGetFASTAFromDMS(
+            'exporter = New Protein_Exporter.GetFASTAFromDMS(txtConnString.Text, Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.FASTA, Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward_sequence)
+            'exporter = New Protein_Exporter.GetFASTAFromDMS(
             '    txtConnString.Text,
             '    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.FASTA,
             '    GetCollectionName(CInt(cboCollectionsList.SelectedValue)) + "_scrambled.fasta")
 
-            'm_Exporter = New Protein_Exporter.clsGetFASTAFromDMS(
+            'm_Exporter = New Protein_Exporter.GetFASTAFromDMS(
             '    txtConnString.Text,
             '    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
             '    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward)
-            m_Exporter = New clsGetFASTAFromDMS(txtConnString.Text)
+            m_Exporter = New GetFASTAFromDMS(txtConnString.Text)
 
             'True Legacy fasta file
             'fingerprint = m_Exporter.ExportFASTAFile("na", "na", "HCMV_2003+H_sapiens_IPI_2005-04-04.fasta", filePath)
@@ -486,7 +486,7 @@ Public Class frmTestingInterface
             ' fingerprint = m_Exporter.ExportFASTAFile(GetCollectionName(CInt(cboCollectionsList.SelectedValue)), "seq_direction=scrambled,filetype=fasta", "na", filePath)
 
             'fingerprint = exporter.ExportFASTAFile(CInt(cboCollectionsList.SelectedValue), filePath)
-            'exporter = New ExportCollectionsFromDMS.clsExportCollectionsFromDMS(txtConnString.Text, ExportCollectionsFromDMS.IExportCollectionsFromDMS.ExportClasses.clsExportProteinsXTFASTA)
+            'exporter = New ExportCollectionsFromDMS.clsExportCollectionsFromDMS(txtConnString.Text, ExportCollectionsFromDMS.IExportCollectionsFromDMS.ExportClasses.ExportProteinsXTFASTA)
             'fingerprint = exporter.Export(CInt(cboCollectionsList.SelectedValue), filePath)
 
 
@@ -508,8 +508,8 @@ Public Class frmTestingInterface
     End Function
 
     Private Sub cmdBatchLoadDMS_Click(sender As Object, e As EventArgs)
-        Dim fileBatcher As clsBatchUploadFromFileList =
-            New clsBatchUploadFromFileList(txtConnString.Text)
+        Dim fileBatcher As BatchUploadFromFileList =
+            New BatchUploadFromFileList(txtConnString.Text)
         fileBatcher.UploadBatch()
     End Sub
 
@@ -520,7 +520,7 @@ Public Class frmTestingInterface
     Private Sub cmdUpdateArchiveTables_Click(sender As Object, e As EventArgs) Handles cmdUpdateArchiveTables.Click
 
         If m_Syncer Is Nothing Then
-            m_Syncer = New clsSyncFASTAFileArchive(txtConnString.Text)
+            m_Syncer = New SyncFASTAFileArchive(txtConnString.Text)
         End If
 
 

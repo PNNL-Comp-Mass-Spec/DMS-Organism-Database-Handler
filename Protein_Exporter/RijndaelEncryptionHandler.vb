@@ -4,7 +4,7 @@ Imports System.IO
 Imports System.Text
 Imports System.Security.Cryptography
 
-Public Class clsRijndaelEncryptionHandler
+Public Class RijndaelEncryptionHandler
     ' <summary>
     ' Encrypts specified plaintext using Rijndael symmetric key algorithm
     ' and returns a base64-encoded result.

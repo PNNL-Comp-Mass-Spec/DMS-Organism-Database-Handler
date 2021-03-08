@@ -1,13 +1,13 @@
-Public Class clsTranslateNucleotides
+Public Class TranslateNucleotides
 
     Protected m_TranslationMatrix As ArrayList
-    Protected m_GetSQLData As TableManipulationBase.clsDBTask
+    Protected m_GetSQLData As TableManipulationBase.DBTask
 
     Protected m_TranTableListName As String = "T_DNA_Translation_Tables"
     Protected m_TransTableMembersName As String = "T_DNA_Translation_Table_Members"
 
     Public Sub New(DMSConnectionString As String)
-        Me.m_GetSQLData = New TableManipulationBase.clsDBTask(DMSConnectionString)
+        Me.m_GetSQLData = New TableManipulationBase.DBTask(DMSConnectionString)
     End Sub
 
     Public Function LoadTransMatrix(TranslationTableID As Integer) As ArrayList
@@ -42,13 +42,13 @@ Public Class clsTranslateNucleotides
 
                     dr = TertiaryRows(0)
 
-                    TertiaryList.Add(New clsTranslationEntry(base_3.ToString, CStr(dr.Item("Coded_AA"))))
+                    TertiaryList.Add(New TranslationEntry(base_3.ToString, CStr(dr.Item("Coded_AA"))))
                 Next
-                SecondaryList.Add(New clsTranslationEntry(base_2.ToString, TertiaryList))
+                SecondaryList.Add(New TranslationEntry(base_2.ToString, TertiaryList))
                 TertiaryList = New ArrayList
             Next
 
-            PrimaryList.Add(New clsTranslationEntry(base_1.ToString, SecondaryList))
+            PrimaryList.Add(New TranslationEntry(base_1.ToString, SecondaryList))
             SecondaryList = New ArrayList
         Next
 

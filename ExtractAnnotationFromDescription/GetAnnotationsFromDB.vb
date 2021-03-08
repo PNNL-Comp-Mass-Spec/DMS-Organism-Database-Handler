@@ -5,19 +5,19 @@ Friend Interface IGetAnnotationsFromDB
 End Interface
 
 <Obsolete("Unused")>
-Friend Class clsGetAnnotationsFromDB
+Friend Class GetAnnotationsFromDB
     Private ReadOnly m_ConnectionString As String
-    Private m_DatabaseHelper As TableManipulationBase.clsDBTask
+    Private m_DatabaseHelper As TableManipulationBase.DBTask
 
     Sub New(psConnectionString As String)
         Me.m_ConnectionString = psConnectionString
     End Sub
 
-    Function GetAnnotationDetails(ProteinCollectionID As Integer) As clsAnnotationInfo
-        Me.m_DatabaseHelper = New TableManipulationBase.clsDBTask(m_ConnectionString)
+    Function GetAnnotationDetails(ProteinCollectionID As Integer) As AnnotationInfo
+        Me.m_DatabaseHelper = New TableManipulationBase.DBTask(m_ConnectionString)
 
-        ' FYI: The constructor for clsAnnotationInfo() doesn't use CollectionName or ProteinCollectionID at present
-        Dim info As New clsAnnotationInfo()
+        ' FYI: The constructor for AnnotationInfo() doesn't use CollectionName or ProteinCollectionID at present
+        Dim info As New AnnotationInfo()
 
         'Get Protein Collection Name
         Dim sqlQuery1 = "SELECT TOP 1 Name FROM V_Collection_Picker " &

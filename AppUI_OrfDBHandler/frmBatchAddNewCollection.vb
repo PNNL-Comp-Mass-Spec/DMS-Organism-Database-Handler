@@ -534,10 +534,10 @@ Public Class frmBatchAddNewCollection
     ''' </summary>
     Private m_FileList As Dictionary(Of String, FileInfo)
 
-    Private m_CheckedFileList As List(Of Protein_Uploader.clsPSUploadHandler.UploadInfo)
+    Private m_CheckedFileList As List(Of Protein_Uploader.PSUploadHandler.UploadInfo)
 
     ' Keys are file paths, values are UploadInfo objects
-    Private m_SelectedFileList As Dictionary(Of String, Protein_Uploader.clsPSUploadHandler.UploadInfo)
+    Private m_SelectedFileList As Dictionary(Of String, Protein_Uploader.PSUploadHandler.UploadInfo)
 
     Private ReadOnly m_OrganismList As DataTable
     Private ReadOnly m_OrganismListSorted As DataView
@@ -556,7 +556,7 @@ Public Class frmBatchAddNewCollection
     Private ReadOnly m_PSConnectionString As String
     Private m_ReallyClose As Boolean = False
 
-    Private WithEvents m_FilePreviewer As clsFilePreviewHandler
+    Private WithEvents m_FilePreviewer As FilePreviewHandler
     Private m_PreviewFormStatus As Boolean
 
     ' Private m_PassphraseList As Hashtable
@@ -586,7 +586,7 @@ Public Class frmBatchAddNewCollection
 #End Region
 
 #Region " Properties "
-    ReadOnly Property FileList As List(Of clsPSUploadHandler.UploadInfo)
+    ReadOnly Property FileList As List(Of PSUploadHandler.UploadInfo)
         Get
             Return m_CheckedFileList
         End Get
@@ -708,7 +708,7 @@ Public Class frmBatchAddNewCollection
             m_FileList = New Dictionary(Of String, FileInfo)
         End If
 
-        m_CheckedFileList = New List(Of clsPSUploadHandler.UploadInfo)
+        m_CheckedFileList = New List(Of PSUploadHandler.UploadInfo)
         LoadOrganismPicker(cboOrganismSelect, m_OrganismListSorted)
         LoadAnnotationTypePicker(cboAnnotationTypePicker, m_AnnotationTypeList)
         cmdUploadChecked.Enabled = False
@@ -930,13 +930,13 @@ Public Class frmBatchAddNewCollection
 
         Try
             If m_SelectedFileList Is Nothing Then
-                m_SelectedFileList = New Dictionary(Of String, clsPSUploadHandler.UploadInfo)(StringComparer.CurrentCultureIgnoreCase)
+                m_SelectedFileList = New Dictionary(Of String, PSUploadHandler.UploadInfo)(StringComparer.CurrentCultureIgnoreCase)
             End If
 
             For Each li As ListViewItem In lvwFolderContents.SelectedItems
                 Dim fastaFilePath = GetFolderContentsColumn(li, eFolderContentsColumn.FilePath)
 
-                Dim upInfo = New clsPSUploadHandler.UploadInfo() With {
+                Dim upInfo = New PSUploadHandler.UploadInfo() With {
                     .FileInformation = m_FileList.Item(fastaFilePath),
                     .OrganismID = DirectCast(cboOrganismSelect.SelectedValue, Integer),
                     .AnnotationTypeID = DirectCast(cboAnnotationTypePicker.SelectedValue, Integer),
@@ -1318,7 +1318,7 @@ Public Class frmBatchAddNewCollection
 
     Private Sub cboAnnotationTypePicker_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboAnnotationTypePicker.SelectedIndexChanged
         Dim cbo = DirectCast(sender, ComboBox)
-        Dim tmpUpInfo As clsPSUploadHandler.UploadInfo
+        Dim tmpUpInfo As PSUploadHandler.UploadInfo
 
         If cboAnnotationTypePicker.SelectedValue.GetType Is Type.GetType("System.Int32") Then
             m_SelectedAnnotationTypeID = CInt(cboAnnotationTypePicker.SelectedValue)
@@ -1332,10 +1332,10 @@ Public Class frmBatchAddNewCollection
 
         If m_SelectedAnnotationTypeID = -2 Then
             'Bring up an additional dialog
-            Dim AnnTypeAdd As New clsAddAnnotationType(m_PSConnectionString)
+            Dim AnnTypeAdd As New AddAnnotationType(m_PSConnectionString)
             AnnTypeAdd.FormLocation = New Point(Left + Width + 10, Top)
             tmpAnnTypeID = AnnTypeAdd.AddAnnotationType
-            'Dim AuthAdd As New clsAddNamingAuthority(m_PSConnectionString)
+            'Dim AuthAdd As New AddNamingAuthority(m_PSConnectionString)
             'tmpAuthID = AuthAdd.AddNamingAuthority
 
             If Not AnnTypeAdd.EntryExists And tmpAnnTypeID > 0 Then
@@ -1368,7 +1368,7 @@ Public Class frmBatchAddNewCollection
                 tmpUpInfo = m_SelectedFileList.Item(fastaFilePath)
 
                 m_SelectedFileList.Item(fastaFilePath) =
-                    New clsPSUploadHandler.UploadInfo(
+                    New PSUploadHandler.UploadInfo(
                         tmpUpInfo.FileInformation,
                         m_SelectedOrganismID,
                         m_SelectedAnnotationTypeID)
@@ -1392,12 +1392,12 @@ Public Class frmBatchAddNewCollection
 
         CheckTransferEnable()
 
-        'Dim tmpUpInfo As Protein_Uploader.clsPSUploadHandler.UploadInfo
+        'Dim tmpUpInfo As Protein_Uploader.PSUploadHandler.UploadInfo
         'If lvwSelectedFiles.SelectedItems.Count > 0 Then
         '    Dim li As ListViewItem
         '    For Each li In lvwSelectedFiles.SelectedItems
         '        Dim fastaFilePath = li.SubItems(eSelectedFileColumn.FilePath).Text
-        '        tmpUpInfo = DirectCast(m_SelectedFileList.Item(fastaFilePath), Protein_Uploader.clsPSUploadHandler.UploadInfo)
+        '        tmpUpInfo = DirectCast(m_SelectedFileList.Item(fastaFilePath), Protein_Uploader.PSUploadHandler.UploadInfo)
         '        If encryptSequences Then
         '            tmpUpInfo.EncryptSequences = True
         '            tmpUpInfo.EncryptionPassphrase = passPhraseForm.Passphrase
@@ -1486,7 +1486,7 @@ Public Class frmBatchAddNewCollection
 
     Private Sub cmdPreviewFile_Click(sender As Object, e As EventArgs) Handles cmdPreviewFile.Click
         If m_FilePreviewer Is Nothing Then
-            m_FilePreviewer = New clsFilePreviewHandler
+            m_FilePreviewer = New FilePreviewHandler
         End If
 
         If lvwFolderContents.SelectedItems.Count = 0 Then

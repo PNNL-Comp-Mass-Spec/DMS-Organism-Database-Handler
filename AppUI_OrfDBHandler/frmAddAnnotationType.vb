@@ -324,7 +324,7 @@ Public Class frmAddAnnotationType
 
         If m_AuthID = -2 Then
             'Bring up addition dialog
-            Dim AuthAdd As New clsAddNamingAuthority(m_PSConnectionString)
+            Dim AuthAdd As New AddNamingAuthority(m_PSConnectionString)
             AuthAdd.FormLocation = New Point(Me.Left + 20, Me.Top + 30)
             tmpAuthID = AuthAdd.AddNamingAuthority
 
@@ -352,9 +352,9 @@ Public Class frmAddAnnotationType
         'If lvwSelectedFiles.SelectedItems.Count > 0 Then
         '    Dim li As ListViewItem
         '    For Each li In lvwSelectedFiles.SelectedItems
-        '        tmpUpInfo = DirectCast(m_SelectedFileList.Item(li.SubItems(3).Text), Protein_Uploader.clsPSUploadHandler.UploadInfo)
+        '        tmpUpInfo = DirectCast(m_SelectedFileList.Item(li.SubItems(3).Text), Protein_Uploader.PSUploadHandler.UploadInfo)
         '        m_SelectedFileList.Item(li.SubItems(3).Text) =
-        '            New Protein_Uploader.clsPSUploadHandler.UploadInfo(tmpUpInfo.FileInformation, m_SelectedOrganismID, tmpUpInfo.AuthorityID)
+        '            New Protein_Uploader.PSUploadHandler.UploadInfo(tmpUpInfo.FileInformation, m_SelectedOrganismID, tmpUpInfo.AuthorityID)
         '        li.SubItems(2).Text = cbo.Text
         '    Next
         'End If

@@ -24,7 +24,7 @@ Imports System.Collections.Generic
 '- - - - - - - --
 
 
-Public Class clsTransTableHandler
+Public Class TransTableHandler
 
     Private m_Translation_Entries As DataTable
     Private m_Translation_Tables As DataTable
@@ -52,7 +52,7 @@ Public Class clsTransTableHandler
         Dim tmpLineCache As String
         Dim checkString As String
 
-        Dim dba = New TableManipulationBase.clsDBTask(m_ConnectionString)
+        Dim dba = New TableManipulationBase.DBTask(m_ConnectionString)
 
         Dim sqlQuery1 As String = "SELECT * FROM " & EntriesTableName
         m_Translation_Entries = dba.GetTable(sqlQuery1)
@@ -81,7 +81,7 @@ Public Class clsTransTableHandler
                         ProcessTranslationEntry(rawEntry)
 
                         ' These two statements used a DataAdapter object to synchronize data in m_Translation_Entries and m_Translation_Tables with tables in the database
-                        ' With the update of clsDBTask to use DbToolsFactory in February 2020, the DataAdapter functionality is no longer enabled
+                        ' With the update of DBTask to use DbToolsFactory in February 2020, the DataAdapter functionality is no longer enabled
 
                         Console.WriteLine("Skipping: entryDA.Update(m_Translation_Entries)")
                         Console.WriteLine("Skipping: idDA.Update(m_Translation_Tables)")
@@ -98,9 +98,9 @@ Public Class clsTransTableHandler
 
     <Obsolete("Unused")>
     Private Sub SyncLocalToDMS()
-        Dim dba = New TableManipulationBase.clsDBTask(m_ConnectionString)
+        Dim dba = New TableManipulationBase.DBTask(m_ConnectionString)
 
-        Dim sqlQuery = "SELECT * FROM " & clsTransTableHandler.EntriesTableName
+        Dim sqlQuery = "SELECT * FROM " & TransTableHandler.EntriesTableName
 
         Dim entriesTable = dba.GetTable(sqlQuery)
 
