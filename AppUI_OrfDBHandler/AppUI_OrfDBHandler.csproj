@@ -94,7 +94,7 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+    <ApplicationManifest>App.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ExtractAnnotationFromDescription, Version=1.0.6301.20791, Culture=neutral, processorArchitecture=MSIL">
@@ -172,107 +172,107 @@
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.vb">
+    <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AddAnnotationType.vb">
+    <Compile Include="AddAnnotationType.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AddNamingAuthority.vb">
+    <Compile Include="AddNamingAuthority.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CollectionStatePickerHandler.vb">
+    <Compile Include="CollectionStatePickerHandler.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataListViewHandler.vb">
+    <Compile Include="DataListViewHandler.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FilePreviewHandler.vb">
+    <Compile Include="FilePreviewHandler.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="frmAddAnnotationType.vb">
+    <Compile Include="frmAddAnnotationType.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmAddNamingAuthority.vb">
+    <Compile Include="frmAddNamingAuthority.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmAddNewCollection.vb">
+    <Compile Include="frmAddNewCollection.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmBatchAddNewCollection.vb">
+    <Compile Include="frmBatchAddNewCollection.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCollectionEditor.vb">
+    <Compile Include="frmCollectionEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCollectionStateEditor.vb">
+    <Compile Include="frmCollectionStateEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmFilePreview.vb">
+    <Compile Include="frmFilePreview.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmNewCollectionMetadataEditor.Designer.vb">
-      <DependentUpon>frmNewCollectionMetadataEditor.vb</DependentUpon>
+    <Compile Include="frmNewCollectionMetadataEditor.Designer.cs">
+      <DependentUpon>frmNewCollectionMetadataEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmNewCollectionMetadataEditor.vb">
+    <Compile Include="frmNewCollectionMetadataEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmTestingInterface.vb">
+    <Compile Include="frmTestingInterface.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmValidationReport.vb">
+    <Compile Include="frmValidationReport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SyncFASTAFileArchive.vb">
+    <Compile Include="SyncFASTAFileArchive.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="My Project\Resources.Designer.vb">
+    <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="My Project\Settings.Designer.vb">
+    <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <EmbeddedResource Include="frmAddAnnotationType.resx">
-      <DependentUpon>frmAddAnnotationType.vb</DependentUpon>
+      <DependentUpon>frmAddAnnotationType.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmAddNamingAuthority.resx">
-      <DependentUpon>frmAddNamingAuthority.vb</DependentUpon>
+      <DependentUpon>frmAddNamingAuthority.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmAddNewCollection.resx">
-      <DependentUpon>frmAddNewCollection.vb</DependentUpon>
+      <DependentUpon>frmAddNewCollection.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmBatchAddNewCollection.resx">
-      <DependentUpon>frmBatchAddNewCollection.vb</DependentUpon>
+      <DependentUpon>frmBatchAddNewCollection.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmCollectionEditor.resx">
-      <DependentUpon>frmCollectionEditor.vb</DependentUpon>
+      <DependentUpon>frmCollectionEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmCollectionStateEditor.resx">
-      <DependentUpon>frmCollectionStateEditor.vb</DependentUpon>
+      <DependentUpon>frmCollectionStateEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmFilePreview.resx">
-      <DependentUpon>frmFilePreview.vb</DependentUpon>
+      <DependentUpon>frmFilePreview.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmNewCollectionMetadataEditor.resx">
-      <DependentUpon>frmNewCollectionMetadataEditor.vb</DependentUpon>
+      <DependentUpon>frmNewCollectionMetadataEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmTestingInterface.resx">
-      <DependentUpon>frmTestingInterface.vb</DependentUpon>
+      <DependentUpon>frmTestingInterface.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmValidationReport.resx">
-      <DependentUpon>frmValidationReport.vb</DependentUpon>
+      <DependentUpon>frmValidationReport.cs</DependentUpon>
     </EmbeddedResource>
     <Content Include="PRISMSeq_Favicon.ico" />
-    <EmbeddedResource Include="My Project\Resources.resx">
+    <EmbeddedResource Include="Properties\Resources.resx">
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -307,12 +307,12 @@
     <Folder Include="obj\Debug\temp\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="My Project\app.manifest" />
-    <None Include="My Project\Settings.settings">
+    <None Include="App.config" />
+    <None Include="App.manifest" />
+    <None Include="Properties\Settings.settings">
       <CustomToolNamespace>My</CustomToolNamespace>
       <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>

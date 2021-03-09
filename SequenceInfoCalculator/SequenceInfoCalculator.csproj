@@ -4,14 +4,14 @@
     <ProjectType>Local</ProjectType>
     <ProductVersion>8.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{85531A5F-F4DB-42EB-B597-397ADF10B0E9}</ProjectGuid>
+    <ProjectGuid>{99C5D78C-00DA-49A5-BAC8-19ADFE95FABE}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon>
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>TranslationTableImport</AssemblyName>
+    <AssemblyName>SequenceInfoCalculator</AssemblyName>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
     <AssemblyOriginatorKeyMode>None</AssemblyOriginatorKeyMode>
@@ -23,9 +23,8 @@
     <OptionCompare>Binary</OptionCompare>
     <OptionExplicit>On</OptionExplicit>
     <OptionStrict>On</OptionStrict>
-    <RootNamespace>TranslationTableImport</RootNamespace>
-    <StartupObject>
-    </StartupObject>
+    <RootNamespace>SequenceInfoCalculator</RootNamespace>
+    <StartupObject>SequenceInfoCalculator.%28None%29</StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <MyType>Windows</MyType>
@@ -37,7 +36,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\</OutputPath>
-    <DocumentationFile>TranslationTableImport.xml</DocumentationFile>
+    <DocumentationFile>SequenceInfoCalculator.xml</DocumentationFile>
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
@@ -56,7 +55,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\</OutputPath>
-    <DocumentationFile>TranslationTableImport.xml</DocumentationFile>
+    <DocumentationFile>SequenceInfoCalculator.xml</DocumentationFile>
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
@@ -99,15 +98,12 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.vb">
+    <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TransTableHandler.vb">
+    <Compile Include="SequenceInfoCalculator.cs">
       <SubType>Code</SubType>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="My Project\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="PRISM-DatabaseUtils">

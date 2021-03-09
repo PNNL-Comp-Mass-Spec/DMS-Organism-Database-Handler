@@ -4,14 +4,14 @@
     <ProjectType>Local</ProjectType>
     <ProductVersion>8.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8989FDEF-3CA5-42ED-B080-294CE455A72E}</ProjectGuid>
+    <ProjectGuid>{E476B943-B24F-4483-A0F1-FFE2D20B4258}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon>
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>Protein_Uploader</AssemblyName>
+    <AssemblyName>ExtractAnnotationFromDescription</AssemblyName>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
     <AssemblyOriginatorKeyMode>None</AssemblyOriginatorKeyMode>
@@ -23,7 +23,7 @@
     <OptionCompare>Binary</OptionCompare>
     <OptionExplicit>On</OptionExplicit>
     <OptionStrict>On</OptionStrict>
-    <RootNamespace>Protein_Uploader</RootNamespace>
+    <RootNamespace>ExtractAnnotationFromDescription</RootNamespace>
     <StartupObject>
     </StartupObject>
     <FileUpgradeFlags>
@@ -37,7 +37,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\</OutputPath>
-    <DocumentationFile>Protein_Uploader.xml</DocumentationFile>
+    <DocumentationFile>ExtractAnnotationFromDescription.xml</DocumentationFile>
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
@@ -53,11 +53,10 @@
     <WarningLevel>1</WarningLevel>
     <NoWarn>42016,42017,42018,42019,42032,42353,42354,42355</NoWarn>
     <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\</OutputPath>
-    <DocumentationFile>Protein_Uploader.xml</DocumentationFile>
+    <DocumentationFile>ExtractAnnotationFromDescription.xml</DocumentationFile>
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
@@ -65,29 +64,19 @@
     </DefineConstants>
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>false</DebugSymbols>
     <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningLevel>1</WarningLevel>
     <NoWarn>42016,42017,42018,42019,42032,42353,42354,42355</NoWarn>
-    <DebugType>Full</DebugType>
+    <DebugType>none</DebugType>
   </PropertyGroup>
   <PropertyGroup>
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FlexibleFileSortUtility, Version=1.0.5610.27179, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Shared Libraries\FlexibleFileSortUtility.dll</HintPath>
-    </Reference>
-    <Reference Include="Protein_Exporter">
-      <HintPath>..\Release_DLL\Protein_Exporter.dll</HintPath>
-    </Reference>
-    <Reference Include="Protein_Importer">
-      <HintPath>..\Release_DLL\Protein_Importer.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -103,55 +92,66 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <Reference Include="TableManipulationBase">
-      <HintPath>..\Release_DLL\TableManipulationBase.dll</HintPath>
-    </Reference>
-    <Reference Include="ValidateFastaFile, Version=2.1.4834.35819, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Shared Libraries\ValidateFastaFile.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\Protein_Importer\Protein_Importer.csproj">
+      <Name>Protein_Importer</Name>
+      <Project>{28D5A54E-B47D-41F3-95AB-96C4346ADE38}</Project>
+      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\Protein_Storage\Protein_Storage.csproj">
+      <Name>Protein_Storage</Name>
+      <Project>{77B1CDDC-23D8-4408-8CA3-6FA8A31A975A}</Project>
+      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\TableManipulationBase\TableManipulationBase.csproj">
+      <Name>TableManipulationBase</Name>
+      <Project>{15939683-D5B9-4784-9E16-89B0C059D3C8}</Project>
+      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
     <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
     <Import Include="System.Data" />
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.vb">
+    <Compile Include="AnnotationInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BatchUploadFromFileList.vb">
+    <Compile Include="AnnotationGroup.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CollectionEncryptor.vb">
+    <Compile Include="AnnotationStorage.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PSUploadHandler.vb">
+    <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="frmBatchUploadFromFileList.vb">
+    <Compile Include="ExtractFromFlatfile.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="frmExtractFromFlatfile.cs">
       <SubType>Form</SubType>
     </Compile>
-    <EmbeddedResource Include="frmBatchUploadFromFileList.resx">
-      <DependentUpon>frmBatchUploadFromFileList.vb</DependentUpon>
-      <SubType>Designer</SubType>
+    <Compile Include="frmRegexSpecifyFromDescription.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GetAnnotationsFromDB.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <EmbeddedResource Include="frmExtractFromFlatfile.resx">
+      <DependentUpon>frmExtractFromFlatfile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmRegexSpecifyFromDescription.resx">
+      <DependentUpon>frmRegexSpecifyFromDescription.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="My Project\" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="PRISM-Library">
-      <Version>2.6.1</Version>
+    <PackageReference Include="PRISM-DatabaseUtils">
+      <Version>1.0.9</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Protein_Storage\Protein_Storage.vbproj">
-      <Project>{77b1cddc-23d8-4408-8ca3-6fa8a31a975a}</Project>
-      <Name>Protein_Storage</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>

@@ -2,16 +2,16 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>8.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B291F511-6EB2-447A-B7E2-B2A2E50AF2DE}</ProjectGuid>
+    <ProjectGuid>{8989FDEF-3CA5-42ED-B080-294CE455A72E}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon>
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>FastaFileMaker_Exe</AssemblyName>
+    <AssemblyName>Protein_Uploader</AssemblyName>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
     <AssemblyOriginatorKeyMode>None</AssemblyOriginatorKeyMode>
@@ -19,15 +19,16 @@
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <OptionCompare>Binary</OptionCompare>
     <OptionExplicit>On</OptionExplicit>
     <OptionStrict>On</OptionStrict>
-    <RootNamespace>FastaFileMaker_Exe</RootNamespace>
-    <StartupObject>FastaFileMaker_Exe.modMain</StartupObject>
+    <RootNamespace>Protein_Uploader</RootNamespace>
+    <StartupObject>
+    </StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <MyType>Console</MyType>
+    <MyType>Windows</MyType>
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
@@ -36,7 +37,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\</OutputPath>
-    <DocumentationFile>FastaFileMaker_Exe.xml</DocumentationFile>
+    <DocumentationFile>Protein_Uploader.xml</DocumentationFile>
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
@@ -50,14 +51,13 @@
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningLevel>1</WarningLevel>
-    <NoWarn>42353,42354,42355</NoWarn>
+    <NoWarn>42016,42017,42018,42019,42032,42353,42354,42355</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\</OutputPath>
-    <DocumentationFile>FastaFileMaker_Exe.xml</DocumentationFile>
+    <DocumentationFile>Protein_Uploader.xml</DocumentationFile>
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
@@ -65,25 +65,28 @@
     </DefineConstants>
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <DebugSymbols>false</DebugSymbols>
+    <DebugSymbols>true</DebugSymbols>
     <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningLevel>1</WarningLevel>
-    <NoWarn>42353,42354,42355</NoWarn>
-    <DebugType>none</DebugType>
-    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <NoWarn>42016,42017,42018,42019,42032,42353,42354,42355</NoWarn>
+    <DebugType>Full</DebugType>
   </PropertyGroup>
   <PropertyGroup>
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FlexibleFileSortUtility, Version=1.0.5610.27179, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Shared Libraries\FlexibleFileSortUtility.dll</HintPath>
+    </Reference>
     <Reference Include="Protein_Exporter">
       <HintPath>..\Release_DLL\Protein_Exporter.dll</HintPath>
     </Reference>
-    <Reference Include="Protein_Storage">
-      <HintPath>..\Release_DLL\Protein_Storage.dll</HintPath>
+    <Reference Include="Protein_Importer">
+      <HintPath>..\Release_DLL\Protein_Importer.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -91,11 +94,21 @@
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
     <Reference Include="TableManipulationBase">
       <HintPath>..\Release_DLL\TableManipulationBase.dll</HintPath>
+    </Reference>
+    <Reference Include="ValidateFastaFile, Version=2.1.4834.35819, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Shared Libraries\ValidateFastaFile.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -104,45 +117,42 @@
     <Import Include="System.Collections" />
     <Import Include="System.Data" />
     <Import Include="System.Diagnostics" />
-    <Import Include="System.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.vb">
+    <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="modMain.vb">
+    <Compile Include="BatchUploadFromFileList.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="My Project\Settings.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
+    <Compile Include="CollectionEncryptor.cs">
+      <SubType>Code</SubType>
     </Compile>
+    <Compile Include="PSUploadHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="frmBatchUploadFromFileList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <EmbeddedResource Include="frmBatchUploadFromFileList.resx">
+      <DependentUpon>frmBatchUploadFromFileList.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="My Project\Settings.settings">
-      <CustomToolNamespace>My</CustomToolNamespace>
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="PRISM-DatabaseUtils">
-      <Version>1.0.9</Version>
-    </PackageReference>
     <PackageReference Include="PRISM-Library">
       <Version>2.6.1</Version>
     </PackageReference>
-    <PackageReference Include="PRISMWin-Library">
-      <Version>1.0.14</Version>
-    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Protein_Storage\Protein_Storage.csproj">
+      <Project>{77b1cddc-23d8-4408-8ca3-6fa8a31a975a}</Project>
+      <Name>Protein_Storage</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PreBuildEvent>if not exist "$(ProjectDir)..\Release_DLL" (mkdir "$(ProjectDir)..\Release_DLL")</PreBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetPath)" "$(ProjectDir)..\Release_DLL\" /y /d</PostBuildEvent>
   </PropertyGroup>
 </Project>

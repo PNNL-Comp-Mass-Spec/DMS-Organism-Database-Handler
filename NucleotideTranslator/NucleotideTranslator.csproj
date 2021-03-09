@@ -2,16 +2,16 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>8.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{A698B58B-15B8-4893-81AD-116D57B9B404}</ProjectGuid>
+    <ProjectGuid>{3AA2CACA-0803-4A08-96A2-C1EAE0F2D832}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon>
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>Protein_Exporter</AssemblyName>
+    <AssemblyName>NucleotideTranslator</AssemblyName>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
     <AssemblyOriginatorKeyMode>None</AssemblyOriginatorKeyMode>
@@ -23,8 +23,9 @@
     <OptionCompare>Binary</OptionCompare>
     <OptionExplicit>On</OptionExplicit>
     <OptionStrict>On</OptionStrict>
-    <RootNamespace>Protein_Exporter</RootNamespace>
-    <StartupObject>Protein_Exporter.%28None%29</StartupObject>
+    <RootNamespace>NucleotideTranslator</RootNamespace>
+    <StartupObject>
+    </StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <MyType>Windows</MyType>
@@ -36,7 +37,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\</OutputPath>
-    <DocumentationFile>Protein_Exporter.xml</DocumentationFile>
+    <DocumentationFile>NucleotideTranslator.xml</DocumentationFile>
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
@@ -54,8 +55,8 @@
     <DebugType>full</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\Release_DLL\</OutputPath>
-    <DocumentationFile>Protein_Exporter.xml</DocumentationFile>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>NucleotideTranslator.xml</DocumentationFile>
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
@@ -63,28 +64,27 @@
     </DefineConstants>
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>false</DebugSymbols>
     <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningLevel>1</WarningLevel>
     <NoWarn>42016,42017,42018,42019,42032,42353,42354,42355</NoWarn>
-    <DebugType>Full</DebugType>
+    <DebugType>none</DebugType>
   </PropertyGroup>
   <PropertyGroup>
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Protein_Storage, Version=1.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Release_DLL\Protein_Storage.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
     <Reference Include="System.Data">
       <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
     </Reference>
     <Reference Include="System.Windows.Forms">
       <Name>System.Windows.Forms</Name>
@@ -92,68 +92,39 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <Reference Include="TableManipulationBase, Version=1.0.6302.34079, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Release_DLL\TableManipulationBase.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\Protein_Importer\Protein_Importer.csproj">
+      <Name>Protein_Importer</Name>
+      <Project>{28D5A54E-B47D-41F3-95AB-96C4346ADE38}</Project>
+      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\TableManipulationBase\TableManipulationBase.csproj">
+      <Name>TableManipulationBase</Name>
+      <Project>{15939683-D5B9-4784-9E16-89B0C059D3C8}</Project>
+      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
     <Import Include="System.Collections" />
     <Import Include="System.Data" />
-    <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.vb">
+    <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ArchiveOutputFilesBase.vb">
+    <Compile Include="TranslateNucleotides.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ArchiveToFile.vb">
+    <Compile Include="TranslationEntry.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ArchiveToSubversion.vb">
-      <SubType>Code</SubType>
+    <Compile Include="frmNucTransGUI.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CRC32.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExportProteins.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExportProteinsFASTA.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExportProteinsXTFASTA.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="FileCreationOptions.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GetFASTAFromDMS.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GetFASTAFromDMSDecoy.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GetFASTAFromDMSDecoyX.vb" />
-    <Compile Include="GetFASTAFromDMSForward.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GetFASTAFromDMSReversed.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GetFASTAFromDMSScrambled.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="RijndaelEncryptionHandler.vb">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="My Project\" />
+    <EmbeddedResource Include="frmNucTransGUI.resx">
+      <DependentUpon>frmNucTransGUI.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="PRISM-DatabaseUtils">
@@ -161,9 +132,6 @@
     </PackageReference>
     <PackageReference Include="PRISM-Library">
       <Version>2.6.1</Version>
-    </PackageReference>
-    <PackageReference Include="PRISMWin-Library">
-      <Version>1.0.14</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />

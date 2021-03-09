@@ -63,7 +63,7 @@
     <Compile Include="ImageButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ImageButton.resx" />

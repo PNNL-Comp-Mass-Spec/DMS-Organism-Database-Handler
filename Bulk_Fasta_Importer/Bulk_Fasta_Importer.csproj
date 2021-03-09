@@ -80,10 +80,10 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BulkFastaImporter.vb" />
-    <Compile Include="modMain.vb" />
-    <Compile Include="My Project\AssemblyInfo.vb" />
-    <Compile Include="My Project\Settings.Designer.vb">
+    <Compile Include="BulkFastaImporter.cs" />
+    <Compile Include="modMain.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -91,30 +91,30 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="My Project\Settings.settings">
+    <None Include="Properties\Settings.settings">
       <CustomToolNamespace>My</CustomToolNamespace>
       <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Protein_Exporter\Protein_Exporter.vbproj">
+    <ProjectReference Include="..\Protein_Exporter\Protein_Exporter.csproj">
       <Project>{a698b58b-15b8-4893-81ad-116d57b9b404}</Project>
       <Name>Protein_Exporter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Protein_Importer\Protein_Importer.vbproj">
+    <ProjectReference Include="..\Protein_Importer\Protein_Importer.csproj">
       <Project>{28d5a54e-b47d-41f3-95ab-96c4346ade38}</Project>
       <Name>Protein_Importer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Protein_Uploader\Protein_Uploader.vbproj">
+    <ProjectReference Include="..\Protein_Uploader\Protein_Uploader.csproj">
       <Project>{8989fdef-3ca5-42ed-b080-294ce455a72e}</Project>
       <Name>Protein_Uploader</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SequenceInfoCalculator\SequenceInfoCalculator.vbproj">
+    <ProjectReference Include="..\SequenceInfoCalculator\SequenceInfoCalculator.csproj">
       <Project>{99c5d78c-00da-49a5-bac8-19adfe95fabe}</Project>
       <Name>SequenceInfoCalculator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TableManipulationBase\TableManipulationBase.vbproj">
+    <ProjectReference Include="..\TableManipulationBase\TableManipulationBase.csproj">
       <Project>{15939683-d5b9-4784-9e16-89b0c059d3c8}</Project>
       <Name>TableManipulationBase</Name>
     </ProjectReference>

@@ -4,14 +4,14 @@
     <ProjectType>Local</ProjectType>
     <ProductVersion>8.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{28D5A54E-B47D-41F3-95AB-96C4346ADE38}</ProjectGuid>
+    <ProjectGuid>{77B1CDDC-23D8-4408-8CA3-6FA8A31A975A}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon>
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>Protein_Importer</AssemblyName>
+    <AssemblyName>Protein_Storage</AssemblyName>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
     <AssemblyOriginatorKeyMode>None</AssemblyOriginatorKeyMode>
@@ -23,9 +23,8 @@
     <OptionCompare>Binary</OptionCompare>
     <OptionExplicit>On</OptionExplicit>
     <OptionStrict>On</OptionStrict>
-    <RootNamespace>Protein_Importer</RootNamespace>
-    <StartupObject>
-    </StartupObject>
+    <RootNamespace>Protein_Storage</RootNamespace>
+    <StartupObject>Protein_Storage.%28None%29</StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <MyType>Windows</MyType>
@@ -37,7 +36,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\</OutputPath>
-    <DocumentationFile>Protein_Importer.xml</DocumentationFile>
+    <DocumentationFile>Protein_Storage.xml</DocumentationFile>
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
@@ -55,8 +54,8 @@
     <DebugType>full</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\Release_DLL\</OutputPath>
-    <DocumentationFile>Protein_Importer.xml</DocumentationFile>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>Protein_Storage.xml</DocumentationFile>
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
@@ -77,36 +76,15 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TableManipulationBase\TableManipulationBase.vbproj">
-      <Project>{15939683-d5b9-4784-9e16-89b0c059d3c8}</Project>
-      <Name>TableManipulationBase</Name>
-    </ProjectReference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
-    <Reference Include="System.Windows.Forms">
-      <Name>System.Windows.Forms</Name>
-    </Reference>
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="..\Protein_Exporter\Protein_Exporter.vbproj">
-      <Name>Protein_Exporter</Name>
-      <Project>{A698B58B-15B8-4893-81AD-116D57B9B404}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\Protein_Storage\Protein_Storage.vbproj">
-      <Name>Protein_Storage</Name>
-      <Project>{77B1CDDC-23D8-4408-8CA3-6FA8A31A975A}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\SequenceInfoCalculator\SequenceInfoCalculator.vbproj">
-      <Project>{99c5d78c-00da-49a5-bac8-19adfe95fabe}</Project>
-      <Name>SequenceInfoCalculator</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -116,40 +94,28 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.vb">
+    <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AddUpdateEntries.vb">
+    <Compile Include="ProteinStorage.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ImportAnnotations.vb">
+    <Compile Include="ProteinStorageDMS.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ImportHandler.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="FASTAReader.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TinySeqXMLReader.vb">
+    <Compile Include="ProteinStorageEntry.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="My Project\" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="PRISM-DatabaseUtils">
-      <Version>1.0.9</Version>
-    </PackageReference>
-    <PackageReference Include="PRISM-Library">
-      <Version>2.6.1</Version>
-    </PackageReference>
+    <ProjectReference Include="..\TableManipulationBase\TableManipulationBase.csproj">
+      <Project>{15939683-d5b9-4784-9e16-89b0c059d3c8}</Project>
+      <Name>TableManipulationBase</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
-    <PreBuildEvent>if not exist "$(ProjectDir)..\Release_DLL" (mkdir "$(ProjectDir)..\Release_DLL")
-    </PreBuildEvent>
+    <PreBuildEvent>if not exist "$(ProjectDir)..\Release_DLL" (mkdir "$(ProjectDir)..\Release_DLL")</PreBuildEvent>
     <PostBuildEvent>xcopy "$(TargetPath)" "$(ProjectDir)..\Release_DLL\" /y /d</PostBuildEvent>
   </PropertyGroup>
 </Project>
