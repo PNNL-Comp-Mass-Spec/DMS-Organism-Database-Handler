@@ -54,21 +54,26 @@ namespace ExtractAnnotationFromDescription
                 m_AuthorityLookup.GetName(AuthorityID));
         }
 
-        public string get_ProteinName(
+        public string GetProteinName(
             int ProteinID,
             int AnnotationGroupCode)
         {
             var details = m_AnnotationDetails[ProteinID];
-            return details.get_Name(AnnotationGroupCode);
+            return details.GetAnnotationName(AnnotationGroupCode);
         }
 
-        public int get_ReferenceID(int ProteinID, int AnnotationGroupCode)
+        public int GetProteinReferenceID(int ProteinID, int AnnotationGroupCode)
+        {
+            return GetProteinReferenceID(ProteinID);
+        }
+
+        public int GetProteinReferenceID(int ProteinID)
         {
             var details = m_AnnotationDetails[ProteinID];
             return details.ReferenceID;
         }
 
-        public string get_AuthorityName(int AnnotationGroupCode)
+        public string GetAnnotationAuthorityName(int AnnotationGroupCode)
         {
             return m_AuthorityLookup.GetName(AnnotationGroupCode);
         }
@@ -136,7 +141,7 @@ namespace ExtractAnnotationFromDescription
 
             public string PrimaryName => Names[0].ToString();
 
-            public string get_Name(int annotationGroupCode)
+            public string GetAnnotationName(int annotationGroupCode)
             {
                 return Names[annotationGroupCode];
             }

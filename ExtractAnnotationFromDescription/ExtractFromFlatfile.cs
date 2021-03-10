@@ -219,19 +219,19 @@ namespace ExtractAnnotationFromDescription
             int GroupID)
         {
             var li = new System.Windows.Forms.ListViewItem(GroupID.ToString());
-            li.SubItems.Add(m_AnnotationStorage.get_GroupName(GroupID));
-            if (m_AnnotationStorage.get_AnnotationAuthorityID(GroupID) > 0)
+            li.SubItems.Add(m_AnnotationStorage.GetGroupName(GroupID));
+            if (m_AnnotationStorage.GetAnnotationAuthorityID(GroupID) > 0)
             {
-                li.SubItems.Add(m_Authorities[m_AnnotationStorage.get_AnnotationAuthorityID(GroupID).ToString()].ToString());
+                li.SubItems.Add(m_Authorities[m_AnnotationStorage.GetAnnotationAuthorityID(GroupID).ToString()].ToString());
             }
             else
             {
                 li.SubItems.Add("-- None Selected --");
             }
 
-            if (m_AnnotationStorage.get_Delimiter(GroupID) != null)
+            if (m_AnnotationStorage.GetDelimiter(GroupID) != null)
             {
-                li.SubItems.Add(m_AnnotationStorage.get_Delimiter(GroupID).ToString());
+                li.SubItems.Add(m_AnnotationStorage.GetDelimiter(GroupID).ToString());
             }
             else
             {
@@ -243,7 +243,7 @@ namespace ExtractAnnotationFromDescription
 
         public void ChangeAuthorityIDforGroup(int GroupID, int AuthorityID)
         {
-            m_AnnotationStorage.set_AnnotationAuthorityID(GroupID, AuthorityID);
+            m_AnnotationStorage.SetAnnotationAuthorityID(GroupID, AuthorityID);
         }
 
         public void UploadNewNames(int PrimaryReferenceNameColumnID)

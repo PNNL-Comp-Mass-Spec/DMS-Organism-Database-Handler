@@ -82,27 +82,27 @@ namespace ExtractAnnotationFromDescription
 
         public int GroupCount => m_AnnotationGroups.Count;
 
-        public string get_Delimiter(int GroupID)
+        public string GetDelimiter(int GroupID)
         {
             return GetGroup(GroupID).XRefDelimiter;
         }
 
-        public int get_AnnotationAuthorityID(int GroupID)
+        public int GetAnnotationAuthorityID(int GroupID)
         {
             return m_AnnotationGroups[GroupID].AnnotationAuthorityID;
         }
 
-        public void set_AnnotationAuthorityID(int GroupID, int value)
+        public void SetAnnotationAuthorityID(int GroupID, int value)
         {
             m_AnnotationGroups[GroupID].AnnotationAuthorityID = value;
         }
 
-        public string get_GroupName(int GroupID)
+        public string GetGroupName(int GroupID)
         {
             return GetGroup(GroupID).GroupName;
         }
 
-        public void set_GroupName(int GroupID, string value)
+        public void SetGroupName(int GroupID, string value)
         {
             string oldName;
             var group = GetGroup(GroupID);
