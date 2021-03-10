@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -15,10 +14,8 @@ using ValidateFastaFile;
 
 namespace AppUI_OrfDBHandler
 {
-    public class frmBatchAddNewCollection : Form
+    public partial class frmBatchAddNewCollection : Form
     {
-        #region "Windows Form Designer generated code"
-
         public frmBatchAddNewCollection(
             DataTable organismList,
             DataTable annotationTypeList,
@@ -26,12 +23,10 @@ namespace AppUI_OrfDBHandler
             string psConnectionString,
             string selectedFolderPath,
             Dictionary<string, KeyValuePair<string, string>> cachedFileDescriptions)
-            : base()
         {
             base.Load += frmBatchAddNewCollection_Load;
             base.Closing += frmBatchAddNewCollection_Closing;
 
-            // This call is required by the Windows Form Designer.
             InitializeComponent();
 
             m_StatusResetTimer = new Timer() { Interval = 1000 };
@@ -41,7 +36,6 @@ namespace AppUI_OrfDBHandler
 
             ClearStatus();
 
-            // Add any initialization after the InitializeComponent() call
             m_OrganismList = organismList;
             m_OrganismListSorted = new DataView(m_OrganismList) { Sort = "Display_Name" };
 
@@ -56,477 +50,6 @@ namespace AppUI_OrfDBHandler
 
             InitializeTreeView(selectedFolderPath);
         }
-
-        // Form overrides dispose to clean up the component list.
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (components != null)
-                {
-                    components.Dispose();
-                }
-            }
-
-            base.Dispose(disposing);
-        }
-
-        // Required by the Windows Form Designer
-        private IContainer components;
-        internal TreeViewFolderBrowser ctlTreeViewFolderBrowser;
-        internal ComboBox cboOrganismSelect;
-        internal Label lblBatchUploadTree;
-        internal Label lblOrganismSelect;
-        internal Label lblFolderContents;
-        internal Button cmdCancel;
-        internal Button cmdUploadChecked;
-        internal ListView lvwFolderContents;
-        internal ColumnHeader colFileName;
-        internal ColumnHeader colFileSize;
-        internal ColumnHeader colFileModDate;
-        internal ComboBox cboAnnotationTypePicker;
-        internal ColumnHeader colCollectionExists;
-        internal ColumnHeader colUpFileName;
-        internal ColumnHeader colSelOrganism;
-        internal Label lblSelectedFiles;
-        internal ListView lvwSelectedFiles;
-        internal UIControls.ImageButton cmdAddFile;
-        internal UIControls.ImageButton cmdRemoveFile;
-        internal Label lblAnnAuth;
-        internal ColumnHeader colAnnType;
-        internal Button cmdPreviewFile;
-        internal CheckBox chkEncryptionEnable;
-        internal Label lblPassphrase;
-        internal TextBox txtPassphrase;
-        internal GroupBox fraValidationOptions;
-        internal CheckBox chkValidationAllowAsterisks;
-        internal Button cmdRefreshFiles;
-        internal TextBox txtMaximumProteinNameLength;
-        internal Label lblMaximumProteinNameLength;
-        internal CheckBox chkValidationAllowAllSymbolsInProteinNames;
-        internal ColumnHeader colDescription;
-        internal ColumnHeader colSource;
-        internal Button cmdUpdateDescription;
-        internal Label lblStatus;
-        internal CheckBox chkValidationAllowDash;
-
-        [DebuggerStepThrough()]
-        private void InitializeComponent()
-        {
-            components = new Container();
-            var resources = new ComponentResourceManager(typeof(frmBatchAddNewCollection));
-            ctlTreeViewFolderBrowser = new TreeViewFolderBrowser();
-            ctlTreeViewFolderBrowser.AfterSelect += new TreeViewEventHandler(ctlTreeViewFolderBrowser_AfterSelect);
-            ctlTreeViewFolderBrowser.MouseUp += new MouseEventHandler(ctlTreeViewFolderBrowser_MouseUp);
-            ctlTreeViewFolderBrowser.KeyUp += new KeyEventHandler(ctlTreeViewFolderBrowser_KeyUp);
-            cboOrganismSelect = new ComboBox();
-            cboOrganismSelect.SelectedIndexChanged += new EventHandler(cboOrganismSelect_SelectedIndexChanged);
-            lblBatchUploadTree = new Label();
-            lblOrganismSelect = new Label();
-            lblFolderContents = new Label();
-            cmdCancel = new Button();
-            cmdCancel.Click += new EventHandler(cmdCancel_Click);
-            cmdUploadChecked = new Button();
-            cmdUploadChecked.Click += new EventHandler(cmdUploadChecked_Click);
-            lvwFolderContents = new ListView();
-            lvwFolderContents.Click += new EventHandler(lvwFolderContents_Click);
-            lvwFolderContents.MouseUp += new MouseEventHandler(lvwFolderContents_MouseUp);
-            lvwFolderContents.ColumnClick += new ColumnClickEventHandler(lvwFolderContents_ColumnClick);
-            lvwFolderContents.KeyDown += new KeyEventHandler(lvwFolderContents_KeyDown);
-            colFileName = new ColumnHeader();
-            colFileModDate = new ColumnHeader();
-            colFileSize = new ColumnHeader();
-            colCollectionExists = new ColumnHeader();
-            cboAnnotationTypePicker = new ComboBox();
-            cboAnnotationTypePicker.SelectedIndexChanged += new EventHandler(cboAnnotationTypePicker_SelectedIndexChanged);
-            lblAnnAuth = new Label();
-            lvwSelectedFiles = new ListView();
-            lvwSelectedFiles.Click += new EventHandler(lvwSelectedFiles_Click);
-            lvwSelectedFiles.ColumnClick += new ColumnClickEventHandler(lvwSelectedFiles_ColumnClick);
-            lvwSelectedFiles.DoubleClick += new EventHandler(lvwSelectedFiles_DoubleClick);
-            lvwSelectedFiles.KeyDown += new KeyEventHandler(lvwSelectedFiles_KeyDown);
-            colUpFileName = new ColumnHeader();
-            colSelOrganism = new ColumnHeader();
-            colDescription = new ColumnHeader();
-            colSource = new ColumnHeader();
-            colAnnType = new ColumnHeader();
-            lblSelectedFiles = new Label();
-            cmdAddFile = new UIControls.ImageButton();
-            cmdAddFile.Click += new EventHandler(cmdAddFile_Click);
-            cmdRemoveFile = new UIControls.ImageButton();
-            cmdRemoveFile.Click += new EventHandler(cmdRemoveFile_Click);
-            cmdPreviewFile = new Button();
-            cmdPreviewFile.Click += new EventHandler(cmdPreviewFile_Click);
-            chkEncryptionEnable = new CheckBox();
-            chkEncryptionEnable.CheckedChanged += new EventHandler(chkEncryptionEnable_CheckedChanged);
-            lblPassphrase = new Label();
-            txtPassphrase = new TextBox();
-            fraValidationOptions = new GroupBox();
-            chkValidationAllowAllSymbolsInProteinNames = new CheckBox();
-            txtMaximumProteinNameLength = new TextBox();
-            txtMaximumProteinNameLength.Validating += new CancelEventHandler(txtMaximumProteinNameLength_Validating);
-            lblMaximumProteinNameLength = new Label();
-            chkValidationAllowAsterisks = new CheckBox();
-            chkValidationAllowDash = new CheckBox();
-            cmdRefreshFiles = new Button();
-            cmdRefreshFiles.Click += new EventHandler(cmdRefreshFiles_Click);
-            cmdUpdateDescription = new Button();
-            cmdUpdateDescription.Click += new EventHandler(cmdUpdateDescription_Click);
-            lblStatus = new Label();
-            fraValidationOptions.SuspendLayout();
-            SuspendLayout();
-            //
-            // ctlTreeViewFolderBrowser
-            //
-            ctlTreeViewFolderBrowser.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            ctlTreeViewFolderBrowser.DataSource = null;
-            ctlTreeViewFolderBrowser.HideSelection = false;
-            ctlTreeViewFolderBrowser.Location = new Point(10, 35);
-            ctlTreeViewFolderBrowser.Name = "_treeViewFolderBrowser1";
-            ctlTreeViewFolderBrowser.ShowLines = false;
-            ctlTreeViewFolderBrowser.ShowRootLines = false;
-            ctlTreeViewFolderBrowser.Size = new Size(326, 524);
-            ctlTreeViewFolderBrowser.TabIndex = 0;
-            //
-            // cboOrganismSelect
-            //
-            cboOrganismSelect.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            cboOrganismSelect.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboOrganismSelect.Location = new Point(8, 587);
-            cboOrganismSelect.Name = "cboOrganismSelect";
-            cboOrganismSelect.Size = new Size(609, 25);
-            cboOrganismSelect.TabIndex = 11;
-            //
-            // lblBatchUploadTree
-            //
-            lblBatchUploadTree.Location = new Point(14, 12);
-            lblBatchUploadTree.Name = "lblBatchUploadTree";
-            lblBatchUploadTree.Size = new Size(320, 20);
-            lblBatchUploadTree.TabIndex = 0;
-            lblBatchUploadTree.Text = "Select source folder for upload (F5 to refresh)";
-            //
-            // lblOrganismSelect
-            //
-            lblOrganismSelect.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            lblOrganismSelect.Location = new Point(8, 567);
-            lblOrganismSelect.Name = "lblOrganismSelect";
-            lblOrganismSelect.Size = new Size(261, 20);
-            lblOrganismSelect.TabIndex = 10;
-            lblOrganismSelect.Text = "Select destination &organism";
-            //
-            // lblFolderContents
-            //
-            lblFolderContents.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            lblFolderContents.Location = new Point(342, 12);
-            lblFolderContents.Name = "lblFolderContents";
-            lblFolderContents.Size = new Size(835, 20);
-            lblFolderContents.TabIndex = 2;
-            lblFolderContents.Text = "Selected folder contents";
-            //
-            // cmdCancel
-            //
-            cmdCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            cmdCancel.DialogResult = DialogResult.Cancel;
-            cmdCancel.Location = new Point(1101, 653);
-            cmdCancel.Name = "cmdCancel";
-            cmdCancel.Size = new Size(84, 36);
-            cmdCancel.TabIndex = 20;
-            cmdCancel.Text = "Cancel";
-            //
-            // cmdUploadChecked
-            //
-            cmdUploadChecked.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            cmdUploadChecked.Location = new Point(918, 653);
-            cmdUploadChecked.Name = "cmdUploadChecked";
-            cmdUploadChecked.Size = new Size(168, 36);
-            cmdUploadChecked.TabIndex = 19;
-            cmdUploadChecked.Text = "&Upload new FASTAs";
-            //
-            // lvwFolderContents
-            //
-            lvwFolderContents.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            lvwFolderContents.Columns.AddRange(new ColumnHeader[] { colFileName, colFileModDate, colFileSize, colCollectionExists });
-            lvwFolderContents.FullRowSelect = true;
-            lvwFolderContents.GridLines = true;
-            lvwFolderContents.HideSelection = false;
-            lvwFolderContents.Location = new Point(342, 32);
-            lvwFolderContents.Name = "lvwFolderContents";
-            lvwFolderContents.Size = new Size(843, 218);
-            lvwFolderContents.Sorting = SortOrder.Ascending;
-            lvwFolderContents.TabIndex = 3;
-            lvwFolderContents.UseCompatibleStateImageBehavior = false;
-            lvwFolderContents.View = View.Details;
-            //
-            // colFileName
-            //
-            colFileName.Text = "Name";
-            colFileName.Width = 450;
-            //
-            // colFileModDate
-            //
-            colFileModDate.Text = "Date Modified";
-            colFileModDate.Width = 140;
-            //
-            // colFileSize
-            //
-            colFileSize.Text = "Size";
-            colFileSize.Width = 67;
-            //
-            // colCollectionExists
-            //
-            colCollectionExists.Text = "Existing Collection?";
-            colCollectionExists.Width = 150;
-            //
-            // cboAnnotationTypePicker
-            //
-            cboAnnotationTypePicker.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            cboAnnotationTypePicker.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboAnnotationTypePicker.Location = new Point(641, 587);
-            cboAnnotationTypePicker.Name = "cboAnnotationTypePicker";
-            cboAnnotationTypePicker.Size = new Size(364, 25);
-            cboAnnotationTypePicker.TabIndex = 13;
-            //
-            // lblAnnAuth
-            //
-            lblAnnAuth.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            lblAnnAuth.Location = new Point(641, 567);
-            lblAnnAuth.Name = "lblAnnAuth";
-            lblAnnAuth.Size = new Size(285, 20);
-            lblAnnAuth.TabIndex = 12;
-            lblAnnAuth.Text = "Select Annotation &Type";
-            //
-            // lvwSelectedFiles
-            //
-            lvwSelectedFiles.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            lvwSelectedFiles.Columns.AddRange(new ColumnHeader[] { colUpFileName, colSelOrganism, colDescription, colSource, colAnnType });
-            lvwSelectedFiles.FullRowSelect = true;
-            lvwSelectedFiles.GridLines = true;
-            lvwSelectedFiles.HideSelection = false;
-            lvwSelectedFiles.Location = new Point(342, 335);
-            lvwSelectedFiles.Name = "lvwSelectedFiles";
-            lvwSelectedFiles.Size = new Size(843, 224);
-            lvwSelectedFiles.TabIndex = 9;
-            lvwSelectedFiles.UseCompatibleStateImageBehavior = false;
-            lvwSelectedFiles.View = View.Details;
-            //
-            // colUpFileName
-            //
-            colUpFileName.Text = "Name";
-            colUpFileName.Width = 251;
-            //
-            // colSelOrganism
-            //
-            colSelOrganism.Text = "Selected Organism";
-            colSelOrganism.Width = 141;
-            //
-            // colDescription
-            //
-            colDescription.Text = "Description";
-            colDescription.Width = 150;
-            //
-            // colSource
-            //
-            colSource.Text = "Source (person, URL, FTP)";
-            colSource.Width = 150;
-            //
-            // colAnnType
-            //
-            colAnnType.Text = "Annotation Type";
-            colAnnType.Width = 105;
-            //
-            // lblSelectedFiles
-            //
-            lblSelectedFiles.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            lblSelectedFiles.Location = new Point(342, 304);
-            lblSelectedFiles.Name = "lblSelectedFiles";
-            lblSelectedFiles.Size = new Size(868, 19);
-            lblSelectedFiles.TabIndex = 8;
-            lblSelectedFiles.Text = "FASTA files selected for upload";
-            //
-            // cmdAddFile
-            //
-            cmdAddFile.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            cmdAddFile.FlatStyle = FlatStyle.System;
-            cmdAddFile.GenerateDisabledImage = true;
-            cmdAddFile.Location = new Point(681, 272);
-            cmdAddFile.Name = "cmdAddFile";
-            cmdAddFile.Size = new Size(48, 44);
-            cmdAddFile.TabIndex = 6;
-            cmdAddFile.ThemedImage = (Bitmap)resources.GetObject("cmdAddFile.ThemedImage");
-            //
-            // cmdRemoveFile
-            //
-            cmdRemoveFile.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            cmdRemoveFile.FlatStyle = FlatStyle.System;
-            cmdRemoveFile.GenerateDisabledImage = true;
-            cmdRemoveFile.Location = new Point(751, 272);
-            cmdRemoveFile.Name = "cmdRemoveFile";
-            cmdRemoveFile.Size = new Size(48, 44);
-            cmdRemoveFile.TabIndex = 7;
-            cmdRemoveFile.ThemedImage = (Bitmap)resources.GetObject("cmdRemoveFile.ThemedImage");
-            //
-            // cmdPreviewFile
-            //
-            cmdPreviewFile.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            cmdPreviewFile.Enabled = false;
-            cmdPreviewFile.Location = new Point(1003, 297);
-            cmdPreviewFile.Name = "cmdPreviewFile";
-            cmdPreviewFile.Size = new Size(182, 30);
-            cmdPreviewFile.TabIndex = 5;
-            cmdPreviewFile.Text = "&Preview Selected File";
-            //
-            // chkEncryptionEnable
-            //
-            chkEncryptionEnable.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            chkEncryptionEnable.Location = new Point(707, 628);
-            chkEncryptionEnable.Name = "chkEncryptionEnable";
-            chkEncryptionEnable.Size = new Size(174, 23);
-            chkEncryptionEnable.TabIndex = 16;
-            chkEncryptionEnable.Text = "Encrypt Sequences?";
-            chkEncryptionEnable.Visible = false;
-            //
-            // lblPassphrase
-            //
-            lblPassphrase.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            lblPassphrase.Location = new Point(703, 653);
-            lblPassphrase.Name = "lblPassphrase";
-            lblPassphrase.Size = new Size(178, 20);
-            lblPassphrase.TabIndex = 17;
-            lblPassphrase.Text = "Encryption Passphrase";
-            lblPassphrase.Visible = false;
-            //
-            // txtPassphrase
-            //
-            txtPassphrase.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            txtPassphrase.Enabled = false;
-            txtPassphrase.Location = new Point(707, 673);
-            txtPassphrase.Name = "txtPassphrase";
-            txtPassphrase.PasswordChar = '•';
-            txtPassphrase.Size = new Size(154, 24);
-            txtPassphrase.TabIndex = 18;
-            txtPassphrase.Visible = false;
-            //
-            // fraValidationOptions
-            //
-            fraValidationOptions.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            fraValidationOptions.Controls.Add(chkValidationAllowAllSymbolsInProteinNames);
-            fraValidationOptions.Controls.Add(txtMaximumProteinNameLength);
-            fraValidationOptions.Controls.Add(lblMaximumProteinNameLength);
-            fraValidationOptions.Controls.Add(chkValidationAllowAsterisks);
-            fraValidationOptions.Controls.Add(chkValidationAllowDash);
-            fraValidationOptions.Location = new Point(6, 622);
-            fraValidationOptions.Name = "fraValidationOptions";
-            fraValidationOptions.Size = new Size(687, 75);
-            fraValidationOptions.TabIndex = 15;
-            fraValidationOptions.TabStop = false;
-            fraValidationOptions.Text = "Fasta Validation Options";
-            //
-            // chkValidationAllowAllSymbolsInProteinNames
-            //
-            chkValidationAllowAllSymbolsInProteinNames.Location = new Point(11, 47);
-            chkValidationAllowAllSymbolsInProteinNames.Name = "chkValidationAllowAllSymbolsInProteinNames";
-            chkValidationAllowAllSymbolsInProteinNames.Size = new Size(292, 25);
-            chkValidationAllowAllSymbolsInProteinNames.TabIndex = 1;
-            chkValidationAllowAllSymbolsInProteinNames.Text = "Allow all symbols in protein names";
-            //
-            // txtMaximumProteinNameLength
-            //
-            txtMaximumProteinNameLength.Location = new Point(570, 21);
-            txtMaximumProteinNameLength.Name = "txtMaximumProteinNameLength";
-            txtMaximumProteinNameLength.Size = new Size(84, 24);
-            txtMaximumProteinNameLength.TabIndex = 4;
-            txtMaximumProteinNameLength.Text = "60";
-            //
-            // lblMaximumProteinNameLength
-            //
-            lblMaximumProteinNameLength.Location = new Point(454, 16);
-            lblMaximumProteinNameLength.Name = "lblMaximumProteinNameLength";
-            lblMaximumProteinNameLength.Size = new Size(128, 34);
-            lblMaximumProteinNameLength.TabIndex = 3;
-            lblMaximumProteinNameLength.Text = "Max Protein Name Length";
-            //
-            // chkValidationAllowAsterisks
-            //
-            chkValidationAllowAsterisks.Location = new Point(11, 19);
-            chkValidationAllowAsterisks.Name = "chkValidationAllowAsterisks";
-            chkValidationAllowAsterisks.Size = new Size(219, 25);
-            chkValidationAllowAsterisks.TabIndex = 0;
-            chkValidationAllowAsterisks.Text = "Allow asterisks in residues";
-            //
-            // chkValidationAllowDash
-            //
-            chkValidationAllowDash.Location = new Point(241, 19);
-            chkValidationAllowDash.Name = "chkValidationAllowDash";
-            chkValidationAllowDash.Size = new Size(218, 25);
-            chkValidationAllowDash.TabIndex = 2;
-            chkValidationAllowDash.Text = "Allow dash in residues";
-            //
-            // cmdRefreshFiles
-            //
-            cmdRefreshFiles.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            cmdRefreshFiles.Location = new Point(1003, 258);
-            cmdRefreshFiles.Name = "cmdRefreshFiles";
-            cmdRefreshFiles.Size = new Size(182, 30);
-            cmdRefreshFiles.TabIndex = 4;
-            cmdRefreshFiles.Text = "&Refresh Files";
-            //
-            // cmdUpdateDescription
-            //
-            cmdUpdateDescription.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            cmdUpdateDescription.Location = new Point(1068, 574);
-            cmdUpdateDescription.Name = "cmdUpdateDescription";
-            cmdUpdateDescription.Size = new Size(117, 49);
-            cmdUpdateDescription.TabIndex = 14;
-            cmdUpdateDescription.Text = "Update &Description";
-            //
-            // lblStatus
-            //
-            lblStatus.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            lblStatus.Location = new Point(342, 258);
-            lblStatus.Name = "lblStatus";
-            lblStatus.Size = new Size(295, 46);
-            lblStatus.TabIndex = 21;
-            lblStatus.Text = "Status";
-            //
-            // frmBatchAddNewCollection
-            //
-            AcceptButton = cmdUploadChecked;
-            AutoScaleBaseSize = new Size(7, 17);
-            CancelButton = cmdCancel;
-            ClientSize = new Size(1199, 707);
-            Controls.Add(cmdRemoveFile);
-            Controls.Add(cmdAddFile);
-            Controls.Add(lblStatus);
-            Controls.Add(cmdCancel);
-            Controls.Add(cmdUploadChecked);
-            Controls.Add(cmdUpdateDescription);
-            Controls.Add(cmdRefreshFiles);
-            Controls.Add(fraValidationOptions);
-            Controls.Add(txtPassphrase);
-            Controls.Add(lblPassphrase);
-            Controls.Add(chkEncryptionEnable);
-            Controls.Add(cmdPreviewFile);
-            Controls.Add(lvwSelectedFiles);
-            Controls.Add(lvwFolderContents);
-            Controls.Add(lblOrganismSelect);
-            Controls.Add(ctlTreeViewFolderBrowser);
-            Controls.Add(cboOrganismSelect);
-            Controls.Add(lblBatchUploadTree);
-            Controls.Add(lblFolderContents);
-            Controls.Add(cboAnnotationTypePicker);
-            Controls.Add(lblAnnAuth);
-            Controls.Add(lblSelectedFiles);
-            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
-            MinimumSize = new Size(1120, 576);
-            Name = "frmBatchAddNewCollection";
-            Text = "Batch Upload FASTA Files";
-            fraValidationOptions.ResumeLayout(false);
-            fraValidationOptions.PerformLayout();
-            ResumeLayout(false);
-            PerformLayout();
-        }
-
-        #endregion
 
         #region "Constants, enums, and member variables"
 
@@ -1194,7 +717,6 @@ namespace AppUI_OrfDBHandler
             }
         }
 
-
         /// <summary>
         /// Populates m_CheckedFileList
         /// </summary>
@@ -1703,7 +1225,6 @@ namespace AppUI_OrfDBHandler
             //    chkEncryptionEnable.CheckedChanged += chkEncryptionEnable_CheckedChanged;
             //}
 
-
             string selFileAnnotationType = GetSelectedFileColumn(li, eSelectedFileColumn.AnnotationType);
 
             cboAnnotationTypePicker.Text = selFileAnnotationType;
@@ -1786,7 +1307,6 @@ namespace AppUI_OrfDBHandler
         //        return;
         //    }
         //}
-
 
         private void txtMaximumProteinNameLength_Validating(object sender, CancelEventArgs e)
         {

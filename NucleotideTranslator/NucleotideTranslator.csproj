@@ -41,15 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TranslateNucleotides.cs" />
-    <Compile Include="TranslationEntry.cs" />
     <Compile Include="frmNucTransGUI.cs">
       <SubType>Form</SubType>
     </Compile>
-    <EmbeddedResource Include="frmNucTransGUI.resx">
+    <Compile Include="frmNucTransGUI.Designer.cs">
       <DependentUpon>frmNucTransGUI.cs</DependentUpon>
-    </EmbeddedResource>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TranslateNucleotides.cs" />
+    <Compile Include="TranslationEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="PRISM-DatabaseUtils">

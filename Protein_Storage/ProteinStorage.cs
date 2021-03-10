@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace Protein_Storage
 {
@@ -104,6 +105,11 @@ namespace Protein_Storage
         public Dictionary<string, ProteinStorageEntry>.Enumerator GetEnumerator()
         {
             return m_Proteins.GetEnumerator();
+        }
+
+        public IEnumerable<ProteinStorageEntry> GetEntriesIEnumerable()
+        {
+            return m_Proteins.Values;
         }
 
         public override string ToString()

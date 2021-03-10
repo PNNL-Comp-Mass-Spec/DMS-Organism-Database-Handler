@@ -474,7 +474,6 @@ namespace Protein_Importer
             return sha1string;
         }
 
-
         #region "Stored Procedure Access"
 
         protected string RunSP_GetProteinCollectionState(

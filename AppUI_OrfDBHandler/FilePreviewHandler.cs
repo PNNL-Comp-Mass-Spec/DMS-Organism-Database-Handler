@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using Protein_Importer;
 using Protein_Storage;
@@ -36,21 +37,13 @@ namespace AppUI_OrfDBHandler
 
             m_Proteins = m_Loader.GetProteinEntries(filePath, lineCount);
 
-            ListViewItem li;
-
-            var enumProteins = m_Proteins.GetEnumerator();
-            m_frmPreview.lvwPreview.BeginUpdate();
-            m_frmPreview.lvwPreview.Items.Clear();
-
-            while (enumProteins.MoveNext())
+            var newPreviewContents = m_Proteins.GetEntriesIEnumerable().Select(protein =>
             {
-                var protein = enumProteins.Current.Value;
-                li = new ListViewItem(protein.Reference);
+                var li = new ListViewItem(protein.Reference);
                 li.SubItems.Add(protein.Description);
-                m_frmPreview.lvwPreview.Items.Add(li);
-            }
-
-            m_frmPreview.lvwPreview.EndUpdate();
+                return li;
+            }).ToArray();
+            m_frmPreview.SetPreviewItems(newPreviewContents);
         }
 
         private void FillPreview(int lineCount)
@@ -77,7 +70,7 @@ namespace AppUI_OrfDBHandler
             }
             else
             {
-                FillPreview(Convert.ToInt32(m_frmPreview.txtLineCount.Text));
+                FillPreview(m_frmPreview.GetLineCount());
             }
 
             FormStatus?.Invoke(true);

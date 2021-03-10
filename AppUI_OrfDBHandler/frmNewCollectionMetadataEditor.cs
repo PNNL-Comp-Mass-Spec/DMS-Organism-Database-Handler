@@ -3,15 +3,11 @@ using System.Windows.Forms;
 
 namespace AppUI_OrfDBHandler
 {
-    public partial class frmNewCollectionMetadataEditor
+    public partial class frmNewCollectionMetadataEditor : Form
     {
         public frmNewCollectionMetadataEditor()
         {
             InitializeComponent();
-            txtDescription.Name = "txtDescription";
-            txtSource.Name = "txtSource";
-            cmdCancel.Name = "cmdCancel";
-            cmdOk.Name = "cmdOk";
         }
 
         public string Description

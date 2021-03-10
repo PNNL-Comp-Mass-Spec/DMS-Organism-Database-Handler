@@ -855,7 +855,6 @@ namespace Protein_Exporter
             }
         }
 
-
         /// <summary>
         /// Validates that the hash of a .fasta file matches the expected hash value
         /// If the actual hash differs and if forceRegenerateHash=True, then this strExpectedHash get updated

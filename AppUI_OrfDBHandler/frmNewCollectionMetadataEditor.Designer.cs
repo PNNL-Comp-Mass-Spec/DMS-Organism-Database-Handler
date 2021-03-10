@@ -1,133 +1,138 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.Windows.Forms;
-
-namespace AppUI_OrfDBHandler
+﻿namespace AppUI_OrfDBHandler
 {
-    public partial class frmNewCollectionMetadataEditor : Form
+    partial class frmNewCollectionMetadataEditor
     {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-        // Form overrides dispose to clean up the component list.
-        [DebuggerNonUserCode()]
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            try
+            if (disposing && (components != null))
             {
-                if (disposing && components != null)
-                {
-                    components.Dispose();
-                }
+                components.Dispose();
             }
-            finally
-            {
-                base.Dispose(disposing);
-            }
+            base.Dispose(disposing);
         }
 
-        // Required by the Windows Form Designer
-        private IContainer components;
+        #region Windows Form Designer generated code
 
-        // NOTE: The following procedure is required by the Windows Form Designer
-        // It can be modified using the Windows Form Designer.  
-        // Do not modify it using the code editor.
-        [DebuggerStepThrough()]
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
         private void InitializeComponent()
         {
-            txtDescription = new TextBox();
-            txtDescription.KeyDown += new KeyEventHandler(txtDescription_KeyDown);
-            lblDescription = new Label();
-            lblSource = new Label();
-            txtSource = new TextBox();
-            txtSource.KeyDown += new KeyEventHandler(txtSource_KeyDown);
-            cmdCancel = new Button();
-            cmdCancel.Click += new EventHandler(cmdCancel_Click);
-            cmdOk = new Button();
-            cmdOk.Click += new EventHandler(cmdOk_Click);
-            SuspendLayout();
+            this.txtDescription = new System.Windows.Forms.TextBox();
+            this.lblDescription = new System.Windows.Forms.Label();
+            this.lblSource = new System.Windows.Forms.Label();
+            this.txtSource = new System.Windows.Forms.TextBox();
+            this.cmdCancel = new System.Windows.Forms.Button();
+            this.cmdOk = new System.Windows.Forms.Button();
+            this.SuspendLayout();
             // 
             // txtDescription
             // 
-            txtDescription.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            txtDescription.Location = new Point(15, 34);
-            txtDescription.Multiline = true;
-            txtDescription.Name = "txtDescription";
-            txtDescription.Size = new Size(484, 68);
-            txtDescription.TabIndex = 1;
+            this.txtDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtDescription.Location = new System.Drawing.Point(11, 28);
+            this.txtDescription.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtDescription.Multiline = true;
+            this.txtDescription.Name = "txtDescription";
+            this.txtDescription.Size = new System.Drawing.Size(364, 56);
+            this.txtDescription.TabIndex = 1;
+            this.txtDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtDescription_KeyDown);
             // 
             // lblDescription
             // 
-            lblDescription.Location = new Point(12, 9);
-            lblDescription.Name = "lblDescription";
-            lblDescription.Size = new Size(208, 22);
-            lblDescription.TabIndex = 0;
-            lblDescription.Text = "Description";
+            this.lblDescription.Location = new System.Drawing.Point(9, 7);
+            this.lblDescription.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblDescription.Name = "lblDescription";
+            this.lblDescription.Size = new System.Drawing.Size(156, 18);
+            this.lblDescription.TabIndex = 0;
+            this.lblDescription.Text = "Description";
             // 
             // lblSource
             // 
-            lblSource.Location = new Point(12, 115);
-            lblSource.Name = "lblSource";
-            lblSource.Size = new Size(208, 22);
-            lblSource.TabIndex = 2;
-            lblSource.Text = "Source (Person, URL, FTP site)";
+            this.lblSource.Location = new System.Drawing.Point(9, 93);
+            this.lblSource.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblSource.Name = "lblSource";
+            this.lblSource.Size = new System.Drawing.Size(156, 18);
+            this.lblSource.TabIndex = 2;
+            this.lblSource.Text = "Source (Person, URL, FTP site)";
             // 
             // txtSource
             // 
-            txtSource.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            txtSource.Location = new Point(15, 140);
-            txtSource.Multiline = true;
-            txtSource.Name = "txtSource";
-            txtSource.Size = new Size(484, 68);
-            txtSource.TabIndex = 3;
+            this.txtSource.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSource.Location = new System.Drawing.Point(11, 114);
+            this.txtSource.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtSource.Multiline = true;
+            this.txtSource.Name = "txtSource";
+            this.txtSource.Size = new System.Drawing.Size(364, 56);
+            this.txtSource.TabIndex = 3;
+            this.txtSource.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSource_KeyDown);
             // 
             // cmdCancel
             // 
-            cmdCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            cmdCancel.DialogResult = DialogResult.Cancel;
-            cmdCancel.Location = new Point(415, 220);
-            cmdCancel.Name = "cmdCancel";
-            cmdCancel.Size = new Size(84, 27);
-            cmdCancel.TabIndex = 5;
-            cmdCancel.Text = "Cancel";
+            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdCancel.Location = new System.Drawing.Point(311, 179);
+            this.cmdCancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cmdCancel.Name = "cmdCancel";
+            this.cmdCancel.Size = new System.Drawing.Size(63, 22);
+            this.cmdCancel.TabIndex = 5;
+            this.cmdCancel.Text = "Cancel";
+            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
             // cmdOk
             // 
-            cmdOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            cmdOk.DialogResult = DialogResult.OK;
-            cmdOk.Location = new Point(310, 220);
-            cmdOk.Name = "cmdOk";
-            cmdOk.Size = new Size(84, 27);
-            cmdOk.TabIndex = 4;
-            cmdOk.Text = "&Ok";
+            this.cmdOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.cmdOk.Location = new System.Drawing.Point(232, 179);
+            this.cmdOk.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cmdOk.Name = "cmdOk";
+            this.cmdOk.Size = new System.Drawing.Size(63, 22);
+            this.cmdOk.TabIndex = 4;
+            this.cmdOk.Text = "&Ok";
+            this.cmdOk.Click += new System.EventHandler(this.cmdOk_Click);
             // 
             // frmNewCollectionMetadataEditor
             // 
-            AutoScaleDimensions = new SizeF(8.0f, 16.0f);
-            AutoScaleMode = AutoScaleMode.Font;
-            CancelButton = cmdCancel;
-            ClientSize = new Size(517, 259);
-            ControlBox = false;
-            Controls.Add(cmdOk);
-            Controls.Add(cmdCancel);
-            Controls.Add(txtSource);
-            Controls.Add(lblSource);
-            Controls.Add(txtDescription);
-            Controls.Add(lblDescription);
-            Name = "frmNewCollectionMetadataEditor";
-            ShowIcon = false;
-            ShowInTaskbar = false;
-            Text = "Protein Collection Metadata";
-            TopMost = true;
-            ResumeLayout(false);
-            PerformLayout();
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.cmdCancel;
+            this.ClientSize = new System.Drawing.Size(388, 210);
+            this.ControlBox = false;
+            this.Controls.Add(this.cmdOk);
+            this.Controls.Add(this.cmdCancel);
+            this.Controls.Add(this.txtSource);
+            this.Controls.Add(this.lblSource);
+            this.Controls.Add(this.txtDescription);
+            this.Controls.Add(this.lblDescription);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Name = "frmNewCollectionMetadataEditor";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
+            this.Text = "Protein Collection Metadata";
+            this.TopMost = true;
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
-        internal TextBox txtDescription;
-        internal Label lblDescription;
-        internal Label lblSource;
-        internal TextBox txtSource;
-        internal Button cmdCancel;
-        internal Button cmdOk;
+        #endregion
+
+        private System.Windows.Forms.TextBox txtDescription;
+        private System.Windows.Forms.Label lblDescription;
+        private System.Windows.Forms.Label lblSource;
+        private System.Windows.Forms.TextBox txtSource;
+        private System.Windows.Forms.Button cmdCancel;
+        private System.Windows.Forms.Button cmdOk;
     }
 }

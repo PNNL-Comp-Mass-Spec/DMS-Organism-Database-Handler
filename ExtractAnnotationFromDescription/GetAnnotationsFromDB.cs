@@ -45,7 +45,6 @@ namespace ExtractAnnotationFromDescription
                     DBTools.GetInteger(dr["Authority_ID"]),
                     DBTools.GetString(dr["Name"]));
 
-
             // Get Annotation Group Information
 
             var sqlQuery3 = "SELECT Annotation_Group, Authority_ID " +
@@ -58,7 +57,6 @@ namespace ExtractAnnotationFromDescription
                 info.AddAnnotationGroupLookup(
                     DBTools.GetInteger(dr["Annotation_Group"]),
                     DBTools.GetInteger(dr["Authority_ID"]));
-
 
             // Get Collection Member Primary Information
 

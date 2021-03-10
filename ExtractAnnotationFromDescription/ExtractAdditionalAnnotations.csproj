@@ -48,8 +48,14 @@
     <Compile Include="frmExtractFromFlatfile.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmExtractFromFlatfile.Designer.cs">
+      <DependentUpon>frmExtractFromFlatfile.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmRegexSpecifyFromDescription.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmRegexSpecifyFromDescription.Designer.cs">
+      <DependentUpon>frmRegexSpecifyFromDescription.cs</DependentUpon>
     </Compile>
     <Compile Include="GetAnnotationsFromDB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
