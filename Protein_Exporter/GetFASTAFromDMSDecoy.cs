@@ -1,78 +1,71 @@
-Option Strict On
+﻿using System.Collections.Generic;
+using System.IO;
+using TableManipulationBase;
 
-Imports System.Collections.Generic
-Imports System.IO
-Imports TableManipulationBase
+namespace Protein_Exporter
+{
+    public class GetFASTAFromDMSDecoy : GetFASTAFromDMSForward
+    {
+        protected GetFASTAFromDMSReversed m_RevGenerator;
 
-Public Class GetFASTAFromDMSDecoy
-    Inherits GetFASTAFromDMSForward
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
+        /// <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
+        public GetFASTAFromDMSDecoy(
+            DBTask databaseAccessor,
+            GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType,
+            bool decoyUsesXXX)
+            : base(databaseAccessor, databaseFormatType)
+        {
+            m_RevGenerator = new GetFASTAFromDMSReversed(
+                databaseAccessor, databaseFormatType) { UseXXX = decoyUsesXXX };
+        }
 
-    Protected m_RevGenerator As GetFASTAFromDMSReversed
+        /// <summary>
+        /// Create the decoy FASTA file for the given protein collections
+        /// </summary>
+        /// <param name="protCollectionList">Protein collection list, or empty string if retrieving a legacy FASTA file</param>
+        /// <param name="destinationFolderPath"></param>
+        /// <returns>CRC32 hash of the generated (or retrieved) file</returns>
+        public override string ExportFASTAFile(
+            List<string> protCollectionList,
+            string destinationFolderPath,
+            int alternateAnnotationTypeID,
+            bool padWithPrimaryAnnotation)
+        {
+            string fwdFilePath;
+            string revFilePath;
 
-    ''' <summary>
-    ''' Constructor
-    ''' </summary>
-    ''' <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
-    ''' <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
-    Public Sub New(
-        databaseAccessor As DBTask,
-        databaseFormatType As GetFASTAFromDMS.DatabaseFormatTypes,
-        decoyUsesXXX As Boolean)
+            base.ExportFASTAFile(protCollectionList,
+                                 destinationFolderPath, alternateAnnotationTypeID, padWithPrimaryAnnotation);
 
-        MyBase.New(databaseAccessor, databaseFormatType)
-        m_RevGenerator = New GetFASTAFromDMSReversed(
-            databaseAccessor, databaseFormatType) With {
-            .UseXXX = decoyUsesXXX
+            fwdFilePath = FullOutputPath;
+
+            m_RevGenerator.ExportFASTAFile(protCollectionList,
+                                           destinationFolderPath, alternateAnnotationTypeID, padWithPrimaryAnnotation);
+
+            revFilePath = m_RevGenerator.FullOutputPath;
+
+            var fwdFI = new FileInfo(fwdFilePath);
+            var revFI = new FileInfo(revFilePath);
+
+            using (var reverseReader = new StreamReader(new FileStream(revFI.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+            using (var appender = new StreamWriter(new FileStream(fwdFI.FullName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)))
+            {
+                while (!reverseReader.EndOfStream)
+                {
+                    string dataLine = reverseReader.ReadLine();
+                    appender.WriteLine(dataLine);
+                }
             }
-    End Sub
 
-    ''' <summary>
-    ''' Create the decoy FASTA file for the given protein collections
-    ''' </summary>
-    ''' <param name="protCollectionList">Protein collection list, or empty string if retrieving a legacy FASTA file</param>
-    ''' <param name="destinationFolderPath"></param>
-    ''' <returns>CRC32 hash of the generated (or retrieved) file</returns>
-    Overloads Overrides Function ExportFASTAFile(
-        protCollectionList As List(Of String),
-        destinationFolderPath As String,
-        alternateAnnotationTypeID As Integer,
-        padWithPrimaryAnnotation As Boolean) As String
+            revFI.Delete();
 
-        Dim fwdFilePath As String
-        Dim revFilePath As String
+            string crc32HashFinal = GetFileHash(fwdFI.FullName);
 
-        MyBase.ExportFASTAFile(protCollectionList,
-                               destinationFolderPath, alternateAnnotationTypeID, padWithPrimaryAnnotation)
-
-        fwdFilePath = FullOutputPath
-
-        m_RevGenerator.ExportFASTAFile(protCollectionList,
-                                       destinationFolderPath, alternateAnnotationTypeID, padWithPrimaryAnnotation)
-
-        revFilePath = m_RevGenerator.FullOutputPath
-
-        Dim fwdFI = New FileInfo(fwdFilePath)
-        Dim revFI = New FileInfo(revFilePath)
-
-        Using reverseReader = New StreamReader(New FileStream(revFI.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            Using appender = New StreamWriter(New FileStream(fwdFI.FullName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
-
-                While (Not reverseReader.EndOfStream)
-                    Dim dataLine = reverseReader.ReadLine()
-                    appender.WriteLine(dataLine)
-                End While
-            End Using
-        End Using
-
-        revFI.Delete()
-
-        Dim crc32HashFinal = GetFileHash(fwdFI.FullName)
-
-        Return crc32HashFinal
-
-    End Function
-
-
-
-
-End Class
+            return crc32HashFinal;
+        }
+    }
+}

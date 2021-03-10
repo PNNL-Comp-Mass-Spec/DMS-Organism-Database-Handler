@@ -1,212 +1,249 @@
-Imports System.ComponentModel
-Imports System.Text.RegularExpressions
+﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using Microsoft.VisualBasic.CompilerServices;
 
-Public Class frmFilePreview
-    Inherits Form
+namespace AppUI_OrfDBHandler
+{
+    public class frmFilePreview : Form
+    {
+        #region "Windows Form Designer generated code"
 
-#Region " Windows Form Designer generated code "
+        public frmFilePreview() : base()
+        {
+            base.Load += frmFilePreview_Load;
+            base.Closed += frmFilePreview_Closed;
 
-    Public Sub New()
-        MyBase.New()
+            // This call is required by the Windows Form Designer.
+            InitializeComponent();
+            validationRegex = new Regex(@"^(\d+)$");
+            // Add any initialization after the InitializeComponent() call
+        }
 
-        'This call is required by the Windows Form Designer.
-        InitializeComponent()
-        Me.validationRegex = New System.Text.RegularExpressions.Regex("^(\d+)$")
-        'Add any initialization after the InitializeComponent() call
+        // Form overrides dispose to clean up the component list.
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                {
+                    components.Dispose();
+                }
+            }
 
-    End Sub
+            base.Dispose(disposing);
+        }
 
-    'Form overrides dispose to clean up the component list.
-    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-        If disposing Then
-            If Not (components Is Nothing) Then
-                components.Dispose()
-            End If
-        End If
-        MyBase.Dispose(disposing)
-    End Sub
+        // Required by the Windows Form Designer
+        private IContainer components;
 
-    'Required by the Windows Form Designer
-    Private components As System.ComponentModel.IContainer
+        // NOTE: The following procedure is required by the Windows Form Designer
+        // It can be modified using the Windows Form Designer.
+        // Do not modify it using the code editor.
+        internal Label lblLineCount;
+        internal TextBox txtLineCount;
+        internal Button cmdRefresh;
+        internal Label lblPreviewTitle;
+        internal ColumnHeader colName;
+        internal ColumnHeader colDescription;
+        internal Button cmdClose;
+        internal ListView lvwPreview;
 
-    'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.
-    'Do not modify it using the code editor.
-    Friend WithEvents lblLineCount As Label
-    Friend WithEvents txtLineCount As TextBox
-    Friend WithEvents cmdRefresh As Button
-    Friend WithEvents lblPreviewTitle As Label
-    Friend WithEvents colName As ColumnHeader
-    Friend WithEvents colDescription As ColumnHeader
-    Friend WithEvents cmdClose As Button
-    Friend WithEvents lvwPreview As ListView
-    <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.lvwPreview = New ListView()
-        Me.colName = CType(New ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.colDescription = CType(New ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.txtLineCount = New TextBox()
-        Me.cmdRefresh = New Button()
-        Me.lblLineCount = New Label()
-        Me.lblPreviewTitle = New Label()
-        Me.cmdClose = New Button()
-        Me.SuspendLayout()
-        '
-        'lvwPreview
-        '
-        Me.lvwPreview.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lvwPreview.Columns.AddRange(New ColumnHeader() {Me.colName, Me.colDescription})
-        Me.lvwPreview.FullRowSelect = True
-        Me.lvwPreview.GridLines = True
-        Me.lvwPreview.Location = New System.Drawing.Point(-3, 58)
-        Me.lvwPreview.MultiSelect = False
-        Me.lvwPreview.Name = "lvwPreview"
-        Me.lvwPreview.Size = New System.Drawing.Size(666, 452)
-        Me.lvwPreview.Sorting = System.Windows.Forms.SortOrder.Ascending
-        Me.lvwPreview.TabIndex = 0
-        Me.lvwPreview.UseCompatibleStateImageBehavior = False
-        Me.lvwPreview.View = System.Windows.Forms.View.Details
-        '
-        'colName
-        '
-        Me.colName.Text = "Protein Name"
-        Me.colName.Width = 200
-        '
-        'colDescription
-        '
-        Me.colDescription.Text = "Description Line"
-        Me.colDescription.Width = 352
-        '
-        'txtLineCount
-        '
-        Me.txtLineCount.Location = New System.Drawing.Point(277, 26)
-        Me.txtLineCount.Name = "txtLineCount"
-        Me.txtLineCount.Size = New System.Drawing.Size(140, 24)
-        Me.txtLineCount.TabIndex = 1
-        Me.txtLineCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'cmdRefresh
-        '
-        Me.cmdRefresh.Location = New System.Drawing.Point(430, 16)
-        Me.cmdRefresh.Name = "cmdRefresh"
-        Me.cmdRefresh.Size = New System.Drawing.Size(106, 36)
-        Me.cmdRefresh.TabIndex = 2
-        Me.cmdRefresh.Text = "&Refresh List"
-        '
-        'lblLineCount
-        '
-        Me.lblLineCount.Location = New System.Drawing.Point(275, 6)
-        Me.lblLineCount.Name = "lblLineCount"
-        Me.lblLineCount.Size = New System.Drawing.Size(137, 20)
-        Me.lblLineCount.TabIndex = 3
-        Me.lblLineCount.Text = "# Lines to Preview"
-        '
-        'lblPreviewTitle
-        '
-        Me.lblPreviewTitle.Font = New System.Drawing.Font("Tahoma", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblPreviewTitle.Location = New System.Drawing.Point(3, 34)
-        Me.lblPreviewTitle.Name = "lblPreviewTitle"
-        Me.lblPreviewTitle.Size = New System.Drawing.Size(257, 19)
-        Me.lblPreviewTitle.TabIndex = 4
-        Me.lblPreviewTitle.Text = "Preview of File Contents"
-        '
-        'cmdClose
-        '
-        Me.cmdClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cmdClose.Location = New System.Drawing.Point(542, 16)
-        Me.cmdClose.Name = "cmdClose"
-        Me.cmdClose.Size = New System.Drawing.Size(106, 36)
-        Me.cmdClose.TabIndex = 5
-        Me.cmdClose.Text = "&Close"
-        '
-        'frmFilePreview
-        '
-        Me.AutoScaleBaseSize = New System.Drawing.Size(7, 17)
-        Me.CancelButton = Me.cmdClose
-        Me.ClientSize = New System.Drawing.Size(660, 510)
-        Me.Controls.Add(Me.cmdClose)
-        Me.Controls.Add(Me.lblLineCount)
-        Me.Controls.Add(Me.cmdRefresh)
-        Me.Controls.Add(Me.txtLineCount)
-        Me.Controls.Add(Me.lvwPreview)
-        Me.Controls.Add(Me.lblPreviewTitle)
-        Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.MinimumSize = New System.Drawing.Size(342, 437)
-        Me.Name = "frmFilePreview"
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual
-        Me.Text = "Preview of: "
-        Me.ResumeLayout(False)
-        Me.PerformLayout()
+        [DebuggerStepThrough()]
+        private void InitializeComponent()
+        {
+            lvwPreview = new ListView();
+            colName = new ColumnHeader();
+            colDescription = new ColumnHeader();
+            txtLineCount = new TextBox();
+            txtLineCount.Validating += new CancelEventHandler(txtLineCount_Validating);
+            txtLineCount.TextChanged += new EventHandler(txtLineCount_TextChanged);
+            cmdRefresh = new Button();
+            cmdRefresh.Click += new EventHandler(cmdRefresh_Click);
+            lblLineCount = new Label();
+            lblPreviewTitle = new Label();
+            cmdClose = new Button();
+            cmdClose.Click += new EventHandler(cmdClose_Click);
+            SuspendLayout();
+            //
+            // lvwPreview
+            //
+            lvwPreview.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lvwPreview.Columns.AddRange(new ColumnHeader[] { colName, colDescription });
+            lvwPreview.FullRowSelect = true;
+            lvwPreview.GridLines = true;
+            lvwPreview.Location = new Point(-3, 58);
+            lvwPreview.MultiSelect = false;
+            lvwPreview.Name = "lvwPreview";
+            lvwPreview.Size = new Size(666, 452);
+            lvwPreview.Sorting = SortOrder.Ascending;
+            lvwPreview.TabIndex = 0;
+            lvwPreview.UseCompatibleStateImageBehavior = false;
+            lvwPreview.View = View.Details;
+            //
+            // colName
+            //
+            colName.Text = "Protein Name";
+            colName.Width = 200;
+            //
+            // colDescription
+            //
+            colDescription.Text = "Description Line";
+            colDescription.Width = 352;
+            //
+            // txtLineCount
+            //
+            txtLineCount.Location = new Point(277, 26);
+            txtLineCount.Name = "txtLineCount";
+            txtLineCount.Size = new Size(140, 24);
+            txtLineCount.TabIndex = 1;
+            txtLineCount.TextAlign = HorizontalAlignment.Right;
+            //
+            // cmdRefresh
+            //
+            cmdRefresh.Location = new Point(430, 16);
+            cmdRefresh.Name = "cmdRefresh";
+            cmdRefresh.Size = new Size(106, 36);
+            cmdRefresh.TabIndex = 2;
+            cmdRefresh.Text = "&Refresh List";
+            //
+            // lblLineCount
+            //
+            lblLineCount.Location = new Point(275, 6);
+            lblLineCount.Name = "lblLineCount";
+            lblLineCount.Size = new Size(137, 20);
+            lblLineCount.TabIndex = 3;
+            lblLineCount.Text = "# Lines to Preview";
+            //
+            // lblPreviewTitle
+            //
+            lblPreviewTitle.Font = new Font("Tahoma", 11.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            lblPreviewTitle.Location = new Point(3, 34);
+            lblPreviewTitle.Name = "lblPreviewTitle";
+            lblPreviewTitle.Size = new Size(257, 19);
+            lblPreviewTitle.TabIndex = 4;
+            lblPreviewTitle.Text = "Preview of File Contents";
+            //
+            // cmdClose
+            //
+            cmdClose.DialogResult = DialogResult.Cancel;
+            cmdClose.Location = new Point(542, 16);
+            cmdClose.Name = "cmdClose";
+            cmdClose.Size = new Size(106, 36);
+            cmdClose.TabIndex = 5;
+            cmdClose.Text = "&Close";
+            //
+            // frmFilePreview
+            //
+            AutoScaleBaseSize = new Size(7, 17);
+            CancelButton = cmdClose;
+            ClientSize = new Size(660, 510);
+            Controls.Add(cmdClose);
+            Controls.Add(lblLineCount);
+            Controls.Add(cmdRefresh);
+            Controls.Add(txtLineCount);
+            Controls.Add(lvwPreview);
+            Controls.Add(lblPreviewTitle);
+            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            MinimumSize = new Size(342, 437);
+            Name = "frmFilePreview";
+            StartPosition = FormStartPosition.Manual;
+            Text = "Preview of: ";
+            ResumeLayout(false);
+            PerformLayout();
+        }
 
-    End Sub
+        #endregion
+        public event RefreshRequestEventHandler RefreshRequest;
 
-#End Region
+        public delegate void RefreshRequestEventHandler(int lineCount);
 
-    Event RefreshRequest(lineCount As Integer)
-    Shadows Event FormClosing()
+        public new event FormClosingEventHandler FormClosing;
 
-    Private ReadOnly validationRegex As Regex
-    Private m_currentLineCount As Integer = 100
+        public new delegate void FormClosingEventHandler();
 
-    WriteOnly Property WindowName As String
-        Set
-            Me.Text = Value
-        End Set
-    End Property
+        private readonly Regex validationRegex;
+        private int m_currentLineCount = 100;
 
-    ReadOnly Property FormVisibility As Boolean
-        Get
-            Return Me.Visible
-        End Get
-    End Property
+        public string WindowName
+        {
+            set
+            {
+                Text = value;
+            }
+        }
 
-    Private Sub cmdRefresh_Click(sender As Object, e As EventArgs) Handles cmdRefresh.Click
-        RaiseEvent RefreshRequest(m_currentLineCount)
-        If cmdRefresh.Enabled = True Then
-            cmdRefresh.Enabled = False
-        End If
-    End Sub
+        public bool FormVisibility
+        {
+            get
+            {
+                return Visible;
+            }
+        }
 
-    Private Sub txtLineCount_Validating(sender As Object, e As CancelEventArgs) Handles txtLineCount.Validating
-        Dim value As Integer
-        Dim m As Match
-        Dim countText As String = txtLineCount.Text
+        private void cmdRefresh_Click(object sender, EventArgs e)
+        {
+            RefreshRequest?.Invoke(m_currentLineCount);
+            if (cmdRefresh.Enabled == true)
+            {
+                cmdRefresh.Enabled = false;
+            }
+        }
 
-        If validationRegex.IsMatch(CInt(countText).ToString) Then
-            m = validationRegex.Match(CInt(countText).ToString)
-            value = CInt(m.Groups(0).Value)
-            txtLineCount.Text = value.ToString
-            m_currentLineCount = value
-            If cmdRefresh.Enabled = False Then
-                cmdRefresh.Enabled = True
-            End If
-        Else
-            txtLineCount.Text = m_currentLineCount.ToString
-            e.Cancel = True
-        End If
+        private void txtLineCount_Validating(object sender, CancelEventArgs e)
+        {
+            int value;
+            Match m;
+            string countText = txtLineCount.Text;
 
-    End Sub
+            if (validationRegex.IsMatch(Conversions.ToInteger(countText).ToString()))
+            {
+                m = validationRegex.Match(Conversions.ToInteger(countText).ToString());
+                value = Conversions.ToInteger(m.Groups[0].Value);
+                txtLineCount.Text = value.ToString();
+                m_currentLineCount = value;
+                if (cmdRefresh.Enabled == false)
+                {
+                    cmdRefresh.Enabled = true;
+                }
+            }
+            else
+            {
+                txtLineCount.Text = m_currentLineCount.ToString();
+                e.Cancel = true;
+            }
+        }
 
-    Private Sub frmFilePreview_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        txtLineCount.Text = m_currentLineCount.ToString
-        RaiseEvent RefreshRequest(m_currentLineCount)
-    End Sub
+        private void frmFilePreview_Load(object sender, EventArgs e)
+        {
+            txtLineCount.Text = m_currentLineCount.ToString();
+            RefreshRequest?.Invoke(m_currentLineCount);
+        }
 
-    Private Sub txtLineCount_TextChanged(sender As Object, e As EventArgs) Handles txtLineCount.TextChanged
-        Dim countText As String = txtLineCount.Text
-        If validationRegex.IsMatch(countText) Then
-            cmdRefresh.Enabled = True
-        Else
-            cmdRefresh.Enabled = False
-        End If
-    End Sub
+        private void txtLineCount_TextChanged(object sender, EventArgs e)
+        {
+            string countText = txtLineCount.Text;
+            if (validationRegex.IsMatch(countText))
+            {
+                cmdRefresh.Enabled = true;
+            }
+            else
+            {
+                cmdRefresh.Enabled = false;
+            }
+        }
 
-    Private Sub frmFilePreview_Closed(sender As Object, e As EventArgs) Handles MyBase.Closed
-        RaiseEvent FormClosing()
-    End Sub
+        private void frmFilePreview_Closed(object sender, EventArgs e)
+        {
+            FormClosing?.Invoke();
+        }
 
-    Private Sub cmdClose_Click(sender As Object, e As EventArgs) Handles cmdClose.Click
-        Me.Close()
-    End Sub
-End Class
+        private void cmdClose_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+    }
+}

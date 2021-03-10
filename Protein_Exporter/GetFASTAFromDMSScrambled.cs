@@ -1,65 +1,73 @@
-Option Strict On
+﻿using System;
+using System.Diagnostics;
+using System.Text;
+using TableManipulationBase;
 
-Imports System.Text
-Imports TableManipulationBase
+namespace Protein_Exporter
+{
+    public class GetFASTAFromDMSScrambled : GetFASTAFromDMSForward
+    {
+        private Random m_RndNumGen;
 
-Public Class GetFASTAFromDMSScrambled
-    Inherits GetFASTAFromDMSForward
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
+        /// <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
+        public GetFASTAFromDMSScrambled(
+            DBTask databaseAccessor,
+            GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType)
+            : base(databaseAccessor, databaseFormatType)
+        {
+        }
 
-    Private m_RndNumGen As Random
+        public override string SequenceExtender(string originalSequence, int collectionCount)
+        {
+            var sb = new StringBuilder(originalSequence.Length);
+            string sequence = originalSequence;
 
-    ''' <summary>
-    ''' Constructor
-    ''' </summary>
-    ''' <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
-    ''' <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
-    Public Sub New(
-        databaseAccessor As DBTask,
-        databaseFormatType As GetFASTAFromDMS.DatabaseFormatTypes)
+            int index;
+            int counter;
 
-        MyBase.New(databaseAccessor, databaseFormatType)
+            if (m_RndNumGen == null)
+            {
+                m_RndNumGen = new Random(collectionCount);
+                m_Naming_Suffix = "_scrambled_seed_" + collectionCount.ToString();
+            }
 
-    End Sub
+            counter = sequence.Length;
 
-    Overrides Function SequenceExtender(originalSequence As String, collectionCount As Integer) As String
+            while (counter > 0)
+            {
+                Debug.Assert(counter == sequence.Length);
+                index = m_RndNumGen.Next(counter);
+                sb.Append(sequence.Substring(index, 1));
 
-        Dim sb As New StringBuilder(originalSequence.Length)
-        Dim sequence As String = originalSequence
+                if (index > 0)
+                {
+                    if (index < sequence.Length - 1)
+                    {
+                        sequence = sequence.Substring(0, index) + sequence.Substring(index + 1);
+                    }
+                    else
+                    {
+                        sequence = sequence.Substring(0, index);
+                    }
+                }
+                else
+                {
+                    sequence = sequence.Substring(index + 1);
+                }
 
-        Dim index As Integer
-        Dim counter As Integer
+                counter -= 1;
+            }
 
-        If m_RndNumGen Is Nothing Then
-            m_RndNumGen = New Random(collectionCount)
-            m_Naming_Suffix = "_scrambled_seed_" + collectionCount.ToString
-        End If
+            return sb.ToString();
+        }
 
-        counter = sequence.Length
-
-        While counter > 0
-            Debug.Assert(counter = sequence.Length)
-            index = m_RndNumGen.Next(counter)
-            sb.Append(sequence.Substring(index, 1))
-
-            If index > 0 Then
-                If index < sequence.Length - 1 Then
-                    sequence = sequence.Substring(0, index) & sequence.Substring(index + 1)
-                Else
-                    sequence = sequence.Substring(0, index)
-                End If
-            Else
-                sequence = sequence.Substring(index + 1)
-            End If
-            counter -= 1
-
-        End While
-
-        Return sb.ToString
-
-    End Function
-
-
-    Overrides Function ReferenceExtender(originalReference As String) As String
-        Return "Scrambled_" + originalReference
-    End Function
-End Class
+        public override string ReferenceExtender(string originalReference)
+        {
+            return "Scrambled_" + originalReference;
+        }
+    }
+}

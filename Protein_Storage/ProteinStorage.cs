@@ -1,92 +1,114 @@
+﻿using System.Collections.Generic;
 
-Imports System.Collections.Generic
+namespace Protein_Storage
+{
+    public class ProteinStorage
+    {
+        /// <summary>
+        /// Keys are Protein_Name
+        /// </summary>
+        protected readonly Dictionary<string, ProteinStorageEntry> m_Proteins;
+        protected int m_ResidueCount;
+        protected readonly SortedSet<string> m_ProteinNames;
+        protected string m_PassPhrase;
 
-Public Class ProteinStorage
+        public ProteinStorage(string fastaFileName)
+        {
+            FileName = fastaFileName;
+            m_Proteins = new Dictionary<string, ProteinStorageEntry>();
+            m_ProteinNames = new SortedSet<string>();
+        }
 
-    ''' <summary>
-    ''' Keys are Protein_Name
-    ''' </summary>
-    Protected ReadOnly m_Proteins As Dictionary(Of String, ProteinStorageEntry)
-    Protected m_ResidueCount As Integer
-    Protected ReadOnly m_ProteinNames As SortedSet(Of String)
-    Protected m_PassPhrase As String
+        public virtual void AddProtein(ProteinStorageEntry proteinEntry)
+        {
+            if (!m_Proteins.ContainsKey(proteinEntry.Reference))
+            {
+                m_Proteins.Add(proteinEntry.Reference, proteinEntry);
+                m_ProteinNames.Add(proteinEntry.Reference);
+                m_ResidueCount += proteinEntry.Sequence.Length;
+            }
+            else
+            {
+                proteinEntry.SetReferenceName(proteinEntry.Reference + "_dup_" + proteinEntry.SHA1Hash.Substring(1, 10));
+                AddProtein(proteinEntry);
+                // flag with some kinda error so we can check out the duplicate entry and rename it
+            }
+        }
 
-    Public Sub New(fastaFileName As String)
-        FileName = fastaFileName
-        m_Proteins = New Dictionary(Of String, ProteinStorageEntry)
-        m_ProteinNames = New SortedSet(Of String)
-    End Sub
+        protected string FileName { get; set; }
 
-    Public Overridable Sub AddProtein(proteinEntry As ProteinStorageEntry)
+        public ProteinStorageEntry GetProtein(string reference)
+        {
+            ProteinStorageEntry proteinEntry = null;
 
-        If Not m_Proteins.ContainsKey(proteinEntry.Reference) Then
-            m_Proteins.Add(proteinEntry.Reference, proteinEntry)
-            m_ProteinNames.Add(proteinEntry.Reference)
-            m_ResidueCount += proteinEntry.Sequence.Length
-        Else
-            proteinEntry.SetReferenceName(proteinEntry.Reference + "_dup_" + proteinEntry.SHA1Hash.Substring(1, 10))
-            AddProtein(proteinEntry)
-            'flag with some kinda error so we can check out the duplicate entry and rename it
-        End If
-    End Sub
+            if (m_Proteins.TryGetValue(reference, out proteinEntry))
+            {
+                return proteinEntry;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
-    Protected Property FileName As String
+        public SortedSet<string> GetSortedProteinNames()
+        {
+            return m_ProteinNames;
+        }
 
-    Public Function GetProtein(reference As String) As ProteinStorageEntry
+        public virtual void ClearProteinEntries()
+        {
+            m_ResidueCount = 0;
+            m_Proteins.Clear();
+            m_ProteinNames.Clear();
+        }
 
-        Dim proteinEntry As ProteinStorageEntry = Nothing
+        public int TotalResidueCount
+        {
+            get
+            {
+                return m_ResidueCount;
+            }
+        }
 
-        If m_Proteins.TryGetValue(reference, proteinEntry) Then
-            Return proteinEntry
-        Else
-            Return Nothing
-        End If
-    End Function
+        public int ProteinCount
+        {
+            get
+            {
+                return m_Proteins.Count;
+            }
+        }
 
-    Public Function GetSortedProteinNames() As SortedSet(Of String)
-        Return m_ProteinNames
-    End Function
+        public bool EncryptSequences { get; set; }
 
-    Public Overridable Sub ClearProteinEntries()
-        m_ResidueCount = 0
-        m_Proteins.Clear()
-        m_ProteinNames.Clear()
-    End Sub
+        public string PassPhrase
+        {
+            get
+            {
+                if (EncryptSequences)
+                {
+                    return m_PassPhrase;
+                }
+                else
+                {
+                    return null;
+                }
+            }
 
-    Public ReadOnly Property TotalResidueCount As Integer
-        Get
-            Return m_ResidueCount
-        End Get
-    End Property
+            set
+            {
+                m_PassPhrase = value;
+            }
+        }
 
-    Public ReadOnly Property ProteinCount As Integer
-        Get
-            Return m_Proteins.Count()
-        End Get
-    End Property
+        public Dictionary<string, ProteinStorageEntry>.Enumerator GetEnumerator()
+        {
+            return m_Proteins.GetEnumerator();
+        }
 
-    Public Property EncryptSequences As Boolean
-
-    Public Property PassPhrase As String
-        Get
-            If EncryptSequences Then
-                Return m_PassPhrase
-            Else
-                Return Nothing
-            End If
-        End Get
-        Set
-            m_PassPhrase = Value
-        End Set
-    End Property
-
-    Public Function GetEnumerator() As Dictionary(Of String, ProteinStorageEntry).Enumerator
-        Return m_Proteins.GetEnumerator
-    End Function
-
-    Public Overrides Function ToString() As String
-        Return FileName & ": " & m_ProteinNames.Count() & " proteins"
-    End Function
-
-End Class
-
+        public override string ToString()
+        {
+            return FileName + ": " + m_ProteinNames.Count + " proteins";
+        }
+    }
+}

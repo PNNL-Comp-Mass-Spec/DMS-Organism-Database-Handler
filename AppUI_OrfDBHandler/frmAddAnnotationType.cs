@@ -1,363 +1,403 @@
-Public Class frmAddAnnotationType
-    Inherits Form
+﻿using System;
+using System.Data;
+using System.Diagnostics;
+using System.Drawing;
+using System.Windows.Forms;
+using Microsoft.VisualBasic.CompilerServices;
 
-#Region " Windows Form Designer generated code "
+namespace AppUI_OrfDBHandler
+{
+    public class frmAddAnnotationType : Form
+    {
+        #region "Windows Form Designer generated code"
 
-    Public Sub New()
-        MyBase.New()
+        public frmAddAnnotationType() : base()
+        {
+            base.Load += frmAddAnnotationType_Load;
 
-        'This call is required by the Windows Form Designer.
-        InitializeComponent()
+            // This call is required by the Windows Form Designer.
+            InitializeComponent();
 
-        'Add any initialization after the InitializeComponent() call
+            // Add any initialization after the InitializeComponent() call
+        }
 
-    End Sub
+        // Form overrides dispose to clean up the component list.
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                {
+                    components.Dispose();
+                }
+            }
 
-    'Form overrides dispose to clean up the component list.
-    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-        If disposing Then
-            If Not (components Is Nothing) Then
-                components.Dispose()
-            End If
-        End If
-        MyBase.Dispose(disposing)
-    End Sub
+            base.Dispose(disposing);
+        }
 
-    'Required by the Windows Form Designer
-    Private components As System.ComponentModel.IContainer
+        // Required by the Windows Form Designer
+        private System.ComponentModel.IContainer components;
 
-    'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.
-    'Do not modify it using the code editor.
-    Friend WithEvents cmdCancel As Button
-    Friend WithEvents cmdOK As Button
-    Friend WithEvents lblAnnTypeName As Label
-    Friend WithEvents txtAnnTypeName As TextBox
-    Friend WithEvents txtDescription As TextBox
-    Friend WithEvents lblDescription As Label
-    Friend WithEvents txtTypeExample As TextBox
-    Friend WithEvents lblTypeExample As Label
-    Friend WithEvents lblAuthority As Label
-    Friend WithEvents cboAuthorityName As ComboBox
-    <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.lblAnnTypeName = New Label
-        Me.txtAnnTypeName = New TextBox
-        Me.txtDescription = New TextBox
-        Me.lblDescription = New Label
-        Me.txtTypeExample = New TextBox
-        Me.lblTypeExample = New Label
-        Me.cmdCancel = New Button
-        Me.cmdOK = New Button
-        Me.lblAuthority = New Label
-        Me.cboAuthorityName = New ComboBox
-        Me.SuspendLayout()
-        '
-        'lblAnnTypeName
-        '
-        Me.lblAnnTypeName.Location = New System.Drawing.Point(6, 8)
-        Me.lblAnnTypeName.Name = "lblAnnTypeName"
-        Me.lblAnnTypeName.Size = New System.Drawing.Size(266, 16)
-        Me.lblAnnTypeName.TabIndex = 0
-        Me.lblAnnTypeName.Text = "Annotation Type Name (64 char max)"
-        '
-        'txtAnnTypeName
-        '
-        Me.txtAnnTypeName.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtAnnTypeName.Location = New System.Drawing.Point(6, 24)
-        Me.txtAnnTypeName.MaxLength = 64
-        Me.txtAnnTypeName.Name = "txtAnnTypeName"
-        Me.txtAnnTypeName.Size = New System.Drawing.Size(276, 21)
-        Me.txtAnnTypeName.TabIndex = 1
-        Me.txtAnnTypeName.Text = ""
-        '
-        'txtDescription
-        '
-        Me.txtDescription.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtDescription.Location = New System.Drawing.Point(7, 66)
-        Me.txtDescription.MaxLength = 128
-        Me.txtDescription.Name = "txtDescription"
-        Me.txtDescription.Size = New System.Drawing.Size(276, 21)
-        Me.txtDescription.TabIndex = 3
-        Me.txtDescription.Text = ""
-        '
-        'lblDescription
-        '
-        Me.lblDescription.Location = New System.Drawing.Point(7, 50)
-        Me.lblDescription.Name = "lblDescription"
-        Me.lblDescription.Size = New System.Drawing.Size(265, 16)
-        Me.lblDescription.TabIndex = 2
-        Me.lblDescription.Text = "Annotation Type Description (128 char max)"
-        '
-        'txtTypeExample
-        '
-        Me.txtTypeExample.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtTypeExample.Location = New System.Drawing.Point(7, 108)
-        Me.txtTypeExample.MaxLength = 128
-        Me.txtTypeExample.Name = "txtTypeExample"
-        Me.txtTypeExample.Size = New System.Drawing.Size(276, 21)
-        Me.txtTypeExample.TabIndex = 5
-        Me.txtTypeExample.Text = ""
-        '
-        'lblTypeExample
-        '
-        Me.lblTypeExample.Location = New System.Drawing.Point(7, 92)
-        Me.lblTypeExample.Name = "lblTypeExample"
-        Me.lblTypeExample.Size = New System.Drawing.Size(265, 16)
-        Me.lblTypeExample.TabIndex = 4
-        Me.lblTypeExample.Text = "Example of Annotation (optional, 128 char max)"
-        '
-        'cmdCancel
-        '
-        Me.cmdCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cmdCancel.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdCancel.Location = New System.Drawing.Point(208, 182)
-        Me.cmdCancel.Name = "cmdCancel"
-        Me.cmdCancel.TabIndex = 6
-        Me.cmdCancel.Text = "Cancel"
-        '
-        'cmdOK
-        '
-        Me.cmdOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.cmdOK.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdOK.Location = New System.Drawing.Point(124, 182)
-        Me.cmdOK.Name = "cmdOK"
-        Me.cmdOK.TabIndex = 7
-        Me.cmdOK.Text = "OK"
-        '
-        'lblAuthority
-        '
-        Me.lblAuthority.Location = New System.Drawing.Point(7, 134)
-        Me.lblAuthority.Name = "lblAuthority"
-        Me.lblAuthority.Size = New System.Drawing.Size(265, 16)
-        Me.lblAuthority.TabIndex = 8
-        Me.lblAuthority.Text = "Naming Authority"
-        '
-        'cboAuthorityName
-        '
-        Me.cboAuthorityName.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cboAuthorityName.Location = New System.Drawing.Point(7, 150)
-        Me.cboAuthorityName.Name = "cboAuthorityName"
-        Me.cboAuthorityName.Size = New System.Drawing.Size(276, 21)
-        Me.cboAuthorityName.TabIndex = 9
-        '
-        'frmAddAnnotationType
-        '
-        Me.AcceptButton = Me.cmdOK
-        Me.AutoScaleBaseSize = New System.Drawing.Size(5, 14)
-        Me.CancelButton = Me.cmdCancel
-        Me.ClientSize = New System.Drawing.Size(292, 216)
-        Me.Controls.Add(Me.cboAuthorityName)
-        Me.Controls.Add(Me.lblAuthority)
-        Me.Controls.Add(Me.cmdOK)
-        Me.Controls.Add(Me.cmdCancel)
-        Me.Controls.Add(Me.txtTypeExample)
-        Me.Controls.Add(Me.txtDescription)
-        Me.Controls.Add(Me.txtAnnTypeName)
-        Me.Controls.Add(Me.lblTypeExample)
-        Me.Controls.Add(Me.lblDescription)
-        Me.Controls.Add(Me.lblAnnTypeName)
-        Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
-        Me.MaximumSize = New System.Drawing.Size(298, 240)
-        Me.MinimumSize = New System.Drawing.Size(298, 240)
-        Me.Name = "frmAddAnnotationType"
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual
-        Me.Text = "Add Annotation Type"
-        Me.ResumeLayout(False)
+        // NOTE: The following procedure is required by the Windows Form Designer
+        // It can be modified using the Windows Form Designer.
+        // Do not modify it using the code editor.
+        internal Button cmdCancel;
+        internal Button cmdOK;
+        internal Label lblAnnTypeName;
+        internal TextBox txtAnnTypeName;
+        internal TextBox txtDescription;
+        internal Label lblDescription;
+        internal TextBox txtTypeExample;
+        internal Label lblTypeExample;
+        internal Label lblAuthority;
+        internal ComboBox cboAuthorityName;
 
-    End Sub
+        [DebuggerStepThrough()]
+        private void InitializeComponent()
+        {
+            lblAnnTypeName = new Label();
+            txtAnnTypeName = new TextBox();
+            txtDescription = new TextBox();
+            lblDescription = new Label();
+            txtTypeExample = new TextBox();
+            lblTypeExample = new Label();
+            cmdCancel = new Button();
+            cmdCancel.Click += new EventHandler(cmdCancel_Click);
+            cmdOK = new Button();
+            cmdOK.Click += new EventHandler(cmdOK_Click);
+            lblAuthority = new Label();
+            cboAuthorityName = new ComboBox();
+            cboAuthorityName.SelectedIndexChanged += new EventHandler(cboAuthorityName_SelectedIndexChanged);
+            //cboAuthorityName.Validating += txtAuthWeb_Validating;
+            SuspendLayout();
+            //
+            // lblAnnTypeName
+            //
+            lblAnnTypeName.Location = new Point(6, 8);
+            lblAnnTypeName.Name = "lblAnnTypeName";
+            lblAnnTypeName.Size = new Size(266, 16);
+            lblAnnTypeName.TabIndex = 0;
+            lblAnnTypeName.Text = "Annotation Type Name (64 char max)";
+            //
+            // txtAnnTypeName
+            //
+            txtAnnTypeName.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtAnnTypeName.Location = new Point(6, 24);
+            txtAnnTypeName.MaxLength = 64;
+            txtAnnTypeName.Name = "txtAnnTypeName";
+            txtAnnTypeName.Size = new Size(276, 21);
+            txtAnnTypeName.TabIndex = 1;
+            txtAnnTypeName.Text = "";
+            //
+            // txtDescription
+            //
+            txtDescription.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtDescription.Location = new Point(7, 66);
+            txtDescription.MaxLength = 128;
+            txtDescription.Name = "txtDescription";
+            txtDescription.Size = new Size(276, 21);
+            txtDescription.TabIndex = 3;
+            txtDescription.Text = "";
+            //
+            // lblDescription
+            //
+            lblDescription.Location = new Point(7, 50);
+            lblDescription.Name = "lblDescription";
+            lblDescription.Size = new Size(265, 16);
+            lblDescription.TabIndex = 2;
+            lblDescription.Text = "Annotation Type Description (128 char max)";
+            //
+            // txtTypeExample
+            //
+            txtTypeExample.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtTypeExample.Location = new Point(7, 108);
+            txtTypeExample.MaxLength = 128;
+            txtTypeExample.Name = "txtTypeExample";
+            txtTypeExample.Size = new Size(276, 21);
+            txtTypeExample.TabIndex = 5;
+            txtTypeExample.Text = "";
+            //
+            // lblTypeExample
+            //
+            lblTypeExample.Location = new Point(7, 92);
+            lblTypeExample.Name = "lblTypeExample";
+            lblTypeExample.Size = new Size(265, 16);
+            lblTypeExample.TabIndex = 4;
+            lblTypeExample.Text = "Example of Annotation (optional, 128 char max)";
+            //
+            // cmdCancel
+            //
+            cmdCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            cmdCancel.DialogResult = DialogResult.Cancel;
+            cmdCancel.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdCancel.Location = new Point(208, 182);
+            cmdCancel.Name = "cmdCancel";
+            cmdCancel.TabIndex = 6;
+            cmdCancel.Text = "Cancel";
+            //
+            // cmdOK
+            //
+            cmdOK.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            cmdOK.DialogResult = DialogResult.OK;
+            cmdOK.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdOK.Location = new Point(124, 182);
+            cmdOK.Name = "cmdOK";
+            cmdOK.TabIndex = 7;
+            cmdOK.Text = "OK";
+            //
+            // lblAuthority
+            //
+            lblAuthority.Location = new Point(7, 134);
+            lblAuthority.Name = "lblAuthority";
+            lblAuthority.Size = new Size(265, 16);
+            lblAuthority.TabIndex = 8;
+            lblAuthority.Text = "Naming Authority";
+            //
+            // cboAuthorityName
+            //
+            cboAuthorityName.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            cboAuthorityName.Location = new Point(7, 150);
+            cboAuthorityName.Name = "cboAuthorityName";
+            cboAuthorityName.Size = new Size(276, 21);
+            cboAuthorityName.TabIndex = 9;
+            //
+            // frmAddAnnotationType
+            //
+            AcceptButton = cmdOK;
+            AutoScaleBaseSize = new Size(5, 14);
+            CancelButton = cmdCancel;
+            ClientSize = new Size(292, 216);
+            Controls.Add(cboAuthorityName);
+            Controls.Add(lblAuthority);
+            Controls.Add(cmdOK);
+            Controls.Add(cmdCancel);
+            Controls.Add(txtTypeExample);
+            Controls.Add(txtDescription);
+            Controls.Add(txtAnnTypeName);
+            Controls.Add(lblTypeExample);
+            Controls.Add(lblDescription);
+            Controls.Add(lblAnnTypeName);
+            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            MaximumSize = new Size(298, 240);
+            MinimumSize = new Size(298, 240);
+            Name = "frmAddAnnotationType";
+            StartPosition = FormStartPosition.Manual;
+            Text = "Add Annotation Type";
+            ResumeLayout(false);
+        }
 
-#End Region
+        #endregion
 
-    Private m_TypeName As String
-    Private m_Description As String
-    Private m_Example As String
-    Private m_AuthID As Integer
-    Private m_AuthoritiesTable As DataTable
-    Private m_PSConnectionString As String
+        private string m_TypeName;
+        private string m_Description;
+        private string m_Example;
+        private int m_AuthID;
+        private DataTable m_AuthoritiesTable;
+        private string m_PSConnectionString;
 
+        #region "Return Properties"
 
-#Region " Return Properties "
+        public string TypeName
+        {
+            get
+            {
+                return m_TypeName;
+            }
 
-    Property TypeName As String
-        Get
-            Return m_TypeName
-        End Get
-        Set
-            m_TypeName = Value
-        End Set
-    End Property
+            set
+            {
+                m_TypeName = value;
+            }
+        }
 
-    Property Description As String
-        Get
-            Return m_Description
-        End Get
-        Set
-            m_Description = Value
-        End Set
-    End Property
+        public string Description
+        {
+            get
+            {
+                return m_Description;
+            }
 
-    Property Example As String
-        Get
-            Return m_Example
-        End Get
-        Set
-            m_Example = Value
-        End Set
-    End Property
+            set
+            {
+                m_Description = value;
+            }
+        }
 
-    Property AuthorityID As Integer
-        Get
-            Return m_AuthID
-        End Get
-        Set
-            m_AuthID = Value
-        End Set
-    End Property
+        public string Example
+        {
+            get
+            {
+                return m_Example;
+            }
 
-    WriteOnly Property ConnectionString As String
-        Set
-            m_PSConnectionString = Value
-        End Set
-    End Property
+            set
+            {
+                m_Example = value;
+            }
+        }
 
-    WriteOnly Property AuthorityTable As DataTable
-        Set
-            m_AuthoritiesTable = Value
-        End Set
-    End Property
+        public int AuthorityID
+        {
+            get
+            {
+                return m_AuthID;
+            }
 
-#End Region
+            set
+            {
+                m_AuthID = value;
+            }
+        }
 
-    Private Sub frmAddAnnotationType_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        If Not m_TypeName Is Nothing Then
-            txtAnnTypeName.Text = m_TypeName
-        End If
+        public string ConnectionString
+        {
+            set
+            {
+                m_PSConnectionString = value;
+            }
+        }
 
-        If Not m_Description Is Nothing Then
-            txtDescription.Text = m_Description
-        End If
+        public DataTable AuthorityTable
+        {
+            set
+            {
+                m_AuthoritiesTable = value;
+            }
+        }
 
-        If Not m_Example Is Nothing Then
-            txtTypeExample.Text = m_Example
-        End If
+        #endregion
 
-        LoadAuthoritiesList()
+        private void frmAddAnnotationType_Load(object sender, EventArgs e)
+        {
+            if (m_TypeName != null)
+            {
+                txtAnnTypeName.Text = m_TypeName;
+            }
 
-        If m_AuthID > 0 Then
-            cboAuthorityName.SelectedValue = m_AuthID
-            cboAuthorityName.Select()
-        End If
+            if (m_Description != null)
+            {
+                txtDescription.Text = m_Description;
+            }
 
-    End Sub
+            if (m_Example != null)
+            {
+                txtTypeExample.Text = m_Example;
+            }
 
-    Private Sub LoadAuthoritiesList()
+            LoadAuthoritiesList();
 
-        RemoveHandler cboAuthorityName.SelectedIndexChanged, AddressOf cboAuthorityName_SelectedIndexChanged
+            if (m_AuthID > 0)
+            {
+                cboAuthorityName.SelectedValue = m_AuthID;
+                cboAuthorityName.Select();
+            }
+        }
 
-        Dim dr As DataRow = m_AuthoritiesTable.NewRow
+        private void LoadAuthoritiesList()
+        {
+            cboAuthorityName.SelectedIndexChanged -= cboAuthorityName_SelectedIndexChanged;
 
-        With dr
-            .Item("ID") = -2
-            .Item("Display_Name") = "Add New Naming Authority..."
-            .Item("Details") = "Brings up a dialog box to allow adding a naming authority to the list"
-        End With
+            var dr = m_AuthoritiesTable.NewRow();
 
-        Dim pk1(0) As DataColumn
-        pk1(0) = m_AuthoritiesTable.Columns("ID")
-        m_AuthoritiesTable.PrimaryKey = pk1
+            dr["ID"] = -2;
+            dr["Display_Name"] = "Add New Naming Authority...";
+            dr["Details"] = "Brings up a dialog box to allow adding a naming authority to the list";
 
-        If m_AuthoritiesTable.Rows.Contains(dr.Item("ID")) Then
-            Dim rdr As DataRow = m_AuthoritiesTable.Rows.Find(dr.Item("ID"))
-            m_AuthoritiesTable.Rows.Remove(rdr)
-        End If
+            var pk1 = new DataColumn[1];
+            pk1[0] = m_AuthoritiesTable.Columns["ID"];
+            m_AuthoritiesTable.PrimaryKey = pk1;
 
-        m_AuthoritiesTable.Rows.Add(dr)
+            if (m_AuthoritiesTable.Rows.Contains(dr["ID"]))
+            {
+                var rdr = m_AuthoritiesTable.Rows.Find(dr["ID"]);
+                m_AuthoritiesTable.Rows.Remove(rdr);
+            }
 
-        With cboAuthorityName
-            .DataSource = m_AuthoritiesTable
-            .DisplayMember = "Display_Name"
-            .ValueMember = "ID"
-        End With
+            m_AuthoritiesTable.Rows.Add(dr);
 
-        AddHandler cboAuthorityName.SelectedIndexChanged, AddressOf cboAuthorityName_SelectedIndexChanged
-    End Sub
+            cboAuthorityName.DataSource = m_AuthoritiesTable;
+            cboAuthorityName.DisplayMember = "Display_Name";
+            cboAuthorityName.ValueMember = "ID";
 
-    Private Sub cmdOK_Click(sender As Object, e As EventArgs) Handles cmdOK.Click
-        m_TypeName = txtAnnTypeName.Text
-        m_Description = txtDescription.Text
-        m_Example = txtTypeExample.Text
-        m_AuthID = CInt(cboAuthorityName.SelectedValue)
+            cboAuthorityName.SelectedIndexChanged += cboAuthorityName_SelectedIndexChanged;
+        }
 
-        DialogResult = DialogResult.OK
-        Close()
-    End Sub
+        private void cmdOK_Click(object sender, EventArgs e)
+        {
+            m_TypeName = txtAnnTypeName.Text;
+            m_Description = txtDescription.Text;
+            m_Example = txtTypeExample.Text;
+            m_AuthID = Conversions.ToInteger(cboAuthorityName.SelectedValue);
 
-    Private Sub cmdCancel_Click(sender As Object, e As EventArgs) Handles cmdCancel.Click
-        DialogResult = DialogResult.Cancel
-        Close()
-    End Sub
+            DialogResult = DialogResult.OK;
+            Close();
+        }
 
-    'Private Sub txtAuthWeb_Validating(sender As System.Object, e As System.ComponentModel.CancelEventArgs) Handles txtTypeExample.Validating
-    '    Dim txt As TextBox = DirectCast(sender, TextBox)
-    '    Dim tmpAddress As String = ValidateWebAddressFormat(txt.Text)
-    '    txt.Text = tmpAddress
-    'End Sub
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
 
-    Private Sub cboAuthorityName_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboAuthorityName.SelectedIndexChanged
-        Dim cbo = DirectCast(sender, ComboBox)
+        //private void txtAuthWeb_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        //{
+        //    TextBox txt = (TextBox)sender;
+        //    var tmpAddress = ValidateWebAddressFormat(txt.Text;
+        //    txt.Text = tmpAddress;
+        //}
 
-        If cbo.SelectedValue.GetType Is Type.GetType("System.Int32") Then
-            m_AuthID = CInt(cbo.SelectedValue)
-        Else
-            'm_SelectedAuthorityID = 0
-        End If
+        private void cboAuthorityName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBox cbo = (ComboBox)sender;
 
-        Dim tmpAuthID As Integer
+            if (ReferenceEquals(cbo.SelectedValue.GetType(), Type.GetType("System.Int32")))
+            {
+                m_AuthID = Conversions.ToInteger(cbo.SelectedValue);
+            }
+            else
+            {
+                // m_SelectedAuthorityID = 0
+            }
 
+            int tmpAuthID;
 
-        If m_AuthID = -2 Then
-            'Bring up addition dialog
-            Dim AuthAdd As New AddNamingAuthority(m_PSConnectionString)
-            AuthAdd.FormLocation = New Point(Me.Left + 20, Me.Top + 30)
-            tmpAuthID = AuthAdd.AddNamingAuthority
+            if (m_AuthID == -2)
+            {
+                // Bring up addition dialog
+                var AuthAdd = new AddNamingAuthorityType(m_PSConnectionString);
+                AuthAdd.FormLocation = new Point(Left + 20, Top + 30);
+                tmpAuthID = AuthAdd.AddNamingAuthority();
 
-            If Not AuthAdd.EntryExists And tmpAuthID > 0 Then
+                if (!AuthAdd.EntryExists & tmpAuthID > 0)
+                {
+                    DataRow dr;
+                    dr = m_AuthoritiesTable.NewRow();
 
-                Dim dr As DataRow
-                dr = m_AuthoritiesTable.NewRow
+                    dr["ID"] = tmpAuthID;
+                    dr["Display_Name"] = AuthAdd.ShortName;
+                    dr["Details"] = AuthAdd.FullName;
 
-                With dr
-                    .Item("ID") = tmpAuthID
-                    .Item("Display_Name") = AuthAdd.ShortName
-                    .Item("Details") = AuthAdd.FullName
-                End With
+                    m_AuthoritiesTable.Rows.Add(dr);
+                    m_AuthoritiesTable.AcceptChanges();
+                    LoadAuthoritiesList();
+                    m_AuthID = tmpAuthID;
+                }
 
-                m_AuthoritiesTable.Rows.Add(dr)
-                m_AuthoritiesTable.AcceptChanges()
-                LoadAuthoritiesList()
-                m_AuthID = tmpAuthID
-            End If
-            cboAuthorityName.SelectedValue = tmpAuthID
+                cboAuthorityName.SelectedValue = tmpAuthID;
+            }
 
-        End If
+            //if (lvwSelectedFiles.SelectedItems.Count > 0)
+            //{
+            //    foreach (ListViewItem li In lvwSelectedFiles.SelectedItems)
+            //    {
+            //        tmpUpInfo = (Protein_Uploader.PSUploadHandler.UploadInfo) m_SelectedFileList[li.SubItems[3].Text];
+            //        m_SelectedFileList[li.SubItems[3].Text] =
+            //            new Protein_Uploader.PSUploadHandler.UploadInfo(tmpUpInfo.FileInformation, m_SelectedOrganismID, tmpUpInfo.AuthorityID);
+            //        li.SubItems[2].Text = cbo.Text;
+            //    }
+            //}
 
-
-        'If lvwSelectedFiles.SelectedItems.Count > 0 Then
-        '    Dim li As ListViewItem
-        '    For Each li In lvwSelectedFiles.SelectedItems
-        '        tmpUpInfo = DirectCast(m_SelectedFileList.Item(li.SubItems(3).Text), Protein_Uploader.PSUploadHandler.UploadInfo)
-        '        m_SelectedFileList.Item(li.SubItems(3).Text) =
-        '            New Protein_Uploader.PSUploadHandler.UploadInfo(tmpUpInfo.FileInformation, m_SelectedOrganismID, tmpUpInfo.AuthorityID)
-        '        li.SubItems(2).Text = cbo.Text
-        '    Next
-        'End If
-
-    End Sub
-End Class
+        }
+    }
+}

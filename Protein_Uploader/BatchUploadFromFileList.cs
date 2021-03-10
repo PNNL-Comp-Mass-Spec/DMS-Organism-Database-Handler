@@ -1,220 +1,247 @@
-Imports System.Collections.Generic
-Imports System.IO
-Imports System.Windows.Forms
-Imports TableManipulationBase
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Windows.Forms;
+using Microsoft.VisualBasic.CompilerServices;
+using TableManipulationBase;
 
-Public Class BatchUploadFromFileList
+namespace Protein_Uploader
+{
+    public class BatchUploadFromFileList
+    {
+        protected readonly PSUploadHandler m_Uploader;
+        protected readonly DBTask m_DatabaseAccessor;
+        protected Dictionary<string, FileListInfo> m_CurrentFileList;
 
-    Protected ReadOnly m_Uploader As PSUploadHandler
-    Protected ReadOnly m_DatabaseAccessor As DBTask
-    Protected m_CurrentFileList As Dictionary(Of String, FileListInfo)
+        protected DataTable m_AuthorityTable;
+        protected DataTable m_AnnotationTypeTable;
+        protected DataTable m_OrganismTable;
 
-    Protected m_AuthorityTable As DataTable
-    Protected m_AnnotationTypeTable As DataTable
-    Protected m_OrganismTable As DataTable
+        protected frmBatchUploadFromFileList m_BatchForm;
 
-    Protected m_BatchForm As frmBatchUploadFromFileList
+        private const string DMS_Org_DB_Table_Name = "V_Legacy_Static_File_Locations";
+        private const string Protein_Collections_Table_Name = "T_Protein_Collections";
 
-    Const DMS_Org_DB_Table_Name As String = "V_Legacy_Static_File_Locations"
-    Const Protein_Collections_Table_Name As String = "T_Protein_Collections"
+        public BatchUploadFromFileList(string psConnectionString)
+        {
+            m_Uploader = new PSUploadHandler(psConnectionString);
+            m_Uploader.BatchProgress += OnTaskChange;
+            m_Uploader.LoadProgress += OnProgressUpdate;
+            m_Uploader.LoadStart += OnLoadStart;
+            m_Uploader.LoadEnd += OnLoadEnd;
+            m_Uploader.LoadStart += OnLoadStart;
 
-    Sub New(psConnectionString As String)
+            m_DatabaseAccessor = new DBTask(psConnectionString);
+        }
 
-        m_Uploader = New PSUploadHandler(psConnectionString)
-        AddHandler m_Uploader.BatchProgress, AddressOf OnTaskChange
-        AddHandler m_Uploader.LoadProgress, AddressOf OnProgressUpdate
-        AddHandler m_Uploader.LoadStart, AddressOf OnLoadStart
-        AddHandler m_Uploader.LoadEnd, AddressOf OnLoadEnd
-        AddHandler m_Uploader.LoadStart, AddressOf OnLoadStart
+        public event ProgressUpdateEventHandler ProgressUpdate;
 
-        m_DatabaseAccessor = New DBTask(psConnectionString)
-    End Sub
+        public delegate void ProgressUpdateEventHandler(double fractionDone);
 
-    Public Event ProgressUpdate(fractionDone As Double)
-    Public Event TaskChange(currentTaskTitle As String)
-    Public Event LoadStart(taskTitle As String)
-    Public Event LoadEnd()
+        public event TaskChangeEventHandler TaskChange;
 
-    Private Sub OnTaskChange(currentTaskTitle As String)
-        RaiseEvent TaskChange(currentTaskTitle)
-    End Sub
+        public delegate void TaskChangeEventHandler(string currentTaskTitle);
 
-    Private Sub OnProgressUpdate(fractionDone As Double)
-        RaiseEvent ProgressUpdate(fractionDone)
-    End Sub
+        public event LoadStartEventHandler LoadStart;
 
-    Private Sub OnLoadStart(taskTitle As String)
-        RaiseEvent LoadStart(taskTitle)
-    End Sub
+        public delegate void LoadStartEventHandler(string taskTitle);
 
-    Private Sub OnLoadEnd()
-        RaiseEvent LoadEnd()
-    End Sub
+        public event LoadEndEventHandler LoadEnd;
 
-    Sub UploadBatch()
+        public delegate void LoadEndEventHandler();
 
-        Dim uiList = New List(Of PSUploadHandler.UploadInfo)
-
-        m_AnnotationTypeTable = GetAnnotationTypeTable()
-        m_AuthorityTable = GetAuthorityTable()
-        m_OrganismTable = GetOrganismsTable()
-
-        m_BatchForm = New frmBatchUploadFromFileList(m_AuthorityTable, m_AnnotationTypeTable, m_OrganismTable)
-
-        m_CurrentFileList = GetDMSFileEntities()
-
-        m_BatchForm.FileCollection = m_CurrentFileList
-
-        Dim r As DialogResult
-
-        r = m_BatchForm.ShowDialog()
-
-        If r = DialogResult.OK Then
-            Dim fileCollection = m_BatchForm.SelectedFilesCollection
-
-            For Each fce In fileCollection.Values
-                Dim ui = TransformToUploadInfo(fce)
-                uiList.Add(ui)
-            Next
-
-            m_Uploader.BatchUpload(uiList)
-
-        End If
-
-    End Sub
-
-    Protected Function GetAuthorityTable() As DataTable
-        Const authSQL = "SELECT ID, Display_Name, Details FROM V_Authority_Picker"
-        Return m_DatabaseAccessor.GetTable(authSQL)
-    End Function
-
-    Protected Function GetAnnotationTypeTable() As DataTable
-        Const annoSQL = "SELECT ID, Display_Name, Details FROM V_Annotation_Type_Picker"
-        Return m_DatabaseAccessor.GetTable(annoSQL)
-    End Function
-
-    Protected Function GetOrganismsTable() As DataTable
-        Const orgSQL = "SELECT ID, Short_Name, Display_Name, Organism_Name FROM V_Organism_Picker"
-        Return m_DatabaseAccessor.GetTable(orgSQL)
-    End Function
-
-    Private Function TransformToUploadInfo(fli As FileListInfo) As PSUploadHandler.UploadInfo
-
-        Dim fi = New FileInfo(fli.FullFilePath)
-        Dim ui = New PSUploadHandler.UploadInfo(fi, fli.OrganismID, fli.AnnotationTypeID)
-
-        Return ui
-
-    End Function
-
-    Protected Function GetDMSFileEntities() As Dictionary(Of String, FileListInfo)
-        Dim fileList = New Dictionary(Of String, FileListInfo)(StringComparer.OrdinalIgnoreCase)
-
-        Dim collectionList = New SortedSet(Of String)(StringComparer.OrdinalIgnoreCase)
-
-        'Dim dr As DataRow
-
-        'Dim LoadedCollectionsSQL As String
-
-        'Dim tmpFileName As String
-        'Dim tmpOrganismName As String
-        'Dim tmpOrganismID As Integer
-        'Dim tmpFullPath As String
-        'Dim tmpAnnTypeID As Integer
-        'Dim tmpAuthTypeID As Integer
-
-        Dim loadedCollectionsSQL = "SELECT FileName, Full_Path, Organism_Name, Organism_ID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered"
-
-        Using fileTable As DataTable = m_DatabaseAccessor.GetTable(loadedCollectionsSQL)
-
-            If m_CurrentFileList Is Nothing Then
-                m_CurrentFileList = New Dictionary(Of String, FileListInfo)
-            Else
-                m_CurrentFileList.Clear()
-            End If
-
-            For Each dr As DataRow In fileTable.Rows
-                Dim fileName = dr.Item("FileName").ToString
-                Dim organismName = dr.Item("Organism_Name").ToString
-                Dim organismID = CInt(dr.Item("Organism_ID"))
-                Dim fullPath = dr.Item("Full_Path").ToString
-                Dim annotationTypeID = CInt(dr.Item("Annotation_Type_ID"))
-                Dim authorityTypeID = CInt(dr.Item("Authority_ID"))
-
-                Dim baseName = Path.GetFileNameWithoutExtension(fileName)
-
-                If Not fileList.ContainsKey(fileName) And Not collectionList.Contains(baseName) Then
-                    fileList.Add(fileName,
-                                 New FileListInfo(fileName, fullPath, organismName, organismID, annotationTypeID, authorityTypeID))
-                End If
-            Next
-
-            fileTable.Clear()
-        End Using
-
-        Return fileList
-
-    End Function
-
-    Protected Function UploadSelectedFiles(fileNameList As Dictionary(Of String, FileListInfo)) As Integer
-
-        Dim selectedFileList = New List(Of PSUploadHandler.UploadInfo)
-
-        For Each fli In fileNameList.Values
-            Dim upInfoContainer = New PSUploadHandler.UploadInfo(
-                New FileInfo(fli.FullFilePath), fli.OrganismID, fli.NamingAuthorityID)
-            selectedFileList.Add(upInfoContainer)
-        Next
-
-        m_Uploader.BatchUpload(selectedFileList)
-
-    End Function
-
-    Public Structure FileListInfo
-        Sub New(
-            FileName As String,
-            FullFilePath As String,
-            OrganismName As String,
-            OrganismID As Integer)
-
-            Me.FileName = FileName
-            Me.FullFilePath = FullFilePath
-            Me.OrganismName = OrganismName
-            Me.OrganismID = OrganismID
-
-        End Sub
-
-        Sub New(
-            FileName As String,
-            FullFilePath As String,
-            OrganismName As String,
-            OrganismID As Integer,
-            AnnotationTypeID As Integer,
-            NamingAuthorityID As Integer)
-
-            Me.FileName = FileName
-            Me.FullFilePath = FullFilePath
-            Me.OrganismName = OrganismName
-            Me.OrganismID = OrganismID
-            Me.AnnotationTypeID = AnnotationTypeID
-            Me.NamingAuthorityID = NamingAuthorityID
-
-        End Sub
-
-        Property FileName As String
-
-        Property FullFilePath As String
-
-        Property OrganismName As String
-
-        Property OrganismID As Integer
-
-        Property NamingAuthorityID As Integer
-
-        Property AnnotationTypeID As Integer
-
-        Public Property AnnotationType As String
-
-    End Structure
-
-End Class
+        private void OnTaskChange(string currentTaskTitle)
+        {
+            TaskChange?.Invoke(currentTaskTitle);
+        }
+
+        private void OnProgressUpdate(double fractionDone)
+        {
+            ProgressUpdate?.Invoke(fractionDone);
+        }
+
+        private void OnLoadStart(string taskTitle)
+        {
+            LoadStart?.Invoke(taskTitle);
+        }
+
+        private void OnLoadEnd()
+        {
+            LoadEnd?.Invoke();
+        }
+
+        public void UploadBatch()
+        {
+            var uiList = new List<PSUploadHandler.UploadInfo>();
+
+            m_AnnotationTypeTable = GetAnnotationTypeTable();
+            m_AuthorityTable = GetAuthorityTable();
+            m_OrganismTable = GetOrganismsTable();
+
+            m_BatchForm = new frmBatchUploadFromFileList(m_AuthorityTable, m_AnnotationTypeTable, m_OrganismTable);
+
+            m_CurrentFileList = GetDMSFileEntities();
+
+            m_BatchForm.FileCollection = m_CurrentFileList;
+
+            DialogResult r;
+
+            r = m_BatchForm.ShowDialog();
+
+            if (r == DialogResult.OK)
+            {
+                var fileCollection = m_BatchForm.SelectedFilesCollection;
+
+                foreach (var fce in fileCollection.Values)
+                {
+                    var ui = TransformToUploadInfo(fce);
+                    uiList.Add(ui);
+                }
+
+                m_Uploader.BatchUpload(uiList);
+            }
+        }
+
+        protected DataTable GetAuthorityTable()
+        {
+            const string authSQL = "SELECT ID, Display_Name, Details FROM V_Authority_Picker";
+            return m_DatabaseAccessor.GetTable(authSQL);
+        }
+
+        protected DataTable GetAnnotationTypeTable()
+        {
+            const string annoSQL = "SELECT ID, Display_Name, Details FROM V_Annotation_Type_Picker";
+            return m_DatabaseAccessor.GetTable(annoSQL);
+        }
+
+        protected DataTable GetOrganismsTable()
+        {
+            const string orgSQL = "SELECT ID, Short_Name, Display_Name, Organism_Name FROM V_Organism_Picker";
+            return m_DatabaseAccessor.GetTable(orgSQL);
+        }
+
+        private PSUploadHandler.UploadInfo TransformToUploadInfo(FileListInfo fli)
+        {
+            var fi = new FileInfo(fli.FullFilePath);
+            var ui = new PSUploadHandler.UploadInfo(fi, fli.OrganismID, fli.AnnotationTypeID);
+
+            return ui;
+        }
+
+        protected Dictionary<string, FileListInfo> GetDMSFileEntities()
+        {
+            var fileList = new Dictionary<string, FileListInfo>(StringComparer.OrdinalIgnoreCase);
+            var collectionList = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            // DataRow dr;
+
+            // string LoadedCollectionsSQL;
+
+            // string tmpFileName;
+            // string tmpOrganismName;
+            // int tmpOrganismID;
+            // string tmpFullPath;
+            // int tmpAnnTypeID;
+            // int tmpAuthTypeID;
+
+            string loadedCollectionsSQL = "SELECT FileName, Full_Path, Organism_Name, Organism_ID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered";
+
+            using (var fileTable = m_DatabaseAccessor.GetTable(loadedCollectionsSQL))
+            {
+                if (m_CurrentFileList == null)
+                {
+                    m_CurrentFileList = new Dictionary<string, FileListInfo>();
+                }
+                else
+                {
+                    m_CurrentFileList.Clear();
+                }
+
+                foreach (DataRow dr in fileTable.Rows)
+                {
+                    string fileName = dr["FileName"].ToString();
+                    string organismName = dr["Organism_Name"].ToString();
+                    int organismID = Conversions.ToInteger(dr["Organism_ID"]);
+                    string fullPath = dr["Full_Path"].ToString();
+                    int annotationTypeID = Conversions.ToInteger(dr["Annotation_Type_ID"]);
+                    int authorityTypeID = Conversions.ToInteger(dr["Authority_ID"]);
+
+                    string baseName = Path.GetFileNameWithoutExtension(fileName);
+
+                    if (!fileList.ContainsKey(fileName) & !collectionList.Contains(baseName))
+                    {
+                        fileList.Add(fileName,
+                                     new FileListInfo(fileName, fullPath, organismName, organismID, annotationTypeID, authorityTypeID));
+                    }
+                }
+
+                fileTable.Clear();
+            }
+
+            return fileList;
+        }
+
+        protected int UploadSelectedFiles(Dictionary<string, FileListInfo> fileNameList)
+        {
+            var selectedFileList = new List<PSUploadHandler.UploadInfo>();
+
+            foreach (var fli in fileNameList.Values)
+            {
+                var upInfoContainer = new PSUploadHandler.UploadInfo(
+                    new FileInfo(fli.FullFilePath), fli.OrganismID, fli.NamingAuthorityID);
+                selectedFileList.Add(upInfoContainer);
+            }
+
+            m_Uploader.BatchUpload(selectedFileList);
+            return default;
+        }
+
+        public class FileListInfo
+        {
+            public FileListInfo(
+                string FileName,
+                string FullFilePath,
+                string OrganismName,
+                int OrganismID)
+            {
+                this.FileName = FileName;
+                this.FullFilePath = FullFilePath;
+                this.OrganismName = OrganismName;
+                this.OrganismID = OrganismID;
+                AnnotationType = "";
+            }
+
+            public FileListInfo(
+                string FileName,
+                string FullFilePath,
+                string OrganismName,
+                int OrganismID,
+                int AnnotationTypeID,
+                int NamingAuthorityID)
+            {
+                this.FileName = FileName;
+                this.FullFilePath = FullFilePath;
+                this.OrganismName = OrganismName;
+                this.OrganismID = OrganismID;
+                this.AnnotationTypeID = AnnotationTypeID;
+                this.NamingAuthorityID = NamingAuthorityID;
+                AnnotationType = "";
+            }
+
+            public string FileName { get; set; }
+
+            public string FullFilePath { get; set; }
+
+            public string OrganismName { get; set; }
+
+            public int OrganismID { get; set; }
+
+            public int NamingAuthorityID { get; set; }
+
+            public int AnnotationTypeID { get; set; }
+
+            public string AnnotationType { get; set; }
+        }
+    }
+}

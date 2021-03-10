@@ -1,85 +1,102 @@
-Imports System.Collections.Generic
+﻿using System.Collections.Generic;
 
-Friend Class AnnotationGroup
-    Private m_AnnotationData As Dictionary(Of String, SortedSet(Of String))       'key=PrimaryReferenceName, value=SortedSet of xrefs
-    Private m_Delimiter As String
+namespace ExtractAnnotationFromDescription
+{
+    internal class AnnotationGroup
+    {
+        private Dictionary<string, SortedSet<string>> m_AnnotationData;       // key=PrimaryReferenceName, value=SortedSet of xrefs
+        private string m_Delimiter;
 
-    Sub New(GroupName As String)
-        Me.GroupName = GroupName
-    End Sub
+        public AnnotationGroup(string GroupName)
+        {
+            this.GroupName = GroupName;
+        }
 
-    Public Property GroupName As String
+        public string GroupName { get; set; }
 
-    Public Property AnnotationAuthorityID As Integer
+        public int AnnotationAuthorityID { get; set; }
 
-    Property XRefDelimiter As String
-        Get
-            Return Me.m_Delimiter
-        End Get
-        Set
-            Me.m_Delimiter = value
-        End Set
-    End Property
+        public string XRefDelimiter
+        {
+            get
+            {
+                return m_Delimiter;
+            }
 
-    Public Property ImportThisGroup As Boolean
+            set
+            {
+                m_Delimiter = value;
+            }
+        }
 
-    Sub AddAnnotation(PrimaryReferenceName As String, XRefName As String)
+        public bool ImportThisGroup { get; set; }
 
-        Dim xrefList As SortedSet(Of String)
+        public void AddAnnotation(string PrimaryReferenceName, string XRefName)
+        {
+            SortedSet<string> xrefList;
 
-        If Me.m_AnnotationData Is Nothing Then
-            Me.m_AnnotationData = New Dictionary(Of String, SortedSet(Of String))
-        End If
+            if (m_AnnotationData == null)
+            {
+                m_AnnotationData = new Dictionary<string, SortedSet<string>>();
+            }
 
-        If Not Me.m_AnnotationData.ContainsKey(PrimaryReferenceName) Then
-            xrefList = New SortedSet(Of String)
-            xrefList.Add(XRefName)
-        Else
-            xrefList = m_AnnotationData.Item(PrimaryReferenceName.ToString)
-            If Not xrefList.Contains(XRefName) Then
-                xrefList.Add(XRefName)
-                Me.m_AnnotationData.Item(PrimaryReferenceName.ToString) = xrefList
-            End If
-        End If
-    End Sub
+            if (!m_AnnotationData.ContainsKey(PrimaryReferenceName))
+            {
+                xrefList = new SortedSet<string>();
+                xrefList.Add(XRefName);
+            }
+            else
+            {
+                xrefList = m_AnnotationData[PrimaryReferenceName.ToString()];
+                if (!xrefList.Contains(XRefName))
+                {
+                    xrefList.Add(XRefName);
+                    m_AnnotationData[PrimaryReferenceName.ToString()] = xrefList;
+                }
+            }
+        }
 
-    Function GetAllXRefs() As Dictionary(Of String, SortedSet(Of String))
-        Return Me.m_AnnotationData
-    End Function
+        public Dictionary<string, SortedSet<string>> GetAllXRefs()
+        {
+            return m_AnnotationData;
+        }
 
-    Function GetAllPrimaryReferences() As SortedSet(Of String)
-        Dim s As String
-        Dim annotationKeys As New SortedSet(Of String)
-        For Each s In Me.m_AnnotationData.Keys
-            annotationKeys.Add(s)
-        Next
+        public SortedSet<string> GetAllPrimaryReferences()
+        {
+            var annotationKeys = new SortedSet<string>();
+            foreach (var s in m_AnnotationData.Keys)
+                annotationKeys.Add(s);
 
-        Return annotationKeys
-    End Function
+            return annotationKeys;
+        }
 
-    Function GetXRefs(PrimaryReferenceName As String) As SortedSet(Of String)
-        Dim xrefList = Me.m_AnnotationData.Item(PrimaryReferenceName)
+        public SortedSet<string> GetXRefs(string PrimaryReferenceName)
+        {
+            var xrefList = m_AnnotationData[PrimaryReferenceName];
 
-        If Me.m_Delimiter.Length > 0 Then
-            Dim addnXRefs() As String
-            Dim primeXRef As String
-            Dim XRefCount As Integer
-            Dim newXReflist As New SortedSet(Of String)
+            if (m_Delimiter.Length > 0)
+            {
+                string[] addnXRefs;
+                int XRefCount;
+                var newXReflist = new SortedSet<string>();
 
-            For Each primeXRef In xrefList
-                addnXRefs = primeXRef.Split(Me.m_Delimiter.ToCharArray)
-                For XRefCount = 0 To addnXRefs.Length - 1
-                    Dim newItem = addnXRefs(XRefCount).ToString
-                    If Not newXReflist.Contains(newItem) Then
-                        newXReflist.Add(newItem)
-                    End If
-                Next
-            Next
+                foreach (var primeXRef in xrefList)
+                {
+                    addnXRefs = primeXRef.Split(m_Delimiter.ToCharArray());
+                    for (XRefCount = 0; XRefCount < addnXRefs.Length; XRefCount++)
+                    {
+                        string newItem = addnXRefs[XRefCount].ToString();
+                        if (!newXReflist.Contains(newItem))
+                        {
+                            newXReflist.Add(newItem);
+                        }
+                    }
+                }
 
-            xrefList = newXReflist
+                xrefList = newXReflist;
+            }
 
-        End If
-
-        Return xrefList
-    End Function
-End Class
+            return xrefList;
+        }
+    }
+}

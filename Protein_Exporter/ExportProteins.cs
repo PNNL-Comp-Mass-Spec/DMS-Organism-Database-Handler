@@ -1,150 +1,164 @@
-Option Strict On
+﻿using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using Protein_Storage;
 
-Imports System.Collections.Generic
-Imports System.IO
-Imports Protein_Storage
+namespace Protein_Exporter
+{
+    public abstract class ExportProteins
+    {
+        protected GetFASTAFromDMSForward m_ExportComponent;
 
-Public MustInherit Class ExportProteins
+        public ExportProteins(GetFASTAFromDMSForward exportComponent)
+        {
+            m_ExportComponent = exportComponent;
+        }
 
-    Protected m_ExportComponent As GetFASTAFromDMSForward
+        public event ExportStartEventHandler ExportStart;
 
-    Public Sub New(exportComponent As GetFASTAFromDMSForward)
-        m_ExportComponent = exportComponent
-    End Sub
+        public delegate void ExportStartEventHandler(string taskTitle);
 
-    Public Event ExportStart(taskTitle As String)
-    Public Event ExportProgress(statusMsg As String, fractionDone As Double)
-    Public Event ExportEnd()
+        public event ExportProgressEventHandler ExportProgress;
 
-    ''' <summary>
-    ''' Export the proteins to the given file
-    ''' </summary>
-    ''' <param name="proteins"></param>
-    ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
-    ''' <param name="selectedProteinList"></param>
-    ''' <returns></returns>
-    Protected Function Export(
-      proteins As ProteinStorage,
-      ByRef destinationPath As String,
-      selectedProteinList As List(Of String)) As String
+        public delegate void ExportProgressEventHandler(string statusMsg, double fractionDone);
 
-        Dim tmpProteinsList As ProteinStorage
+        public event ExportEndEventHandler ExportEnd;
 
-        tmpProteinsList = New ProteinStorage(Path.GetFileNameWithoutExtension(destinationPath))
+        public delegate void ExportEndEventHandler();
 
-        For Each reference In selectedProteinList
-            tmpProteinsList.AddProtein(proteins.GetProtein(reference))
-        Next
+        /// <summary>
+        /// Export the proteins to the given file
+        /// </summary>
+        /// <param name="proteins"></param>
+        /// <param name="destinationPath">Destination file path; will get updated with the final path</param>
+        /// <param name="selectedProteinList"></param>
+        /// <returns></returns>
+        protected string Export(
+            ProteinStorage proteins,
+            ref string destinationPath,
+            List<string> selectedProteinList)
+        {
+            ProteinStorage tmpProteinsList;
 
-        Return Export(tmpProteinsList, destinationPath)
+            tmpProteinsList = new ProteinStorage(Path.GetFileNameWithoutExtension(destinationPath));
 
-    End Function
+            foreach (var reference in selectedProteinList)
+                tmpProteinsList.AddProtein(proteins.GetProtein(reference));
 
-    ''' <summary>
-    ''' Export the proteins to the given file
-    ''' </summary>
-    ''' <param name="proteins"></param>
-    ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
-    ''' <returns></returns>
-    Public MustOverride Function Export(
-      proteins As ProteinStorage,
-      ByRef destinationPath As String) As String
+            return Export(tmpProteinsList, ref destinationPath);
+        }
 
-    ''' <summary>
-    ''' Export the proteins to the given file
-    ''' </summary>
-    ''' <param name="proteinTables"></param>
-    ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
-    ''' <returns></returns>
-    Public MustOverride Function Export(
-      proteinTables As DataSet,
-      ByRef destinationPath As String) As String
+        /// <summary>
+        /// Export the proteins to the given file
+        /// </summary>
+        /// <param name="proteins"></param>
+        /// <param name="destinationPath">Destination file path; will get updated with the final path</param>
+        /// <returns></returns>
+        public abstract string Export(
+            ProteinStorage proteins,
+            ref string destinationPath);
 
-    ''' <summary>
-    ''' Export the proteins to the given file
-    ''' </summary>
-    ''' <param name="proteinTable"></param>
-    ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
-    ''' <returns></returns>
-    Public MustOverride Function Export(
-      proteinTable As DataTable,
-      ByRef destinationPath As String) As String
+        /// <summary>
+        /// Export the proteins to the given file
+        /// </summary>
+        /// <param name="proteinTables"></param>
+        /// <param name="destinationPath">Destination file path; will get updated with the final path</param>
+        /// <returns></returns>
+        public abstract string Export(
+            DataSet proteinTables,
+            ref string destinationPath);
 
-    Protected Sub OnExportStart(taskTitle As String)
-        RaiseEvent ExportStart(taskTitle)
-    End Sub
+        /// <summary>
+        /// Export the proteins to the given file
+        /// </summary>
+        /// <param name="proteinTable"></param>
+        /// <param name="destinationPath">Destination file path; will get updated with the final path</param>
+        /// <returns></returns>
+        public abstract string Export(
+            DataTable proteinTable,
+            ref string destinationPath);
 
-    Protected Sub OnProgressUpdate(statusMsg As String, fractionDone As Double)
-        RaiseEvent ExportProgress(statusMsg, fractionDone)
-    End Sub
+        protected void OnExportStart(string taskTitle)
+        {
+            ExportStart?.Invoke(taskTitle);
+        }
 
-    Protected Sub OnExportEnd()
-        RaiseEvent ExportEnd()
-    End Sub
+        protected void OnProgressUpdate(string statusMsg, double fractionDone)
+        {
+            ExportProgress?.Invoke(statusMsg, fractionDone);
+        }
 
-    ' Unused
-    'Public Function GetHashCRC32(fullFilePath As String) As String
-    '    Return GetFileHash(fullFilePath)
-    'End Function
+        protected void OnExportEnd()
+        {
+            ExportEnd?.Invoke();
+        }
 
-    ' Unused
-    'Public Function GetHashMD5(fullFilePath As String) As String
-    '    Return GetFileHashMD5(fullFilePath)
-    'End Function
+        // Unused
+        // public string GetHashCRC32(string fullFilePath)
+        // {
+        //     return GetFileHash(fullFilePath);
+        // }
 
-    ''' <summary>
-    ''' Compute the CRC32 hash for the file
-    ''' </summary>
-    ''' <param name="fullFilePath"></param>
-    ''' <returns>File hash</returns>
-    Protected Function GetFileHash(fullFilePath As String) As String
-        Return GenerateFileAuthenticationHash(fullFilePath)
-    End Function
+        // Unused
+        // public string GetHashMD5(string fullFilePath)
+        // {
+        //     return GetFileHashMD5(fullFilePath);
+        // }
 
-    ''' <summary>
-    ''' Compute the CRC32 hash for the file
-    ''' </summary>
-    ''' <param name="fullFilePath"></param>
-    ''' <returns>File hash</returns>
-    Public Function GenerateFileAuthenticationHash(fullFilePath As String) As String
+        /// <summary>
+        /// Compute the CRC32 hash for the file
+        /// </summary>
+        /// <param name="fullFilePath"></param>
+        /// <returns>File hash</returns>
+        protected string GetFileHash(string fullFilePath)
+        {
+            return GenerateFileAuthenticationHash(fullFilePath);
+        }
 
-        Dim fi As New FileInfo(fullFilePath)
+        /// <summary>
+        /// Compute the CRC32 hash for the file
+        /// </summary>
+        /// <param name="fullFilePath"></param>
+        /// <returns>File hash</returns>
+        public string GenerateFileAuthenticationHash(string fullFilePath)
+        {
+            var fi = new FileInfo(fullFilePath);
 
-        If Not fi.Exists Then Return String.Empty
+            if (!fi.Exists)
+                return string.Empty;
 
-        Using f = fi.OpenRead()
+            using (var f = fi.OpenRead())
+            {
+                uint crc = PRISM.Crc32.Crc(f);
 
-            Dim crc = PRISM.Crc32.Crc(f)
+                string crcString = string.Format("{0:X8}", crc);
 
-            Dim crcString As String = String.Format("{0:X8}", crc)
+                return crcString;
+            }
+        }
 
-            Return crcString
-
-        End Using
-
-    End Function
-
-    '' <summary>
-    '' Compute the MD5 hash for the file
-    '' </summary>
-    '' <param name="fullFilePath"></param>
-    '' <returns>File hash</returns>
-    'Protected Function GetFileHashMD5(fullFilePath As String) As String
-
-    '    Dim md5Gen = New MD5CryptoServiceProvider
-
-    '    Dim fi As New FileInfo(fullFilePath)
-
-    '    If Not fi.Exists Then Return String.Empty
-
-    '    Using f = fi.OpenRead()
-
-    '        Dim tmpHash = md5Gen.ComputeHash(f)
-    '        Dim md5String As String = RijndaelEncryptionHandler.ToHexString(tmpHash)
-    '        Return md5String
-
-    '    End Using
-
-    'End Function
-
-End Class
+        // /// <summary>
+        // /// Compute the MD5 hash for the file
+        // /// </summary>
+        // /// <param name="fullFilePath"></param>
+        // /// <returns>File hash</returns>
+        // protected string GetFileHashMD5(string fullFilePath)
+        // {
+        //     var md5Gen = new MD5CryptoServiceProvider();
+        //
+        //     var fi = new FileInfo(fullFilePath);
+        //
+        //     if (!fi.Exists)
+        //     {
+        //         return string.Empty;
+        //     }
+        //
+        //     using (var f = fi.OpenRead())
+        //     {
+        //         var tmpHash = md5Gen.ComputeHash(f);
+        //         string md5String = RijndaelEncryptionHandler.ToHexString(tmpHash);
+        //         return md5String;
+        //     }
+        // }
+    }
+}

@@ -1,109 +1,129 @@
-Imports Protein_Importer
+﻿using System.Data;
+using System.Drawing;
+using System.Windows.Forms;
+using Protein_Importer;
 
-Public Class AddNamingAuthority
+namespace AppUI_OrfDBHandler
+{
+    public class AddNamingAuthorityType
+    {
+        protected readonly string m_ConnectionString;
+        protected AddUpdateEntries m_SPRunner;
 
-    Protected ReadOnly m_ConnectionString As String
-    Protected m_SPRunner As AddUpdateEntries
+        protected string m_shortName;
+        protected string m_fullName;
+        protected string m_webAddress;
+        protected bool m_EntryExists = false;
+        protected ImportHandler m_Importer;
+        protected readonly DataTable m_AuthorityTable;
+        protected Point m_FormLocation;
 
-    Protected m_shortName As String
-    Protected m_fullName As String
-    Protected m_webAddress As String
-    Protected m_EntryExists As Boolean = False
-    Protected m_Importer As ImportHandler
-    Protected ReadOnly m_AuthorityTable As DataTable
-    Protected m_FormLocation As Point
+        public string ShortName
+        {
+            get
+            {
+                return m_shortName;
+            }
+        }
 
-    ReadOnly Property ShortName As String
-        Get
-            Return m_shortName
-        End Get
-    End Property
+        public string FullName
+        {
+            get
+            {
+                return m_fullName;
+            }
+        }
 
-    ReadOnly Property FullName As String
-        Get
-            Return m_fullName
-        End Get
-    End Property
+        public string WebAddress
+        {
+            get
+            {
+                return m_webAddress;
+            }
+        }
 
-    ReadOnly Property WebAddress As String
-        Get
-            Return m_webAddress
-        End Get
-    End Property
+        public bool EntryExists
+        {
+            get
+            {
+                return m_EntryExists;
+            }
+        }
 
-    ReadOnly Property EntryExists As Boolean
-        Get
-            Return m_EntryExists
-        End Get
-    End Property
+        public DataTable AuthoritiesTable
+        {
+            get
+            {
+                return m_AuthorityTable;
+            }
+        }
 
-    ReadOnly Property AuthoritiesTable As DataTable
-        Get
-            Return m_AuthorityTable
-        End Get
-    End Property
+        public Point FormLocation
+        {
+            set
+            {
+                m_FormLocation = value;
+            }
+        }
 
-    WriteOnly Property FormLocation As Point
-        Set
-            m_FormLocation = Value
-        End Set
-    End Property
+        public AddNamingAuthorityType(string psConnectionString)
+        {
+            m_ConnectionString = psConnectionString;
+            m_AuthorityTable = GetAuthoritiesList();
+        }
 
+        public int AddNamingAuthority()
+        {
+            var frmAuth = new frmAddNamingAuthority();
+            frmAuth.DesktopLocation = m_FormLocation;
+            int authID;
+            if (m_SPRunner == null)
+            {
+                m_SPRunner = new AddUpdateEntries(m_ConnectionString);
+            }
 
-    Sub New(psConnectionString As String)
-        m_ConnectionString = psConnectionString
-        m_AuthorityTable = GetAuthoritiesList()
-    End Sub
+            var r = frmAuth.ShowDialog();
 
+            if (r == DialogResult.OK)
+            {
+                m_shortName = frmAuth.ShortName;
+                m_fullName = frmAuth.FullName;
+                m_webAddress = frmAuth.WebAddress;
+                authID = m_SPRunner.AddNamingAuthority(m_shortName, m_fullName, m_webAddress);
+                if (authID < 0)
+                {
+                    MessageBox.Show(
+                        "An entry for '" + m_shortName + "' already exists in the Authorities table",
+                        "Entry already exists!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2);
+                    m_EntryExists = true;
+                    authID = -authID;
+                }
+                else
+                {
+                    m_EntryExists = false;
+                }
+            }
+            else
+            {
+                authID = -1;
+            }
 
-    Function AddNamingAuthority() As Integer
+            m_SPRunner = null;
 
-        Dim frmAuth As New frmAddNamingAuthority
-        frmAuth.DesktopLocation = m_FormLocation
-        Dim authID As Integer
-        If m_SPRunner Is Nothing Then
-            m_SPRunner = New AddUpdateEntries(m_ConnectionString)
-        End If
+            return authID;
+        }
 
-        Dim r As DialogResult = frmAuth.ShowDialog
+        private DataTable GetAuthoritiesList()
+        {
+            if (m_Importer == null)
+            {
+                m_Importer = new ImportHandler(m_ConnectionString);
+            }
 
+            DataTable tmpAuthTable;
+            tmpAuthTable = m_Importer.LoadAuthorities();
 
-        If r = DialogResult.OK Then
-            m_shortName = frmAuth.ShortName
-            m_fullName = frmAuth.FullName
-            m_webAddress = frmAuth.WebAddress
-
-            authID = m_SPRunner.AddNamingAuthority(m_shortName, m_fullName, m_webAddress)
-            If authID < 0 Then
-
-                MessageBox.Show(
-                    "An entry for '" + m_shortName + "' already exists in the Authorities table",
-                    "Entry already exists!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2)
-                m_EntryExists = True
-                authID = -authID
-            Else
-                m_EntryExists = False
-            End If
-        Else
-            authID = -1
-        End If
-
-        m_SPRunner = Nothing
-
-        Return authID
-
-    End Function
-
-    Private Function GetAuthoritiesList() As DataTable
-        If m_Importer Is Nothing Then
-            m_Importer = New ImportHandler(m_ConnectionString)
-        End If
-
-        Dim tmpAuthTable As DataTable
-        tmpAuthTable = m_Importer.LoadAuthorities()
-
-        Return tmpAuthTable
-
-    End Function
-
-End Class
+            return tmpAuthTable;
+        }
+    }
+}

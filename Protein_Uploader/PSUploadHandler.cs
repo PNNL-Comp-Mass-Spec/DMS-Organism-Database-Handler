@@ -1,453 +1,550 @@
-Imports System.Collections.Generic
-Imports System.IO
-Imports System.Windows.Forms
-Imports Protein_Exporter
-Imports Protein_Importer
-Imports Protein_Storage
-Imports TableManipulationBase
-Imports ValidateFastaFile
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Windows.Forms;
+using Microsoft.VisualBasic;
+using Protein_Exporter;
+using Protein_Importer;
+using Protein_Storage;
+using TableManipulationBase;
+using ValidateFastaFile;
 
-Public Class PSUploadHandler
+namespace Protein_Uploader
+{
+    public class PSUploadHandler
+    {
+        public enum eValidationOptionConstants : int
+        {
+            AllowAsterisksInResidues = 0,
+            AllowDashInResidues = 1,
+            AllowAllSymbolsInProteinNames = 2,
+        }
 
-    Public Enum eValidationOptionConstants As Integer
-        AllowAsterisksInResidues = 0
-        AllowDashInResidues = 1
-        AllowAllSymbolsInProteinNames = 2
-    End Enum
+        public class UploadInfo
+        {
+            public UploadInfo()
+            {
+                EncryptionPassphrase = string.Empty;
+                Description = string.Empty;
+                Source = string.Empty;
+            }
 
-    Public Structure UploadInfo
-        Public Sub New(inputFile As FileInfo, orgId As Integer, annotationType As Integer)
-            FileInformation = inputFile
-            OrganismID = orgId
-            AnnotationTypeID = annotationType
-            EncryptionPassphrase = String.Empty
-            Description = String.Empty
-            Source = String.Empty
-        End Sub
+            public UploadInfo(FileInfo inputFile, int orgId, int annotationType)
+            {
+                FileInformation = inputFile;
+                OrganismID = orgId;
+                AnnotationTypeID = annotationType;
+                EncryptionPassphrase = string.Empty;
+                Description = string.Empty;
+                Source = string.Empty;
+            }
 
-        Public FileInformation As FileInfo
-        Public OrganismID As Integer
-        Public Description As String
-        Public Source As String
-        Public AnnotationTypeID As Integer
-        Public ProteinCount As Integer
-        Public ErrorList As List(Of String)
-        Public ExportedProteinCount As Integer
+            public FileInfo FileInformation;
+            public int OrganismID;
+            public string Description;
+            public string Source;
+            public int AnnotationTypeID;
+            public int ProteinCount;
+            public List<string> ErrorList;
+            public int ExportedProteinCount;
 
-        ' <Obsolete("No longer supported")>
-        Public EncryptSequences As Boolean
+            // [Obsolete("No longer supported")]
+            public bool EncryptSequences;
 
-        ' <Obsolete("No longer supported")>
-        Public EncryptionPassphrase As String
-    End Structure
+            // [Obsolete("No longer supported")]
+            public string EncryptionPassphrase;
+        }
 
-    Protected m_NormalizedFASTAFilePath As String
+        protected string m_NormalizedFASTAFilePath;
 
-    Protected ReadOnly m_DatabaseAccessor As DBTask
-    Protected WithEvents m_Importer As ImportHandler
-    Protected WithEvents m_Upload As AddUpdateEntries
-    Protected WithEvents m_Export As GetFASTAFromDMS
-    Protected WithEvents m_Validator As clsCustomValidateFastaFiles
+        protected readonly DBTask m_DatabaseAccessor;
+        protected readonly ImportHandler m_Importer;
+        protected readonly AddUpdateEntries m_Upload;
+        protected readonly GetFASTAFromDMS m_Export;
+        protected readonly clsCustomValidateFastaFiles m_Validator;
 
-    Public Event LoadStart(taskTitle As String)
-    Public Event LoadProgress(fractionDone As Double)
-    Public Event LoadEnd()
-    Public Event BatchProgress(status As String)
-    Public Event ValidationProgress(taskTitle As String, fractionDone As Double)
-    Public Event ValidFASTAFileLoaded(fastaFilePath As String, uploadData As UploadInfo)
-    Public Event InvalidFASTAFile(fastaFilePath As String, errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
-    Public Event FASTAFileWarnings(fastaFilePath As String, warningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
-    Public Event FASTAValidationComplete(fastaFilePath As String, uploadInfo As UploadInfo)
-    Public Event WroteLineEndNormalizedFASTA(newFilePath As String)
+        public event LoadStartEventHandler LoadStart;
 
+        public delegate void LoadStartEventHandler(string taskTitle);
 
-    Protected mMaximumProteinNameLength As Integer = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
+        public event LoadProgressEventHandler LoadProgress;
 
-    Private WithEvents m_Encryptor As CollectionEncryptor
+        public delegate void LoadProgressEventHandler(double fractionDone);
 
-    ' Note: this array gets initialized with space for 10 items
-    ' If eValidationOptionConstants gets more than 10 entries, then this array will need to be expanded
-    Protected mValidationOptions() As Boolean
+        public event LoadEndEventHandler LoadEnd;
 
-    Public Property MaximumProteinNameLength As Integer
-        Get
-            Return mMaximumProteinNameLength
-        End Get
-        Set
-            mMaximumProteinNameLength = Value
-            m_Upload.MaximumProteinNameLength = Value
-        End Set
-    End Property
+        public delegate void LoadEndEventHandler();
 
-    Public Sub ResetErrorList()
-        m_Validator.ClearErrorList()
-    End Sub
+        public event BatchProgressEventHandler BatchProgress;
 
-    Private Sub OnLoadStart(taskTitle As String)
-        RaiseEvent LoadStart(taskTitle)
-    End Sub
+        public delegate void BatchProgressEventHandler(string status);
 
-    Private Sub OnProgressUpdate(fractionDone As Double)
-        RaiseEvent LoadProgress(fractionDone)
-    End Sub
+        public event ValidationProgressEventHandler ValidationProgress;
 
-    Private Sub OnLoadEnd()
-        RaiseEvent LoadEnd()
-    End Sub
+        public delegate void ValidationProgressEventHandler(string taskTitle, double fractionDone);
 
-    Private Sub OnBatchProgressUpdate(status As String)
-        RaiseEvent BatchProgress(status)
-    End Sub
+        public event ValidFASTAFileLoadedEventHandler ValidFASTAFileLoaded;
 
-    Private Sub OnFileValidationComplete(fastaFilePath As String, uploadInfo As UploadInfo)
-        RaiseEvent FASTAValidationComplete(fastaFilePath, uploadInfo)
-    End Sub
+        public delegate void ValidFASTAFileLoadedEventHandler(string fastaFilePath, UploadInfo uploadData);
 
-    Private Sub LoadStartHandler(taskTitle As String) Handles m_Upload.LoadStart, m_Importer.LoadStart
-        OnLoadStart(taskTitle)
-    End Sub
+        public event InvalidFASTAFileEventHandler InvalidFASTAFile;
 
-    Private Sub LoadProgressHandler(fractionDone As Double) Handles m_Upload.LoadProgress, m_Importer.LoadProgress
-        OnProgressUpdate(fractionDone)
-    End Sub
+        public delegate void InvalidFASTAFileEventHandler(string fastaFilePath, List<clsCustomValidateFastaFiles.udtErrorInfoExtended> errorCollection);
 
-    Private Sub LoadEndHandler() Handles m_Upload.LoadEnd, m_Importer.LoadEnd
-        OnLoadEnd()
-    End Sub
+        public event FASTAFileWarningsEventHandler FASTAFileWarnings;
 
-    Private Sub Task_LoadProgress(taskDescription As String, percentComplete As Single) Handles m_Validator.ProgressUpdate
-        RaiseEvent ValidationProgress(taskDescription, CDbl(percentComplete / 100))
-    End Sub
+        public delegate void FASTAFileWarningsEventHandler(string fastaFilePath, List<clsCustomValidateFastaFiles.udtErrorInfoExtended> warningCollection);
 
-    'Private Sub Encryption_Progress(taskMsg As String, fractionDone As Double)
-    '    RaiseEvent LoadStart()
-    'End Sub
+        public event FASTAValidationCompleteEventHandler FASTAValidationComplete;
 
-    Private Sub OnNormalizedFASTAGeneration(newFASTAFilePath As String) Handles m_Validator.WroteLineEndNormalizedFASTA
-        m_NormalizedFASTAFilePath = newFASTAFilePath
-        RaiseEvent WroteLineEndNormalizedFASTA(newFASTAFilePath)
-    End Sub
+        public delegate void FASTAValidationCompleteEventHandler(string fastaFilePath, UploadInfo uploadInfo);
 
-    Private Sub OnFASTAFileWarnings(fastaFilePath As String, warningCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
-        RaiseEvent FASTAFileWarnings(fastaFilePath, warningCollection)
-    End Sub
+        public event WroteLineEndNormalizedFASTAEventHandler WroteLineEndNormalizedFASTA;
 
-    Private Sub OnInvalidFASTAFile(fastaFilePath As String, errorCollection As List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended))
-        RaiseEvent InvalidFASTAFile(fastaFilePath, errorCollection)
-    End Sub
+        public delegate void WroteLineEndNormalizedFASTAEventHandler(string newFilePath);
 
-    Private Sub OnValidFASTAFileUpload(fastaFilePath As String, uploadData As UploadInfo)
-        RaiseEvent ValidFASTAFileLoaded(fastaFilePath, uploadData)
-    End Sub
+        protected int mMaximumProteinNameLength = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
 
-    Public Sub New(psConnectionString As String)
-        m_DatabaseAccessor = New DBTask(psConnectionString)
+        private CollectionEncryptor m_Encryptor;
 
-        ' Reserve space for tracking up to 10 validation updates (expand later if needed)
-        ReDim mValidationOptions(10)
+        // Note: this array gets initialized with space for 10 items
+        // If eValidationOptionConstants gets more than 10 entries, then this array will need to be expanded
+        protected bool[] mValidationOptions;
 
-        m_Upload = New AddUpdateEntries(psConnectionString)
+        public int MaximumProteinNameLength
+        {
+            get
+            {
+                return mMaximumProteinNameLength;
+            }
 
-        m_Export = New GetFASTAFromDMS(psConnectionString,
-                                          GetFASTAFromDMS.DatabaseFormatTypes.fasta,
-                                          GetFASTAFromDMS.SequenceTypes.forward)
+            set
+            {
+                mMaximumProteinNameLength = value;
+                m_Upload.MaximumProteinNameLength = value;
+            }
+        }
 
-        m_Validator = New clsCustomValidateFastaFiles()
+        public void ResetErrorList()
+        {
+            m_Validator.ClearErrorList();
+        }
 
-        m_Importer = New ImportHandler(m_DatabaseAccessor.ConnectionString)
-    End Sub
+        private void OnLoadStart(string taskTitle)
+        {
+            LoadStart?.Invoke(taskTitle);
+        }
 
-    'fileInfoList hash -> key =
-    Public Sub BatchUpload(
-        fileInfoList As IEnumerable(Of UploadInfo))
+        private void OnProgressUpdate(double fractionDone)
+        {
+            LoadProgress?.Invoke(fractionDone);
+        }
 
-        Dim eResult As DialogResult
+        private void OnLoadEnd()
+        {
+            LoadEnd?.Invoke();
+        }
 
-        Dim databaseAccessor = New DBTask(m_DatabaseAccessor.ConnectionString)
+        private void OnBatchProgressUpdate(string status)
+        {
+            BatchProgress?.Invoke(status);
+        }
 
-        For Each upInfo In fileInfoList
-            'upInfo.OriginalFileInformation = upInfo.FileInformation
-            Dim currentFile = upInfo.FileInformation
+        private void OnFileValidationComplete(string fastaFilePath, UploadInfo uploadInfo)
+        {
+            FASTAValidationComplete?.Invoke(fastaFilePath, uploadInfo);
+        }
 
-            ' Configure the validator to possibly allow asterisks in the residues
-            m_Validator.OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowAllSymbolsInProteinNames) = mValidationOptions(eValidationOptionConstants.AllowAllSymbolsInProteinNames)
+        private void LoadStartHandler(string taskTitle)
+        {
+            OnLoadStart(taskTitle);
+        }
 
-            ' Configure the validator to possibly allow asterisks in the residues
-            m_Validator.OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowAsteriskInResidues) = mValidationOptions(eValidationOptionConstants.AllowAsterisksInResidues)
+        private void LoadProgressHandler(double fractionDone)
+        {
+            OnProgressUpdate(fractionDone);
+        }
 
-            ' Configure the validator to possibly allow dashes in the residues
-            m_Validator.OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowDashInResidues) = mValidationOptions(eValidationOptionConstants.AllowDashInResidues)
+        private void LoadEndHandler()
+        {
+            OnLoadEnd();
+        }
 
-            ' Configure the additional validation options
-            m_Validator.SetValidationOptions(clsCustomValidateFastaFiles.eValidationOptionConstants.AllowAllSymbolsInProteinNames,
-                                                mValidationOptions(eValidationOptionConstants.AllowAllSymbolsInProteinNames))
+        private void Task_LoadProgress(string taskDescription, float percentComplete)
+        {
+            ValidationProgress?.Invoke(taskDescription, percentComplete / 100f);
+        }
 
-            m_Validator.SetValidationOptions(clsCustomValidateFastaFiles.eValidationOptionConstants.AllowAsterisksInResidues,
-                                                mValidationOptions(eValidationOptionConstants.AllowAsterisksInResidues))
+        //private void Encryption_Progress(string taskMsg, double fractionDone)
+        //{
+        //    LoadStart?.Invoke();
+        //}
 
-            m_Validator.SetValidationOptions(clsCustomValidateFastaFiles.eValidationOptionConstants.AllowDashInResidues,
-                                                mValidationOptions(eValidationOptionConstants.AllowDashInResidues))
+        private void OnNormalizedFASTAGeneration(string newFASTAFilePath)
+        {
+            m_NormalizedFASTAFilePath = newFASTAFilePath;
+            WroteLineEndNormalizedFASTA?.Invoke(newFASTAFilePath);
+        }
 
-            ' Update the default rules (important if AllowAsteriskInResidues = True or AllowDashInResidues = True)
-            m_Validator.SetDefaultRules()
+        private void OnFASTAFileWarnings(string fastaFilePath, List<clsCustomValidateFastaFiles.udtErrorInfoExtended> warningCollection)
+        {
+            FASTAFileWarnings?.Invoke(fastaFilePath, warningCollection);
+        }
 
-            ' Update the maximum protein name length
-            If mMaximumProteinNameLength <= 0 Then
-                mMaximumProteinNameLength = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
-            End If
+        private void OnInvalidFASTAFile(string fastaFilePath, List<clsCustomValidateFastaFiles.udtErrorInfoExtended> errorCollection)
+        {
+            InvalidFASTAFile?.Invoke(fastaFilePath, errorCollection);
+        }
 
-            m_Validator.MaximumProteinNameLength = mMaximumProteinNameLength
+        private void OnValidFASTAFileUpload(string fastaFilePath, UploadInfo uploadData)
+        {
+            ValidFASTAFileLoaded?.Invoke(fastaFilePath, uploadData);
+        }
 
-            OnLoadStart("Validating fasta files")
+        public PSUploadHandler(string psConnectionString)
+        {
+            m_DatabaseAccessor = new DBTask(psConnectionString);
 
-            ' Validate the fasta file (send full path)
-            ' This function returns True if the file is successfully processed (even if it has errors)
-            Dim fileValidated = m_Validator.StartValidateFASTAFile(currentFile.FullName)
+            // Reserve space for tracking up to 10 validation updates (expand later if needed)
+            mValidationOptions = new bool[11];
 
-            OnLoadEnd()
+            m_Upload = new AddUpdateEntries(psConnectionString);
+            m_Upload.LoadStart += LoadStartHandler;
+            m_Upload.LoadProgress += LoadProgressHandler;
+            m_Upload.LoadEnd += LoadEndHandler;
 
-            If Not fileValidated Then
-                Console.WriteLine("--------------------------------------------------------------")
-                Console.WriteLine("Warning: Skipping protein collection due to validation error")
-                Console.WriteLine(currentFile.FullName)
-                Console.WriteLine("--------------------------------------------------------------")
-                Continue For
-            End If
+            m_Export = new GetFASTAFromDMS(psConnectionString,
+                                           GetFASTAFromDMS.DatabaseFormatTypes.fasta,
+                                           GetFASTAFromDMS.SequenceTypes.forward);
+            m_Export.FileGenerationCompleted += m_Export_FileGenerationCompleted;
+            m_Export.FileGenerationProgress += m_Export_FileGenerationProgress;
 
-            If m_Validator.FASTAFileHasWarnings(currentFile.Name) Then
-                ' If any warnings were cached, return them with the OnFASTAFileWarnings event
-                OnFASTAFileWarnings(currentFile.FullName, m_Validator.RecordedFASTAFileWarnings(currentFile.Name))
-            End If
+            m_Validator = new clsCustomValidateFastaFiles();
+            m_Validator.ProgressUpdate += Task_LoadProgress;
+            m_Validator.WroteLineEndNormalizedFASTA += OnNormalizedFASTAGeneration;
 
-            ' Now check whether or not any errors were found for the file
-            If Not m_Validator.FASTAFileValid(currentFile.Name) Then
-                ' Errors were found; return the error collection with the InvalidFASTAFile event
-                OnInvalidFASTAFile(currentFile.FullName, m_Validator.RecordedFASTAFileErrors(currentFile.Name))
+            m_Importer = new ImportHandler(m_DatabaseAccessor.ConnectionString);
+            m_Importer.LoadStart += LoadStartHandler;
+            m_Importer.LoadProgress += LoadProgressHandler;
+            m_Importer.LoadEnd += LoadEndHandler;
+        }
 
-                Console.WriteLine("--------------------------------------------------------------")
-                Console.WriteLine("Warning: Skipping protein collection because validation failed")
-                Console.WriteLine(currentFile.FullName)
-                Console.WriteLine("--------------------------------------------------------------")
-                Continue For
-            End If
+        // fileInfoList hash -> key =
+        public void BatchUpload(
+            IEnumerable<UploadInfo> fileInfoList)
+        {
+            DialogResult eResult;
 
-            OnBatchProgressUpdate("Loading: " & currentFile.Name)
-            If Not m_NormalizedFASTAFilePath Is Nothing Then
-                If currentFile.FullName <> m_NormalizedFASTAFilePath Then
-                    upInfo.FileInformation = New FileInfo(m_NormalizedFASTAFilePath)
-                End If
-            End If
+            var databaseAccessor = new DBTask(m_DatabaseAccessor.ConnectionString);
 
-            Dim proteinCollectionName = Path.GetFileNameWithoutExtension(currentFile.Name)
+            foreach (var upInfo in fileInfoList)
+            {
+                // upInfo.OriginalFileInformation = upInfo.FileInformation
+                var currentFile = upInfo.FileInformation;
 
-            Dim existingCollectionID = m_Upload.GetProteinCollectionID(proteinCollectionName)
-            If existingCollectionID > 0 Then
-                Dim collectionState = m_Upload.GetProteinCollectionState(existingCollectionID)
+                // Configure the validator to possibly allow asterisks in the residues
+                m_Validator.set_OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowAllSymbolsInProteinNames, mValidationOptions[(int)eValidationOptionConstants.AllowAllSymbolsInProteinNames]);
 
-                Dim logMessageIfCancelled As String
-                Dim logLabelIfCancelled As String
+                // Configure the validator to possibly allow asterisks in the residues
+                m_Validator.set_OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowAsteriskInResidues, mValidationOptions[(int)eValidationOptionConstants.AllowAsterisksInResidues]);
 
-                If collectionState = "New" Or collectionState = "Provisional" Then
-                    Dim warningMessage = "The Collection '" & proteinCollectionName & "' has been declared '" &
-                               collectionState & "'. Are you sure you want to replace its contents?"
+                // Configure the validator to possibly allow dashes in the residues
+                m_Validator.set_OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowDashInResidues, mValidationOptions[(int)eValidationOptionConstants.AllowDashInResidues]);
 
-                    logMessageIfCancelled = "Collection was in State '" & collectionState & "' and was not changed"
-                    logLabelIfCancelled = "Warning"
+                // Configure the additional validation options
+                m_Validator.SetValidationOptions(clsCustomValidateFastaFiles.eValidationOptionConstants.AllowAllSymbolsInProteinNames,
+                                                 mValidationOptions[(int)eValidationOptionConstants.AllowAllSymbolsInProteinNames]);
 
-                    eResult = MessageBox.Show(
-                        warningMessage,
-                        "Confirm Replacement",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Stop,
-                        MessageBoxDefaultButton.Button2)
-                Else
-                    logMessageIfCancelled = "Collections in State '" & collectionState & "' cannot be changed or deleted"
-                    logLabelIfCancelled = "Error"
-                    eResult = DialogResult.No
-                End If
+                m_Validator.SetValidationOptions(clsCustomValidateFastaFiles.eValidationOptionConstants.AllowAsterisksInResidues,
+                                                 mValidationOptions[(int)eValidationOptionConstants.AllowAsterisksInResidues]);
 
-                If eResult = DialogResult.No Then
-                    Dim errorCollection = New List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended) From {
-                        New clsCustomValidateFastaFiles.udtErrorInfoExtended(
-                        0, " N/A ", logMessageIfCancelled, "", logLabelIfCancelled)
+                m_Validator.SetValidationOptions(clsCustomValidateFastaFiles.eValidationOptionConstants.AllowDashInResidues,
+                                                 mValidationOptions[(int)eValidationOptionConstants.AllowDashInResidues]);
+
+                // Update the default rules (important if AllowAsteriskInResidues = True or AllowDashInResidues = True)
+                m_Validator.SetDefaultRules();
+
+                // Update the maximum protein name length
+                if (mMaximumProteinNameLength <= 0)
+                {
+                    mMaximumProteinNameLength = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
+                }
+
+                m_Validator.MaximumProteinNameLength = mMaximumProteinNameLength;
+
+                OnLoadStart("Validating fasta files");
+
+                // Validate the fasta file (send full path)
+                // This function returns True if the file is successfully processed (even if it has errors)
+                bool fileValidated = m_Validator.StartValidateFASTAFile(currentFile.FullName);
+
+                OnLoadEnd();
+
+                if (!fileValidated)
+                {
+                    Console.WriteLine("--------------------------------------------------------------");
+                    Console.WriteLine("Warning: Skipping protein collection due to validation error");
+                    Console.WriteLine(currentFile.FullName);
+                    Console.WriteLine("--------------------------------------------------------------");
+                    continue;
+                }
+
+                if (m_Validator.get_FASTAFileHasWarnings(currentFile.Name))
+                {
+                    // If any warnings were cached, return them with the OnFASTAFileWarnings event
+                    OnFASTAFileWarnings(currentFile.FullName, m_Validator.get_RecordedFASTAFileWarnings(currentFile.Name));
+                }
+
+                // Now check whether or not any errors were found for the file
+                if (!m_Validator.get_FASTAFileValid(currentFile.Name))
+                {
+                    // Errors were found; return the error collection with the InvalidFASTAFile event
+                    OnInvalidFASTAFile(currentFile.FullName, m_Validator.get_RecordedFASTAFileErrors(currentFile.Name));
+
+                    Console.WriteLine("--------------------------------------------------------------");
+                    Console.WriteLine("Warning: Skipping protein collection because validation failed");
+                    Console.WriteLine(currentFile.FullName);
+                    Console.WriteLine("--------------------------------------------------------------");
+                    continue;
+                }
+
+                OnBatchProgressUpdate("Loading: " + currentFile.Name);
+                if (m_NormalizedFASTAFilePath != null)
+                {
+                    if ((currentFile.FullName ?? "") != (m_NormalizedFASTAFilePath ?? ""))
+                    {
+                        upInfo.FileInformation = new FileInfo(m_NormalizedFASTAFilePath);
                     }
-                    OnInvalidFASTAFile(currentFile.FullName, errorCollection)
+                }
 
-                End If
-            Else
-                eResult = DialogResult.Yes
-            End If
+                string proteinCollectionName = Path.GetFileNameWithoutExtension(currentFile.Name);
 
-            If eResult = DialogResult.Yes Then
-                Dim proteinStorage = m_Importer.LoadProteinsForBatch(upInfo.FileInformation.FullName)
-                If Not proteinStorage Is Nothing Then
-                    If proteinStorage.ProteinCount = 0 Then
-                        ' No proteins
+                int existingCollectionID = m_Upload.GetProteinCollectionID(proteinCollectionName);
+                if (existingCollectionID > 0)
+                {
+                    string collectionState = m_Upload.GetProteinCollectionState(existingCollectionID);
 
-                        Dim errorCollection = New List(Of clsCustomValidateFastaFiles.udtErrorInfoExtended) From {
-                            New clsCustomValidateFastaFiles.udtErrorInfoExtended(
-                            0, " N/A ", "No valid proteins were loaded from the .Fasta file", "", "Error")
+                    string logMessageIfCancelled;
+                    string logLabelIfCancelled;
+
+                    if (collectionState == "New" | collectionState == "Provisional")
+                    {
+                        var warningMessage = "The Collection '" + proteinCollectionName + "' has been declared '" +
+                                             collectionState + "'. Are you sure you want to replace its contents?";
+
+                        logMessageIfCancelled = "Collection was in State '" + collectionState + "' and was not changed";
+                        logLabelIfCancelled = "Warning";
+
+                        eResult = MessageBox.Show(
+                            warningMessage,
+                            "Confirm Replacement",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Stop,
+                            MessageBoxDefaultButton.Button2);
+                    }
+                    else
+                    {
+                        logMessageIfCancelled = "Collections in State '" + collectionState + "' cannot be changed or deleted";
+                        logLabelIfCancelled = "Error";
+                        eResult = DialogResult.No;
+                    }
+
+                    if (eResult == DialogResult.No)
+                    {
+                        var errorCollection = new List<clsCustomValidateFastaFiles.udtErrorInfoExtended>()
+                        {
+                            new clsCustomValidateFastaFiles.udtErrorInfoExtended(
+                                0, " N/A ", logMessageIfCancelled, "", logLabelIfCancelled)
+                        };
+                        OnInvalidFASTAFile(currentFile.FullName, errorCollection);
+                    }
+                }
+                else
+                {
+                    eResult = DialogResult.Yes;
+                }
+
+                if (eResult == DialogResult.Yes)
+                {
+                    var proteinStorage = m_Importer.LoadProteinsForBatch(upInfo.FileInformation.FullName);
+                    if (proteinStorage != null)
+                    {
+                        if (proteinStorage.ProteinCount == 0)
+                        {
+                            // No proteins
+
+                            var errorCollection = new List<clsCustomValidateFastaFiles.udtErrorInfoExtended>()
+                            {
+                                new clsCustomValidateFastaFiles.udtErrorInfoExtended(
+                                    0, " N/A ", "No valid proteins were loaded from the .Fasta file", "", "Error")
+                            };
+
+                            OnInvalidFASTAFile(upInfo.FileInformation.FullName, errorCollection);
                         }
+                        else
+                        {
+                            if (upInfo.EncryptSequences && !string.IsNullOrEmpty(upInfo.EncryptionPassphrase))
+                            {
+                                m_Encryptor = new CollectionEncryptor(upInfo.EncryptionPassphrase, databaseAccessor);
+                                m_Encryptor.EncryptStorageCollectionSequences(proteinStorage);
+                                proteinStorage.EncryptSequences = true;
+                                proteinStorage.PassPhrase = upInfo.EncryptionPassphrase;
+                            }
 
-                        OnInvalidFASTAFile(upInfo.FileInformation.FullName, errorCollection)
-                    Else
+                            upInfo.ProteinCount = proteinStorage.ProteinCount;
+                            CollectionBatchUploadCoordinator(proteinStorage, currentFile.FullName, upInfo.OrganismID, upInfo.AnnotationTypeID, upInfo.Description, upInfo.Source);
+                            // upInfo.ExportedProteinCount = m_Export.ExportedProteinCount;
+                            OnValidFASTAFileUpload(upInfo.FileInformation.FullName, upInfo);
+                            proteinStorage.ClearProteinEntries();
+                        }
+                    }
+                    else
+                    {
+                        OnInvalidFASTAFile(upInfo.FileInformation.FullName, m_Validator.get_RecordedFASTAFileErrors(currentFile.FullName));
+                    }
+                }
+            }
 
-                        If upInfo.EncryptSequences AndAlso Not String.IsNullOrEmpty(upInfo.EncryptionPassphrase) Then
-                            m_Encryptor = New CollectionEncryptor(upInfo.EncryptionPassphrase, databaseAccessor)
-                            m_Encryptor.EncryptStorageCollectionSequences(proteinStorage)
-                            proteinStorage.EncryptSequences = True
-                            proteinStorage.PassPhrase = upInfo.EncryptionPassphrase
-                        End If
+            m_Importer.TriggerProteinCollectionTableUpdate();
+        }
 
-                        upInfo.ProteinCount = proteinStorage.ProteinCount
-                        CollectionBatchUploadCoordinator(proteinStorage, currentFile.FullName, upInfo.OrganismID, upInfo.AnnotationTypeID, upInfo.Description, upInfo.Source)
-                        'upInfo.ExportedProteinCount = m_Export.ExportedProteinCount
-                        OnValidFASTAFileUpload(upInfo.FileInformation.FullName, upInfo)
-                        proteinStorage.ClearProteinEntries()
+        public int UploadCollection(
+            ProteinStorage fileContents,
+            List<string> selectedProteins,
+            string filepath,
+            string description,
+            string collectionSource,
+            AddUpdateEntries.CollectionTypes collectionType,
+            int organismID,
+            int annotationTypeID)
+        {
+            int XrefID;
 
-                    End If
-                Else
-                    OnInvalidFASTAFile(upInfo.FileInformation.FullName, m_Validator.RecordedFASTAFileErrors(currentFile.FullName))
-                End If
-            End If
+            // task 2a - Get Protein_Collection_ID or make a new one
 
-        Next
+            string proteinCollectionName = Path.GetFileNameWithoutExtension(filepath);
+            int existingCollectionID = m_Upload.GetProteinCollectionID(proteinCollectionName);
 
-        m_Importer.TriggerProteinCollectionTableUpdate()
+            string collectionState = m_Upload.GetProteinCollectionState(existingCollectionID);
 
-    End Sub
+            if (collectionState != "Unknown" &&
+                collectionState != "New" &&
+                collectionState != "Provisional")
+            {
+                throw new Exception("Protein collections in state " + collectionState + " cannot be updated");
+            }
 
-    Public Function UploadCollection(
-        fileContents As ProteinStorage,
-        selectedProteins As List(Of String),
-        filepath As String,
-        description As String,
-        collectionSource As String,
-        collectionType As AddUpdateEntries.CollectionTypes,
-        organismID As Integer,
-        annotationTypeID As Integer) As Integer
+            int numProteins = selectedProteins.Count;
+            int numResidues = m_Upload.GetTotalResidueCount(fileContents, selectedProteins);
 
-        Dim XrefID As Integer
+            int collectionID;
 
-        'task 2a - Get Protein_Collection_ID or make a new one
+            if (existingCollectionID <= 0)
+            {
+                // Note that we're storing 0 for NumResidues at this time
+                // That value will be updated later after all of the proteins have been added
+                int newCollectionId = m_Upload.MakeNewProteinCollection(
+                    proteinCollectionName, description,
+                    collectionSource, collectionType,
+                    annotationTypeID, numProteins, 0);
 
-        Dim proteinCollectionName = Path.GetFileNameWithoutExtension(filepath)
-        Dim existingCollectionID = m_Upload.GetProteinCollectionID(proteinCollectionName)
+                if (newCollectionId <= 0)
+                {
+                    // Error making the new protein collection
+                    Interaction.MsgBox(string.Format(
+                        "MakeNewProteinCollection was unable to create a new protein collection named {0}; the Collection ID returned was {1}",
+                        proteinCollectionName, newCollectionId));
+                    return -1;
+                }
 
-        Dim collectionState = m_Upload.GetProteinCollectionState(existingCollectionID)
+                collectionID = newCollectionId;
+            }
+            else
+            {
+                // Make sure there are no proteins defined for this protein collection
+                // In addition, this will update NumResidues to be 0
+                m_Upload.DeleteProteinCollectionMembers(existingCollectionID, numProteins);
+                collectionID = existingCollectionID;
+            }
 
-        If collectionState <> "Unknown" And
-           collectionState <> "New" And
-           collectionState <> "Provisional" Then
-            Throw New Exception("Protein collections in state " & collectionState & " cannot be updated")
-        End If
+            // task 2b - Compare file to existing sequences and upload new sequences to T_Proteins
+            m_Upload.CompareProteinID(fileContents, selectedProteins);
 
-        Dim numProteins = selectedProteins.Count
-        Dim numResidues = m_Upload.GetTotalResidueCount(fileContents, selectedProteins)
+            // task 3 - Add Protein References to T_Protein_Names
+            m_Upload.UpdateProteinNames(fileContents, selectedProteins, organismID, annotationTypeID);
 
-        Dim collectionID As Integer
+            // task 4 - Add new collection members to T_Protein_Collection_Members
+            m_Upload.UpdateProteinCollectionMembers(collectionID, fileContents, selectedProteins, numProteins, numResidues);
 
-        If existingCollectionID <= 0 Then
+            OnLoadStart("Associating protein collection with organism using T_Collection_Organism_Xref");
+            XrefID = m_Upload.AddCollectionOrganismXref(collectionID, organismID);
+            OnLoadEnd();
 
-            ' Note that we're storing 0 for NumResidues at this time
-            ' That value will be updated later after all of the proteins have been added
-            Dim newCollectionId = m_Upload.MakeNewProteinCollection(
-                proteinCollectionName, description,
-                collectionSource, collectionType,
-                annotationTypeID, numProteins, 0)
+            if (XrefID < 1)
+            {
+                // Throw New Exception("Could not add Collection/Organism Xref")
+                Interaction.MsgBox("Could not add Collection/Organism Xref; m_Upload.AddCollectionOrganismXref returned " + XrefID);
+            }
 
-            If newCollectionId <= 0 Then
-                ' Error making the new protein collection
-                MsgBox(String.Format(
-                    "MakeNewProteinCollection was unable to create a new protein collection named {0}; the Collection ID returned was {1}",
-                    proteinCollectionName, newCollectionId))
-                Return -1
-            End If
+            // task 5 - Update encryption metadata (if applicable)
+            if (fileContents.EncryptSequences)
+            {
+                OnLoadStart("Storing encryption metadata");
+                m_Upload.UpdateEncryptionMetadata(collectionID, fileContents.PassPhrase);
+                OnLoadEnd();
+            }
 
-            collectionID = newCollectionId
-        Else
-            ' Make sure there are no proteins defined for this protein collection
-            ' In addition, this will update NumResidues to be 0
-            m_Upload.DeleteProteinCollectionMembers(existingCollectionID, numProteins)
-            collectionID = existingCollectionID
-        End If
+            string tmpFileName = Path.GetTempPath();
 
-        'task 2b - Compare file to existing sequences and upload new sequences to T_Proteins
-        m_Upload.CompareProteinID(fileContents, selectedProteins)
+            // Dim tmpFi As System.IO.FileInfo = New System.IO.FileInfo(tmpFileName)
 
-        'task 3 - Add Protein References to T_Protein_Names
-        m_Upload.UpdateProteinNames(fileContents, selectedProteins, organismID, annotationTypeID)
+            string fingerprint;
+            OnLoadStart("Generating Hash fingerprint");
+            fingerprint = m_Export.ExportFASTAFile(collectionID, tmpFileName, GetFASTAFromDMS.DatabaseFormatTypes.fasta, GetFASTAFromDMS.SequenceTypes.forward);
+            OnLoadEnd();
 
-        'task 4 - Add new collection members to T_Protein_Collection_Members
-        m_Upload.UpdateProteinCollectionMembers(collectionID, fileContents, selectedProteins, numProteins, numResidues)
+            OnLoadStart("Storing fingerprint in T_Protein_Collections");
+            m_Upload.AddAuthenticationHash(collectionID, fingerprint, numProteins, numResidues);
+            OnLoadEnd();
 
-        OnLoadStart("Associating protein collection with organism using T_Collection_Organism_Xref")
-        XrefID = m_Upload.AddCollectionOrganismXref(collectionID, organismID)
-        OnLoadEnd()
+            // TODO add in hash return
+            return 0;
+        }
 
-        If XrefID < 1 Then
-            'Throw New Exception("Could not add Collection/Organism Xref")
-            MsgBox("Could not add Collection/Organism Xref; m_Upload.AddCollectionOrganismXref returned " & XrefID)
-        End If
+        protected int CollectionBatchUploadCoordinator(
+            ProteinStorage fileContents,
+            string filepath,
+            int organismID,
+            int annotationTypeID,
+            string description,
+            string source)
+        {
+            var selectedList = new List<string>();
 
+            var counter = fileContents.GetEnumerator();
 
-        'task 5 - Update encryption metadata (if applicable)
-        If fileContents.EncryptSequences Then
-            OnLoadStart("Storing encryption metadata")
-            m_Upload.UpdateEncryptionMetadata(collectionID, fileContents.PassPhrase)
-            OnLoadEnd()
-        End If
+            while (counter.MoveNext())
+                selectedList.Add(counter.Current.Value.Reference);
 
-        Dim tmpFileName As String = Path.GetTempPath
+            selectedList.Sort();
 
-        'Dim tmpFi As System.IO.FileInfo = New System.IO.FileInfo(tmpFileName)
+            return UploadCollection(
+                fileContents, selectedList, filepath, description, source,
+                AddUpdateEntries.CollectionTypes.prot_original_source, organismID, annotationTypeID);
+        }
 
-        Dim fingerprint As String
-        OnLoadStart("Generating Hash fingerprint")
-        fingerprint = m_Export.ExportFASTAFile(collectionID, tmpFileName, GetFASTAFromDMS.DatabaseFormatTypes.fasta, GetFASTAFromDMS.SequenceTypes.forward)
-        OnLoadEnd()
+        public void SetValidationOptions(eValidationOptionConstants eValidationOptionName, bool blnEnabled)
+        {
+            mValidationOptions[(int)eValidationOptionName] = blnEnabled;
+        }
 
-        OnLoadStart("Storing fingerprint in T_Protein_Collections")
-        m_Upload.AddAuthenticationHash(collectionID, fingerprint, numProteins, numResidues)
-        OnLoadEnd()
+        private void m_Export_FileGenerationCompleted(string fullOutputPath)
+        {
+        }
 
-        'TODO add in hash return
-        Return 0
-    End Function
-
-    Protected Function CollectionBatchUploadCoordinator(
-        fileContents As ProteinStorage,
-        filepath As String,
-        organismID As Integer,
-        annotationTypeID As Integer,
-        description As String,
-        source As String) As Integer
-
-        Dim selectedList As New List(Of String)
-
-        Dim counter As Dictionary(Of String, ProteinStorageEntry).Enumerator = fileContents.GetEnumerator
-
-        While counter.MoveNext()
-            selectedList.Add(counter.Current.Value.Reference)
-        End While
-
-        selectedList.Sort()
-
-        Return UploadCollection(
-            fileContents, selectedList, filepath, description, source,
-            AddUpdateEntries.CollectionTypes.prot_original_source, organismID, annotationTypeID)
-
-    End Function
-
-    Public Sub SetValidationOptions(eValidationOptionName As eValidationOptionConstants, blnEnabled As Boolean)
-        mValidationOptions(eValidationOptionName) = blnEnabled
-    End Sub
-
-    Private Sub m_Export_FileGenerationCompleted(fullOutputPath As String) Handles m_Export.FileGenerationCompleted
-
-    End Sub
-
-    Private Sub m_Export_FileGenerationProgress(statusMsg As String, fractionDone As Double) Handles m_Export.FileGenerationProgress
-        OnProgressUpdate(fractionDone)
-    End Sub
-End Class
+        private void m_Export_FileGenerationProgress(string statusMsg, double fractionDone)
+        {
+            OnProgressUpdate(fractionDone);
+        }
+    }
+}

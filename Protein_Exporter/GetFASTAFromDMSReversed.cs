@@ -1,54 +1,58 @@
-Option Strict On
+﻿using Microsoft.VisualBasic;
+using TableManipulationBase;
 
-Imports TableManipulationBase
+namespace Protein_Exporter
+{
+    public class GetFASTAFromDMSReversed : GetFASTAFromDMSForward
+    {
+        protected bool m_UseXXX;
 
-Public Class GetFASTAFromDMSReversed
-    Inherits GetFASTAFromDMSForward
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
+        /// <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
+        public GetFASTAFromDMSReversed(
+            DBTask databaseAccessor,
+            GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType)
+            : base(databaseAccessor, databaseFormatType)
+        {
+            m_Naming_Suffix = "_reversed";
+        }
 
-    Protected m_UseXXX As Boolean
+        /// <summary>
+        /// When true, reverse proteins start with XXX_
+        /// When false, they start with Reversed_
+        /// </summary>
+        /// <returns></returns>
+        public bool UseXXX
+        {
+            get
+            {
+                return m_UseXXX;
+            }
 
-    ''' <summary>
-    ''' Constructor
-    ''' </summary>
-    ''' <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
-    ''' <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
-    Public Sub New(
-        databaseAccessor As DBTask,
-        databaseFormatType As GetFASTAFromDMS.DatabaseFormatTypes)
+            set
+            {
+                m_UseXXX = true;
+            }
+        }
 
-        MyBase.New(databaseAccessor, databaseFormatType)
-        m_Naming_Suffix = "_reversed"
-    End Sub
+        public override string SequenceExtender(string originalSequence, int collectionCount)
+        {
+            return Strings.StrReverse(originalSequence);
+        }
 
-    ''' <summary>
-    ''' When true, reverse proteins start with XXX_
-    ''' When false, they start with Reversed_
-    ''' </summary>
-    ''' <returns></returns>
-    Public Property UseXXX As Boolean
-        Get
-            Return m_UseXXX
-        End Get
-        Set
-            m_UseXXX = True
-        End Set
-    End Property
-
-    Overrides Function SequenceExtender(originalSequence As String, collectionCount As Integer) As String
-
-        Return StrReverse(originalSequence)
-
-    End Function
-
-    Overrides Function ReferenceExtender(originalReference As String) As String
-        If m_UseXXX Then
-            Return "XXX_" + originalReference
-        Else
-            Return "Reversed_" + originalReference
-        End If
-
-    End Function
-
-
-
-End Class
+        public override string ReferenceExtender(string originalReference)
+        {
+            if (m_UseXXX)
+            {
+                return "XXX_" + originalReference;
+            }
+            else
+            {
+                return "Reversed_" + originalReference;
+            }
+        }
+    }
+}

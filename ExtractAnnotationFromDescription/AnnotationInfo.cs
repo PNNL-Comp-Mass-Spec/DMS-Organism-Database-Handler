@@ -1,149 +1,151 @@
-<Obsolete("Unused")>
-Friend Class AnnotationInfo
+﻿using System;
+using System.Collections.Generic;
 
-    Private ReadOnly m_AnnotationDetails As Dictionary(Of Integer, AnnotationDetails)
+namespace ExtractAnnotationFromDescription
+{
+    [Obsolete("Unused")]
+    internal class AnnotationInfo
+    {
+        private readonly Dictionary<int, AnnotationDetails> m_AnnotationDetails;
 
-    Private m_AuthorityLookup As NameLookups
-    Private m_AnnotationGroupLookup As NameLookups
+        private NameLookups m_AuthorityLookup;
+        private NameLookups m_AnnotationGroupLookup;
 
-    Sub New()
+        public AnnotationInfo()
+        {
+            m_AnnotationDetails = new Dictionary<int, AnnotationDetails>();
+            m_AuthorityLookup = new NameLookups();
+            m_AnnotationGroupLookup = new NameLookups();
+        }
 
-        Me.m_AnnotationDetails = New Dictionary(Of Integer, AnnotationDetails)
-        Me.m_AuthorityLookup = New NameLookups()
-        Me.m_AnnotationGroupLookup = New NameLookups()
-    End Sub
+        public void AddPrimaryAnnotation(int proteinID,
+            string protName, string description,
+            int refID, int namingAuthorityID)
+        {
+            m_AnnotationDetails.Add(proteinID,
+                new AnnotationDetails(
+                        protName, description, refID,
+                        proteinID));
+        }
 
-    Sub AddPrimaryAnnotation(proteinID As Integer,
-        protName As String, description As String,
-        refID As Integer, namingAuthorityID As Integer)
+        public void AddAdditionalAnnotation(
+            int ProteinID,
+            string NewName,
+            int AnnotationGroupID)
+        {
+            AnnotationDetails tmpDetails;
 
-        Me.m_AnnotationDetails.Add(proteinID,
-            New AnnotationDetails(
-                protName, description, refID,
-                proteinID))
-    End Sub
+            tmpDetails = m_AnnotationDetails[ProteinID];
+            tmpDetails.AddNewName(AnnotationGroupID, NewName);
+        }
 
+        public void AddAuthorityNameToLookup(
+            int AuthorityID, string authName)
+        {
+            m_AuthorityLookup.AddName(AuthorityID, authName);
+        }
 
+        public void AddAnnotationGroupLookup(
+            int AnnotationGroupCode,
+            int AuthorityID)
+        {
+            m_AnnotationGroupLookup.AddName(
+                AnnotationGroupCode,
+                m_AuthorityLookup.GetName(AuthorityID));
+        }
 
-    Sub AddAdditionalAnnotation(
-        ProteinID As Integer,
-        NewName As String,
-        AnnotationGroupID As Integer)
+        public string get_ProteinName(
+            int ProteinID,
+            int AnnotationGroupCode)
+        {
+            var details = m_AnnotationDetails[ProteinID];
+            return details.get_Name(AnnotationGroupCode);
+        }
 
-        Dim tmpDetails As AnnotationDetails
+        public int get_ReferenceID(int ProteinID, int AnnotationGroupCode)
+        {
+            var details = m_AnnotationDetails[ProteinID];
+            return details.ReferenceID;
+        }
 
-        tmpDetails = m_AnnotationDetails(ProteinID)
-        tmpDetails.AddNewName(AnnotationGroupID, NewName)
+        public string get_AuthorityName(int AnnotationGroupCode)
+        {
+            return m_AuthorityLookup.GetName(AnnotationGroupCode);
+        }
 
-    End Sub
+        public struct NameLookups
+        {
+            private Dictionary<int, string> Names;
 
-    Sub AddAuthorityNameToLookup(
-        AuthorityID As Integer, authName As String)
+            public void AddName(
+                int ID,
+                string Name)
+            {
+                if (Names == null)
+                {
+                    Names = new Dictionary<int, string>();
+                }
 
-        Me.m_AuthorityLookup.AddName(AuthorityID, authName)
+                Names.Add(ID, Name);
+            }
 
-    End Sub
+            public string GetName(int ID)
+            {
+                if (Names.ContainsKey(ID))
+                {
+                    return Names[ID];
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+        }
 
-    Sub AddAnnotationGroupLookup(
-        AnnotationGroupCode As Integer,
-        AuthorityID As Integer)
+        public class AnnotationDetails
+        {
+            internal string Description;
+            internal int ReferenceID;
+            internal int ProteinID;
+            internal int NamingAuthorityID;
+            internal Dictionary<int, string> Names;
 
-        Me.m_AnnotationGroupLookup.AddName(
-            AnnotationGroupCode,
-            Me.m_AuthorityLookup.GetName(AuthorityID))
-    End Sub
+            // Key is AnnotationGroupID, Value is Name
 
+            public AnnotationDetails(
+                string PrimaryName,
+                string Description,
+                int ReferenceID,
+                int ProteinID)
+            {
+                this.Description = Description;
+                this.ReferenceID = ReferenceID;
+                this.ProteinID = ProteinID;
 
-    ReadOnly Property ProteinName(
-        ProteinID As Integer,
-        AnnotationGroupCode As Integer) As String
-        Get
-            Dim details = m_AnnotationDetails.Item(ProteinID)
-            Return details.Name(AnnotationGroupCode)
-        End Get
-    End Property
+                Names = new Dictionary<int, string>();
+                Names.Add(0, PrimaryName);
+            }
 
-    ReadOnly Property ReferenceID(
-        ProteinID As Integer,
-        AnnotationGroupCode As Integer) As Integer
-        Get
-            Dim details = m_AnnotationDetails.Item(ProteinID)
-            Return details.ReferenceID
-        End Get
-    End Property
+            public void AddNewName(int annotationGroupId, string annotationName)
+            {
+                if (!Names.ContainsValue(annotationName))
+                {
+                    Names.Add(annotationGroupId, annotationName);
+                }
+            }
 
-    ReadOnly Property AuthorityName(AnnotationGroupCode As Integer) As String
-        Get
-            Return Me.m_AuthorityLookup.GetName(AnnotationGroupCode)
-        End Get
-    End Property
+            public string PrimaryName
+            {
+                get
+                {
+                    return Names[0].ToString();
+                }
+            }
 
-    Structure NameLookups
-        Private Names As Dictionary(Of Integer, String)
-
-        Sub AddName(
-            ID As Integer,
-            Name As String)
-
-            If Names Is Nothing Then
-                Names = New Dictionary(Of Integer, String)
-            End If
-
-            Names.Add(ID, Name)
-        End Sub
-
-        Function GetName(ID As Integer) As String
-            If Me.Names.ContainsKey(ID) Then
-                Return Me.Names(ID)
-            Else
-                Return String.Empty
-            End If
-        End Function
-
-    End Structure
-
-    Structure AnnotationDetails
-        Friend Description As String
-        Friend ReferenceID As Integer
-        Friend ProteinID As Integer
-        Friend NamingAuthorityID As Integer
-
-        Friend Names As Dictionary(Of Integer, String)
-
-        'Key is AnnotationGroupID, Value is Name
-
-        Sub New(
-            PrimaryName As String,
-            Description As String,
-            ReferenceID As Integer,
-            ProteinID As Integer)
-
-            Me.Description = Description
-            Me.ReferenceID = ReferenceID
-            Me.ProteinID = ProteinID
-
-            Me.Names = New Dictionary(Of Integer, String)
-            Me.Names.Add(0, PrimaryName)
-        End Sub
-
-        Sub AddNewName(annotationGroupId As Integer, annotationName As String)
-            If Not Me.Names.ContainsValue(annotationName) Then
-                Me.Names.Add(annotationGroupId, annotationName)
-            End If
-        End Sub
-
-        ReadOnly Property PrimaryName As String
-            Get
-                Return Me.Names(0).ToString
-            End Get
-        End Property
-
-        ReadOnly Property Name(annotationGroupCode As Integer) As String
-            Get
-                Return Me.Names(annotationGroupCode)
-            End Get
-        End Property
-
-    End Structure
-
-End Class
+            public string get_Name(int annotationGroupCode)
+            {
+                return Names[annotationGroupCode];
+            }
+        }
+    }
+}

@@ -1,59 +1,60 @@
+﻿using System.Collections.Generic;
 
-Imports System.Collections.Generic
+namespace Protein_Storage
+{
+    public class ProteinStorageDMS : ProteinStorage
+    {
+        private readonly Dictionary<int, SortedSet<string>> m_UniqueProteinIDList;        // Protein_ID, Protein_Name
 
-Public Class ProteinStorageDMS
-    Inherits ProteinStorage
+        public ProteinStorageDMS(string fastaFileName)
+            : base(fastaFileName)
+        {
+            m_UniqueProteinIDList = new Dictionary<int, SortedSet<string>>();
+        }
 
-    Private ReadOnly m_UniqueProteinIDList As Dictionary(Of Integer, SortedSet(Of String))        'Protein_ID, Protein_Name
+        public override void AddProtein(ProteinStorageEntry proteinEntry)
+        {
+            int proteinEntryID = proteinEntry.Protein_ID;
+            string proteinEntryName = proteinEntry.Reference;
 
-    Public Sub New(fastaFileName As String)
-        MyBase.New(fastaFileName)
+            SortedSet<string> nameList = null;
 
-        m_UniqueProteinIDList = New Dictionary(Of Integer, SortedSet(Of String))
-    End Sub
+            if (!m_UniqueProteinIDList.TryGetValue(proteinEntryID, out nameList))
+            {
+                nameList = new SortedSet<string>();
+                nameList.Add(proteinEntryName);
+                m_UniqueProteinIDList.Add(proteinEntryID, nameList);
+                m_ResidueCount += proteinEntry.Sequence.Length;
+            }
+            else
+            {
+                foreach (var proteinName in nameList)
+                {
+                    var existingEntry = m_Proteins[proteinName];
 
-    Public Overrides Sub AddProtein(proteinEntry As ProteinStorageEntry)
+                    if (!proteinEntry.Reference.Equals(existingEntry.Reference))
+                    {
+                        existingEntry.AddXRef(proteinEntryName);
+                        proteinEntry.AddXRef(existingEntry.Reference);
+                    }
+                }
 
-        Dim proteinName As String
-        Dim proteinEntryID As Integer = proteinEntry.Protein_ID
-        Dim proteinEntryName As String = proteinEntry.Reference
+                nameList.Add(proteinEntryName);
+                m_UniqueProteinIDList[proteinEntryID] = nameList;
+            }
 
-        Dim nameList As SortedSet(Of String) = Nothing
+            if (!m_ProteinNames.Contains(proteinEntryName))
+            {
+                m_Proteins.Add(proteinEntryName, proteinEntry);
+                m_ProteinNames.Add(proteinEntryName);
+                m_ResidueCount += proteinEntry.Sequence.Length;
+            }
+        }
 
-        If Not m_UniqueProteinIDList.TryGetValue(proteinEntryID, nameList) Then
-            nameList = New SortedSet(Of String)
-            nameList.Add(proteinEntryName)
-            m_UniqueProteinIDList.Add(proteinEntryID, nameList)
-            m_ResidueCount += proteinEntry.Sequence.Length
-        Else
-
-            For Each proteinName In nameList
-                Dim existingEntry = m_Proteins.Item(proteinName)
-
-                If Not proteinEntry.Reference.Equals(existingEntry.Reference) Then
-                    existingEntry.AddXRef(proteinEntryName)
-                    proteinEntry.AddXRef(existingEntry.Reference)
-                End If
-            Next
-
-            nameList.Add(proteinEntryName)
-            m_UniqueProteinIDList(proteinEntryID) = nameList
-        End If
-
-        If Not m_ProteinNames.Contains(proteinEntryName) Then
-            m_Proteins.Add(proteinEntryName, proteinEntry)
-            m_ProteinNames.Add(proteinEntryName)
-            m_ResidueCount += proteinEntry.Sequence.Length
-        End If
-
-    End Sub
-
-    Public Overrides Sub ClearProteinEntries()
-
-        MyBase.ClearProteinEntries()
-        m_UniqueProteinIDList.Clear()
-
-    End Sub
-
-End Class
-
+        public override void ClearProteinEntries()
+        {
+            base.ClearProteinEntries();
+            m_UniqueProteinIDList.Clear();
+        }
+    }
+}

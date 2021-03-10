@@ -1,43 +1,71 @@
-﻿Public Class frmNewCollectionMetadataEditor
+﻿using System;
+using System.Windows.Forms;
 
-    Public Property Description As String
-        Get
-            Return txtDescription.Text
-        End Get
-        Set
-            txtDescription.Text = Value
-        End Set
-    End Property
+namespace AppUI_OrfDBHandler
+{
+    public partial class frmNewCollectionMetadataEditor
+    {
+        public frmNewCollectionMetadataEditor()
+        {
+            InitializeComponent();
+            txtDescription.Name = "txtDescription";
+            txtSource.Name = "txtSource";
+            cmdCancel.Name = "cmdCancel";
+            cmdOk.Name = "cmdOk";
+        }
 
-    Public Property Source As String
-        Get
-            Return txtSource.Text
-        End Get
-        Set
-            txtSource.Text = Value
-        End Set
-    End Property
+        public string Description
+        {
+            get
+            {
+                return txtDescription.Text;
+            }
 
-    Private Sub cmdCancel_Click(sender As Object, e As EventArgs) Handles cmdCancel.Click
-        Me.DialogResult = DialogResult.Cancel
-        Me.Close()
-    End Sub
+            set
+            {
+                txtDescription.Text = value;
+            }
+        }
 
-    Private Sub cmdOk_Click(sender As Object, e As EventArgs) Handles cmdOk.Click
-        Me.DialogResult = DialogResult.OK
-        Me.Close()
-    End Sub
+        public string Source
+        {
+            get
+            {
+                return txtSource.Text;
+            }
 
-    Private Sub txtDescription_KeyDown(sender As Object, e As KeyEventArgs) Handles txtDescription.KeyDown
-        If e.Control AndAlso e.KeyCode = Keys.A Then
-            txtDescription.SelectAll()
-        End If
-    End Sub
+            set
+            {
+                txtSource.Text = value;
+            }
+        }
 
-    Private Sub txtSource_KeyDown(sender As Object, e As KeyEventArgs) Handles txtSource.KeyDown
-        If e.Control AndAlso e.KeyCode = Keys.A Then
-            txtSource.SelectAll()
-        End If
-    End Sub
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
 
-End Class
+        private void cmdOk_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+
+        private void txtDescription_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.A)
+            {
+                txtDescription.SelectAll();
+            }
+        }
+
+        private void txtSource_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.A)
+            {
+                txtSource.SelectAll();
+            }
+        }
+    }
+}

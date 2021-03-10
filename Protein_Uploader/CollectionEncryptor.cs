@@ -1,60 +1,80 @@
-Friend Class CollectionEncryptor
+﻿using System;
 
-    Protected m_RijndaelEncryptor As Protein_Exporter.RijndaelEncryptionHandler
-    Private ReadOnly m_DatabaseAccessor As TableManipulationBase.DBTask
-    Event EncryptionStart(taskMsg As String)
-    Event EncryptionProgress(statusMsg As String, fractionDone As Double)
-    Event EncryptionComplete()
+namespace Protein_Uploader
+{
+    internal class CollectionEncryptor
+    {
+        protected Protein_Exporter.RijndaelEncryptionHandler m_RijndaelEncryptor;
+        private readonly TableManipulationBase.DBTask m_DatabaseAccessor;
 
-    Sub New(PassPhrase As String, databaseAccessor As TableManipulationBase.DBTask)
+        public event EncryptionStartEventHandler EncryptionStart;
 
-        m_RijndaelEncryptor = New Protein_Exporter.RijndaelEncryptionHandler(PassPhrase)
-        m_DatabaseAccessor = databaseAccessor
+        public delegate void EncryptionStartEventHandler(string taskMsg);
 
-    End Sub
+        public event EncryptionProgressEventHandler EncryptionProgress;
 
-    Sub EncryptStorageCollectionSequences(storageCollection As Protein_Storage.ProteinStorage)
+        public delegate void EncryptionProgressEventHandler(string statusMsg, double fractionDone);
 
-        Dim e = storageCollection.GetEnumerator
+        public event EncryptionCompleteEventHandler EncryptionComplete;
 
-        OnEncryptionStart("Encrypting Sequences")
-        Dim counter = 0
-        Dim counterMax As Integer = storageCollection.ProteinCount
-        Dim EventTriggerThresh As Integer
+        public delegate void EncryptionCompleteEventHandler();
 
-        If counterMax <= 50 Then
-            EventTriggerThresh = 1
-        Else
-            EventTriggerThresh = CInt(counterMax / 50)
-        End If
+        public CollectionEncryptor(string PassPhrase, TableManipulationBase.DBTask databaseAccessor)
+        {
+            m_RijndaelEncryptor = new Protein_Exporter.RijndaelEncryptionHandler(PassPhrase);
+            m_DatabaseAccessor = databaseAccessor;
+        }
 
-        While e.MoveNext()
-            If counter Mod EventTriggerThresh = 0 Then
-                OnEncryptionProgressUpdate(CDbl(counter / counterMax))
-            End If
+        public void EncryptStorageCollectionSequences(Protein_Storage.ProteinStorage storageCollection)
+        {
+            var e = storageCollection.GetEnumerator();
 
-            Dim ce = e.Current.Value
-            ce.Sequence = m_RijndaelEncryptor.Encrypt(ce.Sequence)
-            ce.SHA1Hash = m_RijndaelEncryptor.MakeArbitraryHash(ce.Sequence)
-            ce.IsEncrypted = True
-            counter += 1
-        End While
+            OnEncryptionStart("Encrypting Sequences");
+            int counter = 0;
+            int counterMax = storageCollection.ProteinCount;
+            int EventTriggerThresh;
 
-    End Sub
+            if (counterMax <= 50)
+            {
+                EventTriggerThresh = 1;
+            }
+            else
+            {
+                EventTriggerThresh = (int)Math.Round(counterMax / 50d);
+            }
 
-    Sub AddUpdateEncryptionMetadata()
+            while (e.MoveNext())
+            {
+                if (counter % EventTriggerThresh == 0)
+                {
+                    OnEncryptionProgressUpdate(counter / (double)counterMax);
+                }
 
-    End Sub
+                var ce = e.Current.Value;
+                ce.Sequence = m_RijndaelEncryptor.Encrypt(ce.Sequence);
+                ce.SHA1Hash = m_RijndaelEncryptor.MakeArbitraryHash(ce.Sequence);
+                ce.IsEncrypted = true;
+                counter += 1;
+            }
+        }
 
-    Private Sub OnEncryptionStart(taskMsg As String)
-        RaiseEvent EncryptionStart(taskMsg)
-    End Sub
+        public void AddUpdateEncryptionMetadata()
+        {
+        }
 
-    Private Sub OnEncryptionProgressUpdate(fractionDone As Double)
-        RaiseEvent EncryptionProgress("", fractionDone)
-    End Sub
+        private void OnEncryptionStart(string taskMsg)
+        {
+            EncryptionStart?.Invoke(taskMsg);
+        }
 
-    Private Sub OnEncryptionComplete()
-        RaiseEvent EncryptionComplete()
-    End Sub
-End Class
+        private void OnEncryptionProgressUpdate(double fractionDone)
+        {
+            EncryptionProgress?.Invoke("", fractionDone);
+        }
+
+        private void OnEncryptionComplete()
+        {
+            EncryptionComplete?.Invoke();
+        }
+    }
+}

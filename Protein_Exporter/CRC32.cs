@@ -1,59 +1,71 @@
-Option Strict Off
+﻿using System;
+using System.IO;
+using Microsoft.VisualBasic.CompilerServices;
 
-Imports System.IO
+namespace Protein_Exporter
+{
+    [Obsolete("Use CRC32 in PRISM.dll", true)]
+    public class CRC32
+    {
 
-<Obsolete("Use CRC32 in PRISM.dll")>
-Public Class CRC32
+        // This is v2 of the VB CRC32 algorithm provided by Paul
+        // (wpsjr1@succeed.net) - much quicker than the nasty
+        // original version I posted.  Excellent work!
 
-    ' This is v2 of the VB CRC32 algorithm provided by Paul
-    ' (wpsjr1@succeed.net) - much quicker than the nasty
-    ' original version I posted.  Excellent work!
+        private readonly uint[] crc32Table;
+        private const int BUFFER_SIZE = 1024;
 
-    Private ReadOnly crc32Table() As Integer
-    Private Const BUFFER_SIZE As Integer = 1024
+        public uint GetCrc32(Stream stream)
+        {
+            uint crc32Result = 0xFFFFFFFF;
 
-    Public Function GetCrc32(stream As Stream) As Integer
+            var buffer = new byte[1025];
+            int readSize = BUFFER_SIZE;
 
-        Dim crc32Result = &HFFFFFFFF
+            int count = stream.Read(buffer, 0, readSize);
+            while (count > 0)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    uint iLookup = crc32Result & 0xFF ^ buffer[i];
+                    crc32Result = (crc32Result & 0xFFFFFF00) / 0x100 & 0xFFFFFF;   // nasty shr 8 with vb :/
+                    crc32Result = crc32Result ^ crc32Table[iLookup];
+                }
 
-        Dim buffer(BUFFER_SIZE) As Byte
-        Dim readSize As Integer = BUFFER_SIZE
+                count = stream.Read(buffer, 0, readSize);
+            }
 
-        Dim count As Integer = stream.Read(buffer, 0, readSize)
-        Do While (count > 0)
-            For i = 0 To count - 1
-                Dim iLookup = (crc32Result And &HFF) Xor buffer(i)
-                crc32Result = ((crc32Result And &HFFFFFF00) \ &H100) And &HFFFFFF   ' nasty shr 8 with vb :/
-                crc32Result = crc32Result Xor crc32Table(iLookup)
-            Next i
-            count = stream.Read(buffer, 0, readSize)
-        Loop
+            return ~crc32Result;
+        }
 
-        Return Not (crc32Result)
+        public CRC32()
+        {
 
-    End Function
+            // This is the official polynomial used by CRC32 in PKZip.
+            // Often the polynomial is shown reversed (04C11DB7).
+            uint dwPolynomial = 0xEDB88320;
 
-    Public Sub New()
+            crc32Table = new uint[257];
 
-        ' This is the official polynomial used by CRC32 in PKZip.
-        ' Often the polynomial is shown reversed (04C11DB7).
-        Dim dwPolynomial = &HEDB88320
+            for (uint i = 0; i <= 255; i++)
+            {
+                uint dwCrc = i;
+                // ReSharper disable once RedundantAssignment
+                for (int j = 8; j >= 1; j -= 1)
+                {
+                    if (Conversions.ToBoolean(dwCrc & 1))
+                    {
+                        dwCrc = (uint)((dwCrc & 0xFFFFFFFE) / 2L & 0x7FFFFFFFL);
+                        dwCrc = dwCrc ^ dwPolynomial;
+                    }
+                    else
+                    {
+                        dwCrc = (uint)((dwCrc & 0xFFFFFFFE) / 2L & 0x7FFFFFFFL);
+                    }
+                }
 
-        ReDim crc32Table(256)
-
-        For i = 0 To 255
-            Dim dwCrc = i
-            ' ReSharper disable once RedundantAssignment
-            For j = 8 To 1 Step -1
-                If (dwCrc And 1) Then
-                    dwCrc = ((dwCrc And &HFFFFFFFE) \ 2&) And &H7FFFFFFF
-                    dwCrc = dwCrc Xor dwPolynomial
-                Else
-                    dwCrc = ((dwCrc And &HFFFFFFFE) \ 2&) And &H7FFFFFFF
-                End If
-            Next j
-            crc32Table(i) = dwCrc
-        Next i
-    End Sub
-
-End Class
+                crc32Table[i] = dwCrc;
+            }
+        }
+    }
+}

@@ -1,99 +1,116 @@
-Imports Protein_Importer
-Imports TableManipulationBase
+﻿using System;
+using System.Collections;
+using System.Data;
+using System.Windows.Forms;
+using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.CompilerServices;
+using Protein_Importer;
+using TableManipulationBase;
 
-Public Class CollectionStatePickerHandler
-    Private m_forceReload As Boolean = False
-    Private m_ListViewData As DataTable
-    Private ReadOnly m_GetTables As DBTask
-    Private ReadOnly m_SPAccess As AddUpdateEntries
+namespace AppUI_OrfDBHandler
+{
+    public class CollectionStatePickerHandler
+    {
+        private bool m_forceReload = false;
+        private DataTable m_ListViewData;
+        private readonly DBTask m_GetTables;
+        private readonly AddUpdateEntries m_SPAccess;
 
-    Public Sub New(psConnectionString As String)
-        m_GetTables = New DBTask(psConnectionString)
-        m_SPAccess = New AddUpdateEntries(psConnectionString)
-        m_forceReload = True
-    End Sub
+        public CollectionStatePickerHandler(string psConnectionString)
+        {
+            m_GetTables = new DBTask(psConnectionString);
+            m_SPAccess = new AddUpdateEntries(psConnectionString);
+            m_forceReload = true;
+        }
 
-    WriteOnly Property ForceIDTableReload As Boolean
-        Set
-            m_forceReload = Value
-        End Set
-    End Property
+        public bool ForceIDTableReload
+        {
+            set
+            {
+                m_forceReload = value;
+            }
+        }
 
-    Sub ChangeSelectedCollectionStates(newStateID As Integer, selectedCollectionIDList As ArrayList)
+        public void ChangeSelectedCollectionStates(int newStateID, ArrayList selectedCollectionIDList)
+        {
+            foreach (int ID in selectedCollectionIDList)
+                m_SPAccess.UpdateProteinCollectionState(ID, newStateID);
+        }
 
-        Dim ID As Integer
+        private void SetupPickerListView(ListView lvw, DataTable dt, string filterCriteria)
+        {
+            DateTime tmpCreated;
+            DateTime tmpMod;
 
-        For Each ID In selectedCollectionIDList
-            m_SPAccess.UpdateProteinCollectionState(ID, newStateID)
-        Next
-    End Sub
+            filterCriteria = filterCriteria.Trim(' ');
 
-    Private Sub SetupPickerListView(lvw As ListView, dt As DataTable, filterCriteria As String)
+            var criteriaCollection = filterCriteria.Split(' ');
+            DataRow[] collectionRows;
 
-        Dim tmpCreated As Date
-        Dim tmpMod As Date
+            string filterString = string.Empty;
 
+            if (criteriaCollection.Length > 0 & filterCriteria.Length > 0)
+            {
+                foreach (var filterElement in criteriaCollection)
+                    filterString += "[Name] LIKE '%" + filterElement + "%' OR [State] LIKE '%" + filterElement + "%' OR ";
+                // Trim off final " OR "
+                filterString = Strings.Left(filterString, filterString.Length - 4);
+            }
+            else
+            {
+                filterString = "";
+            }
 
-        filterCriteria = filterCriteria.Trim(" "c)
+            collectionRows = dt.Select(filterString);
+            ListViewItem item;
 
-        Dim criteriaCollection() As String = filterCriteria.Split(" "c)
-        Dim collectionRows() As DataRow
-        Dim cRow As DataRow
+            lvw.BeginUpdate();
+            foreach (var cRow in collectionRows)
+            {
+                tmpCreated = Conversions.ToDate(cRow["Created"]);
+                tmpMod = Conversions.ToDate(cRow["Modified"]);
+                item = new ListViewItem();
+                item.Text = cRow["Name"].ToString();
+                item.Tag = cRow["ID"];
+                item.SubItems.Add(Strings.Format(tmpCreated, "yyyy-MM-dd"));
+                item.SubItems.Add(Strings.Format(tmpMod, "yyyy-MM-dd"));
+                item.SubItems.Add(cRow["State"].ToString());
+                lvw.Items.Add(item);
+            }
 
-        Dim filterString As String = String.Empty
-        Dim filterElement As String
+            lvw.EndUpdate();
+        }
 
-        If criteriaCollection.Length > 0 And filterCriteria.Length > 0 Then
-            For Each filterElement In criteriaCollection
-                filterString += "[Name] LIKE '%" & filterElement & "%' OR [State] LIKE '%" & filterElement & "%' OR "
-            Next
-            'Trim off final " OR "
-            filterString = Left(filterString, filterString.Length - 4)
-        Else
-            filterString = ""
-        End If
+        public void FillListView(ListView listViewToFill)
+        {
+            FillFilteredListView(listViewToFill, "");
+        }
 
-        collectionRows = dt.Select(filterString)
-        Dim item As ListViewItem
+        public void FillFilteredListView(ListView listViewToFill, string FilterString)
+        {
+            listViewToFill.Items.Clear();
+            if (m_forceReload)
+            {
+                m_ListViewData = GetCollectionTable();
+                m_forceReload = false;
+            }
 
-        lvw.BeginUpdate()
-        For Each cRow In collectionRows
-            tmpCreated = CType(cRow.Item("Created"), Date)
-            tmpMod = CType(cRow.Item("Modified"), Date)
-            item = New ListViewItem
-            item.Text = cRow.Item("Name").ToString
-            item.Tag = cRow.Item("ID")
-            item.SubItems.Add(Format(tmpCreated, "yyyy-MM-dd"))
-            item.SubItems.Add(Format(tmpMod, "yyyy-MM-dd"))
-            item.SubItems.Add(cRow.Item("State").ToString)
-            lvw.Items.Add(item)
-        Next
-        lvw.EndUpdate()
-    End Sub
+            SetupPickerListView(listViewToFill, m_ListViewData, FilterString);
+        }
 
-    Sub FillListView(listViewToFill As ListView)
-        FillFilteredListView(listViewToFill, "")
-    End Sub
+        public DataTable GetCollectionTable()
+        {
+            string SQL = "SELECT * FROM V_Collection_State_Picker ORDER BY [Name]";
+            var cTable = m_GetTables.GetTable(SQL);
+            return cTable;
+        }
 
-    Sub FillFilteredListView(listViewToFill As ListView, FilterString As String)
-        listViewToFill.Items.Clear()
-        If m_forceReload Then
-            m_ListViewData = GetCollectionTable()
-            m_forceReload = False
-        End If
-        SetupPickerListView(listViewToFill, m_ListViewData, FilterString)
-    End Sub
+        public DataTable GetStates()
+        {
+            string SQL = "SELECT State, Collection_State_ID as ID " + "FROM T_Protein_Collection_States ORDER BY Collection_State_ID";
+            var sTable = m_GetTables.GetTable(SQL);
 
-    Function GetCollectionTable() As DataTable
-        Dim SQL = "SELECT * FROM V_Collection_State_Picker ORDER BY [Name]"
-        Dim cTable As DataTable = m_GetTables.GetTable(SQL)
-        Return cTable
-    End Function
-
-    Function GetStates() As DataTable
-        Dim SQL As String = "SELECT State, Collection_State_ID as ID " & "FROM T_Protein_Collection_States ORDER BY Collection_State_ID"
-        Dim sTable As DataTable = m_GetTables.GetTable(SQL)
-
-        Return sTable
-    End Function
-End Class
+            return sTable;
+        }
+    }
+}

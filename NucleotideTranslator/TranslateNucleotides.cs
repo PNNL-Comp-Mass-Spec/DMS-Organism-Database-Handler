@@ -1,62 +1,70 @@
-Public Class TranslateNucleotides
+﻿using System.Collections;
+using System.Data;
+using Microsoft.VisualBasic.CompilerServices;
 
-    Protected m_TranslationMatrix As ArrayList
-    Protected m_GetSQLData As TableManipulationBase.DBTask
+namespace NucleotideTranslator
+{
+    public class TranslateNucleotides
+    {
+        protected ArrayList m_TranslationMatrix;
+        protected TableManipulationBase.DBTask m_GetSQLData;
 
-    Protected m_TranTableListName As String = "T_DNA_Translation_Tables"
-    Protected m_TransTableMembersName As String = "T_DNA_Translation_Table_Members"
+        protected string m_TranTableListName = "T_DNA_Translation_Tables";
+        protected string m_TransTableMembersName = "T_DNA_Translation_Table_Members";
 
-    Public Sub New(DMSConnectionString As String)
-        Me.m_GetSQLData = New TableManipulationBase.DBTask(DMSConnectionString)
-    End Sub
+        public TranslateNucleotides(string DMSConnectionString)
+        {
+            m_GetSQLData = new TableManipulationBase.DBTask(DMSConnectionString);
+        }
 
-    Public Function LoadTransMatrix(TranslationTableID As Integer) As ArrayList
+        public ArrayList LoadTransMatrix(int TranslationTableID)
+        {
+            var BaseArray = "ATGC".ToCharArray();
 
-        Dim BaseArray() As Char = "ATGC".ToCharArray
-        Dim base_1 As Char
-        Dim base_2 As Char
-        Dim base_3 As Char
+            string selectSQL =
+                "SELECT * FROM " + m_TransTableMembersName +
+                " WHERE DNA_Translation_Table_ID = " + TranslationTableID;
 
-        Dim selectSQL As String =
-            "SELECT * FROM " & Me.m_TransTableMembersName &
-            " WHERE DNA_Translation_Table_ID = " & TranslationTableID
+            var members = m_GetSQLData.GetTable(selectSQL);
 
-        Dim members As DataTable = Me.m_GetSQLData.GetTable(selectSQL)
+            DataRow dr;
+            string tertSelect;
+            DataRow[] TertiaryRows;
 
-        Dim dr As DataRow
-        Dim tertSelect As String
-        Dim TertiaryRows() As DataRow
+            var PrimaryList = new ArrayList();
+            var SecondaryList = new ArrayList();
+            var TertiaryList = new ArrayList();
 
-        Dim PrimaryList As New ArrayList
-        Dim SecondaryList As New ArrayList
-        Dim TertiaryList As New ArrayList
+            foreach (var base_1 in BaseArray)
+            {
+                foreach (var base_2 in BaseArray)
+                {
+                    foreach (var base_3 in BaseArray)
+                    {
+                        tertSelect = "Base_1 = '" + base_1.ToString() +
+                            "' AND Base_2 = '" + base_2.ToString() +
+                            "' AND Base_3 = '" + base_3.ToString() + "'";
+                        TertiaryRows = members.Select(tertSelect);
 
-        For Each base_1 In BaseArray
-            For Each base_2 In BaseArray
+                        dr = TertiaryRows[0];
 
-                For Each base_3 In BaseArray
-                    tertSelect = "Base_1 = '" & base_1.ToString &
-                        "' AND Base_2 = '" & base_2.ToString &
-                        "' AND Base_3 = '" & base_3.ToString & "'"
-                    TertiaryRows = members.Select(tertSelect)
+                        TertiaryList.Add(new TranslationEntry(base_3.ToString(), Conversions.ToString(dr["Coded_AA"])));
+                    }
 
-                    dr = TertiaryRows(0)
+                    SecondaryList.Add(new TranslationEntry(base_2.ToString(), TertiaryList));
+                    TertiaryList = new ArrayList();
+                }
 
-                    TertiaryList.Add(New TranslationEntry(base_3.ToString, CStr(dr.Item("Coded_AA"))))
-                Next
-                SecondaryList.Add(New TranslationEntry(base_2.ToString, TertiaryList))
-                TertiaryList = New ArrayList
-            Next
+                PrimaryList.Add(new TranslationEntry(base_1.ToString(), SecondaryList));
+                SecondaryList = new ArrayList();
+            }
 
-            PrimaryList.Add(New TranslationEntry(base_1.ToString, SecondaryList))
-            SecondaryList = New ArrayList
-        Next
+            return PrimaryList;
+        }
 
-        Return PrimaryList
-    End Function
-
-    Protected Function LoadNucPositions(filePath As String) As Integer
-
-    End Function
-
-End Class
+        protected int LoadNucPositions(string filePath)
+        {
+            return default;
+        }
+    }
+}

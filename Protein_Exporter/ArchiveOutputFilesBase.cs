@@ -1,182 +1,218 @@
-Option Strict On
+﻿using System;
+using System.Data;
+using System.IO;
+using System.Text.RegularExpressions;
+using PRISMDatabaseUtils;
+using TableManipulationBase;
 
-Imports System.IO
-Imports System.Text.RegularExpressions
-Imports PRISMDatabaseUtils
-Imports TableManipulationBase
+namespace Protein_Exporter
+{
+    public abstract class ArchiveOutputFilesBase
+    {
+        public enum CollectionTypes
+        {
+            @static = 1,
+            dynamic = 2
+        }
 
-Public MustInherit Class ArchiveOutputFilesBase
-    Public Enum CollectionTypes
-        [static] = 1
-        dynamic = 2
-    End Enum
+        protected GetFASTAFromDMSForward m_Exporter;
+        protected readonly DBTask m_DatabaseAccessor;
+        protected string m_LastError;
+        // Unused: protected GetFASTAFromDMS.SequenceTypes m_OutputSequenceType;
+        protected string m_Archived_File_Name;
 
-    Protected m_Exporter As GetFASTAFromDMSForward
-    Protected ReadOnly m_DatabaseAccessor As DBTask
-    Protected m_LastError As String
-    ' Unused: Protected m_OutputSequenceType As GetFASTAFromDMS.SequenceTypes
-    Protected m_Archived_File_Name As String
+        protected event ArchiveStartEventHandler ArchiveStart;
 
-    Protected Event ArchiveStart()
-    Protected Event SubTaskStart(taskDescription As String)
-    Protected Event SubTaskProgressUpdate(fractionDone As Double)
-    Protected Event OverallProgressUpdate(fractionDone As Double)
-    Protected Event ArchiveComplete(archivePath As String)
+        protected delegate void ArchiveStartEventHandler();
 
-    ''' <summary>
-    ''' Constructor
-    ''' </summary>
-    ''' <param name="databaseAccessor"></param>
-    ''' <param name="exporterModule"></param>
-    Sub New(databaseAccessor As DBTask, exporterModule As GetFASTAFromDMS)
-        m_DatabaseAccessor = databaseAccessor
+        protected event SubTaskStartEventHandler SubTaskStart;
 
-        m_Exporter = exporterModule.ExporterComponent
-    End Sub
+        protected delegate void SubTaskStartEventHandler(string taskDescription);
 
-    Protected ReadOnly Property LastErrorMessage As String
-        Get
-            Return m_LastError
-        End Get
-    End Property
+        protected event SubTaskProgressUpdateEventHandler SubTaskProgressUpdate;
 
-    Public ReadOnly Property Archived_File_Name As String
-        Get
-            Return m_Archived_File_Name
-        End Get
-    End Property
+        protected delegate void SubTaskProgressUpdateEventHandler(double fractionDone);
 
-    Public Function ArchiveCollection(proteinCollectionID As Integer, archivedFileType As CollectionTypes, outputSequenceType As GetFASTAFromDMS.SequenceTypes, databaseFormatType As GetFASTAFromDMS.DatabaseFormatTypes, sourceFilePath As String, creationOptionsString As String, authentication_Hash As String, proteinCollectionList As String) As Integer
+        protected event OverallProgressUpdateEventHandler OverallProgressUpdate;
 
-        OnArchiveStart()
+        protected delegate void OverallProgressUpdateEventHandler(double fractionDone);
 
-        Return DispositionFile(proteinCollectionID, sourceFilePath, creationOptionsString, authentication_Hash, outputSequenceType, archivedFileType, proteinCollectionList)
-    End Function
+        protected event ArchiveCompleteEventHandler ArchiveComplete;
 
-    Public Function ArchiveCollection(proteinCollectionName As String, archivedFileType As CollectionTypes, outputSequenceType As GetFASTAFromDMS.SequenceTypes, databaseFormatType As GetFASTAFromDMS.DatabaseFormatTypes, sourceFilePath As String, creationOptionsString As String, authentication_Hash As String, proteinCollectionList As String) As Integer
+        protected delegate void ArchiveCompleteEventHandler(string archivePath);
 
-        Dim proteinCollectionID As Integer = GetProteinCollectionID(proteinCollectionName)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="databaseAccessor"></param>
+        /// <param name="exporterModule"></param>
+        public ArchiveOutputFilesBase(DBTask databaseAccessor, GetFASTAFromDMS exporterModule)
+        {
+            m_DatabaseAccessor = databaseAccessor;
 
-        Return ArchiveCollection(proteinCollectionID, archivedFileType, outputSequenceType, databaseFormatType, sourceFilePath, creationOptionsString, authentication_Hash, proteinCollectionList)
-    End Function
+            m_Exporter = exporterModule.ExporterComponent;
+        }
 
-    Protected MustOverride Function DispositionFile(proteinCollectionID As Integer, sourceFilePath As String, creationOptionsString As String, sourceAuthenticationHash As String, outputSequenceType As GetFASTAFromDMS.SequenceTypes, archivedFileType As ArchiveOutputFilesBase.CollectionTypes, ProteinCollectionsList As String) As Integer
+        protected string LastErrorMessage
+        {
+            get
+            {
+                return m_LastError;
+            }
+        }
 
-    Protected Function GetProteinCount(sourceFilePath As String) As Integer
-        Dim idLineRegex = New Regex("^>.+", RegexOptions.Compiled)
+        public string Archived_File_Name
+        {
+            get
+            {
+                return m_Archived_File_Name;
+            }
+        }
 
-        Dim fi = New FileInfo(sourceFilePath)
-        Dim counter = 0
+        public int ArchiveCollection(int proteinCollectionID, CollectionTypes archivedFileType, GetFASTAFromDMS.SequenceTypes outputSequenceType, GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType, string sourceFilePath, string creationOptionsString, string authentication_Hash, string proteinCollectionList)
+        {
+            OnArchiveStart();
 
-        If (fi.Exists) Then
-            Using fileReader = New StreamReader(New FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                While Not fileReader.EndOfStream
-                    Dim dataLine = fileReader.ReadLine
-                    If idLineRegex.IsMatch(dataLine) Then
-                        counter += 1
-                    End If
-                End While
-            End Using
-        End If
+            return DispositionFile(proteinCollectionID, sourceFilePath, creationOptionsString, authentication_Hash, outputSequenceType, archivedFileType, proteinCollectionList);
+        }
 
-        Return counter
-    End Function
+        public int ArchiveCollection(string proteinCollectionName, CollectionTypes archivedFileType, GetFASTAFromDMS.SequenceTypes outputSequenceType, GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType, string sourceFilePath, string creationOptionsString, string authentication_Hash, string proteinCollectionList)
+        {
+            int proteinCollectionID = GetProteinCollectionID(proteinCollectionName);
 
-    ' Unused
-    'Protected Function CheckForExistingArchiveEntry(
-    '    authentication_Hash As String,
-    '    archivedFileType As IArchiveOutputFiles.CollectionTypes,
-    '    creationOptionsString As String) As Integer
+            return ArchiveCollection(proteinCollectionID, archivedFileType, outputSequenceType, databaseFormatType, sourceFilePath, creationOptionsString, authentication_Hash, proteinCollectionList);
+        }
 
-    '    Dim SQL As String
-    '    SQL = "SELECT Archived_File_ID,  Archived_File_Path " &
-    '            "FROM V_Archived_Output_Files " &
-    '            "WHERE Authentication_Hash = '" & authentication_Hash & "' AND " &
-    '                    "Archived_File_Type = '" &
-    '                    [Enum].GetName(GetType(IArchiveOutputFiles.CollectionTypes), archivedFileType) &
-    '                    "' AND " & "Creation_Options = '" & creationOptionsString & "'"
+        protected abstract int DispositionFile(int proteinCollectionID, string sourceFilePath, string creationOptionsString, string sourceAuthenticationHash, GetFASTAFromDMS.SequenceTypes outputSequenceType, CollectionTypes archivedFileType, string ProteinCollectionsList);
 
-    '    Dim dt As DataTable
-    '    dt = m_DatabaseAccessor.GetTable(SQL)
+        protected int GetProteinCount(string sourceFilePath)
+        {
+            var idLineRegex = new Regex("^>.+", RegexOptions.Compiled);
 
-    '    If dt.Rows.Count > 0 Then
-    '        m_Archived_File_Name = dt.Rows(0).Item("Archived_File_Path").ToString
-    '        Return CInt(dt.Rows(0).Item("Archived_File_ID"))
-    '    Else
-    '        Return 0
-    '    End If
+            var fi = new FileInfo(sourceFilePath);
+            int counter = 0;
 
+            if (fi.Exists)
+            {
+                using (var fileReader = new StreamReader(new FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+                {
+                    while (!fileReader.EndOfStream)
+                    {
+                        string dataLine = fileReader.ReadLine();
+                        if (idLineRegex.IsMatch(dataLine))
+                        {
+                            counter += 1;
+                        }
+                    }
+                }
+            }
 
-    'End Function
+            return counter;
+        }
 
-    Public Sub AddArchiveCollectionXRef(proteinCollectionID As Integer, archivedFileID As Integer)
+        //Unused
+        //protected int CheckForExistingArchiveEntry(
+        //    string authentication_Hash,
+        //    IArchiveOutputFiles.CollectionTypes archivedFileType,
+        //    string creationOptionsString)
+        //{
+        //    var SQL = "SELECT Archived_File_ID,  Archived_File_Path " +
+        //        "FROM V_Archived_Output_Files " +
+        //        "WHERE Authentication_Hash = '" + authentication_Hash + "' AND " +
+        //        "Archived_File_Type = '" +
+        //        Enum.GetName(typeof(IArchiveOutputFiles.CollectionTypes), archivedFileType) +
+        //        "' AND " + "Creation_Options = '" + creationOptionsString + "'";
 
-        Dim intReturn As Integer = RunSP_AddArchivedFileEntryXRef(proteinCollectionID, archivedFileID)
+        //    DataTable dt;
+        //    dt = m_DatabaseAccessor.GetTable(SQL);
 
-        If intReturn <> 0 Then
-            Throw New Exception("Error calling RunSP_AddArchivedFileEntryXRef with ProteinCollectionID " & proteinCollectionID & " and ArchivedFileID " & archivedFileID & ", ReturnCode=" & intReturn)
-        End If
-    End Sub
+        //    if (dt.Rows.Count > 0)
+        //    {
+        //        m_Archived_File_Name = dt.Rows[0]["Archived_File_Path"].ToString();
+        //        return System.Convert.ToInt32(dt.Rows[0]["Archived_File_ID"]);
+        //    }
+        //    else
+        //        return 0;
+        //}
 
-    ' Unused
-    'Protected Function GetFileAuthenticationHash(sourcePath As String) As String
-    '    Return m_Exporter.GetFileHash(sourcePath)
-    'End Function
+        public void AddArchiveCollectionXRef(int proteinCollectionID, int archivedFileID)
+        {
+            int intReturn = RunSP_AddArchivedFileEntryXRef(proteinCollectionID, archivedFileID);
 
-    ' Unused
-    'Protected Function GetStoredFileAuthenticationHash(ProteinCollectionID As Integer) As String
-    '    Return m_Exporter.GetStoredHash(ProteinCollectionID)
-    'End Function
+            if (intReturn != 0)
+            {
+                throw new Exception("Error calling RunSP_AddArchivedFileEntryXRef with ProteinCollectionID " + proteinCollectionID + " and ArchivedFileID " + archivedFileID + ", ReturnCode=" + intReturn);
+            }
+        }
 
-    Protected Function GetProteinCollectionID(proteinCollectionName As String) As Integer
-        Return m_Exporter.FindIDByName(proteinCollectionName)
-    End Function
+        // Unused
+        //protected string GetFileAuthenticationHash(string sourcePath)
+        //{
+        //    return m_Exporter.GetFileHash(sourcePath);
+        //}
 
-    Protected Function RunSP_AddArchivedFileEntryXRef(proteinCollectionID As Integer, archivedFileID As Integer) As Integer
+        //// Unused
+        //protected string GetStoredFileAuthenticationHash(int ProteinCollectionID)
+        //{
+        //    return m_Exporter.GetStoredHash(ProteinCollectionID);
+        //}
 
-        Dim dbTools = m_DatabaseAccessor.DBTools
+        protected int GetProteinCollectionID(string proteinCollectionName)
+        {
+            return m_Exporter.FindIDByName(proteinCollectionName);
+        }
 
-        Dim cmdSave = dbTools.CreateCommand("AddArchivedFileEntryXRef", CommandType.StoredProcedure)
+        protected int RunSP_AddArchivedFileEntryXRef(int proteinCollectionID, int archivedFileID)
+        {
+            var dbTools = m_DatabaseAccessor.DBTools;
 
-        ' Define parameters
+            var cmdSave = dbTools.CreateCommand("AddArchivedFileEntryXRef", CommandType.StoredProcedure);
 
-        dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
+            // Define parameters
 
-        dbTools.AddParameter(cmdSave, "@Collection_ID", SqlType.Int).Value = proteinCollectionID
+            dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue);
 
-        dbTools.AddParameter(cmdSave, "@Archived_File_ID", SqlType.Int).Value = archivedFileID
+            dbTools.AddParameter(cmdSave, "@Collection_ID", SqlType.Int).Value = proteinCollectionID;
 
-        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 250, ParameterDirection.Output)
+            dbTools.AddParameter(cmdSave, "@Archived_File_ID", SqlType.Int).Value = archivedFileID;
 
-        Dim errorMessage As String = String.Empty
+            dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 250, ParameterDirection.Output);
 
-        ' Execute the sp
-        Dim returnValue = dbTools.ExecuteSP(cmdSave, errorMessage)
+            string errorMessage = string.Empty;
 
-        Return returnValue
-    End Function
+            // Execute the sp
+            int returnValue = dbTools.ExecuteSP(cmdSave, out errorMessage);
 
-    Protected Sub OnArchiveStart()
-        RaiseEvent ArchiveStart()
-        OnOverallProgressUpdate(0.0)
-    End Sub
+            return returnValue;
+        }
 
-    ' Unused
-    'Protected Sub OnSubTaskStart(subTaskDescription As String)
-    '    RaiseEvent SubTaskStart(subTaskDescription)
-    '    OnSubTaskProgressUpdate(0.0)
-    'End Sub
+        protected void OnArchiveStart()
+        {
+            ArchiveStart?.Invoke();
+            OnOverallProgressUpdate(0.0d);
+        }
 
-    Protected Sub OnOverallProgressUpdate(fractionDone As Double)
-        RaiseEvent OverallProgressUpdate(fractionDone)
-    End Sub
+        // Unused
+        //protected void OnSubTaskStart(string subTaskDescription)
+        //{
+        //    SubTaskStart?.Invoke(subTaskDescription);
+        //    OnSubTaskProgressUpdate(0.0);
+        //}
 
-    ' Unused
-    'Protected Sub OnSubTaskProgressUpdate(fractionDone As Double)
-    '    RaiseEvent SubTaskProgressUpdate(fractionDone)
-    'End Sub
+        protected void OnOverallProgressUpdate(double fractionDone)
+        {
+            OverallProgressUpdate?.Invoke(fractionDone);
+        }
 
-    'Protected Sub OnArchiveComplete(archivedPath As String)
-    '    RaiseEvent ArchiveComplete(archivedPath)
-    'End Sub
-End Class
+        // Unused
+        //protected void OnSubTaskProgressUpdate(double fractionDone)
+        //{
+        //    SubTaskProgressUpdate?.Invoke(fractionDone);
+        //}
+
+        //protected void OnArchiveComplete(string archivedPath)
+        //{
+        //    ArchiveComplete?.Invoke(archivedPath);
+        //}
+    }
+}

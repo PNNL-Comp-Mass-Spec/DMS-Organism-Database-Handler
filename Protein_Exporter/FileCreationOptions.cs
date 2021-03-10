@@ -1,166 +1,183 @@
-Option Strict On
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Text;
+using System.Text.RegularExpressions;
+using TableManipulationBase;
 
-Imports System.Collections.Generic
-Imports System.Text
-Imports System.Text.RegularExpressions
-Imports TableManipulationBase
+namespace Protein_Exporter
+{
+    internal class FileCreationOptions
+    {
+        private readonly DBTask m_DatabaseAccessor;
+        private GetFASTAFromDMS.SequenceTypes m_SeqDirection;
+        private GetFASTAFromDMS.DatabaseFormatTypes m_FileType;
+        private DataTable m_CreationValuesTable;
+        private DataTable m_KeywordTable;
 
-Friend Class FileCreationOptions
-    Private ReadOnly m_DatabaseAccessor As DBTask
-    Private m_SeqDirection As GetFASTAFromDMS.SequenceTypes
-    Private m_FileType As GetFASTAFromDMS.DatabaseFormatTypes
-    Private m_CreationValuesTable As DataTable
-    Private m_KeywordTable As DataTable
+        public FileCreationOptions(DBTask databaseAccessor)
+        {
+            m_DatabaseAccessor = databaseAccessor;
+        }
 
-    Sub New(databaseAccessor As DBTask)
-        m_DatabaseAccessor = databaseAccessor
-    End Sub
+        public GetFASTAFromDMS.SequenceTypes SequenceDirection
+        {
+            get
+            {
+                return m_SeqDirection;
+            }
+        }
 
-    ReadOnly Property SequenceDirection As GetFASTAFromDMS.SequenceTypes
-        Get
-            Return m_SeqDirection
-        End Get
-    End Property
+        public GetFASTAFromDMS.DatabaseFormatTypes FileFormatType
+        {
+            get
+            {
+                return m_FileType;
+            }
+        }
 
-    ReadOnly Property FileFormatType As GetFASTAFromDMS.DatabaseFormatTypes
-        Get
-            Return m_FileType
-        End Get
-    End Property
+        // Options string looks like... "seq_direction=forward;filetype=fasta"
+        public string ExtractOptions(string optionsString)
+        {
+            string keywordTableSQL;
+            // string valuesTableSQL;
+            string creationValuesSQL;
+            var optionsHash = new Dictionary<string, string>();
+            MatchCollection mCollection;
 
-    'Options string looks like... "seq_direction=forward;filetype=fasta"
-    Function ExtractOptions(optionsString As String) As String
-        Dim keywordTableSQL As String
-        'Dim valuesTableSQL As String
-        Dim creationValuesSQL As String
-        Dim optionsHash As New Dictionary(Of String, String)
-        Dim mCollection As MatchCollection
-        Dim m As Match
-        Dim optionsStringParser As Regex
-        Dim dr As DataRow
-        Dim foundRows() As DataRow
-        Dim checkRows() As DataRow
-        Dim errorString As StringBuilder
+            Regex optionsStringParser;
 
-        Dim tmpKeyword As String
-        Dim tmpValue As String
+            DataRow[] foundRows;
+            DataRow[] checkRows;
+            StringBuilder errorString;
 
-        Dim validKeyword As Boolean
-        Dim validValue As Boolean
+            string tmpKeyword;
+            string tmpValue;
 
-        Dim cleanOptionsString As New StringBuilder
+            var validKeyword = default(bool);
+            var validValue = default(bool);
 
-        keywordTableSQL = "SELECT Keyword_ID, Keyword, Default_Value FROM T_Creation_Option_Keywords"
-        'valuesTableSQL = "SELECT Value_ID, Value_String, Keyword_ID FROM T_Creation_Option_Values"
-        creationValuesSQL = "SELECT Keyword, Value_String, String_Element FROM V_Creation_String_Lookup"
+            var cleanOptionsString = new StringBuilder();
 
-        If m_KeywordTable Is Nothing Then
-            m_KeywordTable = m_DatabaseAccessor.GetTable(keywordTableSQL)
-        End If
+            keywordTableSQL = "SELECT Keyword_ID, Keyword, Default_Value FROM T_Creation_Option_Keywords";
+            // valuesTableSQL = "SELECT Value_ID, Value_String, Keyword_ID FROM T_Creation_Option_Values";
+            creationValuesSQL = "SELECT Keyword, Value_String, String_Element FROM V_Creation_String_Lookup";
 
-        'If m_ValuesTable Is Nothing Then
-        '    m_ValuesTable = m_DatabaseAccessor.GetTable(valuesTableSQL)
-        'End If
+            if (m_KeywordTable == null)
+            {
+                m_KeywordTable = m_DatabaseAccessor.GetTable(keywordTableSQL);
+            }
 
-        If m_CreationValuesTable Is Nothing Then
-            m_CreationValuesTable = m_DatabaseAccessor.GetTable(creationValuesSQL)
-        End If
+            // If m_ValuesTable Is Nothing Then
+            // m_ValuesTable = m_DatabaseAccessor.GetTable(valuesTableSQL)
+            // End If
 
-        'optionsStringParser = New System.Text.RegularExpressions.Regex(
-        '    "(?<keyword>\S+)\s*=\s*(?<value>\S+),*?")
-        optionsStringParser = New Regex(
-            "(?<keyword>[^,\s]*)\s*=\s*(?<value>[^,\s]+)")
+            if (m_CreationValuesTable == null)
+            {
+                m_CreationValuesTable = m_DatabaseAccessor.GetTable(creationValuesSQL);
+            }
 
-        mCollection = optionsStringParser.Matches(optionsString)
+            // optionsStringParser = New System.Text.RegularExpressions.Regex(
+            // "(?<keyword>\S+)\s*=\s*(?<value>\S+),*?")
+            optionsStringParser = new Regex(
+                @"(?<keyword>[^,\s]*)\s*=\s*(?<value>[^,\s]+)");
 
-        For Each m In mCollection
-            'optionsHash.Add(m.Groups("keyword").Value, m.Groups("value").Value)
-            tmpKeyword = m.Groups("keyword").Value
-            tmpValue = m.Groups("value").Value
+            mCollection = optionsStringParser.Matches(optionsString);
 
-            'Check for valid keyword/value pair
-            foundRows = m_CreationValuesTable.Select("Keyword = '" & tmpKeyword & "' AND Value_String = '" & tmpValue & "'")
-            If foundRows.Length < 1 Then
-                'check if keyword or value is bad
-                errorString = New StringBuilder
-                checkRows = m_CreationValuesTable.Select("Keyword = '" & tmpKeyword)
-                If checkRows.Length > 0 Then validKeyword = True
+            foreach (Match m in mCollection)
+            {
+                // optionsHash.Add(m.Groups("keyword").Value, m.Groups("value").Value)
+                tmpKeyword = m.Groups["keyword"].Value;
+                tmpValue = m.Groups["value"].Value;
 
-                checkRows = m_CreationValuesTable.Select("Value_String = '" & tmpValue & "'")
-                If checkRows.Length > 0 Then validValue = True
+                // Check for valid keyword/value pair
+                foundRows = m_CreationValuesTable.Select("Keyword = '" + tmpKeyword + "' AND Value_String = '" + tmpValue + "'");
+                if (foundRows.Length < 1)
+                {
+                    // check if keyword or value is bad
+                    errorString = new StringBuilder();
+                    checkRows = m_CreationValuesTable.Select("Keyword = '" + tmpKeyword);
+                    if (checkRows.Length > 0)
+                        validKeyword = true;
+                    checkRows = m_CreationValuesTable.Select("Value_String = '" + tmpValue + "'");
+                    if (checkRows.Length > 0)
+                        validValue = true;
+                    if (!validKeyword)
+                    {
+                        errorString.Append("Keyword: " + tmpKeyword + " is not valid");
+                    }
 
-                If Not validKeyword Then
-                    errorString.Append("Keyword: " & tmpKeyword & " is not valid")
-                End If
+                    if (!validValue)
+                    {
+                        if (errorString.ToString().Length > 0)
+                            errorString.Append(", ");
+                        errorString.Append("Value: " + tmpValue + "is not a valid option");
+                    }
 
-                If Not validValue Then
-                    If errorString.ToString.Length > 0 Then errorString.Append(", ")
-                    errorString.Append("Value: " & tmpValue & "is not a valid option")
-                End If
-                Throw New Exception(errorString.ToString)
-            End If
+                    throw new Exception(errorString.ToString());
+                }
 
-            If optionsHash.ContainsKey(tmpKeyword) Then
-                Throw New Exception(tmpKeyword & " is a duplicate keyword")
-            Else
-                optionsHash.Add(tmpKeyword, tmpValue)
-            End If
+                if (optionsHash.ContainsKey(tmpKeyword))
+                {
+                    throw new Exception(tmpKeyword + " is a duplicate keyword");
+                }
+                else
+                {
+                    optionsHash.Add(tmpKeyword, tmpValue);
+                }
+            }
 
-        Next
+            // Parse dictionary into canonical options string for return
+            foundRows = m_KeywordTable.Select("", "Keyword_ID ASC");
+            foreach (var dr in foundRows)
+            {
+                if (cleanOptionsString.ToString().Length > 0)
+                {
+                    cleanOptionsString.Append(",");
+                }
 
-        ' Parse dictionary into canonical options string for return
-        foundRows = m_KeywordTable.Select("", "Keyword_ID ASC")
-        For Each dr In foundRows
-            If cleanOptionsString.ToString.Length > 0 Then
-                cleanOptionsString.Append(",")
-            End If
+                tmpKeyword = dr["Keyword"].ToString();
+                if (optionsHash.ContainsKey(tmpKeyword))
+                {
+                    tmpValue = optionsHash[tmpKeyword].ToString();
+                }
+                else
+                {
+                    tmpValue = dr["Default_Value"].ToString();
+                }
 
-            tmpKeyword = dr.Item("Keyword").ToString
-            If optionsHash.ContainsKey(tmpKeyword) Then
-                tmpValue = optionsHash.Item(tmpKeyword).ToString
-            Else
-                tmpValue = dr.Item("Default_Value").ToString
-            End If
+                switch (tmpKeyword ?? "")
+                {
+                    case "seq_direction":
+                        m_SeqDirection = (GetFASTAFromDMS.SequenceTypes)Enum.Parse(typeof(GetFASTAFromDMS.SequenceTypes), tmpValue);
+                        break;
 
+                    case "filetype":
+                        m_FileType = (GetFASTAFromDMS.DatabaseFormatTypes)Enum.Parse(typeof(GetFASTAFromDMS.DatabaseFormatTypes), tmpValue);
+                        break;
+                }
 
-            Select Case tmpKeyword
-                Case "seq_direction"
-                    m_SeqDirection = DirectCast([Enum].Parse(GetType(GetFASTAFromDMS.SequenceTypes), tmpValue),
-                        GetFASTAFromDMS.SequenceTypes)
+                cleanOptionsString.Append(tmpKeyword);
+                cleanOptionsString.Append("=");
+                cleanOptionsString.Append(tmpValue);
+            }
 
-                Case "filetype"
-                    m_FileType = DirectCast([Enum].Parse(GetType(GetFASTAFromDMS.DatabaseFormatTypes), tmpValue),
-                        GetFASTAFromDMS.DatabaseFormatTypes)
-            End Select
+            return cleanOptionsString.ToString();
+        }
 
-            With cleanOptionsString
-                .Append(tmpKeyword)
-                .Append("=")
-                .Append(tmpValue)
-            End With
-        Next
+        public string MakeCreationOptionsString(
+            GetFASTAFromDMS.SequenceTypes seqDirection,
+            GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType)
+        {
+            var creationOptionsSB = new StringBuilder();
 
+            creationOptionsSB.Append("seq_direction=");
+            creationOptionsSB.Append(seqDirection.ToString());
+            creationOptionsSB.Append(",");
+            creationOptionsSB.Append("filetype=");
+            creationOptionsSB.Append(databaseFormatType.ToString());
 
-        Return cleanOptionsString.ToString
-
-    End Function
-
-    Function MakeCreationOptionsString(
-        seqDirection As GetFASTAFromDMS.SequenceTypes,
-        databaseFormatType As GetFASTAFromDMS.DatabaseFormatTypes) As String
-
-        Dim creationOptionsSB As New StringBuilder
-
-        With creationOptionsSB
-            .Append("seq_direction=")
-            .Append(seqDirection.ToString)
-            .Append(",")
-            .Append("filetype=")
-            .Append(databaseFormatType.ToString)
-        End With
-
-        Return creationOptionsSB.ToString
-
-    End Function
-
-End Class
+            return creationOptionsSB.ToString();
+        }
+    }
+}

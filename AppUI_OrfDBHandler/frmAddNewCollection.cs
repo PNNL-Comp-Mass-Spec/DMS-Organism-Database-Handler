@@ -1,452 +1,492 @@
-Public Class frmAddNewCollection
-    Inherits Form
+﻿using System;
+using System.Data;
+using System.Diagnostics;
+using System.Drawing;
+using System.Windows.Forms;
+using Microsoft.VisualBasic.CompilerServices;
 
-#Region " Windows Form Designer generated code "
+namespace AppUI_OrfDBHandler
+{
+    public class frmAddNewCollection : Form
+    {
+        #region "Windows Form Designer generated code"
 
-    Public Sub New()
-        MyBase.New()
+        public frmAddNewCollection() : base()
+        {
+            base.Load += frmAddNewCollection_Load;
 
-        'This call is required by the Windows Form Designer.
-        InitializeComponent()
+            // This call is required by the Windows Form Designer.
+            InitializeComponent();
 
-        'Add any initialization after the InitializeComponent() call
+            // Add any initialization after the InitializeComponent() call
+        }
 
-    End Sub
+        // Form overrides dispose to clean up the component list.
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                {
+                    components.Dispose();
+                }
+            }
 
-    'Form overrides dispose to clean up the component list.
-    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-        If disposing Then
-            If Not (components Is Nothing) Then
-                components.Dispose()
-            End If
-        End If
-        MyBase.Dispose(disposing)
-    End Sub
+            base.Dispose(disposing);
+        }
 
-    'Required by the Windows Form Designer
-    Private components As System.ComponentModel.IContainer
+        // Required by the Windows Form Designer
+        private System.ComponentModel.IContainer components;
 
-    'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.
-    'Do not modify it using the code editor.
-    Friend WithEvents gbxMetaData As GroupBox
-    Friend WithEvents txtCollectionName As TextBox
-    Friend WithEvents lblCollectionName As Label
-    Friend WithEvents cboOrganismPicker As ComboBox
-    Friend WithEvents lblOrganismPicker As Label
-    Friend WithEvents lblAuthorityPicker As Label
-    Friend WithEvents cboAuthorityPicker As ComboBox
-    Friend WithEvents cmdAddOrganism As Button
-    Friend WithEvents cmdAddAuthority As Button
-    Friend WithEvents cmdCancel As Button
-    Friend WithEvents cmdOK As Button
-    Friend WithEvents lblProteinCount As Label
-    Friend WithEvents lblResidueCount As Label
-    Friend WithEvents lblDescription As Label
-    Friend WithEvents lblSource As Label
-    Friend WithEvents txtSource As TextBox
-    Friend WithEvents txtDescription As TextBox
-    <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.txtCollectionName = New TextBox()
-        Me.lblCollectionName = New Label()
-        Me.cboOrganismPicker = New ComboBox()
-        Me.lblOrganismPicker = New Label()
-        Me.lblAuthorityPicker = New Label()
-        Me.cboAuthorityPicker = New ComboBox()
-        Me.cmdAddOrganism = New Button()
-        Me.cmdAddAuthority = New Button()
-        Me.gbxMetaData = New GroupBox()
-        Me.lblDescription = New Label()
-        Me.txtDescription = New TextBox()
-        Me.cmdCancel = New Button()
-        Me.cmdOK = New Button()
-        Me.lblProteinCount = New Label()
-        Me.lblResidueCount = New Label()
-        Me.lblSource = New Label()
-        Me.txtSource = New TextBox()
-        Me.gbxMetaData.SuspendLayout()
-        Me.SuspendLayout()
-        '
-        'txtCollectionName
-        '
-        Me.txtCollectionName.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtCollectionName.BackColor = System.Drawing.SystemColors.Window
-        Me.txtCollectionName.Location = New System.Drawing.Point(17, 36)
-        Me.txtCollectionName.Name = "txtCollectionName"
-        Me.txtCollectionName.Size = New System.Drawing.Size(454, 24)
-        Me.txtCollectionName.TabIndex = 0
-        '
-        'lblCollectionName
-        '
-        Me.lblCollectionName.Location = New System.Drawing.Point(14, 19)
-        Me.lblCollectionName.Name = "lblCollectionName"
-        Me.lblCollectionName.Size = New System.Drawing.Size(140, 15)
-        Me.lblCollectionName.TabIndex = 1
-        Me.lblCollectionName.Text = "Name"
-        '
-        'cboOrganismPicker
-        '
-        Me.cboOrganismPicker.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cboOrganismPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboOrganismPicker.Location = New System.Drawing.Point(6, 262)
-        Me.cboOrganismPicker.Name = "cboOrganismPicker"
-        Me.cboOrganismPicker.Size = New System.Drawing.Size(418, 25)
-        Me.cboOrganismPicker.TabIndex = 2
-        '
-        'lblOrganismPicker
-        '
-        Me.lblOrganismPicker.Location = New System.Drawing.Point(3, 241)
-        Me.lblOrganismPicker.Name = "lblOrganismPicker"
-        Me.lblOrganismPicker.Size = New System.Drawing.Size(140, 20)
-        Me.lblOrganismPicker.TabIndex = 3
-        Me.lblOrganismPicker.Text = "Organism"
-        '
-        'lblAuthorityPicker
-        '
-        Me.lblAuthorityPicker.Location = New System.Drawing.Point(3, 292)
-        Me.lblAuthorityPicker.Name = "lblAuthorityPicker"
-        Me.lblAuthorityPicker.Size = New System.Drawing.Size(140, 20)
-        Me.lblAuthorityPicker.TabIndex = 4
-        Me.lblAuthorityPicker.Text = "Authority"
-        '
-        'cboAuthorityPicker
-        '
-        Me.cboAuthorityPicker.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cboAuthorityPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboAuthorityPicker.Location = New System.Drawing.Point(6, 313)
-        Me.cboAuthorityPicker.Name = "cboAuthorityPicker"
-        Me.cboAuthorityPicker.Size = New System.Drawing.Size(418, 25)
-        Me.cboAuthorityPicker.TabIndex = 5
-        '
-        'cmdAddOrganism
-        '
-        Me.cmdAddOrganism.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdAddOrganism.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cmdAddOrganism.Enabled = False
-        Me.cmdAddOrganism.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdAddOrganism.Location = New System.Drawing.Point(432, 262)
-        Me.cmdAddOrganism.Name = "cmdAddOrganism"
-        Me.cmdAddOrganism.Size = New System.Drawing.Size(28, 25)
-        Me.cmdAddOrganism.TabIndex = 10
-        Me.cmdAddOrganism.Text = "+"
-        '
-        'cmdAddAuthority
-        '
-        Me.cmdAddAuthority.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdAddAuthority.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cmdAddAuthority.Enabled = False
-        Me.cmdAddAuthority.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdAddAuthority.Location = New System.Drawing.Point(432, 313)
-        Me.cmdAddAuthority.Name = "cmdAddAuthority"
-        Me.cmdAddAuthority.Size = New System.Drawing.Size(28, 25)
-        Me.cmdAddAuthority.TabIndex = 11
-        Me.cmdAddAuthority.Text = "+"
-        '
-        'gbxMetaData
-        '
-        Me.gbxMetaData.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.gbxMetaData.Controls.Add(Me.lblSource)
-        Me.gbxMetaData.Controls.Add(Me.txtSource)
-        Me.gbxMetaData.Controls.Add(Me.cmdAddOrganism)
-        Me.gbxMetaData.Controls.Add(Me.cboAuthorityPicker)
-        Me.gbxMetaData.Controls.Add(Me.cmdAddAuthority)
-        Me.gbxMetaData.Controls.Add(Me.lblAuthorityPicker)
-        Me.gbxMetaData.Controls.Add(Me.txtCollectionName)
-        Me.gbxMetaData.Controls.Add(Me.cboOrganismPicker)
-        Me.gbxMetaData.Controls.Add(Me.lblCollectionName)
-        Me.gbxMetaData.Controls.Add(Me.lblOrganismPicker)
-        Me.gbxMetaData.Controls.Add(Me.lblDescription)
-        Me.gbxMetaData.Controls.Add(Me.txtDescription)
-        Me.gbxMetaData.Location = New System.Drawing.Point(11, 7)
-        Me.gbxMetaData.Name = "gbxMetaData"
-        Me.gbxMetaData.Size = New System.Drawing.Size(488, 354)
-        Me.gbxMetaData.TabIndex = 13
-        Me.gbxMetaData.TabStop = False
-        Me.gbxMetaData.Text = "Collection Information"
-        '
-        'lblDescription
-        '
-        Me.lblDescription.Location = New System.Drawing.Point(14, 68)
-        Me.lblDescription.Name = "lblDescription"
-        Me.lblDescription.Size = New System.Drawing.Size(140, 20)
-        Me.lblDescription.TabIndex = 1
-        Me.lblDescription.Text = "Description"
-        '
-        'txtDescription
-        '
-        Me.txtDescription.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtDescription.BackColor = System.Drawing.SystemColors.Window
-        Me.txtDescription.Location = New System.Drawing.Point(17, 89)
-        Me.txtDescription.MaxLength = 256
-        Me.txtDescription.Multiline = True
-        Me.txtDescription.Name = "txtDescription"
-        Me.txtDescription.Size = New System.Drawing.Size(454, 56)
-        Me.txtDescription.TabIndex = 0
-        '
-        'cmdCancel
-        '
-        Me.cmdCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cmdCancel.Location = New System.Drawing.Point(393, 391)
-        Me.cmdCancel.Name = "cmdCancel"
-        Me.cmdCancel.Size = New System.Drawing.Size(105, 28)
-        Me.cmdCancel.TabIndex = 14
-        Me.cmdCancel.Text = "Cancel"
-        '
-        'cmdOK
-        '
-        Me.cmdOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.cmdOK.Location = New System.Drawing.Point(275, 391)
-        Me.cmdOK.Name = "cmdOK"
-        Me.cmdOK.Size = New System.Drawing.Size(105, 28)
-        Me.cmdOK.TabIndex = 15
-        Me.cmdOK.Text = "OK"
-        '
-        'lblProteinCount
-        '
-        Me.lblProteinCount.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblProteinCount.Location = New System.Drawing.Point(11, 386)
-        Me.lblProteinCount.Name = "lblProteinCount"
-        Me.lblProteinCount.Size = New System.Drawing.Size(140, 14)
-        Me.lblProteinCount.TabIndex = 17
-        Me.lblProteinCount.Text = "Protein Count: -"
-        '
-        'lblResidueCount
-        '
-        Me.lblResidueCount.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblResidueCount.Location = New System.Drawing.Point(11, 405)
-        Me.lblResidueCount.Name = "lblResidueCount"
-        Me.lblResidueCount.Size = New System.Drawing.Size(140, 15)
-        Me.lblResidueCount.TabIndex = 16
-        Me.lblResidueCount.Text = "Residue Count: -"
-        '
-        'lblSource
-        '
-        Me.lblSource.Location = New System.Drawing.Point(14, 152)
-        Me.lblSource.Name = "lblSource"
-        Me.lblSource.Size = New System.Drawing.Size(300, 20)
-        Me.lblSource.TabIndex = 13
-        Me.lblSource.Text = "Source (person, url, ftp site, etc.)"
-        '
-        'txtSource
-        '
-        Me.txtSource.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtSource.BackColor = System.Drawing.SystemColors.Window
-        Me.txtSource.Location = New System.Drawing.Point(17, 173)
-        Me.txtSource.MaxLength = 256
-        Me.txtSource.Multiline = True
-        Me.txtSource.Name = "txtSource"
-        Me.txtSource.Size = New System.Drawing.Size(454, 56)
-        Me.txtSource.TabIndex = 12
-        '
-        'frmAddNewCollection
-        '
-        Me.AcceptButton = Me.cmdOK
-        Me.AutoScaleBaseSize = New System.Drawing.Size(7, 17)
-        Me.CancelButton = Me.cmdCancel
-        Me.ClientSize = New System.Drawing.Size(510, 430)
-        Me.Controls.Add(Me.lblProteinCount)
-        Me.Controls.Add(Me.lblResidueCount)
-        Me.Controls.Add(Me.cmdOK)
-        Me.Controls.Add(Me.cmdCancel)
-        Me.Controls.Add(Me.gbxMetaData)
-        Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.MaximumSize = New System.Drawing.Size(896, 475)
-        Me.MinimumSize = New System.Drawing.Size(448, 150)
-        Me.Name = "frmAddNewCollection"
-        Me.Text = "Upload a Protein Collection"
-        Me.gbxMetaData.ResumeLayout(False)
-        Me.gbxMetaData.PerformLayout()
-        Me.ResumeLayout(False)
+        // NOTE: The following procedure is required by the Windows Form Designer
+        // It can be modified using the Windows Form Designer.
+        // Do not modify it using the code editor.
+        internal GroupBox gbxMetaData;
+        internal TextBox txtCollectionName;
+        internal Label lblCollectionName;
+        internal ComboBox cboOrganismPicker;
+        internal Label lblOrganismPicker;
+        internal Label lblAuthorityPicker;
+        internal ComboBox cboAuthorityPicker;
+        internal Button cmdAddOrganism;
+        internal Button cmdAddAuthority;
+        internal Button cmdCancel;
+        internal Button cmdOK;
+        internal Label lblProteinCount;
+        internal Label lblResidueCount;
+        internal Label lblDescription;
+        internal Label lblSource;
+        internal TextBox txtSource;
+        internal TextBox txtDescription;
 
-    End Sub
+        [DebuggerStepThrough()]
+        private void InitializeComponent()
+        {
+            txtCollectionName = new TextBox();
+            txtCollectionName.Leave += new EventHandler(txtCollectionName_Leave);
+            lblCollectionName = new Label();
+            cboOrganismPicker = new ComboBox();
+            lblOrganismPicker = new Label();
+            lblAuthorityPicker = new Label();
+            cboAuthorityPicker = new ComboBox();
+            cmdAddOrganism = new Button();
+            cmdAddOrganism.Click += new EventHandler(cmdAddOrganism_Click);
+            cmdAddAuthority = new Button();
+            cmdAddAuthority.Click += new EventHandler(cmdAddAuthority_Click);
+            gbxMetaData = new GroupBox();
+            lblDescription = new Label();
+            txtDescription = new TextBox();
+            cmdCancel = new Button();
+            cmdCancel.Click += new EventHandler(cmdCancel_Click);
+            cmdOK = new Button();
+            cmdOK.Click += new EventHandler(cmdOK_Click);
+            lblProteinCount = new Label();
+            lblResidueCount = new Label();
+            lblSource = new Label();
+            txtSource = new TextBox();
+            gbxMetaData.SuspendLayout();
+            SuspendLayout();
+            //
+            // txtCollectionName
+            //
+            txtCollectionName.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtCollectionName.BackColor = SystemColors.Window;
+            txtCollectionName.Location = new Point(17, 36);
+            txtCollectionName.Name = "txtCollectionName";
+            txtCollectionName.Size = new Size(454, 24);
+            txtCollectionName.TabIndex = 0;
+            //
+            // lblCollectionName
+            //
+            lblCollectionName.Location = new Point(14, 19);
+            lblCollectionName.Name = "lblCollectionName";
+            lblCollectionName.Size = new Size(140, 15);
+            lblCollectionName.TabIndex = 1;
+            lblCollectionName.Text = "Name";
+            //
+            // cboOrganismPicker
+            //
+            cboOrganismPicker.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            cboOrganismPicker.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboOrganismPicker.Location = new Point(6, 262);
+            cboOrganismPicker.Name = "cboOrganismPicker";
+            cboOrganismPicker.Size = new Size(418, 25);
+            cboOrganismPicker.TabIndex = 2;
+            //
+            // lblOrganismPicker
+            //
+            lblOrganismPicker.Location = new Point(3, 241);
+            lblOrganismPicker.Name = "lblOrganismPicker";
+            lblOrganismPicker.Size = new Size(140, 20);
+            lblOrganismPicker.TabIndex = 3;
+            lblOrganismPicker.Text = "Organism";
+            //
+            // lblAuthorityPicker
+            //
+            lblAuthorityPicker.Location = new Point(3, 292);
+            lblAuthorityPicker.Name = "lblAuthorityPicker";
+            lblAuthorityPicker.Size = new Size(140, 20);
+            lblAuthorityPicker.TabIndex = 4;
+            lblAuthorityPicker.Text = "Authority";
+            //
+            // cboAuthorityPicker
+            //
+            cboAuthorityPicker.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            cboAuthorityPicker.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboAuthorityPicker.Location = new Point(6, 313);
+            cboAuthorityPicker.Name = "cboAuthorityPicker";
+            cboAuthorityPicker.Size = new Size(418, 25);
+            cboAuthorityPicker.TabIndex = 5;
+            //
+            // cmdAddOrganism
+            //
+            cmdAddOrganism.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            cmdAddOrganism.DialogResult = DialogResult.Cancel;
+            cmdAddOrganism.Enabled = false;
+            cmdAddOrganism.Font = new Font("Microsoft Sans Serif", 15.75f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdAddOrganism.Location = new Point(432, 262);
+            cmdAddOrganism.Name = "cmdAddOrganism";
+            cmdAddOrganism.Size = new Size(28, 25);
+            cmdAddOrganism.TabIndex = 10;
+            cmdAddOrganism.Text = "+";
+            //
+            // cmdAddAuthority
+            //
+            cmdAddAuthority.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            cmdAddAuthority.DialogResult = DialogResult.Cancel;
+            cmdAddAuthority.Enabled = false;
+            cmdAddAuthority.Font = new Font("Microsoft Sans Serif", 15.75f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdAddAuthority.Location = new Point(432, 313);
+            cmdAddAuthority.Name = "cmdAddAuthority";
+            cmdAddAuthority.Size = new Size(28, 25);
+            cmdAddAuthority.TabIndex = 11;
+            cmdAddAuthority.Text = "+";
+            //
+            // gbxMetaData
+            //
+            gbxMetaData.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            gbxMetaData.Controls.Add(lblSource);
+            gbxMetaData.Controls.Add(txtSource);
+            gbxMetaData.Controls.Add(cmdAddOrganism);
+            gbxMetaData.Controls.Add(cboAuthorityPicker);
+            gbxMetaData.Controls.Add(cmdAddAuthority);
+            gbxMetaData.Controls.Add(lblAuthorityPicker);
+            gbxMetaData.Controls.Add(txtCollectionName);
+            gbxMetaData.Controls.Add(cboOrganismPicker);
+            gbxMetaData.Controls.Add(lblCollectionName);
+            gbxMetaData.Controls.Add(lblOrganismPicker);
+            gbxMetaData.Controls.Add(lblDescription);
+            gbxMetaData.Controls.Add(txtDescription);
+            gbxMetaData.Location = new Point(11, 7);
+            gbxMetaData.Name = "gbxMetaData";
+            gbxMetaData.Size = new Size(488, 354);
+            gbxMetaData.TabIndex = 13;
+            gbxMetaData.TabStop = false;
+            gbxMetaData.Text = "Collection Information";
+            //
+            // lblDescription
+            //
+            lblDescription.Location = new Point(14, 68);
+            lblDescription.Name = "lblDescription";
+            lblDescription.Size = new Size(140, 20);
+            lblDescription.TabIndex = 1;
+            lblDescription.Text = "Description";
+            //
+            // txtDescription
+            //
+            txtDescription.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtDescription.BackColor = SystemColors.Window;
+            txtDescription.Location = new Point(17, 89);
+            txtDescription.MaxLength = 256;
+            txtDescription.Multiline = true;
+            txtDescription.Name = "txtDescription";
+            txtDescription.Size = new Size(454, 56);
+            txtDescription.TabIndex = 0;
+            //
+            // cmdCancel
+            //
+            cmdCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            cmdCancel.DialogResult = DialogResult.Cancel;
+            cmdCancel.Location = new Point(393, 391);
+            cmdCancel.Name = "cmdCancel";
+            cmdCancel.Size = new Size(105, 28);
+            cmdCancel.TabIndex = 14;
+            cmdCancel.Text = "Cancel";
+            //
+            // cmdOK
+            //
+            cmdOK.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            cmdOK.DialogResult = DialogResult.OK;
+            cmdOK.Location = new Point(275, 391);
+            cmdOK.Name = "cmdOK";
+            cmdOK.Size = new Size(105, 28);
+            cmdOK.TabIndex = 15;
+            cmdOK.Text = "OK";
+            //
+            // lblProteinCount
+            //
+            lblProteinCount.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lblProteinCount.Location = new Point(11, 386);
+            lblProteinCount.Name = "lblProteinCount";
+            lblProteinCount.Size = new Size(140, 14);
+            lblProteinCount.TabIndex = 17;
+            lblProteinCount.Text = "Protein Count: -";
+            //
+            // lblResidueCount
+            //
+            lblResidueCount.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lblResidueCount.Location = new Point(11, 405);
+            lblResidueCount.Name = "lblResidueCount";
+            lblResidueCount.Size = new Size(140, 15);
+            lblResidueCount.TabIndex = 16;
+            lblResidueCount.Text = "Residue Count: -";
+            //
+            // lblSource
+            //
+            lblSource.Location = new Point(14, 152);
+            lblSource.Name = "lblSource";
+            lblSource.Size = new Size(300, 20);
+            lblSource.TabIndex = 13;
+            lblSource.Text = "Source (person, url, ftp site, etc.)";
+            //
+            // txtSource
+            //
+            txtSource.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtSource.BackColor = SystemColors.Window;
+            txtSource.Location = new Point(17, 173);
+            txtSource.MaxLength = 256;
+            txtSource.Multiline = true;
+            txtSource.Name = "txtSource";
+            txtSource.Size = new Size(454, 56);
+            txtSource.TabIndex = 12;
+            //
+            // frmAddNewCollection
+            //
+            AcceptButton = cmdOK;
+            AutoScaleBaseSize = new Size(7, 17);
+            CancelButton = cmdCancel;
+            ClientSize = new Size(510, 430);
+            Controls.Add(lblProteinCount);
+            Controls.Add(lblResidueCount);
+            Controls.Add(cmdOK);
+            Controls.Add(cmdCancel);
+            Controls.Add(gbxMetaData);
+            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            MaximumSize = new Size(896, 475);
+            MinimumSize = new Size(448, 150);
+            Name = "frmAddNewCollection";
+            Text = "Upload a Protein Collection";
+            gbxMetaData.ResumeLayout(false);
+            gbxMetaData.PerformLayout();
+            ResumeLayout(false);
+        }
 
-#End Region
+        #endregion
 
-    Protected m_CollectionName As String
-    Protected m_Description As String
-    Protected m_CollectionSource As String
+        protected string m_CollectionName;
+        protected string m_Description;
+        protected string m_CollectionSource;
 
-    Protected m_OrganismID As Integer
-    Protected m_AnnotationTypeID As Integer
+        protected int m_OrganismID;
+        protected int m_AnnotationTypeID;
 
-    Protected m_AnnotationTypes As DataTable
-    Protected m_Organisms As DataTable
+        protected DataTable m_AnnotationTypes;
+        protected DataTable m_Organisms;
 
-    Protected m_Local_File As Boolean
+        protected bool m_Local_File;
 
-    Private Sub frmAddNewCollection_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        If IsLocalFile Then
-            cboAuthorityPicker.Enabled = True
-            cboOrganismPicker.Enabled = True
-            'txtCollectionName.Visible = False
-            txtCollectionName.Text = m_CollectionName
+        private void frmAddNewCollection_Load(object sender, EventArgs e)
+        {
+            if (IsLocalFile)
+            {
+                cboAuthorityPicker.Enabled = true;
+                cboOrganismPicker.Enabled = true;
+                // txtCollectionName.Visible = false;
+                txtCollectionName.Text = m_CollectionName;
 
-            m_Organisms.Rows(0).Item("Display_Name") = " -- Select an Organism --"
-            m_Organisms.Rows(0).Item("ID") = 0
-            m_Organisms.AcceptChanges()
+                m_Organisms.Rows[0]["Display_Name"] = " -- Select an Organism --";
+                m_Organisms.Rows[0]["ID"] = 0;
+                m_Organisms.AcceptChanges();
 
-            BindToCombo(cboAuthorityPicker, m_AnnotationTypes, "Display_Name", "ID")
-            BindToCombo(cboOrganismPicker, m_Organisms, "Display_Name", "ID")
-            'cboOrganismPicker.Items.RemoveAt(0)
-            cboOrganismPicker.SelectedValue = 1
-            AddHandler cboOrganismPicker.SelectedIndexChanged, AddressOf cboOrganismPicker_SelectedIndexChanged
-            AddHandler cboAuthorityPicker.SelectedIndexChanged, AddressOf cboAuthorityPicker_SelectedIndexChanged
+                BindToCombo(cboAuthorityPicker, m_AnnotationTypes, "Display_Name", "ID");
+                BindToCombo(cboOrganismPicker, m_Organisms, "Display_Name", "ID");
+                //cboOrganismPicker.Items.RemoveAt(0);
+                cboOrganismPicker.SelectedValue = 1;
+                cboOrganismPicker.SelectedIndexChanged += cboOrganismPicker_SelectedIndexChanged;
+                cboAuthorityPicker.SelectedIndexChanged += cboAuthorityPicker_SelectedIndexChanged;
+            }
+            else
+            {
+                txtCollectionName.Visible = true;
+                txtCollectionName.Text = m_CollectionName;
+                BindToCombo(cboOrganismPicker, m_Organisms, "Display_Name", "ID");
+                cboOrganismPicker.SelectedValue = m_OrganismID;
+                BindToCombo(cboAuthorityPicker, m_AnnotationTypes, "Display_Name", "ID");
+                cboAuthorityPicker.SelectedValue = m_AnnotationTypeID;
+                cboAuthorityPicker.Enabled = false;
+                cboOrganismPicker.Enabled = false;
+            }
+        }
 
-        Else
-            txtCollectionName.Visible = True
-            txtCollectionName.Text = m_CollectionName
-            BindToCombo(cboOrganismPicker, m_Organisms, "Display_Name", "ID")
-            cboOrganismPicker.SelectedValue = m_OrganismID
-            BindToCombo(cboAuthorityPicker, m_AnnotationTypes, "Display_Name", "ID")
-            cboAuthorityPicker.SelectedValue = m_AnnotationTypeID
-            cboAuthorityPicker.Enabled = False
-            cboOrganismPicker.Enabled = False
+        internal bool IsLocalFile
+        {
+            get
+            {
+                return m_Local_File;
+            }
 
-        End If
+            set
+            {
+                m_Local_File = value;
+            }
+        }
 
+        internal string CollectionName
+        {
+            get
+            {
+                return m_CollectionName;
+            }
 
+            set
+            {
+                m_CollectionName = value;
+            }
+        }
 
-    End Sub
+        internal string CollectionDescription
+        {
+            get
+            {
+                return m_Description;
+            }
 
-    Friend Property IsLocalFile As Boolean
-        Get
-            Return m_Local_File
-        End Get
-        Set
-            m_Local_File = Value
-        End Set
-    End Property
+            set
+            {
+                m_Description = value;
+            }
+        }
 
-    Friend Property CollectionName As String
-        Get
-            Return m_CollectionName
-        End Get
-        Set
-            m_CollectionName = Value
-        End Set
-    End Property
+        internal string CollectionSource
+        {
+            get
+            {
+                return m_CollectionSource;
+            }
 
-    Friend Property CollectionDescription As String
-        Get
-            Return m_Description
-        End Get
-        Set
-            m_Description = Value
-        End Set
-    End Property
+            set
+            {
+                m_CollectionSource = value;
+            }
+        }
 
-    Friend Property CollectionSource As String
-        Get
-            Return m_CollectionSource
-        End Get
-        Set
-            m_CollectionSource = Value
-        End Set
-    End Property
+        internal DataTable OrganismList
+        {
+            set
+            {
+                m_Organisms = value;
+            }
+        }
 
-    Friend WriteOnly Property OrganismList As DataTable
-        Set
-            m_Organisms = Value
-        End Set
-    End Property
+        internal DataTable AnnotationTypes
+        {
+            set
+            {
+                m_AnnotationTypes = value;
+            }
+        }
 
-    Friend WriteOnly Property AnnotationTypes As DataTable
-        Set
-            m_AnnotationTypes = Value
-        End Set
-    End Property
+        internal int OrganismID
+        {
+            get
+            {
+                return m_OrganismID;
+            }
 
-    Friend Property OrganismID As Integer
-        Get
-            Return m_OrganismID
-        End Get
-        Set
-            m_OrganismID = Value
-        End Set
-    End Property
+            set
+            {
+                m_OrganismID = value;
+            }
+        }
 
-    Friend Property AnnotationTypeID As Integer
-        Get
-            Return m_AnnotationTypeID
-        End Get
-        Set
-            m_AnnotationTypeID = Value
-        End Set
-    End Property
+        internal int AnnotationTypeID
+        {
+            get
+            {
+                return m_AnnotationTypeID;
+            }
 
+            set
+            {
+                m_AnnotationTypeID = value;
+            }
+        }
 
-    Protected Sub BindToCombo(
-        cbo As ComboBox,
-        list As DataTable,
-        DisplayMember As String,
-        ValueMember As String)
+        protected void BindToCombo(
+            ComboBox cbo,
+            DataTable list,
+            string DisplayMember,
+            string ValueMember)
+        {
+            //foreach (DataRow dr in list.Rows)
+            //    Debug.WriteLine(dr[0].ToString() + ", " + dr[1].ToString() + ", " + dr[2].ToString() + ", ");
 
-        'Dim dr As DataRow
-        'For Each dr In list.Rows
-        '    Debug.WriteLine(dr.Item(0).ToString & ", " & dr.Item(1).ToString & ", " & dr.Item(2).ToString & ", ")
-        'Next
+            cbo.DataSource = list;
+            cbo.DisplayMember = DisplayMember;
+            //cbo.DisplayMember = list.Columns["Display_Name"].ColumnName.ToString();
+            cbo.ValueMember = ValueMember;
+            //cbo.ValueMember = list.Columns["ID"].ColumnName.ToString();
+        }
 
-        With cbo
-            .DataSource = list
-            .DisplayMember = DisplayMember
-            '.DisplayMember = list.Columns("Display_Name").ColumnName.ToString
-            .ValueMember = ValueMember
-            '.ValueMember = list.Columns("ID").ColumnName.ToString
-        End With
+        #region "Event Handlers"
 
-    End Sub
+        private void txtCollectionName_Leave(object sender, EventArgs e)
+        {
+            m_CollectionName = txtCollectionName.Text;
+        }
 
-#Region " Event Handlers "
+        private void cboOrganismPicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            m_OrganismID = Conversions.ToInteger(cboOrganismPicker.SelectedValue);
+            if (m_OrganismID == 0)
+            {
+                cmdOK.Enabled = false;
+            }
+            else
+            {
+                cmdOK.Enabled = true;
+            }
+        }
 
-    Private Sub txtCollectionName_Leave(sender As Object, e As EventArgs) Handles txtCollectionName.Leave
-        m_CollectionName = txtCollectionName.Text
-    End Sub
+        private void cboAuthorityPicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            m_AnnotationTypeID = Conversions.ToInteger(cboAuthorityPicker.SelectedValue);
+        }
 
-    Private Sub cboOrganismPicker_SelectedIndexChanged(sender As Object, e As EventArgs)
-        m_OrganismID = CInt(cboOrganismPicker.SelectedValue)
-        If m_OrganismID = 0 Then
-            cmdOK.Enabled = False
-        Else
-            cmdOK.Enabled = True
-        End If
+        private void cmdAddOrganism_Click(object sender, EventArgs e)
+        {
+        }
 
-    End Sub
+        private void cmdAddAuthority_Click(object sender, EventArgs e)
+        {
+        }
 
-    Private Sub cboAuthorityPicker_SelectedIndexChanged(sender As Object, e As EventArgs)
-        m_AnnotationTypeID = CInt(cboAuthorityPicker.SelectedValue)
-    End Sub
+        private void cmdOK_Click(object sender, EventArgs e)
+        {
+            m_CollectionName = txtCollectionName.Text;
+            m_Description = txtDescription.Text;
+            m_CollectionSource = txtSource.Text;
+            m_OrganismID = Conversions.ToInteger(cboOrganismPicker.SelectedValue);
+            m_AnnotationTypeID = Conversions.ToInteger(cboAuthorityPicker.SelectedValue);
+        }
 
-    Private Sub cmdAddOrganism_Click(sender As Object, e As EventArgs) Handles cmdAddOrganism.Click
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            m_CollectionName = null;
+            m_OrganismID = default;
+            m_AnnotationTypeID = default;
+        }
 
-    End Sub
-
-    Private Sub cmdAddAuthority_Click(sender As Object, e As EventArgs) Handles cmdAddAuthority.Click
-
-    End Sub
-
-    Private Sub cmdOK_Click(sender As Object, e As EventArgs) Handles cmdOK.Click
-        m_CollectionName = txtCollectionName.Text
-        m_Description = txtDescription.Text
-        m_CollectionSource = txtSource.Text
-        m_OrganismID = CInt(cboOrganismPicker.SelectedValue)
-        m_AnnotationTypeID = CInt(cboAuthorityPicker.SelectedValue)
-    End Sub
-
-    Private Sub cmdCancel_Click(sender As Object, e As EventArgs) Handles cmdCancel.Click
-        m_CollectionName = Nothing
-        m_OrganismID = Nothing
-        m_AnnotationTypeID = Nothing
-    End Sub
-
-
-#End Region
-
-End Class
+        #endregion
+    }
+}

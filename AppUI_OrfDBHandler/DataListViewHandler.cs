@@ -1,68 +1,79 @@
-Public Class DataListViewHandler
+﻿using System.Data;
+using System.Windows.Forms;
+using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.CompilerServices;
 
-    Public Sub New(listViewToFill As ListView)
-        m_LVW = listViewToFill
-    End Sub
+namespace AppUI_OrfDBHandler
+{
+    public class DataListViewHandler
+    {
+        public DataListViewHandler(ListView listViewToFill)
+        {
+            m_LVW = listViewToFill;
+        }
 
-    Private ReadOnly m_LVW As ListView
+        private readonly ListView m_LVW;
 
-    Public Sub Load(listTable As DataTable)
-        FillListView(m_LVW, listTable)
-    End Sub
+        public void Load(DataTable listTable)
+        {
+            FillListView(m_LVW, listTable);
+        }
 
-    Public Sub Load(listTable As DataTable, quickFilterCriteria As String)
-        FillFilteredListView(m_LVW, listTable, quickFilterCriteria)
-    End Sub
+        public void Load(DataTable listTable, string quickFilterCriteria)
+        {
+            FillFilteredListView(m_LVW, listTable, quickFilterCriteria);
+        }
 
-    Private Sub SetupPickerListView(
-        lvw As ListView,
-        dt As DataTable,
-        Optional filterCriteria As String = "")
+        private void SetupPickerListView(
+            ListView lvw,
+            DataTable dt,
+            string filterCriteria = "")
+        {
+            DataRow[] itemRows;
+            string filterString = string.Empty;
 
-        Dim itemRow As DataRow
-        Dim itemRows() As DataRow
-        Dim filterString As String = String.Empty
+            if (Strings.Len(filterCriteria) != 0)
+            {
+                filterString = "[Name] LIKE '%" + filterCriteria + "%' " +
+                    "OR [Description] LIKE '%" + filterCriteria + "%'";
+            }
 
-        If Len(filterCriteria) <> 0 Then
-            filterString = "[Name] LIKE '%" & filterCriteria & "%' " &
-                "OR [Description] LIKE '%" & filterCriteria & "%'"
-        End If
+            lvw.BeginUpdate();
 
-        lvw.BeginUpdate()
+            itemRows = dt.Select(filterString, "Name");
 
-        itemRows = dt.Select(filterString, "Name")
+            //NumberLoadedStatus?.Invoke(itemRows.Length, dt.Rows.Count);
 
-        'RaiseEvent NumberLoadedStatus(itemRows.Length, dt.Rows.Count)
+            // proteinCount = Conversions.ToInteger(itemRows.Length);
 
-        ' proteinCount = CInt(itemRows.Length)
+            //LoadStart?.Invoke("Filling List...");
 
-        'RaiseEvent LoadStart("Filling List...")
+            foreach (var itemRow in itemRows)
+            {
+                var item = new ListViewItem();
+                item.Text = Conversions.ToString(itemRow[0]);
+                item.SubItems.Add(Conversions.ToString(itemRow[1]));
+                lvw.Items.Add(item);
+            }
 
-        For Each itemRow In itemRows
-            Dim item As New ListViewItem
-            item.Text = CStr(itemRow.Item(0))
-            item.SubItems.Add(CStr(itemRow.Item(1)))
-            lvw.Items.Add(item)
-        Next
+            lvw.EndUpdate();
+        }
 
-        lvw.EndUpdate()
-    End Sub
+        protected void FillListView(
+            ListView listViewToFill,
+            DataTable listData)
+        {
+            listViewToFill.Items.Clear();
+            SetupPickerListView(listViewToFill, listData);
+        }
 
-    Protected Sub FillListView(
-        listViewToFill As ListView,
-        listData As DataTable)
-
-        listViewToFill.Items.Clear()
-        SetupPickerListView(listViewToFill, listData)
-    End Sub
-
-    Protected Sub FillFilteredListView(
-        listViewToFill As ListView,
-        listData As DataTable,
-        filterString As String)
-
-        listViewToFill.Items.Clear()
-        SetupPickerListView(listViewToFill, listData, filterString)
-    End Sub
-
-End Class
+        protected void FillFilteredListView(
+            ListView listViewToFill,
+            DataTable listData,
+            string filterString)
+        {
+            listViewToFill.Items.Clear();
+            SetupPickerListView(listViewToFill, listData, filterString);
+        }
+    }
+}

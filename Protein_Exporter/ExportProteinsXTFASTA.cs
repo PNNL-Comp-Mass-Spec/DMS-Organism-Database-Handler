@@ -1,295 +1,310 @@
-Option Strict On
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Text;
+using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.CompilerServices;
+using PRISM;
+using PRISMWin;
+using Protein_Storage;
+
+namespace Protein_Exporter
+{
+    public class ExportProteinsXTFASTA : ExportProteins
+    {
+        public ExportProteinsXTFASTA(GetFASTAFromDMSForward exportComponent)
+            : base(exportComponent)
+        {
+        }
+
+        private const string HEADER_STRING = "xbang-pro-fasta-format";
+
+        /// <summary>
+        /// Export the proteins to the given file
+        /// </summary>
+        /// <param name="proteins"></param>
+        /// <param name="destinationPath">Destination file path; will get updated with the final path</param>
+        /// <returns></returns>
+        public override string Export(
+            ProteinStorage proteins,
+            ref string destinationPath)
+        {
+            const int REQUIRED_SIZE_MB = 150;
+
+            var buffer = Encoding.Default.GetBytes(HEADER_STRING);
+
+            Array.Resize(ref buffer, 256);
+
+            long currentFreeSpaceBytes;
+            string errorMessage = string.Empty;
+
+            bool success = DiskInfo.GetDiskFreeSpace(destinationPath, out currentFreeSpaceBytes, out errorMessage);
+            if (!success)
+            {
+                if (string.IsNullOrEmpty(errorMessage))
+                    errorMessage = "DiskInfo.GetDiskFreeSpace returned a blank error message";
+                throw new IOException("Unable to create FASTA file at " + destinationPath + ". " + errorMessage);
+            }
+
+            if (!FileTools.ValidateFreeDiskSpace(destinationPath, REQUIRED_SIZE_MB, currentFreeSpaceBytes, out errorMessage))
+            {
+                if (string.IsNullOrEmpty(errorMessage))
+                    errorMessage = "FileTools.ValidateFreeDiskSpace returned a blank error message";
+                throw new IOException("Unable to create FASTA file at " + destinationPath + ". " + errorMessage);
+            }
+
+            using (var bw = new BinaryWriter(File.OpenWrite(destinationPath)))
+            {
+                bw.BaseStream.Seek(0L, SeekOrigin.Begin);
+
+                int proteinLength;
+
+                string tmpSeq;
+
+                ProteinStorageEntry tmpPC;
+                int tmpNum;
+
+                OnExportStart("Writing to X!Tandem formatted FASTA File");
+
+                int counterMax = proteins.ProteinCount;
+                var counter = default(int);
+
+                var proteinArray = new SortedSet<string>();
+
+                var proteinEnum = proteins.GetEnumerator();
+
+                while (proteinEnum.MoveNext())
+                    proteinArray.Add(proteinEnum.Current.Key);
+
+                var encoding = new ASCIIEncoding();
+
+                int EventTriggerThresh;
+                if (counterMax <= 25)
+                {
+                    EventTriggerThresh = 1;
+                }
+                else
+                {
+                    EventTriggerThresh = (int)Math.Round(counterMax / 25d);
+                }
+
+                bw.Write(buffer);
+
+                foreach (var tmpName in proteinArray)
+                {
+                    OnExportStart("Writing: " + tmpName);
+                    tmpPC = proteins.GetProtein(tmpName);
+                    tmpSeq = tmpPC.Sequence;
+
+                    counter += 1;
+
+                    if (counter % EventTriggerThresh == 0)
+                    {
+                        OnProgressUpdate("Processing: " + tmpName, Math.Round(counter / (double)counterMax, 3));
+                    }
+
+                    proteinLength = tmpSeq.Length;
+
+                    Array.Clear(buffer, 0, 4);
+                    tmpNum = tmpName.Length + 1;
+                    buffer = ConvIntegerToByteArray(tmpNum, 4);
+                    Array.Reverse(buffer);
 
-Imports System.Collections.Generic
-Imports System.IO
-Imports System.Text
-Imports PRISM
-Imports PRISMWin
-Imports Protein_Storage
-
-Public Class ExportProteinsXTFASTA
-    Inherits ExportProteins
-
-    Public Sub New(exportComponent As GetFASTAFromDMSForward)
-        MyBase.New(exportComponent)
-    End Sub
-
-    Const HEADER_STRING As String = "xbang-pro-fasta-format"
-
-    ''' <summary>
-    ''' Export the proteins to the given file
-    ''' </summary>
-    ''' <param name="proteins"></param>
-    ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
-    ''' <returns></returns>
-    Public Overloads Overrides Function Export(
-      proteins As ProteinStorage,
-      ByRef destinationPath As String) As String
-
-        Const REQUIRED_SIZE_MB = 150
-
-        Dim buffer = Encoding.Default.GetBytes(HEADER_STRING)
-
-        ReDim Preserve buffer(255)
-
-        Dim currentFreeSpaceBytes As Int64
-        Dim errorMessage As String = String.Empty
-
-        Dim success = DiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
-        If Not success Then
-            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "DiskInfo.GetDiskFreeSpace returned a blank error message"
-            Throw New IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
-        End If
-
-        If Not FileTools.ValidateFreeDiskSpace(destinationPath, REQUIRED_SIZE_MB, currentFreeSpaceBytes, errorMessage) Then
-            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "FileTools.ValidateFreeDiskSpace returned a blank error message"
-            Throw New IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
-        End If
-
-        Using bw = New BinaryWriter(File.OpenWrite(destinationPath))
-
-            bw.BaseStream.Seek(0, SeekOrigin.Begin)
-
-            Dim proteinLength As Integer
-
-            Dim tmpSeq As String
-            Dim tmpName As String
-            Dim tmpPC As ProteinStorageEntry
-            Dim tmpNum As Int32
-
-            OnExportStart("Writing to X!Tandem formatted FASTA File")
-
-            Dim counterMax As Integer = proteins.ProteinCount
-            Dim counter As Integer
-
-            Dim proteinArray As New SortedSet(Of String)
-
-            Dim proteinEnum = proteins.GetEnumerator
-
-            While proteinEnum.MoveNext()
-                proteinArray.Add(proteinEnum.Current.Key)
-            End While
-
-            Dim encoding As New ASCIIEncoding
-
-            Dim EventTriggerThresh As Integer
-            If counterMax <= 25 Then
-                EventTriggerThresh = 1
-            Else
-                EventTriggerThresh = CInt(counterMax / 25)
-            End If
-
-            bw.Write(buffer)
-
-            For Each tmpName In proteinArray
-                OnExportStart("Writing: " + tmpName)
-                tmpPC = proteins.GetProtein(tmpName)
-                tmpSeq = tmpPC.Sequence
-
-                counter += 1
-
-                If (counter Mod EventTriggerThresh) = 0 Then
-                    OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
-
-                End If
-
-                proteinLength = tmpSeq.Length
-
-                Array.Clear(buffer, 0, 4)
-                tmpNum = tmpName.Length + 1
-                buffer = ConvIntegerToByteArray(tmpNum, 4)
-                Array.Reverse(buffer)
-
-                bw.Write(buffer)
-                buffer = encoding.GetBytes(tmpName)
-                bw.Write(buffer)
-                bw.Write(ConvIntegerToByteArray(0, 1))
-
-                Array.Clear(buffer, 0, 4)
-                tmpNum = proteinLength + 1
-                buffer = ConvIntegerToByteArray(tmpNum, 4)
-                Array.Reverse(buffer)
-
-                bw.Write(buffer)
-                buffer = encoding.GetBytes(tmpSeq)
-                bw.Write(buffer)
-                bw.Write(ConvIntegerToByteArray(0, 1))
-
-
-            Next
-
-        End Using
-
-        Dim fingerprint As String = GenerateFileAuthenticationHash(destinationPath)
-
-        OnExportEnd()
-
-        Return fingerprint
-
-    End Function
-
-    ''' <summary>
-    ''' Export the proteins to the given file
-    ''' </summary>
-    ''' <param name="proteinTables"></param>
-    ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
-    ''' <returns></returns>
-    Public Overloads Overrides Function Export(
-      proteinTables As DataSet,
-      ByRef destinationPath As String) As String
-
-        Const REQUIRED_SIZE_MB = 150
-
-        Dim buffer = Encoding.Default.GetBytes(HEADER_STRING)
-
-        ReDim Preserve buffer(255)
-
-        Dim currentFreeSpaceBytes As Int64
-        Dim errorMessage As String = String.Empty
-
-        Dim success = DiskInfo.GetDiskFreeSpace(destinationPath, currentFreeSpaceBytes, errorMessage)
-        If Not success Then
-            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "DiskInfo.GetDiskFreeSpace returned a blank error message"
-            Throw New IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
-        End If
-
-        If Not FileTools.ValidateFreeDiskSpace(destinationPath, REQUIRED_SIZE_MB, currentFreeSpaceBytes, errorMessage) Then
-            If String.IsNullOrEmpty(errorMessage) Then errorMessage = "FileTools.ValidateFreeDiskSpace returned a blank error message"
-            Throw New IOException("Unable to create FASTA file at " & destinationPath & ". " & errorMessage)
-        End If
-
-        Using bw = New BinaryWriter(File.OpenWrite(destinationPath))
-
-            bw.BaseStream.Seek(0, SeekOrigin.Begin)
-
-            'Dim e As IEnumerator = Proteins.GetEnumerator
-
-            Dim proteinLength As Integer
-
-            Dim proteinTable As DataTable
-
-            Dim dr As DataRow
-            Dim foundRows() As DataRow
-
-            Dim tmpSeq As String
-            Dim tmpName As String
-
-            Dim tmpNum As Int32
-
-            OnExportStart("Writing to X!Tandem formatted FASTA File")
-
-            'Dim counterMax As Integer = Proteins.ProteinCount
-            Dim counterMax As Integer ' = ProteinTable.Rows.Count
-            Dim counter As Integer
-
-            For Each proteinTable In proteinTables.Tables
-                OnExportStart("Writing: " + proteinTable.TableName)
-                counterMax = proteinTable.Rows.Count
-                foundRows = proteinTable.Select("", "Name")
-
-                Dim encoding As New ASCIIEncoding
-
-                Dim EventTriggerThresh As Integer
-                If counterMax <= 25 Then
-                    EventTriggerThresh = 1
-                Else
-                    EventTriggerThresh = CInt(counterMax / 25)
-                End If
-
-                bw.Write(buffer)
-
-                For Each dr In foundRows
-                    'tmpPC = Proteins.GetProtein(tmpName)
-                    'tmpSeq = tmpPC.Sequence
-                    tmpSeq = dr.Item("Sequence").ToString
-                    tmpName = dr.Item("Name").ToString
-                    'tmpDesc = dr.Item("Description").ToString
-
-                    counter += 1
-
-                    If (counter Mod EventTriggerThresh) = 0 Then
-                        OnProgressUpdate("Processing: " + tmpName, Math.Round(CDbl(counter / counterMax), 3))
-                    End If
-
-                    proteinLength = tmpSeq.Length
-
-                    Array.Clear(buffer, 0, 4)
-                    tmpNum = tmpName.Length + 1
-                    buffer = ConvIntegerToByteArray(tmpNum, 4)
-                    Array.Reverse(buffer)
-
-                    bw.Write(buffer)
-                    buffer = encoding.GetBytes(tmpName)
-                    bw.Write(buffer)
-                    bw.Write(ConvIntegerToByteArray(0, 1))
-
-                    Array.Clear(buffer, 0, 4)
-                    tmpNum = proteinLength + 1
-                    buffer = ConvIntegerToByteArray(tmpNum, 4)
-                    Array.Reverse(buffer)
-
-                    bw.Write(buffer)
-                    buffer = encoding.GetBytes(tmpSeq)
-                    bw.Write(buffer)
-                    bw.Write(ConvIntegerToByteArray(0, 1))
-
-
-                Next
-            Next
-
-        End Using
-
-        Dim fingerprint As String = GenerateFileAuthenticationHash(destinationPath)
-
-        OnExportEnd()
-
-        Return fingerprint
-
-    End Function
-
-    ''' <summary>
-    ''' Export the proteins to the given file
-    ''' </summary>
-    ''' <param name="proteinTable"></param>
-    ''' <param name="destinationPath">Destination file path; will get updated with the final path</param>
-    ''' <returns></returns>
-    Public Overloads Overrides Function Export(
-      proteinTable As DataTable,
-      ByRef destinationPath As String) As String
-
-        ' Not implemented for this class
-        Return String.Empty
-
-    End Function
-
-    Friend Function ConvIntegerToByteArray(n As Long, lg As Integer) As Byte()
-        'converts an integer to a byte array of length lg
-        Dim m = New Byte(lg - 1) {}
-        Dim i, k As Integer
-        Dim h As String
-        h = Hex(n).PadLeft(16, "0"c)
-        k = 16
-        For i = lg - 1 To 0 Step -1
-            k = k - 2
-            m(i) = CByte("&H" & h.Substring(k, 2))
-        Next
-        Return m
-    End Function
-
-    Public Function ConvByteArrayToInteger(b As Byte(), Optional ln As Integer = 0, Optional sidx As Integer = 0) As Long
-        Dim i As Integer
-        Dim j, k As Long
-        If ln = 0 Then ln = UBound(b) + 1
-        ln = sidx + ln - 1
-        k = 1
-        j = CInt(b(ln))
-        For i = ln - 1 To sidx Step -1
-            k = 256 * k
-            j = j + k * b(i)
-        Next
-        Return j
-    End Function
-
-
-
-End Class
+                    bw.Write(buffer);
+                    buffer = encoding.GetBytes(tmpName);
+                    bw.Write(buffer);
+                    bw.Write(ConvIntegerToByteArray(0L, 1));
+
+                    Array.Clear(buffer, 0, 4);
+                    tmpNum = proteinLength + 1;
+                    buffer = ConvIntegerToByteArray(tmpNum, 4);
+                    Array.Reverse(buffer);
+
+                    bw.Write(buffer);
+                    buffer = encoding.GetBytes(tmpSeq);
+                    bw.Write(buffer);
+                    bw.Write(ConvIntegerToByteArray(0L, 1));
+                }
+            }
+
+            string fingerprint = GenerateFileAuthenticationHash(destinationPath);
+
+            OnExportEnd();
+
+            return fingerprint;
+        }
+
+        /// <summary>
+        /// Export the proteins to the given file
+        /// </summary>
+        /// <param name="proteinTables"></param>
+        /// <param name="destinationPath">Destination file path; will get updated with the final path</param>
+        /// <returns></returns>
+        public override string Export(
+            DataSet proteinTables,
+            ref string destinationPath)
+        {
+            const int REQUIRED_SIZE_MB = 150;
+
+            var buffer = Encoding.Default.GetBytes(HEADER_STRING);
+
+            Array.Resize(ref buffer, 256);
+
+            long currentFreeSpaceBytes;
+            string errorMessage = string.Empty;
+
+            bool success = DiskInfo.GetDiskFreeSpace(destinationPath, out currentFreeSpaceBytes, out errorMessage);
+            if (!success)
+            {
+                if (string.IsNullOrEmpty(errorMessage))
+                    errorMessage = "DiskInfo.GetDiskFreeSpace returned a blank error message";
+                throw new IOException("Unable to create FASTA file at " + destinationPath + ". " + errorMessage);
+            }
+
+            if (!FileTools.ValidateFreeDiskSpace(destinationPath, REQUIRED_SIZE_MB, currentFreeSpaceBytes, out errorMessage))
+            {
+                if (string.IsNullOrEmpty(errorMessage))
+                    errorMessage = "FileTools.ValidateFreeDiskSpace returned a blank error message";
+                throw new IOException("Unable to create FASTA file at " + destinationPath + ". " + errorMessage);
+            }
+
+            using (var bw = new BinaryWriter(File.OpenWrite(destinationPath)))
+            {
+                bw.BaseStream.Seek(0L, SeekOrigin.Begin);
+
+                // IEnumerator e = Proteins.GetEnumerator;
+
+                int proteinLength;
+
+                DataRow[] foundRows;
+
+                string tmpSeq;
+                string tmpName;
+
+                int tmpNum;
+
+                OnExportStart("Writing to X!Tandem formatted FASTA File");
+
+                // int counterMax = Proteins.ProteinCount;
+                int counterMax; // = ProteinTable.Rows.Count;
+                var counter = default(int);
+
+                foreach (DataTable proteinTable in proteinTables.Tables)
+                {
+                    OnExportStart("Writing: " + proteinTable.TableName);
+                    counterMax = proteinTable.Rows.Count;
+                    foundRows = proteinTable.Select("", "Name");
+
+                    var encoding = new ASCIIEncoding();
+
+                    int EventTriggerThresh;
+                    if (counterMax <= 25)
+                    {
+                        EventTriggerThresh = 1;
+                    }
+                    else
+                    {
+                        EventTriggerThresh = (int)Math.Round(counterMax / 25d);
+                    }
+
+                    bw.Write(buffer);
+
+                    foreach (var dr in foundRows)
+                    {
+                        // tmpPC = Proteins.GetProtein(tmpName);
+                        // tmpSeq = tmpPC.Sequence;
+                        tmpSeq = dr["Sequence"].ToString();
+                        tmpName = dr["Name"].ToString();
+                        // tmpDesc = dr.Item("Description").ToString();
+
+                        counter += 1;
+
+                        if (counter % EventTriggerThresh == 0)
+                        {
+                            OnProgressUpdate("Processing: " + tmpName, Math.Round(counter / (double)counterMax, 3));
+                        }
+
+                        proteinLength = tmpSeq.Length;
+
+                        Array.Clear(buffer, 0, 4);
+                        tmpNum = tmpName.Length + 1;
+                        buffer = ConvIntegerToByteArray(tmpNum, 4);
+                        Array.Reverse(buffer);
+
+                        bw.Write(buffer);
+                        buffer = encoding.GetBytes(tmpName);
+                        bw.Write(buffer);
+                        bw.Write(ConvIntegerToByteArray(0L, 1));
+
+                        Array.Clear(buffer, 0, 4);
+                        tmpNum = proteinLength + 1;
+                        buffer = ConvIntegerToByteArray(tmpNum, 4);
+                        Array.Reverse(buffer);
+
+                        bw.Write(buffer);
+                        buffer = encoding.GetBytes(tmpSeq);
+                        bw.Write(buffer);
+                        bw.Write(ConvIntegerToByteArray(0L, 1));
+                    }
+                }
+            }
+
+            string fingerprint = GenerateFileAuthenticationHash(destinationPath);
+
+            OnExportEnd();
+
+            return fingerprint;
+        }
+
+        /// <summary>
+        /// Export the proteins to the given file
+        /// </summary>
+        /// <param name="proteinTable"></param>
+        /// <param name="destinationPath">Destination file path; will get updated with the final path</param>
+        /// <returns></returns>
+        public override string Export(
+            DataTable proteinTable,
+            ref string destinationPath)
+        {
+
+            // Not implemented for this class
+            return string.Empty;
+        }
+
+        internal byte[] ConvIntegerToByteArray(long n, int lg)
+        {
+            // converts an integer to a byte array of length lg
+            var m = new byte[lg];
+            int i, k;
+            string h;
+            h = Conversion.Hex(n).PadLeft(16, '0');
+            k = 16;
+            for (i = lg - 1; i >= 0; i -= 1)
+            {
+                k = k - 2;
+                m[i] = Conversions.ToByte("&H" + h.Substring(k, 2));
+            }
+
+            return m;
+        }
+
+        public long ConvByteArrayToInteger(byte[] b, int ln = 0, int sidx = 0)
+        {
+            int i;
+            long j, k;
+            if (ln == 0)
+                ln = Information.UBound(b) + 1;
+            ln = sidx + ln - 1;
+            k = 1L;
+            j = b[ln];
+            for (i = ln - 1; i >= sidx; i -= 1)
+            {
+                k = 256L * k;
+                j = j + k * b[i];
+            }
+
+            return j;
+        }
+    }
+}

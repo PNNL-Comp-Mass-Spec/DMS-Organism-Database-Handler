@@ -1,37 +1,47 @@
-Friend Class TranslationEntry
+﻿using System.Collections;
 
+namespace NucleotideTranslator
+{
+    internal class TranslationEntry
+    {
+        protected string m_Base;
+        protected ArrayList m_TransEntries;
+        protected string m_TranslatedAA;
 
-    Protected m_Base As String
-    Protected m_TransEntries As ArrayList
-    Protected m_TranslatedAA As String
+        internal TranslationEntry(string NucleotideBase, ArrayList TranslationEntries)
+        {
+            m_Base = NucleotideBase;
+            m_TransEntries = TranslationEntries;
+        }
 
-    Friend Sub New(NucleotideBase As String, TranslationEntries As ArrayList)
-        Me.m_Base = NucleotideBase
-        Me.m_TransEntries = TranslationEntries
-    End Sub
+        internal TranslationEntry(string NucleotideBase, string TranslatedAA) : base()
+        {
+            m_Base = NucleotideBase;
+            m_TranslatedAA = TranslatedAA;
+        }
 
-    Friend Sub New(NucleotideBase As String, TranslatedAA As String)
-        MyBase.New()
-        Me.m_Base = NucleotideBase
-        Me.m_TranslatedAA = TranslatedAA
-    End Sub
+        internal string BaseLetter
+        {
+            get
+            {
+                return m_Base;
+            }
+        }
 
-    Friend ReadOnly Property BaseLetter As String
-        Get
-            Return Me.m_Base
-        End Get
-    End Property
+        internal ArrayList TranslationEntries
+        {
+            get
+            {
+                return m_TransEntries;
+            }
+        }
 
-    Friend ReadOnly Property TranslationEntries As ArrayList
-        Get
-            Return Me.m_TransEntries
-        End Get
-    End Property
-
-    Friend ReadOnly Property TranslatedAA As String
-        Get
-            Return Me.m_TranslatedAA
-        End Get
-    End Property
-
-End Class
+        internal string TranslatedAA
+        {
+            get
+            {
+                return m_TranslatedAA;
+            }
+        }
+    }
+}

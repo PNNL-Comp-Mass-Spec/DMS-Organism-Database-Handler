@@ -1,146 +1,158 @@
-Imports System.Collections.Generic
+﻿using System.Collections.Generic;
 
-Friend Class AnnotationStorage
-    Private m_AnnotationGroups As Dictionary(Of Integer, AnnotationGroup)
-    Private m_GroupNameLookup As Dictionary(Of String, Integer)
-    Private ReadOnly m_GlobalProteinNameList As New SortedSet(Of String)
+namespace ExtractAnnotationFromDescription
+{
+    internal class AnnotationStorage
+    {
+        private Dictionary<int, AnnotationGroup> m_AnnotationGroups;
+        private Dictionary<string, int> m_GroupNameLookup;
+        private readonly SortedSet<string> m_GlobalProteinNameList = new SortedSet<string>();
 
-    Sub AddAnnotationGroup(GroupID As Integer, groupNameToAdd As String)
+        public void AddAnnotationGroup(int GroupID, string groupNameToAdd)
+        {
+            if (m_GroupNameLookup == null)
+            {
+                m_GroupNameLookup = new Dictionary<string, int>();
+            }
 
-        If Me.m_GroupNameLookup Is Nothing Then
-            Me.m_GroupNameLookup = New Dictionary(Of String, Integer)
-        End If
+            if (m_AnnotationGroups == null)
+            {
+                m_AnnotationGroups = new Dictionary<int, AnnotationGroup>();
+            }
 
-        If Me.m_AnnotationGroups Is Nothing Then
-            Me.m_AnnotationGroups = New Dictionary(Of Integer, AnnotationGroup)
-        End If
+            var newGroup = new AnnotationGroup(groupNameToAdd);
+            newGroup.ImportThisGroup = false;
+            m_AnnotationGroups.Add(GroupID, newGroup);
+            m_GroupNameLookup.Add(groupNameToAdd, GroupID);
+        }
 
-        Dim newGroup As New AnnotationGroup(groupNameToAdd)
-        newGroup.ImportThisGroup = False
-        Me.m_AnnotationGroups.Add(GroupID, newGroup)
-        Me.m_GroupNameLookup.Add(groupNameToAdd, GroupID)
+        public void ClearAnnotationGroups()
+        {
+            if (m_AnnotationGroups != null)
+            {
+                m_AnnotationGroups.Clear();
+            }
 
-    End Sub
+            if (m_GroupNameLookup != null)
+            {
+                m_GroupNameLookup.Clear();
+            }
+        }
 
-    Sub ClearAnnotationGroups()
-        If Not Me.m_AnnotationGroups Is Nothing Then
-            Me.m_AnnotationGroups.Clear()
-        End If
-        If Not Me.m_GroupNameLookup Is Nothing Then
-            Me.m_GroupNameLookup.Clear()
-        End If
-    End Sub
+        public void AddAnnotation(
+            int groupID,
+            string PrimaryReferenceName,
+            string XRefName)
+        {
+            var ag = GetGroup(groupID);
+            ag.AddAnnotation(PrimaryReferenceName, XRefName);
+            m_AnnotationGroups[groupID] = ag;
+            if (!m_GlobalProteinNameList.Contains(PrimaryReferenceName))
+            {
+                m_GlobalProteinNameList.Add(PrimaryReferenceName);
+            }
+        }
 
-    Sub AddAnnotation(
-        groupID As Integer,
-        PrimaryReferenceName As String,
-        XRefName As String)
+        public void AddDelimiter(
+            int groupID,
+            string newDelimiter)
+        {
+            GetGroup(groupID).XRefDelimiter = newDelimiter;
+        }
 
-        Dim ag As AnnotationGroup = Me.GetGroup(groupID)
-        ag.AddAnnotation(PrimaryReferenceName, XRefName)
-        Me.m_AnnotationGroups.Item(groupID) = ag
-        If Not Me.m_GlobalProteinNameList.Contains(PrimaryReferenceName) Then
-            Me.m_GlobalProteinNameList.Add(PrimaryReferenceName)
-        End If
-    End Sub
+        public void SetAnnotationGroupStatus(int GroupID, bool NewState)
+        {
+            var group = m_AnnotationGroups[GroupID];
+            group.ImportThisGroup = NewState;
+            m_AnnotationGroups[GroupID] = group;
+            group = null;
+        }
 
-    Sub AddDelimiter(
-        groupID As Integer,
-        newDelimiter As String)
+        // Controls the import state of the named annotation group
+        public void SetAnnotationGroupStatus(string groupNameToUpdate, bool newStateForGroup)
+        {
+            int groupID = m_GroupNameLookup[groupNameToUpdate];
+            SetAnnotationGroupStatus(groupID, newStateForGroup);
+        }
 
-        Me.GetGroup(groupID).XRefDelimiter = newDelimiter
+        public SortedSet<string> GetAllPrimaryReferences()
+        {
+            return m_GlobalProteinNameList;
+        }
 
-    End Sub
+        public int GroupCount
+        {
+            get { return m_AnnotationGroups.Count; }
+        }
 
-    Sub SetAnnotationGroupStatus(GroupID As Integer, NewState As Boolean)
-        Dim group = Me.m_AnnotationGroups.Item(GroupID)
-        group.ImportThisGroup = NewState
-        Me.m_AnnotationGroups.Item(GroupID) = group
-        group = Nothing
-    End Sub
+        public string get_Delimiter(int GroupID)
+        {
+            return GetGroup(GroupID).XRefDelimiter;
+        }
 
-    'Controls the import state of the named annotation group
-    Sub SetAnnotationGroupStatus(groupNameToUpdate As String, newStateForGroup As Boolean)
-        Dim groupID = Me.m_GroupNameLookup(groupNameToUpdate)
-        Me.SetAnnotationGroupStatus(groupID, newStateForGroup)
-    End Sub
+        public int get_AnnotationAuthorityID(int GroupID)
+        {
+            return m_AnnotationGroups[GroupID].AnnotationAuthorityID;
+        }
 
-    Function GetAllPrimaryReferences() As SortedSet(Of String)
-        Return Me.m_GlobalProteinNameList
-    End Function
+        public void set_AnnotationAuthorityID(int GroupID, int value)
+        {
+            m_AnnotationGroups[GroupID].AnnotationAuthorityID = value;
+        }
 
-    ReadOnly Property GroupCount As Integer
-        Get
-            Return Me.m_AnnotationGroups.Count
-        End Get
-    End Property
+        public string get_GroupName(int GroupID)
+        {
+            return GetGroup(GroupID).GroupName;
+        }
 
-    ReadOnly Property Delimiter(GroupID As Integer) As String
-        Get
-            Return Me.GetGroup(GroupID).XRefDelimiter
-        End Get
-    End Property
+        public void set_GroupName(int GroupID, string value)
+        {
+            string oldName;
+            var group = GetGroup(GroupID);
+            oldName = group.GroupName;
+            group.GroupName = value;
+            m_AnnotationGroups[GroupID] = group;
+            m_GroupNameLookup.Remove(oldName);
+            m_GroupNameLookup[value] = GroupID;
+        }
 
-    Property AnnotationAuthorityID(GroupID As Integer) As Integer
-        Get
-            Return Me.m_AnnotationGroups.Item(GroupID).AnnotationAuthorityID
-        End Get
-        Set
-            Me.m_AnnotationGroups.Item(GroupID).AnnotationAuthorityID = Value
-        End Set
-    End Property
+        // public HashTable GetAnnotationGroup(string GroupName)
+        // {
+        //     var groupID = m_GroupNameLookup(GroupName);
+        //     return GetAnnotationGroupData(groupID);
+        // }
 
-    Property GroupName(GroupID As Integer) As String
-        Get
-            Return Me.GetGroup(GroupID).GroupName
-        End Get
-        Set
-            Dim oldName As String
-            Dim group As AnnotationGroup = Me.GetGroup(GroupID)
-            oldName = group.GroupName
-            group.GroupName = Value
-            Me.m_AnnotationGroups.Item(GroupID) = group
-            Me.m_GroupNameLookup.Remove(oldName)
-            Me.m_GroupNameLookup.Item(Value) = GroupID
-        End Set
-    End Property
+        // public AnnotationGroup GetAnnotationGroupData(int GroupID)
+        // {
+        //     return GetGroup(GroupID);
+        // }
 
-    'Function GetAnnotationGroup(GroupName As String) As Hashtable
-    '    Dim groupID As Integer
-    '    groupID = Me.m_GroupNameLookup(GroupName)
-    '    Return Me.GetAnnotationGroupData(groupID)
-    'End Function
+        /// <summary>
+        /// Obtain dictionary containing all the added primary reference names as keys
+        /// and SortedSets of their corresponding xref names for the specified Annotation group id
+        /// </summary>
+        /// <param name="GroupID"></param>
+        /// <returns></returns>
+        public Dictionary<string, SortedSet<string>> GetAllRawXRefs(int GroupID)
+        {
+            return GetGroup(GroupID).GetAllXRefs();
+        }
 
-    'Function GetAnnotationGroupData(GroupID As Integer) As AnnotationGroup
-    '    Return Me.GetGroup(GroupID)
-    'End Function
+        // Returns a SortedSet containing all the xref names for the given
+        // primary reference name
+        public SortedSet<string> GetXRefs(
+            string PrimaryReferenceName,
+            int GroupID)
+        {
+            var group = GetGroup(GroupID);
+            return group.GetXRefs(PrimaryReferenceName);
+        }
 
-    ''' <summary>
-    ''' Obtain dictionary containing all the added primary reference names as keys
-    ''' and SortedSets of their corresponding xref names for the specified Annotation group id
-    ''' </summary>
-    ''' <param name="GroupID"></param>
-    ''' <returns></returns>
-    Function GetAllRawXRefs(GroupID As Integer) As Dictionary(Of String, SortedSet(Of String))
-        Return Me.GetGroup(GroupID).GetAllXRefs
-    End Function
-
-    'Returns a SortedSet containing all the xref names for the given
-    'primary reference name
-    Function GetXRefs(
-        PrimaryReferenceName As String,
-        GroupID As Integer) As SortedSet(Of String)
-
-        Dim group As AnnotationGroup = Me.GetGroup(GroupID)
-        Return group.GetXRefs(PrimaryReferenceName)
-
-    End Function
-
-    Function GetGroup(groupid As Integer) As AnnotationGroup
-        Dim group As AnnotationGroup
-        group = Me.m_AnnotationGroups(groupid)
-        Return group
-
-    End Function
-
-End Class
+        public AnnotationGroup GetGroup(int groupid)
+        {
+            AnnotationGroup group;
+            group = m_AnnotationGroups[groupid];
+            return group;
+        }
+    }
+}

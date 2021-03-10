@@ -1,354 +1,398 @@
-Imports System.Timers
+﻿using System;
+using System.Collections;
+using System.Data;
+using System.Diagnostics;
+using System.Drawing;
+using System.Timers;
+using System.Windows.Forms;
+using Microsoft.VisualBasic.CompilerServices;
 
-Public Class frmCollectionStateEditor
-    Inherits Form
+namespace AppUI_OrfDBHandler
+{
+    public class frmCollectionStateEditor : Form
+    {
+        #region "Windows Form Designer generated code"
 
-#Region " Windows Form Designer generated code "
+        public frmCollectionStateEditor(string ProteinStorageConnectionString) : base()
+        {
+            SearchTimer = new System.Timers.Timer(2000d);
+            SearchTimer.Elapsed += TimerHandler;
 
-    Public Sub New(ProteinStorageConnectionString As String)
-        MyBase.New()
+            base.Load += frmCollectionStateEditor_Load;
 
-        'This call is required by the Windows Form Designer.
-        InitializeComponent()
+            // This call is required by the Windows Form Designer.
+            InitializeComponent();
 
-        'Add any initialization after the InitializeComponent() call
-        Me.m_PSConnectionString = ProteinStorageConnectionString
-    End Sub
+            // Add any initialization after the InitializeComponent() call
+            m_PSConnectionString = ProteinStorageConnectionString;
+        }
 
-    'Form overrides dispose to clean up the component list.
-    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-        If disposing Then
-            If Not (components Is Nothing) Then
-                components.Dispose()
-            End If
-        End If
-        MyBase.Dispose(disposing)
-    End Sub
+        // Form overrides dispose to clean up the component list.
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                {
+                    components.Dispose();
+                }
+            }
 
-    'Required by the Windows Form Designer
-    Private components As System.ComponentModel.IContainer
+            base.Dispose(disposing);
+        }
 
-    'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.
-    'Do not modify it using the code editor.
-    Friend WithEvents lvwCollections As ListView
-    Friend WithEvents lblCollectionsListView As Label
-    Friend WithEvents colCollectionName As ColumnHeader
-    Friend WithEvents colOrganism As ColumnHeader
-    Friend WithEvents colDateAdded As ColumnHeader
-    Friend WithEvents colCurrState As ColumnHeader
-    Friend WithEvents txtLiveSearch As TextBox
-    Friend WithEvents pbxLiveSearchBkg As PictureBox
-    Friend WithEvents lblStateChanger As Label
-    Friend WithEvents cboStateChanger As ComboBox
-    Friend WithEvents cmdStateChanger As Button
-    Friend WithEvents MainMenu1 As MainMenu
-    Friend WithEvents mnuTools As MenuItem
-    Friend WithEvents mnuToolsDeleteSelected As MenuItem
-    <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmCollectionStateEditor))
-        Me.lvwCollections = New System.Windows.Forms.ListView()
-        Me.colCollectionName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.colOrganism = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.colDateAdded = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.colCurrState = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.lblCollectionsListView = New System.Windows.Forms.Label()
-        Me.txtLiveSearch = New System.Windows.Forms.TextBox()
-        Me.pbxLiveSearchBkg = New System.Windows.Forms.PictureBox()
-        Me.lblStateChanger = New System.Windows.Forms.Label()
-        Me.cboStateChanger = New System.Windows.Forms.ComboBox()
-        Me.cmdStateChanger = New System.Windows.Forms.Button()
-        Me.MainMenu1 = New System.Windows.Forms.MainMenu(Me.components)
-        Me.mnuTools = New System.Windows.Forms.MenuItem()
-        Me.mnuToolsDeleteSelected = New System.Windows.Forms.MenuItem()
-        CType(Me.pbxLiveSearchBkg, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SuspendLayout()
-        '
-        'lvwCollections
-        '
-        Me.lvwCollections.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colCollectionName, Me.colOrganism, Me.colDateAdded, Me.colCurrState})
-        Me.lvwCollections.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lvwCollections.FullRowSelect = True
-        Me.lvwCollections.GridLines = True
-        Me.lvwCollections.Location = New System.Drawing.Point(10, 30)
-        Me.lvwCollections.Name = "lvwCollections"
-        Me.lvwCollections.Size = New System.Drawing.Size(594, 660)
-        Me.lvwCollections.TabIndex = 0
-        Me.lvwCollections.UseCompatibleStateImageBehavior = False
-        Me.lvwCollections.View = System.Windows.Forms.View.Details
-        '
-        'colCollectionName
-        '
-        Me.colCollectionName.Text = "Collection Name"
-        Me.colCollectionName.Width = 278
-        '
-        'colOrganism
-        '
-        Me.colOrganism.Text = "Organism"
-        Me.colOrganism.Width = 110
-        '
-        'colDateAdded
-        '
-        Me.colDateAdded.Text = "Date Added"
-        Me.colDateAdded.Width = 100
-        '
-        'colCurrState
-        '
-        Me.colCurrState.Text = "State"
-        Me.colCurrState.Width = 80
-        '
-        'lblCollectionsListView
-        '
-        Me.lblCollectionsListView.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCollectionsListView.Location = New System.Drawing.Point(14, 17)
-        Me.lblCollectionsListView.Name = "lblCollectionsListView"
-        Me.lblCollectionsListView.Size = New System.Drawing.Size(826, 24)
-        Me.lblCollectionsListView.TabIndex = 1
-        Me.lblCollectionsListView.Text = "Available Collections"
-        '
-        'txtLiveSearch
-        '
-        Me.txtLiveSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.txtLiveSearch.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.txtLiveSearch.ForeColor = System.Drawing.SystemColors.InactiveCaption
-        Me.txtLiveSearch.Location = New System.Drawing.Point(48, 696)
-        Me.txtLiveSearch.Name = "txtLiveSearch"
-        Me.txtLiveSearch.Size = New System.Drawing.Size(215, 17)
-        Me.txtLiveSearch.TabIndex = 17
-        Me.txtLiveSearch.Text = "Search"
-        '
-        'pbxLiveSearchBkg
-        '
-        Me.pbxLiveSearchBkg.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.pbxLiveSearchBkg.Image = CType(resources.GetObject("pbxLiveSearchBkg.Image"), System.Drawing.Image)
-        Me.pbxLiveSearchBkg.Location = New System.Drawing.Point(17, 689)
-        Me.pbxLiveSearchBkg.Name = "pbxLiveSearchBkg"
-        Me.pbxLiveSearchBkg.Size = New System.Drawing.Size(280, 29)
-        Me.pbxLiveSearchBkg.TabIndex = 18
-        Me.pbxLiveSearchBkg.TabStop = False
-        '
-        'lblStateChanger
-        '
-        Me.lblStateChanger.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblStateChanger.Location = New System.Drawing.Point(305, 696)
-        Me.lblStateChanger.Name = "lblStateChanger"
-        Me.lblStateChanger.Size = New System.Drawing.Size(255, 17)
-        Me.lblStateChanger.TabIndex = 19
-        Me.lblStateChanger.Text = "Change Selected Collections To..."
-        '
-        'cboStateChanger
-        '
-        Me.cboStateChanger.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cboStateChanger.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboStateChanger.Location = New System.Drawing.Point(560, 691)
-        Me.cboStateChanger.Name = "cboStateChanger"
-        Me.cboStateChanger.Size = New System.Drawing.Size(0, 25)
-        Me.cboStateChanger.TabIndex = 20
-        '
-        'cmdStateChanger
-        '
-        Me.cmdStateChanger.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdStateChanger.Location = New System.Drawing.Point(504, 691)
-        Me.cmdStateChanger.Name = "cmdStateChanger"
-        Me.cmdStateChanger.Size = New System.Drawing.Size(96, 24)
-        Me.cmdStateChanger.TabIndex = 21
-        Me.cmdStateChanger.Text = "Change"
-        '
-        'MainMenu1
-        '
-        Me.MainMenu1.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuTools})
-        '
-        'mnuTools
-        '
-        Me.mnuTools.Index = 0
-        Me.mnuTools.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuToolsDeleteSelected})
-        Me.mnuTools.Text = "Tools"
-        Me.mnuTools.Visible = False
-        '
-        'mnuToolsDeleteSelected
-        '
-        Me.mnuToolsDeleteSelected.Index = 0
-        Me.mnuToolsDeleteSelected.Text = "Delete Selected Collections..."
-        '
-        'frmCollectionStateEditor
-        '
-        Me.AutoScaleBaseSize = New System.Drawing.Size(7, 17)
-        Me.ClientSize = New System.Drawing.Size(614, 740)
-        Me.Controls.Add(Me.cmdStateChanger)
-        Me.Controls.Add(Me.cboStateChanger)
-        Me.Controls.Add(Me.lblStateChanger)
-        Me.Controls.Add(Me.txtLiveSearch)
-        Me.Controls.Add(Me.pbxLiveSearchBkg)
-        Me.Controls.Add(Me.lvwCollections)
-        Me.Controls.Add(Me.lblCollectionsListView)
-        Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Menu = Me.MainMenu1
-        Me.Name = "frmCollectionStateEditor"
-        Me.Padding = New System.Windows.Forms.Padding(10, 30, 10, 50)
-        Me.Text = "Collection State Editor"
-        CType(Me.pbxLiveSearchBkg, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.ResumeLayout(False)
-        Me.PerformLayout()
+        // Required by the Windows Form Designer
+        private System.ComponentModel.IContainer components;
 
-    End Sub
+        // NOTE: The following procedure is required by the Windows Form Designer
+        // It can be modified using the Windows Form Designer.
+        // Do not modify it using the code editor.
+        internal ListView lvwCollections;
+        internal Label lblCollectionsListView;
+        internal ColumnHeader colCollectionName;
+        internal ColumnHeader colOrganism;
+        internal ColumnHeader colDateAdded;
+        internal ColumnHeader colCurrState;
+        internal TextBox txtLiveSearch;
+        internal PictureBox pbxLiveSearchBkg;
+        internal Label lblStateChanger;
+        internal ComboBox cboStateChanger;
+        internal Button cmdStateChanger;
+        internal MainMenu MainMenu1;
+        internal MenuItem mnuTools;
+        internal MenuItem mnuToolsDeleteSelected;
 
-#End Region
-    Friend WithEvents SearchTimer As New Timer(2000)
-    Private m_SearchActive As Boolean = False
-    Private m_Handler As CollectionStatePickerHandler
-    Private ReadOnly m_PSConnectionString As String
-    Private m_StatesTable As DataTable
-    Private m_SelectedNewStateID As Integer = 1
-    Private m_SortOrderAsc As Boolean = True
-    Private m_SelectedCol As Integer = 0
+        [DebuggerStepThrough()]
+        private void InitializeComponent()
+        {
+            components = new System.ComponentModel.Container();
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCollectionStateEditor));
+            lvwCollections = new ListView();
+            lvwCollections.ColumnClick += new ColumnClickEventHandler(lvwSearchResults_ColumnClick);
+            colCollectionName = new ColumnHeader();
+            colOrganism = new ColumnHeader();
+            colDateAdded = new ColumnHeader();
+            colCurrState = new ColumnHeader();
+            lblCollectionsListView = new Label();
+            txtLiveSearch = new TextBox();
+            txtLiveSearch.TextChanged += new EventHandler(txtLiveSearch_TextChanged);
+            txtLiveSearch.Click += new EventHandler(txtLiveSearch_Click);
+            txtLiveSearch.Leave += new EventHandler(txtLiveSearch_Leave);
+            pbxLiveSearchBkg = new PictureBox();
+            lblStateChanger = new Label();
+            cboStateChanger = new ComboBox();
+            cboStateChanger.SelectedIndexChanged += new EventHandler(cboStateChanger_SelectedIndexChanged);
+            cmdStateChanger = new Button();
+            cmdStateChanger.Click += new EventHandler(cmdStateChanger_Click);
+            MainMenu1 = new MainMenu(components);
+            mnuTools = new MenuItem();
+            mnuToolsDeleteSelected = new MenuItem();
+            ((System.ComponentModel.ISupportInitialize)pbxLiveSearchBkg).BeginInit();
+            SuspendLayout();
+            //
+            // lvwCollections
+            //
+            lvwCollections.Columns.AddRange(new ColumnHeader[] { colCollectionName, colOrganism, colDateAdded, colCurrState });
+            lvwCollections.Dock = DockStyle.Fill;
+            lvwCollections.FullRowSelect = true;
+            lvwCollections.GridLines = true;
+            lvwCollections.Location = new Point(10, 30);
+            lvwCollections.Name = "lvwCollections";
+            lvwCollections.Size = new Size(594, 660);
+            lvwCollections.TabIndex = 0;
+            lvwCollections.UseCompatibleStateImageBehavior = false;
+            lvwCollections.View = View.Details;
+            //
+            // colCollectionName
+            //
+            colCollectionName.Text = "Collection Name";
+            colCollectionName.Width = 278;
+            //
+            // colOrganism
+            //
+            colOrganism.Text = "Organism";
+            colOrganism.Width = 110;
+            //
+            // colDateAdded
+            //
+            colDateAdded.Text = "Date Added";
+            colDateAdded.Width = 100;
+            //
+            // colCurrState
+            //
+            colCurrState.Text = "State";
+            colCurrState.Width = 80;
+            //
+            // lblCollectionsListView
+            //
+            lblCollectionsListView.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            lblCollectionsListView.Location = new Point(14, 17);
+            lblCollectionsListView.Name = "lblCollectionsListView";
+            lblCollectionsListView.Size = new Size(826, 24);
+            lblCollectionsListView.TabIndex = 1;
+            lblCollectionsListView.Text = "Available Collections";
+            //
+            // txtLiveSearch
+            //
+            txtLiveSearch.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            txtLiveSearch.BorderStyle = BorderStyle.None;
+            txtLiveSearch.ForeColor = SystemColors.InactiveCaption;
+            txtLiveSearch.Location = new Point(48, 696);
+            txtLiveSearch.Name = "txtLiveSearch";
+            txtLiveSearch.Size = new Size(215, 17);
+            txtLiveSearch.TabIndex = 17;
+            txtLiveSearch.Text = "Search";
+            //
+            // pbxLiveSearchBkg
+            //
+            pbxLiveSearchBkg.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            pbxLiveSearchBkg.Image = (Image)resources.GetObject("pbxLiveSearchBkg.Image");
+            pbxLiveSearchBkg.Location = new Point(17, 689);
+            pbxLiveSearchBkg.Name = "pbxLiveSearchBkg";
+            pbxLiveSearchBkg.Size = new Size(280, 29);
+            pbxLiveSearchBkg.TabIndex = 18;
+            pbxLiveSearchBkg.TabStop = false;
+            //
+            // lblStateChanger
+            //
+            lblStateChanger.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lblStateChanger.Location = new Point(305, 696);
+            lblStateChanger.Name = "lblStateChanger";
+            lblStateChanger.Size = new Size(255, 17);
+            lblStateChanger.TabIndex = 19;
+            lblStateChanger.Text = "Change Selected Collections To...";
+            //
+            // cboStateChanger
+            //
+            cboStateChanger.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            cboStateChanger.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboStateChanger.Location = new Point(560, 691);
+            cboStateChanger.Name = "cboStateChanger";
+            cboStateChanger.Size = new Size(0, 25);
+            cboStateChanger.TabIndex = 20;
+            //
+            // cmdStateChanger
+            //
+            cmdStateChanger.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            cmdStateChanger.Location = new Point(504, 691);
+            cmdStateChanger.Name = "cmdStateChanger";
+            cmdStateChanger.Size = new Size(96, 24);
+            cmdStateChanger.TabIndex = 21;
+            cmdStateChanger.Text = "Change";
+            //
+            // MainMenu1
+            //
+            MainMenu1.MenuItems.AddRange(new MenuItem[] { mnuTools });
+            //
+            // mnuTools
+            //
+            mnuTools.Index = 0;
+            mnuTools.MenuItems.AddRange(new MenuItem[] { mnuToolsDeleteSelected });
+            mnuTools.Text = "Tools";
+            mnuTools.Visible = false;
+            //
+            // mnuToolsDeleteSelected
+            //
+            mnuToolsDeleteSelected.Index = 0;
+            mnuToolsDeleteSelected.Text = "Delete Selected Collections...";
+            //
+            // frmCollectionStateEditor
+            //
+            AutoScaleBaseSize = new Size(7, 17);
+            ClientSize = new Size(614, 740);
+            Controls.Add(cmdStateChanger);
+            Controls.Add(cboStateChanger);
+            Controls.Add(lblStateChanger);
+            Controls.Add(txtLiveSearch);
+            Controls.Add(pbxLiveSearchBkg);
+            Controls.Add(lvwCollections);
+            Controls.Add(lblCollectionsListView);
+            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            Menu = MainMenu1;
+            Name = "frmCollectionStateEditor";
+            Padding = new Padding(10, 30, 10, 50);
+            Text = "Collection State Editor";
+            ((System.ComponentModel.ISupportInitialize)pbxLiveSearchBkg).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
+        }
 
-#Region " Live Search Handler "
+        #endregion
 
-    Private Sub txtLiveSearch_TextChanged(sender As Object, e As EventArgs) Handles txtLiveSearch.TextChanged
-        If m_SearchActive Then
-            SearchTimer.Start()
-        End If
-    End Sub
+        internal readonly System.Timers.Timer SearchTimer;
 
-    Private Sub txtLiveSearch_Click(sender As Object, e As EventArgs) Handles txtLiveSearch.Click
-        If m_SearchActive Then
-        Else
-            txtLiveSearch.Text = Nothing
-            txtLiveSearch.ForeColor = SystemColors.ControlText
-            m_SearchActive = True
-        End If
-    End Sub
+        private bool m_SearchActive = false;
+        private CollectionStatePickerHandler m_Handler;
+        private readonly string m_PSConnectionString;
+        private DataTable m_StatesTable;
+        private int m_SelectedNewStateID = 1;
+        private bool m_SortOrderAsc = true;
+        private int m_SelectedCol = 0;
 
-    Private Sub txtLiveSearch_Leave(sender As Object, e As EventArgs) Handles txtLiveSearch.Leave
-        If txtLiveSearch.Text.Length = 0 Then
-            txtLiveSearch.ForeColor = SystemColors.InactiveCaption
-            txtLiveSearch.Text = "Search"
-            m_SearchActive = False
-            SearchTimer.Stop()
-            m_Handler.FillListView(lvwCollections)
-        End If
-    End Sub
+        #region "Live Search Handler"
 
-#End Region
+        private void txtLiveSearch_TextChanged(object sender, EventArgs e)
+        {
+            if (m_SearchActive)
+            {
+                SearchTimer.Start();
+            }
+        }
 
-    Friend Sub TimerHandler(sender As Object, e As ElapsedEventArgs) Handles SearchTimer.Elapsed
-        m_Handler.FillFilteredListView(lvwCollections, txtLiveSearch.Text)
-    End Sub
+        private void txtLiveSearch_Click(object sender, EventArgs e)
+        {
+            if (m_SearchActive)
+            {
+            }
+            else
+            {
+                txtLiveSearch.Text = null;
+                txtLiveSearch.ForeColor = SystemColors.ControlText;
+                m_SearchActive = true;
+            }
+        }
 
-#Region " Form Event Handlers"
+        private void txtLiveSearch_Leave(object sender, EventArgs e)
+        {
+            if (txtLiveSearch.Text.Length == 0)
+            {
+                txtLiveSearch.ForeColor = SystemColors.InactiveCaption;
+                txtLiveSearch.Text = "Search";
+                m_SearchActive = false;
+                SearchTimer.Stop();
+                m_Handler.FillListView(lvwCollections);
+            }
+        }
 
-    Private Sub frmCollectionStateEditor_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        m_Handler = New CollectionStatePickerHandler(m_PSConnectionString)
-        m_StatesTable = m_Handler.GetStates()
+        #endregion
 
-        RemoveHandler cboStateChanger.SelectedIndexChanged, AddressOf cboStateChanger_SelectedIndexChanged
+        internal void TimerHandler(object sender, ElapsedEventArgs e)
+        {
+            m_Handler.FillFilteredListView(lvwCollections, txtLiveSearch.Text);
+        }
 
-        With cboStateChanger
-            .BeginUpdate()
-            .DataSource = m_StatesTable
-            .DisplayMember = "State"
-            .ValueMember = "ID"
-            .EndUpdate()
-        End With
+        #region "Form Event Handlers"
 
-        AddHandler cboStateChanger.SelectedIndexChanged, AddressOf cboStateChanger_SelectedIndexChanged
+        private void frmCollectionStateEditor_Load(object sender, EventArgs e)
+        {
+            m_Handler = new CollectionStatePickerHandler(m_PSConnectionString);
+            m_StatesTable = m_Handler.GetStates();
 
-        cboStateChanger.SelectedValue = m_SelectedNewStateID
+            cboStateChanger.SelectedIndexChanged -= cboStateChanger_SelectedIndexChanged;
 
-        m_Handler.FillListView(lvwCollections)
-    End Sub
+            cboStateChanger.BeginUpdate();
+            cboStateChanger.DataSource = m_StatesTable;
+            cboStateChanger.DisplayMember = "State";
+            cboStateChanger.ValueMember = "ID";
+            cboStateChanger.EndUpdate();
 
-    Private Sub cboStateChanger_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboStateChanger.SelectedIndexChanged
-        Dim cbo = DirectCast(sender, ComboBox)
-        m_SelectedNewStateID = CInt(cbo.SelectedValue)
-    End Sub
+            cboStateChanger.SelectedIndexChanged += cboStateChanger_SelectedIndexChanged;
 
-    Private Sub cmdStateChanger_Click(sender As Object, e As EventArgs) Handles cmdStateChanger.Click
-        Dim al As New ArrayList
-        Dim item As ListViewItem
+            cboStateChanger.SelectedValue = m_SelectedNewStateID;
 
-        For Each item In lvwCollections.SelectedItems
-            al.Add(item.Tag)
-        Next
+            m_Handler.FillListView(lvwCollections);
+        }
 
-        m_Handler.ChangeSelectedCollectionStates(m_SelectedNewStateID, al)
+        private void cboStateChanger_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBox cbo = (ComboBox)sender;
+            m_SelectedNewStateID = Conversions.ToInteger(cbo.SelectedValue);
+        }
 
-        m_Handler.ForceIDTableReload = True
+        private void cmdStateChanger_Click(object sender, EventArgs e)
+        {
+            var al = new ArrayList();
 
-        If m_SearchActive Then
-            m_Handler.FillFilteredListView(lvwCollections, txtLiveSearch.Text)
-        Else
-            m_Handler.FillListView(lvwCollections)
-        End If
+            foreach (ListViewItem item in lvwCollections.SelectedItems)
+                al.Add(item.Tag);
 
-    End Sub
+            m_Handler.ChangeSelectedCollectionStates(m_SelectedNewStateID, al);
 
-#End Region
+            m_Handler.ForceIDTableReload = true;
 
-    Private Sub lvwSearchResults_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles lvwCollections.ColumnClick
+            if (m_SearchActive)
+            {
+                m_Handler.FillFilteredListView(lvwCollections, txtLiveSearch.Text);
+            }
+            else
+            {
+                m_Handler.FillListView(lvwCollections);
+            }
+        }
 
-        'If selected column is same as previously selected column, then reverse sort order. Otherwise,
-        '	sort newly selected column in ascending order
+        #endregion
 
-        'Set up ascending/descending criteria
-        If e.Column = m_SelectedCol Then
-            m_SortOrderAsc = Not m_SortOrderAsc
-        Else
-            m_SortOrderAsc = True
-            m_SelectedCol = e.Column
-        End If
+        private void lvwSearchResults_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            // If selected column is same as previously selected column, then reverse sort order. Otherwise,
+            // sort newly selected column in ascending order
 
-        'Perform sort
-        lvwCollections.ListViewItemSorter = New ListViewItemComparer(e.Column, m_SortOrderAsc)
-    End Sub
+            // Set up ascending/descending criteria
+            if (e.Column == m_SelectedCol)
+            {
+                m_SortOrderAsc = !m_SortOrderAsc;
+            }
+            else
+            {
+                m_SortOrderAsc = true;
+                m_SelectedCol = e.Column;
+            }
 
-    Private Class ListViewItemComparer
-        Implements IComparer
+            // Perform sort
+            lvwCollections.ListViewItemSorter = new ListViewItemComparer(e.Column, m_SortOrderAsc);
+        }
 
-        ' Implements the manual sorting of items by columns.
-        ReadOnly m_SortAscending As Boolean = True
+        private class ListViewItemComparer : IComparer
+        {
+            // Implements the manual sorting of items by columns.
+            private readonly bool m_SortAscending = true;
 
-        Private ReadOnly colIndex As Integer
+            private readonly int colIndex;
 
-        ''' <summary>
-        ''' Constructor
-        ''' </summary>
-        ''' <param name="columnIndex"></param>
-        ''' <param name="sortAscending"></param>
-        Public Sub New(columnIndex As Integer, sortAscending As Boolean)
-            colIndex = columnIndex
-            m_SortAscending = sortAscending
-        End Sub
+            /// <summary>
+            /// Constructor
+            /// </summary>
+            /// <param name="columnIndex"></param>
+            /// <param name="sortAscending"></param>
+            public ListViewItemComparer(int columnIndex, bool sortAscending)
+            {
+                colIndex = columnIndex;
+                m_SortAscending = sortAscending;
+            }
 
-        Public Function Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
+            public int Compare(object x, object y)
+            {
+                ListViewItem item1 = x as ListViewItem;
+                ListViewItem item2 = y as ListViewItem;
 
-            Dim item1 = TryCast(x, ListViewItem)
-            Dim item2 = TryCast(y, ListViewItem)
+                if (item1 == null && item2 == null)
+                {
+                    return 0;
+                }
 
-            If item1 Is Nothing AndAlso item2 Is Nothing Then
-                Return 0
-            End If
+                int compareResult;
+                if (item1 == null)
+                {
+                    compareResult = 1;
+                }
+                else if (item2 == null)
+                {
+                    compareResult = -1;
+                }
+                else
+                {
+                    compareResult = string.Compare(item1.SubItems[colIndex].Text, item2.SubItems[colIndex].Text);
+                }
 
-            Dim compareResult As Integer
-
-            If item1 Is Nothing Then
-                compareResult = 1
-            ElseIf item2 Is Nothing Then
-                compareResult = -1
-            Else
-                compareResult = String.Compare(item1.SubItems(colIndex).Text, item2.SubItems(colIndex).Text)
-            End If
-
-            If m_SortAscending Then
-                Return compareResult
-            Else
-                Return -compareResult
-            End If
-
-        End Function
-
-    End Class
-
-End Class
+                if (m_SortAscending)
+                {
+                    return compareResult;
+                }
+                else
+                {
+                    return -compareResult;
+                }
+            }
+        }
+    }
+}

@@ -1,209 +1,276 @@
-Imports System.Collections.Generic
+﻿using System;
+using System.Collections.Generic;
 
-Public Class ProteinStorageEntry
+namespace Protein_Storage
+{
+    public class ProteinStorageEntry
+    {
+        public ProteinStorageEntry(
+            string reference,
+            string description,
+            string sequence,
+            int length,
+            double monoisotopicMass,
+            double averageMass,
+            string molecularFormula,
+            string authenticationHash,
+            int sortingIndex)
+        {
+            if (string.IsNullOrWhiteSpace(reference))
+            {
+                throw new Exception("Reference name cannot be empty");
+            }
 
-    Public Sub New(
-        reference As String,
-        description As String,
-        sequence As String,
-        length As Integer,
-        monoisotopicMass As Double,
-        averageMass As Double,
-        molecularFormula As String,
-        authenticationHash As String,
-        sortingIndex As Integer)
+            m_Reference = reference;
+            m_Description = description;
+            m_Sequence = sequence;
+            m_MonoMass = monoisotopicMass;
+            m_AvgMass = averageMass;
+            m_Length = length;
+            m_MolecularFormula = molecularFormula;
+            m_AuthHash = authenticationHash;
+            m_SortCount = sortingIndex;
 
-        If String.IsNullOrWhiteSpace(reference) Then
-            Throw New Exception("Reference name cannot be empty")
-        End If
+            m_Protein_ID = 0;
+        }
 
-        m_Reference = reference
-        m_Description = description
-        m_Sequence = sequence
-        m_MonoMass = monoisotopicMass
-        m_AvgMass = averageMass
-        m_Length = length
-        m_MolecularFormula = molecularFormula
-        m_AuthHash = authenticationHash
-        m_SortCount = sortingIndex
+        protected string m_Reference;
+        protected string m_AlternateReference;
+        protected string m_Description;
+        protected string m_Sequence;
 
-        m_Protein_ID = 0
+        protected double m_MonoMass;
+        protected double m_AvgMass;
+        protected int m_Length;
+        protected string m_MolecularFormula;
+        protected string m_AuthHash;
+        protected int m_Protein_ID;
+        protected int m_Reference_ID;
+        protected int m_Member_ID;
+        protected int m_Authority_ID;
+        protected List<string> m_XRefList;
+        protected int m_SortCount;
 
-    End Sub
+        protected bool m_IsEncrypted = false;
 
-    Protected m_Reference As String
-    Protected m_AlternateReference As String
-    Protected m_Description As String
-    Protected m_Sequence As String
+        public string Reference
+        {
+            get
+            {
+                return m_Reference;
+            }
+        }
 
-    Protected m_MonoMass As Double
-    Protected m_AvgMass As Double
-    Protected m_Length As Integer
-    Protected m_MolecularFormula As String
-    Protected m_AuthHash As String
-    Protected m_Protein_ID As Integer
-    Protected m_Reference_ID As Integer
-    Protected m_Member_ID As Integer
-    Protected m_Authority_ID As Integer
-    Protected m_XRefList As List(Of String)
-    Protected m_SortCount As Integer
+        protected string AlternateReference
+        {
+            get
+            {
+                return m_AlternateReference;
+            }
 
-    Protected m_IsEncrypted As Boolean = False
+            set
+            {
+                if (value.Length > 0)
+                {
+                    m_AlternateReference = value;
+                }
+                else
+                {
+                    m_AlternateReference = null;
+                }
+            }
+        }
 
-    Public ReadOnly Property Reference As String
-        Get
-            Return m_Reference
-        End Get
-    End Property
+        public bool HasAlternateReference
+        {
+            get
+            {
+                return m_AlternateReference != null;
+            }
+        }
 
-    Protected Property AlternateReference As String
-        Get
-            Return m_AlternateReference
-        End Get
-        Set
-            If Value.Length > 0 Then
-                m_AlternateReference = Value
-            Else
-                m_AlternateReference = Nothing
-            End If
-        End Set
-    End Property
+        public string Description
+        {
+            get
+            {
+                return m_Description;
+            }
+        }
 
-    Public ReadOnly Property HasAlternateReference As Boolean
-        Get
-            Return Not m_AlternateReference Is Nothing
-        End Get
-    End Property
+        public string Sequence
+        {
+            get
+            {
+                return m_Sequence;
+            }
 
-    Public ReadOnly Property Description As String
-        Get
-            Return m_Description
-        End Get
-    End Property
+            set
+            {
+                m_Sequence = value;
+            }
+        }
 
-    Public Property Sequence As String
-        Get
-            Return m_Sequence
-        End Get
-        Set
-            m_Sequence = Value
-        End Set
-    End Property
+        public bool IsEncrypted
+        {
+            get
+            {
+                return m_IsEncrypted;
+            }
 
-    Public Property IsEncrypted As Boolean
-        Get
-            Return m_IsEncrypted
-        End Get
-        Set
-            m_IsEncrypted = Value
-        End Set
-    End Property
+            set
+            {
+                m_IsEncrypted = value;
+            }
+        }
 
-    Public ReadOnly Property MonoisotopicMass As Double
-        Get
-            Return m_MonoMass
-        End Get
-    End Property
+        public double MonoisotopicMass
+        {
+            get
+            {
+                return m_MonoMass;
+            }
+        }
 
-    Public ReadOnly Property AverageMass As Double
-        Get
-            Return m_AvgMass
-        End Get
-    End Property
+        public double AverageMass
+        {
+            get
+            {
+                return m_AvgMass;
+            }
+        }
 
-    Public ReadOnly Property Length As Integer
-        Get
-            Return m_Length
-        End Get
-    End Property
+        public int Length
+        {
+            get
+            {
+                return m_Length;
+            }
+        }
 
-    Public ReadOnly Property MolecularFormula As String
-        Get
-            Return m_MolecularFormula
-        End Get
-    End Property
+        public string MolecularFormula
+        {
+            get
+            {
+                return m_MolecularFormula;
+            }
+        }
 
-    Public Property SHA1Hash As String
-        Get
-            Return m_AuthHash
-        End Get
-        Set
-            m_AuthHash = Value
-        End Set
-    End Property
+        public string SHA1Hash
+        {
+            get
+            {
+                return m_AuthHash;
+            }
 
-    Public Property Protein_ID As Integer
-        Get
-            Return m_Protein_ID
-        End Get
-        Set
-            m_Protein_ID = Value
-        End Set
-    End Property
+            set
+            {
+                m_AuthHash = value;
+            }
+        }
 
-    Public Property Reference_ID As Integer
-        Get
-            Return m_Reference_ID
-        End Get
-        Set
-            m_Reference_ID = Value
-        End Set
-    End Property
+        public int Protein_ID
+        {
+            get
+            {
+                return m_Protein_ID;
+            }
 
-    Public Property Member_ID As Integer
-        Get
-            Return m_Member_ID
-        End Get
-        Set
-            m_Member_ID = Value
-        End Set
-    End Property
+            set
+            {
+                m_Protein_ID = value;
+            }
+        }
 
-    Public Property Authority_ID As Integer
-        Get
-            Return m_Authority_ID
-        End Get
-        Set
-            m_Authority_ID = Value
-        End Set
-    End Property
+        public int Reference_ID
+        {
+            get
+            {
+                return m_Reference_ID;
+            }
 
-    Public Property SortingIndex As Integer
-        Get
-            Return m_SortCount
-        End Get
-        Set
-            m_SortCount = Value
-        End Set
-    End Property
+            set
+            {
+                m_Reference_ID = value;
+            }
+        }
 
-    Public ReadOnly Property NameXRefs As List(Of String)
-        Get
-            Return m_XRefList
-        End Get
-    End Property
+        public int Member_ID
+        {
+            get
+            {
+                return m_Member_ID;
+            }
 
-    Public Sub AddXRef(newReference As String)
-        If m_XRefList Is Nothing Then
-            m_XRefList = New List(Of String)
-        End If
-        m_XRefList.Add(newReference)
-    End Sub
+            set
+            {
+                m_Member_ID = value;
+            }
+        }
 
-    Public Sub SetReferenceName(newName As String)
-        If String.IsNullOrWhiteSpace(newName) Then
-            Throw New Exception("New protein name cannot be empty")
-        End If
-        m_Reference = newName
-    End Sub
+        public int Authority_ID
+        {
+            get
+            {
+                return m_Authority_ID;
+            }
 
-    Public Overrides Function ToString() As String
+            set
+            {
+                m_Authority_ID = value;
+            }
+        }
 
-        If String.IsNullOrWhiteSpace(m_Sequence) Then
-            Return m_Reference & ", ResidueCount=0"
-        Else
-            Return m_Reference & ", ResidueCount=" & m_Length & ", " & m_Sequence.Substring(0, 20)
-        End If
+        public int SortingIndex
+        {
+            get
+            {
+                return m_SortCount;
+            }
 
-    End Function
-End Class
+            set
+            {
+                m_SortCount = value;
+            }
+        }
+
+        public List<string> NameXRefs
+        {
+            get
+            {
+                return m_XRefList;
+            }
+        }
+
+        public void AddXRef(string newReference)
+        {
+            if (m_XRefList == null)
+            {
+                m_XRefList = new List<string>();
+            }
+
+            m_XRefList.Add(newReference);
+        }
+
+        public void SetReferenceName(string newName)
+        {
+            if (string.IsNullOrWhiteSpace(newName))
+            {
+                throw new Exception("New protein name cannot be empty");
+            }
+
+            m_Reference = newName;
+        }
+
+        public override string ToString()
+        {
+            if (string.IsNullOrWhiteSpace(m_Sequence))
+            {
+                return m_Reference + ", ResidueCount=0";
+            }
+            else
+            {
+                return m_Reference + ", ResidueCount=" + m_Length + ", " + m_Sequence.Substring(0, 20);
+            }
+        }
+    }
+}

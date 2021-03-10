@@ -34,12 +34,10 @@
     <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TableManipulationBase">
-      <HintPath>..\TableManipulationBase\bin\TableManipulationBase.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -49,6 +47,12 @@
     <PackageReference Include="PRISM-DatabaseUtils">
       <Version>1.0.9</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TableManipulationBase\TableManipulationBase.csproj">
+      <Project>{15939683-d5b9-4784-9e16-89b0c059d3c8}</Project>
+      <Name>TableManipulationBase</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

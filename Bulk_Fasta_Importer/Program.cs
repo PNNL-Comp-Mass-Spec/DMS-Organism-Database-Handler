@@ -1,232 +1,266 @@
-﻿Option Strict On
+﻿using System;
+using System.IO;
+using System.Reflection;
+using System.Threading;
+using Bulk_Fasta_Importer.Properties;
+using Microsoft.VisualBasic;
+using PRISM;
+using ValidateFastaFile;
 
-Imports System.IO
-Imports System.Reflection
-Imports System.Threading
-Imports PRISM
-Imports ValidateFastaFile
+namespace Bulk_Fasta_Importer
+{
+    /// <summary>
+    /// This program can be used to load one or more FASTA files into the Protein Sequences database
+    /// </summary>
+    static class Program
+    {
+        public const string PROGRAM_DATE = "February 18, 2020";
 
-''' <summary>
-''' This program can be used to load one or more FASTA files into the Protein Sequences database
-''' </summary>
-Module modMain
+        private static string mInputFilePath;
+        private static bool mPreviewMode;
+        private static int mMaxProteinNameLength = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
 
-    Public Const PROGRAM_DATE As String = "February 18, 2020"
+        private static bool mLogMessagesToFile;
+        private static string mLogFilePath;
 
-    Private mInputFilePath As String
-    Private mPreviewMode As Boolean
-    Private mMaxProteinNameLength As Integer = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH
+        private static bool mQuietMode;
 
-    Private mLogMessagesToFile As Boolean
-    Private mLogFilePath As String
+        private static DateTime mLastProgressReportTime;
+        private static int mLastProgressReportValue;
 
-    Private mQuietMode As Boolean
+        public static int Main()
+        {
+            // Returns 0 if no error, error code if an error
 
-    Private mLastProgressReportTime As DateTime
-    Private mLastProgressReportValue As Integer
+            int returnCode;
+            var commandLineParser = new clsParseCommandLine();
+            bool proceed;
 
-    Public Function Main() As Integer
-        ' Returns 0 if no error, error code if an error
+            // Initialize the options
+            mInputFilePath = string.Empty;
+            mPreviewMode = false;
 
-        Dim returnCode As Integer
-        Dim commandLineParser As New clsParseCommandLine()
-        Dim proceed As Boolean
+            mQuietMode = false;
+            mLogMessagesToFile = false;
+            mLogFilePath = string.Empty;
+            try
+            {
+                proceed = false;
+                if (commandLineParser.ParseCommandLine())
+                {
+                    if (SetOptionsUsingCommandLineParameters(commandLineParser))
+                        proceed = true;
+                }
 
-        ' Initialize the options
-        mInputFilePath = String.Empty
-        mPreviewMode = False
+                if (!proceed ||
+                    commandLineParser.NeedToShowHelp ||
+                    commandLineParser.ParameterCount + commandLineParser.NonSwitchParameterCount == 0 ||
+                    mInputFilePath.Length == 0)
+                {
+                    ShowProgramHelp();
+                    return -1;
+                }
 
-        mQuietMode = False
-        mLogMessagesToFile = False
-        mLogFilePath = String.Empty
+                // Data Source=proteinseqs;Initial Catalog=Protein_Sequences
+                string proteinSeqsConnectionString = Settings.Default.ProteinSeqsDBConnectStr;
 
-        Try
-            proceed = False
-            If commandLineParser.ParseCommandLine Then
-                If SetOptionsUsingCommandLineParameters(commandLineParser) Then proceed = True
-            End If
+                // Data Source=dms5;Initial Catalog=Protein_Sequences
+                string dmsConnectionString = Settings.Default.DMSConnectStr;
 
-            If Not proceed OrElse
-               commandLineParser.NeedToShowHelp OrElse
-               commandLineParser.ParameterCount + commandLineParser.NonSwitchParameterCount = 0 OrElse
-               mInputFilePath.Length = 0 Then
-                ShowProgramHelp()
-                Return -1
-            End If
+                var fastaImporter = new BulkFastaImporter(dmsConnectionString, proteinSeqsConnectionString)
+                {
+                    PreviewMode = mPreviewMode,
+                    ValidationMaxProteinNameLength = mMaxProteinNameLength
+                };
 
-            ' Data Source=proteinseqs;Initial Catalog=Protein_Sequences
-            Dim proteinSeqsConnectionString = My.Settings.ProteinSeqsDBConnectStr
+                fastaImporter.ProgressUpdate += BulkImporter_ProgressChanged;
+                fastaImporter.ProgressReset += BulkImporter_ProgressReset;
 
-            ' Data Source=dms5;Initial Catalog=Protein_Sequences
-            Dim dmsConnectionString = My.Settings.DMSConnectStr
+                fastaImporter.LogMessagesToFile = mLogMessagesToFile;
+                if (!string.IsNullOrEmpty(mLogFilePath))
+                    fastaImporter.LogFilePath = mLogFilePath;
 
-            Dim fastaImporter = New BulkFastaImporter(dmsConnectionString, proteinSeqsConnectionString) With {
-                .PreviewMode = mPreviewMode,
-                .ValidationMaxProteinNameLength = mMaxProteinNameLength
+                string outputFolderNamePlaceholder = string.Empty;
+                string paramFilePathPlaceholder = string.Empty;
+
+                if (fastaImporter.ProcessFilesWildcard(mInputFilePath, outputFolderNamePlaceholder, paramFilePathPlaceholder))
+                {
+                    returnCode = 0;
+                }
+                else
+                {
+                    returnCode = (int)fastaImporter.ErrorCode;
+                    if (returnCode != 0 && !mQuietMode)
+                    {
+                        Console.WriteLine("Error while processing: " + fastaImporter.GetErrorMessage());
+                    }
+                }
+
+                DisplayProgressPercent(mLastProgressReportValue, true);
+
+                return returnCode;
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage("Error occurred in modMain->Main: " + ControlChars.NewLine + ex.Message);
+                return -1;
+            }
+        }
+
+        private static void DisplayProgressPercent(int percentComplete, bool addCarriageReturn)
+        {
+            if (addCarriageReturn)
+            {
+                Console.WriteLine();
             }
 
-            AddHandler fastaImporter.ProgressUpdate, AddressOf BulkImporter_ProgressChanged
-            AddHandler fastaImporter.ProgressReset, AddressOf BulkImporter_ProgressReset
+            if (percentComplete > 100)
+                percentComplete = 100;
+            Console.Write("Processing: " + percentComplete.ToString() + "% ");
+            if (addCarriageReturn)
+            {
+                Console.WriteLine();
+            }
+        }
 
-            fastaImporter.LogMessagesToFile = mLogMessagesToFile
-            If Not String.IsNullOrEmpty(mLogFilePath) Then fastaImporter.LogFilePath = mLogFilePath
+        private static string GetAppVersion()
+        {
+            return Assembly.GetExecutingAssembly().GetName().Version.ToString() + " (" + PROGRAM_DATE + ")";
+        }
 
-            Dim outputFolderNamePlaceholder As String = String.Empty
-            Dim paramFilePathPlaceholder As String = String.Empty
+        private static bool SetOptionsUsingCommandLineParameters(clsParseCommandLine commandLineParser)
+        {
+            // Returns True if no problems; otherwise, returns false
 
-            If fastaImporter.ProcessFilesWildcard(mInputFilePath, outputFolderNamePlaceholder, paramFilePathPlaceholder) Then
-                returnCode = 0
-            Else
-                returnCode = fastaImporter.ErrorCode
-                If returnCode <> 0 AndAlso Not mQuietMode Then
-                    Console.WriteLine("Error while processing: " & fastaImporter.GetErrorMessage())
-                End If
-            End If
+            string strValue = string.Empty;
+            var strValidParameters = new string[] { "I", "L", "Preview", "MaxLength" };
+            try
+            {
+                // Make sure no invalid parameters are present
+                if (commandLineParser.InvalidParametersPresent(strValidParameters))
+                {
+                    return false;
+                }
+                else
+                {
+                    // Query commandLineParser to see if various parameters are present
+                    if (commandLineParser.RetrieveValueForParameter("I", out strValue))
+                    {
+                        mInputFilePath = strValue;
+                    }
+                    else if (commandLineParser.NonSwitchParameterCount > 0)
+                    {
+                        mInputFilePath = commandLineParser.RetrieveNonSwitchParameter(0);
+                    }
 
-            DisplayProgressPercent(mLastProgressReportValue, True)
+                    if (commandLineParser.RetrieveValueForParameter("L", out strValue))
+                    {
+                        mLogMessagesToFile = true;
+                        if (!string.IsNullOrEmpty(strValue))
+                        {
+                            mLogFilePath = strValue;
+                        }
+                    }
 
-            Return returnCode
+                    if (commandLineParser.IsParameterPresent("Preview"))
+                        mPreviewMode = true;
 
-        Catch ex As Exception
-            ShowErrorMessage("Error occurred in modMain->Main: " & ControlChars.NewLine & ex.Message)
-            Return -1
-        End Try
+                    if (commandLineParser.RetrieveValueForParameter("MaxLength", out strValue))
+                    {
+                        if (!int.TryParse(strValue, out mMaxProteinNameLength))
+                        {
+                            ShowErrorMessage("Integer not found for the /MaxLength switch");
+                            return false;
+                        }
+                    }
 
-    End Function
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage("Error parsing the command line parameters: " + ControlChars.NewLine + ex.Message);
+                return false;
+            }
+        }
 
-    Private Sub DisplayProgressPercent(percentComplete As Integer, addCarriageReturn As Boolean)
-        If addCarriageReturn Then
-            Console.WriteLine()
-        End If
-        If percentComplete > 100 Then percentComplete = 100
-        Console.Write("Processing: " & percentComplete.ToString & "% ")
-        If addCarriageReturn Then
-            Console.WriteLine()
-        End If
-    End Sub
+        private static void ShowErrorMessage(string strMessage)
+        {
+            string strSeparator = "------------------------------------------------------------------------------";
 
-    Private Function GetAppVersion() As String
-        Return Assembly.GetExecutingAssembly.GetName.Version.ToString & " (" & PROGRAM_DATE & ")"
-    End Function
+            Console.WriteLine();
+            Console.WriteLine(strSeparator);
+            Console.WriteLine(strMessage);
+            Console.WriteLine(strSeparator);
+            Console.WriteLine();
+        }
 
-    Private Function SetOptionsUsingCommandLineParameters(commandLineParser As clsParseCommandLine) As Boolean
-        ' Returns True if no problems; otherwise, returns false
+        private static void ShowProgramHelp()
+        {
+            try
+            {
+                Console.WriteLine("This program reads a tab delimited file containing a list of FASTA files to import into the Protein_Sequences database in DMS.");
+                Console.WriteLine();
 
-        Dim strValue As String = String.Empty
-        Dim strValidParameters = New String() {"I", "L", "Preview", "MaxLength"}
+                Console.WriteLine("Program syntax:");
+                Console.WriteLine(Path.GetFileName(Assembly.GetExecutingAssembly().Location) +
+                                  " FastaInfoFile.txt [/MaxLength:##] [/Preview] [/L]");
+                Console.WriteLine();
+                Console.WriteLine("FastaInfoFile.txt is a tab delimited text file listing the FASTA files to import");
+                Console.WriteLine("Required columns are: FastaFilePath, OrganismName_or_ID, and AnnotationTypeName_or_ID");
+                Console.WriteLine();
+                Console.WriteLine("Use /MaxLength to define the maximum allowable length for protein names");
+                Console.WriteLine("The default is /MaxLength:" + clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH);
+                Console.WriteLine();
 
-        Try
-            ' Make sure no invalid parameters are present
-            If commandLineParser.InvalidParametersPresent(strValidParameters) Then
-                Return False
-            Else
-                With commandLineParser
-                    ' Query commandLineParser to see if various parameters are present
-                    If .RetrieveValueForParameter("I", strValue) Then
-                        mInputFilePath = strValue
-                    ElseIf .NonSwitchParameterCount > 0 Then
-                        mInputFilePath = .RetrieveNonSwitchParameter(0)
-                    End If
+                Console.WriteLine("Use /Preview to see the fasta files that would be imported");
+                Console.WriteLine("Use /L to log messages to a file; optionally specify the filename using /L:FilePath");
+                Console.WriteLine();
 
-                    If .RetrieveValueForParameter("L", strValue) Then
-                        mLogMessagesToFile = True
-                        If Not String.IsNullOrEmpty(strValue) Then
-                            mLogFilePath = strValue
-                        End If
-                    End If
+                Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2014");
+                Console.WriteLine("Version: " + GetAppVersion());
+                Console.WriteLine();
 
-                    If .IsParameterPresent("Preview") Then mPreviewMode = True
+                Console.WriteLine("E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov");
+                Console.WriteLine("Website: http://panomics.pnnl.gov/ or http://omics.pnl.gov");
+                Console.WriteLine();
 
-                    If .RetrieveValueForParameter("MaxLength", strValue) Then
-                        If Not Integer.TryParse(strValue, mMaxProteinNameLength) Then
-                            ShowErrorMessage("Integer not found for the /MaxLength switch")
-                            Return False
-                        End If
-                    End If
+                // Delay for 750 msec in case the user double clicked this file from within Windows Explorer (or started the program via a shortcut)
+                Thread.Sleep(750);
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage("Error displaying the program syntax: " + ex.Message);
+            }
+        }
 
-                End With
+        private static void BulkImporter_ProgressChanged(string taskDescription, float percentComplete)
+        {
+            const int PERCENT_REPORT_INTERVAL = 25;
+            const int PROGRESS_DOT_INTERVAL_MSEC = 250;
 
-                Return True
-            End If
+            if (percentComplete >= mLastProgressReportValue)
+            {
+                if (mLastProgressReportValue > 0)
+                {
+                    Console.WriteLine();
+                }
 
-        Catch ex As Exception
-            ShowErrorMessage("Error parsing the command line parameters: " & ControlChars.NewLine & ex.Message)
-            Return False
-        End Try
+                DisplayProgressPercent(mLastProgressReportValue, false);
+                mLastProgressReportValue += PERCENT_REPORT_INTERVAL;
+                mLastProgressReportTime = DateTime.UtcNow;
+            }
+            else if (DateTime.UtcNow.Subtract(mLastProgressReportTime).TotalMilliseconds > PROGRESS_DOT_INTERVAL_MSEC)
+            {
+                mLastProgressReportTime = DateTime.UtcNow;
+                Console.Write(".");
+            }
+        }
 
-    End Function
-
-    Private Sub ShowErrorMessage(strMessage As String)
-        Dim strSeparator = "------------------------------------------------------------------------------"
-
-        Console.WriteLine()
-        Console.WriteLine(strSeparator)
-        Console.WriteLine(strMessage)
-        Console.WriteLine(strSeparator)
-        Console.WriteLine()
-
-    End Sub
-
-    Private Sub ShowProgramHelp()
-
-        Try
-
-            Console.WriteLine("This program reads a tab delimited file containing a list of FASTA files to import into the Protein_Sequences database in DMS.")
-            Console.WriteLine()
-
-            Console.WriteLine("Program syntax:")
-            Console.WriteLine(Path.GetFileName(Assembly.GetExecutingAssembly().Location) &
-                              " FastaInfoFile.txt [/MaxLength:##] [/Preview] [/L]")
-            Console.WriteLine()
-            Console.WriteLine("FastaInfoFile.txt is a tab delimited text file listing the FASTA files to import")
-            Console.WriteLine("Required columns are: FastaFilePath, OrganismName_or_ID, and AnnotationTypeName_or_ID")
-            Console.WriteLine()
-            Console.WriteLine("Use /MaxLength to define the maximum allowable length for protein names")
-            Console.WriteLine("The default is /MaxLength:" & clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH)
-            Console.WriteLine()
-
-            Console.WriteLine("Use /Preview to see the fasta files that would be imported")
-            Console.WriteLine("Use /L to log messages to a file; optionally specify the filename using /L:FilePath")
-            Console.WriteLine()
-
-            Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2014")
-            Console.WriteLine("Version: " & GetAppVersion())
-            Console.WriteLine()
-
-            Console.WriteLine("E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov")
-            Console.WriteLine("Website: http://panomics.pnnl.gov/ or http://omics.pnl.gov")
-            Console.WriteLine()
-
-            ' Delay for 750 msec in case the user double clicked this file from within Windows Explorer (or started the program via a shortcut)
-            Thread.Sleep(750)
-
-        Catch ex As Exception
-            ShowErrorMessage("Error displaying the program syntax: " & ex.Message)
-        End Try
-
-    End Sub
-
-    Private Sub BulkImporter_ProgressChanged(taskDescription As String, percentComplete As Single)
-        Const PERCENT_REPORT_INTERVAL = 25
-        Const PROGRESS_DOT_INTERVAL_MSEC = 250
-
-        If percentComplete >= mLastProgressReportValue Then
-            If mLastProgressReportValue > 0 Then
-                Console.WriteLine()
-            End If
-            DisplayProgressPercent(mLastProgressReportValue, False)
-            mLastProgressReportValue += PERCENT_REPORT_INTERVAL
-            mLastProgressReportTime = DateTime.UtcNow
-        Else
-            If DateTime.UtcNow.Subtract(mLastProgressReportTime).TotalMilliseconds > PROGRESS_DOT_INTERVAL_MSEC Then
-                mLastProgressReportTime = DateTime.UtcNow
-                Console.Write(".")
-            End If
-        End If
-    End Sub
-
-    Private Sub BulkImporter_ProgressReset()
-        mLastProgressReportTime = DateTime.UtcNow
-        mLastProgressReportValue = 0
-    End Sub
-End Module
+        private static void BulkImporter_ProgressReset()
+        {
+            mLastProgressReportTime = DateTime.UtcNow;
+            mLastProgressReportValue = 0;
+        }
+    }
+}

@@ -1,132 +1,161 @@
-Imports System.Linq
-Imports Protein_Importer
+﻿using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
+using Protein_Importer;
 
-Public Class AddAnnotationType
-    Protected m_ConnectionString As String
-    Protected m_SPRunner As AddUpdateEntries
+namespace AppUI_OrfDBHandler
+{
+    public class AddAnnotationTypeType
+    {
+        protected string m_ConnectionString;
+        protected AddUpdateEntries m_SPRunner;
 
-    Protected m_TypeName As String
-    Protected m_Description As String
-    Protected m_Example As String
-    Protected m_AuthID As Integer
-    Protected m_EntryExists As Boolean = False
-    Protected m_AuthAdd As AddNamingAuthority
-    Protected m_Authorities As DataTable
-    Protected m_FormLocation As Point
+        protected string m_TypeName;
+        protected string m_Description;
+        protected string m_Example;
+        protected int m_AuthID;
+        protected bool m_EntryExists = false;
+        protected AddNamingAuthorityType m_AuthAdd;
+        protected DataTable m_Authorities;
+        protected Point m_FormLocation;
 
-    ReadOnly Property TypeName As String
-        Get
-            Return m_TypeName
-        End Get
-    End Property
+        public string TypeName
+        {
+            get
+            {
+                return m_TypeName;
+            }
+        }
 
-    ReadOnly Property Description As String
-        Get
-            Return m_Description
-        End Get
-    End Property
+        public string Description
+        {
+            get
+            {
+                return m_Description;
+            }
+        }
 
-    ReadOnly Property AnnotationExample As String
-        Get
-            Return m_Example
-        End Get
-    End Property
+        public string AnnotationExample
+        {
+            get
+            {
+                return m_Example;
+            }
+        }
 
-    ReadOnly Property AuthorityID As Integer
-        Get
-            Return m_AuthID
-        End Get
-    End Property
+        public int AuthorityID
+        {
+            get
+            {
+                return m_AuthID;
+            }
+        }
 
-    ReadOnly Property DisplayName As String
-        Get
-            Return GetDisplayName(m_AuthID, m_TypeName)
-        End Get
-    End Property
+        public string DisplayName
+        {
+            get
+            {
+                return GetDisplayName(m_AuthID, m_TypeName);
+            }
+        }
 
-    ReadOnly Property EntryExists As Boolean
-        Get
-            Return m_EntryExists
-        End Get
-    End Property
+        public bool EntryExists
+        {
+            get
+            {
+                return m_EntryExists;
+            }
+        }
 
-    WriteOnly Property FormLocation As Point
-        Set
-            m_FormLocation = Value
-        End Set
-    End Property
+        public Point FormLocation
+        {
+            set
+            {
+                m_FormLocation = value;
+            }
+        }
 
+        public AddAnnotationTypeType(string psConnectionString)
+        {
+            m_ConnectionString = psConnectionString;
 
-    Sub New(psConnectionString As String)
-        m_ConnectionString = psConnectionString
+            m_AuthAdd = new AddNamingAuthorityType(m_ConnectionString);
+            m_Authorities = m_AuthAdd.AuthoritiesTable;
+        }
 
-        m_AuthAdd = New AddNamingAuthority(m_ConnectionString)
-        m_Authorities = m_AuthAdd.AuthoritiesTable
+        private string GetDisplayName(int authID, string authTypeName)
+        {
+            string authName;
+            var foundRows = m_Authorities.Select("ID = " + authID).ToList();
 
-    End Sub
+            if (foundRows.Count > 0)
+            {
+                authName = foundRows[0]["Display_Name"].ToString();
+            }
+            else
+            {
+                authName = "UnknownAuth";
+            }
 
-    Private Function GetDisplayName(authID As Integer, authTypeName As String) As String
-        Dim authName As String
-        Dim foundRows = m_Authorities.Select("ID = " & authID).ToList()
+            return authName + " - " + authTypeName;
+        }
 
-        If (foundRows.Count > 0) Then
-            authName = foundRows(0).Item("Display_Name").ToString()
-        Else
-            authName = "UnknownAuth"
-        End If
+        public int AddAnnotationType()
+        {
+            var frmAnn = new frmAddAnnotationType();
+            int annTypeID;
+            if (m_SPRunner == null)
+            {
+                m_SPRunner = new AddUpdateEntries(m_ConnectionString);
+            }
 
-        Return authName & " - " & authTypeName
-    End Function
+            if (m_AuthAdd == null)
+            {
+                m_AuthAdd = new AddNamingAuthorityType(m_ConnectionString);
+            }
 
-    Function AddAnnotationType() As Integer
+            frmAnn.AuthorityTable = m_Authorities;
+            frmAnn.ConnectionString = m_ConnectionString;
+            frmAnn.DesktopLocation = m_FormLocation;
+            var r = frmAnn.ShowDialog();
+            DataRow[] authNames;
+            string authName;
 
-        Dim frmAnn As New frmAddAnnotationType
-        Dim annTypeID As Integer
-        If m_SPRunner Is Nothing Then
-            m_SPRunner = New AddUpdateEntries(m_ConnectionString)
-        End If
+            if (r == DialogResult.OK)
+            {
+                m_TypeName = frmAnn.TypeName;
+                m_Description = frmAnn.Description;
+                m_Example = frmAnn.Example;
+                m_AuthID = frmAnn.AuthorityID;
 
-        If m_AuthAdd Is Nothing Then
-            m_AuthAdd = New AddNamingAuthority(m_ConnectionString)
-        End If
+                annTypeID = m_SPRunner.AddAnnotationType(
+                    m_TypeName, m_Description, m_Example, m_AuthID);
 
-        frmAnn.AuthorityTable = m_Authorities
-        frmAnn.ConnectionString = m_ConnectionString
-        frmAnn.DesktopLocation = m_FormLocation
-        Dim r As DialogResult = frmAnn.ShowDialog
-        Dim authNames() As DataRow
-        Dim authName As String
+                if (annTypeID < 0)
+                {
+                    authNames = m_Authorities.Select("Authority_ID = " + m_AuthID.ToString());
+                    authName = authNames[0]["Name"].ToString();
+                    MessageBox.Show(
+                        "An entry called '" + m_TypeName + "' for '" + authName + "' already exists in the Annotation Types table",
+                        "Entry already exists!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2);
+                    m_EntryExists = true;
+                    annTypeID = -annTypeID;
+                }
+                else
+                {
+                    m_EntryExists = false;
+                }
+            }
+            else
+            {
+                annTypeID = 0;
+                m_EntryExists = true;
+            }
 
+            m_SPRunner = null;
 
-        If r = DialogResult.OK Then
-            m_TypeName = frmAnn.TypeName
-            m_Description = frmAnn.Description
-            m_Example = frmAnn.Example
-            m_AuthID = frmAnn.AuthorityID
-
-            annTypeID = m_SPRunner.AddAnnotationType(
-                 m_TypeName, m_Description, m_Example, m_AuthID)
-
-            If annTypeID < 0 Then
-                authNames = m_Authorities.Select("Authority_ID = " & m_AuthID.ToString)
-                authName = authNames(0).Item("Name").ToString
-                MessageBox.Show(
-                    "An entry called '" + m_TypeName + "' for '" & authName & "' already exists in the Annotation Types table",
-                    "Entry already exists!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2)
-                m_EntryExists = True
-                annTypeID = -annTypeID
-            Else
-                m_EntryExists = False
-            End If
-        Else
-            annTypeID = 0
-            m_EntryExists = True
-        End If
-
-        m_SPRunner = Nothing
-
-        Return annTypeID
-
-    End Function
-
-End Class
+            return annTypeID;
+        }
+    }
+}

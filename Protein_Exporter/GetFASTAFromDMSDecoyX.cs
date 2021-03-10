@@ -1,30 +1,26 @@
-﻿
-Option Strict On
+﻿using TableManipulationBase;
 
-Imports TableManipulationBase
+namespace Protein_Exporter
+{
+    public class GetFASTAFromDMSDecoyX : GetFASTAFromDMSDecoy
+    {
+        private const bool DECOY_PROTEINS_USE_XXX = true;
 
-Public Class GetFASTAFromDMSDecoyX
-    Inherits GetFASTAFromDMSDecoy
-
-    Private Const DECOY_PROTEINS_USE_XXX As Boolean = True
-
-    ''' <summary>
-    ''' Constructor
-    ''' </summary>
-    ''' <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
-    ''' <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
-    Public Sub New(
-        databaseAccessor As DBTask,
-        databaseFormatType As GetFASTAFromDMS.DatabaseFormatTypes)
-
-        MyBase.New(databaseAccessor, databaseFormatType, DECOY_PROTEINS_USE_XXX)
-
-        m_RevGenerator = New GetFASTAFromDMSReversed(
-            databaseAccessor, databaseFormatType) With {
-            .UseXXX = DECOY_PROTEINS_USE_XXX
-            }
-
-    End Sub
-
-
-End Class
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
+        /// <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
+        public GetFASTAFromDMSDecoyX(
+            DBTask databaseAccessor,
+            GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType)
+            : base(databaseAccessor, databaseFormatType, DECOY_PROTEINS_USE_XXX)
+        {
+            m_RevGenerator = new GetFASTAFromDMSReversed(
+                databaseAccessor, databaseFormatType)
+            {
+                UseXXX = DECOY_PROTEINS_USE_XXX
+            };
+        }
+    }
+}

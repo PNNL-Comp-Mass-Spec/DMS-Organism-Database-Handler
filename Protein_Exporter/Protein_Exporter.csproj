@@ -34,16 +34,11 @@
     <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Protein_Storage">
-      <HintPath>..\Release_DLL\Protein_Storage.dll</HintPath>
-    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="TableManipulationBase">
-      <HintPath>..\Release_DLL\TableManipulationBase.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArchiveOutputFilesBase.cs" />
@@ -73,6 +68,16 @@
     <PackageReference Include="PRISMWin-Library">
       <Version>1.0.14</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Protein_Storage\Protein_Storage.csproj">
+      <Project>{77b1cddc-23d8-4408-8ca3-6fa8a31a975a}</Project>
+      <Name>Protein_Storage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TableManipulationBase\TableManipulationBase.csproj">
+      <Project>{15939683-d5b9-4784-9e16-89b0c059d3c8}</Project>
+      <Name>TableManipulationBase</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

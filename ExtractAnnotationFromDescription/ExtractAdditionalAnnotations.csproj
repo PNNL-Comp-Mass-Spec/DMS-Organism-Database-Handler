@@ -34,26 +34,12 @@
     <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <ProjectReference Include="..\Protein_Importer\Protein_Importer.csproj">
-      <Name>Protein_Importer</Name>
-      <Project>{28D5A54E-B47D-41F3-95AB-96C4346ADE38}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\Protein_Storage\Protein_Storage.csproj">
-      <Name>Protein_Storage</Name>
-      <Project>{77B1CDDC-23D8-4408-8CA3-6FA8A31A975A}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\TableManipulationBase\TableManipulationBase.csproj">
-      <Name>TableManipulationBase</Name>
-      <Project>{15939683-D5B9-4784-9E16-89B0C059D3C8}</Project>
-      <Package>{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</Package>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnnotationInfo.cs" />
@@ -68,17 +54,25 @@
     </Compile>
     <Compile Include="GetAnnotationsFromDB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="frmExtractFromFlatfile.resx">
-      <DependentUpon>frmExtractFromFlatfile.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmRegexSpecifyFromDescription.resx">
-      <DependentUpon>frmRegexSpecifyFromDescription.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="PRISM-DatabaseUtils">
       <Version>1.0.9</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Protein_Importer\Protein_Importer.csproj">
+      <Project>{28d5a54e-b47d-41f3-95ab-96c4346ade38}</Project>
+      <Name>Protein_Importer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Protein_Storage\Protein_Storage.csproj">
+      <Project>{77b1cddc-23d8-4408-8ca3-6fa8a31a975a}</Project>
+      <Name>Protein_Storage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TableManipulationBase\TableManipulationBase.csproj">
+      <Project>{15939683-d5b9-4784-9e16-89b0c059d3c8}</Project>
+      <Name>TableManipulationBase</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

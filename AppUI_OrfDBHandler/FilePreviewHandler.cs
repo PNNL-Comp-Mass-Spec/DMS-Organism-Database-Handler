@@ -1,84 +1,116 @@
-Imports System.IO
-Imports Protein_Importer
-Imports Protein_Storage
+﻿using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
+using Microsoft.VisualBasic.CompilerServices;
+using Protein_Importer;
+using Protein_Storage;
 
-Public Class FilePreviewHandler
+namespace AppUI_OrfDBHandler
+{
+    public class FilePreviewHandler
+    {
+        private ProteinStorage m_Proteins;
+        private FASTAReader m_Loader;
+        private string m_currentFilePath;
+        private frmFilePreview m_frmPreview;
 
-    Private m_Proteins As ProteinStorage
-    Private m_Loader As FASTAReader
-    Private m_currentFilePath As String
-    Private WithEvents m_frmPreview As frmFilePreview
+        public event FormStatusEventHandler FormStatus;
 
-    Event FormStatus(visible As Boolean)
+        public delegate void FormStatusEventHandler(bool visible);
 
-    Sub New()
+        public FilePreviewHandler()
+        {
+            m_frmPreview = new frmFilePreview();
+            m_frmPreview.RefreshRequest += FillPreview;
+            m_frmPreview.FormClosing += OnFormClose;
+        }
 
-        m_frmPreview = New frmFilePreview
+        private void GetProteins(
+            string filePath,
+            int lineCount)
+        {
+            if (m_Loader == null)
+            {
+                m_Loader = new FASTAReader();
+            }
 
-    End Sub
+            m_Proteins = m_Loader.GetProteinEntries(filePath, lineCount);
 
-    Private Sub GetProteins(
-        filePath As String,
-        lineCount As Integer)
+            ListViewItem li;
 
-        If m_Loader Is Nothing Then
-            m_Loader = New FASTAReader
-        End If
+            var enumProteins = m_Proteins.GetEnumerator();
+            m_frmPreview.lvwPreview.BeginUpdate();
+            m_frmPreview.lvwPreview.Items.Clear();
 
-        m_Proteins = m_Loader.GetProteinEntries(filePath, lineCount)
+            while (enumProteins.MoveNext())
+            {
+                var protein = enumProteins.Current.Value;
+                li = new ListViewItem(protein.Reference);
+                li.SubItems.Add(protein.Description);
+                m_frmPreview.lvwPreview.Items.Add(li);
+            }
 
-        Dim li As ListViewItem
+            m_frmPreview.lvwPreview.EndUpdate();
+        }
 
-        Dim enumProteins = m_Proteins.GetEnumerator()
-        m_frmPreview.lvwPreview.BeginUpdate()
-        m_frmPreview.lvwPreview.Items.Clear()
+        private void FillPreview(int lineCount)
+        {
+            GetProteins(m_currentFilePath, lineCount);
+        }
 
-        While enumProteins.MoveNext()
-            Dim protein = enumProteins.Current.Value
-            li = New ListViewItem(protein.Reference)
-            li.SubItems.Add(protein.Description)
-            m_frmPreview.lvwPreview.Items.Add(li)
-        End While
+        public void ShowPreview(string filePath, int horizontalPos, int verticalPos, int height)
+        {
+            m_currentFilePath = filePath;
+            if (m_frmPreview == null)
+            {
+                m_frmPreview = new frmFilePreview();
+                m_frmPreview.RefreshRequest += FillPreview;
+                m_frmPreview.FormClosing += OnFormClose;
+            }
 
-        m_frmPreview.lvwPreview.EndUpdate()
-    End Sub
+            m_frmPreview.DesktopLocation = new Point(horizontalPos, verticalPos);
+            m_frmPreview.Height = height;
+            m_frmPreview.WindowName = "Preview of: " + Path.GetFileName(filePath);
+            if (m_frmPreview.Visible == false)
+            {
+                m_frmPreview.Show();
+            }
+            else
+            {
+                FillPreview(Conversions.ToInteger(m_frmPreview.txtLineCount.Text));
+            }
 
-    Private Sub FillPreview(lineCount As Integer) Handles m_frmPreview.RefreshRequest
-        GetProteins(m_currentFilePath, lineCount)
-    End Sub
+            FormStatus?.Invoke(true);
+        }
 
-    Sub ShowPreview(filePath As String, horizontalPos As Integer, verticalPos As Integer, height As Integer)
-        m_currentFilePath = filePath
-        If m_frmPreview Is Nothing Then
-            m_frmPreview = New frmFilePreview
-        End If
-        With m_frmPreview
-            .DesktopLocation = New Point(horizontalPos, verticalPos)
-            .Height = height
-            .WindowName = "Preview of: " & Path.GetFileName(filePath)
-            If m_frmPreview.Visible = False Then
-                .Show()
-            Else
-                FillPreview(CInt(m_frmPreview.txtLineCount.Text))
-            End If
-        End With
-        RaiseEvent FormStatus(True)
-    End Sub
+        public void CloseForm()
+        {
+            m_frmPreview.Close();
+        }
 
-    Sub CloseForm()
-        m_frmPreview.Close()
-    End Sub
+        ~FilePreviewHandler()
+        {
+            if (m_frmPreview != null)
+            {
+                m_frmPreview.RefreshRequest -= FillPreview;
+                m_frmPreview.FormClosing -= OnFormClose;
+            }
 
-    Protected Overrides Sub Finalize()
-        MyBase.Finalize()
-        m_Proteins = Nothing
-        m_Loader = Nothing
-        m_frmPreview = Nothing
-    End Sub
+            m_Proteins = null;
+            m_Loader = null;
+            m_frmPreview = null;
+        }
 
-    Sub OnFormClose() Handles m_frmPreview.FormClosing
-        RaiseEvent FormStatus(False)
-        m_frmPreview = Nothing
-    End Sub
+        public void OnFormClose()
+        {
+            FormStatus?.Invoke(false);
 
-End Class
+            if (m_frmPreview != null)
+            {
+                m_frmPreview.RefreshRequest -= FillPreview;
+                m_frmPreview.FormClosing -= OnFormClose;
+            }
+            m_frmPreview = null;
+        }
+    }
+}

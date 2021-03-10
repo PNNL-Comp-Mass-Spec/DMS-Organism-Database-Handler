@@ -1,85 +1,89 @@
-Imports PRISM
+﻿using System;
+using System.Data;
+using PRISM;
 
-Friend Interface IGetAnnotationsFromDB
+namespace ExtractAnnotationFromDescription
+{
+    internal interface IGetAnnotationsFromDB
+    {
+    }
 
-End Interface
+    [Obsolete("Unused")]
+    internal class GetAnnotationsFromDB
+    {
+        private readonly string m_ConnectionString;
+        private TableManipulationBase.DBTask m_DatabaseHelper;
 
-<Obsolete("Unused")>
-Friend Class GetAnnotationsFromDB
-    Private ReadOnly m_ConnectionString As String
-    Private m_DatabaseHelper As TableManipulationBase.DBTask
+        public GetAnnotationsFromDB(string psConnectionString)
+        {
+            m_ConnectionString = psConnectionString;
+        }
 
-    Sub New(psConnectionString As String)
-        Me.m_ConnectionString = psConnectionString
-    End Sub
+        public AnnotationInfo GetAnnotationDetails(int ProteinCollectionID)
+        {
+            m_DatabaseHelper = new TableManipulationBase.DBTask(m_ConnectionString);
 
-    Function GetAnnotationDetails(ProteinCollectionID As Integer) As AnnotationInfo
-        Me.m_DatabaseHelper = New TableManipulationBase.DBTask(m_ConnectionString)
+            // FYI: The constructor for AnnotationInfo() doesn't use CollectionName or ProteinCollectionID at present
+            var info = new AnnotationInfo();
 
-        ' FYI: The constructor for AnnotationInfo() doesn't use CollectionName or ProteinCollectionID at present
-        Dim info As New AnnotationInfo()
+            // Get Protein Collection Name
+            var sqlQuery1 = "SELECT TOP 1 Name FROM V_Collection_Picker " +
+                            "WHERE ID = " + ProteinCollectionID;
+            var nameLookupTable = m_DatabaseHelper.GetTable(sqlQuery1);
 
-        'Get Protein Collection Name
-        Dim sqlQuery1 = "SELECT TOP 1 Name FROM V_Collection_Picker " &
-                       "WHERE ID = " & ProteinCollectionID
-        Dim nameLookupTable = Me.m_DatabaseHelper.GetTable(sqlQuery1)
+            // ReSharper disable once UnusedVariable
+            string collectionName = nameLookupTable.Rows[0]["Name"].ToString();
 
-        ' ReSharper disable once UnusedVariable
-        Dim collectionName = nameLookupTable.Rows(0).Item("Name").ToString()
+            // Get Naming Authority Lookup
 
-        'Get Naming Authority Lookup
+            string sqlQuery2 = "SELECT Authority_ID, Name FROM T_Naming_Authorities";
+            var authorityLookupTable = m_DatabaseHelper.GetTable(sqlQuery2);
 
-        Dim sqlQuery2 = "SELECT Authority_ID, Name FROM T_Naming_Authorities"
-        Dim authorityLookupTable = Me.m_DatabaseHelper.GetTable(sqlQuery2)
-
-        Dim authorityLookupRows = authorityLookupTable.Select("")
-        For Each dr As DataRow In authorityLookupRows
-            info.AddAuthorityNameToLookup(
-                DBTools.GetInteger(dr.Item("Authority_ID")),
-                DBTools.GetString(dr.Item("Name")))
-        Next
-
-
-        'Get Annotation Group Information
-
-        Dim sqlQuery3 = "SELECT Annotation_Group, Authority_ID " &
-                        "FROM T_Annotation_Groups " &
-                        "WHERE Protein_Collection_ID = " & ProteinCollectionID.ToString
-
-        Dim annotationGroupLookup = Me.m_DatabaseHelper.GetTable(sqlQuery3)
-
-        For Each dr As DataRow In annotationGroupLookup.Rows
-            info.AddAnnotationGroupLookup(
-                DBTools.GetInteger(dr.Item("Annotation_Group")),
-                DBTools.GetInteger(dr.Item("Authority_ID")))
-        Next
+            var authorityLookupRows = authorityLookupTable.Select("");
+            foreach (DataRow dr in authorityLookupRows)
+                info.AddAuthorityNameToLookup(
+                    DBTools.GetInteger(dr["Authority_ID"]),
+                    DBTools.GetString(dr["Name"]));
 
 
-        'Get Collection Member Primary Information
+            // Get Annotation Group Information
 
-        'Get Reference_ID, Name, Description, Protein_ID, Protein_Collection_ID,
-        '   Authority_ID, Annotation_Group_ID
-        Dim sqlQuery4 = "SELECT * FROM V_Protein_Collection_Members " &
-            "WHERE Protein_Collection_ID = " & ProteinCollectionID.ToString &
-            " AND Annotation_Group_ID = 0"
-        Dim annotationTableLookup = Me.m_DatabaseHelper.GetTable(sqlQuery4)
+            var sqlQuery3 = "SELECT Annotation_Group, Authority_ID " +
+                            "FROM T_Annotation_Groups " +
+                            "WHERE Protein_Collection_ID = " + ProteinCollectionID.ToString();
 
-        Dim annotationTableRows = annotationTableLookup.Select("")
+            var annotationGroupLookup = m_DatabaseHelper.GetTable(sqlQuery3);
 
-        For Each dr As DataRow In annotationTableRows
-            Dim tmpRefID = DBTools.GetInteger(dr.Item("Reference_ID"))
-            Dim tmpName = DBTools.GetString(dr.Item("Name"))
-            Dim tmpDesc = DBTools.GetString(dr.Item("Description"))
-            Dim tmpProtID = DBTools.GetInteger(dr.Item("Protein_ID"))
-            Dim tmpNameAuthID = DBTools.GetInteger(dr.Item("Annotation_Type_ID"))
-
-            info.AddPrimaryAnnotation(
-                tmpProtID, tmpName, tmpDesc, tmpRefID, tmpNameAuthID)
-        Next
+            foreach (DataRow dr in annotationGroupLookup.Rows)
+                info.AddAnnotationGroupLookup(
+                    DBTools.GetInteger(dr["Annotation_Group"]),
+                    DBTools.GetInteger(dr["Authority_ID"]));
 
 
-        Return info
+            // Get Collection Member Primary Information
 
-    End Function
+            // Get Reference_ID, Name, Description, Protein_ID, Protein_Collection_ID,
+            // Authority_ID, Annotation_Group_ID
+            var sqlQuery4 = "SELECT * FROM V_Protein_Collection_Members " +
+                "WHERE Protein_Collection_ID = " + ProteinCollectionID.ToString() +
+                " AND Annotation_Group_ID = 0";
+            var annotationTableLookup = m_DatabaseHelper.GetTable(sqlQuery4);
 
-End Class
+            var annotationTableRows = annotationTableLookup.Select("");
+
+            foreach (DataRow dr in annotationTableRows)
+            {
+                int tmpRefID = DBTools.GetInteger(dr["Reference_ID"]);
+                string tmpName = DBTools.GetString(dr["Name"]);
+                string tmpDesc = DBTools.GetString(dr["Description"]);
+                int tmpProtID = DBTools.GetInteger(dr["Protein_ID"]);
+                int tmpNameAuthID = DBTools.GetInteger(dr["Annotation_Type_ID"]);
+
+                info.AddPrimaryAnnotation(
+                    tmpProtID, tmpName, tmpDesc, tmpRefID, tmpNameAuthID);
+            }
+
+            return info;
+        }
+    }
+}

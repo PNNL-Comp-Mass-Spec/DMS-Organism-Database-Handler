@@ -1,26 +1,26 @@
-Public Class ArchiveToSubversion
-    'Inherits ArchiveOutputFilesBase
+﻿namespace Protein_Exporter
+{
+    public class ArchiveToSubversion //: ArchiveOutputFilesBase
+    {
+        //protected override int ArchiveChangedCollection(
+        //    int ProteinCollectionID,
+        //    string SourceFilePath,
+        //    IArchiveOutputFiles.ArchiveTypes DestinationType)
+        //{
+        //}
 
+        //protected override int ArchiveCombinedCollection(
+        //    int ProteinCollectionID,
+        //    string SourceFilePath,
+        //    IArchiveOutputFiles.ArchiveTypes DestinationType)
+        //{
+        //}
 
-    'Protected Overrides Function ArchiveChangedCollection(
-    '    ProteinCollectionID As Integer,
-    '    SourceFilePath As String,
-    '    DestinationType As IArchiveOutputFiles.ArchiveTypes) As Integer
-
-    'End Function
-
-    'Protected Overrides Function ArchiveCombinedCollection(
-    '    ProteinCollectionID As Integer,
-    '    SourceFilePath As String,
-    '    DestinationType As IArchiveOutputFiles.ArchiveTypes) As Integer
-
-    'End Function
-
-    'Protected Overrides Function ArchiveNewCollection(
-    '    ProteinCollectionID As Integer,
-    '    SourceFilePath As String,
-    '    DestinationType As IArchiveOutputFiles.ArchiveTypes) As Integer
-
-    'End Function
-
-End Class
+        //protected override int ArchiveNewCollection(
+        //    int ProteinCollectionID,
+        //    string SourceFilePath,
+        //    IArchiveOutputFiles.ArchiveTypes DestinationType)
+        //{
+        //}
+    }
+}

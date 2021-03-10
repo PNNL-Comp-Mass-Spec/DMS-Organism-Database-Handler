@@ -1,4 +1,6 @@
-Public Class TinySeqXMLReader
-
-
-End Class
+﻿namespace Protein_Importer
+{
+    public class TinySeqXMLReader
+    {
+    }
+}

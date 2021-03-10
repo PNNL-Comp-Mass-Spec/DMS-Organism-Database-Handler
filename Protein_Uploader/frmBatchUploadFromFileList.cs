@@ -1,492 +1,528 @@
-Imports System.Collections.Generic
-Imports System.ComponentModel
-Imports System.IO
-Imports System.Reflection
-Imports System.Windows.Forms
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Windows.Forms;
+using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.CompilerServices;
 
-Public Class frmBatchUploadFromFileList
-    Inherits Form
+namespace Protein_Uploader
+{
+    public class frmBatchUploadFromFileList : Form
+    {
+        private readonly DataTable m_AnnotationTypeList;
+        private readonly DataTable m_OrganismList;
+        private const string m_SaveFileName = "FASTAFile_NamingAuth_XRef.txt";
+        private readonly string m_SavePath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
-    Private ReadOnly m_AnnotationTypeList As DataTable
-    Private ReadOnly m_OrganismList As DataTable
-    Private Const m_SaveFileName As String = "FASTAFile_NamingAuth_XRef.txt"
-    Private ReadOnly m_SavePath As String = Path.GetDirectoryName(Assembly.GetEntryAssembly.Location)
+        #region "Windows Form Designer generated code"
 
+        public frmBatchUploadFromFileList(
+            DataTable AuthorityList,
+            DataTable AnnotationTypeList,
+            DataTable OrganismList)
+            : base()
+        {
+            base.Load += frmBatchUploadFromFileList_Load;
+            base.Closing += frmBatchUploadFromFileList_Closing;
+            m_AnnotationTypeList = AnnotationTypeList;
+            m_OrganismList = OrganismList;
 
-#Region " Windows Form Designer generated code "
+            // This call is required by the Windows Form Designer.
+            InitializeComponent();
 
-    Public Sub New(
-        AuthorityList As DataTable,
-        AnnotationTypeList As DataTable,
-        OrganismList As DataTable)
+            // Add any initialization after the InitializeComponent() call
 
-        MyBase.New()
-        m_AnnotationTypeList = AnnotationTypeList
-        m_OrganismList = OrganismList
+        }
 
-        'This call is required by the Windows Form Designer.
-        InitializeComponent()
-
-        'Add any initialization after the InitializeComponent() call
-
-    End Sub
-
-    'Form overrides dispose to clean up the component list.
-    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-        If disposing Then
-            If Not (components Is Nothing) Then
-                components.Dispose()
-            End If
-        End If
-        MyBase.Dispose(disposing)
-    End Sub
-
-    'Required by the Windows Form Designer
-    Private components As System.ComponentModel.IContainer
-
-    'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.
-    'Do not modify it using the code editor.
-    'Friend WithEvents lvwNewNames As ListView
-    Friend WithEvents cmdUploadFiles As Button
-    Friend WithEvents colFileName As ColumnHeader
-    Friend WithEvents colFilePath As ColumnHeader
-    Friend WithEvents colAnnType As ColumnHeader
-    Friend WithEvents cmdCheckAll As Button
-    Friend WithEvents colOrganism As ColumnHeader
-    Friend WithEvents cboAnnotationType As ComboBox
-    Friend WithEvents cmdUncheckAll As Button
-    Friend WithEvents lblAnnotationType As Label
-    Friend WithEvents lvwFiles As ListView
-    Friend WithEvents lblOrganismPicker As Label
-    Friend WithEvents cboOrganismPicker As ComboBox
-    Friend WithEvents txtFilePath As TextBox
-    <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.cmdUploadFiles = New Button()
-        Me.lblOrganismPicker = New Label()
-        Me.cboOrganismPicker = New ComboBox()
-        Me.lvwFiles = New ListView()
-        Me.colFileName = CType(New ColumnHeader(), ColumnHeader)
-        Me.colFilePath = CType(New ColumnHeader(), ColumnHeader)
-        Me.colOrganism = CType(New ColumnHeader(), ColumnHeader)
-        Me.colAnnType = CType(New ColumnHeader(), ColumnHeader)
-        Me.cboAnnotationType = New ComboBox()
-        Me.lblAnnotationType = New Label()
-        Me.cmdCheckAll = New Button()
-        Me.cmdUncheckAll = New Button()
-        Me.txtFilePath = New TextBox()
-        Me.SuspendLayout()
-        '
-        'cmdUploadFiles
-        '
-        Me.cmdUploadFiles.Anchor = CType((AnchorStyles.Bottom Or AnchorStyles.Right), AnchorStyles)
-        Me.cmdUploadFiles.DialogResult = DialogResult.OK
-        Me.cmdUploadFiles.FlatStyle = FlatStyle.System
-        Me.cmdUploadFiles.Location = New System.Drawing.Point(587, 630)
-        Me.cmdUploadFiles.Name = "cmdUploadFiles"
-        Me.cmdUploadFiles.Size = New System.Drawing.Size(221, 27)
-        Me.cmdUploadFiles.TabIndex = 9
-        Me.cmdUploadFiles.Text = "Upload Checked Files"
-        '
-        'lblOrganismPicker
-        '
-        Me.lblOrganismPicker.Anchor = CType((AnchorStyles.Bottom Or AnchorStyles.Left), AnchorStyles)
-        Me.lblOrganismPicker.Location = New System.Drawing.Point(14, 569)
-        Me.lblOrganismPicker.Name = "lblOrganismPicker"
-        Me.lblOrganismPicker.Size = New System.Drawing.Size(319, 22)
-        Me.lblOrganismPicker.TabIndex = 16
-        Me.lblOrganismPicker.Text = "Organism"
-        '
-        'cboOrganismPicker
-        '
-        Me.cboOrganismPicker.Anchor = CType(((AnchorStyles.Bottom Or AnchorStyles.Left) _
-            Or AnchorStyles.Right), AnchorStyles)
-        Me.cboOrganismPicker.Location = New System.Drawing.Point(14, 589)
-        Me.cboOrganismPicker.Name = "cboOrganismPicker"
-        Me.cboOrganismPicker.Size = New System.Drawing.Size(385, 25)
-        Me.cboOrganismPicker.TabIndex = 17
-        '
-        'lvwFiles
-        '
-        Me.lvwFiles.Anchor = CType((((AnchorStyles.Top Or AnchorStyles.Bottom) _
-            Or AnchorStyles.Left) _
-            Or AnchorStyles.Right), AnchorStyles)
-        Me.lvwFiles.CheckBoxes = True
-        Me.lvwFiles.Columns.AddRange(New ColumnHeader() {Me.colFileName, Me.colFilePath, Me.colOrganism, Me.colAnnType})
-        Me.lvwFiles.FullRowSelect = True
-        Me.lvwFiles.GridLines = True
-        Me.lvwFiles.HideSelection = False
-        Me.lvwFiles.Location = New System.Drawing.Point(1, 2)
-        Me.lvwFiles.Name = "lvwFiles"
-        Me.lvwFiles.Size = New System.Drawing.Size(820, 555)
-        Me.lvwFiles.Sorting = SortOrder.Ascending
-        Me.lvwFiles.TabIndex = 19
-        Me.lvwFiles.UseCompatibleStateImageBehavior = False
-        Me.lvwFiles.View = View.Details
-        '
-        'colFileName
-        '
-        Me.colFileName.Text = "FileName"
-        Me.colFileName.Width = 215
-        '
-        'colFilePath
-        '
-        Me.colFilePath.Text = "Directory Path of File"
-        Me.colFilePath.Width = 247
-        '
-        'colOrganism
-        '
-        Me.colOrganism.Text = "Organism"
-        Me.colOrganism.Width = 125
-        '
-        'colAnnType
-        '
-        Me.colAnnType.Text = "Annotation Type"
-        Me.colAnnType.Width = 117
-        '
-        'cboAnnotationType
-        '
-        Me.cboAnnotationType.Anchor = CType((AnchorStyles.Bottom Or AnchorStyles.Right), AnchorStyles)
-        Me.cboAnnotationType.Location = New System.Drawing.Point(419, 589)
-        Me.cboAnnotationType.Name = "cboAnnotationType"
-        Me.cboAnnotationType.Size = New System.Drawing.Size(392, 25)
-        Me.cboAnnotationType.TabIndex = 21
-        '
-        'lblAnnotationType
-        '
-        Me.lblAnnotationType.Anchor = CType((AnchorStyles.Bottom Or AnchorStyles.Right), AnchorStyles)
-        Me.lblAnnotationType.Location = New System.Drawing.Point(422, 569)
-        Me.lblAnnotationType.Name = "lblAnnotationType"
-        Me.lblAnnotationType.Size = New System.Drawing.Size(294, 22)
-        Me.lblAnnotationType.TabIndex = 20
-        Me.lblAnnotationType.Text = "Annotation Type"
-        '
-        'cmdCheckAll
-        '
-        Me.cmdCheckAll.Anchor = CType((AnchorStyles.Bottom Or AnchorStyles.Left), AnchorStyles)
-        Me.cmdCheckAll.FlatStyle = FlatStyle.System
-        Me.cmdCheckAll.Location = New System.Drawing.Point(14, 630)
-        Me.cmdCheckAll.Name = "cmdCheckAll"
-        Me.cmdCheckAll.Size = New System.Drawing.Size(140, 27)
-        Me.cmdCheckAll.TabIndex = 22
-        Me.cmdCheckAll.Text = "Check All"
-        '
-        'cmdUncheckAll
-        '
-        Me.cmdUncheckAll.Anchor = CType((AnchorStyles.Bottom Or AnchorStyles.Left), AnchorStyles)
-        Me.cmdUncheckAll.FlatStyle = FlatStyle.System
-        Me.cmdUncheckAll.Location = New System.Drawing.Point(165, 630)
-        Me.cmdUncheckAll.Name = "cmdUncheckAll"
-        Me.cmdUncheckAll.Size = New System.Drawing.Size(140, 27)
-        Me.cmdUncheckAll.TabIndex = 23
-        Me.cmdUncheckAll.Text = "Uncheck All"
-        '
-        'txtFilePath
-        '
-        Me.txtFilePath.Location = New System.Drawing.Point(319, 641)
-        Me.txtFilePath.Name = "txtFilePath"
-        Me.txtFilePath.Size = New System.Drawing.Size(431, 24)
-        Me.txtFilePath.TabIndex = 24
-        '
-        'frmBatchUploadFromFileList
-        '
-        Me.AutoScaleBaseSize = New System.Drawing.Size(7, 17)
-        Me.ClientSize = New System.Drawing.Size(822, 667)
-        Me.Controls.Add(Me.txtFilePath)
-        Me.Controls.Add(Me.cmdUncheckAll)
-        Me.Controls.Add(Me.cmdCheckAll)
-        Me.Controls.Add(Me.cboAnnotationType)
-        Me.Controls.Add(Me.lblAnnotationType)
-        Me.Controls.Add(Me.lvwFiles)
-        Me.Controls.Add(Me.cboOrganismPicker)
-        Me.Controls.Add(Me.lblOrganismPicker)
-        Me.Controls.Add(Me.cmdUploadFiles)
-        Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.MinimumSize = New System.Drawing.Size(840, 712)
-        Me.Name = "frmBatchUploadFromFileList"
-        Me.Text = "Batch Upload FASTA Files from FileList"
-        Me.ResumeLayout(False)
-        Me.PerformLayout()
-
-    End Sub
-
-#End Region
-
-    Private Sub frmBatchUploadFromFileList_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Me.PopulateDropDowns()
-        If Not Me.FileCollection Is Nothing Then
-            'Me.LoadFileNamingAuthorities()
-            Me.PopulateListView()
-        End If
-    End Sub
-
-    Private Sub frmBatchUploadFromFileList_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
-        Me.SaveFileNamingAuthorities()
-
-    End Sub
-
-    Property FileCollection As Dictionary(Of String, BatchUploadFromFileList.FileListInfo)
-
-    Private Sub SaveFileNamingAuthorities()
-        Dim saveFilePath As String = Path.Combine(Me.m_SavePath, m_SaveFileName)
-
-        Dim fi = New FileInfo(saveFilePath)
-        If fi.Exists Then
-            fi.Delete()
-        End If
-
-        Using writer = New StreamWriter(Path.Combine(Me.m_SavePath, m_SaveFileName))
-            For Each fli In Me.FileCollection.Values
-                If fli.AnnotationTypeID > 0 Then
-                    writer.Write(fli.FileName)
-                    writer.Write(ControlChars.Tab)
-                    writer.Write(fli.AnnotationTypeID.ToString)
-                    writer.Flush()
-                End If
-            Next
-
-        End Using
-
-    End Sub
-
-    'Private Sub LoadFileNamingAuthorities()
-    '    Dim loadFilePath As String = System.IO.Path.Combine(Me.m_SavePath, Me.m_SaveFileName)
-    '    Dim fi As System.IO.FileInfo = New System.IO.FileInfo(loadFilePath)
-    '    Dim tr As System.IO.TextReader
-    '    Dim s As String
-
-    '    Dim tmpFileName As String
-    '    Dim tmpAnnotationID As Integer
-    '    Dim fields() As String
-
-    '    Dim fli As BatchUploadFromFileList.FileListInfo
-
-    '    If fi.Exists And Not Me.m_FileCollection Is Nothing Then
-    '        tr = fi.OpenText
-    '        s = tr.ReadLine
-    '        While Not s Is Nothing
-    '            fields = s.Split(ControlChars.Tab)
-    '            tmpFileName = fields(0)
-    '            tmpAnnotationID = CInt(fields(1))
-    '            If tmpAnnotationID > 0 Then
-    '                fli = DirectCast(Me.m_FileCollection.Item(tmpFileName), BatchUploadFromFileList.FileListInfo)
-    '                fli.AnnotationTypeID = tmpAnnotationID
-    '                Me.m_FileCollection(tmpFileName) = fli
-    '            End If
-    '            s = tr.ReadLine
-    '        End While
-    '    Else
-    '        Exit Sub
-    '    End If
-
-    'End Sub
-
-    Private Sub LoadFileNamingAuthorities()
-        Dim loadFilePath As String = Path.Combine(Me.m_SavePath, m_SaveFileName)
-        Dim fi As FileInfo = New FileInfo(loadFilePath)
-        'Dim tr As System.IO.TextReader
-        'Dim s As String
-
-        'Dim tmpFileName As String
-        'Dim tmpAnnotationID As Integer
-        'Dim fields() As String
-
-        'Dim fli As BatchUploadFromFileList.FileListInfo
-
-        'If fi.Exists And Not Me.m_FileCollection Is Nothing Then
-        '    tr = fi.OpenText
-        '    s = tr.ReadLine
-        '    While Not s Is Nothing
-        '        fields = s.Split(ControlChars.Tab)
-        '        tmpFileName = fields(0)
-        '        tmpAnnotationID = CInt(fields(1))
-        '        If tmpAnnotationID > 0 Then
-        '            fli = DirectCast(Me.m_FileCollection.Item(tmpFileName), BatchUploadFromFileList.FileListInfo)
-        '            fli.AnnotationTypeID = tmpAnnotationID
-        '            Me.m_FileCollection(tmpFileName) = fli
-        '        End If
-        '        s = tr.ReadLine
-        '    End While
-        'Else
-        '    Exit Sub
-        'End If
-
-
-
-    End Sub
-
-    ReadOnly Property SelectedFilesCollection As Dictionary(Of String, BatchUploadFromFileList.FileListInfo) = New Dictionary(Of String, BatchUploadFromFileList.FileListInfo)(StringComparer.OrdinalIgnoreCase)
-
-    Private Sub PopulateDropDowns()
-
-        Dim dr As DataRow
-
-        dr = Me.m_AnnotationTypeList.NewRow
-        With dr
-            .Item("ID") = 0
-            .Item("Display_Name") = "---------"
-        End With
-        Me.m_AnnotationTypeList.Rows.InsertAt(dr, 0)
-        Me.m_AnnotationTypeList.AcceptChanges()
-
-        dr = Me.m_OrganismList.NewRow
-        With dr
-            .Item("ID") = 0
-            .Item("Display_Name") = "---------"
-        End With
-        Me.m_OrganismList.Rows.InsertAt(dr, 0)
-        Me.m_OrganismList.AcceptChanges()
-
-        RemoveHandler cboAnnotationType.SelectedIndexChanged, AddressOf cboAnnotationType_SelectedIndexChanged
-
-        With Me.cboAnnotationType
-            .BeginUpdate()
-            .DisplayMember = "Display_Name"
-            .ValueMember = "ID"
-            .DataSource = Me.m_AnnotationTypeList
-            .EndUpdate()
-        End With
-        Me.cboAnnotationType.Text = "---------"
-
-        AddHandler cboAnnotationType.SelectedIndexChanged, AddressOf cboAnnotationType_SelectedIndexChanged
-
-
-        RemoveHandler cboOrganismPicker.SelectedIndexChanged, AddressOf cboOrganismPicker_SelectedIndexChanged
-        With Me.cboOrganismPicker
-            .BeginUpdate()
-            .DisplayMember = "Display_Name"
-            .ValueMember = "ID"
-            .DataSource = Me.m_OrganismList
-            .EndUpdate()
-        End With
-        Me.cboOrganismPicker.Text = "---------"
-
-        AddHandler cboOrganismPicker.SelectedIndexChanged, AddressOf cboOrganismPicker_SelectedIndexChanged
-
-    End Sub
-
-    Sub PopulateListView()
-        Dim foundRows() As DataRow
-
-        RemoveHandler lvwFiles.SelectedIndexChanged, AddressOf lvwFiles_SelectedIndexChanged
-
-        If Me.FileCollection.Count > 0 Then
-            Me.lvwFiles.BeginUpdate()
-            For Each fli In Me.FileCollection.Values
-                Dim li = New ListViewItem With {
-                    .Text = fli.FileName
+        // Form overrides dispose to clean up the component list.
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                {
+                    components.Dispose();
                 }
-                li.SubItems.Add(fli.FullFilePath)
-                li.SubItems.Add(fli.OrganismName)
-                If fli.AnnotationTypeID > 0 Then
-                    foundRows = Me.m_AnnotationTypeList.Select("ID = " & fli.AnnotationTypeID)
-                    fli.AnnotationType = foundRows(0).Item(1).ToString
-                    li.SubItems.Add(fli.AnnotationType)
-                Else
-                    li.SubItems.Add("---------")
-                End If
-                Me.lvwFiles.Items.Add(li)
-            Next
-            Me.lvwFiles.EndUpdate()
+            }
 
-            AddHandler lvwFiles.SelectedIndexChanged, AddressOf lvwFiles_SelectedIndexChanged
+            base.Dispose(disposing);
+        }
 
-        End If
-    End Sub
+        // Required by the Windows Form Designer
+        private IContainer components;
 
-    Private Function BuildSelectedFilesList() As Integer
-        Me.SelectedFilesCollection.Clear()
+        // NOTE: The following procedure is required by the Windows Form Designer
+        // It can be modified using the Windows Form Designer.
+        // Do not modify it using the code editor.
+        // Friend WithEvents lvwNewNames As ListView
+        internal Button cmdUploadFiles;
+        internal ColumnHeader colFileName;
+        internal ColumnHeader colFilePath;
+        internal ColumnHeader colAnnType;
+        internal Button cmdCheckAll;
+        internal ColumnHeader colOrganism;
+        internal ComboBox cboAnnotationType;
+        internal Button cmdUncheckAll;
+        internal Label lblAnnotationType;
+        internal ListView lvwFiles;
+        internal Label lblOrganismPicker;
+        internal ComboBox cboOrganismPicker;
+        internal TextBox txtFilePath;
 
-        Dim li As ListViewItem
+        [DebuggerStepThrough()]
+        private void InitializeComponent()
+        {
+            cmdUploadFiles = new Button();
+            cmdUploadFiles.Click += new EventHandler(cmdUploadFiles_Click);
+            lblOrganismPicker = new Label();
+            cboOrganismPicker = new ComboBox();
+            cboOrganismPicker.SelectedIndexChanged += new EventHandler(cboOrganismPicker_SelectedIndexChanged);
+            lvwFiles = new ListView();
+            lvwFiles.SelectedIndexChanged += new EventHandler(lvwFiles_SelectedIndexChanged);
+            colFileName = new ColumnHeader();
+            colFilePath = new ColumnHeader();
+            colOrganism = new ColumnHeader();
+            colAnnType = new ColumnHeader();
+            cboAnnotationType = new ComboBox();
+            cboAnnotationType.SelectedIndexChanged += new EventHandler(cboAnnotationType_SelectedIndexChanged);
+            lblAnnotationType = new Label();
+            cmdCheckAll = new Button();
+            cmdCheckAll.Click += new EventHandler(cmdCheckAll_Click);
+            cmdUncheckAll = new Button();
+            cmdUncheckAll.Click += new EventHandler(cmdUncheckAll_Click);
+            txtFilePath = new TextBox();
+            SuspendLayout();
+            //
+            // cmdUploadFiles
+            //
+            cmdUploadFiles.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            cmdUploadFiles.DialogResult = DialogResult.OK;
+            cmdUploadFiles.FlatStyle = FlatStyle.System;
+            cmdUploadFiles.Location = new System.Drawing.Point(587, 630);
+            cmdUploadFiles.Name = "cmdUploadFiles";
+            cmdUploadFiles.Size = new System.Drawing.Size(221, 27);
+            cmdUploadFiles.TabIndex = 9;
+            cmdUploadFiles.Text = "Upload Checked Files";
+            //
+            // lblOrganismPicker
+            //
+            lblOrganismPicker.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lblOrganismPicker.Location = new System.Drawing.Point(14, 569);
+            lblOrganismPicker.Name = "lblOrganismPicker";
+            lblOrganismPicker.Size = new System.Drawing.Size(319, 22);
+            lblOrganismPicker.TabIndex = 16;
+            lblOrganismPicker.Text = "Organism";
+            //
+            // cboOrganismPicker
+            //
+            cboOrganismPicker.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            cboOrganismPicker.Location = new System.Drawing.Point(14, 589);
+            cboOrganismPicker.Name = "cboOrganismPicker";
+            cboOrganismPicker.Size = new System.Drawing.Size(385, 25);
+            cboOrganismPicker.TabIndex = 17;
+            //
+            // lvwFiles
+            //
+            lvwFiles.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lvwFiles.CheckBoxes = true;
+            lvwFiles.Columns.AddRange(new ColumnHeader[] { colFileName, colFilePath, colOrganism, colAnnType });
+            lvwFiles.FullRowSelect = true;
+            lvwFiles.GridLines = true;
+            lvwFiles.HideSelection = false;
+            lvwFiles.Location = new System.Drawing.Point(1, 2);
+            lvwFiles.Name = "lvwFiles";
+            lvwFiles.Size = new System.Drawing.Size(820, 555);
+            lvwFiles.Sorting = SortOrder.Ascending;
+            lvwFiles.TabIndex = 19;
+            lvwFiles.UseCompatibleStateImageBehavior = false;
+            lvwFiles.View = View.Details;
+            //
+            // colFileName
+            //
+            colFileName.Text = "FileName";
+            colFileName.Width = 215;
+            //
+            // colFilePath
+            //
+            colFilePath.Text = "Directory Path of File";
+            colFilePath.Width = 247;
+            //
+            // colOrganism
+            //
+            colOrganism.Text = "Organism";
+            colOrganism.Width = 125;
+            //
+            // colAnnType
+            //
+            colAnnType.Text = "Annotation Type";
+            colAnnType.Width = 117;
+            //
+            // cboAnnotationType
+            //
+            cboAnnotationType.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            cboAnnotationType.Location = new System.Drawing.Point(419, 589);
+            cboAnnotationType.Name = "cboAnnotationType";
+            cboAnnotationType.Size = new System.Drawing.Size(392, 25);
+            cboAnnotationType.TabIndex = 21;
+            //
+            // lblAnnotationType
+            //
+            lblAnnotationType.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            lblAnnotationType.Location = new System.Drawing.Point(422, 569);
+            lblAnnotationType.Name = "lblAnnotationType";
+            lblAnnotationType.Size = new System.Drawing.Size(294, 22);
+            lblAnnotationType.TabIndex = 20;
+            lblAnnotationType.Text = "Annotation Type";
+            //
+            // cmdCheckAll
+            //
+            cmdCheckAll.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            cmdCheckAll.FlatStyle = FlatStyle.System;
+            cmdCheckAll.Location = new System.Drawing.Point(14, 630);
+            cmdCheckAll.Name = "cmdCheckAll";
+            cmdCheckAll.Size = new System.Drawing.Size(140, 27);
+            cmdCheckAll.TabIndex = 22;
+            cmdCheckAll.Text = "Check All";
+            //
+            // cmdUncheckAll
+            //
+            cmdUncheckAll.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            cmdUncheckAll.FlatStyle = FlatStyle.System;
+            cmdUncheckAll.Location = new System.Drawing.Point(165, 630);
+            cmdUncheckAll.Name = "cmdUncheckAll";
+            cmdUncheckAll.Size = new System.Drawing.Size(140, 27);
+            cmdUncheckAll.TabIndex = 23;
+            cmdUncheckAll.Text = "Uncheck All";
+            //
+            // txtFilePath
+            //
+            txtFilePath.Location = new System.Drawing.Point(319, 641);
+            txtFilePath.Name = "txtFilePath";
+            txtFilePath.Size = new System.Drawing.Size(431, 24);
+            txtFilePath.TabIndex = 24;
+            //
+            // frmBatchUploadFromFileList
+            //
+            AutoScaleBaseSize = new System.Drawing.Size(7, 17);
+            ClientSize = new System.Drawing.Size(822, 667);
+            Controls.Add(txtFilePath);
+            Controls.Add(cmdUncheckAll);
+            Controls.Add(cmdCheckAll);
+            Controls.Add(cboAnnotationType);
+            Controls.Add(lblAnnotationType);
+            Controls.Add(lvwFiles);
+            Controls.Add(cboOrganismPicker);
+            Controls.Add(lblOrganismPicker);
+            Controls.Add(cmdUploadFiles);
+            Font = new System.Drawing.Font("Tahoma", 8.25f, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Conversions.ToByte(0));
+            MinimumSize = new System.Drawing.Size(840, 712);
+            Name = "frmBatchUploadFromFileList";
+            Text = "Batch Upload FASTA Files from FileList";
+            ResumeLayout(false);
+            PerformLayout();
+        }
 
-        For Each li In Me.lvwFiles.CheckedItems
-            Me.SelectedFilesCollection.Add(li.Text, FileCollection.Item(li.Text))
-        Next
+        #endregion
 
-        Return Me.lvwFiles.CheckedItems.Count
+        private void frmBatchUploadFromFileList_Load(object sender, EventArgs e)
+        {
+            PopulateDropDowns();
+            if (FileCollection != null)
+            {
+                // Me.LoadFileNamingAuthorities();
+                PopulateListView();
+            }
+        }
 
-    End Function
+        private void frmBatchUploadFromFileList_Closing(object sender, CancelEventArgs e)
+        {
+            SaveFileNamingAuthorities();
+        }
 
-    Private Sub cmdUploadFiles_Click(sender As Object, e As EventArgs) Handles cmdUploadFiles.Click
+        public Dictionary<string, BatchUploadFromFileList.FileListInfo> FileCollection { get; set; }
 
-        Dim selectedCount As Integer = Me.BuildSelectedFilesList()
-        If selectedCount > 0 Then
-            Me.DialogResult = DialogResult.OK
-        End If
-    End Sub
+        private void SaveFileNamingAuthorities()
+        {
+            string saveFilePath = Path.Combine(m_SavePath, m_SaveFileName);
 
-    Private Sub cmdCheckAll_Click(sender As Object, e As EventArgs) Handles cmdCheckAll.Click
-        Dim li As ListViewItem
-        For Each li In Me.lvwFiles.Items
-            li.Checked = True
-        Next
-    End Sub
+            var fi = new FileInfo(saveFilePath);
+            if (fi.Exists)
+            {
+                fi.Delete();
+            }
 
-    Private Sub cmdUncheckAll_Click(sender As Object, e As EventArgs) Handles cmdUncheckAll.Click
-        Dim li As ListViewItem
-        For Each li In Me.lvwFiles.Items
-            li.Checked = False
-        Next
-    End Sub
+            using (var writer = new StreamWriter(Path.Combine(m_SavePath, m_SaveFileName)))
+            {
+                foreach (var fli in FileCollection.Values)
+                {
+                    if (fli.AnnotationTypeID > 0)
+                    {
+                        writer.Write(fli.FileName);
+                        writer.Write(ControlChars.Tab);
+                        writer.Write(fli.AnnotationTypeID.ToString());
+                        writer.Flush();
+                    }
+                }
+            }
+        }
 
-    Private Sub cboOrganismPicker_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboOrganismPicker.SelectedIndexChanged
-        Dim cbo = DirectCast(sender, ComboBox)
-        Dim li As ListViewItem
-        Dim fli As BatchUploadFromFileList.FileListInfo
+        // private void LoadFileNamingAuthorities()
+        // {
+        //     string loadFilePath = System.IO.Path.Combine(this.m_SavePath, this.m_SaveFileName);
+        //     System.IO.FileInfo fi = new System.IO.FileInfo(loadFilePath);
+        //     System.IO.TextReader tr;
+        //     string s;
+        //
+        //     string tmpFileName;
+        //     int tmpAnnotationID;
+        //     string[] fields;
+        //
+        //     BatchUploadFromFileList.FileListInfo fli;
+        //
+        //     if (fi.Exists & !this.m_FileCollection == null)
+        //     {
+        //         tr = fi.OpenText();
+        //         s = tr.ReadLine();
+        //         while (!s == null)
+        //         {
+        //             fields = s.Split(ControlChars.Tab);
+        //             tmpFileName = fields[0];
+        //             tmpAnnotationID = System.Convert.ToInt32(fields[1]);
+        //             if (tmpAnnotationID > 0)
+        //             {
+        //                 fli = (BatchUploadFromFileList.FileListInfo)this.m_FileCollection[tmpFileName];
+        //                 fli.AnnotationTypeID = tmpAnnotationID;
+        //                 this.m_FileCollection[tmpFileName] = fli;
+        //             }
+        //
+        //             s = tr.ReadLine();
+        //         }
+        //     }
+        //     else
+        //         return;
+        // }
 
-        If Me.lvwFiles.SelectedItems.Count > 0 Then
-            For Each li In Me.lvwFiles.SelectedItems
-                li.SubItems(2).Text = cbo.Text
-                fli = FileCollection.Item(li.Text)
-                fli.NamingAuthorityID = CInt(cbo.SelectedValue)
-                Me.FileCollection.Item(li.Text) = fli
-            Next
-        End If
-    End Sub
-
-    Private Sub cboAnnotationType_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboAnnotationType.SelectedIndexChanged
-        Dim cbo = DirectCast(sender, ComboBox)
-        Dim li As ListViewItem
-        Dim fli As BatchUploadFromFileList.FileListInfo
-
-        If Me.lvwFiles.SelectedItems.Count > 0 Then
-            For Each li In Me.lvwFiles.SelectedItems
-                li.SubItems(3).Text = cbo.Text
-                fli = FileCollection.Item(li.Text)
-                fli.AnnotationTypeID = CInt(cbo.SelectedValue)
-                Me.FileCollection.Item(li.Text) = fli
-            Next
-        End If
-    End Sub
-
-    Private Sub lvwFiles_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lvwFiles.SelectedIndexChanged
-        Dim fli As BatchUploadFromFileList.FileListInfo
-        Dim li As ListViewItem
-
-        RemoveHandler cboAnnotationType.SelectedIndexChanged, AddressOf cboAnnotationType_SelectedIndexChanged
-        RemoveHandler cboOrganismPicker.SelectedIndexChanged, AddressOf cboOrganismPicker_SelectedIndexChanged
-        If Me.lvwFiles.SelectedItems.Count = 0 Then
-            Exit Sub
-        ElseIf Me.lvwFiles.SelectedItems.Count = 1 Then
-            li = Me.lvwFiles.SelectedItems(0)
-            fli = FileCollection.Item(li.Text)
-            If fli.AnnotationTypeID > 0 Then
-                Me.cboAnnotationType.SelectedValue = fli.AnnotationTypeID
-            End If
-            If fli.OrganismID > 0 Then
-                Me.cboOrganismPicker.SelectedValue = fli.OrganismID
-            End If
-            If fli.FullFilePath.Length > 0 Then
-                Me.txtFilePath.Text = Path.GetDirectoryName(fli.FullFilePath)
-            End If
-        ElseIf Me.lvwFiles.SelectedItems.Count > 1 Then
-            Me.cboAnnotationType.SelectedValue = 0
-            Me.cboOrganismPicker.SelectedValue = 0
-        End If
-
-        AddHandler cboAnnotationType.SelectedIndexChanged, AddressOf cboAnnotationType_SelectedIndexChanged
-        AddHandler cboOrganismPicker.SelectedIndexChanged, AddressOf cboOrganismPicker_SelectedIndexChanged
+        private void LoadFileNamingAuthorities()
+        {
+            string loadFilePath = Path.Combine(this.m_SavePath, m_SaveFileName);
+            FileInfo fi = new FileInfo(loadFilePath);
+            // System.IO.TextReader tr;
+            // string s;
+            //
+            // string tmpFileName;
+            // int tmpAnnotationID;
+            // string[] fields;
+            //
+            // BatchUploadFromFileList.FileListInfo fli;
+            //
+            // if (fi.Exists & !this.m_FileCollection == null)
+            // {
+            //     tr = fi.OpenText();
+            //     s = tr.ReadLine();
+            //     while (!s == null)
+            //     {
+            //         fields = s.Split(ControlChars.Tab);
+            //         tmpFileName = fields[0];
+            //         tmpAnnotationID = System.Convert.ToInt32(fields[1]);
+            //         if (tmpAnnotationID > 0)
+            //         {
+            //             fli = (BatchUploadFromFileList.FileListInfo)this.m_FileCollection[tmpFileName];
+            //             fli.AnnotationTypeID = tmpAnnotationID;
+            //             this.m_FileCollection[tmpFileName] = fli;
+            //         }
+            //         s = tr.ReadLine();
+            //     }
+            // }
+            // else
+            //     return;
+        }
 
 
-    End Sub
-End Class
+        public Dictionary<string, BatchUploadFromFileList.FileListInfo> SelectedFilesCollection { get; private set; } = new Dictionary<string, BatchUploadFromFileList.FileListInfo>(StringComparer.OrdinalIgnoreCase);
+
+        private void PopulateDropDowns()
+        {
+            DataRow dr;
+
+            dr = m_AnnotationTypeList.NewRow();
+            {
+                dr["ID"] = 0;
+                dr["Display_Name"] = "---------";
+            }
+
+            m_AnnotationTypeList.Rows.InsertAt(dr, 0);
+            m_AnnotationTypeList.AcceptChanges();
+
+            dr = m_OrganismList.NewRow();
+            dr["ID"] = 0;
+            dr["Display_Name"] = "---------";
+
+            m_OrganismList.Rows.InsertAt(dr, 0);
+            m_OrganismList.AcceptChanges();
+
+            cboAnnotationType.SelectedIndexChanged -= cboAnnotationType_SelectedIndexChanged;
+
+                cboAnnotationType.BeginUpdate();
+                cboAnnotationType.DisplayMember = "Display_Name";
+                cboAnnotationType.ValueMember = "ID";
+                cboAnnotationType.DataSource = m_AnnotationTypeList;
+                cboAnnotationType.EndUpdate();
+
+            cboAnnotationType.Text = "---------";
+            cboAnnotationType.SelectedIndexChanged += cboAnnotationType_SelectedIndexChanged;
+            cboOrganismPicker.SelectedIndexChanged -= cboOrganismPicker_SelectedIndexChanged;
+                cboOrganismPicker.BeginUpdate();
+                cboOrganismPicker.DisplayMember = "Display_Name";
+                cboOrganismPicker.ValueMember = "ID";
+                cboOrganismPicker.DataSource = m_OrganismList;
+                cboOrganismPicker.EndUpdate();
+
+            cboOrganismPicker.Text = "---------";
+
+            cboOrganismPicker.SelectedIndexChanged += cboOrganismPicker_SelectedIndexChanged;
+        }
+
+        public void PopulateListView()
+        {
+            DataRow[] foundRows;
+
+            lvwFiles.SelectedIndexChanged -= lvwFiles_SelectedIndexChanged;
+
+            if (FileCollection.Count > 0)
+            {
+                lvwFiles.BeginUpdate();
+                foreach (var fli in FileCollection.Values)
+                {
+                    var li = new ListViewItem() { Text = fli.FileName };
+                    li.SubItems.Add(fli.FullFilePath);
+                    li.SubItems.Add(fli.OrganismName);
+                    if (fli.AnnotationTypeID > 0)
+                    {
+                        foundRows = m_AnnotationTypeList.Select("ID = " + fli.AnnotationTypeID);
+                        fli.AnnotationType = foundRows[0][1].ToString();
+                        li.SubItems.Add(fli.AnnotationType);
+                    }
+                    else
+                    {
+                        li.SubItems.Add("---------");
+                    }
+
+                    lvwFiles.Items.Add(li);
+                }
+
+                lvwFiles.EndUpdate();
+
+                lvwFiles.SelectedIndexChanged += lvwFiles_SelectedIndexChanged;
+            }
+        }
+
+        private int BuildSelectedFilesList()
+        {
+            SelectedFilesCollection.Clear();
+
+            foreach (ListViewItem li in lvwFiles.CheckedItems)
+                SelectedFilesCollection.Add(li.Text, FileCollection[li.Text]);
+
+            return lvwFiles.CheckedItems.Count;
+        }
+
+        private void cmdUploadFiles_Click(object sender, EventArgs e)
+        {
+            int selectedCount = BuildSelectedFilesList();
+            if (selectedCount > 0)
+            {
+                DialogResult = DialogResult.OK;
+            }
+        }
+
+        private void cmdCheckAll_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem li in lvwFiles.Items)
+                li.Checked = true;
+        }
+
+        private void cmdUncheckAll_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem li in lvwFiles.Items)
+                li.Checked = false;
+        }
+
+        private void cboOrganismPicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBox cbo = (ComboBox)sender;
+            BatchUploadFromFileList.FileListInfo fli;
+
+            if (lvwFiles.SelectedItems.Count > 0)
+            {
+                foreach (ListViewItem li in lvwFiles.SelectedItems)
+                {
+                    li.SubItems[2].Text = cbo.Text;
+                    fli = FileCollection[li.Text];
+                    fli.NamingAuthorityID = Conversions.ToInteger(cbo.SelectedValue);
+                    FileCollection[li.Text] = fli;
+                }
+            }
+        }
+
+        private void cboAnnotationType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBox cbo = (ComboBox)sender;
+            BatchUploadFromFileList.FileListInfo fli;
+
+            if (lvwFiles.SelectedItems.Count > 0)
+            {
+                foreach (ListViewItem li in lvwFiles.SelectedItems)
+                {
+                    li.SubItems[3].Text = cbo.Text;
+                    fli = FileCollection[li.Text];
+                    fli.AnnotationTypeID = Conversions.ToInteger(cbo.SelectedValue);
+                    FileCollection[li.Text] = fli;
+                }
+            }
+        }
+
+        private void lvwFiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BatchUploadFromFileList.FileListInfo fli;
+            ListViewItem li;
+
+            cboAnnotationType.SelectedIndexChanged -= cboAnnotationType_SelectedIndexChanged;
+            cboOrganismPicker.SelectedIndexChanged -= cboOrganismPicker_SelectedIndexChanged;
+            if (lvwFiles.SelectedItems.Count == 0)
+            {
+                return;
+            }
+            else if (lvwFiles.SelectedItems.Count == 1)
+            {
+                li = lvwFiles.SelectedItems[0];
+                fli = FileCollection[li.Text];
+                if (fli.AnnotationTypeID > 0)
+                {
+                    cboAnnotationType.SelectedValue = fli.AnnotationTypeID;
+                }
+
+                if (fli.OrganismID > 0)
+                {
+                    cboOrganismPicker.SelectedValue = fli.OrganismID;
+                }
+
+                if (fli.FullFilePath.Length > 0)
+                {
+                    txtFilePath.Text = Path.GetDirectoryName(fli.FullFilePath);
+                }
+            }
+            else if (lvwFiles.SelectedItems.Count > 1)
+            {
+                cboAnnotationType.SelectedValue = 0;
+                cboOrganismPicker.SelectedValue = 0;
+            }
+
+            cboAnnotationType.SelectedIndexChanged += cboAnnotationType_SelectedIndexChanged;
+            cboOrganismPicker.SelectedIndexChanged += cboOrganismPicker_SelectedIndexChanged;
+        }
+    }
+}

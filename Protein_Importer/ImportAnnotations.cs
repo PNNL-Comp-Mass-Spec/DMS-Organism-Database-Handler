@@ -1,227 +1,259 @@
-Imports System.Collections.Generic
-Imports System.Text.RegularExpressions
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
-Public Interface IImportAnnotations
+namespace Protein_Importer
+{
+    public interface IImportAnnotations
+    {
 
-    'Structure GOInfoCategories
-    'End Structure
+        // Structure GOInfoCategories
+        // End Structure
 
-End Interface
+    }
 
-Public MustInherit Class ImportAnnotationsBase
+    public abstract class ImportAnnotationsBase
+    {
+        public ImportAnnotationsBase()
+        {
+        }
+    }
 
-    Public Sub New()
+    public class GeneOntologyEntry
+    {
+        private string m_ID;
+        private string m_Name;
+        private string m_Namespace;
+        private string m_Definition;
+        private string m_Comment;
+        private bool m_IsObsolete;
+        private ArrayList m_ExactSynonym;
+        private ArrayList m_IsA;
+        private ArrayList m_XRefAnalog;
+        private ArrayList m_Relationship;
+        private ArrayList m_SubSet;
 
-    End Sub
+        public string ID
+        {
+            get
+            {
+                return m_ID;
+            }
 
-End Class
+            set
+            {
+                m_ID = CleanUpLine(value);
+            }
+        }
 
-Public Class GeneOntologyEntry
+        public string Name
+        {
+            get
+            {
+                return m_Name;
+            }
 
-    Private m_ID As String
-    Private m_Name As String
-    Private m_Namespace As String
-    Private m_Definition As String
-    Private m_Comment As String
-    Private m_IsObsolete As Boolean
-    Private m_ExactSynonym As ArrayList
-    Private m_IsA As ArrayList
-    Private m_XRefAnalog As ArrayList
-    Private m_Relationship As ArrayList
-    Private m_SubSet As ArrayList
+            set
+            {
+                m_Name = CleanUpLine(value);
+            }
+        }
 
+        public string NameSpace
+        {
+            get
+            {
+                return m_Namespace;
+            }
 
-    Property ID As String
-        Get
-            Return m_ID
-        End Get
-        Set
-            m_ID = CleanUpLine(Value)
-        End Set
-    End Property
+            set
+            {
+                m_Namespace = CleanUpLine(value);
+            }
+        }
 
-    Property Name As String
-        Get
-            Return m_Name
-        End Get
-        Set
-            m_Name = CleanUpLine(Value)
-        End Set
-    End Property
+        public string Definition
+        {
+            get
+            {
+                return m_Definition;
+            }
 
-    Property [NameSpace] As String
-        Get
-            Return m_Namespace
-        End Get
-        Set
-            m_Namespace = CleanUpLine(Value)
-        End Set
-    End Property
+            set
+            {
+                m_Definition = CleanUpLine(value);
+            }
+        }
 
-    Property Definition As String
-        Get
-            Return m_Definition
-        End Get
-        Set
-            m_Definition = CleanUpLine(Value)
-        End Set
-    End Property
+        public string Comment
+        {
+            get
+            {
+                return m_Comment;
+            }
 
-    Property Comment As String
-        Get
-            Return m_Comment
-        End Get
-        Set
-            m_Comment = CleanUpLine(Value)
-        End Set
-    End Property
+            set
+            {
+                m_Comment = CleanUpLine(value);
+            }
+        }
 
-    Property IsObsolete As Boolean
-        Get
-            Return m_IsObsolete
-        End Get
-        Set
-            m_IsObsolete = Value
-        End Set
-    End Property
+        public bool IsObsolete
+        {
+            get
+            {
+                return m_IsObsolete;
+            }
 
-    ReadOnly Property ExactSynonym_List As ArrayList
-        Get
-            Return m_ExactSynonym
-        End Get
-    End Property
+            set
+            {
+                m_IsObsolete = value;
+            }
+        }
 
-    ReadOnly Property IsA_List As ArrayList
-        Get
-            Return m_IsA
-        End Get
-    End Property
+        public ArrayList ExactSynonym_List
+        {
+            get
+            {
+                return m_ExactSynonym;
+            }
+        }
 
-    ReadOnly Property XRefAnalog_List As ArrayList
-        Get
-            Return m_XRefAnalog
-        End Get
-    End Property
+        public ArrayList IsA_List
+        {
+            get
+            {
+                return m_IsA;
+            }
+        }
 
-    ReadOnly Property Relationship As ArrayList
-        Get
-            Return m_Relationship
-        End Get
-    End Property
+        public ArrayList XRefAnalog_List
+        {
+            get
+            {
+                return m_XRefAnalog;
+            }
+        }
 
-    ReadOnly Property SubSet As ArrayList
-        Get
-            Return m_SubSet
-        End Get
-    End Property
+        public ArrayList Relationship
+        {
+            get
+            {
+                return m_Relationship;
+            }
+        }
 
+        public ArrayList SubSet
+        {
+            get
+            {
+                return m_SubSet;
+            }
+        }
 
-    Sub Add_ExactSynonym_Entry(synonym As String)
-        m_ExactSynonym.Add(CleanUpLine(synonym))
-    End Sub
-    Sub Add_IsA_Entry(IsAReference As String)
-        m_IsA.Add(IsAReference)
-    End Sub
-    Sub Add_XRefAnalog_Entry(XRef As String)
-        m_XRefAnalog.Add(XRef)
-    End Sub
-    Sub Add_RelationShip_Entry(relationshipEntry As String)
-        m_Relationship.Add(relationshipEntry)
-    End Sub
-    Sub Add_Subset_Entry(subsetEntry As String)
-        m_SubSet.Add(subsetEntry)
-    End Sub
+        public void Add_ExactSynonym_Entry(string synonym)
+        {
+            m_ExactSynonym.Add(CleanUpLine(synonym));
+        }
 
-    Private Function CleanUpLine(entryLine As String) As String
-        Dim tmpEntryLine As String = entryLine.Replace("\"c, Nothing)
-        Return tmpEntryLine
-    End Function
+        public void Add_IsA_Entry(string IsAReference)
+        {
+            m_IsA.Add(IsAReference);
+        }
 
-End Class
+        public void Add_XRefAnalog_Entry(string XRef)
+        {
+            m_XRefAnalog.Add(XRef);
+        }
 
-Public Class GeneOntologyListOBO
+        public void Add_RelationShip_Entry(string relationshipEntry)
+        {
+            m_Relationship.Add(relationshipEntry);
+        }
 
-#Region " Regular Expressions "
-    Private r_entryHeader As Regex
-    Private r_IDLine As Regex
-    Private r_NameLine As Regex
-    Private r_NameSpaceLine As Regex
-    Private r_DefinitionLine As Regex
-    Private r_CommentLine As Regex
-    Private r_IsObsoleteLine As Regex
-    Private r_ExactSynonymLine As Regex
-    Private r_IsALine As Regex
-    Private r_XRefAnalogLine As Regex
-    Private r_RelationshipLine As Regex
-    Private r_SubsetLine As Regex
-#End Region
+        public void Add_Subset_Entry(string subsetEntry)
+        {
+            m_SubSet.Add(subsetEntry);
+        }
 
-    'Send it the text block from a single entry
-    Sub New(GOEntryText As List(Of String))
+        private string CleanUpLine(string entryLine)
+        {
+            string tmpEntryLine = entryLine.Replace("\\", "");
+            return tmpEntryLine;
+        }
+    }
 
-    End Sub
+    public class GeneOntologyListOBO
+    {
 
-    Sub New()
+        #region "Regular Expressions"
+        private Regex r_entryHeader;
+        private Regex r_IDLine;
+        private Regex r_NameLine;
+        private Regex r_NameSpaceLine;
+        private Regex r_DefinitionLine;
+        private Regex r_CommentLine;
+        private Regex r_IsObsoleteLine;
+        private Regex r_ExactSynonymLine;
+        private Regex r_IsALine;
+        private Regex r_XRefAnalogLine;
+        private Regex r_RelationshipLine;
+        private Regex r_SubsetLine;
+        #endregion
 
-    End Sub
+        // Send it the text block from a single entry
+        public GeneOntologyListOBO(List<string> GOEntryText)
+        {
+        }
 
-    Protected Sub ProcessEntry(EntryCollection As List(Of String))
+        public GeneOntologyListOBO()
+        {
+        }
 
-    End Sub
+        protected void ProcessEntry(List<string> EntryCollection)
+        {
+        }
 
-    Private Sub SetupRegexes()
+        private void SetupRegexes()
+        {
+            var reOptions = RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled;
 
-        Dim reOptions = RegexOptions.IgnoreCase Or RegexOptions.CultureInvariant Or RegexOptions.IgnorePatternWhitespace Or RegexOptions.Compiled
-
-        r_entryHeader = New Regex(
-            "^\[Term\]$",
-            reOptions)
-        r_IDLine = New Regex(
-            "^(?<tag>id):\s+(?<value>.+)$",
-            reOptions
-            )
-        r_NameLine = New Regex(
-            "^(?<tag>name):\s+(?<value>.+)$",
-            reOptions
-            )
-        r_NameSpaceLine = New Regex(
-            "^(?<tag>namespace):\s+(?<value>.+)$",
-            reOptions
-            )
-        r_DefinitionLine = New Regex(
-            "^(?<tag>def):\s+\""+(?<value>.*)\""\s*\[*(?<xref>.*)\]*\s*",
-            reOptions
-            )
-        r_CommentLine = New Regex(
-            "^(?<tag>comment):\s+(?<value>.+)$",
-           reOptions
-            )
-        r_IsObsoleteLine = New Regex(
-            "^(?<tag>is_obsolete):\s+(?<value>true|false)$",
-            reOptions
-            )
-        r_ExactSynonymLine = New Regex(
-            "^(?<tag>exact_synonym):\s+\""+(?<value>.*)\""\s*\[(?<xref>.*)\]S*$",
-            reOptions
-            )
-        r_IsALine = New Regex(
-            "^(?<tag>is_a):\s+(?<value>\S+)\s*\!.*$",
-            reOptions
-            )
-        r_RelationshipLine = New Regex(
-            "^(?<tag>relationship):\s+part_of\s+(?<value>\S+)\s*\!.*$",
-            reOptions
-            )
-        r_XRefAnalogLine = New Regex(
-            "^(?<tag>xref_analog):\s+(?<value>.+)$",
-            reOptions
-            )
-        r_SubsetLine = New Regex(
-            "^(?<tag>subset):\s+(?<value>.+)$",
-            reOptions
-            )
-    End Sub
-
-
-
-End Class
+            r_entryHeader = new Regex(
+                @"^\[Term\]$",
+                reOptions);
+            r_IDLine = new Regex(
+                @"^(?<tag>id):\s+(?<value>.+)$",
+                reOptions);
+            r_NameLine = new Regex(
+                @"^(?<tag>name):\s+(?<value>.+)$",
+                reOptions);
+            r_NameSpaceLine = new Regex(
+                @"^(?<tag>namespace):\s+(?<value>.+)$",
+                reOptions);
+            r_DefinitionLine = new Regex(
+                @"^(?<tag>def):\s+\""+(?<value>.*)\""\s*\[*(?<xref>.*)\]*\s*",
+                reOptions);
+            r_CommentLine = new Regex(
+                @"^(?<tag>comment):\s+(?<value>.+)$",
+                reOptions);
+            r_IsObsoleteLine = new Regex(
+                @"^(?<tag>is_obsolete):\s+(?<value>true|false)$",
+                reOptions);
+            r_ExactSynonymLine = new Regex(
+                @"^(?<tag>exact_synonym):\s+\""+(?<value>.*)\""\s*\[(?<xref>.*)\]S*$",
+                reOptions);
+            r_IsALine = new Regex(
+                @"^(?<tag>is_a):\s+(?<value>\S+)\s*\!.*$",
+                reOptions);
+            r_RelationshipLine = new Regex(
+                @"^(?<tag>relationship):\s+part_of\s+(?<value>\S+)\s*\!.*$",
+                reOptions);
+            r_XRefAnalogLine = new Regex(
+                @"^(?<tag>xref_analog):\s+(?<value>.+)$",
+                reOptions);
+            r_SubsetLine = new Regex(
+                @"^(?<tag>subset):\s+(?<value>.+)$",
+                reOptions);
+        }
+    }
+}

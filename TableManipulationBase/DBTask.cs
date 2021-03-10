@@ -1,135 +1,147 @@
-Imports System.Collections.Generic
-Imports PRISM
-Imports PRISMDatabaseUtils
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using PRISM;
+using PRISMDatabaseUtils;
 
-Public Class DBTask
-    Inherits EventNotifier
+namespace TableManipulationBase
+{
+    public class DBTask : EventNotifier
+    {
+        #region "Member Variables"
 
-#Region "Member Variables"
+#pragma warning disable CS3003 // Type is not CLS-compliant
+        protected readonly IDBTools mDBTools;
+#pragma warning restore CS3003 // Type is not CLS-compliant
 
-#Disable Warning BC40025 ' Type of member is not CLS-compliant
-    Protected ReadOnly mDBTools As IDBTools
-#Enable Warning BC40025 ' Type of member is not CLS-compliant
+        #endregion
 
-#End Region
+        #region "Properties"
 
-#Region "Properties"
+        /// <summary>
+        /// Database connection string
+        /// </summary>
+        /// <returns></returns>
+        public string ConnectionString
+        {
+            get
+            {
+                return mDBTools.ConnectStr;
+            }
+        }
 
-    ''' <summary>
-    ''' Database connection string
-    ''' </summary>
-    ''' <returns></returns>
-    Public ReadOnly Property ConnectionString As String
-        Get
-            Return mDBTools.ConnectStr
-        End Get
-    End Property
+        /// <summary>
+        /// Database connection string
+        /// </summary>
+        /// <returns></returns>
+#pragma warning disable CS3003 // Type is not CLS-compliant
+        public IDBTools DBTools
+        {
+            get
+            {
+                return mDBTools;
+            }
+        }
+#pragma warning restore CS3003 // Type is not CLS-compliant
 
-#Disable Warning BC40027 ' Return type of function is not CLS-compliant
+        #endregion
 
-    ''' <summary>
-    ''' Database connection string
-    ''' </summary>
-    ''' <returns></returns>
-    Public ReadOnly Property DBTools As IDBTools
-        Get
-            Return mDBTools
-        End Get
-    End Property
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="connectionString"></param>
+        public DBTask(string connectionString)
+        {
+            mDBTools = DbToolsFactory.GetDBTools(connectionString);
+            RegisterEvents(mDBTools);
+        }
 
-#Enable Warning BC40027 ' Return type of function is not CLS-compliant
+#pragma warning disable CS3001 // Argument type is not CLS-compliant
+        public DBTask(IDBTools existingDbTools)
+#pragma warning restore CS3001 // Argument type is not CLS-compliant
+        {
+            mDBTools = existingDbTools;
+        }
 
-#End Region
-    ''' <summary>
-    ''' Constructor
-    ''' </summary>
-    ''' <param name="connectionString"></param>
-    Public Sub New(connectionString As String)
-        mDBTools = DbToolsFactory.GetDBTools(connectionString)
-        RegisterEvents(mDBTools)
-    End Sub
+        public DataTable GetTableTemplate(string tableName)
+        {
+            string sql = "SELECT * FROM " + tableName + " WHERE 1=0";
+            return GetTable(sql);
+        }
 
-#Disable Warning BC40028 ' Type of parameter is not CLS-compliant
-    Public Sub New(existingDbTools As IDBTools)
-        mDBTools = existingDbTools
-    End Sub
-#Enable Warning BC40028 ' Type of parameter is not CLS-compliant
+        public DataTable GetTable(string selectSQL)
+        {
+            int retryCount = 6;
+            int retryDelaySeconds = 5;
+            int timeoutSeconds = 600;
+            DataTable queryResults = null;
+            bool success = mDBTools.GetQueryResultsDataTable(selectSQL, out queryResults, retryCount, retryDelaySeconds, timeoutSeconds);
 
-    Public Function GetTableTemplate(tableName As String) As DataTable
-        Dim sql As String = "SELECT * FROM " & tableName & " WHERE 1=0"
-        Return GetTable(sql)
-    End Function
+            if (!success)
+            {
+                string errorMessage = "Could not get records after three tries; query: " + selectSQL;
+                OnErrorEvent(errorMessage);
+                throw new Exception(errorMessage);
+            }
 
-    Public Function GetTable(selectSQL As String) As DataTable
+            return queryResults;
+        }
 
-        Dim retryCount = 6
-        Dim retryDelaySeconds = 5
-        Dim timeoutSeconds = 600
+        public Dictionary<string, string> DataTableToDictionary(
+            DataTable dt,
+            string keyFieldName,
+            string valueFieldName,
+            string filterString = "")
+        {
+            var foundRows = dt.Select(filterString);
+            var dataDictionary = new Dictionary<string, string>(foundRows.Length);
 
-        Dim queryResults As DataTable = Nothing
-        Dim success = mDBTools.GetQueryResultsDataTable(selectSQL, queryResults, retryCount, retryDelaySeconds, timeoutSeconds)
+            foreach (var dr in foundRows)
+            {
+                string key = dr[keyFieldName].ToString();
+                if (!dataDictionary.ContainsKey(key))
+                {
+                    dataDictionary.Add(key, dr[valueFieldName].ToString());
+                }
+            }
 
-        If Not success Then
-            Dim errorMessage = "Could not get records after three tries; query: " & selectSQL
-            OnErrorEvent(errorMessage)
-            Throw New Exception(errorMessage)
-        End If
+            return dataDictionary;
+        }
 
-        Return queryResults
+        public Dictionary<int, string> DataTableToDictionaryIntegerKeys(
+            DataTable dt,
+            string keyFieldName,
+            string valueFieldName,
+            string filterString = "")
+        {
+            var foundRows = dt.Select(filterString);
+            var dataDictionary = new Dictionary<int, string>(foundRows.Length);
 
-    End Function
+            foreach (var dr in foundRows)
+            {
+                string key = dr[keyFieldName].ToString();
+                int keyValue;
+                if (!int.TryParse(key, out keyValue))
+                {
+                    continue;
+                }
 
-    Public Function DataTableToDictionary(
-      dt As DataTable,
-      keyFieldName As String,
-      valueFieldName As String,
-      Optional filterString As String = "") As Dictionary(Of String, String)
+                if (!dataDictionary.ContainsKey(keyValue))
+                {
+                    dataDictionary.Add(keyValue, dr[valueFieldName].ToString());
+                }
+            }
 
-        Dim foundRows() As DataRow = dt.Select(filterString)
-        Dim dataDictionary = New Dictionary(Of String, String)(foundRows.Length)
+            return dataDictionary;
+        }
 
-        For Each dr In foundRows
-            Dim key = dr.Item(keyFieldName).ToString()
-            If Not dataDictionary.ContainsKey(key) Then
-                dataDictionary.Add(key, dr.Item(valueFieldName).ToString())
-            End If
-        Next
+        private void ShowTrace(string message)
+        {
+            if (!ShowTraceMessages)
+                return;
+            Console.WriteLine("  " + message);
+        }
 
-        Return dataDictionary
-
-    End Function
-
-    Public Function DataTableToDictionaryIntegerKeys(
-      dt As DataTable,
-      keyFieldName As String,
-      valueFieldName As String,
-      Optional filterString As String = "") As Dictionary(Of Integer, String)
-
-        Dim foundRows() As DataRow = dt.Select(filterString)
-        Dim dataDictionary = New Dictionary(Of Integer, String)(foundRows.Length)
-
-        For Each dr In foundRows
-            Dim key = dr.Item(keyFieldName).ToString()
-            Dim keyValue As Integer
-            If Not Integer.TryParse(key, keyValue) Then
-                Continue For
-            End If
-
-            If Not dataDictionary.ContainsKey(keyValue) Then
-                dataDictionary.Add(keyValue, dr.Item(valueFieldName).ToString())
-            End If
-        Next
-
-        Return dataDictionary
-
-    End Function
-
-    Private Sub ShowTrace(message As String)
-        If Not ShowTraceMessages Then Exit Sub
-
-        Console.WriteLine("  " & message)
-    End Sub
-
-    Public Property ShowTraceMessages As Boolean
-
-End Class
+        public bool ShowTraceMessages { get; set; }
+    }
+}

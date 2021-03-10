@@ -1,511 +1,542 @@
-Option Strict On
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Windows.Forms;
+using PRISMDatabaseUtils;
+using Protein_Storage;
+
+namespace Protein_Importer
+{
+    public class ImportHandler
+    {
+        public enum ProteinImportFileTypes
+        {
+            FASTA,
+            Access
+        }
+
+        protected TableManipulationBase.DBTask m_SQLAccess;
+
+        protected readonly FASTAReader m_Importer;
+
+        protected int m_PersistentTaskNum;
+
+        protected string m_SPError;
+
+        // Unused constants
+        // protected const string ProteinCollectionsTable = "T_Protein_Collections";
+        // protected const string ProteinsTable = "T_Proteins";
+        // protected const string MembersTable = "T_Protein_Collection_Members";
+        // protected const string NamesTable = "T_Protein_Names";
+        // protected const string PositionTable = "T_Position_Info";
+        // protected const string CollectionProteinMap = "V_Protein_Collections_By_Organism";
+
+        protected ProteinStorage m_FileContents;
+        protected DataTable m_CollectionsList;
+
+        protected Dictionary<string, string> m_AuthoritiesList;
+        protected DataTable m_AuthoritiesTable;
+
+        public event LoadStartEventHandler LoadStart;
 
-Imports System.Collections.Generic
-Imports System.Windows.Forms
-Imports PRISMDatabaseUtils
-Imports Protein_Storage
+        public delegate void LoadStartEventHandler(string taskTitle);
 
-Public Class ImportHandler
+        public event LoadProgressEventHandler LoadProgress;
 
-    Public Enum ProteinImportFileTypes
-        FASTA
-        Access
-    End Enum
+        public delegate void LoadProgressEventHandler(double fractionDone);
 
-    Protected m_SQLAccess As TableManipulationBase.DBTask
-    Protected WithEvents m_Importer As FASTAReader
+        public event LoadEndEventHandler LoadEnd;
 
-    Protected m_PersistentTaskNum As Integer
+        public delegate void LoadEndEventHandler();
+
+        public event CollectionLoadCompleteEventHandler CollectionLoadComplete;
+
+        public delegate void CollectionLoadCompleteEventHandler(DataTable CollectionsTable);
+
+        public ImportHandler(string psConnectionString)
+        {
+            m_SQLAccess = new TableManipulationBase.DBTask(psConnectionString);
+            m_Importer = new FASTAReader();
+            m_Importer.LoadStart += Task_LoadStart;
+            m_Importer.LoadProgress += Task_LoadProgress;
+            m_Importer.LoadEnd += Task_LoadEnd;
+            m_CollectionsList = LoadProteinCollectionNames();
+        }
+
+        public ProteinStorage CollectionMembers
+        {
+            get
+            {
+                return m_FileContents;
+            }
+        }
+
+        public Dictionary<string, string> Authorities
+        {
+            get
+            {
+                return m_AuthoritiesList;
+            }
+        }
+
+        protected string GetCollectionNameFromID(int ProteinCollectionID)
+        {
+            var foundRows = m_CollectionsList.Select("Protein_Collection_ID = " + ProteinCollectionID.ToString());
+            var dr = foundRows[0];
+            string collectionName = m_SQLAccess.DBTools.GetString(dr["FileName"]);
 
-    Protected m_SPError As String
+            return collectionName;
+        }
 
-    ' Unused constants
-    'Const ProteinCollectionsTable As String = "T_Protein_Collections"
-    'Const ProteinsTable As String = "T_Proteins"
-    'Const MembersTable As String = "T_Protein_Collection_Members"
-    'Const NamesTable As String = "T_Protein_Names"
-    'Const PositionTable As String = "T_Position_Info"
-    'Const CollectionProteinMap As String = "V_Protein_Collections_By_Organism"
+        protected ProteinStorage LoadFASTA(string filePath)
+        {
 
-    Protected m_FileContents As ProteinStorage
-    Protected m_CollectionsList As DataTable
+            // check for existence of current file
+            ProteinStorage fastaContents;
+            fastaContents = m_Importer.GetProteinEntries(filePath);
 
-    Protected m_AuthoritiesList As Dictionary(Of String, String)
-    Protected m_AuthoritiesTable As DataTable
+            string errorMessage = m_Importer.LastErrorMessage;
 
-    Public Event LoadStart(taskTitle As String)
-    Public Event LoadProgress(fractionDone As Double)
-    Public Event LoadEnd()
-    Public Event CollectionLoadComplete(CollectionsTable As DataTable)
+            if (!string.IsNullOrWhiteSpace(errorMessage))
+            {
+                var proteinsLoaded = default(int);
+                try
+                {
+                    if (fastaContents != null)
+                    {
+                        proteinsLoaded = fastaContents.ProteinCount;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Ignore errors here
+                }
 
-    Public Sub New(psConnectionString As String)
-        m_SQLAccess = New TableManipulationBase.DBTask(psConnectionString)
-        m_Importer = New FASTAReader
-        m_CollectionsList = LoadProteinCollectionNames()
-    End Sub
+                MessageBox.Show("GetProteinEntries returned an error after loading " + proteinsLoaded + " proteins: " + errorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-    Public ReadOnly Property CollectionMembers As ProteinStorage
-        Get
-            Return m_FileContents
-        End Get
-    End Property
+                fastaContents.ClearProteinEntries();
+            }
 
-    Public ReadOnly Property Authorities As Dictionary(Of String, String)
-        Get
-            Return m_AuthoritiesList
-        End Get
-    End Property
+            return fastaContents;
+        }
 
-    Protected Function GetCollectionNameFromID(ProteinCollectionID As Integer) As String
-        Dim foundRows() As DataRow = m_CollectionsList.Select("Protein_Collection_ID = " & CStr(ProteinCollectionID))
-        Dim dr As DataRow = foundRows(0)
-        Dim collectionName = m_SQLAccess.DBTools.GetString(dr.Item("FileName"))
+        public DataTable LoadOrganisms()
+        {
+            string orgSQL = "SELECT * FROM V_Organism_Picker ORDER BY Short_Name";
+            var tmpOrgTable = m_SQLAccess.GetTable(orgSQL);
 
-        Return collectionName
-    End Function
+            var dr = tmpOrgTable.NewRow();
 
-    Protected Function LoadFASTA(filePath As String) As ProteinStorage
+            dr["ID"] = 0;
+            dr["Short_Name"] = "None";
+            dr["Display_Name"] = " -- None Selected -- ";
 
-        'check for existence of current file
-        Dim fastaContents As ProteinStorage
-        fastaContents = m_Importer.GetProteinEntries(filePath)
+            tmpOrgTable.Rows.InsertAt(dr, 0);
 
-        Dim errorMessage As String = m_Importer.LastErrorMessage()
+            tmpOrgTable.AcceptChanges();
 
-        If Not String.IsNullOrWhiteSpace(errorMessage) Then
-            Dim proteinsLoaded As Integer
+            var pk1 = new DataColumn[1];
 
-            Try
-                If Not fastaContents Is Nothing Then
-                    proteinsLoaded = fastaContents.ProteinCount
-                End If
-            Catch ex As Exception
-                ' Ignore errors here
-            End Try
+            pk1[0] = tmpOrgTable.Columns["ID"];
+            tmpOrgTable.PrimaryKey = pk1;
 
-            MessageBox.Show("GetProteinEntries returned an error after loading " & proteinsLoaded & " proteins: " & errorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            return tmpOrgTable;
+        }
 
-            fastaContents.ClearProteinEntries()
-        End If
+        public DataTable LoadAnnotationTypes(
+            int proteinCollectionID)
+        {
+            string sqlQuery =
+                "SELECT Annotation_Type_ID " +
+                "FROM V_Protein_Collection_Authority " +
+                "WHERE Protein_Collection_ID = " + proteinCollectionID.ToString();
+            DataTable tmpAnnTypeIDTable;
+            tmpAnnTypeIDTable = m_SQLAccess.GetTable(sqlQuery);
 
-        Return fastaContents
+            DataRow dr;
+            var authIDSB = new System.Text.StringBuilder();
+            foreach (DataRow currentDr in tmpAnnTypeIDTable.Rows)
+            {
+                dr = currentDr;
+                authIDSB.Append(dr["Annotation_Type_ID"].ToString());
+                authIDSB.Append(", ");
+            }
 
-    End Function
+            tmpAnnTypeIDTable = null;
+
+            authIDSB.Remove(authIDSB.Length - 2, 2);
 
-    Public Function LoadOrganisms() As DataTable
-        Dim orgSQL = "SELECT * FROM V_Organism_Picker ORDER BY Short_Name"
-        Dim tmpOrgTable As DataTable = m_SQLAccess.GetTable(orgSQL)
+            string AuthSQL =
+                "SELECT * FROM V_Annotation_Type_Picker " +
+                "WHERE ID IN (" + authIDSB.ToString() + ") " +
+                "ORDER BY Display_Name";
 
-        Dim dr As DataRow = tmpOrgTable.NewRow
+            var tmpAuthTable = m_SQLAccess.GetTable(AuthSQL);
 
-        With dr
-            .Item("ID") = 0
-            .Item("Short_Name") = "None"
-            .Item("Display_Name") = " -- None Selected -- "
-        End With
+            dr = tmpAuthTable.NewRow();
 
-        tmpOrgTable.Rows.InsertAt(dr, 0)
+            dr["ID"] = 0;
+            dr["Display_Name"] = " -- None Selected -- ";
+            dr["Details"] = "None Selected";
 
+            tmpAuthTable.Rows.InsertAt(dr, 0);
 
-        tmpOrgTable.AcceptChanges()
+            tmpAuthTable.AcceptChanges();
 
-        Dim pk1(0) As DataColumn
+            var pk1 = new DataColumn[1];
 
-        pk1(0) = tmpOrgTable.Columns("ID")
-        tmpOrgTable.PrimaryKey = pk1
+            pk1[0] = tmpAuthTable.Columns["ID"];
+            tmpAuthTable.PrimaryKey = pk1;
 
+            return tmpAuthTable;
+        }
 
-        Return tmpOrgTable
+        public DataTable LoadAnnotationTypes()
+        {
+            string AuthSQL = "SELECT * FROM V_Annotation_Type_Picker ORDER BY Display_Name";
+            var tmpAnnTypeTable = m_SQLAccess.GetTable(AuthSQL);
 
-    End Function
+            var dr = tmpAnnTypeTable.NewRow();
 
-    Public Function LoadAnnotationTypes(
-        proteinCollectionID As Integer) As DataTable
+            dr["ID"] = 0;
+            dr["Display_Name"] = " -- None Selected -- ";
+            // dr["name"] = " -- None Selected -- ";
+            dr["Details"] = "None Selected";
 
-        Dim sqlQuery =
-            "SELECT Annotation_Type_ID " &
-            "FROM V_Protein_Collection_Authority " &
-            "WHERE Protein_Collection_ID = " & proteinCollectionID.ToString
+            tmpAnnTypeTable.Rows.InsertAt(dr, 0);
 
-        Dim tmpAnnTypeIDTable As DataTable
-        tmpAnnTypeIDTable = m_SQLAccess.GetTable(sqlQuery)
+            tmpAnnTypeTable.AcceptChanges();
+            m_AuthoritiesList = m_SQLAccess.DataTableToDictionary(tmpAnnTypeTable, "ID", "Display_Name");
+            m_AuthoritiesTable = tmpAnnTypeTable.Copy();
 
-        Dim dr As DataRow
-        Dim authIDSB As New System.Text.StringBuilder
-        For Each dr In tmpAnnTypeIDTable.Rows
-            With authIDSB
-                .Append(dr.Item("Annotation_Type_ID").ToString)
-                .Append(", ")
-            End With
-        Next
+            return tmpAnnTypeTable;
+        }
 
-        tmpAnnTypeIDTable = Nothing
+        public DataTable LoadAuthorities()
+        {
+            string AuthSQL = "SELECT * FROM V_Authority_Picker ORDER BY Display_Name";
+            var tmpAuthTable = m_SQLAccess.GetTable(AuthSQL);
 
-        authIDSB.Remove(authIDSB.Length - 2, 2)
+            var dr = tmpAuthTable.NewRow();
 
-        Dim AuthSQL As String =
-            "SELECT * FROM V_Annotation_Type_Picker " &
-            "WHERE ID IN (" & authIDSB.ToString & ") " &
-            "ORDER BY Display_Name"
+            dr["ID"] = 0;
+            dr["Display_Name"] = " -- None Selected -- ";
+            dr["Details"] = "None Selected";
 
-        Dim tmpAuthTable As DataTable = m_SQLAccess.GetTable(AuthSQL)
+            tmpAuthTable.Rows.InsertAt(dr, 0);
 
-        dr = tmpAuthTable.NewRow
+            tmpAuthTable.AcceptChanges();
+            m_AuthoritiesList = m_SQLAccess.DataTableToDictionary(tmpAuthTable, "ID", "Display_Name");
 
-        With dr
-            .Item("ID") = 0
-            .Item("Display_Name") = " -- None Selected -- "
-            .Item("Details") = "None Selected"
-        End With
+            return tmpAuthTable;
+        }
 
-        tmpAuthTable.Rows.InsertAt(dr, 0)
+        public void ClearProteinCollection()
+        {
+            if (m_FileContents != null)
+            {
+                m_FileContents.ClearProteinEntries();
+            }
+        }
 
-        tmpAuthTable.AcceptChanges()
+        public void TriggerProteinCollectionsLoad()
+        {
+            OnCollectionLoadComplete(LoadProteinCollections());
+        }
+
+        public void TriggerProteinCollectionsLoad(int Organism_ID)
+        {
+            OnCollectionLoadComplete(LoadProteinCollections(Organism_ID));
+        }
+
+        public void TriggerProteinCollectionTableUpdate()
+        {
+            // Dim errCode As Integer = RunSP_UpdateProteinCollectionsByOrganism
+            OnCollectionLoadComplete(LoadProteinCollections());
+        }
+
+        public DataTable LoadProteinCollections()
+        {
+            var PCSQL = "SELECT MIN(FileName) AS FileName, Protein_Collection_ID, " +
+                        "MIN(Organism_ID) AS Organism_ID, MIN(Authority_ID) AS Authority_ID, " +
+                        "MIN(Display) AS Display, MIN(Authentication_Hash) AS Authentication_Hash " +
+                        "FROM V_Protein_Collections_By_Organism " +
+                        "GROUP BY Protein_Collection_ID " +
+                        "ORDER BY MIN(FileName)";
+
+            var tmpPCTable = m_SQLAccess.GetTable(PCSQL);
+
+            var dr = tmpPCTable.NewRow();
+
+            dr["Protein_Collection_ID"] = 0;
+            dr["Display"] = " -- None Selected -- ";
 
-        Dim pk1(0) As DataColumn
+            tmpPCTable.Rows.InsertAt(dr, 0);
+            tmpPCTable.AcceptChanges();
 
-        pk1(0) = tmpAuthTable.Columns("ID")
-        tmpAuthTable.PrimaryKey = pk1
-
-
-        Return tmpAuthTable
-
-    End Function
-
-    Public Function LoadAnnotationTypes() As DataTable
-        Dim AuthSQL As String = "SELECT * FROM V_Annotation_Type_Picker ORDER BY Display_Name"
-        Dim tmpAnnTypeTable As DataTable = m_SQLAccess.GetTable(AuthSQL)
-
-        Dim dr As DataRow = tmpAnnTypeTable.NewRow
-
-        With dr
-            .Item("ID") = 0
-            .Item("Display_Name") = " -- None Selected -- "
-            '.Item("name") = " -- None Selected -- "
-            .Item("Details") = "None Selected"
-        End With
-
-        tmpAnnTypeTable.Rows.InsertAt(dr, 0)
-
-        tmpAnnTypeTable.AcceptChanges()
-        m_AuthoritiesList = m_SQLAccess.DataTableToDictionary(tmpAnnTypeTable, "ID", "Display_Name")
-        m_AuthoritiesTable = tmpAnnTypeTable.Copy
-
-        Return tmpAnnTypeTable
-    End Function
-
-    Public Function LoadAuthorities() As DataTable
-        Dim AuthSQL As String = "SELECT * FROM V_Authority_Picker ORDER BY Display_Name"
-        Dim tmpAuthTable As DataTable = m_SQLAccess.GetTable(AuthSQL)
-
-        Dim dr As DataRow = tmpAuthTable.NewRow
-
-        With dr
-            .Item("ID") = 0
-            .Item("Display_Name") = " -- None Selected -- "
-            .Item("Details") = "None Selected"
-        End With
-
-        tmpAuthTable.Rows.InsertAt(dr, 0)
-
-        tmpAuthTable.AcceptChanges()
-        m_AuthoritiesList = m_SQLAccess.DataTableToDictionary(tmpAuthTable, "ID", "Display_Name")
-
-        Return tmpAuthTable
-    End Function
-
-    Public Sub ClearProteinCollection()
-        If Not m_FileContents Is Nothing Then
-            m_FileContents.ClearProteinEntries()
-        End If
-    End Sub
-
-    Public Sub TriggerProteinCollectionsLoad()
-        OnCollectionLoadComplete(LoadProteinCollections)
-    End Sub
-
-    Public Sub TriggerProteinCollectionsLoad(Organism_ID As Integer)
-        OnCollectionLoadComplete(LoadProteinCollections(Organism_ID))
-    End Sub
-
-    Public Sub TriggerProteinCollectionTableUpdate()
-        'Dim errCode As Integer = RunSP_UpdateProteinCollectionsByOrganism
-        OnCollectionLoadComplete(LoadProteinCollections)
-    End Sub
-
-    Public Function LoadProteinCollections() As DataTable
-
-        Dim PCSQL = "SELECT MIN(FileName) AS FileName, Protein_Collection_ID, " &
-                    "MIN(Organism_ID) AS Organism_ID, MIN(Authority_ID) AS Authority_ID, " &
-                    "MIN(Display) AS Display, MIN(Authentication_Hash) AS Authentication_Hash " &
-                "FROM V_Protein_Collections_By_Organism " &
-                "GROUP BY Protein_Collection_ID " &
-                "ORDER BY MIN(FileName)"
-
-        Dim tmpPCTable As DataTable = m_SQLAccess.GetTable(PCSQL)
-
-        Dim dr As DataRow = tmpPCTable.NewRow
-
-        With dr
-            .Item("Protein_Collection_ID") = 0
-            .Item("Display") = " -- None Selected -- "
-        End With
-
-        tmpPCTable.Rows.InsertAt(dr, 0)
-        tmpPCTable.AcceptChanges()
-
-        Return tmpPCTable
-    End Function
-
-    Protected Function LoadProteinCollections(Organism_ID As Integer) As DataTable
-
-        Dim sqlQuery = "SELECT FileName, Protein_Collection_ID, Organism_ID, Authority_ID, Display, Authentication_Hash" &
-                       " FROM V_Protein_Collections_By_Organism" &
-                       " WHERE Organism_ID = " & Organism_ID &
-                       " ORDER BY FileName"
-        Dim tmpPCTable As DataTable = m_SQLAccess.GetTable(sqlQuery)
-
-        Dim dr As DataRow = tmpPCTable.NewRow
-
-        With dr
-            .Item("Protein_Collection_ID") = 0
-            .Item("Display") = " -- None Selected -- "
-        End With
-
-        tmpPCTable.Rows.InsertAt(dr, 0)
-        tmpPCTable.AcceptChanges()
-
-        Return tmpPCTable
-    End Function
-
-    Public Function LoadProteinCollectionNames() As DataTable
-        Dim PCSQL As String =
-            "SELECT Protein_Collection_ID, FileName, Authority_ID " &
-            "FROM V_Protein_Collections_By_Organism " &
-            "ORDER BY FileName"
-        Dim tmpPCTable As DataTable = m_SQLAccess.GetTable(PCSQL)
-
-        Dim dr As DataRow = tmpPCTable.NewRow
-
-        With dr
-            .Item("Protein_Collection_ID") = 0
-            .Item("FileName") = " -- None Selected -- "
-        End With
-
-        tmpPCTable.Rows.InsertAt(dr, 0)
-        tmpPCTable.AcceptChanges()
-
-        Return tmpPCTable
-    End Function
-
-    Public Function LoadCollectionMembersByID(
-        collectionID As Integer,
-        authorityID As Integer) As DataTable
-
-        m_CollectionsList = LoadProteinCollections()
-
-        If authorityID <= 0 Then
-            Dim foundRows = m_CollectionsList.Select("Protein_Collection_ID = " & collectionID)
-            authorityID = m_SQLAccess.DBTools.GetInteger(foundRows(0).Item("Authority_ID"))
-
-        End If
-
-        Dim sqlQuery As String =
-            "SELECT * From V_Protein_Storage_Entry_Import " &
-            "WHERE Protein_Collection_ID = " & collectionID & " " &
-                "AND Annotation_Type_ID = " & authorityID & " " &
-                "ORDER BY Name"
-        Return LoadCollectionMembers(sqlQuery)
-    End Function
-
-    Public Function LoadCollectionMembersByName(
-        collectionName As String,
-        authorityID As Integer) As DataTable
-
-        Dim sqlQuery As String =
-                "SELECT Protein_Collection_ID, Primary_Annotation_Type_ID " &
-                "FROM T_Protein_Collections " &
-                "WHERE FileName = " & collectionName & " ORDER BY Name"
-
-        Dim tmpTable As DataTable = m_SQLAccess.GetTable(sqlQuery)
-        Dim foundRow As DataRow = tmpTable.Rows(0)
-        Dim collectionID = m_SQLAccess.DBTools.GetInteger(foundRow.Item("Protein_Collection_ID"))
-        'Dim authorityID = m_SQLAccess.dbTools.GetInteger(foundRow.Item("Primary_Authority_ID"))
-
-        Return LoadCollectionMembersByID(collectionID, authorityID)
-
-    End Function
-
-    Private Function LoadCollectionMembers(SelectStatement As String) As DataTable
-        Dim tmpMemberTable As DataTable = m_SQLAccess.GetTable(SelectStatement)
-
-        m_FileContents = LoadProteinInfo(tmpMemberTable.Select(""))
-
-        Return tmpMemberTable
-
-    End Function
-
-    Protected Function LoadProteinInfo(proteinCollectionMembers() As DataRow) As Protein_Storage.ProteinStorage
-        Dim tmpPS = New Protein_Storage.ProteinStorageDMS("")
-        Dim proteinCount As Integer
-        Dim triggerCount As Integer
-        Dim counter As Integer
-
-        RaiseEvent LoadStart("Retrieving Protein Entries...")
-
-        proteinCount = proteinCollectionMembers.Length
-
-        If proteinCount > 20 Then
-            triggerCount = CInt(proteinCount / 20)
-        Else
-            triggerCount = 1
-        End If
-
-        Dim dbTools = m_SQLAccess.DBTools
-
-        For Each dr As DataRow In proteinCollectionMembers
-
-            dbTools.GetInteger(dr.Item("Authority_ID"))
-
-
-            Dim ce = New ProteinStorageEntry(
-                dbTools.GetString(dr.Item("Name")),
-                dbTools.GetString(dr.Item("Description")),
-                dbTools.GetString(dr.Item("Sequence")),
-                dbTools.GetInteger(dr.Item("Length")),
-                dbTools.GetDouble(dr.Item("Monoisotopic_Mass")),
-                dbTools.GetDouble(dr.Item("Average_Mass")),
-                dbTools.GetString(dr.Item("Molecular_Formula")),
-                dbTools.GetString(dr.Item("SHA1_Hash")),
-                counter)
-
-            If counter Mod triggerCount > 0 Then
-                Task_LoadProgress(CSng(counter / proteinCount))
-            End If
-
-            ce.Protein_ID = dbTools.GetInteger(dr.Item("Protein_ID"))
-            tmpPS.AddProtein(ce)
-            counter += 1
-        Next
-
-        Return CType(tmpPS, ProteinStorage)
-
-    End Function
-
-    'Function to load fasta file contents with no checking against the existing database entries
-    'used to load up the source collection ListView
-    Public Function LoadProteinsRaw(
-        filePath As String,
-        fileType As ProteinImportFileTypes) As DataTable
-
-        Dim tmpProteinTable As DataTable = m_SQLAccess.GetTableTemplate("V_Protein_Database_Export")
-        Dim counter As Integer
-        Dim triggerCount As Integer
-        Dim proteinCount As Integer
-
-        Select Case fileType
-            Case ProteinImportFileTypes.FASTA
-                m_FileContents = LoadFASTA(filePath)
-            Case Else
-                Return Nothing
-        End Select
-
-        If m_FileContents Is Nothing Then
-            Return Nothing
-        End If
-
-        proteinCount = m_FileContents.ProteinCount
-        If proteinCount > 20 Then
-            triggerCount = CInt(proteinCount / 20)
-        Else
-            triggerCount = 1
-        End If
-
-        Dim contentsEnum = m_FileContents.GetEnumerator
-
-        'Move certain elements of the protein record to a DataTable for display in the source window
-        Task_LoadStart("Updating Display List...")
-        Do While contentsEnum.MoveNext()
-            Dim entry = contentsEnum.Current.Value
-            Dim dr = tmpProteinTable.NewRow
-            dr.Item("Name") = entry.Reference
-            dr.Item("Description") = entry.Description
-            dr.Item("Sequence") = entry.Sequence
-            tmpProteinTable.Rows.Add(dr)
-            If counter Mod triggerCount > 0 Then
-                Task_LoadProgress(CSng(counter / proteinCount))
-            End If
-            counter += 1
-        Loop
-        Task_LoadEnd()
-
-        Return tmpProteinTable
-
-    End Function
-
-    Public Function LoadProteinsForBatch(
-        fullFilePath As String) As ProteinStorage
-
-        Dim ps As ProteinStorage = LoadFASTA(fullFilePath)
-
-        Return ps
-    End Function
-
-
-#Region " Event Handlers "
-
-    ' Handles the LoadStart event for the fasta importer module
-    Protected Sub Task_LoadStart(taskTitle As String) Handles m_Importer.LoadStart
-        'm_PersistentTaskNum += 1
-        RaiseEvent LoadStart(taskTitle)
-    End Sub
-
-    Protected Sub Task_LoadProgress(fractionDone As Double) Handles m_Importer.LoadProgress
-        RaiseEvent LoadProgress(fractionDone)
-    End Sub
-
-    'Private Sub Task_LoadProgress(taskTitle As String, fractionDone As Double) Handles m_Importer.ValidationProgress
-    '    RaiseEvent ValidationProgress(taskTitle, fractionDone)
-    'End Sub
-
-    Protected Sub Task_LoadEnd() Handles m_Importer.LoadEnd
-        RaiseEvent LoadEnd()
-    End Sub
-
-    'Private Sub OnInvalidFASTAFile(FASTAFilePath As String, errorCollection As ArrayList) Handles m_Importer.InvalidFASTAFile
-    '    RaiseEvent InvalidFASTAFile(FASTAFilePath, errorCollection)
-    'End Sub
-
-    Protected Sub OnCollectionLoadComplete(CollectionsList As DataTable)
-        RaiseEvent CollectionLoadComplete(CollectionsList)
-    End Sub
-#End Region
-
-#Region " Stored Procedure Access "
-    Protected Function RunSP_UpdateProteinCollectionsByOrganism() As Integer
-
-        Dim dbTools = m_SQLAccess.DBTools
-
-        Dim cmdSave = dbTools.CreateCommand("UpdateProteinCollectionsByOrganism", CommandType.StoredProcedure)
-
-        ' Define parameters
-
-        ' Define parameter for procedure's return value
-        Dim returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue)
-
-        ' Define parameters for the procedure's arguments
-        dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output)
-
-        ' Execute the sp
-        dbTools.ExecuteSP(cmdSave)
-
-        ' Get return value
-        Dim ret = dbTools.GetInteger(returnParam.Value)
-
-        Return ret
-
-    End Function
-
-#End Region
-
-End Class
+            return tmpPCTable;
+        }
+
+        protected DataTable LoadProteinCollections(int Organism_ID)
+        {
+            var sqlQuery = "SELECT FileName, Protein_Collection_ID, Organism_ID, Authority_ID, Display, Authentication_Hash" +
+                           " FROM V_Protein_Collections_By_Organism" +
+                           " WHERE Organism_ID = " + Organism_ID +
+                           " ORDER BY FileName";
+            var tmpPCTable = m_SQLAccess.GetTable(sqlQuery);
+
+            var dr = tmpPCTable.NewRow();
+
+            dr["Protein_Collection_ID"] = 0;
+            dr["Display"] = " -- None Selected -- ";
+
+            tmpPCTable.Rows.InsertAt(dr, 0);
+            tmpPCTable.AcceptChanges();
+
+            return tmpPCTable;
+        }
+
+        public DataTable LoadProteinCollectionNames()
+        {
+            string PCSQL =
+                "SELECT Protein_Collection_ID, FileName, Authority_ID " +
+                "FROM V_Protein_Collections_By_Organism " +
+                "ORDER BY FileName";
+            var tmpPCTable = m_SQLAccess.GetTable(PCSQL);
+
+            var dr = tmpPCTable.NewRow();
+
+            dr["Protein_Collection_ID"] = 0;
+            dr["FileName"] = " -- None Selected -- ";
+
+            tmpPCTable.Rows.InsertAt(dr, 0);
+            tmpPCTable.AcceptChanges();
+
+            return tmpPCTable;
+        }
+
+        public DataTable LoadCollectionMembersByID(
+            int collectionID,
+            int authorityID)
+        {
+            m_CollectionsList = LoadProteinCollections();
+
+            if (authorityID <= 0)
+            {
+                var foundRows = m_CollectionsList.Select("Protein_Collection_ID = " + collectionID);
+                authorityID = m_SQLAccess.DBTools.GetInteger(foundRows[0]["Authority_ID"]);
+            }
+
+            string sqlQuery =
+                "SELECT * From V_Protein_Storage_Entry_Import " +
+                "WHERE Protein_Collection_ID = " + collectionID + " " +
+                "AND Annotation_Type_ID = " + authorityID + " " +
+                "ORDER BY Name";
+            return LoadCollectionMembers(sqlQuery);
+        }
+
+        public DataTable LoadCollectionMembersByName(
+            string collectionName,
+            int authorityID)
+        {
+            string sqlQuery =
+                "SELECT Protein_Collection_ID, Primary_Annotation_Type_ID " +
+                "FROM T_Protein_Collections " +
+                "WHERE FileName = " + collectionName + " ORDER BY Name";
+
+            var tmpTable = m_SQLAccess.GetTable(sqlQuery);
+            var foundRow = tmpTable.Rows[0];
+            int collectionID = m_SQLAccess.DBTools.GetInteger(foundRow["Protein_Collection_ID"]);
+            // Dim authorityID = m_SQLAccess.dbTools.GetInteger(foundRow.Item("Primary_Authority_ID"))
+
+            return LoadCollectionMembersByID(collectionID, authorityID);
+        }
+
+        private DataTable LoadCollectionMembers(string SelectStatement)
+        {
+            var tmpMemberTable = m_SQLAccess.GetTable(SelectStatement);
+
+            m_FileContents = LoadProteinInfo(tmpMemberTable.Select(""));
+
+            return tmpMemberTable;
+        }
+
+        protected ProteinStorage LoadProteinInfo(DataRow[] proteinCollectionMembers)
+        {
+            var tmpPS = new ProteinStorageDMS("");
+            int proteinCount;
+            int triggerCount;
+            var counter = default(int);
+
+            LoadStart?.Invoke("Retrieving Protein Entries...");
+
+            proteinCount = proteinCollectionMembers.Length;
+
+            if (proteinCount > 20)
+            {
+                triggerCount = (int)Math.Round(proteinCount / 20d);
+            }
+            else
+            {
+                triggerCount = 1;
+            }
+
+            var dbTools = m_SQLAccess.DBTools;
+
+            foreach (DataRow dr in proteinCollectionMembers)
+            {
+                dbTools.GetInteger(dr["Authority_ID"]);
+
+                var ce = new ProteinStorageEntry(
+                    dbTools.GetString(dr["Name"]),
+                    dbTools.GetString(dr["Description"]),
+                    dbTools.GetString(dr["Sequence"]),
+                    dbTools.GetInteger(dr["Length"]),
+                    dbTools.GetDouble(dr["Monoisotopic_Mass"]),
+                    dbTools.GetDouble(dr["Average_Mass"]),
+                    dbTools.GetString(dr["Molecular_Formula"]),
+                    dbTools.GetString(dr["SHA1_Hash"]),
+                    counter);
+
+                if (counter % triggerCount > 0)
+                {
+                    Task_LoadProgress((float)(counter / (double)proteinCount));
+                }
+
+                ce.Protein_ID = dbTools.GetInteger(dr["Protein_ID"]);
+                tmpPS.AddProtein(ce);
+                counter += 1;
+            }
+
+            return tmpPS;
+        }
+
+        // Function to load fasta file contents with no checking against the existing database entries
+        // used to load up the source collection ListView
+        public DataTable LoadProteinsRaw(
+            string filePath,
+            ProteinImportFileTypes fileType)
+        {
+            var tmpProteinTable = m_SQLAccess.GetTableTemplate("V_Protein_Database_Export");
+            var counter = default(int);
+            int triggerCount;
+            int proteinCount;
+
+            switch (fileType)
+            {
+                case ProteinImportFileTypes.FASTA:
+                    m_FileContents = LoadFASTA(filePath);
+                    break;
+
+                default:
+                    return null;
+            }
+
+            if (m_FileContents == null)
+            {
+                return null;
+            }
+
+            proteinCount = m_FileContents.ProteinCount;
+            if (proteinCount > 20)
+            {
+                triggerCount = (int)Math.Round(proteinCount / 20d);
+            }
+            else
+            {
+                triggerCount = 1;
+            }
+
+            var contentsEnum = m_FileContents.GetEnumerator();
+
+            // Move certain elements of the protein record to a DataTable for display in the source window
+            Task_LoadStart("Updating Display List...");
+            while (contentsEnum.MoveNext())
+            {
+                var entry = contentsEnum.Current.Value;
+                var dr = tmpProteinTable.NewRow();
+                dr["Name"] = entry.Reference;
+                dr["Description"] = entry.Description;
+                dr["Sequence"] = entry.Sequence;
+                tmpProteinTable.Rows.Add(dr);
+                if (counter % triggerCount > 0)
+                {
+                    Task_LoadProgress((float)(counter / (double)proteinCount));
+                }
+
+                counter += 1;
+            }
+
+            Task_LoadEnd();
+            return tmpProteinTable;
+        }
+
+        public ProteinStorage LoadProteinsForBatch(string fullFilePath)
+        {
+            var ps = LoadFASTA(fullFilePath);
+
+            return ps;
+        }
+
+        #region "Event Handlers"
+
+        // Handles the LoadStart event for the fasta importer module
+        protected void Task_LoadStart(string taskTitle)
+        {
+            // m_PersistentTaskNum += 1
+            LoadStart?.Invoke(taskTitle);
+        }
+
+        protected void Task_LoadProgress(double fractionDone)
+        {
+            LoadProgress?.Invoke(fractionDone);
+        }
+
+        //protected void Task_LoadProgress(string taskTitle, double fractionDone)
+        //{
+        //    ValidationProgress?.Invoke(taskTitle, fractionDone);
+        //}
+
+        protected void Task_LoadEnd()
+        {
+            LoadEnd?.Invoke();
+        }
+
+        //private void OnInvalidFASTAFile(string FASTAFilePath, List errorCollection)
+        //{
+        //    InvalidFASTAFile?.Invoke(FASTAFilePath, errorCollection);
+        //}
+
+        protected void OnCollectionLoadComplete(DataTable CollectionsList)
+        {
+            CollectionLoadComplete?.Invoke(CollectionsList);
+        }
+        #endregion
+
+        #region "Stored Procedure Access"
+        protected int RunSP_UpdateProteinCollectionsByOrganism()
+        {
+            var dbTools = m_SQLAccess.DBTools;
+
+            var cmdSave = dbTools.CreateCommand("UpdateProteinCollectionsByOrganism", CommandType.StoredProcedure);
+
+            // Define parameters
+
+            // Define parameter for procedure's return value
+            var returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue);
+
+            // Define parameters for the procedure's arguments
+            dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
+
+            // Execute the sp
+            dbTools.ExecuteSP(cmdSave);
+
+            // Get return value
+            int ret = dbTools.GetInteger(returnParam.Value);
+
+            return ret;
+        }
+
+        #endregion
+    }
+}

@@ -1,177 +1,211 @@
-Option Strict Off
+﻿using System;
+using System.IO;
+using System.Text.RegularExpressions;
+using Protein_Storage;
 
-Imports System.IO
-Imports System.Text.RegularExpressions
-Imports Protein_Storage
+namespace Protein_Importer
+{
+    public class FASTAReader
+    {
+        private string m_FASTAFilePath;
 
-Public Class FASTAReader
+        private string m_LastError;
+        private readonly Regex m_DescLineRegEx;
+        private readonly Regex m_NoDescLineRegEx;
+        private readonly Regex m_DescLineMatcher;
 
-    Private m_FASTAFilePath As String
+        #region "Events"
 
-    Private m_LastError As String
-    Private ReadOnly m_DescLineRegEx As Regex
-    Private ReadOnly m_NoDescLineRegEx As Regex
-    Private ReadOnly m_DescLineMatcher As Regex
+        public event LoadStartEventHandler LoadStart;
 
-#Region " Events "
+        public delegate void LoadStartEventHandler(string taskTitle);
 
-    Public Event LoadStart(taskTitle As String)
-    Public Event LoadEnd()
-    Public Event LoadProgress(fractionDone As Double)
+        public event LoadEndEventHandler LoadEnd;
 
-#End Region
+        public delegate void LoadEndEventHandler();
 
-    ''' <summary>
-    ''' Constructor
-    ''' </summary>
-    Public Sub New()
-        m_DescLineMatcher = New Regex("^\>.+$")
-        m_DescLineRegEx = New Regex("^\>(?<name>\S+)\s+(?<description>.*)$")
-        m_NoDescLineRegEx = New Regex("^\>(?<name>\S+)$")
-    End Sub
+        public event LoadProgressEventHandler LoadProgress;
 
-    Public ReadOnly Property LastErrorMessage As String
-        Get
-            Return m_LastError
-        End Get
-    End Property
+        public delegate void LoadProgressEventHandler(double fractionDone);
 
-    Public Function GetProteinEntries(filePath As String) As ProteinStorage
-        Return LoadFASTAFile(filePath, -1)
-    End Function
+        #endregion
 
-    Public Function GetProteinEntries(filePath As String, numRecordsToLoad As Integer) As ProteinStorage
-        Return LoadFASTAFile(filePath, numRecordsToLoad)
-    End Function
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public FASTAReader()
+        {
+            m_DescLineMatcher = new Regex(@"^\>.+$");
+            m_DescLineRegEx = new Regex(@"^\>(?<name>\S+)\s+(?<description>.*)$");
+            m_NoDescLineRegEx = new Regex(@"^\>(?<name>\S+)$");
+        }
 
-    Public Function LoadFASTAFile(filePath As String) As ProteinStorage
-        Return LoadFASTAFile(filePath, -1)
-    End Function
+        public string LastErrorMessage
+        {
+            get
+            {
+                return m_LastError;
+            }
+        }
 
-    Public Function LoadFASTAFile(filePath As String, numRecordsToLoad As Integer) As ProteinStorage
+        public ProteinStorage GetProteinEntries(string filePath)
+        {
+            return LoadFASTAFile(filePath, -1);
+        }
 
-        Dim fileLength As Integer
-        Dim currentPosition = 0
+        public ProteinStorage GetProteinEntries(string filePath, int numRecordsToLoad)
+        {
+            return LoadFASTAFile(filePath, numRecordsToLoad);
+        }
 
-        Dim fastaContents = New ProteinStorage(filePath)
+        public ProteinStorage LoadFASTAFile(string filePath)
+        {
+            return LoadFASTAFile(filePath, -1);
+        }
 
-        Dim reference As String = String.Empty
-        Dim description As String = String.Empty
-        Dim sequence As String = String.Empty
-        Dim descMatch As Match
+        public ProteinStorage LoadFASTAFile(string filePath, int numRecordsToLoad)
+        {
+            int fileLength;
+            int currentPosition = 0;
 
-        Dim seqInfo = New SequenceInfoCalculator.SequenceInfoCalculator
+            var fastaContents = new ProteinStorage(filePath);
 
-        Dim recordCount As Integer
+            string reference = string.Empty;
+            string description = string.Empty;
+            string sequence = string.Empty;
+            Match descMatch;
 
-        m_FASTAFilePath = filePath
+            var seqInfo = new SequenceInfoCalculator.SequenceInfoCalculator();
 
-        Dim lineEndCharCount As Integer = LineEndCharacterCount(filePath)
+            var recordCount = default(int);
 
-        Try
+            m_FASTAFilePath = filePath;
 
-            Dim fi = New FileInfo(m_FASTAFilePath)
-            fileLength = fi.Length
-            If (fi.Exists And fileLength > 0) Then
+            int lineEndCharCount = LineEndCharacterCount(filePath);
 
-                RaiseEvent LoadStart("Reading Source File...") 'Trigger the setup of the pgb
+            try
+            {
+                var fi = new FileInfo(m_FASTAFilePath);
+                fileLength = (int)fi.Length;
+                if (fi.Exists & fileLength > 0)
+                {
+                    LoadStart?.Invoke("Reading Source File..."); // Trigger the setup of the pgb
 
-                Using fileReader = New StreamReader(New FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    using (var fileReader = new StreamReader(new FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.Read)))
+                    {
+                        string s = fileReader.ReadLine().Trim();
 
-                    Dim s = fileReader.ReadLine.Trim
+                        while (s != null)
+                        {
+                            if (m_DescLineMatcher.IsMatch(s))
+                            {
+                                // DescriptionLine, new record
+                                if (currentPosition > 0) // dump current record
+                                {
+                                    seqInfo.CalculateSequenceInfo(sequence);
+                                    recordCount += 1;
+                                    if (recordCount % 100 == 0)
+                                    {
+                                        LoadProgress?.Invoke((float)(currentPosition / (double)fileLength));     // trigger pgb update every 10th record
+                                    }
 
-                    Do While Not s Is Nothing
-                        If m_DescLineMatcher.IsMatch(s) Then
-                            'DescriptionLine, new record
-                            If currentPosition > 0 Then 'dump current record
-                                seqInfo.CalculateSequenceInfo(sequence)
-                                recordCount += 1
-                                If recordCount Mod 100 = 0 Then
-                                    RaiseEvent LoadProgress(CSng(currentPosition / fileLength))     'trigger pgb update every 10th record
-                                End If
-                                fastaContents.AddProtein(New ProteinStorageEntry(
-                                 reference, description, sequence, seqInfo.SequenceLength,
-                                 seqInfo.MonoisotopicMass, seqInfo.AverageMass,
-                                 seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount))
-                            End If
+                                    fastaContents.AddProtein(new ProteinStorageEntry(
+                                        reference, description, sequence, seqInfo.SequenceLength,
+                                        seqInfo.MonoisotopicMass, seqInfo.AverageMass,
+                                        seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount));
+                                }
 
-                            reference = String.Empty
-                            description = String.Empty
-                            sequence = String.Empty
+                                reference = string.Empty;
+                                description = string.Empty;
+                                sequence = string.Empty;
 
-                            If m_DescLineRegEx.IsMatch(s) Then
-                                descMatch = m_DescLineRegEx.Match(s)
-                                reference = descMatch.Groups("name").Value
-                                description = descMatch.Groups("description").Value
-                            ElseIf m_NoDescLineRegEx.IsMatch(s) Then
-                                descMatch = m_NoDescLineRegEx.Match(s)
-                                reference = descMatch.Groups(1).Value
-                                description = String.Empty
-                            End If
-                        Else
-                            sequence &= s
-                        End If
-                        If numRecordsToLoad > 0 And recordCount >= numRecordsToLoad - 1 Then
-                            Exit Do
-                        End If
-                        currentPosition += s.Length + lineEndCharCount
+                                if (m_DescLineRegEx.IsMatch(s))
+                                {
+                                    descMatch = m_DescLineRegEx.Match(s);
+                                    reference = descMatch.Groups["name"].Value;
+                                    description = descMatch.Groups["description"].Value;
+                                }
+                                else if (m_NoDescLineRegEx.IsMatch(s))
+                                {
+                                    descMatch = m_NoDescLineRegEx.Match(s);
+                                    reference = descMatch.Groups[1].Value;
+                                    description = string.Empty;
+                                }
+                            }
+                            else
+                            {
+                                sequence += s;
+                            }
 
-                        If fileReader.EndOfStream Then
-                            Exit Do
-                        End If
+                            if (numRecordsToLoad > 0 & recordCount >= numRecordsToLoad - 1)
+                            {
+                                break;
+                            }
 
-                        s = fileReader.ReadLine.Trim
-                    Loop
+                            currentPosition += s.Length + lineEndCharCount;
 
-                    'dump the last record
-                    seqInfo.CalculateSequenceInfo(sequence)
-                    recordCount += 1
+                            if (fileReader.EndOfStream)
+                            {
+                                break;
+                            }
 
-                    fastaContents.AddProtein(New ProteinStorageEntry(
-                        reference, description, sequence, seqInfo.SequenceLength,
-                        seqInfo.MonoisotopicMass, seqInfo.AverageMass,
-                        seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount))
+                            s = fileReader.ReadLine().Trim();
+                        }
 
-                    RaiseEvent LoadEnd()
+                        // dump the last record
+                        seqInfo.CalculateSequenceInfo(sequence);
+                        recordCount += 1;
 
-                End Using
+                        fastaContents.AddProtein(new ProteinStorageEntry(
+                            reference, description, sequence, seqInfo.SequenceLength,
+                            seqInfo.MonoisotopicMass, seqInfo.AverageMass,
+                            seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount));
 
-            End If
+                        LoadEnd?.Invoke();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string stackTrace = PRISM.StackTraceFormatter.GetExceptionStackTrace(ex);
+                m_LastError = ex.Message + "; " + stackTrace;
+            }
 
-        Catch ex As Exception
-            Dim stackTrace = PRISM.StackTraceFormatter.GetExceptionStackTrace(ex)
-            m_LastError = ex.Message & "; " & stackTrace
-        End Try
+            return fastaContents;
+        }
 
-        Return fastaContents
+        protected int LineEndCharacterCount(string filePath)
+        {
+            var fi = new FileInfo(m_FASTAFilePath);
+            if (fi.Exists)
+            {
+                using (var fileReader = new StreamReader(new FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+                {
+                    while (!fileReader.EndOfStream)
+                    {
+                        int testCode = fileReader.Read();
+                        if (testCode == 10 || testCode == 13)
+                        {
+                            if (fileReader.EndOfStream)
+                            {
+                                return 1;
+                            }
 
-    End Function
+                            int testCode2 = fileReader.Read();
+                            if (testCode2 == 10 | testCode2 == 13)
+                            {
+                                return 2;
+                            }
+                            else
+                            {
+                                return 1;
+                            }
+                        }
+                    }
+                }
+            }
 
-    Protected Function LineEndCharacterCount(filePath As String) As Integer
-
-        Dim fi = New FileInfo(m_FASTAFilePath)
-        If (fi.Exists) Then
-            Using fileReader = New StreamReader(New FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                While Not fileReader.EndOfStream
-                    Dim testCode = fileReader.Read()
-                    If testCode = 10 OrElse testCode = 13 Then
-                        If fileReader.EndOfStream Then
-                            Return 1
-                        End If
-
-                        Dim testCode2 = fileReader.Read()
-                        If testCode2 = 10 Or testCode2 = 13 Then
-                            Return 2
-                        Else
-                            Return 1
-                        End If
-                    End If
-                End While
-            End Using
-
-        End If
-
-        Return 2
-
-    End Function
-End Class
+            return 2;
+        }
+    }
+}
