@@ -25,10 +25,10 @@ namespace AppUI_OrfDBHandler
         private string m_LastOutputDirectory = @"D:\outbox\output_test\";
         private string m_AppPath = Application.ExecutablePath;
 
-        protected SyncFASTAFileArchive m_Syncer;
-        protected GetFASTAFromDMS m_Exporter;
+        private SyncFASTAFileArchive m_Syncer;
+        private GetFASTAFromDMS m_Exporter;
 
-        protected string m_FullOutputPath;
+        private string m_FullOutputPath;
 
         private string m_TaskMessage;
         private string m_ProgressMessage;

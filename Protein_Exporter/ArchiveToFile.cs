@@ -12,8 +12,8 @@ namespace Protein_Exporter
     {
         private const string DEFAULT_BASE_ARCHIVE_PATH = @"\\gigasax\DMS_FASTA_File_Archive\";
 
-        protected readonly string m_BaseArchivePath;
-        protected readonly SHA1Managed m_SHA1Provider;
+        private readonly string m_BaseArchivePath;
+        private readonly SHA1Managed m_SHA1Provider;
 
         /// <summary>
         /// Constructor

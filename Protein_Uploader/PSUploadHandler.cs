@@ -54,13 +54,13 @@ namespace Protein_Uploader
             public string EncryptionPassphrase;
         }
 
-        protected string m_NormalizedFASTAFilePath;
+        private string m_NormalizedFASTAFilePath;
 
-        protected readonly DBTask m_DatabaseAccessor;
-        protected readonly ImportHandler m_Importer;
-        protected readonly AddUpdateEntries m_Upload;
-        protected readonly GetFASTAFromDMS m_Export;
-        protected readonly clsCustomValidateFastaFiles m_Validator;
+        private readonly DBTask m_DatabaseAccessor;
+        private readonly ImportHandler m_Importer;
+        private readonly AddUpdateEntries m_Upload;
+        private readonly GetFASTAFromDMS m_Export;
+        private readonly clsCustomValidateFastaFiles m_Validator;
 
         public event LoadStartEventHandler LoadStart;
 
@@ -102,13 +102,13 @@ namespace Protein_Uploader
 
         public delegate void WroteLineEndNormalizedFASTAEventHandler(string newFilePath);
 
-        protected int mMaximumProteinNameLength = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
+        private int mMaximumProteinNameLength = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
 
         private CollectionEncryptor m_Encryptor;
 
         // Note: this array gets initialized with space for 10 items
         // If eValidationOptionConstants gets more than 10 entries, then this array will need to be expanded
-        protected bool[] mValidationOptions;
+        private bool[] mValidationOptions;
 
         public int MaximumProteinNameLength
         {

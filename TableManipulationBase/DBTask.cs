@@ -11,7 +11,7 @@ namespace TableManipulationBase
         #region "Member Variables"
 
 #pragma warning disable CS3003 // Type is not CLS-compliant
-        protected readonly IDBTools mDBTools;
+        private readonly IDBTools mDBTools;
 #pragma warning restore CS3003 // Type is not CLS-compliant
 
         #endregion

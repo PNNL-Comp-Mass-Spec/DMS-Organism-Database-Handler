@@ -4,9 +4,9 @@ namespace NucleotideTranslator
 {
     internal class TranslationEntry
     {
-        protected string m_Base;
-        protected ArrayList m_TransEntries;
-        protected string m_TranslatedAA;
+        private string m_Base;
+        private ArrayList m_TransEntries;
+        private string m_TranslatedAA;
 
         internal TranslationEntry(string NucleotideBase, ArrayList TranslationEntries)
         {

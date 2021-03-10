@@ -9,7 +9,7 @@ namespace SequenceInfoCalculator
 {
     public class SequenceInfoCalculator
     {
-        internal static Dictionary<string, AminoAcidInfo> m_AminoAcids;
+        private static Dictionary<string, AminoAcidInfo> m_AminoAcids;
 
         private double m_MonoisotopicMass;
         private double m_AverageMass;

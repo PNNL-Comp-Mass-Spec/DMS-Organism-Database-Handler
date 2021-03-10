@@ -15,13 +15,13 @@ namespace Protein_Importer
             Access
         }
 
-        protected TableManipulationBase.DBTask m_SQLAccess;
+        private TableManipulationBase.DBTask m_SQLAccess;
 
-        protected readonly FASTAReader m_Importer;
+        private readonly FASTAReader m_Importer;
 
-        protected int m_PersistentTaskNum;
+        private int m_PersistentTaskNum;
 
-        protected string m_SPError;
+        private string m_SPError;
 
         // Unused constants
         // protected const string ProteinCollectionsTable = "T_Protein_Collections";
@@ -31,11 +31,11 @@ namespace Protein_Importer
         // protected const string PositionTable = "T_Position_Info";
         // protected const string CollectionProteinMap = "V_Protein_Collections_By_Organism";
 
-        protected ProteinStorage m_FileContents;
-        protected DataTable m_CollectionsList;
+        private ProteinStorage m_FileContents;
+        private DataTable m_CollectionsList;
 
-        protected Dictionary<string, string> m_AuthoritiesList;
-        protected DataTable m_AuthoritiesTable;
+        private Dictionary<string, string> m_AuthoritiesList;
+        private DataTable m_AuthoritiesTable;
 
         public event LoadStartEventHandler LoadStart;
 

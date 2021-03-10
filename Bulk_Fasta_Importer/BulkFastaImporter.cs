@@ -50,7 +50,7 @@ namespace Bulk_Fasta_Importer
 
         #region "Classwide Variables"
 
-        protected PSUploadHandler m_UploadHandler;
+        private PSUploadHandler m_UploadHandler;
 
         /// <summary>
         /// Organism info, where keys are organism name and values are organism ID

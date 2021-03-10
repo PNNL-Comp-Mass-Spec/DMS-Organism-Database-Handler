@@ -9,15 +9,15 @@ namespace Protein_Uploader
 {
     public class BatchUploadFromFileList
     {
-        protected readonly PSUploadHandler m_Uploader;
-        protected readonly DBTask m_DatabaseAccessor;
-        protected Dictionary<string, FileListInfo> m_CurrentFileList;
+        private readonly PSUploadHandler m_Uploader;
+        private readonly DBTask m_DatabaseAccessor;
+        private Dictionary<string, FileListInfo> m_CurrentFileList;
 
-        protected DataTable m_AuthorityTable;
-        protected DataTable m_AnnotationTypeTable;
-        protected DataTable m_OrganismTable;
+        private DataTable m_AuthorityTable;
+        private DataTable m_AnnotationTypeTable;
+        private DataTable m_OrganismTable;
 
-        protected frmBatchUploadFromFileList m_BatchForm;
+        private frmBatchUploadFromFileList m_BatchForm;
 
         private const string DMS_Org_DB_Table_Name = "V_Legacy_Static_File_Locations";
         private const string Protein_Collections_Table_Name = "T_Protein_Collections";

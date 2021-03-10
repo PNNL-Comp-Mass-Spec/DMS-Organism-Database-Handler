@@ -14,17 +14,17 @@ namespace AppUI_OrfDBHandler
             InitializeComponent();
         }
 
-        protected string m_CollectionName;
-        protected string m_Description;
-        protected string m_CollectionSource;
+        private string m_CollectionName;
+        private string m_Description;
+        private string m_CollectionSource;
 
-        protected int m_OrganismID;
-        protected int m_AnnotationTypeID;
+        private int m_OrganismID;
+        private int m_AnnotationTypeID;
 
-        protected DataTable m_AnnotationTypes;
-        protected DataTable m_Organisms;
+        private DataTable m_AnnotationTypes;
+        private DataTable m_Organisms;
 
-        protected bool m_Local_File;
+        private bool m_Local_File;
 
         private void frmAddNewCollection_Load(object sender, EventArgs e)
         {

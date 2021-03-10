@@ -12,28 +12,28 @@ namespace Protein_Exporter
 {
     public class GetFASTAFromDMSForward
     {
-        protected readonly DBTask m_DatabaseAccessor;
-        protected readonly ExportProteins m_fileDumper;
+        private readonly DBTask m_DatabaseAccessor;
+        private readonly ExportProteins m_fileDumper;
 
         /// <summary>
         /// Keys are protein collection IDs
         /// Values are filename
         /// </summary>
-        protected Dictionary<int, string> m_AllCollections;
+        private Dictionary<int, string> m_AllCollections;
 
-        protected Dictionary<string, string> m_OrganismList;
+        private Dictionary<string, string> m_OrganismList;
 
-        protected string m_CurrentFullOutputPath;
-        internal int m_CurrentFileProteinCount;
-        protected string m_CurrentArchiveFileName;
+        private string m_CurrentFullOutputPath;
+        private int m_CurrentFileProteinCount;
+        private string m_CurrentArchiveFileName;
 
-        protected DataTable m_CollectionsCache;
-        protected DataTable m_OrganismCache;
+        private DataTable m_CollectionsCache;
+        private DataTable m_OrganismCache;
 
         protected string m_Naming_Suffix = "_forward";
-        protected string m_Extension = "";
+        private string m_Extension = "";
 
-        protected RijndaelEncryptionHandler m_RijndaelDecryption;
+        private RijndaelEncryptionHandler m_RijndaelDecryption;
 
         /// <summary>
         /// Constructor

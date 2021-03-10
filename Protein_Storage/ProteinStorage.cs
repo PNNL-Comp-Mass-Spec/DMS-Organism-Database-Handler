@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Protein_Storage
 {
@@ -11,7 +10,7 @@ namespace Protein_Storage
         protected readonly Dictionary<string, ProteinStorageEntry> m_Proteins;
         protected int m_ResidueCount;
         protected readonly SortedSet<string> m_ProteinNames;
-        protected string m_PassPhrase;
+        private string m_PassPhrase;
 
         public ProteinStorage(string fastaFileName)
         {

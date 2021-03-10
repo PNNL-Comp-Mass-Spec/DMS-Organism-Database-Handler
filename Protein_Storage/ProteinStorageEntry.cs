@@ -34,24 +34,24 @@ namespace Protein_Storage
             m_Protein_ID = 0;
         }
 
-        protected string m_Reference;
-        protected string m_AlternateReference;
-        protected string m_Description;
-        protected string m_Sequence;
+        private string m_Reference;
+        private string m_AlternateReference;
+        private string m_Description;
+        private string m_Sequence;
 
-        protected double m_MonoMass;
-        protected double m_AvgMass;
-        protected int m_Length;
-        protected string m_MolecularFormula;
-        protected string m_AuthHash;
-        protected int m_Protein_ID;
-        protected int m_Reference_ID;
-        protected int m_Member_ID;
-        protected int m_Authority_ID;
-        protected List<string> m_XRefList;
-        protected int m_SortCount;
+        private double m_MonoMass;
+        private double m_AvgMass;
+        private int m_Length;
+        private string m_MolecularFormula;
+        private string m_AuthHash;
+        private int m_Protein_ID;
+        private int m_Reference_ID;
+        private int m_Member_ID;
+        private int m_Authority_ID;
+        private List<string> m_XRefList;
+        private int m_SortCount;
 
-        protected bool m_IsEncrypted = false;
+        private bool m_IsEncrypted = false;
 
         public string Reference => m_Reference;
 

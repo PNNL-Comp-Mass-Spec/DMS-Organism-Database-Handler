@@ -7,16 +7,16 @@ namespace AppUI_OrfDBHandler
 {
     public class AddNamingAuthorityType
     {
-        protected readonly string m_ConnectionString;
-        protected AddUpdateEntries m_SPRunner;
+        private readonly string m_ConnectionString;
+        private AddUpdateEntries m_SPRunner;
 
-        protected string m_shortName;
-        protected string m_fullName;
-        protected string m_webAddress;
-        protected bool m_EntryExists = false;
-        protected ImportHandler m_Importer;
-        protected readonly DataTable m_AuthorityTable;
-        protected Point m_FormLocation;
+        private string m_shortName;
+        private string m_fullName;
+        private string m_webAddress;
+        private bool m_EntryExists = false;
+        private ImportHandler m_Importer;
+        private readonly DataTable m_AuthorityTable;
+        private Point m_FormLocation;
 
         public string ShortName => m_shortName;
 

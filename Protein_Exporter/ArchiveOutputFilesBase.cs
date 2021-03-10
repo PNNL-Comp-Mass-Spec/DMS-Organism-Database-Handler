@@ -15,7 +15,7 @@ namespace Protein_Exporter
             dynamic = 2
         }
 
-        protected GetFASTAFromDMSForward m_Exporter;
+        private GetFASTAFromDMSForward m_Exporter;
         protected readonly DBTask m_DatabaseAccessor;
         protected string m_LastError;
         // Unused: protected GetFASTAFromDMS.SequenceTypes m_OutputSequenceType;
@@ -53,7 +53,7 @@ namespace Protein_Exporter
             m_Exporter = exporterModule.ExporterComponent;
         }
 
-        protected string LastErrorMessage => m_LastError;
+        private string LastErrorMessage => m_LastError;
 
         public string Archived_File_Name => m_Archived_File_Name;
 

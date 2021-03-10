@@ -21,7 +21,7 @@ namespace AppUI_OrfDBHandler
             m_PSConnectionString = ProteinStorageConnectionString;
         }
 
-        internal readonly System.Timers.Timer SearchTimer;
+        private readonly System.Timers.Timer SearchTimer;
 
         private bool m_SearchActive = false;
         private CollectionStatePickerHandler m_Handler;

@@ -4,7 +4,7 @@ namespace Protein_Uploader
 {
     internal class CollectionEncryptor
     {
-        protected Protein_Exporter.RijndaelEncryptionHandler m_RijndaelEncryptor;
+        private Protein_Exporter.RijndaelEncryptionHandler m_RijndaelEncryptor;
         private readonly TableManipulationBase.DBTask m_DatabaseAccessor;
 
         public event EncryptionStartEventHandler EncryptionStart;

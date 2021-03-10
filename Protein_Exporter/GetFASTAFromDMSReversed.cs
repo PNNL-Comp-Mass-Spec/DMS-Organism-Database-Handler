@@ -5,7 +5,7 @@ namespace Protein_Exporter
 {
     public class GetFASTAFromDMSReversed : GetFASTAFromDMSForward
     {
-        protected bool m_UseXXX;
+        private bool m_UseXXX;
 
         /// <summary>
         /// Constructor

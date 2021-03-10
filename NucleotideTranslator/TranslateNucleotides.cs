@@ -5,11 +5,11 @@ namespace NucleotideTranslator
 {
     public class TranslateNucleotides
     {
-        protected ArrayList m_TranslationMatrix;
-        protected TableManipulationBase.DBTask m_GetSQLData;
+        private ArrayList m_TranslationMatrix;
+        private TableManipulationBase.DBTask m_GetSQLData;
 
-        protected string m_TranTableListName = "T_DNA_Translation_Tables";
-        protected string m_TransTableMembersName = "T_DNA_Translation_Table_Members";
+        private string m_TranTableListName = "T_DNA_Translation_Tables";
+        private string m_TransTableMembersName = "T_DNA_Translation_Table_Members";
 
         public TranslateNucleotides(string DMSConnectionString)
         {

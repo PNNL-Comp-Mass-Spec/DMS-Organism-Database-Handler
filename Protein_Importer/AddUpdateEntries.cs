@@ -31,12 +31,12 @@ namespace Protein_Importer
             // Unused: nuc_original_source = 5,
         }
 
-        protected readonly TableManipulationBase.DBTask m_DatabaseAccessor;
+        private readonly TableManipulationBase.DBTask m_DatabaseAccessor;
         // Unused: protected int m_OrganismID;
         // Unused: protected HashTable m_ProteinLengths;
-        protected int m_MaxProteinNameLength;
+        private int m_MaxProteinNameLength;
 
-        protected System.Security.Cryptography.SHA1Managed m_Hasher;
+        private System.Security.Cryptography.SHA1Managed m_Hasher;
         // Unused: protected Threading.Thread ProteinHashThread;
         // Unused: protected Threading.Thread ReferenceHashThread;
 

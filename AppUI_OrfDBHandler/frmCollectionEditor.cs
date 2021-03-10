@@ -105,8 +105,8 @@ namespace AppUI_OrfDBHandler
 
         private SyncFASTAFileArchive m_Syncer;
         private readonly bool m_EncryptSequences = false;
-        internal readonly System.Timers.Timer SearchTimer;
-        internal readonly System.Timers.Timer MemberLoadTimer;
+        private readonly System.Timers.Timer SearchTimer;
+        private readonly System.Timers.Timer MemberLoadTimer;
 
         /// <summary>
         /// Tracks the description and source that the user has entered for each FASTA file

@@ -8,17 +8,17 @@ namespace AppUI_OrfDBHandler
 {
     public class AddAnnotationTypeType
     {
-        protected string m_ConnectionString;
-        protected AddUpdateEntries m_SPRunner;
+        private string m_ConnectionString;
+        private AddUpdateEntries m_SPRunner;
 
-        protected string m_TypeName;
-        protected string m_Description;
-        protected string m_Example;
-        protected int m_AuthID;
-        protected bool m_EntryExists = false;
-        protected AddNamingAuthorityType m_AuthAdd;
-        protected DataTable m_Authorities;
-        protected Point m_FormLocation;
+        private string m_TypeName;
+        private string m_Description;
+        private string m_Example;
+        private int m_AuthID;
+        private bool m_EntryExists = false;
+        private AddNamingAuthorityType m_AuthAdd;
+        private DataTable m_Authorities;
+        private Point m_FormLocation;
 
         public string TypeName => m_TypeName;
 
