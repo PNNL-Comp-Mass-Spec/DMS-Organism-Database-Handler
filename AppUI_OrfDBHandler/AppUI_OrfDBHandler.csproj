@@ -36,15 +36,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FlexibleFileSortUtility">
-      <HintPath>..\Shared Libraries\FlexibleFileSortUtility.dll</HintPath>
+      <HintPath>..\Lib\FlexibleFileSortUtility.dll</HintPath>
     </Reference>
     <Reference Include="Raccoom.TreeViewFolderBrowser, Version=3.0.0.22254, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Shared Libraries\Raccoom.TreeViewFolderBrowser.dll</HintPath>
+      <HintPath>..\Lib\Raccoom.TreeViewFolderBrowser.dll</HintPath>
     </Reference>
     <Reference Include="Raccoom.TreeViewFolderBrowser.DataProviders, Version=3.0.0.22257, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Shared Libraries\Raccoom.TreeViewFolderBrowser.DataProviders.dll</HintPath>
+      <HintPath>..\Lib\Raccoom.TreeViewFolderBrowser.DataProviders.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -52,7 +52,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="ValidateFastaFile">
-      <HintPath>..\Shared Libraries\ValidateFastaFile.dll</HintPath>
+      <HintPath>..\Lib\ValidateFastaFile.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
