@@ -20,21 +20,9 @@ namespace Protein_Exporter
             m_DatabaseAccessor = databaseAccessor;
         }
 
-        public GetFASTAFromDMS.SequenceTypes SequenceDirection
-        {
-            get
-            {
-                return m_SeqDirection;
-            }
-        }
+        public GetFASTAFromDMS.SequenceTypes SequenceDirection => m_SeqDirection;
 
-        public GetFASTAFromDMS.DatabaseFormatTypes FileFormatType
-        {
-            get
-            {
-                return m_FileType;
-            }
-        }
+        public GetFASTAFromDMS.DatabaseFormatTypes FileFormatType => m_FileType;
 
         // Options string looks like... "seq_direction=forward;filetype=fasta"
         public string ExtractOptions(string optionsString)

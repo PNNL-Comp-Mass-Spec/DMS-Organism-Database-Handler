@@ -23,10 +23,7 @@ namespace AppUI_OrfDBHandler
 
         public bool ForceIDTableReload
         {
-            set
-            {
-                m_forceReload = value;
-            }
+            set => m_forceReload = value;
         }
 
         public void ChangeSelectedCollectionStates(int newStateID, ArrayList selectedCollectionIDList)

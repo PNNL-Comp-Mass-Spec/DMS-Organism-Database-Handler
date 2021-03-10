@@ -53,21 +53,9 @@ namespace Protein_Exporter
             m_Exporter = exporterModule.ExporterComponent;
         }
 
-        protected string LastErrorMessage
-        {
-            get
-            {
-                return m_LastError;
-            }
-        }
+        protected string LastErrorMessage => m_LastError;
 
-        public string Archived_File_Name
-        {
-            get
-            {
-                return m_Archived_File_Name;
-            }
-        }
+        public string Archived_File_Name => m_Archived_File_Name;
 
         public int ArchiveCollection(int proteinCollectionID, CollectionTypes archivedFileType, GetFASTAFromDMS.SequenceTypes outputSequenceType, GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType, string sourceFilePath, string creationOptionsString, string authentication_Hash, string proteinCollectionList)
         {

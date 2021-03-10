@@ -50,13 +50,7 @@ namespace Protein_Exporter
 
         public bool DecoyProteinsUseXXX { get; set; } = true;
 
-        public GetFASTAFromDMSForward ExporterComponent
-        {
-            get
-            {
-                return m_Getter;
-            }
-        }
+        public GetFASTAFromDMSForward ExporterComponent => m_Getter;
 
         // Unused
         // public bool WaitingForLockFile => m_WaitingForLockFile;

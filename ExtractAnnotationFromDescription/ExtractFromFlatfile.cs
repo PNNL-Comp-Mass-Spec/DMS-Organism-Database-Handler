@@ -34,33 +34,15 @@ namespace ExtractAnnotationFromDescription
             m_PSConnectionString = psConnectionString;
         }
 
-        public List<Dictionary<int, string>> FileContents
-        {
-            get
-            {
-                return m_FileContents;
-            }
-        }
+        public List<Dictionary<int, string>> FileContents => m_FileContents;
 
-        public AnnotationStorage Annotations
-        {
-            get
-            {
-                return m_AnnotationStorage;
-            }
-        }
+        public AnnotationStorage Annotations => m_AnnotationStorage;
 
         /// <summary>
         /// Keys are column number (starting at 1)
         /// Values are column names
         /// </summary>
-        public Dictionary<int, string> ColumnNames
-        {
-            get
-            {
-                return m_ColumnNameLookup;
-            }
-        }
+        public Dictionary<int, string> ColumnNames => m_ColumnNameLookup;
 
         private void ExtractGroupsFromLine(
             string entryLine,

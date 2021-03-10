@@ -18,52 +18,19 @@ namespace AppUI_OrfDBHandler
         protected readonly DataTable m_AuthorityTable;
         protected Point m_FormLocation;
 
-        public string ShortName
-        {
-            get
-            {
-                return m_shortName;
-            }
-        }
+        public string ShortName => m_shortName;
 
-        public string FullName
-        {
-            get
-            {
-                return m_fullName;
-            }
-        }
+        public string FullName => m_fullName;
 
-        public string WebAddress
-        {
-            get
-            {
-                return m_webAddress;
-            }
-        }
+        public string WebAddress => m_webAddress;
 
-        public bool EntryExists
-        {
-            get
-            {
-                return m_EntryExists;
-            }
-        }
+        public bool EntryExists => m_EntryExists;
 
-        public DataTable AuthoritiesTable
-        {
-            get
-            {
-                return m_AuthorityTable;
-            }
-        }
+        public DataTable AuthoritiesTable => m_AuthorityTable;
 
         public Point FormLocation
         {
-            set
-            {
-                m_FormLocation = value;
-            }
+            set => m_FormLocation = value;
         }
 
         public AddNamingAuthorityType(string psConnectionString)

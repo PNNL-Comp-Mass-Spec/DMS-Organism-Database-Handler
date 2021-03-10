@@ -12,28 +12,14 @@ namespace AppUI_OrfDBHandler
 
         public string Description
         {
-            get
-            {
-                return txtDescription.Text;
-            }
-
-            set
-            {
-                txtDescription.Text = value;
-            }
+            get => txtDescription.Text;
+            set => txtDescription.Text = value;
         }
 
         public string Source
         {
-            get
-            {
-                return txtSource.Text;
-            }
-
-            set
-            {
-                txtSource.Text = value;
-            }
+            get => txtSource.Text;
+            set => txtSource.Text = value;
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)

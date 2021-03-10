@@ -63,21 +63,9 @@ namespace Protein_Importer
             m_CollectionsList = LoadProteinCollectionNames();
         }
 
-        public ProteinStorage CollectionMembers
-        {
-            get
-            {
-                return m_FileContents;
-            }
-        }
+        public ProteinStorage CollectionMembers => m_FileContents;
 
-        public Dictionary<string, string> Authorities
-        {
-            get
-            {
-                return m_AuthoritiesList;
-            }
-        }
+        public Dictionary<string, string> Authorities => m_AuthoritiesList;
 
         protected string GetCollectionNameFromID(int ProteinCollectionID)
         {

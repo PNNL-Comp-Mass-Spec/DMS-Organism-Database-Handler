@@ -135,50 +135,32 @@ namespace AppUI_OrfDBHandler
 
         internal Dictionary<string, Dictionary<string, int>> ErrorSummaryList
         {
-            set
-            {
-                m_SummarizedFileErrors = value;
-            }
+            set => m_SummarizedFileErrors = value;
         }
 
         internal Dictionary<string, Dictionary<string, int>> WarningSummaryList
         {
-            set
-            {
-                m_SummarizedFileWarnings = value;
-            }
+            set => m_SummarizedFileWarnings = value;
         }
 
         internal Dictionary<string, List<clsCustomValidateFastaFiles.udtErrorInfoExtended>> FileErrorList
         {
-            set
-            {
-                m_FileErrorList = value;
-            }
+            set => m_FileErrorList = value;
         }
 
         internal Dictionary<string, List<clsCustomValidateFastaFiles.udtErrorInfoExtended>> FileWarningList
         {
-            set
-            {
-                m_FileWarningList = value;
-            }
+            set => m_FileWarningList = value;
         }
 
         internal Dictionary<string, PSUploadHandler.UploadInfo> FileValidList
         {
-            set
-            {
-                m_FileValidList = value;
-            }
+            set => m_FileValidList = value;
         }
 
         internal DataTable OrganismList
         {
-            set
-            {
-                m_Organisms = value;
-            }
+            set => m_Organisms = value;
         }
 
         private string GetOrganismName(int organismID)

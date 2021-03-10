@@ -43,15 +43,8 @@ namespace Protein_Importer
         #region "Properties"
         public int MaximumProteinNameLength
         {
-            get
-            {
-                return m_MaxProteinNameLength;
-            }
-
-            set
-            {
-                m_MaxProteinNameLength = value;
-            }
+            get => m_MaxProteinNameLength;
+            set => m_MaxProteinNameLength = value;
         }
         #endregion
 

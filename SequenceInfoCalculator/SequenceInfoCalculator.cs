@@ -36,45 +36,15 @@ namespace SequenceInfoCalculator
 
         #region "Ken's Added Properties "
 
-        public double MonoisotopicMass
-        {
-            get
-            {
-                return m_MonoisotopicMass;
-            }
-        }
+        public double MonoisotopicMass => m_MonoisotopicMass;
 
-        public double AverageMass
-        {
-            get
-            {
-                return m_AverageMass;
-            }
-        }
+        public double AverageMass => m_AverageMass;
 
-        public int SequenceLength
-        {
-            get
-            {
-                return m_Length;
-            }
-        }
+        public int SequenceLength => m_Length;
 
-        public string MolecularFormula
-        {
-            get
-            {
-                return m_MolFormula;
-            }
-        }
+        public string MolecularFormula => m_MolFormula;
 
-        public string SHA1Hash
-        {
-            get
-            {
-                return m_SHA1Hash;
-            }
-        }
+        public string SHA1Hash => m_SHA1Hash;
 
         #endregion
 
@@ -188,13 +158,7 @@ namespace SequenceInfoCalculator
                 }
             }
 
-            public string Symbol
-            {
-                get
-                {
-                    return Sequence;
-                }
-            }
+            public string Symbol => Sequence;
         }
 
         public static string ToHexString(byte[] bytes)
@@ -257,13 +221,7 @@ namespace SequenceInfoCalculator
             m_Monoisotopic_Mass = monoisotopic;
         }
 
-        public string Sequence
-        {
-            get
-            {
-                return m_sequence;
-            }
-        }
+        public string Sequence => m_sequence;
 
         public void Invalidate()
         {
@@ -277,79 +235,25 @@ namespace SequenceInfoCalculator
             m_S_Count = 0;
         }
 
-        public bool Invalidated
-        {
-            get
-            {
-                return m_invalidated;
-            }
-        }
+        public bool Invalidated => m_invalidated;
 
         public string Name { get; private set; }
 
-        public int C_Count
-        {
-            get
-            {
-                return m_C_Count;
-            }
-        }
+        public int C_Count => m_C_Count;
 
-        public int H_Count
-        {
-            get
-            {
-                return m_H_Count;
-            }
-        }
+        public int H_Count => m_H_Count;
 
-        public int N_Count
-        {
-            get
-            {
-                return m_N_Count;
-            }
-        }
+        public int N_Count => m_N_Count;
 
-        public int O_Count
-        {
-            get
-            {
-                return m_O_Count;
-            }
-        }
+        public int O_Count => m_O_Count;
 
-        public int S_Count
-        {
-            get
-            {
-                return m_S_Count;
-            }
-        }
+        public int S_Count => m_S_Count;
 
-        public double AverageMass
-        {
-            get
-            {
-                return m_Average_Mass + 18.01528d;
-            }
-        }
+        public double AverageMass => m_Average_Mass + 18.01528d;
 
-        public double MonoisotopicMass
-        {
-            get
-            {
-                return m_Monoisotopic_Mass + 18.0105633d;
-            }
-        }
+        public double MonoisotopicMass => m_Monoisotopic_Mass + 18.0105633d;
 
-        public string MolecularFormula
-        {
-            get
-            {
-                return GetMolecularFormula();
-            }
-        }
+        public string MolecularFormula => GetMolecularFormula();
 
         private string GetMolecularFormula()
         {

@@ -20,28 +20,10 @@ namespace NucleotideTranslator
             m_TranslatedAA = TranslatedAA;
         }
 
-        internal string BaseLetter
-        {
-            get
-            {
-                return m_Base;
-            }
-        }
+        internal string BaseLetter => m_Base;
 
-        internal ArrayList TranslationEntries
-        {
-            get
-            {
-                return m_TransEntries;
-            }
-        }
+        internal ArrayList TranslationEntries => m_TransEntries;
 
-        internal string TranslatedAA
-        {
-            get
-            {
-                return m_TranslatedAA;
-            }
-        }
+        internal string TranslatedAA => m_TranslatedAA;
     }
 }

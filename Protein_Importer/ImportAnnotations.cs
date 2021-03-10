@@ -35,121 +35,49 @@ namespace Protein_Importer
 
         public string ID
         {
-            get
-            {
-                return m_ID;
-            }
-
-            set
-            {
-                m_ID = CleanUpLine(value);
-            }
+            get => m_ID;
+            set => m_ID = CleanUpLine(value);
         }
 
         public string Name
         {
-            get
-            {
-                return m_Name;
-            }
-
-            set
-            {
-                m_Name = CleanUpLine(value);
-            }
+            get => m_Name;
+            set => m_Name = CleanUpLine(value);
         }
 
         public string NameSpace
         {
-            get
-            {
-                return m_Namespace;
-            }
-
-            set
-            {
-                m_Namespace = CleanUpLine(value);
-            }
+            get => m_Namespace;
+            set => m_Namespace = CleanUpLine(value);
         }
 
         public string Definition
         {
-            get
-            {
-                return m_Definition;
-            }
-
-            set
-            {
-                m_Definition = CleanUpLine(value);
-            }
+            get => m_Definition;
+            set => m_Definition = CleanUpLine(value);
         }
 
         public string Comment
         {
-            get
-            {
-                return m_Comment;
-            }
-
-            set
-            {
-                m_Comment = CleanUpLine(value);
-            }
+            get => m_Comment;
+            set => m_Comment = CleanUpLine(value);
         }
 
         public bool IsObsolete
         {
-            get
-            {
-                return m_IsObsolete;
-            }
-
-            set
-            {
-                m_IsObsolete = value;
-            }
+            get => m_IsObsolete;
+            set => m_IsObsolete = value;
         }
 
-        public ArrayList ExactSynonym_List
-        {
-            get
-            {
-                return m_ExactSynonym;
-            }
-        }
+        public ArrayList ExactSynonym_List => m_ExactSynonym;
 
-        public ArrayList IsA_List
-        {
-            get
-            {
-                return m_IsA;
-            }
-        }
+        public ArrayList IsA_List => m_IsA;
 
-        public ArrayList XRefAnalog_List
-        {
-            get
-            {
-                return m_XRefAnalog;
-            }
-        }
+        public ArrayList XRefAnalog_List => m_XRefAnalog;
 
-        public ArrayList Relationship
-        {
-            get
-            {
-                return m_Relationship;
-            }
-        }
+        public ArrayList Relationship => m_Relationship;
 
-        public ArrayList SubSet
-        {
-            get
-            {
-                return m_SubSet;
-            }
-        }
+        public ArrayList SubSet => m_SubSet;
 
         public void Add_ExactSynonym_Entry(string synonym)
         {

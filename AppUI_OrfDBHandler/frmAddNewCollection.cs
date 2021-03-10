@@ -61,96 +61,48 @@ namespace AppUI_OrfDBHandler
 
         internal bool IsLocalFile
         {
-            get
-            {
-                return m_Local_File;
-            }
-
-            set
-            {
-                m_Local_File = value;
-            }
+            get => m_Local_File;
+            set => m_Local_File = value;
         }
 
         internal string CollectionName
         {
-            get
-            {
-                return m_CollectionName;
-            }
-
-            set
-            {
-                m_CollectionName = value;
-            }
+            get => m_CollectionName;
+            set => m_CollectionName = value;
         }
 
         internal string CollectionDescription
         {
-            get
-            {
-                return m_Description;
-            }
-
-            set
-            {
-                m_Description = value;
-            }
+            get => m_Description;
+            set => m_Description = value;
         }
 
         internal string CollectionSource
         {
-            get
-            {
-                return m_CollectionSource;
-            }
-
-            set
-            {
-                m_CollectionSource = value;
-            }
+            get => m_CollectionSource;
+            set => m_CollectionSource = value;
         }
 
         internal DataTable OrganismList
         {
-            set
-            {
-                m_Organisms = value;
-            }
+            set => m_Organisms = value;
         }
 
         internal DataTable AnnotationTypes
         {
-            set
-            {
-                m_AnnotationTypes = value;
-            }
+            set => m_AnnotationTypes = value;
         }
 
         internal int OrganismID
         {
-            get
-            {
-                return m_OrganismID;
-            }
-
-            set
-            {
-                m_OrganismID = value;
-            }
+            get => m_OrganismID;
+            set => m_OrganismID = value;
         }
 
         internal int AnnotationTypeID
         {
-            get
-            {
-                return m_AnnotationTypeID;
-            }
-
-            set
-            {
-                m_AnnotationTypeID = value;
-            }
+            get => m_AnnotationTypeID;
+            set => m_AnnotationTypeID = value;
         }
 
         protected void BindToCombo(

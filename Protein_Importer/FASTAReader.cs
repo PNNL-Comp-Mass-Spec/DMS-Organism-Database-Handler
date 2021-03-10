@@ -40,13 +40,7 @@ namespace Protein_Importer
             m_NoDescLineRegEx = new Regex(@"^\>(?<name>\S+)$");
         }
 
-        public string LastErrorMessage
-        {
-            get
-            {
-                return m_LastError;
-            }
-        }
+        public string LastErrorMessage => m_LastError;
 
         public ProteinStorage GetProteinEntries(string filePath)
         {
@@ -93,7 +87,7 @@ namespace Protein_Importer
 
                     using (var fileReader = new StreamReader(new FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.Read)))
                     {
-                        string s = fileReader.ReadLine().Trim();
+                        string s = fileReader.ReadLine()?.Trim();
 
                         while (s != null)
                         {

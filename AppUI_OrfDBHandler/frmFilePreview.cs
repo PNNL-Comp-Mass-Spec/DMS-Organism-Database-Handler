@@ -32,19 +32,10 @@ namespace AppUI_OrfDBHandler
 
         public string WindowName
         {
-            set
-            {
-                Text = value;
-            }
+            set => Text = value;
         }
 
-        public bool FormVisibility
-        {
-            get
-            {
-                return Visible;
-            }
-        }
+        public bool FormVisibility => Visible;
 
         public int GetLineCount()
         {

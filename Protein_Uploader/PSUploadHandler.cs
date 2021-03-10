@@ -112,11 +112,7 @@ namespace Protein_Uploader
 
         public int MaximumProteinNameLength
         {
-            get
-            {
-                return mMaximumProteinNameLength;
-            }
-
+            get => mMaximumProteinNameLength;
             set
             {
                 mMaximumProteinNameLength = value;

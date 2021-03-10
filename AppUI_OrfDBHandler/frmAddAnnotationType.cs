@@ -25,70 +25,36 @@ namespace AppUI_OrfDBHandler
 
         public string TypeName
         {
-            get
-            {
-                return m_TypeName;
-            }
-
-            set
-            {
-                m_TypeName = value;
-            }
+            get => m_TypeName;
+            set => m_TypeName = value;
         }
 
         public string Description
         {
-            get
-            {
-                return m_Description;
-            }
-
-            set
-            {
-                m_Description = value;
-            }
+            get => m_Description;
+            set => m_Description = value;
         }
 
         public string Example
         {
-            get
-            {
-                return m_Example;
-            }
-
-            set
-            {
-                m_Example = value;
-            }
+            get => m_Example;
+            set => m_Example = value;
         }
 
         public int AuthorityID
         {
-            get
-            {
-                return m_AuthID;
-            }
-
-            set
-            {
-                m_AuthID = value;
-            }
+            get => m_AuthID;
+            set => m_AuthID = value;
         }
 
         public string ConnectionString
         {
-            set
-            {
-                m_PSConnectionString = value;
-            }
+            set => m_PSConnectionString = value;
         }
 
         public DataTable AuthorityTable
         {
-            set
-            {
-                m_AuthoritiesTable = value;
-            }
+            set => m_AuthoritiesTable = value;
         }
 
         #endregion

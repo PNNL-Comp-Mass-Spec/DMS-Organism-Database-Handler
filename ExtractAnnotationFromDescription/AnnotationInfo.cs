@@ -134,13 +134,7 @@ namespace ExtractAnnotationFromDescription
                 }
             }
 
-            public string PrimaryName
-            {
-                get
-                {
-                    return Names[0].ToString();
-                }
-            }
+            public string PrimaryName => Names[0].ToString();
 
             public string get_Name(int annotationGroupCode)
             {

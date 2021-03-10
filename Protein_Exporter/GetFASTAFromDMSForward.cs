@@ -82,15 +82,8 @@ namespace Protein_Exporter
 
         public string FullOutputPath
         {
-            get
-            {
-                return m_CurrentFullOutputPath;
-            }
-
-            set
-            {
-                m_CurrentFullOutputPath = value;
-            }
+            get => m_CurrentFullOutputPath;
+            set => m_CurrentFullOutputPath = value;
         }
 
         // Unused

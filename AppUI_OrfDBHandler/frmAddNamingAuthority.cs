@@ -24,41 +24,20 @@ namespace AppUI_OrfDBHandler
 
         public string ShortName
         {
-            get
-            {
-                return m_ShortName;
-            }
-
-            set
-            {
-                m_ShortName = value;
-            }
+            get => m_ShortName;
+            set => m_ShortName = value;
         }
 
         public string FullName
         {
-            get
-            {
-                return m_FullName;
-            }
-
-            set
-            {
-                m_FullName = value;
-            }
+            get => m_FullName;
+            set => m_FullName = value;
         }
 
         public string WebAddress
         {
-            get
-            {
-                return m_WebAddress;
-            }
-
-            set
-            {
-                m_WebAddress = value;
-            }
+            get => m_WebAddress;
+            set => m_WebAddress = value;
         }
 
         #endregion

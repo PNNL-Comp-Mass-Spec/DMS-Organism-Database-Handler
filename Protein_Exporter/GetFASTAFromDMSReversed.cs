@@ -27,15 +27,8 @@ namespace Protein_Exporter
         /// <returns></returns>
         public bool UseXXX
         {
-            get
-            {
-                return m_UseXXX;
-            }
-
-            set
-            {
-                m_UseXXX = true;
-            }
+            get => m_UseXXX;
+            set => m_UseXXX = true;
         }
 
         public override string SequenceExtender(string originalSequence, int collectionCount)

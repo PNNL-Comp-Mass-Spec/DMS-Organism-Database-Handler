@@ -80,10 +80,7 @@ namespace ExtractAnnotationFromDescription
             return m_GlobalProteinNameList;
         }
 
-        public int GroupCount
-        {
-            get { return m_AnnotationGroups.Count; }
-        }
+        public int GroupCount => m_AnnotationGroups.Count;
 
         public string get_Delimiter(int GroupID)
         {

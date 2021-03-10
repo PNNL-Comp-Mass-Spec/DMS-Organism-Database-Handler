@@ -140,41 +140,16 @@ namespace AppUI_OrfDBHandler
 
         #region "Properties"
 
-        public List<PSUploadHandler.UploadInfo> FileList
-        {
-            get
-            {
-                return m_CheckedFileList;
-            }
-        }
+        public List<PSUploadHandler.UploadInfo> FileList => m_CheckedFileList;
 
-        public int SelectedOrganismID
-        {
-            get
-            {
-                return m_SelectedOrganismID;
-            }
-        }
+        public int SelectedOrganismID => m_SelectedOrganismID;
 
-        public int SelectedAnnotationTypeID
-        {
-            get
-            {
-                return m_SelectedAnnotationTypeID;
-            }
-        }
+        public int SelectedAnnotationTypeID => m_SelectedAnnotationTypeID;
 
         public string CurrentDirectory
         {
-            get
-            {
-                return m_LastUsedDirectory;
-            }
-
-            set
-            {
-                m_LastUsedDirectory = value;
-            }
+            get => m_LastUsedDirectory;
+            set => m_LastUsedDirectory = value;
         }
 
         private string SelectedNodeFolderPath
@@ -212,11 +187,7 @@ namespace AppUI_OrfDBHandler
                     return string.Empty;
                 }
             }
-
-            set
-            {
-                m_LastSelectedOrganism = value;
-            }
+            set => m_LastSelectedOrganism = value;
         }
 
         public string SelectedAnnotationType
@@ -232,50 +203,25 @@ namespace AppUI_OrfDBHandler
                     return string.Empty;
                 }
             }
-
-            set
-            {
-                m_LastSelectedAnnotationType = value;
-            }
+            set => m_LastSelectedAnnotationType = value;
         }
 
         public bool ValidationAllowAsterisks
         {
-            get
-            {
-                return chkValidationAllowAsterisks.Checked;
-            }
-
-            set
-            {
-                chkValidationAllowAsterisks.Checked = value;
-            }
+            get => chkValidationAllowAsterisks.Checked;
+            set => chkValidationAllowAsterisks.Checked = value;
         }
 
         public bool ValidationAllowDash
         {
-            get
-            {
-                return chkValidationAllowDash.Checked;
-            }
-
-            set
-            {
-                chkValidationAllowDash.Checked = value;
-            }
+            get => chkValidationAllowDash.Checked;
+            set => chkValidationAllowDash.Checked = value;
         }
 
         public bool ValidationAllowAllSymbolsInProteinNames
         {
-            get
-            {
-                return chkValidationAllowAllSymbolsInProteinNames.Checked;
-            }
-
-            set
-            {
-                chkValidationAllowAllSymbolsInProteinNames.Checked = value;
-            }
+            get => chkValidationAllowAllSymbolsInProteinNames.Checked;
+            set => chkValidationAllowAllSymbolsInProteinNames.Checked = value;
         }
 
         public int ValidationMaxProteinNameLength
@@ -292,7 +238,6 @@ namespace AppUI_OrfDBHandler
                     return clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
                 }
             }
-
             set
             {
                 if (value < 5)

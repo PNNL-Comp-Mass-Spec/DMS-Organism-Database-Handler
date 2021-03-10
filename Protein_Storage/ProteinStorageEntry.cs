@@ -53,21 +53,11 @@ namespace Protein_Storage
 
         protected bool m_IsEncrypted = false;
 
-        public string Reference
-        {
-            get
-            {
-                return m_Reference;
-            }
-        }
+        public string Reference => m_Reference;
 
         protected string AlternateReference
         {
-            get
-            {
-                return m_AlternateReference;
-            }
-
+            get => m_AlternateReference;
             set
             {
                 if (value.Length > 0)
@@ -81,165 +71,67 @@ namespace Protein_Storage
             }
         }
 
-        public bool HasAlternateReference
-        {
-            get
-            {
-                return m_AlternateReference != null;
-            }
-        }
+        public bool HasAlternateReference => m_AlternateReference != null;
 
-        public string Description
-        {
-            get
-            {
-                return m_Description;
-            }
-        }
+        public string Description => m_Description;
 
         public string Sequence
         {
-            get
-            {
-                return m_Sequence;
-            }
-
-            set
-            {
-                m_Sequence = value;
-            }
+            get => m_Sequence;
+            set => m_Sequence = value;
         }
 
         public bool IsEncrypted
         {
-            get
-            {
-                return m_IsEncrypted;
-            }
-
-            set
-            {
-                m_IsEncrypted = value;
-            }
+            get => m_IsEncrypted;
+            set => m_IsEncrypted = value;
         }
 
-        public double MonoisotopicMass
-        {
-            get
-            {
-                return m_MonoMass;
-            }
-        }
+        public double MonoisotopicMass => m_MonoMass;
 
-        public double AverageMass
-        {
-            get
-            {
-                return m_AvgMass;
-            }
-        }
+        public double AverageMass => m_AvgMass;
 
-        public int Length
-        {
-            get
-            {
-                return m_Length;
-            }
-        }
+        public int Length => m_Length;
 
-        public string MolecularFormula
-        {
-            get
-            {
-                return m_MolecularFormula;
-            }
-        }
+        public string MolecularFormula => m_MolecularFormula;
 
         public string SHA1Hash
         {
-            get
-            {
-                return m_AuthHash;
-            }
-
-            set
-            {
-                m_AuthHash = value;
-            }
+            get => m_AuthHash;
+            set => m_AuthHash = value;
         }
 
         public int Protein_ID
         {
-            get
-            {
-                return m_Protein_ID;
-            }
-
-            set
-            {
-                m_Protein_ID = value;
-            }
+            get => m_Protein_ID;
+            set => m_Protein_ID = value;
         }
 
         public int Reference_ID
         {
-            get
-            {
-                return m_Reference_ID;
-            }
-
-            set
-            {
-                m_Reference_ID = value;
-            }
+            get => m_Reference_ID;
+            set => m_Reference_ID = value;
         }
 
         public int Member_ID
         {
-            get
-            {
-                return m_Member_ID;
-            }
-
-            set
-            {
-                m_Member_ID = value;
-            }
+            get => m_Member_ID;
+            set => m_Member_ID = value;
         }
 
         public int Authority_ID
         {
-            get
-            {
-                return m_Authority_ID;
-            }
-
-            set
-            {
-                m_Authority_ID = value;
-            }
+            get => m_Authority_ID;
+            set => m_Authority_ID = value;
         }
 
         public int SortingIndex
         {
-            get
-            {
-                return m_SortCount;
-            }
-
-            set
-            {
-                m_SortCount = value;
-            }
+            get => m_SortCount;
+            set => m_SortCount = value;
         }
 
-        public List<string> NameXRefs
-        {
-            get
-            {
-                return m_XRefList;
-            }
-        }
+        public List<string> NameXRefs => m_XRefList;
 
         public void AddXRef(string newReference)
         {

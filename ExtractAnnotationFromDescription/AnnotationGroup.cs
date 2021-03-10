@@ -18,15 +18,8 @@ namespace ExtractAnnotationFromDescription
 
         public string XRefDelimiter
         {
-            get
-            {
-                return m_Delimiter;
-            }
-
-            set
-            {
-                m_Delimiter = value;
-            }
+            get => m_Delimiter;
+            set => m_Delimiter = value;
         }
 
         public bool ImportThisGroup { get; set; }

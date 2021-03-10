@@ -64,21 +64,9 @@ namespace Protein_Storage
             m_ProteinNames.Clear();
         }
 
-        public int TotalResidueCount
-        {
-            get
-            {
-                return m_ResidueCount;
-            }
-        }
+        public int TotalResidueCount => m_ResidueCount;
 
-        public int ProteinCount
-        {
-            get
-            {
-                return m_Proteins.Count;
-            }
-        }
+        public int ProteinCount => m_Proteins.Count;
 
         public bool EncryptSequences { get; set; }
 
@@ -95,11 +83,7 @@ namespace Protein_Storage
                     return null;
                 }
             }
-
-            set
-            {
-                m_PassPhrase = value;
-            }
+            set => m_PassPhrase = value;
         }
 
         public Dictionary<string, ProteinStorageEntry>.Enumerator GetEnumerator()

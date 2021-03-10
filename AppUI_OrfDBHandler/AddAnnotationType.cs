@@ -20,60 +20,21 @@ namespace AppUI_OrfDBHandler
         protected DataTable m_Authorities;
         protected Point m_FormLocation;
 
-        public string TypeName
-        {
-            get
-            {
-                return m_TypeName;
-            }
-        }
+        public string TypeName => m_TypeName;
 
-        public string Description
-        {
-            get
-            {
-                return m_Description;
-            }
-        }
+        public string Description => m_Description;
 
-        public string AnnotationExample
-        {
-            get
-            {
-                return m_Example;
-            }
-        }
+        public string AnnotationExample => m_Example;
 
-        public int AuthorityID
-        {
-            get
-            {
-                return m_AuthID;
-            }
-        }
+        public int AuthorityID => m_AuthID;
 
-        public string DisplayName
-        {
-            get
-            {
-                return GetDisplayName(m_AuthID, m_TypeName);
-            }
-        }
+        public string DisplayName => GetDisplayName(m_AuthID, m_TypeName);
 
-        public bool EntryExists
-        {
-            get
-            {
-                return m_EntryExists;
-            }
-        }
+        public bool EntryExists => m_EntryExists;
 
         public Point FormLocation
         {
-            set
-            {
-                m_FormLocation = value;
-            }
+            set => m_FormLocation = value;
         }
 
         public AddAnnotationTypeType(string psConnectionString)

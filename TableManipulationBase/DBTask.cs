@@ -22,13 +22,7 @@ namespace TableManipulationBase
         /// Database connection string
         /// </summary>
         /// <returns></returns>
-        public string ConnectionString
-        {
-            get
-            {
-                return mDBTools.ConnectStr;
-            }
-        }
+        public string ConnectionString => mDBTools.ConnectStr;
 
         /// <summary>
         /// Database connection string
