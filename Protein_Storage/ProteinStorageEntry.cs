@@ -21,39 +21,24 @@ namespace Protein_Storage
                 throw new Exception("Reference name cannot be empty");
             }
 
-            m_Reference = reference;
-            m_Description = description;
-            m_Sequence = sequence;
-            m_MonoMass = monoisotopicMass;
-            m_AvgMass = averageMass;
-            m_Length = length;
-            m_MolecularFormula = molecularFormula;
-            m_AuthHash = authenticationHash;
-            m_SortCount = sortingIndex;
+            Reference = reference;
+            Description = description;
+            Sequence = sequence;
+            MonoisotopicMass = monoisotopicMass;
+            AverageMass = averageMass;
+            Length = length;
+            MolecularFormula = molecularFormula;
+            SHA1Hash = authenticationHash;
+            SortingIndex = sortingIndex;
 
-            m_Protein_ID = 0;
+            Protein_ID = 0;
         }
 
-        private string m_Reference;
         private string m_AlternateReference;
-        private string m_Description;
-        private string m_Sequence;
 
-        private double m_MonoMass;
-        private double m_AvgMass;
-        private int m_Length;
-        private string m_MolecularFormula;
-        private string m_AuthHash;
-        private int m_Protein_ID;
-        private int m_Reference_ID;
-        private int m_Member_ID;
-        private int m_Authority_ID;
         private List<string> m_XRefList;
-        private int m_SortCount;
 
-        private bool m_IsEncrypted = false;
-
-        public string Reference => m_Reference;
+        public string Reference { get; private set; }
 
         protected string AlternateReference
         {
@@ -73,63 +58,31 @@ namespace Protein_Storage
 
         public bool HasAlternateReference => m_AlternateReference != null;
 
-        public string Description => m_Description;
+        public string Description { get; }
 
-        public string Sequence
-        {
-            get => m_Sequence;
-            set => m_Sequence = value;
-        }
+        public string Sequence { get; set; }
 
-        public bool IsEncrypted
-        {
-            get => m_IsEncrypted;
-            set => m_IsEncrypted = value;
-        }
+        public bool IsEncrypted { get; set; } = false;
 
-        public double MonoisotopicMass => m_MonoMass;
+        public double MonoisotopicMass { get; }
 
-        public double AverageMass => m_AvgMass;
+        public double AverageMass { get; }
 
-        public int Length => m_Length;
+        public int Length { get; }
 
-        public string MolecularFormula => m_MolecularFormula;
+        public string MolecularFormula { get; }
 
-        public string SHA1Hash
-        {
-            get => m_AuthHash;
-            set => m_AuthHash = value;
-        }
+        public string SHA1Hash { get; set; }
 
-        public int Protein_ID
-        {
-            get => m_Protein_ID;
-            set => m_Protein_ID = value;
-        }
+        public int Protein_ID { get; set; }
 
-        public int Reference_ID
-        {
-            get => m_Reference_ID;
-            set => m_Reference_ID = value;
-        }
+        public int Reference_ID { get; set; }
 
-        public int Member_ID
-        {
-            get => m_Member_ID;
-            set => m_Member_ID = value;
-        }
+        public int Member_ID { get; set; }
 
-        public int Authority_ID
-        {
-            get => m_Authority_ID;
-            set => m_Authority_ID = value;
-        }
+        public int Authority_ID { get; set; }
 
-        public int SortingIndex
-        {
-            get => m_SortCount;
-            set => m_SortCount = value;
-        }
+        public int SortingIndex { get; set; }
 
         public List<string> NameXRefs => m_XRefList;
 
@@ -150,18 +103,18 @@ namespace Protein_Storage
                 throw new Exception("New protein name cannot be empty");
             }
 
-            m_Reference = newName;
+            Reference = newName;
         }
 
         public override string ToString()
         {
-            if (string.IsNullOrWhiteSpace(m_Sequence))
+            if (string.IsNullOrWhiteSpace(Sequence))
             {
-                return m_Reference + ", ResidueCount=0";
+                return Reference + ", ResidueCount=0";
             }
             else
             {
-                return m_Reference + ", ResidueCount=" + m_Length + ", " + m_Sequence.Substring(0, 20);
+                return Reference + ", ResidueCount=" + Length + ", " + Sequence.Substring(0, 20);
             }
         }
     }

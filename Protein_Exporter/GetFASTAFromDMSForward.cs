@@ -23,7 +23,6 @@ namespace Protein_Exporter
 
         private Dictionary<string, string> m_OrganismList;
 
-        private string m_CurrentFullOutputPath;
         private int m_CurrentFileProteinCount;
         private string m_CurrentArchiveFileName;
 
@@ -80,11 +79,7 @@ namespace Protein_Exporter
 
         public delegate void FileGenerationStartedEventHandler(string taskMsg);
 
-        public string FullOutputPath
-        {
-            get => m_CurrentFullOutputPath;
-            set => m_CurrentFullOutputPath = value;
-        }
+        public string FullOutputPath { get; set; }
 
         // Unused
         // public readonly string ArchivalName => m_CurrentArchiveFileName;
@@ -380,19 +375,19 @@ namespace Protein_Exporter
                 name = trueName;
             }
 
-            m_CurrentFullOutputPath = ExtendedExportPath(destinationFolderPath, name);
+            FullOutputPath = ExtendedExportPath(destinationFolderPath, name);
             m_CurrentArchiveFileName = name;
 
             // Rename (move) the temporary file to the final, full name
-            if (File.Exists(m_CurrentFullOutputPath))
+            if (File.Exists(FullOutputPath))
             {
-                File.Delete(m_CurrentFullOutputPath);
+                File.Delete(FullOutputPath);
             }
 
-            tmpFI.MoveTo(m_CurrentFullOutputPath);
+            tmpFI.MoveTo(FullOutputPath);
 
             // Assuming the final file now exists, delete the temporary file (if present)
-            var finalOutputFile = new FileInfo(m_CurrentFullOutputPath);
+            var finalOutputFile = new FileInfo(FullOutputPath);
             if (finalOutputFile.Exists)
             {
                 tmpFI = new FileInfo(tmpOutputPath);
@@ -404,9 +399,11 @@ namespace Protein_Exporter
 
             // Determine the CRC32 hash of the output file
             // This process will also rename the file, e.g. from "C:\Temp\SAR116_RBH_AA_012809_forward.fasta" to "C:\Temp\38FFACAC.fasta"
-            string crc32Hash = m_fileDumper.Export(new DataTable(), ref m_CurrentFullOutputPath);
+            var tempFullPath = FullOutputPath;
+            string crc32Hash = m_fileDumper.Export(new DataTable(), ref tempFullPath);
+            FullOutputPath = FullOutputPath;
 
-            OnExportComplete(m_CurrentFullOutputPath);
+            OnExportComplete(FullOutputPath);
 
             return crc32Hash;
         }

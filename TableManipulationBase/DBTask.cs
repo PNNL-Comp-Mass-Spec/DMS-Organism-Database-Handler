@@ -29,13 +29,7 @@ namespace TableManipulationBase
         /// </summary>
         /// <returns></returns>
 #pragma warning disable CS3003 // Type is not CLS-compliant
-        public IDBTools DBTools
-        {
-            get
-            {
-                return mDBTools;
-            }
-        }
+        public IDBTools DBTools => mDBTools;
 #pragma warning restore CS3003 // Type is not CLS-compliant
 
         #endregion

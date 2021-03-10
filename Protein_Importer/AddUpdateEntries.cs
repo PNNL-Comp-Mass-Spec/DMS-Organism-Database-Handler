@@ -34,18 +34,15 @@ namespace Protein_Importer
         private readonly TableManipulationBase.DBTask m_DatabaseAccessor;
         // Unused: protected int m_OrganismID;
         // Unused: protected HashTable m_ProteinLengths;
-        private int m_MaxProteinNameLength;
 
         private System.Security.Cryptography.SHA1Managed m_Hasher;
         // Unused: protected Threading.Thread ProteinHashThread;
         // Unused: protected Threading.Thread ReferenceHashThread;
 
         #region "Properties"
-        public int MaximumProteinNameLength
-        {
-            get => m_MaxProteinNameLength;
-            set => m_MaxProteinNameLength = value;
-        }
+
+        public int MaximumProteinNameLength { get; set; }
+
         #endregion
 
         #region "Events"
@@ -167,7 +164,7 @@ namespace Protein_Importer
                     OnProgressUpdate(counter / (double)counterMax);
                 }
 
-                tmpPC.Reference_ID = AddProteinReference(tmpPC.Reference, tmpPC.Description, organismID, authorityID, tmpPC.Protein_ID, m_MaxProteinNameLength);
+                tmpPC.Reference_ID = AddProteinReference(tmpPC.Reference, tmpPC.Description, organismID, authorityID, tmpPC.Protein_ID, MaximumProteinNameLength);
             }
 
             OnLoadEnd();

@@ -28,6 +28,7 @@ namespace Protein_Exporter
         public bool UseXXX
         {
             get => m_UseXXX;
+            // BUG: this is undoubtedly not the intended action. This can be an auto-property, but change this in a separate commit
             set => m_UseXXX = true;
         }
 
@@ -41,7 +42,7 @@ namespace Protein_Exporter
 
         public override string ReferenceExtender(string originalReference)
         {
-            if (m_UseXXX)
+            if (UseXXX)
             {
                 return "XXX_" + originalReference;
             }

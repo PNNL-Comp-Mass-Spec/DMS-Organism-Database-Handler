@@ -5,7 +5,6 @@ namespace ExtractAnnotationFromDescription
     internal class AnnotationGroup
     {
         private Dictionary<string, SortedSet<string>> m_AnnotationData;       // key=PrimaryReferenceName, value=SortedSet of xrefs
-        private string m_Delimiter;
 
         public AnnotationGroup(string GroupName)
         {
@@ -16,11 +15,7 @@ namespace ExtractAnnotationFromDescription
 
         public int AnnotationAuthorityID { get; set; }
 
-        public string XRefDelimiter
-        {
-            get => m_Delimiter;
-            set => m_Delimiter = value;
-        }
+        public string XRefDelimiter { get; set; }
 
         public bool ImportThisGroup { get; set; }
 
@@ -67,7 +62,7 @@ namespace ExtractAnnotationFromDescription
         {
             var xrefList = m_AnnotationData[PrimaryReferenceName];
 
-            if (m_Delimiter.Length > 0)
+            if (XRefDelimiter.Length > 0)
             {
                 string[] addnXRefs;
                 int XRefCount;
@@ -75,7 +70,7 @@ namespace ExtractAnnotationFromDescription
 
                 foreach (var primeXRef in xrefList)
                 {
-                    addnXRefs = primeXRef.Split(m_Delimiter.ToCharArray());
+                    addnXRefs = primeXRef.Split(XRefDelimiter.ToCharArray());
                     for (XRefCount = 0; XRefCount < addnXRefs.Length; XRefCount++)
                     {
                         string newItem = addnXRefs[XRefCount].ToString();
