@@ -32,5 +32,41 @@ namespace AppUI_OrfDBHandler.Properties {
                 return ((string)(this["ProteinSeqsDBConnectStr"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastSelectedOrganism {
+            get {
+                return ((string)(this["LastSelectedOrganism"]));
+            }
+            set {
+                this["LastSelectedOrganism"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastSelectedAnnotationType {
+            get {
+                return ((string)(this["LastSelectedAnnotationType"]));
+            }
+            set {
+                this["LastSelectedAnnotationType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastBatchULDirectoryPath {
+            get {
+                return ((string)(this["LastBatchULDirectoryPath"]));
+            }
+            set {
+                this["LastBatchULDirectoryPath"] = value;
+            }
+        }
     }
 }

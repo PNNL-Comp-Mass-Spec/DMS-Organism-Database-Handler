@@ -10,7 +10,6 @@ using System.Timers;
 using System.Windows.Forms;
 using AppUI_OrfDBHandler.Properties;
 using ExtractAnnotationFromDescription;
-using Microsoft.VisualBasic;
 using Protein_Importer;
 using Protein_Uploader;
 using ValidateFastaFile;
@@ -1103,18 +1102,23 @@ namespace AppUI_OrfDBHandler
                 // Save these settings to the registry
                 if (!string.IsNullOrEmpty(m_LastSelectedOrganism))
                 {
-                    Interaction.SaveSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedOrganism", m_LastSelectedOrganism);
+                    //Interaction.SaveSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedOrganism", m_LastSelectedOrganism);
+                    Settings.Default.LastSelectedOrganism = m_LastSelectedOrganism;
                 }
 
                 if (!string.IsNullOrEmpty(m_LastSelectedAnnotationType))
                 {
-                    Interaction.SaveSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedAnnotationType", m_LastSelectedAnnotationType);
+                    //Interaction.SaveSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedAnnotationType", m_LastSelectedAnnotationType);
+                    Settings.Default.LastSelectedAnnotationType = m_LastSelectedAnnotationType;
                 }
 
                 if (!string.IsNullOrEmpty(m_LastBatchULDirectoryPath))
                 {
-                    Interaction.SaveSetting("ProteinCollectionEditor", "UserOptions", "LastBatchULDirectoryPath", m_LastBatchULDirectoryPath);
+                    //Interaction.SaveSetting("ProteinCollectionEditor", "UserOptions", "LastBatchULDirectoryPath", m_LastBatchULDirectoryPath);
+                    Settings.Default.LastBatchULDirectoryPath = m_LastBatchULDirectoryPath;
                 }
+
+                Settings.Default.Save();
             }
             catch (Exception ex)
             {
@@ -1212,9 +1216,12 @@ namespace AppUI_OrfDBHandler
         {
             try
             {
-                m_LastSelectedOrganism = Interaction.GetSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedOrganism", "");
-                m_LastSelectedAnnotationType = Interaction.GetSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedAnnotationType", "");
-                m_LastBatchULDirectoryPath = Interaction.GetSetting("ProteinCollectionEditor", "UserOptions", "LastBatchULDirectoryPath", "");
+                //m_LastSelectedOrganism = Interaction.GetSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedOrganism", "");
+                //m_LastSelectedAnnotationType = Interaction.GetSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedAnnotationType", "");
+                //m_LastBatchULDirectoryPath = Interaction.GetSetting("ProteinCollectionEditor", "UserOptions", "LastBatchULDirectoryPath", "");
+                m_LastSelectedOrganism = Settings.Default.LastSelectedOrganism ?? "";
+                m_LastSelectedAnnotationType = Settings.Default.LastSelectedAnnotationType ?? "";
+                m_LastBatchULDirectoryPath = Settings.Default.LastBatchULDirectoryPath ?? "";
             }
             catch (Exception ex)
             {
@@ -1224,10 +1231,10 @@ namespace AppUI_OrfDBHandler
 
         private void ShowAboutBox()
         {
-            // Dim AboutBox As New frmAboutBox
+            //var AboutBox = new frmAboutBox;
 
-            // AboutBox.Location = m_MainProcess.myAppSettings.AboutBoxLocation
-            // AboutBox.ShowDialog()
+            //AboutBox.Location = m_MainProcess.myAppSettings.AboutBoxLocation;
+            //AboutBox.ShowDialog();
 
             string strMessage;
 

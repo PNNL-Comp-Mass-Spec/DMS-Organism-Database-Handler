@@ -38,7 +38,6 @@
     <Reference Include="FlexibleFileSortUtility">
       <HintPath>..\Shared Libraries\FlexibleFileSortUtility.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Raccoom.TreeViewFolderBrowser, Version=3.0.0.22254, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Shared Libraries\Raccoom.TreeViewFolderBrowser.dll</HintPath>
