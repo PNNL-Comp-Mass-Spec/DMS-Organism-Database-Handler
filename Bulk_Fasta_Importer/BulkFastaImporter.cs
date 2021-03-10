@@ -176,7 +176,7 @@ namespace Bulk_Fasta_Importer
             ValidationAllowAllSymbolsInProteinNames = false;
             ValidationAllowAsterisks = true;
             ValidationAllowDash = true;
-            ValidationMaxProteinNameLength = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
+            ValidationMaxProteinNameLength = FastaValidator.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
         }
 
         protected List<udtFastaFileInfoType> ParseFastaInfoFile(string fastaInfoFilePath)
@@ -633,9 +633,9 @@ namespace Bulk_Fasta_Importer
                 m_UploadHandler.ValidFASTAFileLoaded += m_UploadHandler_ValidFASTAFileLoaded;
                 m_UploadHandler.WroteLineEndNormalizedFASTA += m_UploadHandler_WroteLineEndNormalizedFASTA;
 
-                m_UploadHandler.SetValidationOptions(PSUploadHandler.eValidationOptionConstants.AllowAllSymbolsInProteinNames, ValidationAllowAllSymbolsInProteinNames);
-                m_UploadHandler.SetValidationOptions(PSUploadHandler.eValidationOptionConstants.AllowAsterisksInResidues, ValidationAllowAsterisks);
-                m_UploadHandler.SetValidationOptions(PSUploadHandler.eValidationOptionConstants.AllowDashInResidues, ValidationAllowDash);
+                m_UploadHandler.SetValidationOptions(PSUploadHandler.ValidationOptionConstants.AllowAllSymbolsInProteinNames, ValidationAllowAllSymbolsInProteinNames);
+                m_UploadHandler.SetValidationOptions(PSUploadHandler.ValidationOptionConstants.AllowAsterisksInResidues, ValidationAllowAsterisks);
+                m_UploadHandler.SetValidationOptions(PSUploadHandler.ValidationOptionConstants.AllowDashInResidues, ValidationAllowDash);
                 m_UploadHandler.MaximumProteinNameLength = ValidationMaxProteinNameLength;
             }
             catch (Exception ex)
@@ -679,7 +679,7 @@ namespace Bulk_Fasta_Importer
             }
         }
 
-        private void m_UploadHandler_FASTAFileWarnings(string fastaFilePath, List<clsCustomValidateFastaFiles.udtErrorInfoExtended> warningCollection)
+        private void m_UploadHandler_FASTAFileWarnings(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> warningCollection)
         {
             try
             {
@@ -688,7 +688,7 @@ namespace Bulk_Fasta_Importer
             }
             catch (Exception ex)
             {
-                Console.WriteLine("warningCollection is not type ValidateFastaFile.clsCustomValidateFastaFiles.udtErrorInfoExtended");
+                Console.WriteLine("warningCollection is not type ValidateFastaFile.CustomFastaValidator.ErrorInfoExtended");
             }
         }
 
@@ -709,7 +709,7 @@ namespace Bulk_Fasta_Importer
             }
         }
 
-        private void m_UploadHandler_InvalidFASTAFile(string fastaFilePath, List<clsCustomValidateFastaFiles.udtErrorInfoExtended> errorCollection)
+        private void m_UploadHandler_InvalidFASTAFile(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> errorCollection)
         {
             ShowWarning("Invalid fasta file: " + fastaFilePath);
             try
@@ -719,7 +719,7 @@ namespace Bulk_Fasta_Importer
             }
             catch (Exception ex)
             {
-                Console.WriteLine("errorCollection is not type ValidateFastaFile.clsCustomValidateFastaFiles.udtErrorInfoExtended");
+                Console.WriteLine("errorCollection is not type ValidateFastaFile.CustomFastaValidator.ErrorInfoExtended");
             }
         }
 

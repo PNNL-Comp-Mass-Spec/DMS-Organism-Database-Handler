@@ -17,7 +17,7 @@ namespace Bulk_Fasta_Importer
 
         private static string mInputFilePath;
         private static bool mPreviewMode;
-        private static int mMaxProteinNameLength = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
+        private static int mMaxProteinNameLength = FastaValidator.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
 
         private static bool mLogMessagesToFile;
         private static string mLogFilePath;
@@ -209,7 +209,7 @@ namespace Bulk_Fasta_Importer
                 Console.WriteLine("Required columns are: FastaFilePath, OrganismName_or_ID, and AnnotationTypeName_or_ID");
                 Console.WriteLine();
                 Console.WriteLine("Use /MaxLength to define the maximum allowable length for protein names");
-                Console.WriteLine("The default is /MaxLength:" + clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH);
+                Console.WriteLine("The default is /MaxLength:" + FastaValidator.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH);
                 Console.WriteLine();
 
                 Console.WriteLine("Use /Preview to see the fasta files that would be imported");

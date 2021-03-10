@@ -12,7 +12,7 @@ namespace Protein_Uploader
 {
     public class PSUploadHandler
     {
-        public enum eValidationOptionConstants : int
+        public enum ValidationOptionConstants : int
         {
             AllowAsterisksInResidues = 0,
             AllowDashInResidues = 1,
@@ -60,7 +60,7 @@ namespace Protein_Uploader
         private readonly ImportHandler m_Importer;
         private readonly AddUpdateEntries m_Upload;
         private readonly GetFASTAFromDMS m_Export;
-        private readonly clsCustomValidateFastaFiles m_Validator;
+        private readonly CustomFastaValidator m_Validator;
 
         public event LoadStartEventHandler LoadStart;
 
@@ -88,11 +88,11 @@ namespace Protein_Uploader
 
         public event InvalidFASTAFileEventHandler InvalidFASTAFile;
 
-        public delegate void InvalidFASTAFileEventHandler(string fastaFilePath, List<clsCustomValidateFastaFiles.udtErrorInfoExtended> errorCollection);
+        public delegate void InvalidFASTAFileEventHandler(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> errorCollection);
 
         public event FASTAFileWarningsEventHandler FASTAFileWarnings;
 
-        public delegate void FASTAFileWarningsEventHandler(string fastaFilePath, List<clsCustomValidateFastaFiles.udtErrorInfoExtended> warningCollection);
+        public delegate void FASTAFileWarningsEventHandler(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> warningCollection);
 
         public event FASTAValidationCompleteEventHandler FASTAValidationComplete;
 
@@ -102,12 +102,12 @@ namespace Protein_Uploader
 
         public delegate void WroteLineEndNormalizedFASTAEventHandler(string newFilePath);
 
-        private int mMaximumProteinNameLength = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
+        private int mMaximumProteinNameLength = FastaValidator.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
 
         private CollectionEncryptor m_Encryptor;
 
         // Note: this array gets initialized with space for 10 items
-        // If eValidationOptionConstants gets more than 10 entries, then this array will need to be expanded
+        // If ValidationOptionConstants gets more than 10 entries, then this array will need to be expanded
         private bool[] mValidationOptions;
 
         public int MaximumProteinNameLength
@@ -181,12 +181,12 @@ namespace Protein_Uploader
             WroteLineEndNormalizedFASTA?.Invoke(newFASTAFilePath);
         }
 
-        private void OnFASTAFileWarnings(string fastaFilePath, List<clsCustomValidateFastaFiles.udtErrorInfoExtended> warningCollection)
+        private void OnFASTAFileWarnings(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> warningCollection)
         {
             FASTAFileWarnings?.Invoke(fastaFilePath, warningCollection);
         }
 
-        private void OnInvalidFASTAFile(string fastaFilePath, List<clsCustomValidateFastaFiles.udtErrorInfoExtended> errorCollection)
+        private void OnInvalidFASTAFile(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> errorCollection)
         {
             InvalidFASTAFile?.Invoke(fastaFilePath, errorCollection);
         }
@@ -214,7 +214,7 @@ namespace Protein_Uploader
             m_Export.FileGenerationCompleted += m_Export_FileGenerationCompleted;
             m_Export.FileGenerationProgress += m_Export_FileGenerationProgress;
 
-            m_Validator = new clsCustomValidateFastaFiles();
+            m_Validator = new CustomFastaValidator();
             m_Validator.ProgressUpdate += Task_LoadProgress;
             m_Validator.WroteLineEndNormalizedFASTA += OnNormalizedFASTAGeneration;
 
@@ -238,23 +238,23 @@ namespace Protein_Uploader
                 var currentFile = upInfo.FileInformation;
 
                 // Configure the validator to possibly allow asterisks in the residues
-                m_Validator.set_OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowAllSymbolsInProteinNames, mValidationOptions[(int)eValidationOptionConstants.AllowAllSymbolsInProteinNames]);
+                m_Validator.SetOptionSwitch(FastaValidator.SwitchOptions.AllowAllSymbolsInProteinNames, mValidationOptions[(int)ValidationOptionConstants.AllowAllSymbolsInProteinNames]);
 
                 // Configure the validator to possibly allow asterisks in the residues
-                m_Validator.set_OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowAsteriskInResidues, mValidationOptions[(int)eValidationOptionConstants.AllowAsterisksInResidues]);
+                m_Validator.SetOptionSwitch(FastaValidator.SwitchOptions.AllowAsteriskInResidues, mValidationOptions[(int)ValidationOptionConstants.AllowAsterisksInResidues]);
 
                 // Configure the validator to possibly allow dashes in the residues
-                m_Validator.set_OptionSwitch(clsValidateFastaFile.SwitchOptions.AllowDashInResidues, mValidationOptions[(int)eValidationOptionConstants.AllowDashInResidues]);
+                m_Validator.SetOptionSwitch(FastaValidator.SwitchOptions.AllowDashInResidues, mValidationOptions[(int)ValidationOptionConstants.AllowDashInResidues]);
 
                 // Configure the additional validation options
-                m_Validator.SetValidationOptions(clsCustomValidateFastaFiles.eValidationOptionConstants.AllowAllSymbolsInProteinNames,
-                                                 mValidationOptions[(int)eValidationOptionConstants.AllowAllSymbolsInProteinNames]);
+                m_Validator.SetValidationOptions(CustomFastaValidator.ValidationOptionConstants.AllowAllSymbolsInProteinNames,
+                                                 mValidationOptions[(int)ValidationOptionConstants.AllowAllSymbolsInProteinNames]);
 
-                m_Validator.SetValidationOptions(clsCustomValidateFastaFiles.eValidationOptionConstants.AllowAsterisksInResidues,
-                                                 mValidationOptions[(int)eValidationOptionConstants.AllowAsterisksInResidues]);
+                m_Validator.SetValidationOptions(CustomFastaValidator.ValidationOptionConstants.AllowAsterisksInResidues,
+                                                 mValidationOptions[(int)ValidationOptionConstants.AllowAsterisksInResidues]);
 
-                m_Validator.SetValidationOptions(clsCustomValidateFastaFiles.eValidationOptionConstants.AllowDashInResidues,
-                                                 mValidationOptions[(int)eValidationOptionConstants.AllowDashInResidues]);
+                m_Validator.SetValidationOptions(CustomFastaValidator.ValidationOptionConstants.AllowDashInResidues,
+                                                 mValidationOptions[(int)ValidationOptionConstants.AllowDashInResidues]);
 
                 // Update the default rules (important if AllowAsteriskInResidues = True or AllowDashInResidues = True)
                 m_Validator.SetDefaultRules();
@@ -262,7 +262,7 @@ namespace Protein_Uploader
                 // Update the maximum protein name length
                 if (mMaximumProteinNameLength <= 0)
                 {
-                    mMaximumProteinNameLength = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
+                    mMaximumProteinNameLength = FastaValidator.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
                 }
 
                 m_Validator.MaximumProteinNameLength = mMaximumProteinNameLength;
@@ -284,17 +284,17 @@ namespace Protein_Uploader
                     continue;
                 }
 
-                if (m_Validator.get_FASTAFileHasWarnings(currentFile.Name))
+                if (m_Validator.FASTAFileHasWarnings(currentFile.Name))
                 {
                     // If any warnings were cached, return them with the OnFASTAFileWarnings event
-                    OnFASTAFileWarnings(currentFile.FullName, m_Validator.get_RecordedFASTAFileWarnings(currentFile.Name));
+                    OnFASTAFileWarnings(currentFile.FullName, m_Validator.RecordedFASTAFileWarnings(currentFile.Name));
                 }
 
                 // Now check whether or not any errors were found for the file
-                if (!m_Validator.get_FASTAFileValid(currentFile.Name))
+                if (!m_Validator.FASTAFileValid(currentFile.Name))
                 {
                     // Errors were found; return the error collection with the InvalidFASTAFile event
-                    OnInvalidFASTAFile(currentFile.FullName, m_Validator.get_RecordedFASTAFileErrors(currentFile.Name));
+                    OnInvalidFASTAFile(currentFile.FullName, m_Validator.RecordedFASTAFileErrors(currentFile.Name));
 
                     Console.WriteLine("--------------------------------------------------------------");
                     Console.WriteLine("Warning: Skipping protein collection because validation failed");
@@ -346,9 +346,9 @@ namespace Protein_Uploader
 
                     if (eResult == DialogResult.No)
                     {
-                        var errorCollection = new List<clsCustomValidateFastaFiles.udtErrorInfoExtended>()
+                        var errorCollection = new List<CustomFastaValidator.ErrorInfoExtended>()
                         {
-                            new clsCustomValidateFastaFiles.udtErrorInfoExtended(
+                            new CustomFastaValidator.ErrorInfoExtended(
                                 0, " N/A ", logMessageIfCancelled, "", logLabelIfCancelled)
                         };
                         OnInvalidFASTAFile(currentFile.FullName, errorCollection);
@@ -368,9 +368,9 @@ namespace Protein_Uploader
                         {
                             // No proteins
 
-                            var errorCollection = new List<clsCustomValidateFastaFiles.udtErrorInfoExtended>()
+                            var errorCollection = new List<CustomFastaValidator.ErrorInfoExtended>()
                             {
-                                new clsCustomValidateFastaFiles.udtErrorInfoExtended(
+                                new CustomFastaValidator.ErrorInfoExtended(
                                     0, " N/A ", "No valid proteins were loaded from the .Fasta file", "", "Error")
                             };
 
@@ -395,7 +395,7 @@ namespace Protein_Uploader
                     }
                     else
                     {
-                        OnInvalidFASTAFile(upInfo.FileInformation.FullName, m_Validator.get_RecordedFASTAFileErrors(currentFile.FullName));
+                        OnInvalidFASTAFile(upInfo.FileInformation.FullName, m_Validator.RecordedFASTAFileErrors(currentFile.FullName));
                     }
                 }
             }
@@ -528,7 +528,7 @@ namespace Protein_Uploader
                 AddUpdateEntries.CollectionTypes.prot_original_source, organismID, annotationTypeID);
         }
 
-        public void SetValidationOptions(eValidationOptionConstants eValidationOptionName, bool blnEnabled)
+        public void SetValidationOptions(ValidationOptionConstants eValidationOptionName, bool blnEnabled)
         {
             mValidationOptions[(int)eValidationOptionName] = blnEnabled;
         }

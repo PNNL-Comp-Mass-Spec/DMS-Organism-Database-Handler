@@ -235,7 +235,7 @@ namespace AppUI_OrfDBHandler
                 }
                 else
                 {
-                    return clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
+                    return FastaValidator.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
                 }
             }
             set
@@ -1257,7 +1257,7 @@ namespace AppUI_OrfDBHandler
         {
             if (txtMaximumProteinNameLength.TextLength == 0)
             {
-                txtMaximumProteinNameLength.Text = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH.ToString();
+                txtMaximumProteinNameLength.Text = FastaValidator.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH.ToString();
             }
             else
             {
@@ -1271,7 +1271,7 @@ namespace AppUI_OrfDBHandler
                 }
                 else
                 {
-                    txtMaximumProteinNameLength.Text = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH.ToString();
+                    txtMaximumProteinNameLength.Text = FastaValidator.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH.ToString();
                 }
             }
         }

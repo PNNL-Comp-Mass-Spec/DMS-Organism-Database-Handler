@@ -16,15 +16,15 @@ namespace AppUI_OrfDBHandler
 
             InitializeComponent();
 
-            m_ErrorCollection = new List<clsCustomValidateFastaFiles.udtErrorInfoExtended>();
-            m_WarningCollection = new List<clsCustomValidateFastaFiles.udtErrorInfoExtended>();
+            m_ErrorCollection = new List<CustomFastaValidator.ErrorInfoExtended>();
+            m_WarningCollection = new List<CustomFastaValidator.ErrorInfoExtended>();
         }
 
-        private readonly List<clsCustomValidateFastaFiles.udtErrorInfoExtended> m_ErrorCollection;
-        private readonly List<clsCustomValidateFastaFiles.udtErrorInfoExtended> m_WarningCollection;
+        private readonly List<CustomFastaValidator.ErrorInfoExtended> m_ErrorCollection;
+        private readonly List<CustomFastaValidator.ErrorInfoExtended> m_WarningCollection;
 
-        private Dictionary<string, List<clsCustomValidateFastaFiles.udtErrorInfoExtended>> m_FileErrorList;        // Tracks the errors found for each file
-        private Dictionary<string, List<clsCustomValidateFastaFiles.udtErrorInfoExtended>> m_FileWarningList;      // Tracks the warnings found for each file
+        private Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> m_FileErrorList;        // Tracks the errors found for each file
+        private Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> m_FileWarningList;      // Tracks the warnings found for each file
 
         /// <summary>
         /// Keys are fasta file paths, values are upload info
@@ -103,14 +103,14 @@ namespace AppUI_OrfDBHandler
         private void HandleErrorOrWarningListSelectedIndexChanged(
             string selectedItemText,
             ListView objListView,
-            IReadOnlyDictionary<string, List<clsCustomValidateFastaFiles.udtErrorInfoExtended>> itemListByFile,
+            IReadOnlyDictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> itemListByFile,
             IReadOnlyDictionary<string, Dictionary<string, int>> summarizedItemList,
-            List<clsCustomValidateFastaFiles.udtErrorInfoExtended> itemCollection)
+            List<CustomFastaValidator.ErrorInfoExtended> itemCollection)
         {
             objListView.Items.Clear();
             if (itemListByFile != null && itemListByFile.Count > 0)
             {
-                List<clsCustomValidateFastaFiles.udtErrorInfoExtended> itemList = null;
+                List<CustomFastaValidator.ErrorInfoExtended> itemList = null;
 
                 if (itemListByFile.TryGetValue(selectedItemText, out itemList))
                 {
@@ -143,12 +143,12 @@ namespace AppUI_OrfDBHandler
             set => m_SummarizedFileWarnings = value;
         }
 
-        internal Dictionary<string, List<clsCustomValidateFastaFiles.udtErrorInfoExtended>> FileErrorList
+        internal Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> FileErrorList
         {
             set => m_FileErrorList = value;
         }
 
-        internal Dictionary<string, List<clsCustomValidateFastaFiles.udtErrorInfoExtended>> FileWarningList
+        internal Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> FileWarningList
         {
             set => m_FileWarningList = value;
         }
@@ -172,7 +172,7 @@ namespace AppUI_OrfDBHandler
             return foundRows[0]["Display_Name"].ToString();
         }
 
-        private void BindFileListToErrorComboBox(Dictionary<string, List<clsCustomValidateFastaFiles.udtErrorInfoExtended>> contents)
+        private void BindFileListToErrorComboBox(Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> contents)
         {
             cboFileListErrors.SelectedIndexChanged -= cboFileListErrors_SelectedIndexChanged;
 
@@ -195,7 +195,7 @@ namespace AppUI_OrfDBHandler
             cboFileListErrors.SelectedIndexChanged += cboFileListErrors_SelectedIndexChanged;
         }
 
-        private void BindFileListToWarningComboBox(Dictionary<string, List<clsCustomValidateFastaFiles.udtErrorInfoExtended>> contents)
+        private void BindFileListToWarningComboBox(Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> contents)
         {
             cboFileListWarnings.SelectedIndexChanged -= cboFileListWarnings_SelectedIndexChanged;
 
@@ -270,7 +270,7 @@ namespace AppUI_OrfDBHandler
         }
 
         private void DumpDetailedErrorOrWarningList(
-            IReadOnlyCollection<clsCustomValidateFastaFiles.udtErrorInfoExtended> errorList,
+            IReadOnlyCollection<CustomFastaValidator.ErrorInfoExtended> errorList,
             string fastaFileName,
             string messageType)
         {

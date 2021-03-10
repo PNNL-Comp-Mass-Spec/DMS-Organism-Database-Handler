@@ -64,7 +64,7 @@ namespace AppUI_OrfDBHandler
         private string m_LastSelectedAnnotationType = "";
         private bool m_LastValueForAllowAsterisks = false;
         private bool m_LastValueForAllowDash = false;
-        private int m_LastValueForMaxProteinNameLength = clsValidateFastaFile.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
+        private int m_LastValueForMaxProteinNameLength = FastaValidator.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
         private ImportHandler m_ImportHandler;
         private PSUploadHandler m_UploadHandler;
         private DataListViewHandler m_SourceListViewHandler;
@@ -80,7 +80,7 @@ namespace AppUI_OrfDBHandler
         /// <summary>
         /// Keys are fasta file names, values are lists of errors
         /// </summary>
-        private Dictionary<string, List<clsCustomValidateFastaFiles.udtErrorInfoExtended>> m_FileErrorList;
+        private Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> m_FileErrorList;
 
         /// <summary>
         /// Keys are fasta file names, values are dictionaries of error messages, tracking the count of each error
@@ -90,7 +90,7 @@ namespace AppUI_OrfDBHandler
         /// <summary>
         /// Keys are fasta file names, values are lists of warnings
         /// </summary>
-        private Dictionary<string, List<clsCustomValidateFastaFiles.udtErrorInfoExtended>> m_FileWarningList;
+        private Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> m_FileWarningList;
 
         /// <summary>
         /// Keys are fasta file names, values are dictionaries of warning messages, tracking the count of each warning
@@ -413,9 +413,9 @@ namespace AppUI_OrfDBHandler
             pnlProgBar.Visible = true;
             try
             {
-                m_UploadHandler.SetValidationOptions(PSUploadHandler.eValidationOptionConstants.AllowAllSymbolsInProteinNames, frmBatchUpload.ValidationAllowAllSymbolsInProteinNames);
-                m_UploadHandler.SetValidationOptions(PSUploadHandler.eValidationOptionConstants.AllowAsterisksInResidues, frmBatchUpload.ValidationAllowAsterisks);
-                m_UploadHandler.SetValidationOptions(PSUploadHandler.eValidationOptionConstants.AllowDashInResidues, frmBatchUpload.ValidationAllowDash);
+                m_UploadHandler.SetValidationOptions(PSUploadHandler.ValidationOptionConstants.AllowAllSymbolsInProteinNames, frmBatchUpload.ValidationAllowAllSymbolsInProteinNames);
+                m_UploadHandler.SetValidationOptions(PSUploadHandler.ValidationOptionConstants.AllowAsterisksInResidues, frmBatchUpload.ValidationAllowAsterisks);
+                m_UploadHandler.SetValidationOptions(PSUploadHandler.ValidationOptionConstants.AllowDashInResidues, frmBatchUpload.ValidationAllowDash);
 
                 m_UploadHandler.MaximumProteinNameLength = frmBatchUpload.ValidationMaxProteinNameLength;
 
@@ -1099,11 +1099,11 @@ namespace AppUI_OrfDBHandler
             m_ValidUploadsList.Add(FASTAFilePath, UploadInfo);
         }
 
-        private void InvalidFASTAFileHandler(string FASTAFilePath, List<clsCustomValidateFastaFiles.udtErrorInfoExtended> errorCollection)
+        private void InvalidFASTAFileHandler(string FASTAFilePath, List<CustomFastaValidator.ErrorInfoExtended> errorCollection)
         {
             if (m_FileErrorList == null)
             {
-                m_FileErrorList = new Dictionary<string, List<clsCustomValidateFastaFiles.udtErrorInfoExtended>>();
+                m_FileErrorList = new Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>>();
             }
 
             m_FileErrorList.Add(Path.GetFileName(FASTAFilePath), errorCollection);
@@ -1116,11 +1116,11 @@ namespace AppUI_OrfDBHandler
             m_SummarizedFileErrorList.Add(Path.GetFileName(FASTAFilePath), SummarizeErrors(errorCollection));
         }
 
-        private void FASTAFileWarningsHandler(string FASTAFilePath, List<clsCustomValidateFastaFiles.udtErrorInfoExtended> warningCollection)
+        private void FASTAFileWarningsHandler(string FASTAFilePath, List<CustomFastaValidator.ErrorInfoExtended> warningCollection)
         {
             if (m_FileWarningList == null)
             {
-                m_FileWarningList = new Dictionary<string, List<clsCustomValidateFastaFiles.udtErrorInfoExtended>>();
+                m_FileWarningList = new Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>>();
             }
 
             m_FileWarningList.Add(Path.GetFileName(FASTAFilePath), warningCollection);
@@ -1133,7 +1133,7 @@ namespace AppUI_OrfDBHandler
             m_SummarizedFileWarningList.Add(Path.GetFileName(FASTAFilePath), SummarizeErrors(warningCollection));
         }
 
-        private Dictionary<string, int> SummarizeErrors(IReadOnlyCollection<clsCustomValidateFastaFiles.udtErrorInfoExtended> errorCollection)
+        private Dictionary<string, int> SummarizeErrors(IReadOnlyCollection<CustomFastaValidator.ErrorInfoExtended> errorCollection)
         {
             // Keys are error messages, values are the number of times the error was reported
             var errorSummary = new Dictionary<string, int>();
