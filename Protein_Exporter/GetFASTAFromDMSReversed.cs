@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualBasic;
+﻿using System;
 using TableManipulationBase;
 
 namespace Protein_Exporter
@@ -40,7 +40,10 @@ namespace Protein_Exporter
 
         public override string SequenceExtender(string originalSequence, int collectionCount)
         {
-            return Strings.StrReverse(originalSequence);
+            // Note: Not safe for some unicode characters, but those probably should exist in a protein sequence anyway.
+            var charArray = originalSequence.ToCharArray();
+            Array.Reverse(charArray);
+            return new string(charArray);
         }
 
         public override string ReferenceExtender(string originalReference)

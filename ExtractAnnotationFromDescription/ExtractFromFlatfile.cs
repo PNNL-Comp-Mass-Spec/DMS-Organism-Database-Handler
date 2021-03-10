@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Microsoft.VisualBasic;
 
 namespace ExtractAnnotationFromDescription
 {
@@ -95,7 +94,7 @@ namespace ExtractAnnotationFromDescription
                 }
                 else
                 {
-                    columnName = "Column_" + Strings.Format(columnNumber, "00");
+                    columnName = "Column_" + columnNumber.ToString("00");
                 }
 
                 m_ColumnNameLookup.Add(columnNumber, columnName);

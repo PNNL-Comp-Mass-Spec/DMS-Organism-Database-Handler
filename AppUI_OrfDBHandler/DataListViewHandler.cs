@@ -1,7 +1,5 @@
 ﻿using System.Data;
 using System.Windows.Forms;
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace AppUI_OrfDBHandler
 {
@@ -32,7 +30,7 @@ namespace AppUI_OrfDBHandler
             DataRow[] itemRows;
             string filterString = string.Empty;
 
-            if (Strings.Len(filterCriteria) != 0)
+            if (filterCriteria.Length != 0)
             {
                 filterString = "[Name] LIKE '%" + filterCriteria + "%' " +
                     "OR [Description] LIKE '%" + filterCriteria + "%'";
@@ -44,15 +42,15 @@ namespace AppUI_OrfDBHandler
 
             //NumberLoadedStatus?.Invoke(itemRows.Length, dt.Rows.Count);
 
-            // proteinCount = Conversions.ToInteger(itemRows.Length);
+            // proteinCount = Convert.ToInt32(itemRows.Length);
 
             //LoadStart?.Invoke("Filling List...");
 
             foreach (var itemRow in itemRows)
             {
                 var item = new ListViewItem();
-                item.Text = Conversions.ToString(itemRow[0]);
-                item.SubItems.Add(Conversions.ToString(itemRow[1]));
+                item.Text = itemRow[0].ToString();
+                item.SubItems.Add(itemRow[1].ToString());
                 lvw.Items.Add(item);
             }
 

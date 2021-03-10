@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Data;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace NucleotideTranslator
 {
@@ -48,7 +47,7 @@ namespace NucleotideTranslator
 
                         dr = TertiaryRows[0];
 
-                        TertiaryList.Add(new TranslationEntry(base_3.ToString(), Conversions.ToString(dr["Coded_AA"])));
+                        TertiaryList.Add(new TranslationEntry(base_3.ToString(), dr["Coded_AA"].ToString()));
                     }
 
                     SecondaryList.Add(new TranslationEntry(base_2.ToString(), TertiaryList));

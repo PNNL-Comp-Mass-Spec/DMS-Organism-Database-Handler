@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace AppUI_OrfDBHandler
 {
@@ -120,7 +119,7 @@ namespace AppUI_OrfDBHandler
             //
             // lblPreviewTitle
             //
-            lblPreviewTitle.Font = new Font("Tahoma", 11.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            lblPreviewTitle.Font = new Font("Tahoma", 11.25f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             lblPreviewTitle.Location = new Point(3, 34);
             lblPreviewTitle.Name = "lblPreviewTitle";
             lblPreviewTitle.Size = new Size(257, 19);
@@ -147,7 +146,7 @@ namespace AppUI_OrfDBHandler
             Controls.Add(txtLineCount);
             Controls.Add(lvwPreview);
             Controls.Add(lblPreviewTitle);
-            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             MinimumSize = new Size(342, 437);
             Name = "frmFilePreview";
             StartPosition = FormStartPosition.Manual;
@@ -199,10 +198,10 @@ namespace AppUI_OrfDBHandler
             Match m;
             string countText = txtLineCount.Text;
 
-            if (validationRegex.IsMatch(Conversions.ToInteger(countText).ToString()))
+            if (validationRegex.IsMatch(Convert.ToInt32(countText).ToString()))
             {
-                m = validationRegex.Match(Conversions.ToInteger(countText).ToString());
-                value = Conversions.ToInteger(m.Groups[0].Value);
+                m = validationRegex.Match(Convert.ToInt32(countText).ToString());
+                value = Convert.ToInt32(m.Groups[0].Value);
                 txtLineCount.Text = value.ToString();
                 m_currentLineCount = value;
                 if (cmdRefresh.Enabled == false)

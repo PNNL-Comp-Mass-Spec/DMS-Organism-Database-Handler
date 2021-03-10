@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace ExtractAnnotationFromDescription
 {
@@ -179,7 +178,7 @@ namespace ExtractAnnotationFromDescription
             //
             lblMatchCount.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             lblMatchCount.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            lblMatchCount.Font = new System.Drawing.Font("Tahoma", 6.75f, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Conversions.ToByte(0));
+            lblMatchCount.Font = new System.Drawing.Font("Tahoma", 6.75f, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, (byte)0);
             lblMatchCount.Location = new System.Drawing.Point(501, 347);
             lblMatchCount.Name = "lblMatchCount";
             lblMatchCount.Size = new System.Drawing.Size(304, 17);
@@ -201,7 +200,7 @@ namespace ExtractAnnotationFromDescription
             //
             cmdAddExpression.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             cmdAddExpression.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            cmdAddExpression.Font = new System.Drawing.Font("Tahoma", 15.75f, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdAddExpression.Font = new System.Drawing.Font("Tahoma", 15.75f, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, (byte)0);
             cmdAddExpression.Location = new System.Drawing.Point(567, 310);
             cmdAddExpression.Name = "cmdAddExpression";
             cmdAddExpression.Size = new System.Drawing.Size(28, 25);
@@ -212,7 +211,7 @@ namespace ExtractAnnotationFromDescription
             //
             cmdRemoveExpression.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             cmdRemoveExpression.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            cmdRemoveExpression.Font = new System.Drawing.Font("Tahoma", 15.75f, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdRemoveExpression.Font = new System.Drawing.Font("Tahoma", 15.75f, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, (byte)0);
             cmdRemoveExpression.Location = new System.Drawing.Point(595, 310);
             cmdRemoveExpression.Name = "cmdRemoveExpression";
             cmdRemoveExpression.Size = new System.Drawing.Size(28, 25);
@@ -329,7 +328,7 @@ namespace ExtractAnnotationFromDescription
             Controls.Add(cboStoredExpressions);
             Controls.Add(lblCurrentCollectionInfo);
             Controls.Add(lblMatchCount);
-            Font = new System.Drawing.Font("Tahoma", 8.25f, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Conversions.ToByte(0));
+            Font = new System.Drawing.Font("Tahoma", 8.25f, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, (byte)0);
             MinimumSize = new System.Drawing.Size(840, 712);
             Name = "frmRegexSpecifyFromDescription";
             Text = "Extract Annotations From Description";

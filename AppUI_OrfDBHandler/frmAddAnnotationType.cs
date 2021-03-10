@@ -3,7 +3,6 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace AppUI_OrfDBHandler
 {
@@ -129,7 +128,7 @@ namespace AppUI_OrfDBHandler
             //
             cmdCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             cmdCancel.DialogResult = DialogResult.Cancel;
-            cmdCancel.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdCancel.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             cmdCancel.Location = new Point(208, 182);
             cmdCancel.Name = "cmdCancel";
             cmdCancel.TabIndex = 6;
@@ -139,7 +138,7 @@ namespace AppUI_OrfDBHandler
             //
             cmdOK.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             cmdOK.DialogResult = DialogResult.OK;
-            cmdOK.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdOK.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             cmdOK.Location = new Point(124, 182);
             cmdOK.Name = "cmdOK";
             cmdOK.TabIndex = 7;
@@ -177,7 +176,7 @@ namespace AppUI_OrfDBHandler
             Controls.Add(lblTypeExample);
             Controls.Add(lblDescription);
             Controls.Add(lblAnnTypeName);
-            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             MaximumSize = new Size(298, 240);
             MinimumSize = new Size(298, 240);
@@ -328,7 +327,7 @@ namespace AppUI_OrfDBHandler
             m_TypeName = txtAnnTypeName.Text;
             m_Description = txtDescription.Text;
             m_Example = txtTypeExample.Text;
-            m_AuthID = Conversions.ToInteger(cboAuthorityName.SelectedValue);
+            m_AuthID = Convert.ToInt32(cboAuthorityName.SelectedValue);
 
             DialogResult = DialogResult.OK;
             Close();
@@ -353,7 +352,7 @@ namespace AppUI_OrfDBHandler
 
             if (ReferenceEquals(cbo.SelectedValue.GetType(), Type.GetType("System.Int32")))
             {
-                m_AuthID = Conversions.ToInteger(cbo.SelectedValue);
+                m_AuthID = Convert.ToInt32(cbo.SelectedValue);
             }
             else
             {

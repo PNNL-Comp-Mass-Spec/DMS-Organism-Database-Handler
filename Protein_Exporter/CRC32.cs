@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace Protein_Exporter
 {
@@ -53,7 +52,7 @@ namespace Protein_Exporter
                 // ReSharper disable once RedundantAssignment
                 for (int j = 8; j >= 1; j -= 1)
                 {
-                    if (Conversions.ToBoolean(dwCrc & 1))
+                    if (Convert.ToBoolean(dwCrc & 1))
                     {
                         dwCrc = (uint)((dwCrc & 0xFFFFFFFE) / 2L & 0x7FFFFFFFL);
                         dwCrc = dwCrc ^ dwPolynomial;

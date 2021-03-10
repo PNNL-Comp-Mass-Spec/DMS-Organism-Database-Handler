@@ -3,7 +3,6 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace AppUI_OrfDBHandler
 {
@@ -143,7 +142,7 @@ namespace AppUI_OrfDBHandler
             cmdAddOrganism.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cmdAddOrganism.DialogResult = DialogResult.Cancel;
             cmdAddOrganism.Enabled = false;
-            cmdAddOrganism.Font = new Font("Microsoft Sans Serif", 15.75f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdAddOrganism.Font = new Font("Microsoft Sans Serif", 15.75f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             cmdAddOrganism.Location = new Point(432, 262);
             cmdAddOrganism.Name = "cmdAddOrganism";
             cmdAddOrganism.Size = new Size(28, 25);
@@ -155,7 +154,7 @@ namespace AppUI_OrfDBHandler
             cmdAddAuthority.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cmdAddAuthority.DialogResult = DialogResult.Cancel;
             cmdAddAuthority.Enabled = false;
-            cmdAddAuthority.Font = new Font("Microsoft Sans Serif", 15.75f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdAddAuthority.Font = new Font("Microsoft Sans Serif", 15.75f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             cmdAddAuthority.Location = new Point(432, 313);
             cmdAddAuthority.Name = "cmdAddAuthority";
             cmdAddAuthority.Size = new Size(28, 25);
@@ -271,7 +270,7 @@ namespace AppUI_OrfDBHandler
             Controls.Add(cmdOK);
             Controls.Add(cmdCancel);
             Controls.Add(gbxMetaData);
-            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             MaximumSize = new Size(896, 475);
             MinimumSize = new Size(448, 150);
             Name = "frmAddNewCollection";
@@ -447,7 +446,7 @@ namespace AppUI_OrfDBHandler
 
         private void cboOrganismPicker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            m_OrganismID = Conversions.ToInteger(cboOrganismPicker.SelectedValue);
+            m_OrganismID = Convert.ToInt32(cboOrganismPicker.SelectedValue);
             if (m_OrganismID == 0)
             {
                 cmdOK.Enabled = false;
@@ -460,7 +459,7 @@ namespace AppUI_OrfDBHandler
 
         private void cboAuthorityPicker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            m_AnnotationTypeID = Conversions.ToInteger(cboAuthorityPicker.SelectedValue);
+            m_AnnotationTypeID = Convert.ToInt32(cboAuthorityPicker.SelectedValue);
         }
 
         private void cmdAddOrganism_Click(object sender, EventArgs e)
@@ -476,8 +475,8 @@ namespace AppUI_OrfDBHandler
             m_CollectionName = txtCollectionName.Text;
             m_Description = txtDescription.Text;
             m_CollectionSource = txtSource.Text;
-            m_OrganismID = Conversions.ToInteger(cboOrganismPicker.SelectedValue);
-            m_AnnotationTypeID = Conversions.ToInteger(cboAuthorityPicker.SelectedValue);
+            m_OrganismID = Convert.ToInt32(cboOrganismPicker.SelectedValue);
+            m_AnnotationTypeID = Convert.ToInt32(cboAuthorityPicker.SelectedValue);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)

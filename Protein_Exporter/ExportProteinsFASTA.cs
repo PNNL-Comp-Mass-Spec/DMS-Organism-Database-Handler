@@ -2,7 +2,6 @@
 using System.Data;
 using System.IO;
 using System.Text.RegularExpressions;
-using Microsoft.VisualBasic;
 using PRISM;
 using PRISMWin;
 using Protein_Storage;
@@ -100,7 +99,7 @@ namespace Protein_Exporter
 
                     for (proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += m_seqLineLength)
                     {
-                        seqLine = Strings.Mid(tmpSeq, proteinPosition, m_seqLineLength);
+                        seqLine = tmpSeq.Substring(proteinPosition, m_seqLineLength);
                         writer.WriteLine(seqLine);
                     }
                 }
@@ -239,7 +238,7 @@ namespace Protein_Exporter
 
                     for (int proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += m_seqLineLength)
                     {
-                        string seqLinePortion = Strings.Mid(tmpSeq, proteinPosition, m_seqLineLength);
+                        string seqLinePortion = tmpSeq.Substring(proteinPosition, m_seqLineLength);
                         writer.WriteLine(seqLinePortion);
                     }
 

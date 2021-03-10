@@ -7,8 +7,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.CompilerServices;
 using PRISM;
 using PRISMDatabaseUtils;
 using PRISMWin;
@@ -432,7 +430,7 @@ namespace Protein_Exporter
 
         private string ExportProteinCollections(List<string> protCollectionList, string creationOptionsString, string destinationFolderPath, int alternateAnnotationTypeID, bool padWithPrimaryAnnotation, DatabaseFormatTypes databaseFormatType, SequenceTypes outputSequenceType)
         {
-            string proteinCollectionList = Strings.Join(protCollectionList.ToArray(), ",");
+            string proteinCollectionList = string.Join(",", protCollectionList);
 
             string stringToHash = proteinCollectionList + "/" + creationOptionsString;
             string filenameSha1Hash = GenerateHash(stringToHash);
@@ -452,8 +450,8 @@ namespace Protein_Exporter
             if (fileNameTable.Rows.Count >= 1)
             {
                 var foundRow = fileNameTable.Rows[0];
-                finalFileName = Path.GetFileName(Conversions.ToString(foundRow["Archived_File_Path"]));
-                finalFileHash = Conversions.ToString(foundRow["Authentication_Hash"]);
+                finalFileName = Path.GetFileName(foundRow["Archived_File_Path"].ToString());
+                finalFileHash = foundRow["Authentication_Hash"].ToString();
             }
             else
             {
@@ -547,7 +545,7 @@ namespace Protein_Exporter
 
             try
             {
-                OnDebugEvent("Retrieving fasta file for protein collections " + string.Join(Conversions.ToString(','), protCollectionList.ToArray()));
+                OnDebugEvent("Retrieving fasta file for protein collections " + string.Join(",", protCollectionList.ToArray()));
 
                 // Export the fasta file
                 crc32Hash = m_Getter.ExportFASTAFile(protCollectionList, destinationFolderPath, alternateAnnotationTypeID, padWithPrimaryAnnotation);

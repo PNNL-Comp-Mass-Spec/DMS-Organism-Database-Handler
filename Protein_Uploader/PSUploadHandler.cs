@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
-using Microsoft.VisualBasic;
 using Protein_Exporter;
 using Protein_Importer;
 using Protein_Storage;
@@ -451,7 +450,7 @@ namespace Protein_Uploader
                 if (newCollectionId <= 0)
                 {
                     // Error making the new protein collection
-                    Interaction.MsgBox(string.Format(
+                    MessageBox.Show(string.Format(
                         "MakeNewProteinCollection was unable to create a new protein collection named {0}; the Collection ID returned was {1}",
                         proteinCollectionName, newCollectionId));
                     return -1;
@@ -483,7 +482,7 @@ namespace Protein_Uploader
             if (XrefID < 1)
             {
                 // Throw New Exception("Could not add Collection/Organism Xref")
-                Interaction.MsgBox("Could not add Collection/Organism Xref; m_Upload.AddCollectionOrganismXref returned " + XrefID);
+                MessageBox.Show("Could not add Collection/Organism Xref; m_Upload.AddCollectionOrganismXref returned " + XrefID);
             }
 
             // task 5 - Update encryption metadata (if applicable)

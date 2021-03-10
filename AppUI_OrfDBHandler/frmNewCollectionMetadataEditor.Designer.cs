@@ -3,11 +3,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace AppUI_OrfDBHandler
 {
-    [DesignerGenerated()]
     public partial class frmNewCollectionMetadataEditor : Form
     {
 

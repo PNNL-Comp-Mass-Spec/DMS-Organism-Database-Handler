@@ -34,7 +34,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Protein_Exporter">
       <HintPath>..\Release_DLL\Protein_Exporter.dll</HintPath>
     </Reference>

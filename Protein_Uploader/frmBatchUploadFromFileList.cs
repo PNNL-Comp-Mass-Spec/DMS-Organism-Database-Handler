@@ -6,8 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace Protein_Uploader
 {
@@ -218,7 +216,7 @@ namespace Protein_Uploader
             Controls.Add(cboOrganismPicker);
             Controls.Add(lblOrganismPicker);
             Controls.Add(cmdUploadFiles);
-            Font = new System.Drawing.Font("Tahoma", 8.25f, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Conversions.ToByte(0));
+            Font = new System.Drawing.Font("Tahoma", 8.25f, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, (byte)0);
             MinimumSize = new System.Drawing.Size(840, 712);
             Name = "frmBatchUploadFromFileList";
             Text = "Batch Upload FASTA Files from FileList";
@@ -262,7 +260,7 @@ namespace Protein_Uploader
                     if (fli.AnnotationTypeID > 0)
                     {
                         writer.Write(fli.FileName);
-                        writer.Write(ControlChars.Tab);
+                        writer.Write("\t");
                         writer.Write(fli.AnnotationTypeID.ToString());
                         writer.Flush();
                     }
@@ -289,7 +287,7 @@ namespace Protein_Uploader
         //         s = tr.ReadLine();
         //         while (!s == null)
         //         {
-        //             fields = s.Split(ControlChars.Tab);
+        //             fields = s.Split('\t');
         //             tmpFileName = fields[0];
         //             tmpAnnotationID = System.Convert.ToInt32(fields[1]);
         //             if (tmpAnnotationID > 0)
@@ -325,7 +323,7 @@ namespace Protein_Uploader
             //     s = tr.ReadLine();
             //     while (!s == null)
             //     {
-            //         fields = s.Split(ControlChars.Tab);
+            //         fields = s.Split('\t');
             //         tmpFileName = fields[0];
             //         tmpAnnotationID = System.Convert.ToInt32(fields[1]);
             //         if (tmpAnnotationID > 0)
@@ -462,7 +460,7 @@ namespace Protein_Uploader
                 {
                     li.SubItems[2].Text = cbo.Text;
                     fli = FileCollection[li.Text];
-                    fli.NamingAuthorityID = Conversions.ToInteger(cbo.SelectedValue);
+                    fli.NamingAuthorityID = Convert.ToInt32(cbo.SelectedValue);
                     FileCollection[li.Text] = fli;
                 }
             }
@@ -479,7 +477,7 @@ namespace Protein_Uploader
                 {
                     li.SubItems[3].Text = cbo.Text;
                     fli = FileCollection[li.Text];
-                    fli.AnnotationTypeID = Conversions.ToInteger(cbo.SelectedValue);
+                    fli.AnnotationTypeID = Convert.ToInt32(cbo.SelectedValue);
                     FileCollection[li.Text] = fli;
                 }
             }

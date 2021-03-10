@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace ExtractAnnotationFromDescription
 {
@@ -214,7 +213,7 @@ namespace ExtractAnnotationFromDescription
             Controls.Add(lvwNewNames);
             Controls.Add(lblNewNames);
             Controls.Add(lblCurrentCollectionInfo);
-            Font = new System.Drawing.Font("Tahoma", 8.25f, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Conversions.ToByte(0));
+            Font = new System.Drawing.Font("Tahoma", 8.25f, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, (byte)0);
             MinimumSize = new System.Drawing.Size(840, 712);
             Name = "frmExtractFromFlatfile";
             Text = "Extract Annotations From Flatfile";
@@ -265,7 +264,7 @@ namespace ExtractAnnotationFromDescription
             if (r == System.Windows.Forms.DialogResult.OK)
             {
                 filePath = openFrm.FileName;
-                m_Extract.LoadFile(filePath, Conversions.ToString('\t'), m_UseHeaderInfo);
+                m_Extract.LoadFile(filePath, "\t", m_UseHeaderInfo);
                 LoadRawFileListView();
                 LoadAnnotationGroupListView();
             }
@@ -280,8 +279,8 @@ namespace ExtractAnnotationFromDescription
             System.Windows.Forms.ListView lvw = (System.Windows.Forms.ListView)sender;
             if (lvw.SelectedItems.Count > 0)
             {
-                m_CurrentGroupID = Conversions.ToInteger(lvw.SelectedItems[0].Text);
-                cboNamingAuthority.SelectedValue = Conversions.ToInteger(lvw.SelectedItems[0].Tag);
+                m_CurrentGroupID = Convert.ToInt32(lvw.SelectedItems[0].Text);
+                cboNamingAuthority.SelectedValue = Convert.ToInt32(lvw.SelectedItems[0].Tag);
                 // cboNamingAuthority.Select();
             }
         }
@@ -299,7 +298,7 @@ namespace ExtractAnnotationFromDescription
                 m_UseHeaderInfo = false;
             }
 
-            m_Extract.LoadGroups(Conversions.ToString('\t'), m_UseHeaderInfo);
+            m_Extract.LoadGroups("\t", m_UseHeaderInfo);
             RefreshRawFileListViewHeaders();
             LoadAnnotationGroupListView();
         }
@@ -409,7 +408,7 @@ namespace ExtractAnnotationFromDescription
             foreach (var item in authorityList)
             {
                 string authorityName = item.Value.ToString();
-                int authorityId = Conversions.ToInteger(item.Key);
+                int authorityId = Convert.ToInt32(item.Key);
                 a.Add(new AuthorityContainer(authorityName, authorityId));
             }
 
@@ -428,9 +427,9 @@ namespace ExtractAnnotationFromDescription
 
             if (lvwNewNames.SelectedItems.Count > 0)
             {
-                m_Extract.ChangeAuthorityIDforGroup(m_CurrentGroupID, Conversions.ToInteger(cbo.SelectedValue));
+                m_Extract.ChangeAuthorityIDforGroup(m_CurrentGroupID, Convert.ToInt32(cbo.SelectedValue));
                 lvwNewNames.SelectedItems[0].SubItems[2].Text = cbo.Text;
-                lvwNewNames.SelectedItems[0].Tag = Conversions.ToInteger(cbo.SelectedValue);
+                lvwNewNames.SelectedItems[0].Tag = Convert.ToInt32(cbo.SelectedValue);
             }
         }
 
@@ -457,11 +456,11 @@ namespace ExtractAnnotationFromDescription
                 string reference_1 = auth_1.AuthorityName;
                 string reference_2 = auth_2.AuthorityName;
 
-                if (Operators.CompareString(reference_1, reference_2, false) > 0)
+                if (string.Compare(reference_1, reference_2, StringComparison.Ordinal) > 0)
                 {
                     return 1;
                 }
-                else if (Operators.CompareString(reference_1, reference_2, false) < 0)
+                else if (string.Compare(reference_1, reference_2, StringComparison.Ordinal) < 0)
                 {
                     return -1;
                 }

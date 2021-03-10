@@ -3,7 +3,6 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using Bulk_Fasta_Importer.Properties;
-using Microsoft.VisualBasic;
 using PRISM;
 using ValidateFastaFile;
 
@@ -102,7 +101,7 @@ namespace Bulk_Fasta_Importer
             }
             catch (Exception ex)
             {
-                ShowErrorMessage("Error occurred in modMain->Main: " + ControlChars.NewLine + ex.Message);
+                ShowErrorMessage("Error occurred in modMain->Main: " + Environment.NewLine + ex.Message);
                 return -1;
             }
         }
@@ -179,7 +178,7 @@ namespace Bulk_Fasta_Importer
             }
             catch (Exception ex)
             {
-                ShowErrorMessage("Error parsing the command line parameters: " + ControlChars.NewLine + ex.Message);
+                ShowErrorMessage("Error parsing the command line parameters: " + Environment.NewLine + ex.Message);
                 return false;
             }
         }

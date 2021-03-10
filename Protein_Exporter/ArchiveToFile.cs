@@ -3,7 +3,6 @@ using System.Data;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.VisualBasic.CompilerServices;
 using PRISMDatabaseUtils;
 using TableManipulationBase;
 
@@ -96,9 +95,9 @@ namespace Protein_Exporter
             {
                 // Archived file entry already exists
 
-                ArchivedFileEntryID = Conversions.ToInteger(tmpTable.Rows[0]["Archived_File_ID"]);
-                CollectionListHexHashInDB = Conversions.ToString(tmpTable.Rows[0]["Collection_List_Hex_Hash"]);
-                ProteinCollectionsListFromDB = Conversions.ToString(tmpTable.Rows[0]["Protein_Collection_List"]);
+                ArchivedFileEntryID = Convert.ToInt32(tmpTable.Rows[0]["Archived_File_ID"]);
+                CollectionListHexHashInDB = tmpTable.Rows[0]["Collection_List_Hex_Hash"].ToString();
+                ProteinCollectionsListFromDB = tmpTable.Rows[0]["Protein_Collection_List"].ToString();
 
                 if (tmpTable.Rows[0]["Protein_Collection_List"].GetType().Name == "DBNull" ||
                     string.IsNullOrEmpty(CollectionListHexHashInDB) ||

@@ -11,7 +11,6 @@ using System.Windows.Forms;
 using AppUI_OrfDBHandler.Properties;
 using ExtractAnnotationFromDescription;
 using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.CompilerServices;
 using Protein_Importer;
 using Protein_Uploader;
 using ValidateFastaFile;
@@ -255,7 +254,7 @@ namespace AppUI_OrfDBHandler
             // lblBatchProgress
             //
             lblBatchProgress.Dock = DockStyle.Fill;
-            lblBatchProgress.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            lblBatchProgress.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             lblBatchProgress.Location = new Point(6, 23);
             lblBatchProgress.Name = "lblBatchProgress";
             lblBatchProgress.Size = new Size(1118, 22);
@@ -264,7 +263,7 @@ namespace AppUI_OrfDBHandler
             // lblCurrentTask
             //
             lblCurrentTask.Dock = DockStyle.Top;
-            lblCurrentTask.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            lblCurrentTask.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             lblCurrentTask.Location = new Point(6, 6);
             lblCurrentTask.Name = "lblCurrentTask";
             lblCurrentTask.Size = new Size(1118, 17);
@@ -321,7 +320,7 @@ namespace AppUI_OrfDBHandler
             cmdDestAdd.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cmdDestAdd.Enabled = false;
             cmdDestAdd.FlatStyle = FlatStyle.System;
-            cmdDestAdd.Font = new Font("Tahoma", 12.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdDestAdd.Font = new Font("Tahoma", 12.0f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             cmdDestAdd.ForeColor = SystemColors.Highlight;
             cmdDestAdd.Location = new Point(688, 186);
             cmdDestAdd.Name = "cmdDestAdd";
@@ -334,7 +333,7 @@ namespace AppUI_OrfDBHandler
             cmdDestRemove.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cmdDestRemove.Enabled = false;
             cmdDestRemove.FlatStyle = FlatStyle.System;
-            cmdDestRemove.Font = new Font("Tahoma", 12.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdDestRemove.Font = new Font("Tahoma", 12.0f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             cmdDestRemove.ForeColor = SystemColors.Highlight;
             cmdDestRemove.Location = new Point(688, 245);
             cmdDestRemove.Name = "cmdDestRemove";
@@ -347,7 +346,7 @@ namespace AppUI_OrfDBHandler
             cmdDestAddAll.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cmdDestAddAll.Enabled = false;
             cmdDestAddAll.FlatStyle = FlatStyle.System;
-            cmdDestAddAll.Font = new Font("Tahoma", 12.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdDestAddAll.Font = new Font("Tahoma", 12.0f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             cmdDestAddAll.ForeColor = SystemColors.Highlight;
             cmdDestAddAll.Location = new Point(688, 125);
             cmdDestAddAll.Name = "cmdDestAddAll";
@@ -360,7 +359,7 @@ namespace AppUI_OrfDBHandler
             cmdDestRemoveAll.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cmdDestRemoveAll.Enabled = false;
             cmdDestRemoveAll.FlatStyle = FlatStyle.System;
-            cmdDestRemoveAll.Font = new Font("Tahoma", 12.0f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdDestRemoveAll.Font = new Font("Tahoma", 12.0f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             cmdDestRemoveAll.ForeColor = SystemColors.Highlight;
             cmdDestRemoveAll.Location = new Point(688, 306);
             cmdDestRemoveAll.Name = "cmdDestRemoveAll";
@@ -592,7 +591,7 @@ namespace AppUI_OrfDBHandler
             //
             // lblCurrProteinCount
             //
-            lblCurrProteinCount.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            lblCurrProteinCount.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             lblCurrProteinCount.Location = new Point(20, 23);
             lblCurrProteinCount.Name = "lblCurrProteinCount";
             lblCurrProteinCount.Size = new Size(229, 18);
@@ -769,7 +768,7 @@ namespace AppUI_OrfDBHandler
             Controls.Add(SourceDestSplit);
             Controls.Add(pnlSource);
             Controls.Add(pnlProgBar);
-            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Menu = mnuMainGUI;
             MinimumSize = new Size(1148, 550);
@@ -1269,7 +1268,7 @@ namespace AppUI_OrfDBHandler
 
         private void cboOrganismList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Conversions.ToInteger(cboOrganismFilter.SelectedValue) != 0)
+            if (Convert.ToInt32(cboOrganismFilter.SelectedValue) != 0)
             {
                 m_ProteinCollections.DefaultView.RowFilter = "[Organism_ID] = " + cboOrganismFilter.SelectedValue.ToString();
             }
@@ -1278,7 +1277,7 @@ namespace AppUI_OrfDBHandler
                 m_ProteinCollections.DefaultView.RowFilter = "";
             }
 
-            m_SelectedOrganismID = Conversions.ToInteger(cboOrganismFilter.SelectedValue);
+            m_SelectedOrganismID = Convert.ToInt32(cboOrganismFilter.SelectedValue);
 
             BindCollectionListToControl(m_ProteinCollections.DefaultView);
 
@@ -1292,12 +1291,12 @@ namespace AppUI_OrfDBHandler
         {
             lvwSource.Items.Clear();
             m_ImportHandler.ClearProteinCollection();
-            m_SelectedCollectionID = Conversions.ToInteger(cboCollectionPicker.SelectedValue);
+            m_SelectedCollectionID = Convert.ToInt32(cboCollectionPicker.SelectedValue);
 
             if (m_SelectedCollectionID > 0)
             {
                 var foundRows = m_ProteinCollections.Select("[Protein_Collection_ID] = " + m_SelectedCollectionID.ToString());
-                m_SelectedAnnotationTypeID = Conversions.ToInteger(foundRows[0]["Authority_ID"]);
+                m_SelectedAnnotationTypeID = Convert.ToInt32(foundRows[0]["Authority_ID"]);
                 //m_AnnotationTypes = m_ImportHandler.LoadAnnotationTypes(m_SelectedCollectionID);
                 //m_AnnotationTypes = m_ImportHandler.LoadAnnotationTypes();
                 cmdLoadProteins.Enabled = true;
@@ -1321,7 +1320,7 @@ namespace AppUI_OrfDBHandler
 
             if (ReferenceEquals(cboAnnotationTypePicker.SelectedValue.GetType(), Type.GetType("System.Int32")))
             {
-                m_SelectedAnnotationTypeID = Conversions.ToInteger(cboAnnotationTypePicker.SelectedValue);
+                m_SelectedAnnotationTypeID = Convert.ToInt32(cboAnnotationTypePicker.SelectedValue);
             }
             else
             {
@@ -1331,7 +1330,7 @@ namespace AppUI_OrfDBHandler
             if (m_SelectedCollectionID > 0)
             {
                 var foundRows = m_ProteinCollections.Select("[Protein_Collection_ID] = " + m_SelectedCollectionID.ToString());
-                m_SelectedAnnotationTypeID = Conversions.ToInteger(foundRows[0]["Authority_ID"]);
+                m_SelectedAnnotationTypeID = Convert.ToInt32(foundRows[0]["Authority_ID"]);
             }
             //else if (m_SelectedAuthorityID == -2)
             //{
@@ -1598,8 +1597,8 @@ namespace AppUI_OrfDBHandler
             object sender,
             ElapsedEventArgs e)
         {
-            m_SelectedCollectionID = Conversions.ToInteger(cboCollectionPicker.SelectedValue);
-            m_SelectedAnnotationTypeID = Conversions.ToInteger(cboAnnotationTypePicker.SelectedValue);
+            m_SelectedCollectionID = Convert.ToInt32(cboCollectionPicker.SelectedValue);
+            m_SelectedAnnotationTypeID = Convert.ToInt32(cboAnnotationTypePicker.SelectedValue);
 
             m_CollectionMembers = m_ImportHandler.LoadCollectionMembersByID(m_SelectedCollectionID, m_SelectedAnnotationTypeID);
             m_LocalFileLoaded = false;

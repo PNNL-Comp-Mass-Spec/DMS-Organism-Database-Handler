@@ -1,6 +1,5 @@
 ﻿using System;
 using FastaFileMaker_Exe.Properties;
-using Microsoft.VisualBasic;
 using PRISM;
 using Protein_Exporter;
 
@@ -244,16 +243,16 @@ namespace FastaFileMaker_Exe
 
                 if (blnWriteHeader)
                 {
-                    swOutFile.WriteLine("Date" + ControlChars.Tab +
-                                        "Time" + ControlChars.Tab +
-                                        "Protein_Collection_List" + ControlChars.Tab +
-                                        "Creation_Options" + ControlChars.Tab +
-                                        "Legacy_Fasta_Name" + ControlChars.Tab +
-                                        "Hash_String" + ControlChars.Tab +
-                                        "Fasta_File_Name" + ControlChars.Tab +
-                                        "Fasta_File_Last_Modified" + ControlChars.Tab +
-                                        "Fasta_File_Created" + ControlChars.Tab +
-                                        "Fasta_File_Size_Bytes" + ControlChars.Tab +
+                    swOutFile.WriteLine("Date" + "\t" +
+                                        "Time" + "\t" +
+                                        "Protein_Collection_List" + "\t" +
+                                        "Creation_Options" + "\t" +
+                                        "Legacy_Fasta_Name" + "\t" +
+                                        "Hash_String" + "\t" +
+                                        "Fasta_File_Name" + "\t" +
+                                        "Fasta_File_Last_Modified" + "\t" +
+                                        "Fasta_File_Created" + "\t" +
+                                        "Fasta_File_Size_Bytes" + "\t" +
                                         "Fasta_File_Age_vs_PresentTime");
                 }
 
@@ -267,16 +266,16 @@ namespace FastaFileMaker_Exe
                     fiFastaFile = new System.IO.FileInfo(fastaFileName);
                 }
 
-                swOutFile.WriteLine(DateTime.Now.ToString("yyyy-MM-dd") + ControlChars.Tab +
-                                    DateTime.Now.ToString("hh:mm:ss tt") + ControlChars.Tab +
-                                    proteinCollectionList + ControlChars.Tab +
-                                    creationOpts + ControlChars.Tab +
-                                    legacyFasta + ControlChars.Tab +
-                                    crc32Hash + ControlChars.Tab +
-                                    fastaFileName + ControlChars.Tab +
-                                    fiFastaFile.LastWriteTime.ToString() + ControlChars.Tab +
-                                    fiFastaFile.CreationTime.ToString() + ControlChars.Tab +
-                                    fiFastaFile.Length + ControlChars.Tab +
+                swOutFile.WriteLine(DateTime.Now.ToString("yyyy-MM-dd") + "\t" +
+                                    DateTime.Now.ToString("hh:mm:ss tt") + "\t" +
+                                    proteinCollectionList + "\t" +
+                                    creationOpts + "\t" +
+                                    legacyFasta + "\t" +
+                                    crc32Hash + "\t" +
+                                    fastaFileName + "\t" +
+                                    fiFastaFile.LastWriteTime.ToString() + "\t" +
+                                    fiFastaFile.CreationTime.ToString() + "\t" +
+                                    fiFastaFile.Length + "\t" +
                                     GetHumanReadableTimeInterval(DateTime.UtcNow.Subtract(fiFastaFile.LastWriteTimeUtc)));
 
                 if (swOutFile != null)
@@ -345,7 +344,7 @@ namespace FastaFileMaker_Exe
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error parsing the command line parameters: " + ControlChars.NewLine + ex.Message);
+                Console.WriteLine("Error parsing the command line parameters: " + Environment.NewLine + ex.Message);
                 return false;
             }
         }

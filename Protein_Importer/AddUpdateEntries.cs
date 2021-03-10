@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using Microsoft.VisualBasic.CompilerServices;
 using PRISMDatabaseUtils;
 using Protein_Exporter;
 
@@ -356,10 +355,10 @@ namespace Protein_Importer
             {
                 foreach (DataRow testRow in foundRows)
                 {
-                    tmpSeq = Conversions.ToString(testRow["Sequence"]);
+                    tmpSeq = testRow["Sequence"].ToString();
                     if (tmpSeq.Equals(entry.Sequence))
                     {
-                        tmpProteinID = Conversions.ToInteger(testRow["Protein_ID"]);
+                        tmpProteinID = Convert.ToInt32(testRow["Protein_ID"]);
                     }
                 }
             }

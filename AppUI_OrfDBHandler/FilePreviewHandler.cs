@@ -1,7 +1,7 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using Microsoft.VisualBasic.CompilerServices;
 using Protein_Importer;
 using Protein_Storage;
 
@@ -77,7 +77,7 @@ namespace AppUI_OrfDBHandler
             }
             else
             {
-                FillPreview(Conversions.ToInteger(m_frmPreview.txtLineCount.Text));
+                FillPreview(Convert.ToInt32(m_frmPreview.txtLineCount.Text));
             }
 
             FormStatus?.Invoke(true);

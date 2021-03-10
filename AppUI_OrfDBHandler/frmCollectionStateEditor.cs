@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Timers;
 using System.Windows.Forms;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace AppUI_OrfDBHandler
 {
@@ -125,7 +124,7 @@ namespace AppUI_OrfDBHandler
             //
             // lblCollectionsListView
             //
-            lblCollectionsListView.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            lblCollectionsListView.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             lblCollectionsListView.Location = new Point(14, 17);
             lblCollectionsListView.Name = "lblCollectionsListView";
             lblCollectionsListView.Size = new Size(826, 24);
@@ -207,7 +206,7 @@ namespace AppUI_OrfDBHandler
             Controls.Add(pbxLiveSearchBkg);
             Controls.Add(lvwCollections);
             Controls.Add(lblCollectionsListView);
-            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             Menu = MainMenu1;
             Name = "frmCollectionStateEditor";
             Padding = new Padding(10, 30, 10, 50);
@@ -296,7 +295,7 @@ namespace AppUI_OrfDBHandler
         private void cboStateChanger_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox cbo = (ComboBox)sender;
-            m_SelectedNewStateID = Conversions.ToInteger(cbo.SelectedValue);
+            m_SelectedNewStateID = Convert.ToInt32(cbo.SelectedValue);
         }
 
         private void cmdStateChanger_Click(object sender, EventArgs e)

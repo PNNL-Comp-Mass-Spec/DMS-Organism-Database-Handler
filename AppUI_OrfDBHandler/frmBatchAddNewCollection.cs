@@ -8,8 +8,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.CompilerServices;
 using PRISMDatabaseUtils;
 using Protein_Uploader;
 using Raccoom.Windows.Forms;
@@ -518,7 +516,7 @@ namespace AppUI_OrfDBHandler
             Controls.Add(cboAnnotationTypePicker);
             Controls.Add(lblAnnAuth);
             Controls.Add(lblSelectedFiles);
-            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             MinimumSize = new Size(1120, 576);
             Name = "frmBatchAddNewCollection";
             Text = "Batch Upload FASTA Files";
@@ -896,7 +894,7 @@ namespace AppUI_OrfDBHandler
                 li.Text = fi.Name;
 
                 // Last Write Time
-                li.SubItems.Add(Strings.Format(fi.LastWriteTime, "g"));
+                li.SubItems.Add(fi.LastWriteTime.ToString("g"));
 
                 // File Size
                 li.SubItems.Add(Numeric2Bytes(fi.Length));
@@ -981,7 +979,7 @@ namespace AppUI_OrfDBHandler
             bSize[7] = "ZB"; // Zettabytes
             bSize[8] = "YB"; // Yottabytes
 
-            for (i = Information.UBound(bSize); i >= 0; i -= 1)
+            for (i = bSize.Length; i >= 0; i -= 1)
             {
                 if (b >= Math.Pow(1024d, i))
                 {
@@ -1011,17 +1009,17 @@ namespace AppUI_OrfDBHandler
             if (value >= 100d)
             {
                 // No digits after the decimal
-                return Strings.Format((int)Math.Round(value));
+                return ((int)Math.Round(value)).ToString();
             }
             else if (value >= 1d)
             {
                 // One digit after the decimal
-                return Strings.Format(value, "0.0");
+                return value.ToString("0.0");
             }
             else
             {
                 // Two digits after the decimal
-                return Strings.Format(value, "0.00");
+                return value.ToString("0.00");
             }
         }
 
@@ -1298,7 +1296,7 @@ namespace AppUI_OrfDBHandler
 
                         if (!DBNull.Value.Equals(objRow[intDataColumnIndexToCheck]))
                         {
-                            if ((Conversions.ToString(objRow[intDataColumnIndexToCheck]) ?? "") == (strValue ?? ""))
+                            if ((objRow[intDataColumnIndexToCheck]?.ToString() ?? "") == (strValue ?? ""))
                             {
                                 objComboBox.SelectedIndex = intIndex;
                                 break;
@@ -1355,7 +1353,7 @@ namespace AppUI_OrfDBHandler
         /// <remarks></remarks>
         private string StripWhiteSpace(string value)
         {
-            string updatedValue = value.Trim().Replace(Conversions.ToString(ControlChars.Tab), "; ").Replace(ControlChars.NewLine, "; ").Replace(Conversions.ToString(ControlChars.Cr), "; ").Replace(Conversions.ToString(ControlChars.Lf), "; ");
+            string updatedValue = value.Trim().Replace("\t", "; ").Replace(Environment.NewLine, "; ").Replace("\r", "; ").Replace("\n", "; ");
 
             return updatedValue;
         }
@@ -1462,7 +1460,7 @@ namespace AppUI_OrfDBHandler
 
             if (ReferenceEquals(cboAnnotationTypePicker.SelectedValue.GetType(), Type.GetType("System.Int32")))
             {
-                m_SelectedAnnotationTypeID = Conversions.ToInteger(cboAnnotationTypePicker.SelectedValue);
+                m_SelectedAnnotationTypeID = (int)Math.Round(Convert.ToDouble(cboAnnotationTypePicker.SelectedValue));
             }
             else
             {

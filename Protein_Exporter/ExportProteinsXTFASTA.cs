@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Text;
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.CompilerServices;
 using PRISM;
 using PRISMWin;
 using Protein_Storage;
@@ -278,12 +276,12 @@ namespace Protein_Exporter
             var m = new byte[lg];
             int i, k;
             string h;
-            h = Conversion.Hex(n).PadLeft(16, '0');
+            h = n.ToString("X").PadLeft(16, '0');
             k = 16;
             for (i = lg - 1; i >= 0; i -= 1)
             {
                 k = k - 2;
-                m[i] = Conversions.ToByte("&H" + h.Substring(k, 2));
+                m[i] = Convert.ToByte("&H" + h.Substring(k, 2));
             }
 
             return m;
@@ -294,7 +292,7 @@ namespace Protein_Exporter
             int i;
             long j, k;
             if (ln == 0)
-                ln = Information.UBound(b) + 1;
+                ln = b.Length + 1;
             ln = sidx + ln - 1;
             k = 1L;
             j = b[ln];

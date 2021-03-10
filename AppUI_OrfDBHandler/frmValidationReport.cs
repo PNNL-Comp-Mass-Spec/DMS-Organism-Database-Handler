@@ -5,8 +5,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.CompilerServices;
 using Protein_Uploader;
 using ValidateFastaFile;
 
@@ -306,7 +304,7 @@ namespace AppUI_OrfDBHandler
             Controls.Add(gbxInvalidFileList);
             Controls.Add(gbxValidFileList);
             Controls.Add(cmdClose);
-            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             MinimumSize = new Size(362, 416);
             Name = "frmValidationReport";
             Text = "FASTA File Validation Failure Report";
@@ -620,9 +618,9 @@ namespace AppUI_OrfDBHandler
 
             using (var writer = new StreamWriter(new FileStream(SelectedSavePath, FileMode.Create, FileAccess.Write, FileShare.Read)))
             {
-                writer.WriteLine("Protein Name" + ControlChars.Tab +
-                                 "Line Number" + ControlChars.Tab +
-                                 "Message Type" + ControlChars.Tab +
+                writer.WriteLine("Protein Name" + "\t" +
+                                 "Line Number" + "\t" +
+                                 "Message Type" + "\t" +
                                  "Message");
 
                 if (errorList != null && errorList.Count > 0)
@@ -630,9 +628,9 @@ namespace AppUI_OrfDBHandler
                     foreach (var errorDetail in errorList)
                     {
                         writer.WriteLine(
-                            errorDetail.ProteinName + ControlChars.Tab +
-                            errorDetail.LineNumber + ControlChars.Tab +
-                            errorDetail.Type + ControlChars.Tab +
+                            errorDetail.ProteinName + "\t" +
+                            errorDetail.LineNumber + "\t" +
+                            errorDetail.Type + "\t" +
                             errorDetail.MessageText);
                         intErrorCount += 1;
                     }

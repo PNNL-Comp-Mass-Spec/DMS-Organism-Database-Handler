@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic.CompilerServices;
-
-namespace NucleotideTranslator
+﻿namespace NucleotideTranslator
 {
     public class frmNucTransGUI : System.Windows.Forms.Form
     {
@@ -273,7 +271,7 @@ namespace NucleotideTranslator
             Controls.Add(gbxDestinationSelect);
             Controls.Add(gbxTransOptions);
             Controls.Add(gbxNucSeqSelect);
-            Font = new System.Drawing.Font("Tahoma", 8.25f, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Conversions.ToByte(0));
+            Font = new System.Drawing.Font("Tahoma", 8.25f, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, (byte)0);
             Name = "frmNucTransGUI";
             Text = "Translate Nucelotide Sequences";
             gbxNucSeqSelect.ResumeLayout(false);

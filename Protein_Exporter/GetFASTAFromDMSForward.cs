@@ -6,8 +6,6 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.CompilerServices;
 using TableManipulationBase;
 
 namespace Protein_Exporter
@@ -261,7 +259,7 @@ namespace Protein_Exporter
                 if (lengthCheckTable.Rows.Count > 0)
                 {
                     var foundRow = lengthCheckTable.Rows[0];
-                    collectionLength = Conversions.ToInteger(foundRow[0]);
+                    collectionLength = Convert.ToInt32(foundRow[0]);
                 }
                 else
                 {
@@ -317,7 +315,7 @@ namespace Protein_Exporter
                     }
                     else
                     {
-                        tableName = trueName + "_" + Strings.Format(sectionStart, "0000000000") + "-" + Strings.Format(sectionEnd, "0000000000");
+                        tableName = trueName + "_" + sectionStart.ToString("0000000000") + "-" + sectionEnd.ToString("0000000000");
                     }
 
                     collectionTable.TableName = tableName;
@@ -340,7 +338,7 @@ namespace Protein_Exporter
                 }
                 while (collectionTable.Rows.Count != 0);
 
-                tmpIDListSB.Append(Strings.Format(tmpID, "000000"));
+                tmpIDListSB.Append(tmpID.ToString("000000"));
                 tmpIDListSB.Append("+");
                 if (currentCollectionCount != collectionLength)
                 {
@@ -588,7 +586,7 @@ namespace Protein_Exporter
             int id;
             try
             {
-                id = Conversions.ToInteger(foundRows[0]["Protein_Collection_ID"]);
+                id = Convert.ToInt32(foundRows[0]["Protein_Collection_ID"]);
             }
             catch (Exception ex)
             {
@@ -622,7 +620,7 @@ namespace Protein_Exporter
 
             if (foundRows.Count > 0)
             {
-                return Conversions.ToInteger(foundRows[0]["Primary_Annotation_Type_ID"]);
+                return Convert.ToInt32(foundRows[0]["Primary_Annotation_Type_ID"]);
             }
 
             return 0;
@@ -641,7 +639,7 @@ namespace Protein_Exporter
         public string GetStoredHash(string proteinCollectionName)
         {
             var foundRows = m_CollectionsCache.Select("[FileName] = '" + proteinCollectionName + "'");
-            return Conversions.ToString(foundRows[0]["Authentication_Hash"]);
+            return foundRows[0]["Authentication_Hash"]?.ToString();
         }
 
         public string GetStoredHash(int proteinCollectionID)

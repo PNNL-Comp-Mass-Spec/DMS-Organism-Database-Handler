@@ -5,8 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.CompilerServices;
 using PRISMDatabaseUtils;
 using Protein_Exporter;
 using Protein_Importer;
@@ -68,7 +66,7 @@ namespace AppUI_OrfDBHandler
             foreach (DataRow currentDr in dt.Rows)
             {
                 dr = currentDr;
-                m_TotalProteinsCount += Conversions.ToInteger(dr["NumProteins"]);
+                m_TotalProteinsCount += Convert.ToInt32(dr["NumProteins"]);
             }
 
             var outputSequenceType = GetFASTAFromDMS.SequenceTypes.forward;
@@ -82,8 +80,8 @@ namespace AppUI_OrfDBHandler
             {
                 dr = currentDr1;
                 OnSyncProgressUpdate("Processing - '" + dr["FileName"].ToString() + "'", currentCollectionProteinCount / (double)totalProteinsCount);
-                currentCollectionProteinCount = Conversions.ToInteger(dr["NumProteins"]);
-                proteinCollectionID = Conversions.ToInteger(dr["Protein_Collection_ID"]);
+                currentCollectionProteinCount = Convert.ToInt32(dr["NumProteins"]);
+                proteinCollectionID = Convert.ToInt32(dr["Protein_Collection_ID"]);
                 sourceFilePath = Path.Combine(outputPath, dr["FileName"].ToString() + ".fasta");
                 SHA1 = dr["Authentication_Hash"].ToString();
 
@@ -118,7 +116,7 @@ namespace AppUI_OrfDBHandler
 
             foreach (DataRow dr in dt.Rows)
             {
-                m_TotalProteinsCount += Conversions.ToInteger(dr["Numproteins"]);
+                m_TotalProteinsCount += Convert.ToInt32(dr["Numproteins"]);
             }
 
             DateTime startTime;
@@ -151,7 +149,7 @@ namespace AppUI_OrfDBHandler
 
             foreach (DataRow dr in dt.Rows)
             {
-                tmpID = Conversions.ToInteger(dr["Protein_Collection_ID"]);
+                tmpID = Convert.ToInt32(dr["Protein_Collection_ID"]);
                 tmpStoredSHA = dr["Authentication_Hash"].ToString();
                 tmpFilename = dr["FileName"].ToString();
                 m_GeneratedFastaFilePath = string.Empty;
@@ -185,16 +183,16 @@ namespace AppUI_OrfDBHandler
                 //     "Collection "
                 //     + Format(tmpID, "0000")
                 //     + " [Elapsed Time: "
-                //     + elapsedTimeSB.ToString + "]",
+                //     + elapsedTimeSB.ToString() + "]",
                 //     currentProteinCount / (double)totalProteinCount)
-                m_CurrentStatusMsg = "Collection " + Strings.Format(tmpID, "0000") + " [Elapsed Time: " + elapsedTimeSB.ToString() + "]";
+                m_CurrentStatusMsg = "Collection " + tmpID.ToString("0000") + " [Elapsed Time: " + elapsedTimeSB.ToString() + "]";
 
                 OnSyncProgressUpdate(
                     m_CurrentStatusMsg,
                     m_CurrentProteinCount / (double)m_TotalProteinsCount);
 
                 tmpFullPath = Path.Combine(tmpPath, tmpFilename + ".fasta");
-                // Debug.WriteLine("Start: " + tmpFilename + ": " + startTime.ToLongTimeString);
+                // Debug.WriteLine("Start: " + tmpFilename + ": " + startTime.ToLongTimeString());
 
                 tmpGenSHA = m_Exporter.ExportFASTAFile(tmpID, tmpPath,
                     GetFASTAFromDMS.DatabaseFormatTypes.fasta,
@@ -230,7 +228,7 @@ namespace AppUI_OrfDBHandler
                 // tmpNameList.Clear();
                 fi = new FileInfo(tmpFullPath);
                 fi.Delete();
-                m_CurrentProteinCount += Conversions.ToInteger(dr["NumProteins"]);
+                m_CurrentProteinCount += Convert.ToInt32(dr["NumProteins"]);
             }
 
             OnSyncCompletion();
@@ -321,7 +319,7 @@ namespace AppUI_OrfDBHandler
                 tmpOldPath = dr["Archived_File_Path"].ToString();
                 tmpNewPath = dr["Newpath"].ToString();
 
-                FileSystem.Rename(tmpOldPath, tmpNewPath);
+                File.Move(tmpOldPath, tmpNewPath);
             }
         }
 
@@ -341,13 +339,13 @@ namespace AppUI_OrfDBHandler
             foreach (DataRow collectionEntry in collectionTable.Rows)
             {
                 string tmpCollectionName = collectionEntry["FileName"].ToString();
-                int tmpCollectionID = Conversions.ToInteger(collectionEntry["Protein_Collection_ID"]);
+                int tmpCollectionID = Convert.ToInt32(collectionEntry["Protein_Collection_ID"]);
                 if (tmpCollectionID == 1026)
                 {
                     Debug.WriteLine("");
                 }
 
-                int tmpOrgID = Conversions.ToInteger(collectionEntry["Organism_ID"]);
+                int tmpOrgID = Convert.ToInt32(collectionEntry["Organism_ID"]);
 
                 var legacyFoundRows = legacyTable.Select("FileName = '" + tmpCollectionName + ".fasta' AND Organism_ID = " + tmpOrgID);
                 if (legacyFoundRows.Length > 0)
@@ -438,7 +436,7 @@ namespace AppUI_OrfDBHandler
 
             DataRow pdr = tmpTableInfo.Rows[0];
 
-            int tmpProteinCount = Conversions.ToInteger(pdr["TableRowCount"]);
+            int tmpProteinCount = Convert.ToInt32(pdr["TableRowCount"]);
 
             int startCount;
 
@@ -465,7 +463,7 @@ namespace AppUI_OrfDBHandler
 
                 foreach (DataRow dr in proteinTable.Rows)
                 {
-                    proteinList.Add(Conversions.ToInteger(dr["Protein_ID"]), dr["Sequence"].ToString());
+                    proteinList.Add(Convert.ToInt32(dr["Protein_ID"]), dr["Sequence"].ToString());
                 }
 
                 OnSyncProgressUpdate("Processing Protein_ID " + startCount.ToString() + "-" + counter.ToString() + " of " + tmpProteinCount.ToString(), counter / (double)tmpProteinCount);
@@ -484,7 +482,7 @@ namespace AppUI_OrfDBHandler
             string nameCountSQL = "SELECT TOP 1 Reference_ID FROM T_Protein_Names ORDER BY Reference_ID DESC";
 
             var nameCountResults = m_DatabaseAccessor.GetTable(nameCountSQL);
-            totalNameCount = Conversions.ToInteger(nameCountResults.Rows[0]["Reference_ID"]);
+            totalNameCount = Convert.ToInt32(nameCountResults.Rows[0]["Reference_ID"]);
 
             int tmpRefID;
             string tmpProteinName;

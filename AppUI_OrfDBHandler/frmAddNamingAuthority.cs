@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace AppUI_OrfDBHandler
 {
@@ -126,7 +125,7 @@ namespace AppUI_OrfDBHandler
             //
             cmdCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             cmdCancel.DialogResult = DialogResult.Cancel;
-            cmdCancel.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdCancel.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             cmdCancel.Location = new Point(210, 140);
             cmdCancel.Name = "cmdCancel";
             cmdCancel.TabIndex = 6;
@@ -136,7 +135,7 @@ namespace AppUI_OrfDBHandler
             //
             cmdOK.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             cmdOK.DialogResult = DialogResult.OK;
-            cmdOK.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            cmdOK.Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             cmdOK.Location = new Point(126, 140);
             cmdOK.Name = "cmdOK";
             cmdOK.TabIndex = 7;
@@ -156,7 +155,7 @@ namespace AppUI_OrfDBHandler
             Controls.Add(lblAuthWeb);
             Controls.Add(lblAuthFullName);
             Controls.Add(lblAuthShortName);
-            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, Conversions.ToByte(0));
+            Font = new Font("Tahoma", 8.25f, FontStyle.Regular, GraphicsUnit.Point, (byte)0);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             MaximumSize = new Size(298, 196);
             MinimumSize = new Size(298, 196);

@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Data;
 using System.Windows.Forms;
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.CompilerServices;
 using Protein_Importer;
 using TableManipulationBase;
 
@@ -54,7 +52,7 @@ namespace AppUI_OrfDBHandler
                 foreach (var filterElement in criteriaCollection)
                     filterString += "[Name] LIKE '%" + filterElement + "%' OR [State] LIKE '%" + filterElement + "%' OR ";
                 // Trim off final " OR "
-                filterString = Strings.Left(filterString, filterString.Length - 4);
+                filterString = filterString.Substring(0, filterString.Length - 4);
             }
             else
             {
@@ -67,13 +65,13 @@ namespace AppUI_OrfDBHandler
             lvw.BeginUpdate();
             foreach (var cRow in collectionRows)
             {
-                tmpCreated = Conversions.ToDate(cRow["Created"]);
-                tmpMod = Conversions.ToDate(cRow["Modified"]);
+                tmpCreated = Convert.ToDateTime(cRow["Created"]);
+                tmpMod = Convert.ToDateTime(cRow["Modified"]);
                 item = new ListViewItem();
                 item.Text = cRow["Name"].ToString();
                 item.Tag = cRow["ID"];
-                item.SubItems.Add(Strings.Format(tmpCreated, "yyyy-MM-dd"));
-                item.SubItems.Add(Strings.Format(tmpMod, "yyyy-MM-dd"));
+                item.SubItems.Add(tmpCreated.ToString("yyyy-MM-dd"));
+                item.SubItems.Add(tmpMod.ToString("yyyy-MM-dd"));
                 item.SubItems.Add(cRow["State"].ToString());
                 lvw.Items.Add(item);
             }

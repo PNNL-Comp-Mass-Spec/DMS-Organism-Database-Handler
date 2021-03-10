@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Windows.Forms;
-using Microsoft.VisualBasic.CompilerServices;
 using TableManipulationBase;
 
 namespace Protein_Uploader
@@ -162,10 +161,10 @@ namespace Protein_Uploader
                 {
                     string fileName = dr["FileName"].ToString();
                     string organismName = dr["Organism_Name"].ToString();
-                    int organismID = Conversions.ToInteger(dr["Organism_ID"]);
+                    int organismID = Convert.ToInt32(dr["Organism_ID"]);
                     string fullPath = dr["Full_Path"].ToString();
-                    int annotationTypeID = Conversions.ToInteger(dr["Annotation_Type_ID"]);
-                    int authorityTypeID = Conversions.ToInteger(dr["Authority_ID"]);
+                    int annotationTypeID = Convert.ToInt32(dr["Annotation_Type_ID"]);
+                    int authorityTypeID = Convert.ToInt32(dr["Authority_ID"]);
 
                     string baseName = Path.GetFileNameWithoutExtension(fileName);
 

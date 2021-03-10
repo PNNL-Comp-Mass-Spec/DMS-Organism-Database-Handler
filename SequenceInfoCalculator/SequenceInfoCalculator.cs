@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.VisualBasic.CompilerServices;
 using TableManipulationBase;
 
 namespace SequenceInfoCalculator
@@ -103,7 +102,7 @@ namespace SequenceInfoCalculator
 
                     if (!m_AminoAcids.TryGetValue(aa.ToString(), out aaInfo))
                     {
-                        result.AddSequenceInfo(new SequenceInfo(Conversions.ToString(aa), "Not Found, adding input"));
+                        result.AddSequenceInfo(new SequenceInfo(aa.ToString(), "Not Found, adding input"));
                     }
                     else
                     {
@@ -157,15 +156,15 @@ namespace SequenceInfoCalculator
 
             foreach (DataRow dr in tmpAATable.Rows)
             {
-                string singleLetterSymbol = Conversions.ToString(dr["Residue_Symbol"]);
-                string description = Conversions.ToString(dr["Description"]);
-                int countC = Conversions.ToInteger(dr["Num_C"]);
-                int countH = Conversions.ToInteger(dr["Num_H"]);
-                int countN = Conversions.ToInteger(dr["Num_N"]);
-                int countO = Conversions.ToInteger(dr["Num_O"]);
-                int countS = Conversions.ToInteger(dr["Num_S"]);
-                double monoMass = Conversions.ToDouble(dr["Monoisotopic_Mass"]);
-                double avgMass = Conversions.ToDouble(dr["Average_Mass"]);
+                string singleLetterSymbol = dr["Residue_Symbol"].ToString();
+                string description = dr["Description"].ToString();
+                int countC = Convert.ToInt32(dr["Num_C"]);
+                int countH = Convert.ToInt32(dr["Num_H"]);
+                int countN = Convert.ToInt32(dr["Num_N"]);
+                int countO = Convert.ToInt32(dr["Num_O"]);
+                int countS = Convert.ToInt32(dr["Num_S"]);
+                double monoMass = Convert.ToDouble(dr["Monoisotopic_Mass"]);
+                double avgMass = Convert.ToDouble(dr["Average_Mass"]);
 
                 AddAminoAcid(new AminoAcidInfo(singleLetterSymbol, description, countC, countH, countN, countO, countS, avgMass, monoMass));
             }

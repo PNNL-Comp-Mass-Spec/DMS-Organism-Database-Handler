@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.CompilerServices;
 using TableManipulationBase;
 
 namespace TranslationTableImport
@@ -80,14 +78,14 @@ namespace TranslationTableImport
 
                 while (tmpLineCache != null)
                 {
-                    checkString = Strings.Left(tmpLineCache, 2);
+                    checkString = tmpLineCache.Substring(0, 2);
                     if (checkString != "--")      // not a comment line. Process further
                     {
                         if (checkString == " {")   // Beginning of an entry block
                         {
                             rawEntry = new List<string>();
                             entryLine = tr.ReadLine();
-                            while (Strings.Left(entryLine, 2) != " }")
+                            while (entryLine?.Substring(0, 2) != " }")
                             {
                                 rawEntry.Add(entryLine);
                                 entryLine = tr.ReadLine();
@@ -143,12 +141,12 @@ namespace TranslationTableImport
             foreach (var str in rawEntryCollection)
             {
                 var s = str.Trim();
-                switch (Strings.Left(s, 3) ?? "")
+                switch (s.Substring(0, 3) ?? "")
                 {
                     case "nam":
                         tmp = s.TrimStart();
-                        tmpStartPos = Strings.InStr(tmp, " ") + 1;
-                        tmp = Strings.Mid(tmp, tmpStartPos);
+                        tmpStartPos = tmp.IndexOf(" ") + 1;
+                        tmp = tmp.Substring(tmpStartPos);
                         tmp = tmp.Trim(trimChars);
                         tmpNameList = tmp.Split(";".ToCharArray());
                         foreach (var tmpName in tmpNameList)
@@ -157,28 +155,28 @@ namespace TranslationTableImport
 
                     case "id ":
                         tmp = s.TrimStart();
-                        tmp = Strings.Mid(tmp, Strings.InStr(tmp, " ") + 1);
+                        tmp = tmp.Substring(tmp.IndexOf(" ") + 1);
                         tmp = tmp.TrimEnd(trimChars);
-                        id = Conversions.ToInteger(tmp);
+                        id = Convert.ToInt32(tmp);
                         break;
 
                     case "ncb":
                         tmp = s.TrimStart();
-                        tmpStartPos = Strings.InStr(tmp, "\"") + 1;
-                        tmp = Strings.Mid(tmp, tmpStartPos);
+                        tmpStartPos = tmp.IndexOf("\"") + 1;
+                        tmp = tmp.Substring(tmpStartPos);
                         tmp = tmp.TrimEnd(trimChars);
                         AAList = tmp;
                         break;
 
                     case "snc":
                         tmp = s.TrimStart();
-                        tmp = Strings.Mid(tmp, tmpStartPos);
+                        tmp = tmp.Substring(tmpStartPos);
                         tmp = tmp.TrimEnd(trimChars);
                         StartList = tmp;
                         break;
 
                     case "-- ":
-                        switch (Strings.Left(s, 8) ?? "")
+                        switch (s.Substring(0, 8) ?? "")
                         {
                             case "-- Base1":
                                 Base1List = ProcessBaseString(s);
@@ -211,7 +209,7 @@ namespace TranslationTableImport
             string tmpString;
             tmpString = rawBaseString.TrimStart();
 
-            tmpString = Strings.Mid(tmpString, 11);
+            tmpString = tmpString.Substring(11);
 
             return tmpString;
         }
@@ -259,7 +257,7 @@ namespace TranslationTableImport
             {
                 dr = m_Translation_Entries.NewRow();
                 counter += 1;
-                tmpStartString = Strings.Mid(StartString, counter, 1);
+                tmpStartString = StartString.Substring(counter, 1);
                 if (tmpStartString == "M")
                 {
                     tmpStart = true;
@@ -269,9 +267,9 @@ namespace TranslationTableImport
                     tmpStart = false;
                 }
 
-                Base1 = Strings.Mid(Base1List, counter, 1);
-                Base2 = Strings.Mid(Base2List, counter, 1);
-                Base3 = Strings.Mid(Base3List, counter, 1);
+                Base1 = Base1List.Substring(counter, 1);
+                Base2 = Base2List.Substring(counter, 1);
+                Base3 = Base3List.Substring(counter, 1);
 
                 dr["Coded_AA"] = tmpAA;
                 dr["Start_Sequence"] = tmpStartString;

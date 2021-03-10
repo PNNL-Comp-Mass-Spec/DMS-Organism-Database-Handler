@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using Microsoft.VisualBasic;
 using PRISMDatabaseUtils;
 using Protein_Uploader;
 using ValidateFastaFile;
@@ -213,7 +212,7 @@ namespace Bulk_Fasta_Importer
                         // Required columns are:
                         // FastaFilePath, OrganismName_or_ID, AnnotationTypeName_or_ID
 
-                        var dataCols = dataLine.Split(ControlChars.Tab);
+                        var dataCols = dataLine.Split('\t');
                         if (dataCols.Count() < 3)
                         {
                             ShowWarning("Invalid row; does not have 3 columns: " + dataLine);
