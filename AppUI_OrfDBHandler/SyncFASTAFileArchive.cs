@@ -300,6 +300,7 @@ namespace AppUI_OrfDBHandler
             }
         }
 
+        [Obsolete("Unused: uses an old view")]
         public void AddSortingIndices()
         {
             var getCollectionsSQL = "SELECT Protein_Collection_ID, FileName, Organism_ID FROM V_Protein_Collections_By_Organism WHERE Collection_Type_ID = 1 or Collection_Type_ID = 5";
@@ -392,6 +393,7 @@ namespace AppUI_OrfDBHandler
             return nameHash;
         }
 
+        [Obsolete("Unused")]
         public void CorrectMasses()
         {
             var proteinList = new Dictionary<int, string>();
@@ -498,6 +500,7 @@ namespace AppUI_OrfDBHandler
             OnSyncCompletion();
         }
 
+        [Obsolete("Unused")]
         private void UpdateProteinSequenceInfo(Dictionary<int, string> proteins)
         {
             var si = new SequenceInfoCalculator();

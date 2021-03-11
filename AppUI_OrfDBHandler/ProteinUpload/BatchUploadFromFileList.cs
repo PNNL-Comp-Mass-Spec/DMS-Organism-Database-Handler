@@ -71,6 +71,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             LoadEnd?.Invoke();
         }
 
+        [Obsolete("Unused: GetDmsFileEntities uses an old view")]
         public void UploadBatch()
         {
             var uiList = new List<PSUploadHandler.UploadInfo>();
@@ -127,6 +128,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             return ui;
         }
 
+        [Obsolete("Unused: uses an old view")]
         protected Dictionary<string, FileListInfo> GetDmsFileEntities()
         {
             var fileList = new Dictionary<string, FileListInfo>(StringComparer.OrdinalIgnoreCase);

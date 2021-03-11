@@ -319,6 +319,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             return LoadCollectionMembers(sqlQuery);
         }
 
+        [Obsolete("Unused")]
         public DataTable LoadCollectionMembersByName(
             string collectionName,
             int authorityId)

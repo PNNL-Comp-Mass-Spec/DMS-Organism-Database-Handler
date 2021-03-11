@@ -194,12 +194,14 @@ namespace AppUI_OrfDBHandler
             }
         }
 
+        [Obsolete("Unused")]
         private string GetCollectionName(int proteinCollectionId)
         {
             var foundRows = collectionList.Select("Protein_Collection_ID = " + proteinCollectionId);
             return foundRows[0]["FileName"].ToString();
         }
 
+        [Obsolete("Unused: UploadBatch uses an old view")]
         private void cmdBatchLoadDMS_Click(object sender, EventArgs e)
         {
             var fileBatcher = new BatchUploadFromFileList(txtConnString.Text);

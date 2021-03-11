@@ -1152,6 +1152,7 @@ namespace AppUI_OrfDBHandler
 
         #endregion
 
+        [Obsolete("Unused")]
         private void mnuAdminUpdateZeroedMasses_Click(object sender, EventArgs e)
         {
             if (mSyncer == null)
@@ -1211,6 +1212,7 @@ namespace AppUI_OrfDBHandler
             mSyncer.FixArchivedFilePaths();
         }
 
+        [Obsolete("Unused: AddSortingIndices uses an old view")]
         private void MenuItem8_Click(object sender, EventArgs e)
         {
             if (mSyncer == null)
