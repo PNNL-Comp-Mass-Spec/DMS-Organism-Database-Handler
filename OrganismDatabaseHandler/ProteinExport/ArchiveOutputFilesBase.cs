@@ -25,21 +25,9 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         protected delegate void ArchiveStartEventHandler();
 
-        protected event SubTaskStartEventHandler SubTaskStart;
-
-        protected delegate void SubTaskStartEventHandler(string taskDescription);
-
-        protected event SubTaskProgressUpdateEventHandler SubTaskProgressUpdate;
-
-        protected delegate void SubTaskProgressUpdateEventHandler(double fractionDone);
-
         protected event OverallProgressUpdateEventHandler OverallProgressUpdate;
 
         protected delegate void OverallProgressUpdateEventHandler(double fractionDone);
-
-        protected event ArchiveCompleteEventHandler ArchiveComplete;
-
-        protected delegate void ArchiveCompleteEventHandler(string archivePath);
 
         /// <summary>
         /// Constructor

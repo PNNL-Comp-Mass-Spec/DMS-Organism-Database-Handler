@@ -20,10 +20,6 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         private readonly FASTAReader mImporter;
 
-        private int mPersistentTaskNum;
-
-        private string mSPError;
-
         // Unused constants
         // protected const string ProteinCollectionsTable = "T_Protein_Collections";
         // protected const string ProteinsTable = "T_Proteins";
