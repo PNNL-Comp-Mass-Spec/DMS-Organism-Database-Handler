@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{78AD9853-60BB-4B10-8FF2-418B3A21092D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <AssemblyName>PRISMSeq Uploader</AssemblyName>
+    <AssemblyName>PRISMSeq_Uploader</AssemblyName>
     <RootNamespace>AppUI_OrfDBHandler</RootNamespace>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
