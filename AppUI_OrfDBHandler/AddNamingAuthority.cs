@@ -7,67 +7,67 @@ namespace AppUI_OrfDBHandler
 {
     public class AddNamingAuthorityType
     {
-        private readonly string m_ConnectionString;
-        private AddUpdateEntries m_SPRunner;
+        private readonly string mConnectionString;
+        private AddUpdateEntries mSPRunner;
 
-        private string m_shortName;
-        private string m_fullName;
-        private string m_webAddress;
-        private bool m_EntryExists = false;
-        private ImportHandler m_Importer;
-        private readonly DataTable m_AuthorityTable;
-        private Point m_FormLocation;
+        private string mshortName;
+        private string mfullName;
+        private string mwebAddress;
+        private bool mEntryExists = false;
+        private ImportHandler mImporter;
+        private readonly DataTable mAuthorityTable;
+        private Point mFormLocation;
 
-        public string ShortName => m_shortName;
+        public string ShortName => mshortName;
 
-        public string FullName => m_fullName;
+        public string FullName => mfullName;
 
-        public string WebAddress => m_webAddress;
+        public string WebAddress => mwebAddress;
 
-        public bool EntryExists => m_EntryExists;
+        public bool EntryExists => mEntryExists;
 
-        public DataTable AuthoritiesTable => m_AuthorityTable;
+        public DataTable AuthoritiesTable => mAuthorityTable;
 
         public Point FormLocation
         {
-            set => m_FormLocation = value;
+            set => mFormLocation = value;
         }
 
         public AddNamingAuthorityType(string psConnectionString)
         {
-            m_ConnectionString = psConnectionString;
-            m_AuthorityTable = GetAuthoritiesList();
+            mConnectionString = psConnectionString;
+            mAuthorityTable = GetAuthoritiesList();
         }
 
         public int AddNamingAuthority()
         {
             var frmAuth = new frmAddNamingAuthority();
-            frmAuth.DesktopLocation = m_FormLocation;
+            frmAuth.DesktopLocation = mFormLocation;
             int authID;
-            if (m_SPRunner == null)
+            if (mSPRunner == null)
             {
-                m_SPRunner = new AddUpdateEntries(m_ConnectionString);
+                mSPRunner = new AddUpdateEntries(mConnectionString);
             }
 
             var r = frmAuth.ShowDialog();
 
             if (r == DialogResult.OK)
             {
-                m_shortName = frmAuth.ShortName;
-                m_fullName = frmAuth.FullName;
-                m_webAddress = frmAuth.WebAddress;
-                authID = m_SPRunner.AddNamingAuthority(m_shortName, m_fullName, m_webAddress);
+                mshortName = frmAuth.ShortName;
+                mfullName = frmAuth.FullName;
+                mwebAddress = frmAuth.WebAddress;
+                authID = mSPRunner.AddNamingAuthority(mshortName, mfullName, mwebAddress);
                 if (authID < 0)
                 {
                     MessageBox.Show(
-                        "An entry for '" + m_shortName + "' already exists in the Authorities table",
+                        "An entry for '" + mshortName + "' already exists in the Authorities table",
                         "Entry already exists!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2);
-                    m_EntryExists = true;
+                    mEntryExists = true;
                     authID = -authID;
                 }
                 else
                 {
-                    m_EntryExists = false;
+                    mEntryExists = false;
                 }
             }
             else
@@ -75,19 +75,19 @@ namespace AppUI_OrfDBHandler
                 authID = -1;
             }
 
-            m_SPRunner = null;
+            mSPRunner = null;
 
             return authID;
         }
 
         private DataTable GetAuthoritiesList()
         {
-            if (m_Importer == null)
+            if (mImporter == null)
             {
-                m_Importer = new ImportHandler(m_ConnectionString);
+                mImporter = new ImportHandler(mConnectionString);
             }
 
-            var tmpAuthTable = m_Importer.LoadAuthorities();
+            var tmpAuthTable = mImporter.LoadAuthorities();
 
             return tmpAuthTable;
         }

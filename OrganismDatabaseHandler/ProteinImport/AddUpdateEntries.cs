@@ -33,11 +33,11 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Unused: nuc_original_source = 5,
         }
 
-        private readonly DBTask m_DatabaseAccessor;
-        // Unused: protected int m_OrganismID;
-        // Unused: protected HashTable m_ProteinLengths;
+        private readonly DBTask mDatabaseAccessor;
+        // Unused: protected int mOrganismID;
+        // Unused: protected HashTable mProteinLengths;
 
-        private System.Security.Cryptography.SHA1Managed m_Hasher;
+        private System.Security.Cryptography.SHA1Managed mHasher;
         // Unused: protected Threading.Thread ProteinHashThread;
         // Unused: protected Threading.Thread ReferenceHashThread;
 
@@ -79,8 +79,8 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public AddUpdateEntries(string PISConnectionString)
         {
-            m_DatabaseAccessor = new DBTask(PISConnectionString);
-            m_Hasher = new System.Security.Cryptography.SHA1Managed();
+            mDatabaseAccessor = new DBTask(PISConnectionString);
+            mHasher = new System.Security.Cryptography.SHA1Managed();
         }
 
         [Obsolete("No longer used")]
@@ -443,7 +443,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var byteSourceText = encoding.GetBytes(sourceText);
 
             // Compute the hash value from the source
-            var sha1_hash = m_Hasher.ComputeHash(byteSourceText);
+            var sha1_hash = mHasher.ComputeHash(byteSourceText);
 
             // And convert it to String format for return
             string sha1string = RijndaelEncryptionHandler.ToHexString(sha1_hash);
@@ -456,7 +456,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         protected string RunSP_GetProteinCollectionState(
             int proteinCollectionID)
         {
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("GetProteinCollectionState", CommandType.StoredProcedure);
 
@@ -495,7 +495,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                 encryptionFlag = 1;
             }
 
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("AddProteinSequence", CommandType.StoredProcedure);
 
@@ -534,7 +534,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             double averageMass,
             string sha1_Hash)
         {
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("UpdateProteinSequenceInfo", CommandType.StoredProcedure);
 
@@ -571,7 +571,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             int numResidues,
             SPModes mode)
         {
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("AddUpdateProteinCollection", CommandType.StoredProcedure);
 
@@ -632,7 +632,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             int sortingIndex, int Protein_Collection_ID,
             string mode)
         {
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("AddUpdateProteinCollectionMember_New", CommandType.StoredProcedure);
 
@@ -661,7 +661,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         {
             string phraseHash = GenerateHash(passphrase);
 
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("AddUpdateEncryptionMetadata", CommandType.StoredProcedure);
 
@@ -688,7 +688,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             string fullName,
             string webAddress)
         {
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("AddNamingAuthority", CommandType.StoredProcedure);
 
@@ -716,7 +716,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             string example,
             int authorityID)
         {
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("AddAnnotationType", CommandType.StoredProcedure);
 
@@ -743,7 +743,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             int proteinCollectionID,
             int collectionStateID)
         {
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("UpdateProteinCollectionState", CommandType.StoredProcedure);
 
@@ -772,7 +772,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         /// <remarks>NumResidues in T_Protein_Collections is set to 0</remarks>
         protected int RunSP_DeleteProteinCollectionMembers(int proteinCollectionID, int numProteinsForReLoad)
         {
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("DeleteProteinCollectionMembers", CommandType.StoredProcedure);
 
@@ -798,7 +798,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         protected int RunSP_GetProteinCollectionMemberCount(int proteinCollectionID)
         {
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("GetProteinCollectionMemberCount", CommandType.StoredProcedure);
 
@@ -827,7 +827,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         {
             if (maxProteinNameLength <= 0)
                 maxProteinNameLength = 32;
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("AddProteinReference", CommandType.StoredProcedure);
 
@@ -839,7 +839,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@description", SqlType.VarChar, 900).Value = description;
 
             // TODO (org fix) Remove this reference and fix associated stored procedure
-            // myParam = dbTools.AddParameter(cmdSave, "@organism_ID", SqlType.Int)
+            // myParam = dbTools.AddParameter(cmdSave, "@organismID", SqlType.Int)
             // myParam.Direction = ParameterDirection.Input
             // myParam.Value = OrganismID
 
@@ -876,7 +876,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         protected int RunSP_GetProteinCollectionID(string proteinCollectionName)
         {
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("GetProteinCollectionID", CommandType.StoredProcedure);
 
@@ -902,7 +902,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             int numProteins,
             int totalResidueCount)
         {
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("AddCRC32FileAuthentication", CommandType.StoredProcedure);
 
@@ -929,7 +929,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             int protein_Collection_ID,
             int organismID)
         {
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("AddCollectionOrganismXref", CommandType.StoredProcedure);
 
@@ -938,7 +938,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             // Define parameters for the procedure's arguments
             dbTools.AddParameter(cmdSave, "@Protein_Collection_ID", SqlType.Int).Value = protein_Collection_ID;
-            dbTools.AddParameter(cmdSave, "@Organism_ID", SqlType.Int).Value = organismID;
+            dbTools.AddParameter(cmdSave, "@OrganismID", SqlType.Int).Value = organismID;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
 
             // Execute the sp
@@ -959,7 +959,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var tmpHash = protein_Name + "_" + description + "_" + protein_ID.ToString();
             string tmpGenSHA = GenerateHash(tmpHash.ToLower());
 
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("UpdateProteinNameHash", CommandType.StoredProcedure);
 
@@ -985,7 +985,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             int numResidues,
             int proteinCollectionID)
         {
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("UpdateProteinCollectionCounts", CommandType.StoredProcedure);
 
@@ -1013,7 +1013,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         {
             string tmpGenSHA = GenerateHash(proteinSequence);
 
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("UpdateProteinSequenceHash", CommandType.StoredProcedure);
 
@@ -1036,7 +1036,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         protected int RunSP_GetProteinIDFromName(string proteinName)
         {
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("GetProteinIDFromName", CommandType.StoredProcedure);
 

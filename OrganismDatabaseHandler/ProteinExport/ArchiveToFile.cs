@@ -12,8 +12,8 @@ namespace OrganismDatabaseHandler.ProteinExport
     {
         private const string DEFAULT_BASE_ARCHIVE_PATH = @"\\gigasax\DMS_FASTA_File_Archive\";
 
-        private readonly string m_BaseArchivePath;
-        private readonly SHA1Managed m_SHA1Provider;
+        private readonly string mBaseArchivePath;
+        private readonly SHA1Managed mSHA1Provider;
 
         /// <summary>
         /// Constructor
@@ -25,7 +25,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             if (databaseAccessor == null)
             {
-                m_BaseArchivePath = DEFAULT_BASE_ARCHIVE_PATH;
+                mBaseArchivePath = DEFAULT_BASE_ARCHIVE_PATH;
             }
             else
             {
@@ -33,15 +33,15 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 if (connectionStringCheck.Contains("source=cbdms"))
                 {
-                    m_BaseArchivePath = @"\\cbdms\DMS_FASTA_File_Archive\";
+                    mBaseArchivePath = @"\\cbdms\DMS_FASTA_File_Archive\";
                 }
                 else
                 {
-                    m_BaseArchivePath = DEFAULT_BASE_ARCHIVE_PATH;
+                    mBaseArchivePath = DEFAULT_BASE_ARCHIVE_PATH;
                 }
             }
 
-            m_SHA1Provider = new SHA1Managed();
+            mSHA1Provider = new SHA1Managed();
         }
 
         protected override int DispositionFile(
@@ -64,7 +64,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 "Archived_File_State_ID <> 3 " +
                 "ORDER BY File_Modification_Date DESC";
 
-            var tmpTable = m_DatabaseAccessor.GetTable(checkSQL);
+            var tmpTable = mDatabaseAccessor.GetTable(checkSQL);
             var CollectionListHexHash = GenerateHash(proteinCollectionsList + "/" + creationOptionsString);
             if (tmpTable.Rows.Count == 0)
             {
@@ -79,7 +79,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     proteinCollectionID, creationOptionsString, sourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount,
                     archivePath, Enum.GetName(typeof(CollectionTypes), archivedFileType), proteinCollectionsList, CollectionListHexHash);
 
-                tmpTable = m_DatabaseAccessor.GetTable(checkSQL);
+                tmpTable = mDatabaseAccessor.GetTable(checkSQL);
             }
             else
             {
@@ -98,12 +98,12 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
             }
 
-            m_Archived_File_Name = tmpTable.Rows[0]["Archived_File_Path"].ToString();
+            mArchived_File_Name = tmpTable.Rows[0]["Archived_File_Path"].ToString();
 
             try
             {
-                var di = new DirectoryInfo(Path.GetDirectoryName(m_Archived_File_Name));
-                var destFI = new FileInfo(m_Archived_File_Name);
+                var di = new DirectoryInfo(Path.GetDirectoryName(mArchived_File_Name));
+                var destFI = new FileInfo(mArchived_File_Name);
                 if (!di.Exists)
                 {
                     di.Create();
@@ -111,16 +111,16 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 if (!destFI.Exists)
                 {
-                    fi.CopyTo(m_Archived_File_Name);
+                    fi.CopyTo(mArchived_File_Name);
                 }
             }
             catch (UnauthorizedAccessException exUnauthorized)
             {
-                Console.WriteLine("  Warning: access denied copying file to " + m_Archived_File_Name);
+                Console.WriteLine("  Warning: access denied copying file to " + mArchived_File_Name);
             }
             catch (Exception ex)
             {
-                m_LastError = "File copying error: " + ex.Message;
+                mLastError = "File copying error: " + ex.Message;
                 return 0;
             }
 
@@ -136,7 +136,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var byteSourceText = encoding.GetBytes(sourceText);
 
             // Compute the hash value from the source
-            var sha1Hash = m_SHA1Provider.ComputeHash(byteSourceText);
+            var sha1Hash = mSHA1Provider.ComputeHash(byteSourceText);
 
             // And convert it to String format for return
             string sha1String = BitConverter.ToString(sha1Hash).Replace("-", "").ToLower();
@@ -150,7 +150,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             CollectionTypes archivedFileType,
             GetFASTAFromDMS.SequenceTypes outputSequenceType)
         {
-            var pathString = Path.Combine(m_BaseArchivePath, Enum.GetName(typeof(CollectionTypes), archivedFileType));
+            var pathString = Path.Combine(mBaseArchivePath, Enum.GetName(typeof(CollectionTypes), archivedFileType));
             pathString = Path.Combine(pathString, Enum.GetName(typeof(GetFASTAFromDMS.SequenceTypes), outputSequenceType));
             pathString = Path.Combine(pathString, "ID_00000_" + authentication_Hash + Path.GetExtension(sourceFilePath));
 
@@ -163,7 +163,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             string collectionListHash,
             string collectionListHexHash)
         {
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("UpdateFileArchiveEntryCollectionList", CommandType.StoredProcedure);
 
@@ -198,7 +198,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             string proteinCollectionsList,
             string collectionListHexHash)
         {
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("AddOutputFileArchiveEntry", CommandType.StoredProcedure);
 
@@ -221,7 +221,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Execute the sp
             dbTools.ExecuteSP(cmdSave);
 
-            m_Archived_File_Name = archivedFileFullPath;
+            mArchived_File_Name = archivedFileFullPath;
 
             // Get return value
             int ret = dbTools.GetInteger(returnParam.Value);

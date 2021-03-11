@@ -21,87 +21,87 @@ namespace OrganismDatabaseHandler.ProteinImport
 
     public class GeneOntologyEntry
     {
-        private string m_ID;
-        private string m_Name;
-        private string m_Namespace;
-        private string m_Definition;
-        private string m_Comment;
-        private bool m_IsObsolete;
-        private ArrayList m_ExactSynonym;
-        private ArrayList m_IsA;
-        private ArrayList m_XRefAnalog;
-        private ArrayList m_Relationship;
-        private ArrayList m_SubSet;
+        private string mID;
+        private string mName;
+        private string mNamespace;
+        private string mDefinition;
+        private string mComment;
+        private bool mIsObsolete;
+        private ArrayList mExactSynonym;
+        private ArrayList mIsA;
+        private ArrayList mXRefAnalog;
+        private ArrayList mRelationship;
+        private ArrayList mSubSet;
 
         public string ID
         {
-            get => m_ID;
-            set => m_ID = CleanUpLine(value);
+            get => mID;
+            set => mID = CleanUpLine(value);
         }
 
         public string Name
         {
-            get => m_Name;
-            set => m_Name = CleanUpLine(value);
+            get => mName;
+            set => mName = CleanUpLine(value);
         }
 
         public string NameSpace
         {
-            get => m_Namespace;
-            set => m_Namespace = CleanUpLine(value);
+            get => mNamespace;
+            set => mNamespace = CleanUpLine(value);
         }
 
         public string Definition
         {
-            get => m_Definition;
-            set => m_Definition = CleanUpLine(value);
+            get => mDefinition;
+            set => mDefinition = CleanUpLine(value);
         }
 
         public string Comment
         {
-            get => m_Comment;
-            set => m_Comment = CleanUpLine(value);
+            get => mComment;
+            set => mComment = CleanUpLine(value);
         }
 
         public bool IsObsolete
         {
-            get => m_IsObsolete;
-            set => m_IsObsolete = value;
+            get => mIsObsolete;
+            set => mIsObsolete = value;
         }
 
-        public ArrayList ExactSynonym_List => m_ExactSynonym;
+        public ArrayList ExactSynonymList => mExactSynonym;
 
-        public ArrayList IsA_List => m_IsA;
+        public ArrayList IsA_List => mIsA;
 
-        public ArrayList XRefAnalog_List => m_XRefAnalog;
+        public ArrayList XRefAnalog_List => mXRefAnalog;
 
-        public ArrayList Relationship => m_Relationship;
+        public ArrayList Relationship => mRelationship;
 
-        public ArrayList SubSet => m_SubSet;
+        public ArrayList SubSet => mSubSet;
 
-        public void Add_ExactSynonym_Entry(string synonym)
+        public void Add_ExactSynonymEntry(string synonym)
         {
-            m_ExactSynonym.Add(CleanUpLine(synonym));
+            mExactSynonym.Add(CleanUpLine(synonym));
         }
 
         public void Add_IsA_Entry(string IsAReference)
         {
-            m_IsA.Add(IsAReference);
+            mIsA.Add(IsAReference);
         }
 
         public void Add_XRefAnalog_Entry(string XRef)
         {
-            m_XRefAnalog.Add(XRef);
+            mXRefAnalog.Add(XRef);
         }
 
         public void Add_RelationShip_Entry(string relationshipEntry)
         {
-            m_Relationship.Add(relationshipEntry);
+            mRelationship.Add(relationshipEntry);
         }
 
         public void Add_Subset_Entry(string subsetEntry)
         {
-            m_SubSet.Add(subsetEntry);
+            mSubSet.Add(subsetEntry);
         }
 
         private string CleanUpLine(string entryLine)

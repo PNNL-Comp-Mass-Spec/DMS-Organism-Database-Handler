@@ -10,7 +10,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class ExportProteinsFASTA : ExportProteins
     {
-        private readonly int m_seqLineLength = 60;
+        private readonly int mseqLineLength = 60;
 
         public ExportProteinsFASTA(GetFASTAFromDMSForward exportComponent)
             : base(exportComponent)
@@ -89,9 +89,9 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                     writer.WriteLine((">" + tmpPC.Reference + " " + tmpDesc + tmpAltNames).Trim());
 
-                    for (var proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += m_seqLineLength)
+                    for (var proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += mseqLineLength)
                     {
-                        var seqLine = tmpSeq.Substring(proteinPosition, m_seqLineLength);
+                        var seqLine = tmpSeq.Substring(proteinPosition, mseqLineLength);
                         writer.WriteLine(seqLine);
                     }
                 }
@@ -209,7 +209,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 foreach (var currentRow in foundRows)
                 {
-                    string tmpSeq = m_ExportComponent.SequenceExtender(currentRow["Sequence"].ToString(), proteinTable.Rows.Count);
+                    string tmpSeq = mExportComponent.SequenceExtender(currentRow["Sequence"].ToString(), proteinTable.Rows.Count);
 
                     counter += 1;
 
@@ -220,13 +220,13 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                     int proteinLength = tmpSeq.Length;
                     string tmpDesc = hexCodeFinder.Replace(currentRow["Description"].ToString(), " ");
-                    string tmpName = m_ExportComponent.ReferenceExtender(currentRow["Name"].ToString());
+                    string tmpName = mExportComponent.ReferenceExtender(currentRow["Name"].ToString());
 
                     writer.WriteLine((">" + tmpName + " " + tmpDesc + tmpAltNames).Trim());
 
-                    for (int proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += m_seqLineLength)
+                    for (int proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += mseqLineLength)
                     {
-                        string seqLinePortion = tmpSeq.Substring(proteinPosition, m_seqLineLength);
+                        string seqLinePortion = tmpSeq.Substring(proteinPosition, mseqLineLength);
                         writer.WriteLine(seqLinePortion);
                     }
 

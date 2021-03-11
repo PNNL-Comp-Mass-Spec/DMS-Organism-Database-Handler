@@ -9,10 +9,10 @@ namespace AppUI_OrfDBHandler
 {
     public class FilePreviewHandler
     {
-        private ProteinStorage m_Proteins;
-        private FASTAReader m_Loader;
-        private string m_currentFilePath;
-        private frmFilePreview m_frmPreview;
+        private ProteinStorage mProteins;
+        private FASTAReader mLoader;
+        private string mcurrentFilePath;
+        private frmFilePreview mfrmPreview;
 
         public event FormStatusEventHandler FormStatus;
 
@@ -20,56 +20,56 @@ namespace AppUI_OrfDBHandler
 
         public FilePreviewHandler()
         {
-            m_frmPreview = new frmFilePreview();
-            m_frmPreview.RefreshRequest += FillPreview;
-            m_frmPreview.FormClosing += OnFormClose;
+            mfrmPreview = new frmFilePreview();
+            mfrmPreview.RefreshRequest += FillPreview;
+            mfrmPreview.FormClosing += OnFormClose;
         }
 
         private void GetProteins(
             string filePath,
             int lineCount)
         {
-            if (m_Loader == null)
+            if (mLoader == null)
             {
-                m_Loader = new FASTAReader();
+                mLoader = new FASTAReader();
             }
 
-            m_Proteins = m_Loader.GetProteinEntries(filePath, lineCount);
+            mProteins = mLoader.GetProteinEntries(filePath, lineCount);
 
-            var newPreviewContents = m_Proteins.GetEntriesIEnumerable().Select(protein =>
+            var newPreviewContents = mProteins.GetEntriesIEnumerable().Select(protein =>
             {
                 var li = new ListViewItem(protein.Reference);
                 li.SubItems.Add(protein.Description);
                 return li;
             }).ToArray();
-            m_frmPreview.SetPreviewItems(newPreviewContents);
+            mfrmPreview.SetPreviewItems(newPreviewContents);
         }
 
         private void FillPreview(int lineCount)
         {
-            GetProteins(m_currentFilePath, lineCount);
+            GetProteins(mcurrentFilePath, lineCount);
         }
 
         public void ShowPreview(string filePath, int horizontalPos, int verticalPos, int height)
         {
-            m_currentFilePath = filePath;
-            if (m_frmPreview == null)
+            mcurrentFilePath = filePath;
+            if (mfrmPreview == null)
             {
-                m_frmPreview = new frmFilePreview();
-                m_frmPreview.RefreshRequest += FillPreview;
-                m_frmPreview.FormClosing += OnFormClose;
+                mfrmPreview = new frmFilePreview();
+                mfrmPreview.RefreshRequest += FillPreview;
+                mfrmPreview.FormClosing += OnFormClose;
             }
 
-            m_frmPreview.DesktopLocation = new Point(horizontalPos, verticalPos);
-            m_frmPreview.Height = height;
-            m_frmPreview.WindowName = "Preview of: " + Path.GetFileName(filePath);
-            if (m_frmPreview.Visible == false)
+            mfrmPreview.DesktopLocation = new Point(horizontalPos, verticalPos);
+            mfrmPreview.Height = height;
+            mfrmPreview.WindowName = "Preview of: " + Path.GetFileName(filePath);
+            if (mfrmPreview.Visible == false)
             {
-                m_frmPreview.Show();
+                mfrmPreview.Show();
             }
             else
             {
-                FillPreview(m_frmPreview.GetLineCount());
+                FillPreview(mfrmPreview.GetLineCount());
             }
 
             FormStatus?.Invoke(true);
@@ -77,32 +77,32 @@ namespace AppUI_OrfDBHandler
 
         public void CloseForm()
         {
-            m_frmPreview.Close();
+            mfrmPreview.Close();
         }
 
         ~FilePreviewHandler()
         {
-            if (m_frmPreview != null)
+            if (mfrmPreview != null)
             {
-                m_frmPreview.RefreshRequest -= FillPreview;
-                m_frmPreview.FormClosing -= OnFormClose;
+                mfrmPreview.RefreshRequest -= FillPreview;
+                mfrmPreview.FormClosing -= OnFormClose;
             }
 
-            m_Proteins = null;
-            m_Loader = null;
-            m_frmPreview = null;
+            mProteins = null;
+            mLoader = null;
+            mfrmPreview = null;
         }
 
         public void OnFormClose()
         {
             FormStatus?.Invoke(false);
 
-            if (m_frmPreview != null)
+            if (mfrmPreview != null)
             {
-                m_frmPreview.RefreshRequest -= FillPreview;
-                m_frmPreview.FormClosing -= OnFormClose;
+                mfrmPreview.RefreshRequest -= FillPreview;
+                mfrmPreview.FormClosing -= OnFormClose;
             }
-            m_frmPreview = null;
+            mfrmPreview = null;
         }
     }
 }

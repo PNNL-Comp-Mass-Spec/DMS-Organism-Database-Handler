@@ -34,26 +34,26 @@ namespace OrganismDatabaseHandler.ProteinExport
         public const string LOCK_FILE_PROGRESS_TEXT = "Lockfile";
         public const string HASHCHECK_SUFFIX = ".hashcheck";
 
-        private GetFASTAFromDMSForward m_Getter;
-        private ArchiveOutputFilesBase m_Archiver;
-        private DatabaseFormatTypes m_DatabaseFormatType;
-        private SequenceTypes m_OutputSequenceType;
-        private ArchiveOutputFilesBase.CollectionTypes m_CollectionType;
-        private string m_FinalOutputPath;
+        private GetFASTAFromDMSForward mGetter;
+        private ArchiveOutputFilesBase mArchiver;
+        private DatabaseFormatTypes mDatabaseFormatType;
+        private SequenceTypes mOutputSequenceType;
+        private ArchiveOutputFilesBase.CollectionTypes mCollectionType;
+        private string mFinalOutputPath;
 
-        private List<string> m_ArchiveCollectionList;
-        private readonly DBTask m_DatabaseAccessor;
-        private readonly SHA1Managed m_SHA1Provider;
-        private readonly FileTools m_FileTools;
+        private List<string> mArchiveCollectionList;
+        private readonly DBTask mDatabaseAccessor;
+        private readonly SHA1Managed mSHA1Provider;
+        private readonly FileTools mFileTools;
 
-        private DateTime m_LastLockQueueWaitTimeLog;
+        private DateTime mLastLockQueueWaitTimeLog;
 
         public bool DecoyProteinsUseXXX { get; set; } = true;
 
-        public GetFASTAFromDMSForward ExporterComponent => m_Getter;
+        public GetFASTAFromDMSForward ExporterComponent => mGetter;
 
         // Unused
-        // public bool WaitingForLockFile => m_WaitingForLockFile;
+        // public bool WaitingForLockFile => mWaitingForLockFile;
 
         // ReSharper disable once UnusedMember.Global
         /// <summary>
@@ -83,82 +83,82 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <param name="decoyUsesXXX">When true, decoy proteins start with XXX_ instead of Reversed_</param>
         public GetFASTAFromDMS(string dbConnectionString, DatabaseFormatTypes databaseFormatType, SequenceTypes outputSequenceType, bool decoyUsesXXX = true)
         {
-            m_SHA1Provider = new SHA1Managed();
+            mSHA1Provider = new SHA1Managed();
 
             if (string.IsNullOrWhiteSpace(dbConnectionString))
             {
-                m_DatabaseAccessor = null;
+                mDatabaseAccessor = null;
             }
             else
             {
-                m_DatabaseAccessor = new DBTask(dbConnectionString);
-                RegisterEvents(m_DatabaseAccessor);
+                mDatabaseAccessor = new DBTask(dbConnectionString);
+                RegisterEvents(mDatabaseAccessor);
             }
 
             ClassSelector(databaseFormatType, outputSequenceType, decoyUsesXXX);
 
-            m_FileTools = new FileTools();
-            m_FileTools.WaitingForLockQueue += m_FileTools_WaitingForLockQueue;
-            RegisterEvents(m_FileTools);
+            mFileTools = new FileTools();
+            mFileTools.WaitingForLockQueue += mFileTools_WaitingForLockQueue;
+            RegisterEvents(mFileTools);
         }
 
         private void ClassSelector(DatabaseFormatTypes databaseFormatType, SequenceTypes outputSequenceType, bool decoyUsesXXX)
         {
-            if (m_Getter != null)
+            if (mGetter != null)
             {
-                m_Getter.FileGenerationCompleted -= OnFileGenerationCompleted;
-                m_Getter.FileGenerationStarted -= OnFileGenerationStarted;
-                m_Getter.FileGenerationProgress -= OnFileGenerationProgressUpdate;
+                mGetter.FileGenerationCompleted -= OnFileGenerationCompleted;
+                mGetter.FileGenerationStarted -= OnFileGenerationStarted;
+                mGetter.FileGenerationProgress -= OnFileGenerationProgressUpdate;
             }
 
-            m_DatabaseFormatType = databaseFormatType;
-            m_OutputSequenceType = outputSequenceType;
+            mDatabaseFormatType = databaseFormatType;
+            mOutputSequenceType = outputSequenceType;
 
             switch (outputSequenceType)
             {
                 case SequenceTypes.forward:
-                    m_Getter = new GetFASTAFromDMSForward(m_DatabaseAccessor, databaseFormatType);
-                    m_CollectionType = ArchiveOutputFilesBase.CollectionTypes.@static;
+                    mGetter = new GetFASTAFromDMSForward(mDatabaseAccessor, databaseFormatType);
+                    mCollectionType = ArchiveOutputFilesBase.CollectionTypes.@static;
                     break;
 
                 case SequenceTypes.reversed:
-                    m_Getter = new GetFASTAFromDMSReversed(m_DatabaseAccessor, databaseFormatType);
-                    m_CollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic;
+                    mGetter = new GetFASTAFromDMSReversed(mDatabaseAccessor, databaseFormatType);
+                    mCollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic;
                     break;
 
                 case SequenceTypes.scrambled:
-                    m_Getter = new GetFASTAFromDMSScrambled(m_DatabaseAccessor, databaseFormatType);
-                    m_CollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic;
+                    mGetter = new GetFASTAFromDMSScrambled(mDatabaseAccessor, databaseFormatType);
+                    mCollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic;
                     break;
 
                 case SequenceTypes.decoy:
-                    m_Getter = new GetFASTAFromDMSDecoy(m_DatabaseAccessor, databaseFormatType, decoyUsesXXX);
-                    m_CollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic;
+                    mGetter = new GetFASTAFromDMSDecoy(mDatabaseAccessor, databaseFormatType, decoyUsesXXX);
+                    mCollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic;
                     break;
 
                 case SequenceTypes.decoyX:
-                    m_Getter = new GetFASTAFromDMSDecoyX(m_DatabaseAccessor, databaseFormatType);
-                    m_CollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic;
+                    mGetter = new GetFASTAFromDMSDecoyX(mDatabaseAccessor, databaseFormatType);
+                    mCollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic;
                     break;
             }
 
-            if (m_Getter != null)
+            if (mGetter != null)
             {
-                m_Getter.FileGenerationCompleted += OnFileGenerationCompleted;
-                m_Getter.FileGenerationStarted += OnFileGenerationStarted;
-                m_Getter.FileGenerationProgress += OnFileGenerationProgressUpdate;
+                mGetter.FileGenerationCompleted += OnFileGenerationCompleted;
+                mGetter.FileGenerationStarted += OnFileGenerationStarted;
+                mGetter.FileGenerationProgress += OnFileGenerationProgressUpdate;
             }
 
-            m_Archiver = new ArchiveToFile(m_DatabaseAccessor, this);
+            mArchiver = new ArchiveToFile(mDatabaseAccessor, this);
         }
 
         // Unused
         // protected virtual DataTable GetCollectionTable(string selectionSQL)
         // {
-        //     if (m_DatabaseAccessor == null)
-        //         m_DatabaseAccessor = new DBTask(m_PSConnectionString, true);
+        //     if (mDatabaseAccessor == null)
+        //         mDatabaseAccessor = new DBTask(mPSConnectionString, true);
 
-        //     return m_DatabaseAccessor.GetTable(selectionSQL);
+        //     return mDatabaseAccessor.GetTable(selectionSQL);
         // }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             string proteinCollectionName = GetProteinCollectionName(proteinCollectionID);
 
-            var creationOptionsHandler = new FileCreationOptions(m_DatabaseAccessor);
+            var creationOptionsHandler = new FileCreationOptions(mDatabaseAccessor);
 
             string creationOptions = creationOptionsHandler.MakeCreationOptionsString(outputSequenceType, databaseFormatType);
 
@@ -198,7 +198,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Returns the CRC32 hash of the exported file
             // Returns nothing or "" if an error
 
-            var optionsParser = new FileCreationOptions(m_DatabaseAccessor);
+            var optionsParser = new FileCreationOptions(mDatabaseAccessor);
 
             // Trim any leading or trailing commas
             protCollectionList = protCollectionList.Trim(',');
@@ -363,8 +363,8 @@ namespace OrganismDatabaseHandler.ProteinExport
                 InterimFastaFI.Delete();
             }
 
-            m_LastLockQueueWaitTimeLog = DateTime.UtcNow;
-            m_FileTools.CopyFileUsingLocks(fiSourceFile, InterimFastaFI.FullName, "OrgDBHandler", overWrite: false);
+            mLastLockQueueWaitTimeLog = DateTime.UtcNow;
+            mFileTools.CopyFileUsingLocks(fiSourceFile, InterimFastaFI.FullName, "OrgDBHandler", overWrite: false);
 
             // Now that the copy is done, rename the file to the final name
             fiFinalFile.Refresh();
@@ -435,7 +435,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                                      "Archived_File_State_ID <> 3 " +
                               "ORDER BY File_Modification_Date desc";
 
-            var fileNameTable = m_DatabaseAccessor.GetTable(fileNameSql);
+            var fileNameTable = mDatabaseAccessor.GetTable(fileNameSql);
             if (fileNameTable.Rows.Count >= 1)
             {
                 var foundRow = fileNameTable.Rows[0];
@@ -526,7 +526,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             // If more than one protein collection, then we're generating a dynamic protein collection
             if (protCollectionList.Count > 1)
             {
-                m_CollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic;
+                mCollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic;
             }
 
             string crc32Hash;
@@ -536,11 +536,11 @@ namespace OrganismDatabaseHandler.ProteinExport
                 OnDebugEvent("Retrieving fasta file for protein collections " + string.Join(",", protCollectionList.ToArray()));
 
                 // Export the fasta file
-                crc32Hash = m_Getter.ExportFASTAFile(protCollectionList, destinationFolderPath, alternateAnnotationTypeID, padWithPrimaryAnnotation);
+                crc32Hash = mGetter.ExportFASTAFile(protCollectionList, destinationFolderPath, alternateAnnotationTypeID, padWithPrimaryAnnotation);
 
                 if (string.IsNullOrEmpty(crc32Hash))
                 {
-                    string msg = "m_Getter.ExportFASTAFile returned a blank string for the CRC32 authentication hash; this likely represents a problem";
+                    string msg = "mGetter.ExportFASTAFile returned a blank string for the CRC32 authentication hash; this likely represents a problem";
                     OnErrorEvent(msg);
                     throw new Exception(msg);
                 }
@@ -552,9 +552,9 @@ namespace OrganismDatabaseHandler.ProteinExport
                 {
                     if (!firstCollectionProcessed)
                     {
-                        archivedFileId = m_Archiver.ArchiveCollection(
-                            collectionName, m_CollectionType, m_OutputSequenceType,
-                            m_DatabaseFormatType, m_FinalOutputPath,
+                        archivedFileId = mArchiver.ArchiveCollection(
+                            collectionName, mCollectionType, mOutputSequenceType,
+                            mDatabaseFormatType, mFinalOutputPath,
                             creationOptionsString, crc32Hash, proteinCollectionList);
 
                         if (archivedFileId == 0)
@@ -570,15 +570,15 @@ namespace OrganismDatabaseHandler.ProteinExport
                     else
                     {
                         int existingCollectionID = GetProteinCollectionID(collectionName);
-                        m_Archiver.AddArchiveCollectionXRef(existingCollectionID, archivedFileId);
+                        mArchiver.AddArchiveCollectionXRef(existingCollectionID, archivedFileId);
                     }
                 }
 
                 // Rename the new protein collection to the correct, final name on the local computer
                 // E.g. rename from 38FFACAC.fasta to ID_001874_38FFACAC.fasta
-                var interimFastaFile = new FileInfo(m_FinalOutputPath);
+                var interimFastaFile = new FileInfo(mFinalOutputPath);
 
-                finalFileName = Path.GetFileName(m_Archiver.Archived_File_Name);
+                finalFileName = Path.GetFileName(mArchiver.Archived_File_Name);
                 finalFileFI = new FileInfo(Path.Combine(destinationFolderPath, finalFileName));
 
                 if (finalFileFI.Exists)
@@ -779,7 +779,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Lookup the details for LegacyFASTAFileName in the database
             string legacyLocationsSQL = "SELECT FileName, Full_Path, Authentication_Hash FROM V_Legacy_Static_File_Locations WHERE FileName = '" + legacyFASTAFileName + "'";
 
-            var legacyStaticFileLocations = m_DatabaseAccessor.GetTable(legacyLocationsSQL);
+            var legacyStaticFileLocations = mDatabaseAccessor.GetTable(legacyLocationsSQL);
             if (legacyStaticFileLocations.Rows.Count == 0)
             {
                 string msg = "Legacy fasta file " + legacyFASTAFileName + " not found in V_Legacy_Static_File_Locations; unable to continue";
@@ -929,13 +929,13 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         private void OnFileGenerationCompleted(string outputPath)
         {
-            if (m_ArchiveCollectionList == null)
+            if (mArchiveCollectionList == null)
             {
-                m_ArchiveCollectionList = new List<string>();
+                mArchiveCollectionList = new List<string>();
             }
 
-            m_ArchiveCollectionList.Add(Path.GetFileName(outputPath));
-            m_FinalOutputPath = outputPath;
+            mArchiveCollectionList.Add(Path.GetFileName(outputPath));
+            mFinalOutputPath = outputPath;
             OnDebugEvent("Saved fasta file to " + outputPath);
         }
 
@@ -949,25 +949,25 @@ namespace OrganismDatabaseHandler.ProteinExport
             FileGenerationCompleted?.Invoke(finalOutputPath);
         }
 
-        private void m_FileTools_WaitingForLockQueue(string sourceFilePath, string targetFilePath, int sourceBacklogMB, int targetBacklogMB)
+        private void mFileTools_WaitingForLockQueue(string sourceFilePath, string targetFilePath, int sourceBacklogMB, int targetBacklogMB)
         {
-            if (DateTime.UtcNow.Subtract(m_LastLockQueueWaitTimeLog).TotalSeconds >= 30d)
+            if (DateTime.UtcNow.Subtract(mLastLockQueueWaitTimeLog).TotalSeconds >= 30d)
             {
-                m_LastLockQueueWaitTimeLog = DateTime.UtcNow;
+                mLastLockQueueWaitTimeLog = DateTime.UtcNow;
                 Console.WriteLine("Waiting for lockfile queue to fall below threshold to fall below threshold (Protein_Exporter); " + "SourceBacklog=" + sourceBacklogMB + " MB, " + "TargetBacklog=" + targetBacklogMB + " MB, " + "Source=" + sourceFilePath + ", " + "Target=" + targetFilePath);
 
                 string strServers;
                 if (sourceBacklogMB > 0 && targetBacklogMB > 0)
                 {
-                    strServers = m_FileTools.GetServerShareBase(sourceFilePath) + " and " + m_FileTools.GetServerShareBase(targetFilePath);
+                    strServers = mFileTools.GetServerShareBase(sourceFilePath) + " and " + mFileTools.GetServerShareBase(targetFilePath);
                 }
                 else if (targetBacklogMB > 0)
                 {
-                    strServers = m_FileTools.GetServerShareBase(targetFilePath);
+                    strServers = mFileTools.GetServerShareBase(targetFilePath);
                 }
                 else
                 {
-                    strServers = m_FileTools.GetServerShareBase(sourceFilePath);
+                    strServers = mFileTools.GetServerShareBase(sourceFilePath);
                 }
 
                 string msg = "Waiting for lockfile queue on " + strServers + " to fall below threshold";
@@ -993,64 +993,64 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <returns>File hash</returns>
         public string GenerateFileAuthenticationHash(string fullFilePath)
         {
-            return m_Getter.GetFileHash(fullFilePath);
+            return mGetter.GetFileHash(fullFilePath);
         }
 
         public Dictionary<int, string> GetAllCollections()
         {
-            return m_Getter.GetCollectionNameList();
+            return mGetter.GetCollectionNameList();
         }
 
         public Dictionary<string, string> GetCollectionsByOrganism(int organismID)
         {
-            return m_Getter.GetCollectionsByOrganism(organismID);
+            return mGetter.GetCollectionsByOrganism(organismID);
         }
 
         public DataTable GetCollectionsByOrganismTable(int organismID)
         {
-            return m_Getter.GetCollectionsByOrganismTable(organismID);
+            return mGetter.GetCollectionsByOrganismTable(organismID);
         }
 
         public Dictionary<string, string> GetOrganismList()
         {
-            return m_Getter.GetOrganismList();
+            return mGetter.GetOrganismList();
         }
 
         public DataTable GetOrganismListTable()
         {
-            return m_Getter.GetOrganismListTable();
+            return mGetter.GetOrganismListTable();
         }
 
         public string GetStoredFileAuthenticationHash(int proteinCollectionID)
         {
-            return m_Getter.GetStoredHash(proteinCollectionID);
+            return mGetter.GetStoredHash(proteinCollectionID);
         }
 
         public string GetStoredFileAuthenticationHash(string proteinCollectionName)
         {
-            return m_Getter.GetStoredHash(proteinCollectionName);
+            return mGetter.GetStoredHash(proteinCollectionName);
         }
 
         public int GetProteinCollectionID(string proteinCollectionName)
         {
-            return m_Getter.FindIDByName(proteinCollectionName);
+            return mGetter.FindIDByName(proteinCollectionName);
         }
 
         private string GetProteinCollectionName(int proteinCollectionID)
         {
-            return m_Getter.FindNameByID(proteinCollectionID);
+            return mGetter.FindNameByID(proteinCollectionID);
         }
 
         #endregion
 
         private int RunSP_AddLegacyFileUploadRequest(string legacyFilename, string authenticationHash)
         {
-            if (m_DatabaseAccessor == null)
+            if (mDatabaseAccessor == null)
             {
                 return 0;
             }
 
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             var cmdSave = dbTools.CreateCommand("AddLegacyFileUploadRequest", CommandType.StoredProcedure);
 
@@ -1080,7 +1080,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var byteSourceText = encoding.GetBytes(sourceText);
 
             // Compute the hash value from the source
-            var sha1Hash = m_SHA1Provider.ComputeHash(byteSourceText);
+            var sha1Hash = mSHA1Provider.ComputeHash(byteSourceText);
 
             // And convert it to String format for return
             string sha1String = BitConverter.ToString(sha1Hash).Replace("-", "").ToLower();

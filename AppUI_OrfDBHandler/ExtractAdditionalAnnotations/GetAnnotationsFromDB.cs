@@ -12,17 +12,17 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
     [Obsolete("Unused")]
     internal class GetAnnotationsFromDB
     {
-        private readonly string m_ConnectionString;
-        private DBTask m_DatabaseHelper;
+        private readonly string mConnectionString;
+        private DBTask mDatabaseHelper;
 
         public GetAnnotationsFromDB(string psConnectionString)
         {
-            m_ConnectionString = psConnectionString;
+            mConnectionString = psConnectionString;
         }
 
         public AnnotationInfo GetAnnotationDetails(int ProteinCollectionID)
         {
-            m_DatabaseHelper = new DBTask(m_ConnectionString);
+            mDatabaseHelper = new DBTask(mConnectionString);
 
             // FYI: The constructor for AnnotationInfo() doesn't use CollectionName or ProteinCollectionID at present
             var info = new AnnotationInfo();
@@ -30,7 +30,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             // Get Protein Collection Name
             var sqlQuery1 = "SELECT TOP 1 Name FROM V_Collection_Picker " +
                             "WHERE ID = " + ProteinCollectionID;
-            var nameLookupTable = m_DatabaseHelper.GetTable(sqlQuery1);
+            var nameLookupTable = mDatabaseHelper.GetTable(sqlQuery1);
 
             // ReSharper disable once UnusedVariable
             string collectionName = nameLookupTable.Rows[0]["Name"].ToString();
@@ -38,7 +38,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             // Get Naming Authority Lookup
 
             string sqlQuery2 = "SELECT Authority_ID, Name FROM T_Naming_Authorities";
-            var authorityLookupTable = m_DatabaseHelper.GetTable(sqlQuery2);
+            var authorityLookupTable = mDatabaseHelper.GetTable(sqlQuery2);
 
             var authorityLookupRows = authorityLookupTable.Select("");
             foreach (DataRow dr in authorityLookupRows)
@@ -52,7 +52,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
                             "FROM T_Annotation_Groups " +
                             "WHERE Protein_Collection_ID = " + ProteinCollectionID.ToString();
 
-            var annotationGroupLookup = m_DatabaseHelper.GetTable(sqlQuery3);
+            var annotationGroupLookup = mDatabaseHelper.GetTable(sqlQuery3);
 
             foreach (DataRow dr in annotationGroupLookup.Rows)
                 info.AddAnnotationGroupLookup(
@@ -66,7 +66,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             var sqlQuery4 = "SELECT * FROM V_Protein_Collection_Members " +
                 "WHERE Protein_Collection_ID = " + ProteinCollectionID.ToString() +
                 " AND Annotation_Group_ID = 0";
-            var annotationTableLookup = m_DatabaseHelper.GetTable(sqlQuery4);
+            var annotationTableLookup = mDatabaseHelper.GetTable(sqlQuery4);
 
             var annotationTableRows = annotationTableLookup.Select("");
 

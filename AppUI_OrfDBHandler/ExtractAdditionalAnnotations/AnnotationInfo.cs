@@ -6,23 +6,23 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
     [Obsolete("Unused")]
     internal class AnnotationInfo
     {
-        private readonly Dictionary<int, AnnotationDetails> m_AnnotationDetails;
+        private readonly Dictionary<int, AnnotationDetails> mAnnotationDetails;
 
-        private NameLookups m_AuthorityLookup;
-        private NameLookups m_AnnotationGroupLookup;
+        private NameLookups mAuthorityLookup;
+        private NameLookups mAnnotationGroupLookup;
 
         public AnnotationInfo()
         {
-            m_AnnotationDetails = new Dictionary<int, AnnotationDetails>();
-            m_AuthorityLookup = new NameLookups();
-            m_AnnotationGroupLookup = new NameLookups();
+            mAnnotationDetails = new Dictionary<int, AnnotationDetails>();
+            mAuthorityLookup = new NameLookups();
+            mAnnotationGroupLookup = new NameLookups();
         }
 
         public void AddPrimaryAnnotation(int proteinID,
             string protName, string description,
             int refID, int namingAuthorityID)
         {
-            m_AnnotationDetails.Add(proteinID,
+            mAnnotationDetails.Add(proteinID,
                 new AnnotationDetails(
                         protName, description, refID,
                         proteinID));
@@ -33,30 +33,30 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             string NewName,
             int AnnotationGroupID)
         {
-            var tmpDetails = m_AnnotationDetails[ProteinID];
+            var tmpDetails = mAnnotationDetails[ProteinID];
             tmpDetails.AddNewName(AnnotationGroupID, NewName);
         }
 
         public void AddAuthorityNameToLookup(
             int AuthorityID, string authName)
         {
-            m_AuthorityLookup.AddName(AuthorityID, authName);
+            mAuthorityLookup.AddName(AuthorityID, authName);
         }
 
         public void AddAnnotationGroupLookup(
             int AnnotationGroupCode,
             int AuthorityID)
         {
-            m_AnnotationGroupLookup.AddName(
+            mAnnotationGroupLookup.AddName(
                 AnnotationGroupCode,
-                m_AuthorityLookup.GetName(AuthorityID));
+                mAuthorityLookup.GetName(AuthorityID));
         }
 
         public string GetProteinName(
             int ProteinID,
             int AnnotationGroupCode)
         {
-            var details = m_AnnotationDetails[ProteinID];
+            var details = mAnnotationDetails[ProteinID];
             return details.GetAnnotationName(AnnotationGroupCode);
         }
 
@@ -67,13 +67,13 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         public int GetProteinReferenceID(int ProteinID)
         {
-            var details = m_AnnotationDetails[ProteinID];
+            var details = mAnnotationDetails[ProteinID];
             return details.ReferenceID;
         }
 
         public string GetAnnotationAuthorityName(int AnnotationGroupCode)
         {
-            return m_AuthorityLookup.GetName(AnnotationGroupCode);
+            return mAuthorityLookup.GetName(AnnotationGroupCode);
         }
 
         public struct NameLookups

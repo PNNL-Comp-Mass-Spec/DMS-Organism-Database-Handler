@@ -31,15 +31,15 @@ namespace AppUI_OrfDBHandler
 
     public class TransTableHandler
     {
-        private DataTable m_Translation_Entries;
-        private DataTable m_Translation_Tables;
-        private string m_ConnectionString;
+        private DataTable mTranslation_Entries;
+        private DataTable mTranslation_Tables;
+        private string mConnectionString;
         private const string EntriesTableName = "T_DNA_Translation_Table_Members";
         private const string IDTableName = "T_DNA_Translation_Tables";
 
         public TransTableHandler(string PIS_ConnectionString)
         {
-            m_ConnectionString = PIS_ConnectionString;
+            mConnectionString = PIS_ConnectionString;
         }
 
         public DataTable GetAllTranslationTableEntries(string FilePath)
@@ -53,13 +53,13 @@ namespace AppUI_OrfDBHandler
         private void ScanFileForEntries(string filePath)
         {
             // Look through a given ASN.1 file and scan for translation table entries
-            var dba = new DBTask(m_ConnectionString);
+            var dba = new DBTask(mConnectionString);
 
             string sqlQuery1 = "SELECT * FROM " + EntriesTableName;
-            m_Translation_Entries = dba.GetTable(sqlQuery1);
+            mTranslation_Entries = dba.GetTable(sqlQuery1);
 
             string sqlQuery2 = "SELECT * FROM " + IDTableName;
-            m_Translation_Tables = dba.GetTable(sqlQuery2);
+            mTranslation_Tables = dba.GetTable(sqlQuery2);
 
             var fi = new System.IO.FileInfo(filePath);
 
@@ -87,11 +87,11 @@ namespace AppUI_OrfDBHandler
 
                             ProcessTranslationEntry(rawEntry);
 
-                            // These two statements used a DataAdapter object to synchronize data in m_Translation_Entries and m_Translation_Tables with tables in the database
+                            // These two statements used a DataAdapter object to synchronize data in mTranslation_Entries and mTranslation_Tables with tables in the database
                             // With the update of DBTask to use DbToolsFactory in February 2020, the DataAdapter functionality is no longer enabled
 
-                            Console.WriteLine("Skipping: entryDA.Update(m_Translation_Entries)");
-                            Console.WriteLine("Skipping: idDA.Update(m_Translation_Tables)");
+                            Console.WriteLine("Skipping: entryDA.Update(mTranslation_Entries)");
+                            Console.WriteLine("Skipping: idDA.Update(mTranslation_Tables)");
                         }
 
                         tmpLineCache = tr.ReadLine();
@@ -107,7 +107,7 @@ namespace AppUI_OrfDBHandler
         [Obsolete("Unused")]
         private void SyncLocalToDMS()
         {
-            var dba = new DBTask(m_ConnectionString);
+            var dba = new DBTask(mConnectionString);
 
             string sqlQuery = "SELECT * FROM " + EntriesTableName;
 
@@ -233,17 +233,17 @@ namespace AppUI_OrfDBHandler
 
             foreach (var tmpName in NameList)
             {
-                dr = m_Translation_Tables.NewRow();
+                dr = mTranslation_Tables.NewRow();
                 dr["Translation_Table_Name"] = tmpName.Trim() + " (ID = " + ID.ToString() + ")";
                 dr["DNA_Translation_Table_ID"] = ID;
-                m_Translation_Tables.Rows.Add(dr);
+                mTranslation_Tables.Rows.Add(dr);
             }
 
             var arrAA = AAString.ToCharArray();
 
             foreach (var tmpAA in arrAA)
             {
-                dr = m_Translation_Entries.NewRow();
+                dr = mTranslation_Entries.NewRow();
                 counter += 1;
                 var tmpStartString = StartString.Substring(counter, 1);
                 if (tmpStartString == "M")
@@ -266,7 +266,7 @@ namespace AppUI_OrfDBHandler
                 dr["Base_3"] = Base3;
                 dr["DNA_Translation_Table_ID"] = ID;
 
-                m_Translation_Entries.Rows.Add(dr);
+                mTranslation_Entries.Rows.Add(dr);
             }
 
             return default;

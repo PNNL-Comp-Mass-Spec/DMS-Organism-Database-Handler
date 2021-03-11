@@ -15,7 +15,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType)
             : base(databaseAccessor, databaseFormatType)
         {
-            m_Naming_Suffix = "_reversed";
+            mNaming_Suffix = "_reversed";
         }
 
         /// <summary>

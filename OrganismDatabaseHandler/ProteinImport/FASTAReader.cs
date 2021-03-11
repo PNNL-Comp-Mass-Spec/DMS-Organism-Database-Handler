@@ -8,12 +8,12 @@ namespace OrganismDatabaseHandler.ProteinImport
 {
     public class FASTAReader
     {
-        private string m_FASTAFilePath;
+        private string mFASTAFilePath;
 
-        private string m_LastError;
-        private readonly Regex m_DescLineRegEx;
-        private readonly Regex m_NoDescLineRegEx;
-        private readonly Regex m_DescLineMatcher;
+        private string mLastError;
+        private readonly Regex mDescLineRegEx;
+        private readonly Regex mNoDescLineRegEx;
+        private readonly Regex mDescLineMatcher;
 
         #region "Events"
 
@@ -36,12 +36,12 @@ namespace OrganismDatabaseHandler.ProteinImport
         /// </summary>
         public FASTAReader()
         {
-            m_DescLineMatcher = new Regex(@"^\>.+$");
-            m_DescLineRegEx = new Regex(@"^\>(?<name>\S+)\s+(?<description>.*)$");
-            m_NoDescLineRegEx = new Regex(@"^\>(?<name>\S+)$");
+            mDescLineMatcher = new Regex(@"^\>.+$");
+            mDescLineRegEx = new Regex(@"^\>(?<name>\S+)\s+(?<description>.*)$");
+            mNoDescLineRegEx = new Regex(@"^\>(?<name>\S+)$");
         }
 
-        public string LastErrorMessage => m_LastError;
+        public string LastErrorMessage => mLastError;
 
         public ProteinStorage.ProteinStorage GetProteinEntries(string filePath)
         {
@@ -72,13 +72,13 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             var recordCount = default(int);
 
-            m_FASTAFilePath = filePath;
+            mFASTAFilePath = filePath;
 
             int lineEndCharCount = LineEndCharacterCount(filePath);
 
             try
             {
-                var fi = new FileInfo(m_FASTAFilePath);
+                var fi = new FileInfo(mFASTAFilePath);
                 var fileLength = (int)fi.Length;
                 if (fi.Exists & fileLength > 0)
                 {
@@ -90,7 +90,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
                         while (s != null)
                         {
-                            if (m_DescLineMatcher.IsMatch(s))
+                            if (mDescLineMatcher.IsMatch(s))
                             {
                                 // DescriptionLine, new record
                                 if (currentPosition > 0) // dump current record
@@ -113,15 +113,15 @@ namespace OrganismDatabaseHandler.ProteinImport
                                 sequence = string.Empty;
 
                                 Match descMatch;
-                                if (m_DescLineRegEx.IsMatch(s))
+                                if (mDescLineRegEx.IsMatch(s))
                                 {
-                                    descMatch = m_DescLineRegEx.Match(s);
+                                    descMatch = mDescLineRegEx.Match(s);
                                     reference = descMatch.Groups["name"].Value;
                                     description = descMatch.Groups["description"].Value;
                                 }
-                                else if (m_NoDescLineRegEx.IsMatch(s))
+                                else if (mNoDescLineRegEx.IsMatch(s))
                                 {
-                                    descMatch = m_NoDescLineRegEx.Match(s);
+                                    descMatch = mNoDescLineRegEx.Match(s);
                                     reference = descMatch.Groups[1].Value;
                                     description = string.Empty;
                                 }
@@ -162,7 +162,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             catch (Exception ex)
             {
                 string stackTrace = PRISM.StackTraceFormatter.GetExceptionStackTrace(ex);
-                m_LastError = ex.Message + "; " + stackTrace;
+                mLastError = ex.Message + "; " + stackTrace;
             }
 
             return fastaContents;
@@ -170,7 +170,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         protected int LineEndCharacterCount(string filePath)
         {
-            var fi = new FileInfo(m_FASTAFilePath);
+            var fi = new FileInfo(mFASTAFilePath);
             if (fi.Exists)
             {
                 using (var fileReader = new StreamReader(new FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))

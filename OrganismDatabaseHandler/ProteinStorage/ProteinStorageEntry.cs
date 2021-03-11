@@ -34,29 +34,29 @@ namespace OrganismDatabaseHandler.ProteinStorage
             Protein_ID = 0;
         }
 
-        private string m_AlternateReference;
+        private string mAlternateReference;
 
-        private List<string> m_XRefList;
+        private List<string> mXRefList;
 
         public string Reference { get; private set; }
 
         protected string AlternateReference
         {
-            get => m_AlternateReference;
+            get => mAlternateReference;
             set
             {
                 if (value.Length > 0)
                 {
-                    m_AlternateReference = value;
+                    mAlternateReference = value;
                 }
                 else
                 {
-                    m_AlternateReference = null;
+                    mAlternateReference = null;
                 }
             }
         }
 
-        public bool HasAlternateReference => m_AlternateReference != null;
+        public bool HasAlternateReference => mAlternateReference != null;
 
         public string Description { get; }
 
@@ -84,16 +84,16 @@ namespace OrganismDatabaseHandler.ProteinStorage
 
         public int SortingIndex { get; set; }
 
-        public List<string> NameXRefs => m_XRefList;
+        public List<string> NameXRefs => mXRefList;
 
         public void AddXRef(string newReference)
         {
-            if (m_XRefList == null)
+            if (mXRefList == null)
             {
-                m_XRefList = new List<string>();
+                mXRefList = new List<string>();
             }
 
-            m_XRefList.Add(newReference);
+            mXRefList.Add(newReference);
         }
 
         public void SetReferenceName(string newName)

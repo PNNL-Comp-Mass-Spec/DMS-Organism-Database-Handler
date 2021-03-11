@@ -9,20 +9,20 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     internal class FileCreationOptions
     {
-        private readonly DBTask m_DatabaseAccessor;
-        private GetFASTAFromDMS.SequenceTypes m_SeqDirection;
-        private GetFASTAFromDMS.DatabaseFormatTypes m_FileType;
-        private DataTable m_CreationValuesTable;
-        private DataTable m_KeywordTable;
+        private readonly DBTask mDatabaseAccessor;
+        private GetFASTAFromDMS.SequenceTypes mSeqDirection;
+        private GetFASTAFromDMS.DatabaseFormatTypes mFileType;
+        private DataTable mCreationValuesTable;
+        private DataTable mKeywordTable;
 
         public FileCreationOptions(DBTask databaseAccessor)
         {
-            m_DatabaseAccessor = databaseAccessor;
+            mDatabaseAccessor = databaseAccessor;
         }
 
-        public GetFASTAFromDMS.SequenceTypes SequenceDirection => m_SeqDirection;
+        public GetFASTAFromDMS.SequenceTypes SequenceDirection => mSeqDirection;
 
-        public GetFASTAFromDMS.DatabaseFormatTypes FileFormatType => m_FileType;
+        public GetFASTAFromDMS.DatabaseFormatTypes FileFormatType => mFileType;
 
         // Options string looks like... "seq_direction=forward;filetype=fasta"
         public string ExtractOptions(string optionsString)
@@ -43,18 +43,18 @@ namespace OrganismDatabaseHandler.ProteinExport
             //var valuesTableSQL = "SELECT Value_ID, Value_String, Keyword_ID FROM T_Creation_Option_Values";
             var creationValuesSQL = "SELECT Keyword, Value_String, String_Element FROM V_Creation_String_Lookup";
 
-            if (m_KeywordTable == null)
+            if (mKeywordTable == null)
             {
-                m_KeywordTable = m_DatabaseAccessor.GetTable(keywordTableSQL);
+                mKeywordTable = mDatabaseAccessor.GetTable(keywordTableSQL);
             }
 
-            // If m_ValuesTable Is Nothing Then
-            // m_ValuesTable = m_DatabaseAccessor.GetTable(valuesTableSQL)
+            // If mValuesTable Is Nothing Then
+            // mValuesTable = mDatabaseAccessor.GetTable(valuesTableSQL)
             // End If
 
-            if (m_CreationValuesTable == null)
+            if (mCreationValuesTable == null)
             {
-                m_CreationValuesTable = m_DatabaseAccessor.GetTable(creationValuesSQL);
+                mCreationValuesTable = mDatabaseAccessor.GetTable(creationValuesSQL);
             }
 
             //var optionsStringParser = new System.Text.RegularExpressions.Regex(
@@ -71,15 +71,15 @@ namespace OrganismDatabaseHandler.ProteinExport
                 tmpValue = m.Groups["value"].Value;
 
                 // Check for valid keyword/value pair
-                foundRows = m_CreationValuesTable.Select("Keyword = '" + tmpKeyword + "' AND Value_String = '" + tmpValue + "'");
+                foundRows = mCreationValuesTable.Select("Keyword = '" + tmpKeyword + "' AND Value_String = '" + tmpValue + "'");
                 if (foundRows.Length < 1)
                 {
                     // check if keyword or value is bad
                     var errorString = new StringBuilder();
-                    var checkRows = m_CreationValuesTable.Select("Keyword = '" + tmpKeyword);
+                    var checkRows = mCreationValuesTable.Select("Keyword = '" + tmpKeyword);
                     if (checkRows.Length > 0)
                         validKeyword = true;
-                    checkRows = m_CreationValuesTable.Select("Value_String = '" + tmpValue + "'");
+                    checkRows = mCreationValuesTable.Select("Value_String = '" + tmpValue + "'");
                     if (checkRows.Length > 0)
                         validValue = true;
                     if (!validKeyword)
@@ -108,7 +108,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
 
             // Parse dictionary into canonical options string for return
-            foundRows = m_KeywordTable.Select("", "Keyword_ID ASC");
+            foundRows = mKeywordTable.Select("", "Keyword_ID ASC");
             foreach (var dr in foundRows)
             {
                 if (cleanOptionsString.ToString().Length > 0)
@@ -129,11 +129,11 @@ namespace OrganismDatabaseHandler.ProteinExport
                 switch (tmpKeyword ?? "")
                 {
                     case "seq_direction":
-                        m_SeqDirection = (GetFASTAFromDMS.SequenceTypes)Enum.Parse(typeof(GetFASTAFromDMS.SequenceTypes), tmpValue);
+                        mSeqDirection = (GetFASTAFromDMS.SequenceTypes)Enum.Parse(typeof(GetFASTAFromDMS.SequenceTypes), tmpValue);
                         break;
 
                     case "filetype":
-                        m_FileType = (GetFASTAFromDMS.DatabaseFormatTypes)Enum.Parse(typeof(GetFASTAFromDMS.DatabaseFormatTypes), tmpValue);
+                        mFileType = (GetFASTAFromDMS.DatabaseFormatTypes)Enum.Parse(typeof(GetFASTAFromDMS.DatabaseFormatTypes), tmpValue);
                         break;
                 }
 

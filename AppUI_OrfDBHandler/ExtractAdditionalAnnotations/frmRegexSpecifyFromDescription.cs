@@ -12,7 +12,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             InitializeComponent();
         }
 
-        private ExtractionSources m_ExtractionSource;
+        private ExtractionSources mExtractionSource;
 
         public enum ExtractionSources
         {
@@ -44,11 +44,11 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             {
                 if ((rdb.Name ?? "") == (rdbNameSelect.Name ?? ""))
                 {
-                    m_ExtractionSource = ExtractionSources.Name;
+                    mExtractionSource = ExtractionSources.Name;
                 }
                 else if ((rdb.Name ?? "") == (rdbDescriptionSelect.Name ?? ""))
                 {
-                    m_ExtractionSource = ExtractionSources.Description;
+                    mExtractionSource = ExtractionSources.Description;
                 }
             }
         }

@@ -9,18 +9,18 @@ namespace FastaFileMaker_Exe
     {
         public const string PROGRAM_DATE = "February 18, 2020";
 
-        private const int m_DebugLevel = 4;
+        private const int mDebugLevel = 4;
         private const int FASTA_GEN_TIMEOUT_INTERVAL_MINUTES = 70;
         private const string DEFAULT_COLLECTION_OPTIONS = "seq_direction=forward,filetype=fasta";
-        private static GetFASTAFromDMS m_FastaTools;
-        private static string m_FastaToolsCnStr = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;";
-        private static string m_message;
-        private static string m_FastaFileName;
-        private static System.Timers.Timer m_FastaTimer;
-        private static bool m_FastaGenTimeOut;
-        private static bool m_GenerationComplete = false;
+        private static GetFASTAFromDMS mFastaTools;
+        private static string mFastaToolsCnStr = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;";
+        private static string mmessage;
+        private static string mFastaFileName;
+        private static System.Timers.Timer mFastaTimer;
+        private static bool mFastaGenTimeOut;
+        private static bool mGenerationComplete = false;
 
-        private static DateTime m_FastaGenStartTime = DateTime.UtcNow;
+        private static DateTime mFastaGenStartTime = DateTime.UtcNow;
 
         private static string mProteinCollectionList;
         private static string mCreationOpts;
@@ -30,44 +30,44 @@ namespace FastaFileMaker_Exe
 
         #region "Event handlers"
 
-        private static void m_FastaTools_DebugEvent(string message)
+        private static void mFastaTools_DebugEvent(string message)
         {
             ConsoleMsgUtils.ShowDebug(message);
         }
 
-        private static void m_FastaTools_ErrorEvent(string message, Exception ex)
+        private static void mFastaTools_ErrorEvent(string message, Exception ex)
         {
             ConsoleMsgUtils.ShowError(message, ex);
         }
 
-        private static void m_FastaTools_StatusEvent(string message)
+        private static void mFastaTools_StatusEvent(string message)
         {
             Console.WriteLine(message);
         }
 
-        private static void m_FastaTools_WarningEvent(string message)
+        private static void mFastaTools_WarningEvent(string message)
         {
             ConsoleMsgUtils.ShowWarning(message);
         }
 
-        private static void m_FastaTools_FileGenerationStarted(string taskMsg)
+        private static void mFastaTools_FileGenerationStarted(string taskMsg)
         {
         }
 
-        private static void m_FastaTools_FileGenerationCompleted(string fullOutputPath)
+        private static void mFastaTools_FileGenerationCompleted(string fullOutputPath)
         {
-            m_FastaFileName = System.IO.Path.GetFileName(fullOutputPath);  // Get the name of the fasta file that was generated
-            m_GenerationComplete = true;     // Set the completion flag
+            mFastaFileName = System.IO.Path.GetFileName(fullOutputPath);  // Get the name of the fasta file that was generated
+            mGenerationComplete = true;     // Set the completion flag
         }
 
         private static DateTime dtLastLogTime = DateTime.MinValue;
         private static double dblFractionDoneSaved = -1;
 
-        private static void m_FastaTools_FileGenerationProgress(string statusMsg, double fractionDone)
+        private static void mFastaTools_FileGenerationProgress(string statusMsg, double fractionDone)
         {
             const int MINIMUM_LOG_INTERVAL_SEC = 15;
 
-            if (m_DebugLevel >= 3)
+            if (mDebugLevel >= 3)
             {
                 // Limit the logging to once every MINIMUM_LOG_INTERVAL_SEC seconds
                 if (DateTime.UtcNow.Subtract(dtLastLogTime).TotalSeconds >= (double)MINIMUM_LOG_INTERVAL_SEC ||
@@ -80,12 +80,12 @@ namespace FastaFileMaker_Exe
             }
         }
 
-        private static void m_FastaTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private static void mFastaTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if (DateTime.UtcNow.Subtract(m_FastaGenStartTime).TotalMinutes >= FASTA_GEN_TIMEOUT_INTERVAL_MINUTES)
+            if (DateTime.UtcNow.Subtract(mFastaGenStartTime).TotalMinutes >= FASTA_GEN_TIMEOUT_INTERVAL_MINUTES)
             {
-                m_FastaGenTimeOut = true;        // Set the timeout flag so an error will be reported
-                m_GenerationComplete = true;     // Set the completion flag so the fasta generation wait loop will exit
+                mFastaGenTimeOut = true;        // Set the timeout flag so an error will be reported
+                mGenerationComplete = true;     // Set the completion flag so the fasta generation wait loop will exit
             }
         }
 
@@ -161,7 +161,7 @@ namespace FastaFileMaker_Exe
 
                     if (!string.IsNullOrWhiteSpace(proteinSeqsConnectionString))
                     {
-                        m_FastaToolsCnStr = proteinSeqsConnectionString;
+                        mFastaToolsCnStr = proteinSeqsConnectionString;
                     }
 
                     TestExport(mProteinCollectionList, mCreationOpts, mLegacyFasta, mOutputDirectory, mLogProteinFileDetails);
@@ -403,39 +403,39 @@ namespace FastaFileMaker_Exe
             string crc32Hash;
 
             // Instantiate fasta tool if not already done
-            if (m_FastaTools == null)
+            if (mFastaTools == null)
             {
-                if (string.IsNullOrEmpty(m_FastaToolsCnStr))
+                if (string.IsNullOrEmpty(mFastaToolsCnStr))
                 {
-                    m_message = "Protein database connection string not specified";
-                    Console.WriteLine("clsAnalysisResources.CreateFastaFile(), " + m_message);
+                    mmessage = "Protein database connection string not specified";
+                    Console.WriteLine("clsAnalysisResources.CreateFastaFile(), " + mmessage);
                     return false;
                 }
 
-                m_FastaTools = new GetFASTAFromDMS(m_FastaToolsCnStr);
-                m_FastaTools.DebugEvent += m_FastaTools_DebugEvent;
-                m_FastaTools.ErrorEvent += m_FastaTools_ErrorEvent;
-                m_FastaTools.StatusEvent += m_FastaTools_StatusEvent;
-                m_FastaTools.WarningEvent += m_FastaTools_WarningEvent;
-                m_FastaTools.FileGenerationStarted += m_FastaTools_FileGenerationStarted;
-                m_FastaTools.FileGenerationCompleted += m_FastaTools_FileGenerationCompleted;
-                m_FastaTools.FileGenerationProgress += m_FastaTools_FileGenerationProgress;
+                mFastaTools = new GetFASTAFromDMS(mFastaToolsCnStr);
+                mFastaTools.DebugEvent += mFastaTools_DebugEvent;
+                mFastaTools.ErrorEvent += mFastaTools_ErrorEvent;
+                mFastaTools.StatusEvent += mFastaTools_StatusEvent;
+                mFastaTools.WarningEvent += mFastaTools_WarningEvent;
+                mFastaTools.FileGenerationStarted += mFastaTools_FileGenerationStarted;
+                mFastaTools.FileGenerationCompleted += mFastaTools_FileGenerationCompleted;
+                mFastaTools.FileGenerationProgress += mFastaTools_FileGenerationProgress;
             }
 
-            m_FastaTimer = new System.Timers.Timer();
-            m_FastaTimer.Elapsed += m_FastaTimer_Elapsed;
-            m_FastaTimer.Interval = 5000d;
-            m_FastaTimer.AutoReset = true;
+            mFastaTimer = new System.Timers.Timer();
+            mFastaTimer.Elapsed += mFastaTimer_Elapsed;
+            mFastaTimer.Interval = 5000d;
+            mFastaTimer.AutoReset = true;
 
-            // Note that m_FastaTools does not spawn a new thread
-            // Since it does not spawn a new thread, the while loop after this Try block won't actually get reached while m_FastaTools.ExportFASTAFile is running
-            // Furthermore, even if m_FastaTimer_Elapsed sets m_FastaGenTimeOut to True, this won't do any good since m_FastaTools.ExportFASTAFile will still be running
-            m_FastaGenTimeOut = false;
-            m_FastaGenStartTime = DateTime.UtcNow;
+            // Note that mFastaTools does not spawn a new thread
+            // Since it does not spawn a new thread, the while loop after this Try block won't actually get reached while mFastaTools.ExportFASTAFile is running
+            // Furthermore, even if mFastaTimer_Elapsed sets mFastaGenTimeOut to True, this won't do any good since mFastaTools.ExportFASTAFile will still be running
+            mFastaGenTimeOut = false;
+            mFastaGenStartTime = DateTime.UtcNow;
             try
             {
-                m_FastaTimer.Start();
-                crc32Hash = m_FastaTools.ExportFASTAFile(proteinCollectionList, creationOpts, legacyFasta, destinationDirectoryPath);
+                mFastaTimer.Start();
+                crc32Hash = mFastaTools.ExportFASTAFile(proteinCollectionList, creationOpts, legacyFasta, destinationDirectoryPath);
             }
             catch (Exception Ex)
             {
@@ -445,29 +445,29 @@ namespace FastaFileMaker_Exe
             }
 
             // Wait for fasta creation to finish
-            while (!m_GenerationComplete)
+            while (!mGenerationComplete)
             {
                 System.Threading.Thread.Sleep(2000);
-                if (DateTime.UtcNow.Subtract(m_FastaGenStartTime).TotalMinutes >= FASTA_GEN_TIMEOUT_INTERVAL_MINUTES)
+                if (DateTime.UtcNow.Subtract(mFastaGenStartTime).TotalMinutes >= FASTA_GEN_TIMEOUT_INTERVAL_MINUTES)
                 {
-                    m_FastaGenTimeOut = true;
+                    mFastaGenTimeOut = true;
                     break;
                 }
             }
 
-            m_FastaTimer.Stop();
-            if (m_FastaGenTimeOut)
+            mFastaTimer.Stop();
+            if (mFastaGenTimeOut)
             {
                 // Fasta generator hung - report error and exit
-                m_message = "Timeout error while generating OrdDb file (" + FASTA_GEN_TIMEOUT_INTERVAL_MINUTES.ToString() + " minutes have elapsed)";
-                Console.WriteLine("clsAnalysisResources.CreateFastaFile(), " + m_message);
+                mmessage = "Timeout error while generating OrdDb file (" + FASTA_GEN_TIMEOUT_INTERVAL_MINUTES.ToString() + " minutes have elapsed)";
+                Console.WriteLine("clsAnalysisResources.CreateFastaFile(), " + mmessage);
 
                 return false;
             }
 
             if (blnLogProteinFileDetails)
             {
-                LogProteinFileDetails(proteinCollectionList, creationOpts, legacyFasta, crc32Hash, destinationDirectoryPath, m_FastaFileName, "");
+                LogProteinFileDetails(proteinCollectionList, creationOpts, legacyFasta, crc32Hash, destinationDirectoryPath, mFastaFileName, "");
             }
 
             return true;

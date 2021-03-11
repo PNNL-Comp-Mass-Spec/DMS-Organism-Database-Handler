@@ -6,15 +6,15 @@ namespace AppUI_OrfDBHandler.NucleotideTranslator
 {
     public class TranslateNucleotides
     {
-        private ArrayList m_TranslationMatrix;
-        private DBTask m_GetSQLData;
+        private ArrayList mTranslationMatrix;
+        private DBTask mGetSQLData;
 
-        private string m_TranTableListName = "T_DNA_Translation_Tables";
-        private string m_TransTableMembersName = "T_DNA_Translation_Table_Members";
+        private string mTranTableListName = "T_DNA_Translation_Tables";
+        private string mTransTableMembersName = "T_DNA_Translation_Table_Members";
 
         public TranslateNucleotides(string DMSConnectionString)
         {
-            m_GetSQLData = new DBTask(DMSConnectionString);
+            mGetSQLData = new DBTask(DMSConnectionString);
         }
 
         public ArrayList LoadTransMatrix(int TranslationTableID)
@@ -22,10 +22,10 @@ namespace AppUI_OrfDBHandler.NucleotideTranslator
             var BaseArray = "ATGC".ToCharArray();
 
             string selectSQL =
-                "SELECT * FROM " + m_TransTableMembersName +
+                "SELECT * FROM " + mTransTableMembersName +
                 " WHERE DNA_Translation_Table_ID = " + TranslationTableID;
 
-            var members = m_GetSQLData.GetTable(selectSQL);
+            var members = mGetSQLData.GetTable(selectSQL);
 
             var PrimaryList = new ArrayList();
             var SecondaryList = new ArrayList();

@@ -50,16 +50,16 @@ namespace OrganismDatabaseHandler.ProteinExport
         private const string INIT_VECTOR = "@3k8573j4083j410";
         private const int KEY_SIZE = 192;
 
-        private readonly Rfc2898DeriveBytes m_Password;
+        private readonly Rfc2898DeriveBytes mPassword;
 
-        private readonly RijndaelManaged m_SymmetricKey;
-        private SHA1Managed m_SHA1Provider;
-        private readonly ICryptoTransform m_Encryptor;
-        private readonly ICryptoTransform m_Decryptor;
+        private readonly RijndaelManaged mSymmetricKey;
+        private SHA1Managed mSHA1Provider;
+        private readonly ICryptoTransform mEncryptor;
+        private readonly ICryptoTransform mDecryptor;
 
-        private readonly byte[] m_KeyBytes;
-        private readonly byte[] m_saltValueBytes;
-        private readonly byte[] m_initVectorBytes;
+        private readonly byte[] mKeyBytes;
+        private readonly byte[] msaltValueBytes;
+        private readonly byte[] minitVectorBytes;
 
         public RijndaelEncryptionHandler(string passPhrase)
         {
@@ -68,33 +68,33 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Let us assume that strings only contain ASCII codes.
             // If strings include Unicode characters, use Unicode, UTF7, or UTF8
             // encoding.
-            m_initVectorBytes = Encoding.ASCII.GetBytes(INIT_VECTOR);
+            minitVectorBytes = Encoding.ASCII.GetBytes(INIT_VECTOR);
 
-            m_saltValueBytes = Encoding.ASCII.GetBytes(SALT_VALUE);
+            msaltValueBytes = Encoding.ASCII.GetBytes(SALT_VALUE);
 
             // First, we must create a password, from which the key will be derived.
             // This password will be generated from the specified passphrase and
             // salt value. The password will be created using the specified hash
             // algorithm. Password creation can be done in several iterations.
-            m_Password = new Rfc2898DeriveBytes(passPhrase, m_saltValueBytes, NUM_PW_ITERATIONS);
+            mPassword = new Rfc2898DeriveBytes(passPhrase, msaltValueBytes, NUM_PW_ITERATIONS);
 
             // Use the password to generate pseudo-random bytes for the encryption
             // key. Specify the size of the key in bytes (instead of bits).
-            m_KeyBytes = m_Password.GetBytes((int)Math.Round(KEY_SIZE / 8d));
+            mKeyBytes = mPassword.GetBytes((int)Math.Round(KEY_SIZE / 8d));
 
             // Create uninitialized Rijndael encryption object.
-            m_SymmetricKey = new RijndaelManaged();
+            mSymmetricKey = new RijndaelManaged();
 
             // It is reasonable to set encryption mode to Cipher Block Chaining
             // (CBC). Use default options for other symmetric key parameters.
-            m_SymmetricKey.Mode = CipherMode.CBC;
+            mSymmetricKey.Mode = CipherMode.CBC;
 
             // Generate encryptor from the existing key bytes and initialization
             // vector. Key size will be defined based on the number of the key
             // bytes.
-            m_Encryptor = m_SymmetricKey.CreateEncryptor(m_KeyBytes, m_initVectorBytes);
+            mEncryptor = mSymmetricKey.CreateEncryptor(mKeyBytes, minitVectorBytes);
 
-            m_Decryptor = m_SymmetricKey.CreateDecryptor(m_KeyBytes, m_initVectorBytes);
+            mDecryptor = mSymmetricKey.CreateDecryptor(mKeyBytes, minitVectorBytes);
         }
 
         public string Encrypt(string plainText)
@@ -108,7 +108,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             // Define cryptographic stream (always use Write mode for encryption).
             var cryptoStream = new CryptoStream(memoryStream,
-                m_Encryptor,
+                mEncryptor,
                 CryptoStreamMode.Write);
             // Start encrypting.
             cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
@@ -132,9 +132,9 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public string MakeArbitraryHash(string Sourcetext)
         {
-            if (m_SHA1Provider == null)
+            if (mSHA1Provider == null)
             {
-                m_SHA1Provider = new SHA1Managed();
+                mSHA1Provider = new SHA1Managed();
             }
 
             // Create an encoding object to ensure the encoding standard for the source text
@@ -144,7 +144,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var ByteSourceText = Ue.GetBytes(Sourcetext);
 
             // Compute the hash value from the source
-            var SHA1_hash = m_SHA1Provider.ComputeHash(ByteSourceText);
+            var SHA1_hash = mSHA1Provider.ComputeHash(ByteSourceText);
 
             // And convert it to String format for return
             string SHA1string = ToHexString(SHA1_hash);
@@ -216,7 +216,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             // Define memory stream which will be used to hold encrypted data.
             var cryptoStream = new CryptoStream(memoryStream,
-                m_Decryptor,
+                mDecryptor,
                 CryptoStreamMode.Read);
 
             // Since at this point we don't know what the size of decrypted data

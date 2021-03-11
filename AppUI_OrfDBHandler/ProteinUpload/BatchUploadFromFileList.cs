@@ -10,29 +10,29 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 {
     public class BatchUploadFromFileList
     {
-        private readonly PSUploadHandler m_Uploader;
-        private readonly DBTask m_DatabaseAccessor;
-        private Dictionary<string, FileListInfo> m_CurrentFileList;
+        private readonly PSUploadHandler mUploader;
+        private readonly DBTask mDatabaseAccessor;
+        private Dictionary<string, FileListInfo> mCurrentFileList;
 
-        private DataTable m_AuthorityTable;
-        private DataTable m_AnnotationTypeTable;
-        private DataTable m_OrganismTable;
+        private DataTable mAuthorityTable;
+        private DataTable mAnnotationTypeTable;
+        private DataTable mOrganismTable;
 
-        private frmBatchUploadFromFileList m_BatchForm;
+        private frmBatchUploadFromFileList mBatchForm;
 
         private const string DMS_Org_DB_Table_Name = "V_Legacy_Static_File_Locations";
         private const string Protein_Collections_Table_Name = "T_Protein_Collections";
 
         public BatchUploadFromFileList(string psConnectionString)
         {
-            m_Uploader = new PSUploadHandler(psConnectionString);
-            m_Uploader.BatchProgress += OnTaskChange;
-            m_Uploader.LoadProgress += OnProgressUpdate;
-            m_Uploader.LoadStart += OnLoadStart;
-            m_Uploader.LoadEnd += OnLoadEnd;
-            m_Uploader.LoadStart += OnLoadStart;
+            mUploader = new PSUploadHandler(psConnectionString);
+            mUploader.BatchProgress += OnTaskChange;
+            mUploader.LoadProgress += OnProgressUpdate;
+            mUploader.LoadStart += OnLoadStart;
+            mUploader.LoadEnd += OnLoadEnd;
+            mUploader.LoadStart += OnLoadStart;
 
-            m_DatabaseAccessor = new DBTask(psConnectionString);
+            mDatabaseAccessor = new DBTask(psConnectionString);
         }
 
         public event ProgressUpdateEventHandler ProgressUpdate;
@@ -75,21 +75,21 @@ namespace AppUI_OrfDBHandler.ProteinUpload
         {
             var uiList = new List<PSUploadHandler.UploadInfo>();
 
-            m_AnnotationTypeTable = GetAnnotationTypeTable();
-            m_AuthorityTable = GetAuthorityTable();
-            m_OrganismTable = GetOrganismsTable();
+            mAnnotationTypeTable = GetAnnotationTypeTable();
+            mAuthorityTable = GetAuthorityTable();
+            mOrganismTable = GetOrganismsTable();
 
-            m_BatchForm = new frmBatchUploadFromFileList(m_AuthorityTable, m_AnnotationTypeTable, m_OrganismTable);
+            mBatchForm = new frmBatchUploadFromFileList(mAuthorityTable, mAnnotationTypeTable, mOrganismTable);
 
-            m_CurrentFileList = GetDMSFileEntities();
+            mCurrentFileList = GetDMSFileEntities();
 
-            m_BatchForm.FileCollection = m_CurrentFileList;
+            mBatchForm.FileCollection = mCurrentFileList;
 
-            var r = m_BatchForm.ShowDialog();
+            var r = mBatchForm.ShowDialog();
 
             if (r == DialogResult.OK)
             {
-                var fileCollection = m_BatchForm.SelectedFilesCollection;
+                var fileCollection = mBatchForm.SelectedFilesCollection;
 
                 foreach (var fce in fileCollection.Values)
                 {
@@ -97,26 +97,26 @@ namespace AppUI_OrfDBHandler.ProteinUpload
                     uiList.Add(ui);
                 }
 
-                m_Uploader.BatchUpload(uiList);
+                mUploader.BatchUpload(uiList);
             }
         }
 
         protected DataTable GetAuthorityTable()
         {
             const string authSQL = "SELECT ID, Display_Name, Details FROM V_Authority_Picker";
-            return m_DatabaseAccessor.GetTable(authSQL);
+            return mDatabaseAccessor.GetTable(authSQL);
         }
 
         protected DataTable GetAnnotationTypeTable()
         {
             const string annoSQL = "SELECT ID, Display_Name, Details FROM V_Annotation_Type_Picker";
-            return m_DatabaseAccessor.GetTable(annoSQL);
+            return mDatabaseAccessor.GetTable(annoSQL);
         }
 
         protected DataTable GetOrganismsTable()
         {
-            const string orgSQL = "SELECT ID, Short_Name, Display_Name, Organism_Name FROM V_Organism_Picker";
-            return m_DatabaseAccessor.GetTable(orgSQL);
+            const string orgSQL = "SELECT ID, Short_Name, Display_Name, OrganismName FROM V_OrganismPicker";
+            return mDatabaseAccessor.GetTable(orgSQL);
         }
 
         private PSUploadHandler.UploadInfo TransformToUploadInfo(FileListInfo fli)
@@ -143,24 +143,24 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             // int tmpAnnTypeID;
             // int tmpAuthTypeID;
 
-            string loadedCollectionsSQL = "SELECT FileName, Full_Path, Organism_Name, Organism_ID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered";
+            string loadedCollectionsSQL = "SELECT FileName, Full_Path, OrganismName, OrganismID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered";
 
-            using (var fileTable = m_DatabaseAccessor.GetTable(loadedCollectionsSQL))
+            using (var fileTable = mDatabaseAccessor.GetTable(loadedCollectionsSQL))
             {
-                if (m_CurrentFileList == null)
+                if (mCurrentFileList == null)
                 {
-                    m_CurrentFileList = new Dictionary<string, FileListInfo>();
+                    mCurrentFileList = new Dictionary<string, FileListInfo>();
                 }
                 else
                 {
-                    m_CurrentFileList.Clear();
+                    mCurrentFileList.Clear();
                 }
 
                 foreach (DataRow dr in fileTable.Rows)
                 {
                     string fileName = dr["FileName"].ToString();
-                    string organismName = dr["Organism_Name"].ToString();
-                    int organismID = Convert.ToInt32(dr["Organism_ID"]);
+                    string organismName = dr["OrganismName"].ToString();
+                    int organismID = Convert.ToInt32(dr["OrganismID"]);
                     string fullPath = dr["Full_Path"].ToString();
                     int annotationTypeID = Convert.ToInt32(dr["Annotation_Type_ID"]);
                     int authorityTypeID = Convert.ToInt32(dr["Authority_ID"]);
@@ -191,7 +191,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
                 selectedFileList.Add(upInfoContainer);
             }
 
-            m_Uploader.BatchUpload(selectedFileList);
+            mUploader.BatchUpload(selectedFileList);
             return default;
         }
 

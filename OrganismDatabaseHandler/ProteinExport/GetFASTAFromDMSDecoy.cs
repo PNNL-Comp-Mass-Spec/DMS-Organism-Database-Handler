@@ -6,7 +6,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class GetFASTAFromDMSDecoy : GetFASTAFromDMSForward
     {
-        protected GetFASTAFromDMSReversed m_RevGenerator;
+        protected GetFASTAFromDMSReversed mRevGenerator;
 
         /// <summary>
         /// Constructor
@@ -19,7 +19,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             bool decoyUsesXXX)
             : base(databaseAccessor, databaseFormatType)
         {
-            m_RevGenerator = new GetFASTAFromDMSReversed(
+            mRevGenerator = new GetFASTAFromDMSReversed(
                 databaseAccessor, databaseFormatType) { UseXXX = decoyUsesXXX };
         }
 
@@ -40,10 +40,10 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             var fwdFilePath = FullOutputPath;
 
-            m_RevGenerator.ExportFASTAFile(protCollectionList,
+            mRevGenerator.ExportFASTAFile(protCollectionList,
                                            destinationFolderPath, alternateAnnotationTypeID, padWithPrimaryAnnotation);
 
-            var revFilePath = m_RevGenerator.FullOutputPath;
+            var revFilePath = mRevGenerator.FullOutputPath;
 
             var fwdFI = new FileInfo(fwdFilePath);
             var revFI = new FileInfo(revFilePath);

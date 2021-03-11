@@ -29,21 +29,21 @@ namespace AppUI_OrfDBHandler
 
             InitializeComponent();
 
-            m_StatusResetTimer = new Timer() { Interval = 1000 };
-            m_StatusResetTimer.Tick += m_StatusResetTimer_Tick;
+            mStatusResetTimer = new Timer() { Interval = 1000 };
+            mStatusResetTimer.Tick += mStatusResetTimer_Tick;
 
-            m_StatusResetTimer.Start();
+            mStatusResetTimer.Start();
 
             ClearStatus();
 
-            m_OrganismList = organismList;
-            m_OrganismListSorted = new DataView(m_OrganismList) { Sort = "Display_Name" };
+            mOrganismList = organismList;
+            mOrganismListSorted = new DataView(mOrganismList) { Sort = "Display_Name" };
 
-            m_AnnotationTypeList = annotationTypeList;
-            m_CollectionsTable = existingCollectionsList;
-            m_PSConnectionString = psConnectionString;
+            mAnnotationTypeList = annotationTypeList;
+            mCollectionsTable = existingCollectionsList;
+            mPSConnectionString = psConnectionString;
 
-            m_CachedFileDescriptions = cachedFileDescriptions;
+            mCachedFileDescriptions = cachedFileDescriptions;
 
             ctlTreeViewFolderBrowser.DataSource = new TreeStrategyFolderBrowserProvider();
             ctlTreeViewFolderBrowser.CheckBoxBehaviorMode = CheckBoxBehaviorMode.None;
@@ -78,47 +78,47 @@ namespace AppUI_OrfDBHandler
             public string Source;
         }
 
-        private string m_LastUsedDirectory;
-        private string m_LastSelectedOrganism = string.Empty;
-        private string m_LastSelectedAnnotationType = string.Empty;
+        private string mLastUsedDirectory;
+        private string mLastSelectedOrganism = string.Empty;
+        private string mLastSelectedAnnotationType = string.Empty;
 
         /// <summary>
         /// Keys are full paths to the fasta file
         /// Values are FileInfo instances
         /// </summary>
-        private Dictionary<string, FileInfo> m_FileList;
+        private Dictionary<string, FileInfo> mFileList;
 
-        private List<PSUploadHandler.UploadInfo> m_CheckedFileList;
+        private List<PSUploadHandler.UploadInfo> mCheckedFileList;
 
         // Keys are file paths, values are UploadInfo objects
-        private Dictionary<string, PSUploadHandler.UploadInfo> m_SelectedFileList;
+        private Dictionary<string, PSUploadHandler.UploadInfo> mSelectedFileList;
 
-        private readonly DataTable m_OrganismList;
-        private readonly DataView m_OrganismListSorted;
+        private readonly DataTable mOrganismList;
+        private readonly DataView mOrganismListSorted;
 
-        private readonly DataTable m_AnnotationTypeList;
-        private readonly DataTable m_CollectionsTable;
+        private readonly DataTable mAnnotationTypeList;
+        private readonly DataTable mCollectionsTable;
 
         /// <summary>
         /// Keys are protein collection ID
         /// Values are Protein Collection name
         /// </summary>
-        private Dictionary<int, string> m_CollectionsList;
+        private Dictionary<int, string> mCollectionsList;
 
-        private int m_SelectedOrganismID;
-        private int m_SelectedAnnotationTypeID;
-        private readonly string m_PSConnectionString;
-        private bool m_ReallyClose = false;
-        private FilePreviewHandler m_FilePreviewer;
+        private int mSelectedOrganismID;
+        private int mSelectedAnnotationTypeID;
+        private readonly string mPSConnectionString;
+        private bool mReallyClose = false;
+        private FilePreviewHandler mFilePreviewer;
 
-        private bool m_PreviewFormStatus;
+        private bool mPreviewFormStatus;
 
-        // private HashTable m_PassphraseList;
-        // private string m_CachedPassphrase;
+        // private HashTable mPassphraseList;
+        // private string mCachedPassphrase;
 
         private const string ADD_FILES_MESSAGE = "You must first select an organism and annotation type, and then select one or more protein collections.";
-        private bool m_AllowAddFiles;
-        private string m_AllowAddFilesMessage = ADD_FILES_MESSAGE;
+        private bool mAllowAddFiles;
+        private string mAllowAddFilesMessage = ADD_FILES_MESSAGE;
 
         // Tracks the index of the last column clicked in lvwSelectedFiles
         private int mSortColumnSelectedItems = -1;
@@ -130,26 +130,26 @@ namespace AppUI_OrfDBHandler
         /// Tracks Description and Source that the uploader has defined for each file (not persisted when the application closes)
         /// </summary>
         /// <remarks>Useful in case validation fails and the uploader needs to try again to upload a FASTA file</remarks>
-        private readonly Dictionary<string, KeyValuePair<string, string>> m_CachedFileDescriptions;
+        private readonly Dictionary<string, KeyValuePair<string, string>> mCachedFileDescriptions;
 
-        private bool m_StatusResetRequired;
-        private DateTime m_StatusClearTime;
-        private readonly Timer m_StatusResetTimer;
+        private bool mStatusResetRequired;
+        private DateTime mStatusClearTime;
+        private readonly Timer mStatusResetTimer;
 
         #endregion
 
         #region "Properties"
 
-        public List<PSUploadHandler.UploadInfo> FileList => m_CheckedFileList;
+        public List<PSUploadHandler.UploadInfo> FileList => mCheckedFileList;
 
-        public int SelectedOrganismID => m_SelectedOrganismID;
+        public int SelectedOrganismID => mSelectedOrganismID;
 
-        public int SelectedAnnotationTypeID => m_SelectedAnnotationTypeID;
+        public int SelectedAnnotationTypeID => mSelectedAnnotationTypeID;
 
         public string CurrentDirectory
         {
-            get => m_LastUsedDirectory;
-            set => m_LastUsedDirectory = value;
+            get => mLastUsedDirectory;
+            set => mLastUsedDirectory = value;
         }
 
         private string SelectedNodeFolderPath
@@ -187,7 +187,7 @@ namespace AppUI_OrfDBHandler
                     return string.Empty;
                 }
             }
-            set => m_LastSelectedOrganism = value;
+            set => mLastSelectedOrganism = value;
         }
 
         public string SelectedAnnotationType
@@ -203,7 +203,7 @@ namespace AppUI_OrfDBHandler
                     return string.Empty;
                 }
             }
-            set => m_LastSelectedAnnotationType = value;
+            set => mLastSelectedAnnotationType = value;
         }
 
         public bool ValidationAllowAsterisks
@@ -250,22 +250,22 @@ namespace AppUI_OrfDBHandler
 
         private void frmBatchAddNewCollection_Load(object sender, EventArgs e)
         {
-            m_CollectionsList = CollectionsTableToList(m_CollectionsTable);
+            mCollectionsList = CollectionsTableToList(mCollectionsTable);
 
-            if (m_FileList == null)
+            if (mFileList == null)
             {
-                m_FileList = new Dictionary<string, FileInfo>();
+                mFileList = new Dictionary<string, FileInfo>();
             }
 
-            m_CheckedFileList = new List<PSUploadHandler.UploadInfo>();
-            LoadOrganismPicker(cboOrganismSelect, m_OrganismListSorted);
-            LoadAnnotationTypePicker(cboAnnotationTypePicker, m_AnnotationTypeList);
+            mCheckedFileList = new List<PSUploadHandler.UploadInfo>();
+            LoadOrganismPicker(cboOrganismSelect, mOrganismListSorted);
+            LoadAnnotationTypePicker(cboAnnotationTypePicker, mAnnotationTypeList);
             cmdUploadChecked.Enabled = false;
             cmdAddFile.Enabled = true;
             cmdRemoveFile.Enabled = false;
 
-            SelectComboBoxItemByName(cboOrganismSelect, m_LastSelectedOrganism, 2);
-            SelectComboBoxItemByName(cboAnnotationTypePicker, m_LastSelectedAnnotationType, 1);
+            SelectComboBoxItemByName(cboOrganismSelect, mLastSelectedOrganism, 2);
+            SelectComboBoxItemByName(cboAnnotationTypePicker, mLastSelectedAnnotationType, 1);
         }
 
         #region "Directory Loading"
@@ -299,17 +299,17 @@ namespace AppUI_OrfDBHandler
                 return;
             }
 
-            m_LastUsedDirectory = directoryPath;
+            mLastUsedDirectory = directoryPath;
 
             var foundFASTAFiles = di.GetFiles();
 
-            if (m_FileList != null)
+            if (mFileList != null)
             {
-                m_FileList.Clear();
+                mFileList.Clear();
             }
             else
             {
-                m_FileList = new Dictionary<string, FileInfo>();
+                mFileList = new Dictionary<string, FileInfo>();
             }
 
             foreach (var fi in foundFASTAFiles)
@@ -323,7 +323,7 @@ namespace AppUI_OrfDBHandler
                     case ".fa":
                     case ".pep":
                     case ".faa":
-                        m_FileList.Add(fi.FullName, fi);
+                        mFileList.Add(fi.FullName, fi);
                         break;
                 }
             }
@@ -345,12 +345,12 @@ namespace AppUI_OrfDBHandler
 
             lvwFolderContents.Items.Clear();
 
-            if (m_CollectionsList == null)
+            if (mCollectionsList == null)
             {
-                m_CollectionsList = new Dictionary<int, string>();
+                mCollectionsList = new Dictionary<int, string>();
             }
 
-            foreach (var fi in m_FileList.Values)
+            foreach (var fi in mFileList.Values)
             {
                 string proteinCollectionName = Path.GetFileNameWithoutExtension(fi.Name);
 
@@ -366,7 +366,7 @@ namespace AppUI_OrfDBHandler
                 li.SubItems.Add(Numeric2Bytes(fi.Length));
 
                 // Whether or not the fasta file is already a protein collection
-                if (m_CollectionsList.ContainsValue(proteinCollectionName))
+                if (mCollectionsList.ContainsValue(proteinCollectionName))
                 {
                     li.SubItems.Add("Yes");
                 }
@@ -494,9 +494,9 @@ namespace AppUI_OrfDBHandler
         {
             try
             {
-                if (m_SelectedFileList == null)
+                if (mSelectedFileList == null)
                 {
-                    m_SelectedFileList = new Dictionary<string, PSUploadHandler.UploadInfo>(StringComparer.CurrentCultureIgnoreCase);
+                    mSelectedFileList = new Dictionary<string, PSUploadHandler.UploadInfo>(StringComparer.CurrentCultureIgnoreCase);
                 }
 
                 foreach (ListViewItem li in lvwFolderContents.SelectedItems)
@@ -505,7 +505,7 @@ namespace AppUI_OrfDBHandler
 
                     var upInfo = new PSUploadHandler.UploadInfo()
                     {
-                        FileInformation = m_FileList[fastaFilePath],
+                        FileInformation = mFileList[fastaFilePath],
                         OrganismID = (int)cboOrganismSelect.SelectedValue,
                         AnnotationTypeID = (int)cboAnnotationTypePicker.SelectedValue,
                         Description = string.Empty,
@@ -516,9 +516,9 @@ namespace AppUI_OrfDBHandler
 
                     string proteinCollection = Path.GetFileNameWithoutExtension(upInfo.FileInformation.Name);
 
-                    if (m_SelectedFileList.ContainsKey(upInfo.FileInformation.FullName))
+                    if (mSelectedFileList.ContainsKey(upInfo.FileInformation.FullName))
                     {
-                        m_SelectedFileList.Remove(upInfo.FileInformation.FullName);
+                        mSelectedFileList.Remove(upInfo.FileInformation.FullName);
                         foreach (ListViewItem si in lvwSelectedFiles.Items)
                         {
                             if ((si.Text ?? "") == (proteinCollection ?? ""))
@@ -532,7 +532,7 @@ namespace AppUI_OrfDBHandler
                     string fileDescription;
                     string fileSource;
 
-                    if (m_CachedFileDescriptions.TryGetValue(proteinCollection, out kvDescriptionSource))
+                    if (mCachedFileDescriptions.TryGetValue(proteinCollection, out kvDescriptionSource))
                     {
                         fileDescription = kvDescriptionSource.Key;
                         fileSource = kvDescriptionSource.Value;
@@ -560,7 +560,7 @@ namespace AppUI_OrfDBHandler
                     newLi.SubItems.Add(upInfo.FileInformation.FullName);
 
                     lvwSelectedFiles.Items.Add(newLi);
-                    m_SelectedFileList.Add(upInfo.FileInformation.FullName, upInfo);
+                    mSelectedFileList.Add(upInfo.FileInformation.FullName, upInfo);
                 }
             }
             catch (Exception ex)
@@ -599,8 +599,8 @@ namespace AppUI_OrfDBHandler
         {
             lblStatus.Text = message;
 
-            m_StatusClearTime = DateTime.UtcNow.AddSeconds(5d);
-            m_StatusResetRequired = true;
+            mStatusClearTime = DateTime.UtcNow.AddSeconds(5d);
+            mStatusResetRequired = true;
         }
 
         private string GetFolderContentsColumn(ListViewItem li, eFolderContentsColumn eColumn)
@@ -660,7 +660,7 @@ namespace AppUI_OrfDBHandler
         }
 
         /// <summary>
-        /// Populates m_CheckedFileList
+        /// Populates mCheckedFileList
         /// </summary>
         /// <returns>True if success, false if no protein collections are selected or if one or more is missing a description and/or source</returns>
         /// <remarks></remarks>
@@ -681,7 +681,7 @@ namespace AppUI_OrfDBHandler
                 }
             }
 
-            foreach (var item in m_SelectedFileList)
+            foreach (var item in mSelectedFileList)
             {
                 var upInfo = item.Value;
                 var fi = upInfo.FileInformation;
@@ -698,11 +698,11 @@ namespace AppUI_OrfDBHandler
                         return false;
                     }
 
-                    m_CheckedFileList.Add(upInfo);
+                    mCheckedFileList.Add(upInfo);
                 }
             }
 
-            if (m_CheckedFileList.Count == 0)
+            if (mCheckedFileList.Count == 0)
             {
                 MessageBox.Show("No fasta files are selected", "Nothing to Do", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return false;
@@ -730,9 +730,9 @@ namespace AppUI_OrfDBHandler
                 lvwSelectedFiles.Items.Remove(li);
 
                 string filePath = GetSelectedFileColumn(li, eSelectedFileColumn.FilePath);
-                if (m_SelectedFileList.ContainsKey(filePath))
+                if (mSelectedFileList.ContainsKey(filePath))
                 {
-                    m_SelectedFileList.Remove(filePath);
+                    mSelectedFileList.Remove(filePath);
                 }
             }
         }
@@ -877,13 +877,13 @@ namespace AppUI_OrfDBHandler
 
                     var kvDescriptionSource = new KeyValuePair<string, string>(updatedDescription, updatedSource);
 
-                    if (m_CachedFileDescriptions.ContainsKey(proteinCollection))
+                    if (mCachedFileDescriptions.ContainsKey(proteinCollection))
                     {
-                        m_CachedFileDescriptions[proteinCollection] = kvDescriptionSource;
+                        mCachedFileDescriptions[proteinCollection] = kvDescriptionSource;
                     }
                     else
                     {
-                        m_CachedFileDescriptions.Add(proteinCollection, kvDescriptionSource);
+                        mCachedFileDescriptions.Add(proteinCollection, kvDescriptionSource);
                     }
                 }
             }
@@ -895,7 +895,7 @@ namespace AppUI_OrfDBHandler
         {
             ComboBox cbo = (ComboBox)sender;
 
-            m_SelectedOrganismID = (int)cbo.SelectedValue;
+            mSelectedOrganismID = (int)cbo.SelectedValue;
             CheckTransferEnable();
             if (lvwSelectedFiles.SelectedItems.Count > 0)
             {
@@ -903,11 +903,11 @@ namespace AppUI_OrfDBHandler
                 {
                     string fastaFilePath = GetSelectedFileColumn(li, eSelectedFileColumn.FilePath);
 
-                    // Update organism in m_SelectedFileList
-                    var tmpUpInfo = m_SelectedFileList[fastaFilePath];
-                    tmpUpInfo.OrganismID = m_SelectedOrganismID;
+                    // Update organism in mSelectedFileList
+                    var tmpUpInfo = mSelectedFileList[fastaFilePath];
+                    tmpUpInfo.OrganismID = mSelectedOrganismID;
 
-                    m_SelectedFileList[fastaFilePath] = tmpUpInfo;
+                    mSelectedFileList[fastaFilePath] = tmpUpInfo;
 
                     // Update organism in lvwSelectedFiles
                     li.SubItems[(int)eSelectedFileColumn.Organism].Text = cbo.Text;
@@ -921,36 +921,36 @@ namespace AppUI_OrfDBHandler
 
             if (ReferenceEquals(cboAnnotationTypePicker.SelectedValue.GetType(), Type.GetType("System.Int32")))
             {
-                m_SelectedAnnotationTypeID = (int)Math.Round(Convert.ToDouble(cboAnnotationTypePicker.SelectedValue));
+                mSelectedAnnotationTypeID = (int)Math.Round(Convert.ToDouble(cboAnnotationTypePicker.SelectedValue));
             }
             else
             {
-                // m_SelectedAuthorityID = 0
+                // mSelectedAuthorityID = 0
             }
 
             CheckTransferEnable();
 
-            if (m_SelectedAnnotationTypeID == -2)
+            if (mSelectedAnnotationTypeID == -2)
             {
                 // Bring up an additional dialog
-                var AnnTypeAdd = new AddAnnotationTypeType(m_PSConnectionString);
+                var AnnTypeAdd = new AddAnnotationTypeType(mPSConnectionString);
                 AnnTypeAdd.FormLocation = new Point(Left + Width + 10, Top);
                 var tmpAnnTypeID = AnnTypeAdd.AddAnnotationType();
-                // Dim AuthAdd As New AddNamingAuthority(m_PSConnectionString)
+                // Dim AuthAdd As New AddNamingAuthority(mPSConnectionString)
                 // tmpAuthID = AuthAdd.AddNamingAuthority
 
                 if (!AnnTypeAdd.EntryExists & tmpAnnTypeID > 0)
                 {
-                    var dr = m_AnnotationTypeList.NewRow();
+                    var dr = mAnnotationTypeList.NewRow();
 
                     dr["ID"] = tmpAnnTypeID;
                     dr["Display_Name"] = AnnTypeAdd.DisplayName;
                     dr["Details"] = AnnTypeAdd.Description;
 
-                    m_AnnotationTypeList.Rows.Add(dr);
-                    m_AnnotationTypeList.AcceptChanges();
-                    LoadAnnotationTypePicker(cboAnnotationTypePicker, m_AnnotationTypeList);
-                    m_SelectedAnnotationTypeID = tmpAnnTypeID;
+                    mAnnotationTypeList.Rows.Add(dr);
+                    mAnnotationTypeList.AcceptChanges();
+                    LoadAnnotationTypePicker(cboAnnotationTypePicker, mAnnotationTypeList);
+                    mSelectedAnnotationTypeID = tmpAnnTypeID;
 
                     cboAnnotationTypePicker.SelectedValue = tmpAnnTypeID;
                 }
@@ -960,15 +960,15 @@ namespace AppUI_OrfDBHandler
             {
                 foreach (ListViewItem li in lvwSelectedFiles.SelectedItems)
                 {
-                    // Update annotation type in m_SelectedFileList
+                    // Update annotation type in mSelectedFileList
                     string fastaFilePath = GetSelectedFileColumn(li, eSelectedFileColumn.FilePath);
-                    var tmpUpInfo = m_SelectedFileList[fastaFilePath];
+                    var tmpUpInfo = mSelectedFileList[fastaFilePath];
 
-                    m_SelectedFileList[fastaFilePath] =
+                    mSelectedFileList[fastaFilePath] =
                         new PSUploadHandler.UploadInfo(
                             tmpUpInfo.FileInformation,
-                            m_SelectedOrganismID,
-                            m_SelectedAnnotationTypeID);
+                            mSelectedOrganismID,
+                            mSelectedAnnotationTypeID);
 
                     // Update annotation type in lvwSelectedFiles
                     li.SubItems[(int)eSelectedFileColumn.AnnotationType].Text = cbo.Text;
@@ -997,7 +997,7 @@ namespace AppUI_OrfDBHandler
             //    foreach (ListViewItem li in lvwSelectedFiles.SelectedItems)
             //    {
             //        var fastaFilePath = li.SubItems[(int)eSelectedFileColumn.FilePath].Text;
-            //        var tmpUpInfo = (Protein_Uploader.PSUploadHandler.UploadInfo) m_SelectedFileList[fastaFilePath];
+            //        var tmpUpInfo = (Protein_Uploader.PSUploadHandler.UploadInfo) mSelectedFileList[fastaFilePath];
             //        if (encryptSequences)
             //        {
             //            tmpUpInfo.EncryptSequences = true;
@@ -1011,7 +1011,7 @@ namespace AppUI_OrfDBHandler
             //            li.SubItems[(int)eSelectedFileColumn.Encrypt].Text = "No";
             //        }
 
-            //        m_SelectedFileList[fastaFilePath] = tmpUpInfo;
+            //        mSelectedFileList[fastaFilePath] = tmpUpInfo;
             //    }
             //}
         }
@@ -1020,29 +1020,29 @@ namespace AppUI_OrfDBHandler
         {
             if (chkEncryptionEnable.Checked == true)
             {
-                if (m_SelectedOrganismID > 0 &&
-                    m_SelectedAnnotationTypeID > 0 &&
+                if (mSelectedOrganismID > 0 &&
+                    mSelectedAnnotationTypeID > 0 &&
                     lvwFolderContents.SelectedItems.Count > 0 &&
                     txtPassphrase.Text.Length > 0)
                 {
-                    m_AllowAddFiles = true;
-                    m_AllowAddFilesMessage = "";
+                    mAllowAddFiles = true;
+                    mAllowAddFilesMessage = "";
                 }
                 else
                 {
-                    m_AllowAddFiles = false;
-                    m_AllowAddFilesMessage = ADD_FILES_MESSAGE + "  You also must define a passphrase for encryption.";
+                    mAllowAddFiles = false;
+                    mAllowAddFilesMessage = ADD_FILES_MESSAGE + "  You also must define a passphrase for encryption.";
                 }
             }
-            else if (m_SelectedOrganismID > 0 && m_SelectedAnnotationTypeID > 0 && lvwFolderContents.SelectedItems.Count > 0)
+            else if (mSelectedOrganismID > 0 && mSelectedAnnotationTypeID > 0 && lvwFolderContents.SelectedItems.Count > 0)
             {
-                m_AllowAddFiles = true;
-                m_AllowAddFilesMessage = "";
+                mAllowAddFiles = true;
+                mAllowAddFilesMessage = "";
             }
             else
             {
-                m_AllowAddFiles = false;
-                m_AllowAddFilesMessage = ADD_FILES_MESSAGE;
+                mAllowAddFiles = false;
+                mAllowAddFilesMessage = ADD_FILES_MESSAGE;
             }
 
             if (lvwSelectedFiles.Items.Count > 0)
@@ -1078,7 +1078,7 @@ namespace AppUI_OrfDBHandler
             bool validInfo = MakeCheckedFileList();
             if (!validInfo)
                 return;
-            m_ReallyClose = true;
+            mReallyClose = true;
             DialogResult = DialogResult.OK;
             Close();
         }
@@ -1091,9 +1091,9 @@ namespace AppUI_OrfDBHandler
 
         private void cmdAddFile_Click(object sender, EventArgs e)
         {
-            if (!m_AllowAddFiles)
+            if (!mAllowAddFiles)
             {
-                MessageBox.Show(m_AllowAddFilesMessage, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(mAllowAddFilesMessage, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -1110,10 +1110,10 @@ namespace AppUI_OrfDBHandler
 
         private void cmdPreviewFile_Click(object sender, EventArgs e)
         {
-            if (m_FilePreviewer == null)
+            if (mFilePreviewer == null)
             {
-                m_FilePreviewer = new FilePreviewHandler();
-                m_FilePreviewer.FormStatus += OnPreviewFormStatusChange;
+                mFilePreviewer = new FilePreviewHandler();
+                mFilePreviewer.FormStatus += OnPreviewFormStatusChange;
             }
 
             if (lvwFolderContents.SelectedItems.Count == 0)
@@ -1125,12 +1125,12 @@ namespace AppUI_OrfDBHandler
             var li = lvwFolderContents.SelectedItems[0];
             string fullName = GetFolderContentsColumn(li, eFolderContentsColumn.FilePath);
 
-            m_FilePreviewer.ShowPreview(fullName, Left + Width + 10, Top, Height);
+            mFilePreviewer.ShowPreview(fullName, Left + Width + 10, Top, Height);
         }
 
         private void cmdRefreshFiles_Click(object sender, EventArgs e)
         {
-            InitializeTreeView(m_LastUsedDirectory);
+            InitializeTreeView(mLastUsedDirectory);
         }
 
         private void cmdUpdateDescription_Click(object sender, EventArgs e)
@@ -1176,7 +1176,7 @@ namespace AppUI_OrfDBHandler
 
         private void frmBatchAddNewCollection_Closing(object sender, CancelEventArgs e)
         {
-            if (lvwSelectedFiles.Items.Count > 0 & !m_ReallyClose)
+            if (lvwSelectedFiles.Items.Count > 0 & !mReallyClose)
             {
                 var r = MessageBox.Show("You have files selected for upload. Really close the form?",
                     "Files selected for upload", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
@@ -1190,11 +1190,11 @@ namespace AppUI_OrfDBHandler
                 }
             }
 
-            if (m_FilePreviewer != null & m_PreviewFormStatus == true)
+            if (mFilePreviewer != null & mPreviewFormStatus == true)
             {
-                m_FilePreviewer.CloseForm();
-                m_FilePreviewer.FormStatus -= OnPreviewFormStatusChange;
-                m_FilePreviewer = null;
+                mFilePreviewer.CloseForm();
+                mFilePreviewer.FormStatus -= OnPreviewFormStatusChange;
+                mFilePreviewer = null;
             }
         }
 
@@ -1208,12 +1208,12 @@ namespace AppUI_OrfDBHandler
             if (Visibility == true)
             {
                 cmdPreviewFile.Enabled = false;
-                m_PreviewFormStatus = true;
+                mPreviewFormStatus = true;
             }
             else
             {
                 cmdPreviewFile.Enabled = true;
-                m_PreviewFormStatus = false;
+                mPreviewFormStatus = false;
             }
         }
 
@@ -1224,7 +1224,7 @@ namespace AppUI_OrfDBHandler
         //    if (txt.Text.Length > 0)
         //    {
         //        if (lvwSelectedFiles.SelectedItems.Count == 0)
-        //            m_CachedPassphrase = txt.Text;
+        //            mCachedPassphrase = txt.Text;
         //        else if (lvwSelectedFiles.SelectedItems.Count > 0)
         //        {
         //            foreach (ListViewItem li in lvwSelectedFiles.Items)
@@ -1348,11 +1348,11 @@ namespace AppUI_OrfDBHandler
             }
         }
 
-        private void m_StatusResetTimer_Tick(object sender, EventArgs e)
+        private void mStatusResetTimer_Tick(object sender, EventArgs e)
         {
-            if (m_StatusResetRequired && DateTime.UtcNow > m_StatusClearTime)
+            if (mStatusResetRequired && DateTime.UtcNow > mStatusClearTime)
             {
-                m_StatusResetRequired = false;
+                mStatusResetRequired = false;
                 lblStatus.Text = string.Empty;
             }
         }

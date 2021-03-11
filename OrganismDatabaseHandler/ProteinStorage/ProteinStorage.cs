@@ -7,25 +7,25 @@ namespace OrganismDatabaseHandler.ProteinStorage
         /// <summary>
         /// Keys are Protein_Name
         /// </summary>
-        protected readonly Dictionary<string, ProteinStorageEntry> m_Proteins;
-        protected int m_ResidueCount;
-        protected readonly SortedSet<string> m_ProteinNames;
-        private string m_PassPhrase;
+        protected readonly Dictionary<string, ProteinStorageEntry> mProteins;
+        protected int mResidueCount;
+        protected readonly SortedSet<string> mProteinNames;
+        private string mPassPhrase;
 
         public ProteinStorage(string fastaFileName)
         {
             FileName = fastaFileName;
-            m_Proteins = new Dictionary<string, ProteinStorageEntry>();
-            m_ProteinNames = new SortedSet<string>();
+            mProteins = new Dictionary<string, ProteinStorageEntry>();
+            mProteinNames = new SortedSet<string>();
         }
 
         public virtual void AddProtein(ProteinStorageEntry proteinEntry)
         {
-            if (!m_Proteins.ContainsKey(proteinEntry.Reference))
+            if (!mProteins.ContainsKey(proteinEntry.Reference))
             {
-                m_Proteins.Add(proteinEntry.Reference, proteinEntry);
-                m_ProteinNames.Add(proteinEntry.Reference);
-                m_ResidueCount += proteinEntry.Sequence.Length;
+                mProteins.Add(proteinEntry.Reference, proteinEntry);
+                mProteinNames.Add(proteinEntry.Reference);
+                mResidueCount += proteinEntry.Sequence.Length;
             }
             else
             {
@@ -41,7 +41,7 @@ namespace OrganismDatabaseHandler.ProteinStorage
         {
             ProteinStorageEntry proteinEntry = null;
 
-            if (m_Proteins.TryGetValue(reference, out proteinEntry))
+            if (mProteins.TryGetValue(reference, out proteinEntry))
             {
                 return proteinEntry;
             }
@@ -53,19 +53,19 @@ namespace OrganismDatabaseHandler.ProteinStorage
 
         public SortedSet<string> GetSortedProteinNames()
         {
-            return m_ProteinNames;
+            return mProteinNames;
         }
 
         public virtual void ClearProteinEntries()
         {
-            m_ResidueCount = 0;
-            m_Proteins.Clear();
-            m_ProteinNames.Clear();
+            mResidueCount = 0;
+            mProteins.Clear();
+            mProteinNames.Clear();
         }
 
-        public int TotalResidueCount => m_ResidueCount;
+        public int TotalResidueCount => mResidueCount;
 
-        public int ProteinCount => m_Proteins.Count;
+        public int ProteinCount => mProteins.Count;
 
         public bool EncryptSequences { get; set; }
 
@@ -75,29 +75,29 @@ namespace OrganismDatabaseHandler.ProteinStorage
             {
                 if (EncryptSequences)
                 {
-                    return m_PassPhrase;
+                    return mPassPhrase;
                 }
                 else
                 {
                     return null;
                 }
             }
-            set => m_PassPhrase = value;
+            set => mPassPhrase = value;
         }
 
         public Dictionary<string, ProteinStorageEntry>.Enumerator GetEnumerator()
         {
-            return m_Proteins.GetEnumerator();
+            return mProteins.GetEnumerator();
         }
 
         public IEnumerable<ProteinStorageEntry> GetEntriesIEnumerable()
         {
-            return m_Proteins.Values;
+            return mProteins.Values;
         }
 
         public override string ToString()
         {
-            return FileName + ": " + m_ProteinNames.Count + " proteins";
+            return FileName + ": " + mProteinNames.Count + " proteins";
         }
     }
 }

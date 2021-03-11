@@ -17,10 +17,10 @@ namespace AppUI_OrfDBHandler
     public class SyncFASTAFileArchive
     {
 
-        // private IArchiveOutputFiles m_FileArchiver;
-        private readonly DBTask m_DatabaseAccessor;
-        private readonly AddUpdateEntries m_Importer;
-        private GetFASTAFromDMS m_Exporter;
+        // private IArchiveOutputFiles mFileArchiver;
+        private readonly DBTask mDatabaseAccessor;
+        private readonly AddUpdateEntries mImporter;
+        private GetFASTAFromDMS mExporter;
 
         public event SyncStartEventHandler SyncStart;
 
@@ -34,16 +34,16 @@ namespace AppUI_OrfDBHandler
 
         public delegate void SyncCompleteEventHandler();
 
-        private string m_CurrentStatusMsg;
-        private int m_CurrentProteinCount;
-        private int m_TotalProteinsCount;
+        private string mCurrentStatusMsg;
+        private int mCurrentProteinCount;
+        private int mTotalProteinsCount;
 
-        private string m_GeneratedFastaFilePath;
+        private string mGeneratedFastaFilePath;
 
         public SyncFASTAFileArchive(string psConnectionString)
         {
-            m_DatabaseAccessor = new DBTask(psConnectionString);
-            m_Importer = new AddUpdateEntries(psConnectionString);
+            mDatabaseAccessor = new DBTask(psConnectionString);
+            mImporter = new AddUpdateEntries(psConnectionString);
         }
 
         public int SyncCollectionsAndArchiveTables(string outputPath)
@@ -55,13 +55,13 @@ namespace AppUI_OrfDBHandler
             // TODO add collection list string
             string proteinCollectionList = "";
 
-            var dt = m_DatabaseAccessor.GetTable(sql);
+            var dt = mDatabaseAccessor.GetTable(sql);
             string CreationOptionsString = "seq_direction=forward,filetype=fasta";
             var totalProteinsCount = default(int);
             int currentCollectionProteinCount = 0;
             foreach (DataRow dr in dt.Rows)
             {
-                m_TotalProteinsCount += Convert.ToInt32(dr["NumProteins"]);
+                mTotalProteinsCount += Convert.ToInt32(dr["NumProteins"]);
             }
 
             var outputSequenceType = GetFASTAFromDMS.SequenceTypes.forward;
@@ -69,7 +69,7 @@ namespace AppUI_OrfDBHandler
 
             OnSyncStart("Synchronizing Archive Table with Collections Table");
 
-            var fileArchiver = new ArchiveToFile(m_DatabaseAccessor, m_Exporter);
+            var fileArchiver = new ArchiveToFile(mDatabaseAccessor, mExporter);
 
             foreach (DataRow dr in dt.Rows)
             {
@@ -95,11 +95,11 @@ namespace AppUI_OrfDBHandler
             var sql = "SELECT Protein_Collection_ID, FileName, Authentication_Hash, NumProteins " +
                       "FROM V_Missing_Archive_Entries";
 
-            var dt = m_DatabaseAccessor.GetTable(sql);
+            var dt = mDatabaseAccessor.GetTable(sql);
 
             foreach (DataRow dr in dt.Rows)
             {
-                m_TotalProteinsCount += Convert.ToInt32(dr["Numproteins"]);
+                mTotalProteinsCount += Convert.ToInt32(dr["Numproteins"]);
             }
 
             var elapsedTimeSB = new StringBuilder();
@@ -107,32 +107,32 @@ namespace AppUI_OrfDBHandler
             string tmpPath = Path.GetTempPath();
 
             string connectionString;
-            if (m_DatabaseAccessor == null || string.IsNullOrWhiteSpace(m_DatabaseAccessor.ConnectionString))
+            if (mDatabaseAccessor == null || string.IsNullOrWhiteSpace(mDatabaseAccessor.ConnectionString))
             {
                 connectionString = string.Empty;
             }
             else
             {
-                connectionString = m_DatabaseAccessor.ConnectionString;
+                connectionString = mDatabaseAccessor.ConnectionString;
             }
 
-            m_Exporter = new GetFASTAFromDMS(
+            mExporter = new GetFASTAFromDMS(
                 connectionString, GetFASTAFromDMS.DatabaseFormatTypes.fasta,
                 GetFASTAFromDMS.SequenceTypes.forward);
-            m_Exporter.FileGenerationCompleted += m_Exporter_FileGenerationCompleted;
+            mExporter.FileGenerationCompleted += mExporter_FileGenerationCompleted;
 
             var creationOptionsString = "seq_direction=forward,filetype=fasta";
             OnSyncStart("Updating Collections and Archive Entries");
             var startTime = DateTime.UtcNow;
 
-            var fileArchiver = new ArchiveToFile(m_DatabaseAccessor, m_Exporter);
+            var fileArchiver = new ArchiveToFile(mDatabaseAccessor, mExporter);
 
             foreach (DataRow dr in dt.Rows)
             {
                 var tmpID = Convert.ToInt32(dr["Protein_Collection_ID"]);
                 var tmpStoredSHA = dr["Authentication_Hash"].ToString();
                 var tmpFilename = dr["FileName"].ToString();
-                m_GeneratedFastaFilePath = string.Empty;
+                mGeneratedFastaFilePath = string.Empty;
 
                 elapsedTimeSB.Remove(0, elapsedTimeSB.Length);
                 var elapsedTime = DateTime.UtcNow.Subtract(startTime);
@@ -165,16 +165,16 @@ namespace AppUI_OrfDBHandler
                 //     + " [Elapsed Time: "
                 //     + elapsedTimeSB.ToString() + "]",
                 //     currentProteinCount / (double)totalProteinCount)
-                m_CurrentStatusMsg = "Collection " + tmpID.ToString("0000") + " [Elapsed Time: " + elapsedTimeSB.ToString() + "]";
+                mCurrentStatusMsg = "Collection " + tmpID.ToString("0000") + " [Elapsed Time: " + elapsedTimeSB.ToString() + "]";
 
                 OnSyncProgressUpdate(
-                    m_CurrentStatusMsg,
-                    m_CurrentProteinCount / (double)m_TotalProteinsCount);
+                    mCurrentStatusMsg,
+                    mCurrentProteinCount / (double)mTotalProteinsCount);
 
                 var tmpFullPath = Path.Combine(tmpPath, tmpFilename + ".fasta");
                 // Debug.WriteLine("Start: " + tmpFilename + ": " + startTime.ToLongTimeString());
 
-                var tmpGenSHA = m_Exporter.ExportFASTAFile(tmpID, tmpPath,
+                var tmpGenSHA = mExporter.ExportFASTAFile(tmpID, tmpPath,
                     GetFASTAFromDMS.DatabaseFormatTypes.fasta,
                     GetFASTAFromDMS.SequenceTypes.forward);
 
@@ -183,12 +183,12 @@ namespace AppUI_OrfDBHandler
                     int currentFastaProteinCount = 0;
                     int currentFastaResidueCount = 0;
 
-                    if (!string.IsNullOrEmpty(m_GeneratedFastaFilePath))
+                    if (!string.IsNullOrEmpty(mGeneratedFastaFilePath))
                     {
-                        CountProteinsAndResidues(m_GeneratedFastaFilePath, out currentFastaProteinCount, out currentFastaResidueCount);
+                        CountProteinsAndResidues(mGeneratedFastaFilePath, out currentFastaProteinCount, out currentFastaResidueCount);
                     }
 
-                    m_Importer.AddAuthenticationHash(tmpID, tmpGenSHA, currentFastaProteinCount, currentFastaResidueCount);
+                    mImporter.AddAuthenticationHash(tmpID, tmpGenSHA, currentFastaProteinCount, currentFastaResidueCount);
                 }
 
                 // Debug.WriteLine("End: " + tmpFilename + ": " + DateTime.Now.ToLongTimeString);
@@ -208,7 +208,7 @@ namespace AppUI_OrfDBHandler
                 // tmpNameList.Clear();
                 var fi = new FileInfo(tmpFullPath);
                 fi.Delete();
-                m_CurrentProteinCount += Convert.ToInt32(dr["NumProteins"]);
+                mCurrentProteinCount += Convert.ToInt32(dr["NumProteins"]);
             }
 
             OnSyncCompletion();
@@ -226,9 +226,9 @@ namespace AppUI_OrfDBHandler
             // sql = "SELECT Reference_ID, Name, Reference_Fingerprint, Protein_ID " +
             //       "FROM T_Protein_Names";
 
-            // dt = m_DatabaseAccessor.GetTable(sql);
+            // dt = mDatabaseAccessor.GetTable(sql);
 
-            // var dbTools = m_DatabaseAccessor.DBTools;
+            // var dbTools = mDatabaseAccessor.DBTools;
 
             // foreach (DataRow dr in dt.Rows)
             // {
@@ -238,8 +238,8 @@ namespace AppUI_OrfDBHandler
             //     tmpFingerprint = dbTools.GetString(dr["Reference_Fingerprint"]);
             //     tmpProtID = dbTools.GetInteger(dr["Protein_ID"]);
 
-            //     // tmpGenSHA = m_Importer.GenerateArbitraryHash(tmpName + tmpProtID.ToString)
-            //     errorCode = m_Importer.UpdateProteinNameHash(tmpRefID, tmpName, tmpProtID);
+            //     // tmpGenSHA = mImporter.GenerateArbitraryHash(tmpName + tmpProtID.ToString)
+            //     errorCode = mImporter.UpdateProteinNameHash(tmpRefID, tmpName, tmpProtID);
             //     if (counter % 2000 == 0)
             //         Debug.WriteLine(counter.ToString());
             // }
@@ -252,7 +252,7 @@ namespace AppUI_OrfDBHandler
             // sql = "SELECT Protein_ID, Sequence " +
             //       "FROM T_Proteins";
 
-            // dt = m_DatabaseAccessor.GetTable(sql);
+            // dt = mDatabaseAccessor.GetTable(sql);
 
             // foreach (DataRow dr in dt.Rows)
             // {
@@ -260,7 +260,7 @@ namespace AppUI_OrfDBHandler
             //     tmpProtID = dbTools.GetInteger(dr["Protein_ID");
             //     tmpSeq = dbTools.GetString(dr["Sequence");
 
-            //     errorCode = m_Importer.UpdateProteinSequenceHash(tmpProtID, tmpSeq);
+            //     errorCode = mImporter.UpdateProteinSequenceHash(tmpProtID, tmpSeq);
 
             //     if (counter % 2000 == 0)
             //         Debug.WriteLine(counter.ToString());
@@ -289,7 +289,7 @@ namespace AppUI_OrfDBHandler
         {
             string sql = "SELECT * FROM T_Temp_Archive_Path_Fix";
 
-            var tmpTable = m_DatabaseAccessor.GetTable(sql);
+            var tmpTable = mDatabaseAccessor.GetTable(sql);
 
             foreach (DataRow dr in tmpTable.Rows)
             {
@@ -302,14 +302,14 @@ namespace AppUI_OrfDBHandler
 
         public void AddSortingIndices()
         {
-            string getCollectionsSQL = "SELECT Protein_Collection_ID, FileName, Organism_ID FROM V_Protein_Collections_By_Organism WHERE Collection_Type_ID = 1 or Collection_Type_ID = 5";
+            string getCollectionsSQL = "SELECT Protein_Collection_ID, FileName, OrganismID FROM V_Protein_Collections_By_Organism WHERE Collection_Type_ID = 1 or Collection_Type_ID = 5";
 
-            var collectionTable = m_DatabaseAccessor.GetTable(getCollectionsSQL);
+            var collectionTable = mDatabaseAccessor.GetTable(getCollectionsSQL);
 
-            string getLegacyFilesSQL = "SELECT DISTINCT FileName, Full_Path, Organism_ID FROM V_Legacy_Static_File_Locations";
-            var legacyTable = m_DatabaseAccessor.GetTable(getLegacyFilesSQL);
+            string getLegacyFilesSQL = "SELECT DISTINCT FileName, Full_Path, OrganismID FROM V_Legacy_Static_File_Locations";
+            var legacyTable = mDatabaseAccessor.GetTable(getLegacyFilesSQL);
 
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             foreach (DataRow collectionEntry in collectionTable.Rows)
             {
@@ -320,14 +320,14 @@ namespace AppUI_OrfDBHandler
                     Debug.WriteLine("");
                 }
 
-                int tmpOrgID = Convert.ToInt32(collectionEntry["Organism_ID"]);
+                int tmpOrgID = Convert.ToInt32(collectionEntry["OrganismID"]);
 
-                var legacyFoundRows = legacyTable.Select("FileName = '" + tmpCollectionName + ".fasta' AND Organism_ID = " + tmpOrgID);
+                var legacyFoundRows = legacyTable.Select("FileName = '" + tmpCollectionName + ".fasta' AND OrganismID = " + tmpOrgID);
                 if (legacyFoundRows.Length > 0)
                 {
                     var getReferencesSQL = "SELECT * FROM V_Tmp_Member_Name_Lookup WHERE Protein_Collection_ID = " + tmpCollectionID.ToString() +
                                            " AND Sorting_Index == null";
-                    var referencesTable = m_DatabaseAccessor.GetTable(getReferencesSQL);
+                    var referencesTable = mDatabaseAccessor.GetTable(getReferencesSQL);
                     if (referencesTable.Rows.Count > 0)
                     {
                         var legacyFileEntry = legacyFoundRows[0];
@@ -345,7 +345,7 @@ namespace AppUI_OrfDBHandler
 
                             if (tmpSortingIndex > 0)
                             {
-                                m_Importer.UpdateProteinCollectionMember(
+                                mImporter.UpdateProteinCollectionMember(
                                     tmpRefID, tmpProteinID,
                                     tmpSortingIndex, tmpCollectionID);
                             }
@@ -398,7 +398,7 @@ namespace AppUI_OrfDBHandler
             var counter = default(int);
             int tmpRowCount = 1;
 
-            var tmpTableInfo = m_DatabaseAccessor.GetTable(
+            var tmpTableInfo = mDatabaseAccessor.GetTable(
                 "SELECT TOP 1 TableRowCount " +
                 "FROM V_Table_Row_Counts " +
                 "WHERE TableName = 'T_Proteins'");
@@ -422,7 +422,7 @@ namespace AppUI_OrfDBHandler
                 //                    "WHERE Protein_ID = 285130";
                 //     "WHERE Protein_ID <= " + counter.ToString();
 
-                var proteinTable = m_DatabaseAccessor.GetTable(proteinSelectSQL);
+                var proteinTable = mDatabaseAccessor.GetTable(proteinSelectSQL);
 
                 tmpRowCount = proteinTable.Rows.Count;
 
@@ -445,7 +445,7 @@ namespace AppUI_OrfDBHandler
         {
             string nameCountSQL = "SELECT TOP 1 Reference_ID FROM T_Protein_Names ORDER BY Reference_ID DESC";
 
-            var nameCountResults = m_DatabaseAccessor.GetTable(nameCountSQL);
+            var nameCountResults = mDatabaseAccessor.GetTable(nameCountSQL);
             var totalNameCount = Convert.ToInt32(nameCountResults.Rows[0]["Reference_ID"]);
 
             int startIndex = 0;
@@ -458,7 +458,7 @@ namespace AppUI_OrfDBHandler
 
             OnSyncStart("Updating Name Hashes");
 
-            var dbTools = m_DatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DBTools;
 
             for (var counter = stepValue; counter <= totalNameCount + stepValue; counter += stepValue)
             {
@@ -473,7 +473,7 @@ namespace AppUI_OrfDBHandler
                                       "ORDER BY Reference_ID";
 
                 // Protein_Name(+"_" + Description + "_" + ProteinID.ToString)
-                var proteinListResults = m_DatabaseAccessor.GetTable(rowRetrievalSQL);
+                var proteinListResults = mDatabaseAccessor.GetTable(rowRetrievalSQL);
                 if (proteinListResults.Rows.Count > 0)
                 {
                     foreach (DataRow dr in proteinListResults.Rows)
@@ -483,7 +483,7 @@ namespace AppUI_OrfDBHandler
                         var tmpDescription = dbTools.GetString(dr["Description"]);
                         var tmpProteinID = dbTools.GetInteger(dr["Protein_ID"]);
 
-                        m_Importer.UpdateProteinNameHash(
+                        mImporter.UpdateProteinNameHash(
                             tmpRefID,
                             tmpProteinName,
                             tmpDescription,
@@ -506,7 +506,7 @@ namespace AppUI_OrfDBHandler
             {
                 string sequence = proteins[proteinID];
                 si.CalculateSequenceInfo(sequence);
-                m_Importer.UpdateProteinSequenceInfo(
+                mImporter.UpdateProteinSequenceInfo(
                     proteinID, sequence, sequence.Length,
                     si.MolecularFormula, si.MonoisotopicMass,
                     si.AverageMass, si.SHA1Hash);
@@ -528,9 +528,9 @@ namespace AppUI_OrfDBHandler
             SyncComplete?.Invoke();
         }
 
-        private void m_Exporter_FileGenerationCompleted(string fullOutputPath)
+        private void mExporter_FileGenerationCompleted(string fullOutputPath)
         {
-            m_GeneratedFastaFilePath = fullOutputPath;
+            mGeneratedFastaFilePath = fullOutputPath;
         }
     }
 }

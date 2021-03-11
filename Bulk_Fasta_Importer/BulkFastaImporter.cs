@@ -50,7 +50,7 @@ namespace Bulk_Fasta_Importer
 
         #region "Classwide Variables"
 
-        private PSUploadHandler m_UploadHandler;
+        private PSUploadHandler mUploadHandler;
 
         /// <summary>
         /// Organism info, where keys are organism name and values are organism ID
@@ -369,7 +369,7 @@ namespace Bulk_Fasta_Importer
         {
             try
             {
-                const string sqlQuery = "SELECT Organism_ID, Name FROM V_Organism_Export";
+                const string sqlQuery = "SELECT OrganismID, Name FROM V_OrganismExport";
 
                 mOrganismInfo.Clear();
 
@@ -380,7 +380,7 @@ namespace Bulk_Fasta_Importer
 
                 if (!success)
                 {
-                    ReportDatabaseError("Error obtaining data from V_Organism_Export using GetQueryResultsDataTable");
+                    ReportDatabaseError("Error obtaining data from V_OrganismExport using GetQueryResultsDataTable");
                     return false;
                 }
 
@@ -499,7 +499,7 @@ namespace Bulk_Fasta_Importer
                     ShowWarning("Invalid Organism ID: " + organismId);
                     if (!mOrganismViewInfoShown)
                     {
-                        Console.WriteLine("  ... see view V_Organism_Export in the DMS5 database");
+                        Console.WriteLine("  ... see view V_OrganismExport in the DMS5 database");
                         mOrganismViewInfoShown = true;
                     }
 
@@ -517,7 +517,7 @@ namespace Bulk_Fasta_Importer
             ShowWarning("Invalid Organism Name: " + organismNameOrID);
             if (!mOrganismViewInfoShown)
             {
-                Console.WriteLine("  ... see view V_Organism_Export in the DMS5 database");
+                Console.WriteLine("  ... see view V_OrganismExport in the DMS5 database");
                 mOrganismViewInfoShown = true;
             }
 
@@ -619,22 +619,22 @@ namespace Bulk_Fasta_Importer
             try
             {
                 // Initialize the uploader
-                m_UploadHandler = new PSUploadHandler(ProteinSeqsConnectionString);
-                m_UploadHandler.BatchProgress += m_UploadHandler_BatchProgress;
-                m_UploadHandler.FASTAFileWarnings += m_UploadHandler_FASTAFileWarnings;
-                m_UploadHandler.FASTAValidationComplete += m_UploadHandler_FASTAValidationComplete;
-                m_UploadHandler.InvalidFASTAFile += m_UploadHandler_InvalidFASTAFile;
-                m_UploadHandler.LoadEnd += m_UploadHandler_LoadEnd;
-                m_UploadHandler.LoadProgress += m_UploadHandler_LoadProgress;
-                m_UploadHandler.LoadStart += m_UploadHandler_LoadStart;
-                m_UploadHandler.ValidationProgress += m_UploadHandler_ValidationProgress;
-                m_UploadHandler.ValidFASTAFileLoaded += m_UploadHandler_ValidFASTAFileLoaded;
-                m_UploadHandler.WroteLineEndNormalizedFASTA += m_UploadHandler_WroteLineEndNormalizedFASTA;
+                mUploadHandler = new PSUploadHandler(ProteinSeqsConnectionString);
+                mUploadHandler.BatchProgress += mUploadHandler_BatchProgress;
+                mUploadHandler.FASTAFileWarnings += mUploadHandler_FASTAFileWarnings;
+                mUploadHandler.FASTAValidationComplete += mUploadHandler_FASTAValidationComplete;
+                mUploadHandler.InvalidFASTAFile += mUploadHandler_InvalidFASTAFile;
+                mUploadHandler.LoadEnd += mUploadHandler_LoadEnd;
+                mUploadHandler.LoadProgress += mUploadHandler_LoadProgress;
+                mUploadHandler.LoadStart += mUploadHandler_LoadStart;
+                mUploadHandler.ValidationProgress += mUploadHandler_ValidationProgress;
+                mUploadHandler.ValidFASTAFileLoaded += mUploadHandler_ValidFASTAFileLoaded;
+                mUploadHandler.WroteLineEndNormalizedFASTA += mUploadHandler_WroteLineEndNormalizedFASTA;
 
-                m_UploadHandler.SetValidationOptions(PSUploadHandler.ValidationOptionConstants.AllowAllSymbolsInProteinNames, ValidationAllowAllSymbolsInProteinNames);
-                m_UploadHandler.SetValidationOptions(PSUploadHandler.ValidationOptionConstants.AllowAsterisksInResidues, ValidationAllowAsterisks);
-                m_UploadHandler.SetValidationOptions(PSUploadHandler.ValidationOptionConstants.AllowDashInResidues, ValidationAllowDash);
-                m_UploadHandler.MaximumProteinNameLength = ValidationMaxProteinNameLength;
+                mUploadHandler.SetValidationOptions(PSUploadHandler.ValidationOptionConstants.AllowAllSymbolsInProteinNames, ValidationAllowAllSymbolsInProteinNames);
+                mUploadHandler.SetValidationOptions(PSUploadHandler.ValidationOptionConstants.AllowAsterisksInResidues, ValidationAllowAsterisks);
+                mUploadHandler.SetValidationOptions(PSUploadHandler.ValidationOptionConstants.AllowDashInResidues, ValidationAllowDash);
+                mUploadHandler.MaximumProteinNameLength = ValidationMaxProteinNameLength;
             }
             catch (Exception ex)
             {
@@ -657,7 +657,7 @@ namespace Bulk_Fasta_Importer
                 ShowMessage("Uploading " + fileInfoList.Count + " file(s)");
 
                 // Start the upload
-                m_UploadHandler.BatchUpload(fileInfoList);
+                mUploadHandler.BatchUpload(fileInfoList);
 
                 return true;
             }
@@ -668,7 +668,7 @@ namespace Bulk_Fasta_Importer
             }
         }
 
-        private void m_UploadHandler_BatchProgress(string status)
+        private void mUploadHandler_BatchProgress(string status)
         {
             if (DateTime.UtcNow.Subtract(mLastProgressTime).TotalSeconds >= 1d)
             {
@@ -677,7 +677,7 @@ namespace Bulk_Fasta_Importer
             }
         }
 
-        private void m_UploadHandler_FASTAFileWarnings(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> warningCollection)
+        private void mUploadHandler_FASTAFileWarnings(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> warningCollection)
         {
             try
             {
@@ -690,7 +690,7 @@ namespace Bulk_Fasta_Importer
             }
         }
 
-        private void m_UploadHandler_FASTAValidationComplete(string fastaFilePath, PSUploadHandler.UploadInfo uploadInfo)
+        private void mUploadHandler_FASTAValidationComplete(string fastaFilePath, PSUploadHandler.UploadInfo uploadInfo)
         {
             ShowMessage("Validated " + fastaFilePath);
             ShowMessage("  ... ProteinCount: " + uploadInfo.ProteinCount);
@@ -707,7 +707,7 @@ namespace Bulk_Fasta_Importer
             }
         }
 
-        private void m_UploadHandler_InvalidFASTAFile(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> errorCollection)
+        private void mUploadHandler_InvalidFASTAFile(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> errorCollection)
         {
             ShowWarning("Invalid fasta file: " + fastaFilePath);
             try
@@ -721,11 +721,11 @@ namespace Bulk_Fasta_Importer
             }
         }
 
-        private void m_UploadHandler_LoadEnd()
+        private void mUploadHandler_LoadEnd()
         {
         }
 
-        private void m_UploadHandler_LoadProgress(double fractionDone)
+        private void mUploadHandler_LoadProgress(double fractionDone)
         {
             if (DateTime.UtcNow.Subtract(mLastProgressTime).TotalSeconds >= 1d)
             {
@@ -734,16 +734,16 @@ namespace Bulk_Fasta_Importer
             }
         }
 
-        private void m_UploadHandler_LoadStart(string taskTitle)
+        private void mUploadHandler_LoadStart(string taskTitle)
         {
             ShowMessage(taskTitle);
         }
 
-        private void m_UploadHandler_ValidationProgress(string taskTitle, double fractionDone)
+        private void mUploadHandler_ValidationProgress(string taskTitle, double fractionDone)
         {
         }
 
-        private void m_UploadHandler_ValidFASTAFileLoaded(string fastaFilePath, PSUploadHandler.UploadInfo uploadData)
+        private void mUploadHandler_ValidFASTAFileLoaded(string fastaFilePath, PSUploadHandler.UploadInfo uploadData)
         {
             ShowMessage("Uploaded " + fastaFilePath);
             ShowMessage("  ... ProteinCount: " + uploadData.ProteinCount);
@@ -760,7 +760,7 @@ namespace Bulk_Fasta_Importer
             }
         }
 
-        private void m_UploadHandler_WroteLineEndNormalizedFASTA(string newFilePath)
+        private void mUploadHandler_WroteLineEndNormalizedFASTA(string newFilePath)
         {
             Console.WriteLine("WroteLineEndNormalizedFASTA: " + newFilePath);
         }

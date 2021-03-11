@@ -4,38 +4,38 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 {
     internal class AnnotationStorage
     {
-        private Dictionary<int, AnnotationGroup> m_AnnotationGroups;
-        private Dictionary<string, int> m_GroupNameLookup;
-        private readonly SortedSet<string> m_GlobalProteinNameList = new SortedSet<string>();
+        private Dictionary<int, AnnotationGroup> mAnnotationGroups;
+        private Dictionary<string, int> mGroupNameLookup;
+        private readonly SortedSet<string> mGlobalProteinNameList = new SortedSet<string>();
 
         public void AddAnnotationGroup(int GroupID, string groupNameToAdd)
         {
-            if (m_GroupNameLookup == null)
+            if (mGroupNameLookup == null)
             {
-                m_GroupNameLookup = new Dictionary<string, int>();
+                mGroupNameLookup = new Dictionary<string, int>();
             }
 
-            if (m_AnnotationGroups == null)
+            if (mAnnotationGroups == null)
             {
-                m_AnnotationGroups = new Dictionary<int, AnnotationGroup>();
+                mAnnotationGroups = new Dictionary<int, AnnotationGroup>();
             }
 
             var newGroup = new AnnotationGroup(groupNameToAdd);
             newGroup.ImportThisGroup = false;
-            m_AnnotationGroups.Add(GroupID, newGroup);
-            m_GroupNameLookup.Add(groupNameToAdd, GroupID);
+            mAnnotationGroups.Add(GroupID, newGroup);
+            mGroupNameLookup.Add(groupNameToAdd, GroupID);
         }
 
         public void ClearAnnotationGroups()
         {
-            if (m_AnnotationGroups != null)
+            if (mAnnotationGroups != null)
             {
-                m_AnnotationGroups.Clear();
+                mAnnotationGroups.Clear();
             }
 
-            if (m_GroupNameLookup != null)
+            if (mGroupNameLookup != null)
             {
-                m_GroupNameLookup.Clear();
+                mGroupNameLookup.Clear();
             }
         }
 
@@ -46,10 +46,10 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         {
             var ag = GetGroup(groupID);
             ag.AddAnnotation(PrimaryReferenceName, XRefName);
-            m_AnnotationGroups[groupID] = ag;
-            if (!m_GlobalProteinNameList.Contains(PrimaryReferenceName))
+            mAnnotationGroups[groupID] = ag;
+            if (!mGlobalProteinNameList.Contains(PrimaryReferenceName))
             {
-                m_GlobalProteinNameList.Add(PrimaryReferenceName);
+                mGlobalProteinNameList.Add(PrimaryReferenceName);
             }
         }
 
@@ -62,25 +62,25 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         public void SetAnnotationGroupStatus(int GroupID, bool NewState)
         {
-            var group = m_AnnotationGroups[GroupID];
+            var group = mAnnotationGroups[GroupID];
             group.ImportThisGroup = NewState;
-            m_AnnotationGroups[GroupID] = group;
+            mAnnotationGroups[GroupID] = group;
             group = null;
         }
 
         // Controls the import state of the named annotation group
         public void SetAnnotationGroupStatus(string groupNameToUpdate, bool newStateForGroup)
         {
-            int groupID = m_GroupNameLookup[groupNameToUpdate];
+            int groupID = mGroupNameLookup[groupNameToUpdate];
             SetAnnotationGroupStatus(groupID, newStateForGroup);
         }
 
         public SortedSet<string> GetAllPrimaryReferences()
         {
-            return m_GlobalProteinNameList;
+            return mGlobalProteinNameList;
         }
 
-        public int GroupCount => m_AnnotationGroups.Count;
+        public int GroupCount => mAnnotationGroups.Count;
 
         public string GetDelimiter(int GroupID)
         {
@@ -89,12 +89,12 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         public int GetAnnotationAuthorityID(int GroupID)
         {
-            return m_AnnotationGroups[GroupID].AnnotationAuthorityID;
+            return mAnnotationGroups[GroupID].AnnotationAuthorityID;
         }
 
         public void SetAnnotationAuthorityID(int GroupID, int value)
         {
-            m_AnnotationGroups[GroupID].AnnotationAuthorityID = value;
+            mAnnotationGroups[GroupID].AnnotationAuthorityID = value;
         }
 
         public string GetGroupName(int GroupID)
@@ -107,14 +107,14 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             var group = GetGroup(GroupID);
             var oldName = @group.GroupName;
             group.GroupName = value;
-            m_AnnotationGroups[GroupID] = group;
-            m_GroupNameLookup.Remove(oldName);
-            m_GroupNameLookup[value] = GroupID;
+            mAnnotationGroups[GroupID] = group;
+            mGroupNameLookup.Remove(oldName);
+            mGroupNameLookup[value] = GroupID;
         }
 
         // public HashTable GetAnnotationGroup(string GroupName)
         // {
-        //     var groupID = m_GroupNameLookup(GroupName);
+        //     var groupID = mGroupNameLookup(GroupName);
         //     return GetAnnotationGroupData(groupID);
         // }
 
@@ -146,7 +146,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         public AnnotationGroup GetGroup(int groupid)
         {
-            var @group = m_AnnotationGroups[groupid];
+            var @group = mAnnotationGroups[groupid];
             return group;
         }
     }

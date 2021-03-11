@@ -7,67 +7,67 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 {
     internal class ExtractFromFlatFile
     {
-        private string m_FilePath;
+        private string mFilePath;
 
         /// <summary>
         /// Each entry in this list is a dictionary where keys are column name (1-based) and values are the value for that column
         /// </summary>
-        private List<Dictionary<int, string>> m_FileContents;
+        private List<Dictionary<int, string>> mFileContents;
 
         /// <summary>
         /// Keys are column number (starting at 1)
         /// Values are column names
         /// </summary>
-        private Dictionary<int, string> m_ColumnNameLookup;
+        private Dictionary<int, string> mColumnNameLookup;
 
-        private readonly Dictionary<string, string> m_Authorities;
-        private AnnotationStorage m_AnnotationStorage;
-        private string m_firstLine;
-        private readonly string m_PSConnectionString;
-        private AddUpdateEntries m_Uploader;
-        private Dictionary<string, int> m_ProteinIDLookup;
+        private readonly Dictionary<string, string> mAuthorities;
+        private AnnotationStorage mAnnotationStorage;
+        private string mfirstLine;
+        private readonly string mPSConnectionString;
+        private AddUpdateEntries mUploader;
+        private Dictionary<string, int> mProteinIDLookup;
 
-        private int m_MaxProteinNameLength = 32;
+        private int mMaxProteinNameLength = 32;
 
         // AuthorityLookupHash key = AuthorityID, value = AuthorityName
         public ExtractFromFlatFile(Dictionary<string, string> AuthorityList, string psConnectionString)
         {
-            m_Authorities = AuthorityList;
-            m_PSConnectionString = psConnectionString;
+            mAuthorities = AuthorityList;
+            mPSConnectionString = psConnectionString;
         }
 
-        public List<Dictionary<int, string>> FileContents => m_FileContents;
+        public List<Dictionary<int, string>> FileContents => mFileContents;
 
-        public AnnotationStorage Annotations => m_AnnotationStorage;
+        public AnnotationStorage Annotations => mAnnotationStorage;
 
         /// <summary>
         /// Keys are column number (starting at 1)
         /// Values are column names
         /// </summary>
-        public Dictionary<int, string> ColumnNames => m_ColumnNameLookup;
+        public Dictionary<int, string> ColumnNames => mColumnNameLookup;
 
         private void ExtractGroupsFromLine(
             string entryLine,
             string delimiter,
             bool useContentsAsColumnNames)
         {
-            m_AnnotationStorage = new AnnotationStorage();
+            mAnnotationStorage = new AnnotationStorage();
 
             // In dictionary valuesByColumnId:
             // Keys are column number (starting at 1)
             // Values are column names
             var valuesByColumnId = GetLineValuesByColumnId(entryLine, delimiter);
 
-            if (m_ColumnNameLookup == null)
+            if (mColumnNameLookup == null)
             {
-                m_ColumnNameLookup = new Dictionary<int, string>(valuesByColumnId.Count);
+                mColumnNameLookup = new Dictionary<int, string>(valuesByColumnId.Count);
             }
             else
             {
-                m_ColumnNameLookup.Clear();
+                mColumnNameLookup.Clear();
             }
 
-            m_AnnotationStorage.ClearAnnotationGroups();
+            mAnnotationStorage.ClearAnnotationGroups();
 
             for (int columnNumber = 1; columnNumber <= valuesByColumnId.Count; columnNumber++)
             {
@@ -81,8 +81,8 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
                     columnName = "Column_" + columnNumber.ToString("00");
                 }
 
-                m_ColumnNameLookup.Add(columnNumber, columnName);
-                m_AnnotationStorage.AddAnnotationGroup(columnNumber, columnName);
+                mColumnNameLookup.Add(columnNumber, columnName);
+                mAnnotationStorage.AddAnnotationGroup(columnNumber, columnName);
             }
         }
 
@@ -146,7 +146,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             string delimiter,
             bool UseHeaderLineInfo)
         {
-            ExtractGroupsFromLine(m_firstLine, delimiter, UseHeaderLineInfo);
+            ExtractGroupsFromLine(mfirstLine, delimiter, UseHeaderLineInfo);
             return default;
         }
 
@@ -158,7 +158,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         {
             var inputFile = new FileInfo(filePath);
 
-            m_FileContents = new List<Dictionary<int, string>>();
+            mFileContents = new List<Dictionary<int, string>>();
 
             using (var reader = new StreamReader(new FileStream(inputFile.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
             {
@@ -168,19 +168,19 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
                     string entryLine = reader.ReadLine();
                     if (!firstLineStored)
                     {
-                        m_firstLine = entryLine;
+                        mfirstLine = entryLine;
                         firstLineStored = true;
                     }
 
                     var valuesByColumnId = GetLineValuesByColumnId(entryLine, delimiter);
-                    m_FileContents.Add(valuesByColumnId);
+                    mFileContents.Add(valuesByColumnId);
                 }
             }
 
             // Get Column names if possible
-            ExtractGroupsFromLine(m_firstLine, delimiter, useHeaderLineInfo);
+            ExtractGroupsFromLine(mfirstLine, delimiter, useHeaderLineInfo);
 
-            return m_FileContents.Count;
+            return mFileContents.Count;
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             int primaryReferenceNameColumnID,
             Dictionary<string, string> authorityHash)
         {
-            foreach (var dataLine in m_FileContents)
+            foreach (var dataLine in mFileContents)
             {
                 string primaryRef = dataLine[primaryReferenceNameColumnID];
 
@@ -201,7 +201,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
                     if (!columnNumber.Equals(primaryReferenceNameColumnID) &&
                         !dataLine[columnNumber].Equals("---"))
                     {
-                        m_AnnotationStorage.AddAnnotation(
+                        mAnnotationStorage.AddAnnotation(
                             columnNumber, primaryRef,
                             dataLine[columnNumber]);
                     }
@@ -211,26 +211,26 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         public string LookupAuthorityName(int AuthorityID)
         {
-            return m_Authorities[AuthorityID.ToString()];
+            return mAuthorities[AuthorityID.ToString()];
         }
 
         public System.Windows.Forms.ListViewItem GetListViewItemForGroup(
             int GroupID)
         {
             var li = new System.Windows.Forms.ListViewItem(GroupID.ToString());
-            li.SubItems.Add(m_AnnotationStorage.GetGroupName(GroupID));
-            if (m_AnnotationStorage.GetAnnotationAuthorityID(GroupID) > 0)
+            li.SubItems.Add(mAnnotationStorage.GetGroupName(GroupID));
+            if (mAnnotationStorage.GetAnnotationAuthorityID(GroupID) > 0)
             {
-                li.SubItems.Add(m_Authorities[m_AnnotationStorage.GetAnnotationAuthorityID(GroupID).ToString()].ToString());
+                li.SubItems.Add(mAuthorities[mAnnotationStorage.GetAnnotationAuthorityID(GroupID).ToString()].ToString());
             }
             else
             {
                 li.SubItems.Add("-- None Selected --");
             }
 
-            if (m_AnnotationStorage.GetDelimiter(GroupID) != null)
+            if (mAnnotationStorage.GetDelimiter(GroupID) != null)
             {
-                li.SubItems.Add(m_AnnotationStorage.GetDelimiter(GroupID).ToString());
+                li.SubItems.Add(mAnnotationStorage.GetDelimiter(GroupID).ToString());
             }
             else
             {
@@ -242,35 +242,35 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         public void ChangeAuthorityIDforGroup(int GroupID, int AuthorityID)
         {
-            m_AnnotationStorage.SetAnnotationAuthorityID(GroupID, AuthorityID);
+            mAnnotationStorage.SetAnnotationAuthorityID(GroupID, AuthorityID);
         }
 
         public void UploadNewNames(int PrimaryReferenceNameColumnID)
         {
-            ParseLoadedFile(PrimaryReferenceNameColumnID, m_Authorities);
-            if (m_Uploader == null)
+            ParseLoadedFile(PrimaryReferenceNameColumnID, mAuthorities);
+            if (mUploader == null)
             {
-                m_Uploader = new AddUpdateEntries(m_PSConnectionString);
+                mUploader = new AddUpdateEntries(mPSConnectionString);
             }
 
-            int groupCount = m_AnnotationStorage.GroupCount;
+            int groupCount = mAnnotationStorage.GroupCount;
 
-            m_ProteinIDLookup = GetProteinIDsForPrimaryReferences(m_AnnotationStorage.GetAllPrimaryReferences());
+            mProteinIDLookup = GetProteinIDsForPrimaryReferences(mAnnotationStorage.GetAllPrimaryReferences());
 
             for (int columnCount = 1; columnCount <= groupCount; columnCount++)
             {
                 if (!columnCount.Equals(PrimaryReferenceNameColumnID))
                 {
-                    var ag = m_AnnotationStorage.GetGroup(columnCount);
+                    var ag = mAnnotationStorage.GetGroup(columnCount);
                     var referenceLookup = ag.GetAllXRefs();
                     foreach (var proteinName in referenceLookup.Keys)
-                        m_Uploader.AddProteinReference(
+                        mUploader.AddProteinReference(
                             proteinName,
                             string.Empty,
                             0,
                             ag.AnnotationAuthorityID,
-                            m_ProteinIDLookup[proteinName],
-                            m_MaxProteinNameLength);
+                            mProteinIDLookup[proteinName],
+                            mMaxProteinNameLength);
                 }
             }
         }
@@ -279,9 +279,9 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         {
             var ht = new Dictionary<string, int>(PrimaryReferences.Count);
 
-            if (m_Uploader == null)
+            if (mUploader == null)
             {
-                m_Uploader = new AddUpdateEntries(m_PSConnectionString);
+                mUploader = new AddUpdateEntries(mPSConnectionString);
             }
 
             foreach (var name in PrimaryReferences)
@@ -289,13 +289,13 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
                 if (!ht.ContainsKey(name))
                 {
                     int id;
-                    if (m_ProteinIDLookup.ContainsKey(name))
+                    if (mProteinIDLookup.ContainsKey(name))
                     {
-                        id = m_ProteinIDLookup[name];
+                        id = mProteinIDLookup[name];
                     }
                     else
                     {
-                        id = m_Uploader.GetProteinIDFromName(name);
+                        id = mUploader.GetProteinIDFromName(name);
                     }
 
                     ht.Add(name, id);

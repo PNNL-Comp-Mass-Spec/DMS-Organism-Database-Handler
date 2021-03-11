@@ -4,7 +4,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 {
     internal class AnnotationGroup
     {
-        private Dictionary<string, SortedSet<string>> m_AnnotationData;       // key=PrimaryReferenceName, value=SortedSet of xrefs
+        private Dictionary<string, SortedSet<string>> mAnnotationData;       // key=PrimaryReferenceName, value=SortedSet of xrefs
 
         public AnnotationGroup(string GroupName)
         {
@@ -23,36 +23,36 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         {
             SortedSet<string> xrefList;
 
-            if (m_AnnotationData == null)
+            if (mAnnotationData == null)
             {
-                m_AnnotationData = new Dictionary<string, SortedSet<string>>();
+                mAnnotationData = new Dictionary<string, SortedSet<string>>();
             }
 
-            if (!m_AnnotationData.ContainsKey(PrimaryReferenceName))
+            if (!mAnnotationData.ContainsKey(PrimaryReferenceName))
             {
                 xrefList = new SortedSet<string>();
                 xrefList.Add(XRefName);
             }
             else
             {
-                xrefList = m_AnnotationData[PrimaryReferenceName.ToString()];
+                xrefList = mAnnotationData[PrimaryReferenceName.ToString()];
                 if (!xrefList.Contains(XRefName))
                 {
                     xrefList.Add(XRefName);
-                    m_AnnotationData[PrimaryReferenceName.ToString()] = xrefList;
+                    mAnnotationData[PrimaryReferenceName.ToString()] = xrefList;
                 }
             }
         }
 
         public Dictionary<string, SortedSet<string>> GetAllXRefs()
         {
-            return m_AnnotationData;
+            return mAnnotationData;
         }
 
         public SortedSet<string> GetAllPrimaryReferences()
         {
             var annotationKeys = new SortedSet<string>();
-            foreach (var s in m_AnnotationData.Keys)
+            foreach (var s in mAnnotationData.Keys)
                 annotationKeys.Add(s);
 
             return annotationKeys;
@@ -60,7 +60,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         public SortedSet<string> GetXRefs(string PrimaryReferenceName)
         {
-            var xrefList = m_AnnotationData[PrimaryReferenceName];
+            var xrefList = mAnnotationData[PrimaryReferenceName];
 
             if (XRefDelimiter.Length > 0)
             {

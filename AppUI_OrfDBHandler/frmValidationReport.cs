@@ -16,38 +16,38 @@ namespace AppUI_OrfDBHandler
 
             InitializeComponent();
 
-            m_ErrorCollection = new List<CustomFastaValidator.ErrorInfoExtended>();
-            m_WarningCollection = new List<CustomFastaValidator.ErrorInfoExtended>();
+            mErrorCollection = new List<CustomFastaValidator.ErrorInfoExtended>();
+            mWarningCollection = new List<CustomFastaValidator.ErrorInfoExtended>();
         }
 
-        private readonly List<CustomFastaValidator.ErrorInfoExtended> m_ErrorCollection;
-        private readonly List<CustomFastaValidator.ErrorInfoExtended> m_WarningCollection;
+        private readonly List<CustomFastaValidator.ErrorInfoExtended> mErrorCollection;
+        private readonly List<CustomFastaValidator.ErrorInfoExtended> mWarningCollection;
 
-        private Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> m_FileErrorList;        // Tracks the errors found for each file
-        private Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> m_FileWarningList;      // Tracks the warnings found for each file
+        private Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> mFileErrorList;        // Tracks the errors found for each file
+        private Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> mFileWarningList;      // Tracks the warnings found for each file
 
         /// <summary>
         /// Keys are fasta file paths, values are upload info
         /// </summary>
-        private Dictionary<string, PSUploadHandler.UploadInfo> m_FileValidList;
+        private Dictionary<string, PSUploadHandler.UploadInfo> mFileValidList;
 
         /// <summary>
         /// Keys are fasta file names, values are dictionaries of error messages, tracking the count of each error
         /// </summary>
-        private Dictionary<string, Dictionary<string, int>> m_SummarizedFileErrors;
+        private Dictionary<string, Dictionary<string, int>> mSummarizedFileErrors;
 
         /// <summary>
         /// Keys are fasta file names, values are dictionaries of warning messages, tracking the count of each warning
         /// </summary>
-        private Dictionary<string, Dictionary<string, int>> m_SummarizedFileWarnings;
+        private Dictionary<string, Dictionary<string, int>> mSummarizedFileWarnings;
 
-        private DataTable m_Organisms;
+        private DataTable mOrganisms;
 
         private void frmValidationReport_Load(object sender, EventArgs e)
         {
             FillValidListView();
-            BindFileListToErrorComboBox(m_FileErrorList);
-            BindFileListToWarningComboBox(m_FileWarningList);
+            BindFileListToErrorComboBox(mFileErrorList);
+            BindFileListToWarningComboBox(mFileWarningList);
 
             if (cboFileListErrors.Items.Count > 0)
             {
@@ -66,38 +66,38 @@ namespace AppUI_OrfDBHandler
 
         private void cmdExportErrorDetails_Click(object sender, EventArgs e)
         {
-            if (m_ErrorCollection == null || m_ErrorCollection.Count == 0)
+            if (mErrorCollection == null || mErrorCollection.Count == 0)
             {
                 MessageBox.Show("Error list is empty; nothing to export", "Nothing to do", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                DumpDetailedErrorOrWarningList(m_ErrorCollection, cboFileListErrors.Text, "Error");
+                DumpDetailedErrorOrWarningList(mErrorCollection, cboFileListErrors.Text, "Error");
             }
         }
 
         private void cmdExportWarningDetails_Click(object sender, EventArgs e)
         {
-            if (m_WarningCollection == null || m_WarningCollection.Count == 0)
+            if (mWarningCollection == null || mWarningCollection.Count == 0)
             {
                 MessageBox.Show("Warning list is empty; nothing to export", "Nothing to do", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                DumpDetailedErrorOrWarningList(m_WarningCollection, cboFileListWarnings.Text, "Warning");
+                DumpDetailedErrorOrWarningList(mWarningCollection, cboFileListWarnings.Text, "Warning");
             }
         }
 
         private void cboFileListErrors_SelectedIndexChanged(object sender, EventArgs e)
         {
             HandleErrorOrWarningListSelectedIndexChanged(
-                cboFileListErrors.Text, lvwErrorList, m_FileErrorList, m_SummarizedFileErrors, m_ErrorCollection);
+                cboFileListErrors.Text, lvwErrorList, mFileErrorList, mSummarizedFileErrors, mErrorCollection);
         }
 
         private void cboFileListWarnings_SelectedIndexChanged(object sender, EventArgs e)
         {
             HandleErrorOrWarningListSelectedIndexChanged(
-                cboFileListWarnings.Text, lvwWarningList, m_FileWarningList, m_SummarizedFileWarnings, m_WarningCollection);
+                cboFileListWarnings.Text, lvwWarningList, mFileWarningList, mSummarizedFileWarnings, mWarningCollection);
         }
 
         private void HandleErrorOrWarningListSelectedIndexChanged(
@@ -135,37 +135,37 @@ namespace AppUI_OrfDBHandler
 
         internal Dictionary<string, Dictionary<string, int>> ErrorSummaryList
         {
-            set => m_SummarizedFileErrors = value;
+            set => mSummarizedFileErrors = value;
         }
 
         internal Dictionary<string, Dictionary<string, int>> WarningSummaryList
         {
-            set => m_SummarizedFileWarnings = value;
+            set => mSummarizedFileWarnings = value;
         }
 
         internal Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> FileErrorList
         {
-            set => m_FileErrorList = value;
+            set => mFileErrorList = value;
         }
 
         internal Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> FileWarningList
         {
-            set => m_FileWarningList = value;
+            set => mFileWarningList = value;
         }
 
         internal Dictionary<string, PSUploadHandler.UploadInfo> FileValidList
         {
-            set => m_FileValidList = value;
+            set => mFileValidList = value;
         }
 
         internal DataTable OrganismList
         {
-            set => m_Organisms = value;
+            set => mOrganisms = value;
         }
 
         private string GetOrganismName(int organismID)
         {
-            var foundRows = m_Organisms.Select("ID = " + organismID.ToString());
+            var foundRows = mOrganisms.Select("ID = " + organismID.ToString());
 
             return foundRows[0]["Display_Name"].ToString();
         }
@@ -236,12 +236,12 @@ namespace AppUI_OrfDBHandler
 
         private void FillValidListView()
         {
-            if (m_FileValidList == null)
+            if (mFileValidList == null)
             {
-                m_FileValidList = new Dictionary<string, PSUploadHandler.UploadInfo>();
+                mFileValidList = new Dictionary<string, PSUploadHandler.UploadInfo>();
             }
 
-            if (m_FileValidList.Count == 0)
+            if (mFileValidList.Count == 0)
             {
                 return;
             }
@@ -249,7 +249,7 @@ namespace AppUI_OrfDBHandler
             lvwValidList.BeginUpdate();
             lvwValidList.Items.Clear();
 
-            foreach (var item in m_FileValidList)
+            foreach (var item in mFileValidList)
             {
                 string FileName = Path.GetFileName(item.Key);
                 var uploadInfo = item.Value;

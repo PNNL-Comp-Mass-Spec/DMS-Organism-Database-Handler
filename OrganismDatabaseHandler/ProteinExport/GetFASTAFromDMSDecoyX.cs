@@ -16,7 +16,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType)
             : base(databaseAccessor, databaseFormatType, DECOY_PROTEINS_USE_XXX)
         {
-            m_RevGenerator = new GetFASTAFromDMSReversed(
+            mRevGenerator = new GetFASTAFromDMSReversed(
                 databaseAccessor, databaseFormatType)
             {
                 UseXXX = DECOY_PROTEINS_USE_XXX

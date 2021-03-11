@@ -7,7 +7,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class GetFASTAFromDMSScrambled : GetFASTAFromDMSForward
     {
-        private Random m_RndNumGen;
+        private Random mRndNumGen;
 
         /// <summary>
         /// Constructor
@@ -26,10 +26,10 @@ namespace OrganismDatabaseHandler.ProteinExport
             var sb = new StringBuilder(originalSequence.Length);
             string sequence = originalSequence;
 
-            if (m_RndNumGen == null)
+            if (mRndNumGen == null)
             {
-                m_RndNumGen = new Random(collectionCount);
-                m_Naming_Suffix = "_scrambled_seed_" + collectionCount.ToString();
+                mRndNumGen = new Random(collectionCount);
+                mNaming_Suffix = "_scrambled_seed_" + collectionCount.ToString();
             }
 
             var counter = sequence.Length;
@@ -37,7 +37,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             while (counter > 0)
             {
                 Debug.Assert(counter == sequence.Length);
-                var index = m_RndNumGen.Next(counter);
+                var index = mRndNumGen.Next(counter);
                 sb.Append(sequence.Substring(index, 1));
 
                 if (index > 0)

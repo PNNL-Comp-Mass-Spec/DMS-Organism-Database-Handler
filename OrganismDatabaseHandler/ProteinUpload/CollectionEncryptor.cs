@@ -6,8 +6,8 @@ namespace OrganismDatabaseHandler.ProteinUpload
 {
     internal class CollectionEncryptor
     {
-        private RijndaelEncryptionHandler m_RijndaelEncryptor;
-        private readonly DBTask m_DatabaseAccessor;
+        private RijndaelEncryptionHandler mRijndaelEncryptor;
+        private readonly DBTask mDatabaseAccessor;
 
         public event EncryptionStartEventHandler EncryptionStart;
 
@@ -23,8 +23,8 @@ namespace OrganismDatabaseHandler.ProteinUpload
 
         public CollectionEncryptor(string PassPhrase, DBTask databaseAccessor)
         {
-            m_RijndaelEncryptor = new RijndaelEncryptionHandler(PassPhrase);
-            m_DatabaseAccessor = databaseAccessor;
+            mRijndaelEncryptor = new RijndaelEncryptionHandler(PassPhrase);
+            mDatabaseAccessor = databaseAccessor;
         }
 
         public void EncryptStorageCollectionSequences(ProteinStorage.ProteinStorage storageCollection)
@@ -53,8 +53,8 @@ namespace OrganismDatabaseHandler.ProteinUpload
                 }
 
                 var ce = e.Current.Value;
-                ce.Sequence = m_RijndaelEncryptor.Encrypt(ce.Sequence);
-                ce.SHA1Hash = m_RijndaelEncryptor.MakeArbitraryHash(ce.Sequence);
+                ce.Sequence = mRijndaelEncryptor.Encrypt(ce.Sequence);
+                ce.SHA1Hash = mRijndaelEncryptor.MakeArbitraryHash(ce.Sequence);
                 ce.IsEncrypted = true;
                 counter += 1;
             }

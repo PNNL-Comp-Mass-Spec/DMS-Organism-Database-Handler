@@ -12,27 +12,27 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class GetFASTAFromDMSForward
     {
-        private readonly DBTask m_DatabaseAccessor;
-        private readonly ExportProteins m_fileDumper;
+        private readonly DBTask mDatabaseAccessor;
+        private readonly ExportProteins mfileDumper;
 
         /// <summary>
         /// Keys are protein collection IDs
         /// Values are filename
         /// </summary>
-        private Dictionary<int, string> m_AllCollections;
+        private Dictionary<int, string> mAllCollections;
 
-        private Dictionary<string, string> m_OrganismList;
+        private Dictionary<string, string> mOrganismList;
 
-        private int m_CurrentFileProteinCount;
-        private string m_CurrentArchiveFileName;
+        private int mCurrentFileProteinCount;
+        private string mCurrentArchiveFileName;
 
-        private DataTable m_CollectionsCache;
-        private DataTable m_OrganismCache;
+        private DataTable mCollectionsCache;
+        private DataTable mOrganismCache;
 
-        protected string m_Naming_Suffix = "_forward";
-        private string m_Extension = "";
+        protected string mNaming_Suffix = "_forward";
+        private string mExtension = "";
 
-        private RijndaelEncryptionHandler m_RijndaelDecryption;
+        private RijndaelEncryptionHandler mRijndaelDecryption;
 
         /// <summary>
         /// Constructor
@@ -43,27 +43,27 @@ namespace OrganismDatabaseHandler.ProteinExport
             DBTask databaseAccessor,
             GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType)
         {
-            m_DatabaseAccessor = databaseAccessor;
-            m_AllCollections = GetCollectionNameList();
-            m_OrganismList = GetOrganismList();
+            mDatabaseAccessor = databaseAccessor;
+            mAllCollections = GetCollectionNameList();
+            mOrganismList = GetOrganismList();
 
             switch (databaseFormatType)
             {
                 case GetFASTAFromDMS.DatabaseFormatTypes.fasta:
-                    m_fileDumper = new ExportProteinsFASTA(this);
-                    m_Extension = ".fasta";
+                    mfileDumper = new ExportProteinsFASTA(this);
+                    mExtension = ".fasta";
                     break;
 
                 case GetFASTAFromDMS.DatabaseFormatTypes.fastapro:
-                    m_fileDumper = new ExportProteinsXTFASTA(this);
-                    m_Extension = ".fasta.pro";
+                    mfileDumper = new ExportProteinsXTFASTA(this);
+                    mExtension = ".fasta.pro";
                     break;
             }
 
-            if (m_fileDumper != null)
+            if (mfileDumper != null)
             {
-                m_fileDumper.ExportStart += OnExportStart;
-                m_fileDumper.ExportProgress += OnExportProgressUpdate;
+                mfileDumper.ExportStart += OnExportStart;
+                mfileDumper.ExportProgress += OnExportProgressUpdate;
             }
         }
 
@@ -82,13 +82,13 @@ namespace OrganismDatabaseHandler.ProteinExport
         public string FullOutputPath { get; set; }
 
         // Unused
-        // public readonly string ArchivalName => m_CurrentArchiveFileName;
+        // public readonly string ArchivalName => mCurrentArchiveFileName;
 
         protected virtual string ExtendedExportPath(
             string destinationFolderPath,
             string proteinCollectionName)
         {
-            return Path.Combine(destinationFolderPath, proteinCollectionName + m_Naming_Suffix + m_Extension);
+            return Path.Combine(destinationFolderPath, proteinCollectionName + mNaming_Suffix + mExtension);
         }
 
         public virtual string SequenceExtender(string originalSequence, int collectionCount)
@@ -138,7 +138,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Check each collection name for encryption of contents
             foreach (string nameString in protCollectionList)
             {
-                var encCheckRows = m_CollectionsCache.Select("Filename = '" + nameString + "' AND Contents_Encrypted > 0");
+                var encCheckRows = mCollectionsCache.Select("Filename = '" + nameString + "' AND Contents_Encrypted > 0");
 
                 if (encCheckRows.Length > 0)
                 {
@@ -147,7 +147,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                                            "FROM V_Encrypted_Collection_Authorizations " +
                                            "WHERE Login_Name = '" + user_ID + "'";
 
-                    var authorizationTable = m_DatabaseAccessor.GetTable(authorizationSQL);
+                    var authorizationTable = mDatabaseAccessor.GetTable(authorizationSQL);
                     var authCheckRows = authorizationTable.Select("Protein_Collection_Name = '" + nameString + "' OR Protein_Collection_Name = 'Administrator'");
                     if (authCheckRows.Length > 0)
                     {
@@ -155,7 +155,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                         var passPhraseSQL = "SELECT Passphrase " +
                                             "FROM T_Encrypted_Collection_Passphrases " +
                                             "WHERE Protein_Collection_ID = " + tmpID.ToString();
-                        var passPhraseTable = m_DatabaseAccessor.GetTable(passPhraseSQL);
+                        var passPhraseTable = mDatabaseAccessor.GetTable(passPhraseSQL);
 
                         proteinCollectionPassphrases.Add(nameString, passPhraseTable.Rows[0]["Passphrase"].ToString());
                     }
@@ -225,7 +225,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 var lengthCheckSQL = "SELECT NumProteins FROM T_Protein_Collections " +
                                      "WHERE FileName = '" + ProteinCollectionName + "'";
 
-                var lengthCheckTable = m_DatabaseAccessor.GetTable(lengthCheckSQL);
+                var lengthCheckTable = mDatabaseAccessor.GetTable(lengthCheckSQL);
                 int collectionLength;
 
                 if (lengthCheckTable.Rows.Count > 0)
@@ -267,16 +267,16 @@ namespace OrganismDatabaseHandler.ProteinExport
                             "ORDER BY Sorting_Index";
                     }
 
-                    collectionTable = m_DatabaseAccessor.GetTable(collectionSQL);
+                    collectionTable = mDatabaseAccessor.GetTable(collectionSQL);
 
                     string passPhraseForCollection = "";
                     if (proteinCollectionPassphrases.TryGetValue(trueName, out passPhraseForCollection))
                     {
-                        m_RijndaelDecryption = new RijndaelEncryptionHandler(passPhraseForCollection);
+                        mRijndaelDecryption = new RijndaelEncryptionHandler(passPhraseForCollection);
                         foreach (DataRow decryptionRow in collectionTable.Rows)
                         {
                             var cipherSeq = decryptionRow["Sequence"].ToString();
-                            var clearSeq = m_RijndaelDecryption.Decrypt(cipherSeq);
+                            var clearSeq = mRijndaelDecryption.Decrypt(cipherSeq);
                             decryptionRow["Sequence"] = clearSeq;
                             decryptionRow.AcceptChanges();
                         }
@@ -294,10 +294,10 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                     collectionTable.TableName = tableName;
 
-                    m_CurrentFileProteinCount = collectionTable.Rows.Count;
+                    mCurrentFileProteinCount = collectionTable.Rows.Count;
 
                     // collection.Tables.Add(collectionTable)
-                    m_fileDumper.Export(collectionTable, ref tmpOutputPath);
+                    mfileDumper.Export(collectionTable, ref tmpOutputPath);
 
                     currentCollectionPos = sectionEnd + 1;
                     currentCollectionCount += collectionTable.Rows.Count;
@@ -360,7 +360,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
 
             FullOutputPath = ExtendedExportPath(destinationFolderPath, name);
-            m_CurrentArchiveFileName = name;
+            mCurrentArchiveFileName = name;
 
             // Rename (move) the temporary file to the final, full name
             if (File.Exists(FullOutputPath))
@@ -384,7 +384,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Determine the CRC32 hash of the output file
             // This process will also rename the file, e.g. from "C:\Temp\SAR116_RBH_AA_012809_forward.fasta" to "C:\Temp\38FFACAC.fasta"
             var tempFullPath = FullOutputPath;
-            string crc32Hash = m_fileDumper.Export(new DataTable(), ref tempFullPath);
+            string crc32Hash = mfileDumper.Export(new DataTable(), ref tempFullPath);
             FullOutputPath = FullOutputPath;
 
             OnExportComplete(FullOutputPath);
@@ -425,7 +425,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         // Unused
         // protected int GetPrimaryAuthorityID(int proteinCollectionID)
         // {
-        //     var foundRows = m_CollectionsCache.Select("Protein_Collection_ID = " + proteinCollectionID.ToString()).ToList();
+        //     var foundRows = mCollectionsCache.Select("Protein_Collection_ID = " + proteinCollectionID.ToString()).ToList();
         //
         //     var primaryAnnotationTypeID = foundRows[0]["Primary_Annotation_Type_ID"].ToString();
         //     int idValue;
@@ -444,39 +444,39 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public Dictionary<int, string> GetCollectionNameList()
         {
-            if (m_DatabaseAccessor == null)
+            if (mDatabaseAccessor == null)
             {
                 return new Dictionary<int, string>();
             }
 
-            if (m_CollectionsCache == null)
+            if (mCollectionsCache == null)
             {
                 RefreshCollectionCache();
             }
 
-            return m_DatabaseAccessor.DataTableToDictionaryIntegerKeys(m_CollectionsCache, "Protein_Collection_ID", "FileName");
+            return mDatabaseAccessor.DataTableToDictionaryIntegerKeys(mCollectionsCache, "Protein_Collection_ID", "FileName");
         }
 
         public Dictionary<string, string> GetCollectionsByOrganism(int organismID)
         {
-            if (m_DatabaseAccessor == null)
+            if (mDatabaseAccessor == null)
             {
                 return new Dictionary<string, string>();
             }
 
-            if (m_CollectionsCache == null)
+            if (mCollectionsCache == null)
             {
                 RefreshCollectionCache();
             }
 
-            return m_DatabaseAccessor.DataTableToDictionary(m_CollectionsCache, "Protein_Collection_ID", "FileName", "[Organism_ID] = " + organismID.ToString());
+            return mDatabaseAccessor.DataTableToDictionary(mCollectionsCache, "Protein_Collection_ID", "FileName", "[OrganismID] = " + organismID.ToString());
         }
 
         public DataTable GetCollectionsByOrganismTable(int organismID)
         {
-            var tmpTable = m_CollectionsCache.Clone();
+            var tmpTable = mCollectionsCache.Clone();
 
-            var foundRows = m_CollectionsCache.Select("[Organism_ID] = " + organismID.ToString());
+            var foundRows = mCollectionsCache.Select("[OrganismID] = " + organismID.ToString());
 
             foreach (var dr in foundRows)
                 tmpTable.ImportRow(dr);
@@ -486,55 +486,55 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public Dictionary<string, string> GetOrganismList()
         {
-            if (m_DatabaseAccessor == null)
+            if (mDatabaseAccessor == null)
             {
                 return new Dictionary<string, string>();
             }
 
-            if (m_OrganismCache == null)
+            if (mOrganismCache == null)
             {
                 RefreshOrganismCache();
             }
 
-            return m_DatabaseAccessor.DataTableToDictionary(m_OrganismCache, "Organism_ID", "Name");
+            return mDatabaseAccessor.DataTableToDictionary(mOrganismCache, "OrganismID", "Name");
         }
 
         public DataTable GetOrganismListTable()
         {
-            if (m_DatabaseAccessor == null)
+            if (mDatabaseAccessor == null)
             {
                 return new DataTable();
             }
 
-            if (m_OrganismCache == null)
+            if (mOrganismCache == null)
             {
                 RefreshOrganismCache();
             }
 
-            return m_OrganismCache;
+            return mOrganismCache;
         }
 
         protected void RefreshCollectionCache()
         {
-            if (m_DatabaseAccessor == null || string.IsNullOrWhiteSpace(m_DatabaseAccessor.ConnectionString))
+            if (mDatabaseAccessor == null || string.IsNullOrWhiteSpace(mDatabaseAccessor.ConnectionString))
             {
-                m_CollectionsCache = new DataTable();
+                mCollectionsCache = new DataTable();
             }
             else
             {
-                m_CollectionsCache = m_DatabaseAccessor.GetTable("SELECT * FROM V_Protein_Collections_By_Organism ORDER BY Protein_Collection_ID");
+                mCollectionsCache = mDatabaseAccessor.GetTable("SELECT * FROM V_Protein_Collections_By_Organism ORDER BY Protein_Collection_ID");
             }
         }
 
         protected void RefreshOrganismCache()
         {
-            if (m_DatabaseAccessor == null || string.IsNullOrWhiteSpace(m_DatabaseAccessor.ConnectionString))
+            if (mDatabaseAccessor == null || string.IsNullOrWhiteSpace(mDatabaseAccessor.ConnectionString))
             {
-                m_OrganismCache = new DataTable();
+                mOrganismCache = new DataTable();
             }
             else
             {
-                m_OrganismCache = m_DatabaseAccessor.GetTable("SELECT ID as Organism_ID, Short_Name as Name FROM V_Organism_Picker ORDER BY Organism_ID");
+                mOrganismCache = mDatabaseAccessor.GetTable("SELECT ID as OrganismID, Short_Name as Name FROM V_OrganismPicker ORDER BY OrganismID");
             }
         }
 
@@ -547,11 +547,11 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             // Make sure there are no leading or trailing spaces
             collectionName = collectionName.Trim();
-            var foundRows = m_CollectionsCache.Select("[FileName] = '" + collectionName + "'");
+            var foundRows = mCollectionsCache.Select("[FileName] = '" + collectionName + "'");
             if (foundRows.Length == 0)
             {
                 RefreshCollectionCache();
-                foundRows = m_CollectionsCache.Select("[FileName] = '" + collectionName + "'");
+                foundRows = mCollectionsCache.Select("[FileName] = '" + collectionName + "'");
             }
 
             int id;
@@ -569,12 +569,12 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public string FindNameByID(int collectionID)
         {
-            var foundRows = m_CollectionsCache.Select("Protein_Collection_ID = " + collectionID.ToString()).ToList();
+            var foundRows = mCollectionsCache.Select("Protein_Collection_ID = " + collectionID.ToString()).ToList();
 
             if (foundRows.Count == 0)
             {
                 RefreshCollectionCache();
-                foundRows = m_CollectionsCache.Select("Protein_Collection_ID = " + collectionID.ToString()).ToList();
+                foundRows = mCollectionsCache.Select("Protein_Collection_ID = " + collectionID.ToString()).ToList();
             }
 
             if (foundRows.Count > 0)
@@ -587,7 +587,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         protected int FindPrimaryAnnotationID(int collectionID)
         {
-            var foundRows = m_CollectionsCache.Select("Protein_Collection_ID = " + collectionID.ToString()).ToList();
+            var foundRows = mCollectionsCache.Select("Protein_Collection_ID = " + collectionID.ToString()).ToList();
 
             if (foundRows.Count > 0)
             {
@@ -604,18 +604,18 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <returns>File hash</returns>
         public string GetFileHash(string fullFilePath)
         {
-            return m_fileDumper.GenerateFileAuthenticationHash(fullFilePath);
+            return mfileDumper.GenerateFileAuthenticationHash(fullFilePath);
         }
 
         public string GetStoredHash(string proteinCollectionName)
         {
-            var foundRows = m_CollectionsCache.Select("[FileName] = '" + proteinCollectionName + "'");
+            var foundRows = mCollectionsCache.Select("[FileName] = '" + proteinCollectionName + "'");
             return foundRows[0]["Authentication_Hash"]?.ToString();
         }
 
         public string GetStoredHash(int proteinCollectionID)
         {
-            string ProteinCollectionName = m_AllCollections[proteinCollectionID];
+            string ProteinCollectionName = mAllCollections[proteinCollectionID];
             return GetStoredHash(ProteinCollectionName);
         }
 

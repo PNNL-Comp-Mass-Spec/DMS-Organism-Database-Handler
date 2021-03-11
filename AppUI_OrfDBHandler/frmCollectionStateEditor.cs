@@ -18,24 +18,24 @@ namespace AppUI_OrfDBHandler
 
             InitializeComponent();
 
-            m_PSConnectionString = ProteinStorageConnectionString;
+            mPSConnectionString = ProteinStorageConnectionString;
         }
 
         private readonly System.Timers.Timer SearchTimer;
 
-        private bool m_SearchActive = false;
-        private CollectionStatePickerHandler m_Handler;
-        private readonly string m_PSConnectionString;
-        private DataTable m_StatesTable;
-        private int m_SelectedNewStateID = 1;
-        private bool m_SortOrderAsc = true;
-        private int m_SelectedCol = 0;
+        private bool mSearchActive = false;
+        private CollectionStatePickerHandler mHandler;
+        private readonly string mPSConnectionString;
+        private DataTable mStatesTable;
+        private int mSelectedNewStateID = 1;
+        private bool mSortOrderAsc = true;
+        private int mSelectedCol = 0;
 
         #region "Live Search Handler"
 
         private void txtLiveSearch_TextChanged(object sender, EventArgs e)
         {
-            if (m_SearchActive)
+            if (mSearchActive)
             {
                 SearchTimer.Start();
             }
@@ -43,14 +43,14 @@ namespace AppUI_OrfDBHandler
 
         private void txtLiveSearch_Click(object sender, EventArgs e)
         {
-            if (m_SearchActive)
+            if (mSearchActive)
             {
             }
             else
             {
                 txtLiveSearch.Text = null;
                 txtLiveSearch.ForeColor = SystemColors.ControlText;
-                m_SearchActive = true;
+                mSearchActive = true;
             }
         }
 
@@ -60,9 +60,9 @@ namespace AppUI_OrfDBHandler
             {
                 txtLiveSearch.ForeColor = SystemColors.InactiveCaption;
                 txtLiveSearch.Text = "Search";
-                m_SearchActive = false;
+                mSearchActive = false;
                 SearchTimer.Stop();
-                m_Handler.FillListView(lvwCollections);
+                mHandler.FillListView(lvwCollections);
             }
         }
 
@@ -70,35 +70,35 @@ namespace AppUI_OrfDBHandler
 
         internal void TimerHandler(object sender, ElapsedEventArgs e)
         {
-            m_Handler.FillFilteredListView(lvwCollections, txtLiveSearch.Text);
+            mHandler.FillFilteredListView(lvwCollections, txtLiveSearch.Text);
         }
 
         #region "Form Event Handlers"
 
         private void frmCollectionStateEditor_Load(object sender, EventArgs e)
         {
-            m_Handler = new CollectionStatePickerHandler(m_PSConnectionString);
-            m_StatesTable = m_Handler.GetStates();
+            mHandler = new CollectionStatePickerHandler(mPSConnectionString);
+            mStatesTable = mHandler.GetStates();
 
             cboStateChanger.SelectedIndexChanged -= cboStateChanger_SelectedIndexChanged;
 
             cboStateChanger.BeginUpdate();
-            cboStateChanger.DataSource = m_StatesTable;
+            cboStateChanger.DataSource = mStatesTable;
             cboStateChanger.DisplayMember = "State";
             cboStateChanger.ValueMember = "ID";
             cboStateChanger.EndUpdate();
 
             cboStateChanger.SelectedIndexChanged += cboStateChanger_SelectedIndexChanged;
 
-            cboStateChanger.SelectedValue = m_SelectedNewStateID;
+            cboStateChanger.SelectedValue = mSelectedNewStateID;
 
-            m_Handler.FillListView(lvwCollections);
+            mHandler.FillListView(lvwCollections);
         }
 
         private void cboStateChanger_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox cbo = (ComboBox)sender;
-            m_SelectedNewStateID = Convert.ToInt32(cbo.SelectedValue);
+            mSelectedNewStateID = Convert.ToInt32(cbo.SelectedValue);
         }
 
         private void cmdStateChanger_Click(object sender, EventArgs e)
@@ -108,17 +108,17 @@ namespace AppUI_OrfDBHandler
             foreach (ListViewItem item in lvwCollections.SelectedItems)
                 al.Add(item.Tag);
 
-            m_Handler.ChangeSelectedCollectionStates(m_SelectedNewStateID, al);
+            mHandler.ChangeSelectedCollectionStates(mSelectedNewStateID, al);
 
-            m_Handler.ForceIDTableReload = true;
+            mHandler.ForceIDTableReload = true;
 
-            if (m_SearchActive)
+            if (mSearchActive)
             {
-                m_Handler.FillFilteredListView(lvwCollections, txtLiveSearch.Text);
+                mHandler.FillFilteredListView(lvwCollections, txtLiveSearch.Text);
             }
             else
             {
-                m_Handler.FillListView(lvwCollections);
+                mHandler.FillListView(lvwCollections);
             }
         }
 
@@ -130,24 +130,24 @@ namespace AppUI_OrfDBHandler
             // sort newly selected column in ascending order
 
             // Set up ascending/descending criteria
-            if (e.Column == m_SelectedCol)
+            if (e.Column == mSelectedCol)
             {
-                m_SortOrderAsc = !m_SortOrderAsc;
+                mSortOrderAsc = !mSortOrderAsc;
             }
             else
             {
-                m_SortOrderAsc = true;
-                m_SelectedCol = e.Column;
+                mSortOrderAsc = true;
+                mSelectedCol = e.Column;
             }
 
             // Perform sort
-            lvwCollections.ListViewItemSorter = new ListViewItemComparer(e.Column, m_SortOrderAsc);
+            lvwCollections.ListViewItemSorter = new ListViewItemComparer(e.Column, mSortOrderAsc);
         }
 
         private class ListViewItemComparer : IComparer
         {
             // Implements the manual sorting of items by columns.
-            private readonly bool m_SortAscending = true;
+            private readonly bool mSortAscending = true;
 
             private readonly int colIndex;
 
@@ -159,7 +159,7 @@ namespace AppUI_OrfDBHandler
             public ListViewItemComparer(int columnIndex, bool sortAscending)
             {
                 colIndex = columnIndex;
-                m_SortAscending = sortAscending;
+                mSortAscending = sortAscending;
             }
 
             public int Compare(object x, object y)
@@ -186,7 +186,7 @@ namespace AppUI_OrfDBHandler
                     compareResult = string.Compare(item1.SubItems[colIndex].Text, item2.SubItems[colIndex].Text);
                 }
 
-                if (m_SortAscending)
+                if (mSortAscending)
                 {
                     return compareResult;
                 }

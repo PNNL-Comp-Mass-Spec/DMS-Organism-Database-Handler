@@ -7,19 +7,19 @@ namespace AppUI_OrfDBHandler
     {
         public DataListViewHandler(ListView listViewToFill)
         {
-            m_LVW = listViewToFill;
+            mLVW = listViewToFill;
         }
 
-        private readonly ListView m_LVW;
+        private readonly ListView mLVW;
 
         public void Load(DataTable listTable)
         {
-            FillListView(m_LVW, listTable);
+            FillListView(mLVW, listTable);
         }
 
         public void Load(DataTable listTable, string quickFilterCriteria)
         {
-            FillFilteredListView(m_LVW, listTable, quickFilterCriteria);
+            FillFilteredListView(mLVW, listTable, quickFilterCriteria);
         }
 
         private void SetupPickerListView(

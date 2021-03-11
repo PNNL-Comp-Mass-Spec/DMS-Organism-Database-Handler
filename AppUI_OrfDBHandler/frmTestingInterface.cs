@@ -20,16 +20,16 @@ namespace AppUI_OrfDBHandler
 
         private ImportHandler importer;
         private DataTable collectionList;
-        private string m_LastOutputDirectory = @"D:\outbox\output_test\";
-        private string m_AppPath = Application.ExecutablePath;
+        private string mLastOutputDirectory = @"D:\outbox\output_test\";
+        private string mAppPath = Application.ExecutablePath;
 
-        private SyncFASTAFileArchive m_Syncer;
-        private GetFASTAFromDMS m_Exporter;
+        private SyncFASTAFileArchive mSyncer;
+        private GetFASTAFromDMS mExporter;
 
-        private string m_FullOutputPath;
+        private string mFullOutputPath;
 
-        private string m_TaskMessage;
-        private string m_ProgressMessage;
+        private string mTaskMessage;
+        private string mProgressMessage;
 
         //private ExportCollectionsFromDMS.IExportCollectionsFromDMS exporter;
 
@@ -118,14 +118,14 @@ namespace AppUI_OrfDBHandler
             //sd.DefaultExt = ".fasta";
             //sd.FileName = cboCollectionsList.Text + ".fasta";
 
-            sd.SelectedPath = m_LastOutputDirectory;
+            sd.SelectedPath = mLastOutputDirectory;
 
             var r = sd.ShowDialog();
 
             if (r == DialogResult.OK)
             {
                 var filePath = sd.SelectedPath;
-                m_LastOutputDirectory = filePath;
+                mLastOutputDirectory = filePath;
 
                 //tmpNameList.Add(cboCollectionsList.Text.ToString());
                 //exporter = new Protein_Exporter.GetFASTAFromDMS(txtConnString.Text, Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.FASTA, Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward_sequence);
@@ -134,63 +134,63 @@ namespace AppUI_OrfDBHandler
                 //    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.FASTA,
                 //    GetCollectionName(CInt(cboCollectionsList.SelectedValue)) + "_scrambled.fasta");
 
-                //m_Exporter = New Protein_Exporter.GetFASTAFromDMS(
+                //mExporter = New Protein_Exporter.GetFASTAFromDMS(
                 //    txtConnString.Text,
                 //    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
                 //    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward);
-                m_Exporter = new GetFASTAFromDMS(txtConnString.Text);
-                m_Exporter.FileGenerationStarted += StartTask;
-                m_Exporter.FileGenerationProgress += UpdateProgress;
-                m_Exporter.FileGenerationCompleted += CompletedTask;
+                mExporter = new GetFASTAFromDMS(txtConnString.Text);
+                mExporter.FileGenerationStarted += StartTask;
+                mExporter.FileGenerationProgress += UpdateProgress;
+                mExporter.FileGenerationCompleted += CompletedTask;
 
                 //True Legacy fasta file
-                //fingerprint = m_Exporter.ExportFASTAFile("na", "na", "HCMV_2003+H_sapiens_IPI_2005-04-04.fasta", filePath)
+                //fingerprint = mExporter.ExportFASTAFile("na", "na", "HCMV_2003+H_sapiens_IPI_2005-04-04.fasta", filePath)
 
                 //Legacy fasta file with existing protein collection
-                //fingerprint = m_Exporter.ExportFASTAFile("Shewanella_2003-12-19", "seq_direction=forward,filetype=fasta", "Shewanella_2003-12-19.fasta", filePath)
+                //fingerprint = mExporter.ExportFASTAFile("Shewanella_2003-12-19", "seq_direction=forward,filetype=fasta", "Shewanella_2003-12-19.fasta", filePath)
 
                 //Legacy fasta file with existing protein collection
-                //fingerprint = m_Exporter.ExportFASTAFile("M_Musculus_2007-10-24_IPI,Y_pestis_CO92_2006-05-22,Y_pestis_PestoidesF_2006-05-23,Y_pseudotuberculosis_All_2005-08-25", "seq_direction=forward,filetype=fasta", "na", filePath)
+                //fingerprint = mExporter.ExportFASTAFile("M_Musculus_2007-10-24_IPI,Y_pestis_CO92_2006-05-22,Y_pestis_PestoidesF_2006-05-23,Y_pseudotuberculosis_All_2005-08-25", "seq_direction=forward,filetype=fasta", "na", filePath)
 
                 //Legacy fasta file with existing protein collection
-                //fingerprint = m_Exporter.ExportFASTAFile("H_sapiens_IPI_2008-02-07", "seq_direction=decoy", "na", filePath)
+                //fingerprint = mExporter.ExportFASTAFile("H_sapiens_IPI_2008-02-07", "seq_direction=decoy", "na", filePath)
 
                 //Legacy fasta file with existing protein collection
-                //fingerprint = m_Exporter.ExportFASTAFile("na", "na", "Shewanella_2003-12-19.fasta", filePath)
-                m_Exporter.ExportFASTAFile("na", "na", "GOs_Surface_Sargasso_Meso_2009-02-11_24.fasta", filePath);
+                //fingerprint = mExporter.ExportFASTAFile("na", "na", "Shewanella_2003-12-19.fasta", filePath)
+                mExporter.ExportFASTAFile("na", "na", "GOs_Surface_Sargasso_Meso_2009-02-11_24.fasta", filePath);
 
                 //Collection of existing collections
-                //fingerprint = m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=forward,filetype=fasta", "", filePath)
-                m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=reversed,filetype=fasta", "", filePath);
+                //fingerprint = mExporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=forward,filetype=fasta", "", filePath)
+                mExporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=reversed,filetype=fasta", "", filePath);
 
-                //fingerprint = m_Exporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=decoy,filetype=fasta", "", filePath)
-                m_Exporter.ExportFASTAFile("SAR116_RBH_AA_012809", "seq_direction=forward,filetype=fasta", "", filePath);
+                //fingerprint = mExporter.ExportFASTAFile("6_protein_Standard_2009-02-20,H_sapiens_IPI_2006-08-22", "seq_direction=decoy,filetype=fasta", "", filePath)
+                mExporter.ExportFASTAFile("SAR116_RBH_AA_012809", "seq_direction=forward,filetype=fasta", "", filePath);
 
-                m_Exporter.ExportFASTAFile("Phycomyces_blakesleeanus_v2_filtered_2009-12-16", "seq_direction=forward,filetype=fasta", "", filePath);
+                mExporter.ExportFASTAFile("Phycomyces_blakesleeanus_v2_filtered_2009-12-16", "seq_direction=forward,filetype=fasta", "", filePath);
 
                 //Protein collection from cbo exported forward
-                //fingerprint = m_Exporter.ExportFASTAFile(GetCollectionName(CInt(cboCollectionsList.SelectedValue)), "seq_direction=forward,filetype=fasta", "na", filePath)
+                //fingerprint = mExporter.ExportFASTAFile(GetCollectionName(CInt(cboCollectionsList.SelectedValue)), "seq_direction=forward,filetype=fasta", "na", filePath)
 
                 //Protein Collection from cbo exported reversed
-                //fingerprint = m_Exporter.ExportFASTAFile(GetCollectionName(CInt(cboCollectionsList.SelectedValue)), "seq_direction=reversed,filetype=fasta", "na", filePath)
+                //fingerprint = mExporter.ExportFASTAFile(GetCollectionName(CInt(cboCollectionsList.SelectedValue)), "seq_direction=reversed,filetype=fasta", "na", filePath)
 
                 //Protein Collection from cbo exported scrambled
-                //fingerprint = m_Exporter.ExportFASTAFile(GetCollectionName(CInt(cboCollectionsList.SelectedValue)), "seq_direction=scrambled,filetype=fasta", "na", filePath)
+                //fingerprint = mExporter.ExportFASTAFile(GetCollectionName(CInt(cboCollectionsList.SelectedValue)), "seq_direction=scrambled,filetype=fasta", "na", filePath)
 
                 //fingerprint = exporter.ExportFASTAFile(CInt(cboCollectionsList.SelectedValue), filePath)
                 //exporter = New ExportCollectionsFromDMS.clsExportCollectionsFromDMS(txtConnString.Text, ExportCollectionsFromDMS.IExportCollectionsFromDMS.ExportClasses.ExportProteinsXTFASTA)
                 //fingerprint = exporter.Export(CInt(cboCollectionsList.SelectedValue), filePath)
 
-                //var outputFI = new System.IO.FileInfo(m_FullOutputPath);
+                //var outputFI = new System.IO.FileInfo(mFullOutputPath);
                 //var destPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(outputFI.FullName), GetCollectionName(CInt(cboCollectionsList.SelectedValue)) + ".fasta");
                 //var destFI = new System.IO.FileInfo(destPath);
                 //if (destFI.Exists)
                 //    destFI.Delete();
                 //outputFI.MoveTo(destPath);
 
-                m_Exporter.FileGenerationStarted -= StartTask;
-                m_Exporter.FileGenerationProgress -= UpdateProgress;
-                m_Exporter.FileGenerationCompleted -= CompletedTask;
+                mExporter.FileGenerationStarted -= StartTask;
+                mExporter.FileGenerationProgress -= UpdateProgress;
+                mExporter.FileGenerationCompleted -= CompletedTask;
             }
         }
 
@@ -212,12 +212,12 @@ namespace AppUI_OrfDBHandler
 
         private void cmdUpdateArchiveTables_Click(object sender, EventArgs e)
         {
-            if (m_Syncer == null)
+            if (mSyncer == null)
             {
-                m_Syncer = new SyncFASTAFileArchive(txtConnString.Text);
-                m_Syncer.SyncStart += StartTask;
-                m_Syncer.SyncProgress += UpdateProgress;
-                m_Syncer.SyncComplete += CompletedTask;
+                mSyncer = new SyncFASTAFileArchive(txtConnString.Text);
+                mSyncer.SyncStart += StartTask;
+                mSyncer.SyncProgress += UpdateProgress;
+                mSyncer.SyncComplete += CompletedTask;
             }
 
             //string outputPath = "";
@@ -230,8 +230,8 @@ namespace AppUI_OrfDBHandler
             //if (r == DialogResult.OK)
             //    outputPath = f.SelectedPath;
 
-            //int errorCode = m_Syncer.SyncCollectionsAndArchiveTables(outputPath);
-            m_Syncer.UpdateSHA1Hashes();
+            //int errorCode = mSyncer.SyncCollectionsAndArchiveTables(outputPath);
+            mSyncer.UpdateSHA1Hashes();
         }
 
         private void StartTask(string statusMsg)
@@ -241,23 +241,23 @@ namespace AppUI_OrfDBHandler
 
             pgbAdminConsole.Value = 0;
 
-            m_TaskMessage = statusMsg;
-            lblProgress.Text = m_TaskMessage;
+            mTaskMessage = statusMsg;
+            lblProgress.Text = mTaskMessage;
             Application.DoEvents();
         }
 
         private void UpdateProgress(string statusMsg, double fractionDone)
         {
-            m_ProgressMessage = statusMsg;
+            mProgressMessage = statusMsg;
             int percentComplete = (int)Math.Round(fractionDone * 100d);
             if (fractionDone > 0d)
             {
                 pgbAdminConsole.Value = (int)Math.Round(fractionDone * 100d);
-                lblProgress.Text = m_TaskMessage + " (" + percentComplete + "% completed): " + m_ProgressMessage;
+                lblProgress.Text = mTaskMessage + " (" + percentComplete + "% completed): " + mProgressMessage;
             }
             else
             {
-                lblProgress.Text = m_TaskMessage + ": " + m_ProgressMessage;
+                lblProgress.Text = mTaskMessage + ": " + mProgressMessage;
             }
 
             Application.DoEvents();
@@ -278,7 +278,7 @@ namespace AppUI_OrfDBHandler
                 Path.GetFileName(fullOutputPath) +
                 " to " + Path.GetDirectoryName(fullOutputPath);
             lblProgress.Visible = true;
-            m_FullOutputPath = fullOutputPath;
+            mFullOutputPath = fullOutputPath;
         }
     }
 }

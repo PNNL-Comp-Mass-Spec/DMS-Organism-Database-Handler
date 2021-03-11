@@ -10,27 +10,27 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         public frmExtractFromFlatfile(Dictionary<string, string> AuthorityList, string psConnectionString)
         {
             base.Load += frmExtractFromFlatfile_Load;
-            m_AuthorityList = AuthorityList;
-            m_PSConnectionString = psConnectionString;
+            mAuthorityList = AuthorityList;
+            mPSConnectionString = psConnectionString;
 
             InitializeComponent();
         }
 
-        private bool m_UseHeaderInfo = false;
-        private ExtractFromFlatFile m_Extract;
-        private Dictionary<string, string> m_AuthorityList;
-        private int m_CurrentAuthorityID;
-        private int m_CurrentGroupID;
-        private string m_PSConnectionString;
+        private bool mUseHeaderInfo = false;
+        private ExtractFromFlatFile mExtract;
+        private Dictionary<string, string> mAuthorityList;
+        private int mCurrentAuthorityID;
+        private int mCurrentGroupID;
+        private string mPSConnectionString;
 
         private void frmExtractFromFlatfile_Load(object sender, EventArgs e)
         {
-            m_Extract = new ExtractFromFlatFile(m_AuthorityList, m_PSConnectionString);
+            mExtract = new ExtractFromFlatFile(mAuthorityList, mPSConnectionString);
             var openFrm = new System.Windows.Forms.OpenFileDialog();
 
             chkUseHeader.CheckedChanged -= chkUseHeader_CheckedChanged;
 
-            if (m_UseHeaderInfo == true)
+            if (mUseHeaderInfo == true)
             {
                 chkUseHeader.CheckState = System.Windows.Forms.CheckState.Checked;
             }
@@ -41,7 +41,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
             chkUseHeader.CheckedChanged += chkUseHeader_CheckedChanged;
 
-            LoadAuthorityCombobox(cboNamingAuthority, m_AuthorityList);
+            LoadAuthorityCombobox(cboNamingAuthority, mAuthorityList);
 
             openFrm.Filter = "tab-delimited text files (*.txt)|*.txt|All files (*.*)|*.*";
             openFrm.AddExtension = true;
@@ -55,7 +55,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             if (r == System.Windows.Forms.DialogResult.OK)
             {
                 var filePath = openFrm.FileName;
-                m_Extract.LoadFile(filePath, "\t", m_UseHeaderInfo);
+                mExtract.LoadFile(filePath, "\t", mUseHeaderInfo);
                 LoadRawFileListView();
                 LoadAnnotationGroupListView();
             }
@@ -70,7 +70,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             System.Windows.Forms.ListView lvw = (System.Windows.Forms.ListView)sender;
             if (lvw.SelectedItems.Count > 0)
             {
-                m_CurrentGroupID = Convert.ToInt32(lvw.SelectedItems[0].Text);
+                mCurrentGroupID = Convert.ToInt32(lvw.SelectedItems[0].Text);
                 cboNamingAuthority.SelectedValue = Convert.ToInt32(lvw.SelectedItems[0].Tag);
                 // cboNamingAuthority.Select();
             }
@@ -82,39 +82,39 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
             if (chk.CheckState == System.Windows.Forms.CheckState.Checked)
             {
-                m_UseHeaderInfo = true;
+                mUseHeaderInfo = true;
             }
             else
             {
-                m_UseHeaderInfo = false;
+                mUseHeaderInfo = false;
             }
 
-            m_Extract.LoadGroups("\t", m_UseHeaderInfo);
+            mExtract.LoadGroups("\t", mUseHeaderInfo);
             RefreshRawFileListViewHeaders();
             LoadAnnotationGroupListView();
         }
 
         private void RefreshRawFileListViewHeaders()
         {
-            var columnCollection = m_Extract.ColumnNames;
+            var columnCollection = mExtract.ColumnNames;
 
             int columnCount = columnCollection.Count;
             for (var columnNumber = 1; columnNumber <= columnCount; columnNumber++)
                 lvwProteins.Columns[columnNumber - 1].Text = columnCollection[columnNumber];
 
-            if (m_UseHeaderInfo)
+            if (mUseHeaderInfo)
             {
                 lvwProteins.Items.RemoveAt(0);
             }
             else
             {
-                lvwProteins.Items.Insert(0, m_Extract.DataLineToListViewItem(m_Extract.FileContents[0], 1));
+                lvwProteins.Items.Insert(0, mExtract.DataLineToListViewItem(mExtract.FileContents[0], 1));
             }
         }
 
         private void LoadRawFileListView()
         {
-            var fc = m_Extract.FileContents;
+            var fc = mExtract.FileContents;
             int maxIndex = fc.Count - 1;
             int maxColumnCount = 0;
 
@@ -131,7 +131,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             lvwProteins.Clear();
 
             // Create Columns
-            var columnCollection = m_Extract.ColumnNames;
+            var columnCollection = mExtract.ColumnNames;
 
             int columnCount = columnCollection.Count;
             for (var columnNumber = 1; columnNumber <= columnCount; columnNumber++)
@@ -145,7 +145,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             for (int lineCount = 0; lineCount <= maxIndex; lineCount++)
             {
                 var lineHash = fc[lineCount];
-                var lvItem = m_Extract.DataLineToListViewItem(lineHash, lineCount);
+                var lvItem = mExtract.DataLineToListViewItem(lineHash, lineCount);
 
                 // lvItem = new System.Windows.Forms.ListViewItem((lineCount + 1).ToString())
                 // columnCount = lineHash.Count;
@@ -172,13 +172,13 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         private void LoadAnnotationGroupListView()
         {
-            int maxIndex = m_Extract.Annotations.GroupCount;
+            int maxIndex = mExtract.Annotations.GroupCount;
 
             lvwNewNames.BeginUpdate();
             lvwNewNames.Items.Clear();;
             for (var groupID = 1; groupID <= maxIndex; groupID++)
             {
-                var lvItem = m_Extract.GetListViewItemForGroup(groupID);
+                var lvItem = mExtract.GetListViewItemForGroup(groupID);
                 lvwNewNames.Items.Add(lvItem);
             }
 
@@ -214,7 +214,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
             if (lvwNewNames.SelectedItems.Count > 0)
             {
-                m_Extract.ChangeAuthorityIDforGroup(m_CurrentGroupID, Convert.ToInt32(cbo.SelectedValue));
+                mExtract.ChangeAuthorityIDforGroup(mCurrentGroupID, Convert.ToInt32(cbo.SelectedValue));
                 lvwNewNames.SelectedItems[0].SubItems[2].Text = cbo.Text;
                 lvwNewNames.SelectedItems[0].Tag = Convert.ToInt32(cbo.SelectedValue);
             }

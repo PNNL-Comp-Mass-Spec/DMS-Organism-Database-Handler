@@ -16,55 +16,55 @@ namespace AppUI_OrfDBHandler
             InitializeComponent();
         }
 
-        private string m_ShortName;
-        private string m_FullName;
-        private string m_WebAddress;
+        private string mShortName;
+        private string mFullName;
+        private string mWebAddress;
 
         #region "Return Properties"
 
         public string ShortName
         {
-            get => m_ShortName;
-            set => m_ShortName = value;
+            get => mShortName;
+            set => mShortName = value;
         }
 
         public string FullName
         {
-            get => m_FullName;
-            set => m_FullName = value;
+            get => mFullName;
+            set => mFullName = value;
         }
 
         public string WebAddress
         {
-            get => m_WebAddress;
-            set => m_WebAddress = value;
+            get => mWebAddress;
+            set => mWebAddress = value;
         }
 
         #endregion
 
         private void frmAddNamingAuthority_Load(object sender, EventArgs e)
         {
-            if (m_ShortName != null)
+            if (mShortName != null)
             {
-                txtAuthName.Text = m_ShortName;
+                txtAuthName.Text = mShortName;
             }
 
-            if (m_FullName != null)
+            if (mFullName != null)
             {
-                txtAuthFullName.Text = m_FullName;
+                txtAuthFullName.Text = mFullName;
             }
 
-            if (m_WebAddress != null)
+            if (mWebAddress != null)
             {
-                txtAuthWeb.Text = m_WebAddress;
+                txtAuthWeb.Text = mWebAddress;
             }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            m_ShortName = txtAuthName.Text;
-            m_FullName = txtAuthFullName.Text;
-            m_WebAddress = txtAuthWeb.Text;
+            mShortName = txtAuthName.Text;
+            mFullName = txtAuthFullName.Text;
+            mWebAddress = txtAuthWeb.Text;
 
             DialogResult = DialogResult.OK;
             Close();

@@ -114,7 +114,7 @@
             this.cmdAddOrganism.Size = new System.Drawing.Size(20, 20);
             this.cmdAddOrganism.TabIndex = 10;
             this.cmdAddOrganism.Text = "+";
-            this.cmdAddOrganism.Click += new System.EventHandler(this.cmdAddOrganism_Click);
+            this.cmdAddOrganism.Click += new System.EventHandler(this.cmdAddOrganismClick);
             // 
             // cmdAddAuthority
             // 
