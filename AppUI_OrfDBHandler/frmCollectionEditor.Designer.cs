@@ -538,6 +538,7 @@ namespace AppUI_OrfDBHandler
             this.mnuToolsCollectionEdit,
             this.mnuToolsSep1});
             this.mnuTools.Text = "&Tools";
+            this.mnuTools.Visible = false;
             // 
             // mnuToolsCollectionEdit
             // 
@@ -547,7 +548,7 @@ namespace AppUI_OrfDBHandler
             // 
             // mnuToolsSep1
             // 
-            this.mnuToolsSep1.Index = 2;
+            this.mnuToolsSep1.Index = 1;
             this.mnuToolsSep1.Text = "-";
             // 
             // mnuAdmin
@@ -560,6 +561,7 @@ namespace AppUI_OrfDBHandler
             this.mnuAdminUpdateCollectionsArchive,
             this.mnuAdminTestingInterface});
             this.mnuAdmin.Text = "Admin";
+            this.mnuAdmin.Visible = false;
             // 
             // mnuAdminBatchUploadFiles
             // 
@@ -571,6 +573,7 @@ namespace AppUI_OrfDBHandler
             // 
             this.mnuAdminNameHashRefresh.Index = 1;
             this.mnuAdminNameHashRefresh.Text = "Refresh Protein Name Hashes";
+            this.mnuAdminNameHashRefresh.Visible = false;
             this.mnuAdminNameHashRefresh.Click += new System.EventHandler(this.mnuAdminNameHashRefresh_Click);
             // 
             // mnuAdminUpdateSHA
