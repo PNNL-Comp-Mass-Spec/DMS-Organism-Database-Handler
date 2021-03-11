@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using OrganismDatabaseHandler.DatabaseTools;
 using OrganismDatabaseHandler.ProteinExport;
@@ -107,7 +108,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
 
         // Note: this array gets initialized with space for 10 items
         // If ValidationOptionConstants gets more than 10 entries, then this array will need to be expanded
-        private bool[] mValidationOptions;
+        private readonly bool[] mValidationOptions;
 
         public int MaximumProteinNameLength
         {
@@ -303,7 +304,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
                 OnBatchProgressUpdate("Loading: " + currentFile.Name);
                 if (mNormalizedFastaFilePath != null)
                 {
-                    if ((currentFile.FullName ?? "") != (mNormalizedFastaFilePath ?? ""))
+                    if (currentFile.FullName != (mNormalizedFastaFilePath ?? ""))
                     {
                         upInfo.FileInformation = new FileInfo(mNormalizedFastaFilePath);
                     }
@@ -511,11 +512,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
         {
             var selectedList = new List<string>();
 
-            var counter = fileContents.GetEnumerator();
-
-            while (counter.MoveNext())
-                selectedList.Add(counter.Current.Value.Reference);
-
+            selectedList.AddRange(fileContents.GetEntriesIEnumerable().Select(x => x.Reference));
             selectedList.Sort();
 
             return UploadCollection(

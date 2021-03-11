@@ -34,11 +34,11 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             }
             else
             {
-                xrefList = mAnnotationData[primaryReferenceName.ToString()];
+                xrefList = mAnnotationData[primaryReferenceName];
                 if (!xrefList.Contains(xRefName))
                 {
                     xrefList.Add(xRefName);
-                    mAnnotationData[primaryReferenceName.ToString()] = xrefList;
+                    mAnnotationData[primaryReferenceName] = xrefList;
                 }
             }
         }

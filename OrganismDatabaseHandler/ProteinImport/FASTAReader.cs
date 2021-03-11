@@ -143,7 +143,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                                 break;
                             }
 
-                            s = fileReader.ReadLine().Trim();
+                            s = fileReader.ReadLine()?.Trim();
                         }
 
                         // dump the last record

@@ -73,10 +73,10 @@ namespace AppUI_OrfDBHandler
 
             foreach (DataRow dr in dt.Rows)
             {
-                OnSyncProgressUpdate("Processing - '" + dr["FileName"].ToString() + "'", currentCollectionProteinCount / (double)totalProteinsCount);
+                OnSyncProgressUpdate("Processing - '" + dr["FileName"] + "'", currentCollectionProteinCount / (double)totalProteinsCount);
                 currentCollectionProteinCount = Convert.ToInt32(dr["NumProteins"]);
                 var proteinCollectionId = Convert.ToInt32(dr["Protein_Collection_ID"]);
-                var sourceFilePath = Path.Combine(outputPath, dr["FileName"].ToString() + ".fasta");
+                var sourceFilePath = Path.Combine(outputPath, dr["FileName"] + ".fasta");
                 var sha1 = dr["Authentication_Hash"].ToString();
 
                 fileArchiver.ArchiveCollection(
@@ -147,7 +147,7 @@ namespace AppUI_OrfDBHandler
 
                 if (elapsedTime.Hours > 0)
                 {
-                    elapsedTimeSb.Append(elapsedTime.Hours.ToString() + " hours, ");
+                    elapsedTimeSb.Append(elapsedTime.Hours + " hours, ");
                 }
 
                 if (elapsedTime.Minutes <= 1)
@@ -156,7 +156,7 @@ namespace AppUI_OrfDBHandler
                 }
                 else
                 {
-                    elapsedTimeSb.Append(elapsedTime.Minutes.ToString() + " minutes");
+                    elapsedTimeSb.Append(elapsedTime.Minutes + " minutes");
                 }
 
                 // OnSyncProgressUpdate(
@@ -165,7 +165,7 @@ namespace AppUI_OrfDBHandler
                 //     + " [Elapsed Time: "
                 //     + elapsedTimeSB.ToString() + "]",
                 //     currentProteinCount / (double)totalProteinCount)
-                mCurrentStatusMsg = "Collection " + tmpId.ToString("0000") + " [Elapsed Time: " + elapsedTimeSb.ToString() + "]";
+                mCurrentStatusMsg = "Collection " + tmpId.ToString("0000") + " [Elapsed Time: " + elapsedTimeSb + "]";
 
                 OnSyncProgressUpdate(
                     mCurrentStatusMsg,
@@ -325,7 +325,7 @@ namespace AppUI_OrfDBHandler
                 var legacyFoundRows = legacyTable.Select("FileName = '" + tmpCollectionName + ".fasta' AND OrganismID = " + tmpOrgId);
                 if (legacyFoundRows.Length > 0)
                 {
-                    var getReferencesSql = "SELECT * FROM V_Tmp_Member_Name_Lookup WHERE Protein_Collection_ID = " + tmpCollectionId.ToString() +
+                    var getReferencesSql = "SELECT * FROM V_Tmp_Member_Name_Lookup WHERE Protein_Collection_ID = " + tmpCollectionId +
                                            " AND Sorting_Index == null";
                     var referencesTable = mDatabaseAccessor.GetTable(getReferencesSql);
                     if (referencesTable.Rows.Count > 0)
@@ -416,7 +416,7 @@ namespace AppUI_OrfDBHandler
                 counter = counter + 10000;
 
                 var proteinSelectSql = "SELECT Protein_ID, Sequence FROM T_Proteins " +
-                                       "WHERE Protein_ID <= " + counter.ToString() + " AND Protein_ID > " + startCount.ToString();
+                                       "WHERE Protein_ID <= " + counter + " AND Protein_ID > " + startCount;
 
                 // proteinSelectSQL = "SELECT Protein_ID, Sequence FROM T_Proteins " +
                 //                    "WHERE Protein_ID = 285130";
@@ -431,7 +431,7 @@ namespace AppUI_OrfDBHandler
                     proteinList.Add(Convert.ToInt32(dr["Protein_ID"]), dr["Sequence"].ToString());
                 }
 
-                OnSyncProgressUpdate("Processing Protein_ID " + startCount.ToString() + "-" + counter.ToString() + " of " + tmpProteinCount.ToString(), counter / (double)tmpProteinCount);
+                OnSyncProgressUpdate("Processing Protein_ID " + startCount + "-" + counter + " of " + tmpProteinCount, counter / (double)tmpProteinCount);
                 if (proteinList.Count > 0)
                 {
                     UpdateProteinSequenceInfo(proteinList);

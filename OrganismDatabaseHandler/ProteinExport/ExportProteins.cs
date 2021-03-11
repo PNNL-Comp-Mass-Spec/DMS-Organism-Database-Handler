@@ -8,7 +8,7 @@ namespace OrganismDatabaseHandler.ProteinExport
     {
         protected GetFASTAFromDMSForward ExportComponent;
 
-        public ExportProteins(GetFASTAFromDMSForward exportComponent)
+        protected ExportProteins(GetFASTAFromDMSForward exportComponent)
         {
             ExportComponent = exportComponent;
         }

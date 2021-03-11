@@ -63,7 +63,7 @@ namespace AppUI_OrfDBHandler
             mFrmPreview.DesktopLocation = new Point(horizontalPos, verticalPos);
             mFrmPreview.Height = height;
             mFrmPreview.WindowName = "Preview of: " + Path.GetFileName(filePath);
-            if (mFrmPreview.Visible == false)
+            if (!mFrmPreview.Visible)
             {
                 mFrmPreview.Show();
             }

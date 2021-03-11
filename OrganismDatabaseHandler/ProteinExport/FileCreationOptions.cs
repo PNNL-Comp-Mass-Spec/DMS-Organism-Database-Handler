@@ -119,7 +119,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 tmpKeyword = dr["Keyword"].ToString();
                 if (optionsHash.ContainsKey(tmpKeyword))
                 {
-                    tmpValue = optionsHash[tmpKeyword].ToString();
+                    tmpValue = optionsHash[tmpKeyword];
                 }
                 else
                 {

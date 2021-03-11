@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.IO;
 using OrganismDatabaseHandler.DatabaseTools;
 
 namespace AppUI_OrfDBHandler
@@ -33,7 +32,7 @@ namespace AppUI_OrfDBHandler
     {
         private DataTable mTranslationEntries;
         private DataTable mTranslationTables;
-        private string mConnectionString;
+        private readonly string mConnectionString;
         private const string EntriesTableName = "T_DNA_Translation_Table_Members";
         private const string IdTableName = "T_DNA_Translation_Tables";
 
@@ -138,7 +137,7 @@ namespace AppUI_OrfDBHandler
                 {
                     case "nam":
                         tmp = s.TrimStart();
-                        tmpStartPos = tmp.IndexOf(" ") + 1;
+                        tmpStartPos = tmp.IndexOf(" ", StringComparison.Ordinal) + 1;
                         tmp = tmp.Substring(tmpStartPos);
                         tmp = tmp.Trim(trimChars);
                         var tmpNameList = tmp.Split(";".ToCharArray());
@@ -148,14 +147,14 @@ namespace AppUI_OrfDBHandler
 
                     case "id ":
                         tmp = s.TrimStart();
-                        tmp = tmp.Substring(tmp.IndexOf(" ") + 1);
+                        tmp = tmp.Substring(tmp.IndexOf(" ", StringComparison.Ordinal) + 1);
                         tmp = tmp.TrimEnd(trimChars);
                         id = Convert.ToInt32(tmp);
                         break;
 
                     case "ncb":
                         tmp = s.TrimStart();
-                        tmpStartPos = tmp.IndexOf("\"") + 1;
+                        tmpStartPos = tmp.IndexOf("\"", StringComparison.Ordinal) + 1;
                         tmp = tmp.Substring(tmpStartPos);
                         tmp = tmp.TrimEnd(trimChars);
                         aaList = tmp;
@@ -234,7 +233,7 @@ namespace AppUI_OrfDBHandler
             foreach (var tmpName in nameList)
             {
                 dr = mTranslationTables.NewRow();
-                dr["Translation_Table_Name"] = tmpName.Trim() + " (ID = " + id.ToString() + ")";
+                dr["Translation_Table_Name"] = tmpName.Trim() + " (ID = " + id + ")";
                 dr["DNA_Translation_Table_ID"] = id;
                 mTranslationTables.Rows.Add(dr);
             }

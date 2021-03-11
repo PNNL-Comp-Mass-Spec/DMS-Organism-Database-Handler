@@ -293,12 +293,12 @@ namespace AppUI_OrfDBHandler
 
             lblBatchProgress.Text = "";
 
-            if (mLastSelectedOrganism != null && mLastSelectedOrganism.Length > 0)
+            if (!string.IsNullOrEmpty(mLastSelectedOrganism))
             {
                 frmBatchUpload.SelectedOrganismName = mLastSelectedOrganism;
             }
 
-            if (mLastSelectedAnnotationType != null && mLastSelectedAnnotationType.Length > 0)
+            if (!string.IsNullOrEmpty(mLastSelectedAnnotationType))
             {
                 frmBatchUpload.SelectedAnnotationType = mLastSelectedAnnotationType;
             }
@@ -499,7 +499,7 @@ namespace AppUI_OrfDBHandler
         {
             if (Convert.ToInt32(cboOrganismFilter.SelectedValue) != 0)
             {
-                mProteinCollections.DefaultView.RowFilter = "[OrganismID] = " + cboOrganismFilter.SelectedValue.ToString();
+                mProteinCollections.DefaultView.RowFilter = "[OrganismID] = " + cboOrganismFilter.SelectedValue;
             }
             else
             {
@@ -524,7 +524,7 @@ namespace AppUI_OrfDBHandler
 
             if (mSelectedCollectionId > 0)
             {
-                var foundRows = mProteinCollections.Select("[Protein_Collection_ID] = " + mSelectedCollectionId.ToString());
+                var foundRows = mProteinCollections.Select("[Protein_Collection_ID] = " + mSelectedCollectionId);
                 mSelectedAnnotationTypeId = Convert.ToInt32(foundRows[0]["Authority_ID"]);
                 //mAnnotationTypes = mImportHandler.LoadAnnotationTypes(mSelectedCollectionID);
                 //mAnnotationTypes = mImportHandler.LoadAnnotationTypes();
@@ -558,7 +558,7 @@ namespace AppUI_OrfDBHandler
 
             if (mSelectedCollectionId > 0)
             {
-                var foundRows = mProteinCollections.Select("[Protein_Collection_ID] = " + mSelectedCollectionId.ToString());
+                var foundRows = mProteinCollections.Select("[Protein_Collection_ID] = " + mSelectedCollectionId);
                 mSelectedAnnotationTypeId = Convert.ToInt32(foundRows[0]["Authority_ID"]);
             }
             //else if (mSelectedAuthorityID == -2)
@@ -581,7 +581,7 @@ namespace AppUI_OrfDBHandler
         {
             ImportStartHandler("Retrieving Protein Entries..");
             var foundRows =
-                mProteinCollections.Select("Protein_Collection_ID = " + cboCollectionPicker.SelectedValue.ToString());
+                mProteinCollections.Select("Protein_Collection_ID = " + cboCollectionPicker.SelectedValue);
             ImportProgressHandler(0.5d);
             mSelectedFilePath = foundRows[0]["FileName"].ToString();
             MemberLoadTimerHandler(this, null);
@@ -627,8 +627,8 @@ namespace AppUI_OrfDBHandler
                 IsLocalFile = mLocalFileLoaded,
                 AnnotationTypes = mAnnotationTypes,
                 OrganismList = mOrganisms,
-                OrganismID = mSelectedOrganismId,
-                AnnotationTypeID = mSelectedAnnotationTypeId
+                OrganismId = mSelectedOrganismId,
+                AnnotationTypeId = mSelectedAnnotationTypeId
             };
 
             var eResult = frmAddCollection.ShowDialog();
@@ -638,8 +638,8 @@ namespace AppUI_OrfDBHandler
                 cboCollectionPicker.Enabled = true;
                 cboOrganismFilter.Enabled = true;
 
-                var tmpOrganismId = frmAddCollection.OrganismID;
-                var tmpAnnotationTypeId = frmAddCollection.AnnotationTypeID;
+                var tmpOrganismId = frmAddCollection.OrganismId;
+                var tmpAnnotationTypeId = frmAddCollection.AnnotationTypeId;
 
                 var tmpSelectedProteinList = ScanDestinationCollectionWindow(lvwDestination);
 
@@ -787,7 +787,7 @@ namespace AppUI_OrfDBHandler
             object sender,
             ElapsedEventArgs e)
         {
-            if (mSearchActive == true)
+            if (mSearchActive)
             {
                 //Debug.WriteLine("SearchTimer.active.kick");
 
@@ -1060,7 +1060,7 @@ namespace AppUI_OrfDBHandler
         private void BatchImportProgressHandler(string status)
         {
             mBatchLoadCurrentCount += 1;
-            lblBatchProgress.Text = status + " (File " + mBatchLoadCurrentCount.ToString() + " of " + mBatchLoadTotalCount + ")";
+            lblBatchProgress.Text = status + " (File " + mBatchLoadCurrentCount + " of " + mBatchLoadTotalCount + ")";
             Application.DoEvents();
         }
 

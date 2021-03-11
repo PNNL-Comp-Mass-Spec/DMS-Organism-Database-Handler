@@ -624,7 +624,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     if (lockFile.Exists)
                     {
                         var lockTimeoutTime = lockFile.LastWriteTimeUtc.AddMinutes(60d);
-                        var msg = LockFileProgressText + " found; waiting until it is deleted or until " + lockTimeoutTime.ToLocalTime().ToString() + ": " + lockFile.Name;
+                        var msg = LockFileProgressText + " found; waiting until it is deleted or until " + lockTimeoutTime.ToLocalTime() + ": " + lockFile.Name;
                         OnDebugEvent(msg);
                         OnFileGenerationProgressUpdate(msg, 0d);
 
@@ -716,10 +716,10 @@ namespace OrganismDatabaseHandler.ProteinExport
                 // This code will also delete the .hashcheck file; that's OK
                 // e.g., ID_002750_1363538A.fasta.1363538A.hashcheck
 
-                foreach (FileInfo fiFileToDelete in fiFinalFastaFile.Directory.GetFileSystemInfos(strBaseName + ".*"))
+                foreach (FileInfo fiFileToDelete in fiFinalFastaFile.Directory.GetFiles(strBaseName + ".*"))
                     DeleteFastaIndexFile(fiFileToDelete.FullName);
 
-                foreach (FileInfo fiFileToDelete in fiFinalFastaFile.Directory.GetFileSystemInfos(strBaseName + "_shuffle*.*"))
+                foreach (FileInfo fiFileToDelete in fiFinalFastaFile.Directory.GetFiles(strBaseName + "_shuffle*.*"))
                     DeleteFastaIndexFile(fiFileToDelete.FullName);
             }
             catch (Exception ex)
@@ -780,7 +780,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
 
             legacyStaticFilePathOutput = legacyStaticFileLocations.Rows[0]["Full_Path"].ToString();
-            crc32HashOutput = legacyStaticFileLocations.Rows[0]["Authentication_Hash"].ToString() ?? string.Empty;
+            crc32HashOutput = legacyStaticFileLocations.Rows[0]["Authentication_Hash"]?.ToString() ?? string.Empty;
 
             return true;
         }
@@ -827,7 +827,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             using (var swOutFile = new StreamWriter(new FileStream(fiHashValidationFile.FullName, FileMode.Create, FileAccess.Write, FileShare.Read)))
             {
-                swOutFile.WriteLine("Hash validated " + DateTime.Now.ToString());
+                swOutFile.WriteLine("Hash validated " + DateTime.Now);
                 swOutFile.WriteLine("Validated on " + Environment.MachineName);
             }
         }

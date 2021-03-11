@@ -13,6 +13,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// </summary>
         /// <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
         /// <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
+        /// <param name="decoyUsesXXX"></param>
         public GetFASTAFromDMSDecoy(
             DBTask databaseAccessor,
             GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType,
@@ -28,20 +29,22 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// </summary>
         /// <param name="protCollectionList">Protein collection list, or empty string if retrieving a legacy FASTA file</param>
         /// <param name="destinationFolderPath"></param>
+        /// <param name="alternateAnnotationTypeId"></param>
+        /// <param name="padWithPrimaryAnnotation"></param>
         /// <returns>CRC32 hash of the generated (or retrieved) file</returns>
         public override string ExportFASTAFile(
             List<string> protCollectionList,
             string destinationFolderPath,
-            int alternateAnnotationTypeID,
+            int alternateAnnotationTypeId,
             bool padWithPrimaryAnnotation)
         {
             base.ExportFASTAFile(protCollectionList,
-                                 destinationFolderPath, alternateAnnotationTypeID, padWithPrimaryAnnotation);
+                                 destinationFolderPath, alternateAnnotationTypeId, padWithPrimaryAnnotation);
 
             var fwdFilePath = FullOutputPath;
 
             RevGenerator.ExportFASTAFile(protCollectionList,
-                                           destinationFolderPath, alternateAnnotationTypeID, padWithPrimaryAnnotation);
+                                           destinationFolderPath, alternateAnnotationTypeId, padWithPrimaryAnnotation);
 
             var revFilePath = RevGenerator.FullOutputPath;
 

@@ -90,11 +90,11 @@ namespace AppUI_OrfDBHandler
             if (openDialog.ShowDialog() == DialogResult.OK)
             {
                 var newFilePath = openDialog.FileName;
-                if (proxy.Name.ToString() == "cmdBrowseTT")
+                if (proxy.Name == "cmdBrowseTT")
                 {
                     txtTransFilePath.Text = newFilePath;
                 }
-                else if (proxy.Name.ToString() == "cmdBrowseFF")
+                else if (proxy.Name == "cmdBrowseFF")
                 {
                     txtFASTAFilePath.Text = newFilePath;
                 }
@@ -196,7 +196,7 @@ namespace AppUI_OrfDBHandler
 
         private string GetCollectionName(int proteinCollectionId)
         {
-            var foundRows = collectionList.Select("Protein_Collection_ID = " + proteinCollectionId.ToString());
+            var foundRows = collectionList.Select("Protein_Collection_ID = " + proteinCollectionId);
             return foundRows[0]["FileName"].ToString();
         }
 

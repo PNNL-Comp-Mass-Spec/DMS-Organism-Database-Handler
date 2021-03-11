@@ -61,10 +61,10 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 var proteinArray = new SortedSet<string>();
 
-                var proteinEnum = proteins.GetEnumerator();
-
-                while (proteinEnum.MoveNext())
-                    proteinArray.Add(proteinEnum.Current.Key);
+                foreach (var protein in proteins)
+                {
+                    proteinArray.Add(protein.Key);
+                }
 
                 var encoding = new ASCIIEncoding();
 

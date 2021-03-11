@@ -161,7 +161,7 @@ namespace AppUI_OrfDBHandler
 
         private string GetOrganismName(int organismId)
         {
-            var foundRows = mOrganisms.Select("ID = " + organismId.ToString());
+            var foundRows = mOrganisms.Select("ID = " + organismId);
 
             return foundRows[0]["Display_Name"].ToString();
         }
@@ -317,7 +317,7 @@ namespace AppUI_OrfDBHandler
                 writer.WriteLine();
             }
 
-            MessageBox.Show("Wrote " + intErrorCount.ToString() + " " + messageType + "s to " + saveDialog.FileName, "Detailed " + messageType + " List", MessageBoxButtons.OK);
+            MessageBox.Show("Wrote " + intErrorCount + " " + messageType + "s to " + saveDialog.FileName, "Detailed " + messageType + " List", MessageBoxButtons.OK);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
 {
     internal class CollectionEncryptor
     {
-        private RijndaelEncryptionHandler mRijndaelEncryptor;
+        private readonly RijndaelEncryptionHandler mRijndaelEncryptor;
         private readonly DBTask mDatabaseAccessor;
 
         public event EncryptionStartEventHandler EncryptionStart;
@@ -29,8 +29,6 @@ namespace OrganismDatabaseHandler.ProteinUpload
 
         public void EncryptStorageCollectionSequences(ProteinStorage.ProteinStorage storageCollection)
         {
-            var e = storageCollection.GetEnumerator();
-
             OnEncryptionStart("Encrypting Sequences");
             var counter = 0;
             var counterMax = storageCollection.ProteinCount;
@@ -45,14 +43,13 @@ namespace OrganismDatabaseHandler.ProteinUpload
                 eventTriggerThresh = (int)Math.Round(counterMax / 50d);
             }
 
-            while (e.MoveNext())
+            foreach (var ce in storageCollection.GetEntriesIEnumerable())
             {
                 if (counter % eventTriggerThresh == 0)
                 {
                     OnEncryptionProgressUpdate(counter / (double)counterMax);
                 }
 
-                var ce = e.Current.Value;
                 ce.Sequence = mRijndaelEncryptor.Encrypt(ce.Sequence);
                 ce.SHA1Hash = mRijndaelEncryptor.MakeArbitraryHash(ce.Sequence);
                 ce.IsEncrypted = true;

@@ -450,7 +450,7 @@ namespace AppUI_OrfDBHandler
                 }
             }
 
-            return b.ToString() + " Bytes";
+            return b + " Bytes";
         }
 
         /// <summary>
@@ -747,7 +747,7 @@ namespace AppUI_OrfDBHandler
 
             try
             {
-                if (strValue != null && strValue.Length > 0)
+                if (!string.IsNullOrEmpty(strValue))
                 {
                     for (var intIndex = 0; intIndex < objComboBox.Items.Count; intIndex++)
                     {
@@ -1359,7 +1359,7 @@ namespace AppUI_OrfDBHandler
                 {
                     // Compare the two items as a string.
                     returnVal = string.Compare(((ListViewItem)x).SubItems[mColIndex].Text,
-                                               ((ListViewItem)y).SubItems[mColIndex].Text);
+                                               ((ListViewItem)y).SubItems[mColIndex].Text, StringComparison.Ordinal);
                 }
 
                 if (mSortOrder == SortOrder.Descending)

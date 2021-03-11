@@ -114,7 +114,7 @@ namespace Bulk_Fasta_Importer
 
             if (percentComplete > 100)
                 percentComplete = 100;
-            Console.Write("Processing: " + percentComplete.ToString() + "% ");
+            Console.Write("Processing: " + percentComplete + "% ");
             if (addCarriageReturn)
             {
                 Console.WriteLine();
@@ -123,7 +123,7 @@ namespace Bulk_Fasta_Importer
 
         private static string GetAppVersion()
         {
-            return Assembly.GetExecutingAssembly().GetName().Version.ToString() + " (" + ProgramDate + ")";
+            return Assembly.GetExecutingAssembly().GetName().Version + " (" + ProgramDate + ")";
         }
 
         private static bool SetOptionsUsingCommandLineParameters(clsParseCommandLine commandLineParser)

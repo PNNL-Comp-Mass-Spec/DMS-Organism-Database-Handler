@@ -8,7 +8,7 @@ namespace AppUI_OrfDBHandler
 {
     public class AddAnnotationTypeType
     {
-        private string mConnectionString;
+        private readonly string mConnectionString;
         private AddUpdateEntries mSpRunner;
 
         private string mTypeName;
@@ -17,7 +17,7 @@ namespace AppUI_OrfDBHandler
         private int mAuthId;
         private bool mEntryExists = false;
         private AddNamingAuthorityType mAuthAdd;
-        private DataTable mAuthorities;
+        private readonly DataTable mAuthorities;
         private Point mFormLocation;
 
         public string TypeName => mTypeName;
@@ -93,7 +93,7 @@ namespace AppUI_OrfDBHandler
 
                 if (annTypeId < 0)
                 {
-                    var authNames = mAuthorities.Select("Authority_ID = " + mAuthId.ToString());
+                    var authNames = mAuthorities.Select("Authority_ID = " + mAuthId);
                     var authName = authNames[0]["Name"].ToString();
                     MessageBox.Show(
                         "An entry called '" + mTypeName + "' for '" + authName + "' already exists in the Annotation Types table",

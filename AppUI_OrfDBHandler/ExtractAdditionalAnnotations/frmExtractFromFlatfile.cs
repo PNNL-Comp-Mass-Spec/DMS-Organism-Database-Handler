@@ -11,21 +11,21 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         {
             base.Load += frmExtractFromFlatfile_Load;
             mAuthorityList = authorityList;
-            mPSConnectionString = psConnectionString;
+            mPsConnectionString = psConnectionString;
 
             InitializeComponent();
         }
 
         private bool mUseHeaderInfo = false;
         private ExtractFromFlatFile mExtract;
-        private Dictionary<string, string> mAuthorityList;
+        private readonly Dictionary<string, string> mAuthorityList;
         private int mCurrentAuthorityId;
         private int mCurrentGroupId;
-        private string mPSConnectionString;
+        private readonly string mPsConnectionString;
 
         private void frmExtractFromFlatfile_Load(object sender, EventArgs e)
         {
-            mExtract = new ExtractFromFlatFile(mAuthorityList, mPSConnectionString);
+            mExtract = new ExtractFromFlatFile(mAuthorityList, mPsConnectionString);
             var openFrm = new System.Windows.Forms.OpenFileDialog();
 
             chkUseHeader.CheckedChanged -= chkUseHeader_CheckedChanged;
@@ -159,7 +159,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             var maxIndex = mExtract.Annotations.GroupCount;
 
             lvwNewNames.BeginUpdate();
-            lvwNewNames.Items.Clear();;
+            lvwNewNames.Items.Clear();
             for (var groupId = 1; groupId <= maxIndex; groupId++)
             {
                 var lvItem = mExtract.GetListViewItemForGroup(groupId);
@@ -178,7 +178,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             cbo.BeginUpdate();
             foreach (var item in authorityList)
             {
-                var authorityName = item.Value.ToString();
+                var authorityName = item.Value;
                 var authorityId = Convert.ToInt32(item.Key);
                 a.Add(new AuthorityContainer(authorityName, authorityId));
             }
@@ -212,9 +212,9 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
                 AuthorityName = authName;
             }
 
-            public string AuthorityName { get; private set; }
+            public string AuthorityName { get; }
 
-            public int AuthorityId { get; private set; }
+            public int AuthorityId { get; }
         }
 
         private class AuthorityContainerComparer : IComparer

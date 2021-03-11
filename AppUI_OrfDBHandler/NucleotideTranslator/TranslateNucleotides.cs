@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Data;
 using OrganismDatabaseHandler.DatabaseTools;
 
 namespace AppUI_OrfDBHandler.NucleotideTranslator
@@ -7,7 +6,7 @@ namespace AppUI_OrfDBHandler.NucleotideTranslator
     public class TranslateNucleotides
     {
         private ArrayList mTranslationMatrix;
-        private DBTask mGetSQLData;
+        private readonly DBTask mGetSQLData;
 
         private string mTranTableListName = "T_DNA_Translation_Tables";
         private string mTransTableMembersName = "T_DNA_Translation_Table_Members";
@@ -37,9 +36,9 @@ namespace AppUI_OrfDBHandler.NucleotideTranslator
                 {
                     foreach (var base3 in baseArray)
                     {
-                        var tertSelect = "Base_1 = '" + base1.ToString() +
-                                         "' AND Base_2 = '" + base2.ToString() +
-                                         "' AND Base_3 = '" + base3.ToString() + "'";
+                        var tertSelect = "Base_1 = '" + base1 +
+                                         "' AND Base_2 = '" + base2 +
+                                         "' AND Base_3 = '" + base3 + "'";
                         var tertiaryRows = members.Select(tertSelect);
 
                         var dr = tertiaryRows[0];

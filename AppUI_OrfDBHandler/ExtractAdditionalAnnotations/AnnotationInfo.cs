@@ -136,7 +136,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
                 }
             }
 
-            public string PrimaryName => Names[0].ToString();
+            public string PrimaryName => Names[0];
 
             public string GetAnnotationName(int annotationGroupCode)
             {

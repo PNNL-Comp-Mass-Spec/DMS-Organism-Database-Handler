@@ -105,10 +105,10 @@ namespace OrganismDatabaseHandler.SequenceInfo
             var byteSourceText = ue.GetBytes(sourceText);
 
             // Compute the hash value from the source
-            var sha1Hash = sha1Provider.ComputeHash(byteSourceText);
+            var sha1HashBytes = sha1Provider.ComputeHash(byteSourceText);
 
             // And convert it to String format for return
-            var sha1String = ToHexString(sha1Hash);
+            var sha1String = ToHexString(sha1HashBytes);
 
             return sha1String;
         }
@@ -235,7 +235,7 @@ namespace OrganismDatabaseHandler.SequenceInfo
 
         public bool Invalidated => mInvalidated;
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
         public int C => countC;
 

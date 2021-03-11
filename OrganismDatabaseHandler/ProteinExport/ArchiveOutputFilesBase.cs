@@ -15,7 +15,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             Dynamic = 2
         }
 
-        private GetFASTAFromDMSForward mExporter;
+        private readonly GetFASTAFromDMSForward mExporter;
         protected readonly DBTask DatabaseAccessor;
         protected string LastError;
         // Unused: protected GetFASTAFromDMS.SequenceTypes mOutputSequenceType;
@@ -46,7 +46,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// </summary>
         /// <param name="databaseAccessor"></param>
         /// <param name="exporterModule"></param>
-        public ArchiveOutputFilesBase(DBTask databaseAccessor, GetFASTAFromDMS exporterModule)
+        protected ArchiveOutputFilesBase(DBTask databaseAccessor, GetFASTAFromDMS exporterModule)
         {
             DatabaseAccessor = databaseAccessor;
 
@@ -84,9 +84,9 @@ namespace OrganismDatabaseHandler.ProteinExport
             {
                 using (var fileReader = new StreamReader(new FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                 {
-                    while (!fileReader.EndOfStream)
+                    string dataLine;
+                    while ((dataLine = fileReader.ReadLine()) != null)
                     {
-                        var dataLine = fileReader.ReadLine();
                         if (idLineRegex.IsMatch(dataLine))
                         {
                             counter += 1;

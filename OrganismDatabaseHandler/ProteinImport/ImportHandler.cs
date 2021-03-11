@@ -16,7 +16,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             Access
         }
 
-        private DBTask mSQLAccess;
+        private readonly DBTask mSQLAccess;
 
         private readonly FASTAReader mImporter;
 
@@ -70,7 +70,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         protected string GetCollectionNameFromId(int proteinCollectionId)
         {
-            var foundRows = mCollectionsList.Select("Protein_Collection_ID = " + proteinCollectionId.ToString());
+            var foundRows = mCollectionsList.Select("Protein_Collection_ID = " + proteinCollectionId);
             var dr = foundRows[0];
             var collectionName = mSQLAccess.DbTools.GetString(dr["FileName"]);
 
@@ -102,7 +102,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
                 MessageBox.Show("GetProteinEntries returned an error after loading " + proteinsLoaded + " proteins: " + errorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                fastaContents.ClearProteinEntries();
+                fastaContents?.ClearProteinEntries();
             }
 
             return fastaContents;
@@ -137,7 +137,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var sqlQuery =
                 "SELECT Annotation_Type_ID " +
                 "FROM V_Protein_Collection_Authority " +
-                "WHERE Protein_Collection_ID = " + proteinCollectionId.ToString();
+                "WHERE Protein_Collection_ID = " + proteinCollectionId;
             var tmpAnnTypeIdTable = mSQLAccess.GetTable(sqlQuery);
 
             DataRow dr;
@@ -145,7 +145,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             foreach (DataRow currentDr in tmpAnnTypeIdTable.Rows)
             {
                 dr = currentDr;
-                authIdSb.Append(dr["Annotation_Type_ID"].ToString());
+                authIdSb.Append(dr["Annotation_Type_ID"]);
                 authIdSb.Append(", ");
             }
 
@@ -155,7 +155,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             var authSql =
                 "SELECT * FROM V_Annotation_Type_Picker " +
-                "WHERE ID IN (" + authIdSb.ToString() + ") " +
+                "WHERE ID IN (" + authIdSb + ") " +
                 "ORDER BY Display_Name";
 
             var tmpAuthTable = mSQLAccess.GetTable(authSql);
@@ -429,13 +429,10 @@ namespace OrganismDatabaseHandler.ProteinImport
                 triggerCount = 1;
             }
 
-            var contentsEnum = mFileContents.GetEnumerator();
-
             // Move certain elements of the protein record to a DataTable for display in the source window
             Task_LoadStart("Updating Display List...");
-            while (contentsEnum.MoveNext())
+            foreach (var entry in mFileContents.GetEntriesIEnumerable())
             {
-                var entry = contentsEnum.Current.Value;
                 var dr = tmpProteinTable.NewRow();
                 dr["Name"] = entry.Reference;
                 dr["Description"] = entry.Description;

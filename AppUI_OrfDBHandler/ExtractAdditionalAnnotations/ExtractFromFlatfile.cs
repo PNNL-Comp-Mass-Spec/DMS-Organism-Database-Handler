@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
 using OrganismDatabaseHandler.ProteinImport;
 
 namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
@@ -221,7 +220,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             li.SubItems.Add(mAnnotationStorage.GetGroupName(groupId));
             if (mAnnotationStorage.GetAnnotationAuthorityId(groupId) > 0)
             {
-                li.SubItems.Add(mAuthorities[mAnnotationStorage.GetAnnotationAuthorityId(groupId).ToString()].ToString());
+                li.SubItems.Add(mAuthorities[mAnnotationStorage.GetAnnotationAuthorityId(groupId).ToString()]);
             }
             else
             {
@@ -230,7 +229,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
             if (mAnnotationStorage.GetDelimiter(groupId) != null)
             {
-                li.SubItems.Add(mAnnotationStorage.GetDelimiter(groupId).ToString());
+                li.SubItems.Add(mAnnotationStorage.GetDelimiter(groupId));
             }
             else
             {

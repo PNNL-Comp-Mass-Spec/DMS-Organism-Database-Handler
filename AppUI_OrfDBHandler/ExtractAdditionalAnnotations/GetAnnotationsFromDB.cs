@@ -50,7 +50,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
             var sqlQuery3 = "SELECT Annotation_Group, Authority_ID " +
                             "FROM T_Annotation_Groups " +
-                            "WHERE Protein_Collection_ID = " + proteinCollectionId.ToString();
+                            "WHERE Protein_Collection_ID = " + proteinCollectionId;
 
             var annotationGroupLookup = mDatabaseHelper.GetTable(sqlQuery3);
 
@@ -64,7 +64,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             // Get Reference_ID, Name, Description, Protein_ID, Protein_Collection_ID,
             // Authority_ID, Annotation_Group_ID
             var sqlQuery4 = "SELECT * FROM V_Protein_Collection_Members " +
-                "WHERE Protein_Collection_ID = " + proteinCollectionId.ToString() +
+                "WHERE Protein_Collection_ID = " + proteinCollectionId +
                 " AND Annotation_Group_ID = 0";
             var annotationTableLookup = mDatabaseHelper.GetTable(sqlQuery4);
 

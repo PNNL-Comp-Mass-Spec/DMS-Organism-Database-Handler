@@ -37,7 +37,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         // Unused: protected int OrganismId;
         // Unused: protected HashTable ProteinLengths;
 
-        private System.Security.Cryptography.SHA1Managed mHasher;
+        private readonly System.Security.Cryptography.SHA1Managed mHasher;
         // Unused: protected Threading.Thread ProteinHashThread;
         // Unused: protected Threading.Thread ReferenceHashThread;
 
@@ -847,7 +847,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@authority_ID", SqlType.Int).Value = authorityId;
             dbTools.AddParameter(cmdSave, "@protein_ID", SqlType.Int).Value = proteinId;
 
-            var textToHash = proteinName + "_" + description + "_" + proteinId.ToString();
+            var textToHash = proteinName + "_" + description + "_" + proteinId;
             dbTools.AddParameter(cmdSave, "@nameDescHash", SqlType.VarChar, 40).Value = GenerateHash(textToHash.ToLower());
 
             var messageParam = dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
@@ -957,7 +957,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             string description,
             int proteinId)
         {
-            var tmpHash = proteinName + "_" + description + "_" + proteinId.ToString();
+            var tmpHash = proteinName + "_" + description + "_" + proteinId;
             var tmpGenSha = GenerateHash(tmpHash.ToLower());
 
             var dbTools = mDatabaseAccessor.DbTools;

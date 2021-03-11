@@ -19,7 +19,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <summary>
         /// Export the proteins to the given file
         /// </summary>
-        /// <param name="Proteins"></param>
+        /// <param name="proteins"></param>
         /// <param name="destinationPath">Destination file path; will get updated with the final path</param>
         /// <returns></returns>
         /// <remarks></remarks>

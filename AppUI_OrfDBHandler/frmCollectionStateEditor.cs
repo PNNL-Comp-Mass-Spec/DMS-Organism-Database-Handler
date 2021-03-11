@@ -183,7 +183,7 @@ namespace AppUI_OrfDBHandler
                 }
                 else
                 {
-                    compareResult = string.Compare(item1.SubItems[colIndex].Text, item2.SubItems[colIndex].Text);
+                    compareResult = string.Compare(item1.SubItems[colIndex].Text, item2.SubItems[colIndex].Text, StringComparison.Ordinal);
                 }
 
                 if (mSortAscending)

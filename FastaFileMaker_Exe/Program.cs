@@ -177,7 +177,7 @@ namespace FastaFileMaker_Exe
 
         private static string GetAppVersion(string programDate)
         {
-            return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() + " (" + programDate + ")";
+            return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + " (" + programDate + ")";
         }
 
         private static string GetHumanReadableTimeInterval(TimeSpan dtInterval)
@@ -222,7 +222,7 @@ namespace FastaFileMaker_Exe
                 var strLogFileName = "FastaFileMakerLog_" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
 
                 string strLogFilePath;
-                if (logDirectoryPath != null && logDirectoryPath.Length > 0)
+                if (!string.IsNullOrEmpty(logDirectoryPath))
                 {
                     strLogFilePath = System.IO.Path.Combine(logDirectoryPath, strLogFileName);
                 }
@@ -254,7 +254,7 @@ namespace FastaFileMaker_Exe
                 }
 
                 System.IO.FileInfo fiFastaFile;
-                if (destinationDirectoryPath != null && destinationDirectoryPath.Length > 0)
+                if (!string.IsNullOrEmpty(destinationDirectoryPath))
                 {
                     fiFastaFile = new System.IO.FileInfo(System.IO.Path.Combine(destinationDirectoryPath, fastaFileName));
                 }
@@ -270,8 +270,8 @@ namespace FastaFileMaker_Exe
                                     legacyFasta + "\t" +
                                     crc32Hash + "\t" +
                                     fastaFileName + "\t" +
-                                    fiFastaFile.LastWriteTime.ToString() + "\t" +
-                                    fiFastaFile.CreationTime.ToString() + "\t" +
+                                    fiFastaFile.LastWriteTime + "\t" +
+                                    fiFastaFile.CreationTime + "\t" +
                                     fiFastaFile.Length + "\t" +
                                     GetHumanReadableTimeInterval(DateTime.UtcNow.Subtract(fiFastaFile.LastWriteTimeUtc)));
 
@@ -459,7 +459,7 @@ namespace FastaFileMaker_Exe
             if (mFastaGenTimeOut)
             {
                 // Fasta generator hung - report error and exit
-                mMessage = "Timeout error while generating OrdDb file (" + FastaGenTimeoutIntervalMinutes.ToString() + " minutes have elapsed)";
+                mMessage = "Timeout error while generating OrdDb file (" + FastaGenTimeoutIntervalMinutes + " minutes have elapsed)";
                 Console.WriteLine("clsAnalysisResources.CreateFastaFile(), " + mMessage);
 
                 return false;

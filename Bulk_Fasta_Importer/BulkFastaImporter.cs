@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
 using OrganismDatabaseHandler.ProteinUpload;
 using PRISMDatabaseUtils;
 using ValidateFastaFile;
@@ -85,11 +84,11 @@ namespace Bulk_Fasta_Importer
 
         #region "Properties"
 
-        public string DMSConnectionString { get; private set; }
+        public string DMSConnectionString { get; }
 
         public bool PreviewMode { get; set; }
 
-        public string ProteinSeqsConnectionString { get; private set; }
+        public string ProteinSeqsConnectionString { get; }
 
         public bool ValidationAllowAllSymbolsInProteinNames { get; set; }
         public bool ValidationAllowAsterisks { get; set; }
@@ -213,7 +212,7 @@ namespace Bulk_Fasta_Importer
                         // FastaFilePath, OrganismName_or_ID, AnnotationTypeName_or_ID
 
                         var dataCols = dataLine.Split('\t');
-                        if (dataCols.Count() < 3)
+                        if (dataCols.Length < 3)
                         {
                             ShowWarning("Invalid row; does not have 3 columns: " + dataLine);
                             if (!requiredColsShown)

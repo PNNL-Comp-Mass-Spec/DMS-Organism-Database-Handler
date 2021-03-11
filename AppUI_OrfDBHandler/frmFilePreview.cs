@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.ComponentModel;
-using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -55,7 +53,7 @@ namespace AppUI_OrfDBHandler
         private void cmdRefresh_Click(object sender, EventArgs e)
         {
             RefreshRequest?.Invoke(mCurrentLineCount);
-            if (cmdRefresh.Enabled == true)
+            if (cmdRefresh.Enabled)
             {
                 cmdRefresh.Enabled = false;
             }
@@ -71,7 +69,7 @@ namespace AppUI_OrfDBHandler
                 var value = Convert.ToInt32(m.Groups[0].Value);
                 txtLineCount.Text = value.ToString();
                 mCurrentLineCount = value;
-                if (cmdRefresh.Enabled == false)
+                if (!cmdRefresh.Enabled)
                 {
                     cmdRefresh.Enabled = true;
                 }

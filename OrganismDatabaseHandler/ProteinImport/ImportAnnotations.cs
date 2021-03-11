@@ -14,7 +14,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
     public abstract class ImportAnnotationsBase
     {
-        public ImportAnnotationsBase()
+        protected ImportAnnotationsBase()
         {
         }
     }
