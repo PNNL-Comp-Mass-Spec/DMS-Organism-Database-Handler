@@ -276,8 +276,6 @@ namespace AppUI_OrfDBHandler
 
         private void BatchLoadController()
         {
-            DialogResult resultReturn;
-
             m_ProteinCollectionNames = m_ImportHandler.LoadProteinCollectionNames();
             if (m_FileErrorList != null)
             {
@@ -312,8 +310,6 @@ namespace AppUI_OrfDBHandler
                 m_LastBatchULDirectoryPath,
                 m_CachedFileDescriptions);
 
-            List<PSUploadHandler.UploadInfo> tmpSelectedFileList;
-
             lblBatchProgress.Text = "";
 
             if (m_LastSelectedOrganism != null && m_LastSelectedOrganism.Length > 0)
@@ -331,7 +327,7 @@ namespace AppUI_OrfDBHandler
             frmBatchUpload.ValidationMaxProteinNameLength = m_LastValueForMaxProteinNameLength;
 
             // Show the window
-            resultReturn = frmBatchUpload.ShowDialog();
+            var resultReturn = frmBatchUpload.ShowDialog();
 
             // Save the selected organism and annotation type
             m_LastSelectedOrganism = frmBatchUpload.SelectedOrganismName;
@@ -380,7 +376,7 @@ namespace AppUI_OrfDBHandler
             cmdDestRemove.Enabled = false;
             cmdDestRemoveAll.Enabled = false;
 
-            tmpSelectedFileList = frmBatchUpload.FileList;
+            var tmpSelectedFileList = frmBatchUpload.FileList;
 
             m_BatchLoadTotalCount = tmpSelectedFileList.Count;
 
@@ -481,9 +477,7 @@ namespace AppUI_OrfDBHandler
             //AboutBox.Location = m_MainProcess.myAppSettings.AboutBoxLocation;
             //AboutBox.ShowDialog();
 
-            string strMessage;
-
-            strMessage = "This is version " + Application.ProductVersion + ", " + PROGRAM_DATE;
+            var strMessage = "This is version " + Application.ProductVersion + ", " + PROGRAM_DATE;
 
             MessageBox.Show(strMessage, "About Protein Collection Editor", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

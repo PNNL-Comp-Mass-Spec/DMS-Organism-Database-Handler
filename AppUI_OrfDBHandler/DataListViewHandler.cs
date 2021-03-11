@@ -27,7 +27,6 @@ namespace AppUI_OrfDBHandler
             DataTable dt,
             string filterCriteria = "")
         {
-            DataRow[] itemRows;
             string filterString = string.Empty;
 
             if (filterCriteria.Length != 0)
@@ -38,7 +37,7 @@ namespace AppUI_OrfDBHandler
 
             lvw.BeginUpdate();
 
-            itemRows = dt.Select(filterString, "Name");
+            var itemRows = dt.Select(filterString, "Name");
 
             //NumberLoadedStatus?.Invoke(itemRows.Length, dt.Rows.Count);
 

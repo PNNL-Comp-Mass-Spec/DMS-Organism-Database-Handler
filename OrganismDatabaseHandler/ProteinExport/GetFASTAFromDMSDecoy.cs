@@ -35,18 +35,15 @@ namespace OrganismDatabaseHandler.ProteinExport
             int alternateAnnotationTypeID,
             bool padWithPrimaryAnnotation)
         {
-            string fwdFilePath;
-            string revFilePath;
-
             base.ExportFASTAFile(protCollectionList,
                                  destinationFolderPath, alternateAnnotationTypeID, padWithPrimaryAnnotation);
 
-            fwdFilePath = FullOutputPath;
+            var fwdFilePath = FullOutputPath;
 
             m_RevGenerator.ExportFASTAFile(protCollectionList,
                                            destinationFolderPath, alternateAnnotationTypeID, padWithPrimaryAnnotation);
 
-            revFilePath = m_RevGenerator.FullOutputPath;
+            var revFilePath = m_RevGenerator.FullOutputPath;
 
             var fwdFI = new FileInfo(fwdFilePath);
             var revFI = new FileInfo(revFilePath);

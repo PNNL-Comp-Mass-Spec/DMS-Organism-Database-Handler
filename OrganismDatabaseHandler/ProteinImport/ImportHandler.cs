@@ -81,8 +81,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         {
 
             // check for existence of current file
-            ProteinStorage.ProteinStorage fastaContents;
-            fastaContents = m_Importer.GetProteinEntries(filePath);
+            var fastaContents = m_Importer.GetProteinEntries(filePath);
 
             string errorMessage = m_Importer.LastErrorMessage;
 
@@ -139,8 +138,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                 "SELECT Annotation_Type_ID " +
                 "FROM V_Protein_Collection_Authority " +
                 "WHERE Protein_Collection_ID = " + proteinCollectionID.ToString();
-            DataTable tmpAnnTypeIDTable;
-            tmpAnnTypeIDTable = m_SQLAccess.GetTable(sqlQuery);
+            var tmpAnnTypeIDTable = m_SQLAccess.GetTable(sqlQuery);
 
             DataRow dr;
             var authIDSB = new System.Text.StringBuilder();
@@ -353,13 +351,12 @@ namespace OrganismDatabaseHandler.ProteinImport
         protected ProteinStorage.ProteinStorage LoadProteinInfo(DataRow[] proteinCollectionMembers)
         {
             var tmpPS = new ProteinStorageDMS("");
-            int proteinCount;
             int triggerCount;
             var counter = default(int);
 
             LoadStart?.Invoke("Retrieving Protein Entries...");
 
-            proteinCount = proteinCollectionMembers.Length;
+            var proteinCount = proteinCollectionMembers.Length;
 
             if (proteinCount > 20)
             {
@@ -409,7 +406,6 @@ namespace OrganismDatabaseHandler.ProteinImport
             var tmpProteinTable = m_SQLAccess.GetTableTemplate("V_Protein_Database_Export");
             var counter = default(int);
             int triggerCount;
-            int proteinCount;
 
             switch (fileType)
             {
@@ -426,7 +422,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                 return null;
             }
 
-            proteinCount = m_FileContents.ProteinCount;
+            var proteinCount = m_FileContents.ProteinCount;
             if (proteinCount > 20)
             {
                 triggerCount = (int)Math.Round(proteinCount / 20d);

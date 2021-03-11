@@ -64,14 +64,12 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
             if (XRefDelimiter.Length > 0)
             {
-                string[] addnXRefs;
-                int XRefCount;
                 var newXReflist = new SortedSet<string>();
 
                 foreach (var primeXRef in xrefList)
                 {
-                    addnXRefs = primeXRef.Split(XRefDelimiter.ToCharArray());
-                    for (XRefCount = 0; XRefCount < addnXRefs.Length; XRefCount++)
+                    var addnXRefs = primeXRef.Split(XRefDelimiter.ToCharArray());
+                    for (var XRefCount = 0; XRefCount < addnXRefs.Length; XRefCount++)
                     {
                         string newItem = addnXRefs[XRefCount].ToString();
                         if (!newXReflist.Contains(newItem))

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using OrganismDatabaseHandler.DatabaseTools;
 
 namespace AppUI_OrfDBHandler
@@ -52,13 +53,6 @@ namespace AppUI_OrfDBHandler
         private void ScanFileForEntries(string filePath)
         {
             // Look through a given ASN.1 file and scan for translation table entries
-            System.IO.FileInfo fi;
-            System.IO.TextReader tr;
-            List<string> rawEntry;
-            string entryLine;
-            string tmpLineCache;
-            string checkString;
-
             var dba = new DBTask(m_ConnectionString);
 
             string sqlQuery1 = "SELECT * FROM " + EntriesTableName;
@@ -67,24 +61,24 @@ namespace AppUI_OrfDBHandler
             string sqlQuery2 = "SELECT * FROM " + IDTableName;
             m_Translation_Tables = dba.GetTable(sqlQuery2);
 
-            fi = new System.IO.FileInfo(filePath);
+            var fi = new System.IO.FileInfo(filePath);
 
             if (fi.Exists)
             {
-                tr = fi.OpenText();
-                tmpLineCache = tr.ReadLine();
+                System.IO.TextReader tr = fi.OpenText();
+                var tmpLineCache = tr.ReadLine();
 
                 // Get table format
 
                 while (tmpLineCache != null)
                 {
-                    checkString = tmpLineCache.Substring(0, 2);
+                    var checkString = tmpLineCache.Substring(0, 2);
                     if (checkString != "--")      // not a comment line. Process further
                     {
                         if (checkString == " {")   // Beginning of an entry block
                         {
-                            rawEntry = new List<string>();
-                            entryLine = tr.ReadLine();
+                            var rawEntry = new List<string>();
+                            var entryLine = tr.ReadLine();
                             while (entryLine?.Substring(0, 2) != " }")
                             {
                                 rawEntry.Add(entryLine);
@@ -130,9 +124,7 @@ namespace AppUI_OrfDBHandler
             string Base2List = string.Empty;
             string Base3List = string.Empty;
             var nameList = new List<string>();
-            string[] tmpNameList;
 
-            string tmp;
             var tmpStartPos = default(int);
 
             string trimString = " ,\"";
@@ -141,6 +133,7 @@ namespace AppUI_OrfDBHandler
             foreach (var str in rawEntryCollection)
             {
                 var s = str.Trim();
+                string tmp;
                 switch (s.Substring(0, 3) ?? "")
                 {
                     case "nam":
@@ -148,7 +141,7 @@ namespace AppUI_OrfDBHandler
                         tmpStartPos = tmp.IndexOf(" ") + 1;
                         tmp = tmp.Substring(tmpStartPos);
                         tmp = tmp.Trim(trimChars);
-                        tmpNameList = tmp.Split(";".ToCharArray());
+                        var tmpNameList = tmp.Split(";".ToCharArray());
                         foreach (var tmpName in tmpNameList)
                             nameList.Add(tmpName);
                         break;
@@ -206,8 +199,7 @@ namespace AppUI_OrfDBHandler
 
         private string ProcessBaseString(string rawBaseString)
         {
-            string tmpString;
-            tmpString = rawBaseString.TrimStart();
+            var tmpString = rawBaseString.TrimStart();
 
             tmpString = tmpString.Substring(11);
 
@@ -234,11 +226,7 @@ namespace AppUI_OrfDBHandler
                 return false;
             }
 
-            string tmpStartString;
             bool tmpStart;
-            string Base1;
-            string Base2;
-            string Base3;
 
             var counter = default(int);
             DataRow dr;
@@ -257,7 +245,7 @@ namespace AppUI_OrfDBHandler
             {
                 dr = m_Translation_Entries.NewRow();
                 counter += 1;
-                tmpStartString = StartString.Substring(counter, 1);
+                var tmpStartString = StartString.Substring(counter, 1);
                 if (tmpStartString == "M")
                 {
                     tmpStart = true;
@@ -267,9 +255,9 @@ namespace AppUI_OrfDBHandler
                     tmpStart = false;
                 }
 
-                Base1 = Base1List.Substring(counter, 1);
-                Base2 = Base2List.Substring(counter, 1);
-                Base3 = Base3List.Substring(counter, 1);
+                var Base1 = Base1List.Substring(counter, 1);
+                var Base2 = Base2List.Substring(counter, 1);
+                var Base3 = Base3List.Substring(counter, 1);
 
                 dr["Coded_AA"] = tmpAA;
                 dr["Start_Sequence"] = tmpStartString;

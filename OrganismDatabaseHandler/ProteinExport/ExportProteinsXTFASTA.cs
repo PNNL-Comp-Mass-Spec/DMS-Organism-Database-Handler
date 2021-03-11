@@ -56,13 +56,6 @@ namespace OrganismDatabaseHandler.ProteinExport
             {
                 bw.BaseStream.Seek(0L, SeekOrigin.Begin);
 
-                int proteinLength;
-
-                string tmpSeq;
-
-                ProteinStorageEntry tmpPC;
-                int tmpNum;
-
                 OnExportStart("Writing to X!Tandem formatted FASTA File");
 
                 int counterMax = proteins.ProteinCount;
@@ -92,8 +85,8 @@ namespace OrganismDatabaseHandler.ProteinExport
                 foreach (var tmpName in proteinArray)
                 {
                     OnExportStart("Writing: " + tmpName);
-                    tmpPC = proteins.GetProtein(tmpName);
-                    tmpSeq = tmpPC.Sequence;
+                    var tmpPC = proteins.GetProtein(tmpName);
+                    var tmpSeq = tmpPC.Sequence;
 
                     counter += 1;
 
@@ -102,10 +95,10 @@ namespace OrganismDatabaseHandler.ProteinExport
                         OnProgressUpdate("Processing: " + tmpName, Math.Round(counter / (double)counterMax, 3));
                     }
 
-                    proteinLength = tmpSeq.Length;
+                    var proteinLength = tmpSeq.Length;
 
                     Array.Clear(buffer, 0, 4);
-                    tmpNum = tmpName.Length + 1;
+                    var tmpNum = tmpName.Length + 1;
                     buffer = ConvIntegerToByteArray(tmpNum, 4);
                     Array.Reverse(buffer);
 
@@ -173,26 +166,16 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 // IEnumerator e = Proteins.GetEnumerator;
 
-                int proteinLength;
-
-                DataRow[] foundRows;
-
-                string tmpSeq;
-                string tmpName;
-
-                int tmpNum;
-
                 OnExportStart("Writing to X!Tandem formatted FASTA File");
 
                 // int counterMax = Proteins.ProteinCount;
-                int counterMax; // = ProteinTable.Rows.Count;
                 var counter = default(int);
 
                 foreach (DataTable proteinTable in proteinTables.Tables)
                 {
                     OnExportStart("Writing: " + proteinTable.TableName);
-                    counterMax = proteinTable.Rows.Count;
-                    foundRows = proteinTable.Select("", "Name");
+                    var counterMax = proteinTable.Rows.Count; // = ProteinTable.Rows.Count;
+                    var foundRows = proteinTable.Select("", "Name");
 
                     var encoding = new ASCIIEncoding();
 
@@ -212,8 +195,8 @@ namespace OrganismDatabaseHandler.ProteinExport
                     {
                         // tmpPC = Proteins.GetProtein(tmpName);
                         // tmpSeq = tmpPC.Sequence;
-                        tmpSeq = dr["Sequence"].ToString();
-                        tmpName = dr["Name"].ToString();
+                        var tmpSeq = dr["Sequence"].ToString();
+                        var tmpName = dr["Name"].ToString();
                         // tmpDesc = dr.Item("Description").ToString();
 
                         counter += 1;
@@ -223,10 +206,10 @@ namespace OrganismDatabaseHandler.ProteinExport
                             OnProgressUpdate("Processing: " + tmpName, Math.Round(counter / (double)counterMax, 3));
                         }
 
-                        proteinLength = tmpSeq.Length;
+                        var proteinLength = tmpSeq.Length;
 
                         Array.Clear(buffer, 0, 4);
-                        tmpNum = tmpName.Length + 1;
+                        var tmpNum = tmpName.Length + 1;
                         buffer = ConvIntegerToByteArray(tmpNum, 4);
                         Array.Reverse(buffer);
 
@@ -274,11 +257,9 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             // converts an integer to a byte array of length lg
             var m = new byte[lg];
-            int i, k;
-            string h;
-            h = n.ToString("X").PadLeft(16, '0');
-            k = 16;
-            for (i = lg - 1; i >= 0; i -= 1)
+            var h = n.ToString("X").PadLeft(16, '0');
+            var k = 16;
+            for (var i = lg - 1; i >= 0; i -= 1)
             {
                 k = k - 2;
                 m[i] = Convert.ToByte("&H" + h.Substring(k, 2));
@@ -289,14 +270,12 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public long ConvByteArrayToInteger(byte[] b, int ln = 0, int sidx = 0)
         {
-            int i;
-            long j, k;
             if (ln == 0)
                 ln = b.Length + 1;
             ln = sidx + ln - 1;
-            k = 1L;
-            j = b[ln];
-            for (i = ln - 1; i >= sidx; i -= 1)
+            var k = 1L;
+            long j = b[ln];
+            for (var i = ln - 1; i >= sidx; i -= 1)
             {
                 k = 256L * k;
                 j = j + k * b[i];

@@ -75,7 +75,6 @@ namespace AppUI_OrfDBHandler
 
         private void cmdBrowseTT_Click(object sender, EventArgs e)
         {
-            string newFilePath;
             var OpenDialog = new OpenFileDialog();
 
             Button proxy = (Button)sender;
@@ -90,7 +89,7 @@ namespace AppUI_OrfDBHandler
 
             if (OpenDialog.ShowDialog() == DialogResult.OK)
             {
-                newFilePath = OpenDialog.FileName;
+                var newFilePath = OpenDialog.FileName;
                 if (proxy.Name.ToString() == "cmdBrowseTT")
                 {
                     txtTransFilePath.Text = newFilePath;
@@ -113,9 +112,6 @@ namespace AppUI_OrfDBHandler
         {
             var sd = new FolderBrowserDialog();
 
-            string filePath;
-            DialogResult r;
-
             //Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS exporter;
             //var tmpNameList = new ArrayList();
 
@@ -124,11 +120,11 @@ namespace AppUI_OrfDBHandler
 
             sd.SelectedPath = m_LastOutputDirectory;
 
-            r = sd.ShowDialog();
+            var r = sd.ShowDialog();
 
             if (r == DialogResult.OK)
             {
-                filePath = sd.SelectedPath;
+                var filePath = sd.SelectedPath;
                 m_LastOutputDirectory = filePath;
 
                 //tmpNameList.Add(cboCollectionsList.Text.ToString());
@@ -200,8 +196,7 @@ namespace AppUI_OrfDBHandler
 
         private string GetCollectionName(int ProteinCollectionID)
         {
-            DataRow[] foundRows;
-            foundRows = collectionList.Select("Protein_Collection_ID = " + ProteinCollectionID.ToString());
+            var foundRows = collectionList.Select("Protein_Collection_ID = " + ProteinCollectionID.ToString());
             return foundRows[0]["FileName"].ToString();
         }
 

@@ -274,13 +274,11 @@ namespace AppUI_OrfDBHandler
         {
             var collectionInfo = new Dictionary<int, string>(dt.Rows.Count);
             var foundRows = dt.Select("", "Protein_Collection_ID");
-            int tmpID;
-            string tmpName;
 
             foreach (DataRow dr in foundRows)
             {
-                tmpID = DatabaseUtilsExtensions.GetInteger(null, dr["Protein_Collection_ID"]);
-                tmpName = dr["FileName"].ToString();
+                var tmpID = DatabaseUtilsExtensions.GetInteger(null, dr["Protein_Collection_ID"]);
+                var tmpName = dr["FileName"].ToString();
                 if (!collectionInfo.ContainsKey(tmpID))
                 {
                     collectionInfo.Add(tmpID, tmpName);
@@ -435,7 +433,6 @@ namespace AppUI_OrfDBHandler
         public string Numeric2Bytes(double b)
         {
             var bSize = new string[9];
-            int i;
 
             bSize[0] = "Bytes";
             bSize[1] = "KB"; // Kilobytes
@@ -447,7 +444,7 @@ namespace AppUI_OrfDBHandler
             bSize[7] = "ZB"; // Zettabytes
             bSize[8] = "YB"; // Yottabytes
 
-            for (i = bSize.Length; i >= 0; i -= 1)
+            for (var i = bSize.Length; i >= 0; i -= 1)
             {
                 if (b >= Math.Pow(1024d, i))
                 {
@@ -751,15 +748,13 @@ namespace AppUI_OrfDBHandler
             // Look for strValue in a combobox that has a data table attached via the .DataSource property
             // If the value is found, then the given item in the combobox is selected
 
-            int intIndex;
-            DataRowView objRow;
             try
             {
                 if (strValue != null && strValue.Length > 0)
                 {
-                    for (intIndex = 0; intIndex < objComboBox.Items.Count; intIndex++)
+                    for (var intIndex = 0; intIndex < objComboBox.Items.Count; intIndex++)
                     {
-                        objRow = (DataRowView)objComboBox.Items[intIndex];
+                        var objRow = (DataRowView)objComboBox.Items[intIndex];
 
                         if (!DBNull.Value.Equals(objRow[intDataColumnIndexToCheck]))
                         {
@@ -923,7 +918,6 @@ namespace AppUI_OrfDBHandler
         private void cboAnnotationTypePicker_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox cbo = (ComboBox)sender;
-            PSUploadHandler.UploadInfo tmpUpInfo;
 
             if (ReferenceEquals(cboAnnotationTypePicker.SelectedValue.GetType(), Type.GetType("System.Int32")))
             {
@@ -936,21 +930,18 @@ namespace AppUI_OrfDBHandler
 
             CheckTransferEnable();
 
-            int tmpAnnTypeID;
-
             if (m_SelectedAnnotationTypeID == -2)
             {
                 // Bring up an additional dialog
                 var AnnTypeAdd = new AddAnnotationTypeType(m_PSConnectionString);
                 AnnTypeAdd.FormLocation = new Point(Left + Width + 10, Top);
-                tmpAnnTypeID = AnnTypeAdd.AddAnnotationType();
+                var tmpAnnTypeID = AnnTypeAdd.AddAnnotationType();
                 // Dim AuthAdd As New AddNamingAuthority(m_PSConnectionString)
                 // tmpAuthID = AuthAdd.AddNamingAuthority
 
                 if (!AnnTypeAdd.EntryExists & tmpAnnTypeID > 0)
                 {
-                    DataRow dr;
-                    dr = m_AnnotationTypeList.NewRow();
+                    var dr = m_AnnotationTypeList.NewRow();
 
                     dr["ID"] = tmpAnnTypeID;
                     dr["Display_Name"] = AnnTypeAdd.DisplayName;
@@ -971,7 +962,7 @@ namespace AppUI_OrfDBHandler
                 {
                     // Update annotation type in m_SelectedFileList
                     string fastaFilePath = GetSelectedFileColumn(li, eSelectedFileColumn.FilePath);
-                    tmpUpInfo = m_SelectedFileList[fastaFilePath];
+                    var tmpUpInfo = m_SelectedFileList[fastaFilePath];
 
                     m_SelectedFileList[fastaFilePath] =
                         new PSUploadHandler.UploadInfo(
@@ -1187,10 +1178,8 @@ namespace AppUI_OrfDBHandler
         {
             if (lvwSelectedFiles.Items.Count > 0 & !m_ReallyClose)
             {
-                DialogResult r;
-
-                r = MessageBox.Show("You have files selected for upload. Really close the form?",
-                                    "Files selected for upload", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                var r = MessageBox.Show("You have files selected for upload. Really close the form?",
+                    "Files selected for upload", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
                 if (r == DialogResult.No)
                 {
                     e.Cancel = true;

@@ -78,14 +78,12 @@ namespace AppUI_OrfDBHandler
 
         public string ValidateWebAddressFormat(string rawAddress)
         {
-            Match m;
             var r1 = new Regex(@"(?:([^:/?#]+):)?(?://([^/?#]*))?([^?#]*)(?:\?([^#]*))?");  // Match with specific page noted
-            string newAddress;
             var newAddressSB = new StringBuilder();
 
             if (r1.IsMatch(rawAddress))
             {
-                m = r1.Match(rawAddress);
+                var m = r1.Match(rawAddress);
                 if (m.Groups[1].Value.Length == 0)
                 {
                     newAddressSB.Append("http://");
@@ -101,7 +99,7 @@ namespace AppUI_OrfDBHandler
 
                 newAddressSB.Append(m.Groups[4].Value);
 
-                newAddress = newAddressSB.ToString();
+                var newAddress = newAddressSB.ToString();
 
                 return newAddress;
             }

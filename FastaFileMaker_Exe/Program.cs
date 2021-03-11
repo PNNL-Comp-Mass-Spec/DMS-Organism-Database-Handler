@@ -94,11 +94,10 @@ namespace FastaFileMaker_Exe
         public static void Main()
         {
             var commandLineParser = new clsParseCommandLine();
-            bool blnProceed;
 
             try
             {
-                blnProceed = false;
+                var blnProceed = false;
 
                 mProteinCollectionList = string.Empty;
                 mCreationOpts = string.Empty;
@@ -214,17 +213,15 @@ namespace FastaFileMaker_Exe
                                                   string logDirectoryPath)
         {
             // Appends a new entry to the log file
-            System.IO.StreamWriter swOutFile;
 
-            string strLogFileName;
-            string strLogFilePath;
             bool blnWriteHeader = false;
 
             try
             {
                 // Create a new log file each day
-                strLogFileName = "FastaFileMakerLog_" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+                var strLogFileName = "FastaFileMakerLog_" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
 
+                string strLogFilePath;
                 if (logDirectoryPath != null && logDirectoryPath.Length > 0)
                 {
                     strLogFilePath = System.IO.Path.Combine(logDirectoryPath, strLogFileName);
@@ -239,7 +236,7 @@ namespace FastaFileMaker_Exe
                     blnWriteHeader = true;
                 }
 
-                swOutFile = new System.IO.StreamWriter(new System.IO.FileStream(strLogFilePath, System.IO.FileMode.Append, System.IO.FileAccess.Write, System.IO.FileShare.Read));
+                var swOutFile = new System.IO.StreamWriter(new System.IO.FileStream(strLogFilePath, System.IO.FileMode.Append, System.IO.FileAccess.Write, System.IO.FileShare.Read));
 
                 if (blnWriteHeader)
                 {

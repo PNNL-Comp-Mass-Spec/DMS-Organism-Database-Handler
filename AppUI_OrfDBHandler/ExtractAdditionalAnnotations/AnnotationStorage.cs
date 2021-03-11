@@ -104,9 +104,8 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         public void SetGroupName(int GroupID, string value)
         {
-            string oldName;
             var group = GetGroup(GroupID);
-            oldName = group.GroupName;
+            var oldName = @group.GroupName;
             group.GroupName = value;
             m_AnnotationGroups[GroupID] = group;
             m_GroupNameLookup.Remove(oldName);
@@ -147,8 +146,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         public AnnotationGroup GetGroup(int groupid)
         {
-            AnnotationGroup group;
-            group = m_AnnotationGroups[groupid];
+            var @group = m_AnnotationGroups[groupid];
             return group;
         }
     }

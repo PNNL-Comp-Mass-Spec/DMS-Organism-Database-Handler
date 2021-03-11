@@ -115,24 +115,10 @@ namespace OrganismDatabaseHandler.ProteinExport
             int alternateAnnotationTypeID,
             bool padWithPrimaryAnnotation)
         {
-            string collectionSQL;
-            DataTable collectionTable;
-
-            string authorizationSQL;
-            DataTable authorizationTable;
-
-            string passPhraseSQL;
-            DataTable passPhraseTable;
-
-            DataRow[] encCheckRows;
-            DataRow[] authCheckRows;
-
             string trueName = string.Empty;
 
             var tmpID = default(int);
             var tmpIDListSB = new StringBuilder();
-            string cipherSeq;
-            string clearSeq;
 
             var nameCheckRegex = new Regex(@"(?<collectionname>.+)(?<direction>_(forward|reversed|scrambled)).*\.(?<type>(fasta|fasta\.pro))");
 
@@ -140,8 +126,6 @@ namespace OrganismDatabaseHandler.ProteinExport
             {
                 return "";
             }
-
-            Match m;
 
             var user = new WindowsPrincipal(WindowsIdentity.GetCurrent());
             string user_ID = user.Identity.Name;
@@ -154,24 +138,24 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Check each collection name for encryption of contents
             foreach (string nameString in protCollectionList)
             {
-                encCheckRows = m_CollectionsCache.Select("Filename = '" + nameString + "' AND Contents_Encrypted > 0");
+                var encCheckRows = m_CollectionsCache.Select("Filename = '" + nameString + "' AND Contents_Encrypted > 0");
 
                 if (encCheckRows.Length > 0)
                 {
                     // Determine the encrypted collections to which this user has access
-                    authorizationSQL = "SELECT Protein_Collection_ID, Protein_Collection_Name " +
-                        "FROM V_Encrypted_Collection_Authorizations " +
-                        "WHERE Login_Name = '" + user_ID + "'";
+                    var authorizationSQL = "SELECT Protein_Collection_ID, Protein_Collection_Name " +
+                                           "FROM V_Encrypted_Collection_Authorizations " +
+                                           "WHERE Login_Name = '" + user_ID + "'";
 
-                    authorizationTable = m_DatabaseAccessor.GetTable(authorizationSQL);
-                    authCheckRows = authorizationTable.Select("Protein_Collection_Name = '" + nameString + "' OR Protein_Collection_Name = 'Administrator'");
+                    var authorizationTable = m_DatabaseAccessor.GetTable(authorizationSQL);
+                    var authCheckRows = authorizationTable.Select("Protein_Collection_Name = '" + nameString + "' OR Protein_Collection_Name = 'Administrator'");
                     if (authCheckRows.Length > 0)
                     {
                         tmpID = FindIDByName(nameString);
-                        passPhraseSQL = "SELECT Passphrase " +
-                            "FROM T_Encrypted_Collection_Passphrases " +
-                            "WHERE Protein_Collection_ID = " + tmpID.ToString();
-                        passPhraseTable = m_DatabaseAccessor.GetTable(passPhraseSQL);
+                        var passPhraseSQL = "SELECT Passphrase " +
+                                            "FROM T_Encrypted_Collection_Passphrases " +
+                                            "WHERE Protein_Collection_ID = " + tmpID.ToString();
+                        var passPhraseTable = m_DatabaseAccessor.GetTable(passPhraseSQL);
 
                         proteinCollectionPassphrases.Add(nameString, passPhraseTable.Rows[0]["Passphrase"].ToString());
                     }
@@ -229,7 +213,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 if (nameCheckRegex.IsMatch(ProteinCollectionName))
                 {
-                    m = nameCheckRegex.Match(ProteinCollectionName);
+                    var m = nameCheckRegex.Match(ProteinCollectionName);
                     trueName = m.Groups["collectionname"].Value;
                 }
                 else
@@ -254,11 +238,13 @@ namespace OrganismDatabaseHandler.ProteinExport
                     collectionLength = -1;
                 }
 
+                DataTable collectionTable;
                 do
                 {
                     int sectionStart = currentCollectionPos;
                     int sectionEnd = sectionStart + 10000;
 
+                    string collectionSQL;
                     if (padWithPrimaryAnnotation)
                     {
                         tmpID = FindIDByName(trueName);
@@ -289,8 +275,8 @@ namespace OrganismDatabaseHandler.ProteinExport
                         m_RijndaelDecryption = new RijndaelEncryptionHandler(passPhraseForCollection);
                         foreach (DataRow decryptionRow in collectionTable.Rows)
                         {
-                            cipherSeq = decryptionRow["Sequence"].ToString();
-                            clearSeq = m_RijndaelDecryption.Decrypt(cipherSeq);
+                            var cipherSeq = decryptionRow["Sequence"].ToString();
+                            var clearSeq = m_RijndaelDecryption.Decrypt(cipherSeq);
                             decryptionRow["Sequence"] = clearSeq;
                             decryptionRow.AcceptChanges();
                         }
@@ -354,16 +340,14 @@ namespace OrganismDatabaseHandler.ProteinExport
                     // If exporting a large number of protein collections, name can be very long
                     // This can lead to error: The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters
                     // Thus, truncate name
-                    int intMaxNameLength;
-                    intMaxNameLength = 225 - destinationFolderPath.Length;
+                    var intMaxNameLength = 225 - destinationFolderPath.Length;
                     if (intMaxNameLength < 30)
                         intMaxNameLength = 30;
 
                     name = name.Substring(0, intMaxNameLength);
 
                     // Find the last plus sign and truncate just before it
-                    int intLastPlusLocation;
-                    intLastPlusLocation = name.LastIndexOf('+');
+                    var intLastPlusLocation = name.LastIndexOf('+');
                     if (intLastPlusLocation > 30)
                     {
                         name = name.Substring(0, intLastPlusLocation);
@@ -426,10 +410,9 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         protected bool CheckProteinCollectionNameValidity(List<string> protCollectionList)
         {
-            int id;
             foreach (var name in protCollectionList)
             {
-                id = FindIDByName(name);
+                var id = FindIDByName(name);
                 if (id < 1)
                 {
                     throw new Exception("The collection named '" + name + "' does not exist in the system");
@@ -562,11 +545,9 @@ namespace OrganismDatabaseHandler.ProteinExport
                 return 0;
             }
 
-            DataRow[] foundRows;
-
             // Make sure there are no leading or trailing spaces
             collectionName = collectionName.Trim();
-            foundRows = m_CollectionsCache.Select("[FileName] = '" + collectionName + "'");
+            var foundRows = m_CollectionsCache.Select("[FileName] = '" + collectionName + "'");
             if (foundRows.Length == 0)
             {
                 RefreshCollectionCache();

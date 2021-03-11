@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 using OrganismDatabaseHandler.ProteinImport;
 
 namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
@@ -113,14 +114,11 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             Dictionary<int, string> dataLine,
             int lineCount)
         {
-            System.Windows.Forms.ListViewItem lvItem;
             int columnCount = dataLine.Count;
 
             int maxColumnCount = ColumnNames.Count;
 
-            int blankColumnCount;
-
-            lvItem = new System.Windows.Forms.ListViewItem(dataLine[1]);
+            var lvItem = new System.Windows.Forms.ListViewItem(dataLine[1]);
             for (int columnNumber = 2; columnNumber <= columnCount; columnNumber++)
             {
                 string dataValue = dataLine[columnNumber];
@@ -134,7 +132,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
                 }
             }
 
-            blankColumnCount = maxColumnCount - columnCount;
+            var blankColumnCount = maxColumnCount - columnCount;
             if (blankColumnCount > 0)
             {
                 for (int columnNumber = 1; columnNumber <= blankColumnCount; columnNumber++)
@@ -280,7 +278,6 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         private Dictionary<string, int> GetProteinIDsForPrimaryReferences(IReadOnlyCollection<string> PrimaryReferences)
         {
             var ht = new Dictionary<string, int>(PrimaryReferences.Count);
-            int id;
 
             if (m_Uploader == null)
             {
@@ -291,6 +288,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             {
                 if (!ht.ContainsKey(name))
                 {
+                    int id;
                     if (m_ProteinIDLookup.ContainsKey(name))
                     {
                         id = m_ProteinIDLookup[name];

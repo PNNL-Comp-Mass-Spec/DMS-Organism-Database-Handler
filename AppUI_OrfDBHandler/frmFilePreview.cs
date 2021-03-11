@@ -63,14 +63,12 @@ namespace AppUI_OrfDBHandler
 
         private void txtLineCount_Validating(object sender, CancelEventArgs e)
         {
-            int value;
-            Match m;
             string countText = txtLineCount.Text;
 
             if (validationRegex.IsMatch(Convert.ToInt32(countText).ToString()))
             {
-                m = validationRegex.Match(Convert.ToInt32(countText).ToString());
-                value = Convert.ToInt32(m.Groups[0].Value);
+                var m = validationRegex.Match(Convert.ToInt32(countText).ToString());
+                var value = Convert.ToInt32(m.Groups[0].Value);
                 txtLineCount.Text = value.ToString();
                 m_currentLineCount = value;
                 if (cmdRefresh.Enabled == false)

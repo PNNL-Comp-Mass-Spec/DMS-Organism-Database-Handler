@@ -80,8 +80,6 @@ namespace AppUI_OrfDBHandler
             frmAnn.ConnectionString = m_ConnectionString;
             frmAnn.DesktopLocation = m_FormLocation;
             var r = frmAnn.ShowDialog();
-            DataRow[] authNames;
-            string authName;
 
             if (r == DialogResult.OK)
             {
@@ -95,8 +93,8 @@ namespace AppUI_OrfDBHandler
 
                 if (annTypeID < 0)
                 {
-                    authNames = m_Authorities.Select("Authority_ID = " + m_AuthID.ToString());
-                    authName = authNames[0]["Name"].ToString();
+                    var authNames = m_Authorities.Select("Authority_ID = " + m_AuthID.ToString());
+                    var authName = authNames[0]["Name"].ToString();
                     MessageBox.Show(
                         "An entry called '" + m_TypeName + "' for '" + authName + "' already exists in the Annotation Types table",
                         "Entry already exists!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2);

@@ -37,9 +37,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             ref string destinationPath,
             List<string> selectedProteinList)
         {
-            ProteinStorage.ProteinStorage tmpProteinsList;
-
-            tmpProteinsList = new ProteinStorage.ProteinStorage(Path.GetFileNameWithoutExtension(destinationPath));
+            var tmpProteinsList = new ProteinStorage.ProteinStorage(Path.GetFileNameWithoutExtension(destinationPath));
 
             foreach (var reference in selectedProteinList)
                 tmpProteinsList.AddProtein(proteins.GetProtein(reference));

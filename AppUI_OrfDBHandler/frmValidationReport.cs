@@ -165,9 +165,7 @@ namespace AppUI_OrfDBHandler
 
         private string GetOrganismName(int organismID)
         {
-            DataRow[] foundRows;
-
-            foundRows = m_Organisms.Select("ID = " + organismID.ToString());
+            var foundRows = m_Organisms.Select("ID = " + organismID.ToString());
 
             return foundRows[0]["Display_Name"].ToString();
         }
@@ -220,8 +218,6 @@ namespace AppUI_OrfDBHandler
 
         private void FillErrorOrWarningListView(ListView objListView, Dictionary<string, int> itemSummary)
         {
-            ListViewItem li;
-
             if (itemSummary != null)
             {
                 objListView.BeginUpdate();
@@ -229,7 +225,7 @@ namespace AppUI_OrfDBHandler
 
                 foreach (var item in itemSummary)
                 {
-                    li = new ListViewItem(item.Value.ToString());
+                    var li = new ListViewItem(item.Value.ToString());
                     li.SubItems.Add(item.Key);
                     objListView.Items.Add(li);
                 }

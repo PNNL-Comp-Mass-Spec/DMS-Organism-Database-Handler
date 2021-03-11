@@ -60,7 +60,6 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public ProteinStorage.ProteinStorage LoadFASTAFile(string filePath, int numRecordsToLoad)
         {
-            int fileLength;
             int currentPosition = 0;
 
             var fastaContents = new ProteinStorage.ProteinStorage(filePath);
@@ -68,7 +67,6 @@ namespace OrganismDatabaseHandler.ProteinImport
             string reference = string.Empty;
             string description = string.Empty;
             string sequence = string.Empty;
-            Match descMatch;
 
             var seqInfo = new SequenceInfoCalculator();
 
@@ -81,7 +79,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             try
             {
                 var fi = new FileInfo(m_FASTAFilePath);
-                fileLength = (int)fi.Length;
+                var fileLength = (int)fi.Length;
                 if (fi.Exists & fileLength > 0)
                 {
                     LoadStart?.Invoke("Reading Source File..."); // Trigger the setup of the pgb
@@ -114,6 +112,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                                 description = string.Empty;
                                 sequence = string.Empty;
 
+                                Match descMatch;
                                 if (m_DescLineRegEx.IsMatch(s))
                                 {
                                     descMatch = m_DescLineRegEx.Match(s);

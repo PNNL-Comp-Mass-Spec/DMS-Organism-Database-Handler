@@ -555,9 +555,7 @@ namespace Bulk_Fasta_Importer
         {
             try
             {
-                List<udtFastaFileInfoType> sourceFileList;
-
-                sourceFileList = ParseFastaInfoFile(inputFilePath);
+                var sourceFileList = ParseFastaInfoFile(inputFilePath);
 
                 if (sourceFileList.Count == 0)
                     return false;

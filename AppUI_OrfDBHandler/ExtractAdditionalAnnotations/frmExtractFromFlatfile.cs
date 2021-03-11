@@ -27,8 +27,6 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         {
             m_Extract = new ExtractFromFlatFile(m_AuthorityList, m_PSConnectionString);
             var openFrm = new System.Windows.Forms.OpenFileDialog();
-            System.Windows.Forms.DialogResult r;
-            string filePath;
 
             chkUseHeader.CheckedChanged -= chkUseHeader_CheckedChanged;
 
@@ -52,11 +50,11 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             openFrm.FilterIndex = 0;
             openFrm.Multiselect = false;
             openFrm.Title = "Select a tab delimited text file to load";
-            r = openFrm.ShowDialog();
+            var r = openFrm.ShowDialog();
 
             if (r == System.Windows.Forms.DialogResult.OK)
             {
-                filePath = openFrm.FileName;
+                var filePath = openFrm.FileName;
                 m_Extract.LoadFile(filePath, "\t", m_UseHeaderInfo);
                 LoadRawFileListView();
                 LoadAnnotationGroupListView();
@@ -101,8 +99,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             var columnCollection = m_Extract.ColumnNames;
 
             int columnCount = columnCollection.Count;
-            int columnNumber;
-            for (columnNumber = 1; columnNumber <= columnCount; columnNumber++)
+            for (var columnNumber = 1; columnNumber <= columnCount; columnNumber++)
                 lvwProteins.Columns[columnNumber - 1].Text = columnCollection[columnNumber];
 
             if (m_UseHeaderInfo)
@@ -137,8 +134,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             var columnCollection = m_Extract.ColumnNames;
 
             int columnCount = columnCollection.Count;
-            int columnNumber;
-            for (columnNumber = 1; columnNumber <= columnCount; columnNumber++)
+            for (var columnNumber = 1; columnNumber <= columnCount; columnNumber++)
             {
                 var ch = new System.Windows.Forms.ColumnHeader();
                 ch.Text = columnCollection[columnNumber];
@@ -177,14 +173,12 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         private void LoadAnnotationGroupListView()
         {
             int maxIndex = m_Extract.Annotations.GroupCount;
-            int groupID;
-            System.Windows.Forms.ListViewItem lvItem;
 
             lvwNewNames.BeginUpdate();
             lvwNewNames.Items.Clear();;
-            for (groupID = 1; groupID <= maxIndex; groupID++)
+            for (var groupID = 1; groupID <= maxIndex; groupID++)
             {
-                lvItem = m_Extract.GetListViewItemForGroup(groupID);
+                var lvItem = m_Extract.GetListViewItemForGroup(groupID);
                 lvwNewNames.Items.Add(lvItem);
             }
 

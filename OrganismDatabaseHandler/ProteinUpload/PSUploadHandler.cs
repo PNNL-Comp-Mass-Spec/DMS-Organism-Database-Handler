@@ -227,8 +227,6 @@ namespace OrganismDatabaseHandler.ProteinUpload
         public void BatchUpload(
             IEnumerable<UploadInfo> fileInfoList)
         {
-            DialogResult eResult;
-
             var databaseAccessor = new DBTask(m_DatabaseAccessor.ConnectionString);
 
             foreach (var upInfo in fileInfoList)
@@ -314,6 +312,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
                 string proteinCollectionName = Path.GetFileNameWithoutExtension(currentFile.Name);
 
                 int existingCollectionID = m_Upload.GetProteinCollectionID(proteinCollectionName);
+                DialogResult eResult;
                 if (existingCollectionID > 0)
                 {
                     string collectionState = m_Upload.GetProteinCollectionState(existingCollectionID);
@@ -412,8 +411,6 @@ namespace OrganismDatabaseHandler.ProteinUpload
             int organismID,
             int annotationTypeID)
         {
-            int XrefID;
-
             // task 2a - Get Protein_Collection_ID or make a new one
 
             string proteinCollectionName = Path.GetFileNameWithoutExtension(filepath);
@@ -471,7 +468,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
             m_Upload.UpdateProteinCollectionMembers(collectionID, fileContents, selectedProteins, numProteins, numResidues);
 
             OnLoadStart("Associating protein collection with organism using T_Collection_Organism_Xref");
-            XrefID = m_Upload.AddCollectionOrganismXref(collectionID, organismID);
+            var XrefID = m_Upload.AddCollectionOrganismXref(collectionID, organismID);
             OnLoadEnd();
 
             if (XrefID < 1)
@@ -492,9 +489,8 @@ namespace OrganismDatabaseHandler.ProteinUpload
 
             // Dim tmpFi As System.IO.FileInfo = New System.IO.FileInfo(tmpFileName)
 
-            string fingerprint;
             OnLoadStart("Generating Hash fingerprint");
-            fingerprint = m_Export.ExportFASTAFile(collectionID, tmpFileName, GetFASTAFromDMS.DatabaseFormatTypes.fasta, GetFASTAFromDMS.SequenceTypes.forward);
+            var fingerprint = m_Export.ExportFASTAFile(collectionID, tmpFileName, GetFASTAFromDMS.DatabaseFormatTypes.fasta, GetFASTAFromDMS.SequenceTypes.forward);
             OnLoadEnd();
 
             OnLoadStart("Storing fingerprint in T_Protein_Collections");

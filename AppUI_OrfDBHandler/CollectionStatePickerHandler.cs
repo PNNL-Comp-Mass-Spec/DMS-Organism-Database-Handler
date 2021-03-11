@@ -34,13 +34,9 @@ namespace AppUI_OrfDBHandler
 
         private void SetupPickerListView(ListView lvw, DataTable dt, string filterCriteria)
         {
-            DateTime tmpCreated;
-            DateTime tmpMod;
-
             filterCriteria = filterCriteria.Trim(' ');
 
             var criteriaCollection = filterCriteria.Split(' ');
-            DataRow[] collectionRows;
 
             string filterString = string.Empty;
 
@@ -56,15 +52,14 @@ namespace AppUI_OrfDBHandler
                 filterString = "";
             }
 
-            collectionRows = dt.Select(filterString);
-            ListViewItem item;
+            var collectionRows = dt.Select(filterString);
 
             lvw.BeginUpdate();
             foreach (var cRow in collectionRows)
             {
-                tmpCreated = Convert.ToDateTime(cRow["Created"]);
-                tmpMod = Convert.ToDateTime(cRow["Modified"]);
-                item = new ListViewItem();
+                var tmpCreated = Convert.ToDateTime(cRow["Created"]);
+                var tmpMod = Convert.ToDateTime(cRow["Modified"]);
+                var item = new ListViewItem();
                 item.Text = cRow["Name"].ToString();
                 item.Tag = cRow["ID"];
                 item.SubItems.Add(tmpCreated.ToString("yyyy-MM-dd"));

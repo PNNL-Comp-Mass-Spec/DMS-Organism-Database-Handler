@@ -100,8 +100,6 @@ namespace OrganismDatabaseHandler.ProteinImport
             ProteinStorage.ProteinStorage pc,
             List<string> selectedProteinList)
         {
-            ProteinStorageEntry tmpPC;
-
             OnLoadStart("Comparing to existing sequences and adding new proteins");
             int counterMax = selectedProteinList.Count;
             var counter = default(int);
@@ -120,7 +118,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             foreach (var s in selectedProteinList)
             {
-                tmpPC = pc.GetProtein(s);
+                var tmpPC = pc.GetProtein(s);
 
                 counter += 1;
                 if (counter % EventTriggerThresh == 0)
@@ -141,7 +139,6 @@ namespace OrganismDatabaseHandler.ProteinImport
             int authorityID)
         {
             OnLoadStart("Storing Protein Names and Descriptions specific to this protein collection");
-            ProteinStorageEntry tmpPC;
             var counter = default(int);
             int counterMax = selectedProteinList.Count;
 
@@ -159,7 +156,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             foreach (var s in selectedProteinList)
             {
-                tmpPC = pc.GetProtein(s);
+                var tmpPC = pc.GetProtein(s);
                 counter += 1;
                 if (counter % EventTriggerThresh == 0)
                 {
@@ -222,11 +219,10 @@ namespace OrganismDatabaseHandler.ProteinImport
             List<string> selectedProteinList)
         {
             var totalLength = default(int);
-            ProteinStorageEntry tmpPC;
 
             foreach (var s in selectedProteinList)
             {
-                tmpPC = proteinCollection.GetProtein(s);
+                var tmpPC = proteinCollection.GetProtein(s);
                 totalLength += tmpPC.Sequence.Length;
             }
 
@@ -235,8 +231,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         protected int AddProteinSequence(ProteinStorageEntry protein)
         {
-            int protein_id;
-            protein_id = RunSP_AddProteinSequence(
+            var protein_id = RunSP_AddProteinSequence(
                 protein.Sequence,
                 protein.Length,
                 protein.MolecularFormula,
@@ -275,9 +270,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             string fullName,
             string webAddress)
         {
-            int tmpAuthID;
-
-            tmpAuthID = RunSP_AddNamingAuthority(
+            var tmpAuthID = RunSP_AddNamingAuthority(
                 shortName,
                 fullName,
                 webAddress);
@@ -291,9 +284,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             string example,
             int authorityID)
         {
-            int tmpAnnTypeID;
-
-            tmpAnnTypeID = RunSP_AddAnnotationType(
+            var tmpAnnTypeID = RunSP_AddAnnotationType(
                 typeName, description, example, authorityID);
 
             return tmpAnnTypeID;
@@ -308,9 +299,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             int numProteins,
             int numResidues)
         {
-            int tmpProteinCollectionID;
-
-            tmpProteinCollectionID = RunSP_AddUpdateProteinCollection(
+            var tmpProteinCollectionID = RunSP_AddUpdateProteinCollection(
                 proteinCollectionName, description, collectionSource, collectionType, CollectionStates.NewEntry,
                 annotationTypeID, numProteins, numResidues, SPModes.add);
 
@@ -338,16 +327,14 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         protected int GetProteinID(ProteinStorageEntry entry, DataTable hitsTable)
         {
-            DataRow[] foundRows;
-            string tmpSeq;
             var tmpProteinID = default(int);
 
-            foundRows = hitsTable.Select("[SHA1_Hash] = '" + entry.SHA1Hash + "'");
+            var foundRows = hitsTable.Select("[SHA1_Hash] = '" + entry.SHA1Hash + "'");
             if (foundRows.Length > 0)
             {
                 foreach (DataRow testRow in foundRows)
                 {
-                    tmpSeq = testRow["Sequence"].ToString();
+                    var tmpSeq = testRow["Sequence"].ToString();
                     if (tmpSeq.Equals(entry.Sequence))
                     {
                         tmpProteinID = Convert.ToInt32(testRow["Protein_ID"]);
@@ -418,9 +405,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             int proteinID,
             int maxProteinNameLength)
         {
-            int ref_ID;
-
-            ref_ID = RunSP_AddProteinReference(proteinName, description, organismID, authorityID, proteinID, maxProteinNameLength);
+            var ref_ID = RunSP_AddProteinReference(proteinName, description, organismID, authorityID, proteinID, maxProteinNameLength);
             return ref_ID;
         }
 
@@ -971,9 +956,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             string description,
             int protein_ID)
         {
-            string tmpHash;
-
-            tmpHash = protein_Name + "_" + description + "_" + protein_ID.ToString();
+            var tmpHash = protein_Name + "_" + description + "_" + protein_ID.ToString();
             string tmpGenSHA = GenerateHash(tmpHash.ToLower());
 
             var dbTools = m_DatabaseAccessor.DBTools;

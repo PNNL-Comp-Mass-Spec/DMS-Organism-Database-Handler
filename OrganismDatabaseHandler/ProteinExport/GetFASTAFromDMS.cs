@@ -199,7 +199,6 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Returns nothing or "" if an error
 
             var optionsParser = new FileCreationOptions(m_DatabaseAccessor);
-            string cleanOptionsString;
 
             // Trim any leading or trailing commas
             protCollectionList = protCollectionList.Trim(',');
@@ -217,7 +216,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 var collectionList = protCollectionList.Split(',').ToList();
 
                 // Parse options string
-                cleanOptionsString = optionsParser.ExtractOptions(creationOptions);
+                var cleanOptionsString = optionsParser.ExtractOptions(creationOptions);
 
                 return ExportProteinCollections(collectionList, cleanOptionsString, destinationFolderPath, 0, true, optionsParser.FileFormatType, optionsParser.SequenceDirection);
             }
@@ -236,8 +235,6 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             string filenameSha1Hash = GenerateHash(legacyFASTAFileName);
             string lockFileHash = filenameSha1Hash;
-
-            FileInfo lockFi;
 
             if (!LookupLegacyFastaFileDetails(legacyFASTAFileName, out legacyStaticFilePath, out crc32Hash))
             {
@@ -260,14 +257,13 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Look for file LegacyFASTAFileName in folder destinationFolderPath
             // If it exists, and if a .lock file does not exist, then compare file sizes and file modification dates
 
-            FileInfo fiFinalFile;
-            fiFinalFile = new FileInfo(Path.Combine(destinationFolderPath, legacyFASTAFileName));
+            var fiFinalFile = new FileInfo(Path.Combine(destinationFolderPath, legacyFASTAFileName));
             if (fiFinalFile.Exists && fiFinalFile.Length > 0L)
             {
                 // Make sure a .lock file doesn't exist
                 // If it does exist, then another process on this computer is likely creating the .Fasta file
 
-                lockFi = new FileInfo(Path.Combine(destinationFolderPath, lockFileHash + ".lock"));
+                var lockFi = new FileInfo(Path.Combine(destinationFolderPath, lockFileHash + ".lock"));
 
                 if (lockFi.Exists)
                 {
@@ -323,8 +319,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             // If we get here, then finalFileName = "" or the file is not present or the LockFile is present
             // Try to create a lock file, then either wait for an existing lock file to go away or export the database
-            FileStream lockStream;
-            lockStream = CreateLockStream(destinationFolderPath, lockFileHash, legacyFASTAFileName);
+            var lockStream = CreateLockStream(destinationFolderPath, lockFileHash, legacyFASTAFileName);
 
             if (lockStream == null)
             {
@@ -485,8 +480,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             // If we get here, then finalFileName = "" or the file is not present or the LockFile is present or the hash file is out-of-date
             // Try to create a lock file, then either wait for an existing lock file to go away or export the database
-            FileStream lockStream;
-            lockStream = CreateLockStream(destinationFolderPath, lockFileHash, "Protein collection list " + proteinCollectionList);
+            var lockStream = CreateLockStream(destinationFolderPath, lockFileHash, "Protein collection list " + proteinCollectionList);
 
             if (lockStream == null)
             {
@@ -699,8 +693,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             try
             {
-                string strBaseName;
-                strBaseName = Path.GetFileNameWithoutExtension(fiFinalFastaFile.Name);
+                var strBaseName = Path.GetFileNameWithoutExtension(fiFinalFastaFile.Name);
 
                 // Delete files with the same name but different extensions
                 // For example, Inspect's PrepDB.py script creates these files:
@@ -958,13 +951,12 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         private void m_FileTools_WaitingForLockQueue(string sourceFilePath, string targetFilePath, int sourceBacklogMB, int targetBacklogMB)
         {
-            string strServers;
-
             if (DateTime.UtcNow.Subtract(m_LastLockQueueWaitTimeLog).TotalSeconds >= 30d)
             {
                 m_LastLockQueueWaitTimeLog = DateTime.UtcNow;
                 Console.WriteLine("Waiting for lockfile queue to fall below threshold to fall below threshold (Protein_Exporter); " + "SourceBacklog=" + sourceBacklogMB + " MB, " + "TargetBacklog=" + targetBacklogMB + " MB, " + "Source=" + sourceFilePath + ", " + "Target=" + targetFilePath);
 
+                string strServers;
                 if (sourceBacklogMB > 0 && targetBacklogMB > 0)
                 {
                     strServers = m_FileTools.GetServerShareBase(sourceFilePath) + " and " + m_FileTools.GetServerShareBase(targetFilePath);

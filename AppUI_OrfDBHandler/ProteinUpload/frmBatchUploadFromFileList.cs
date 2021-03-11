@@ -145,9 +145,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
         private void PopulateDropDowns()
         {
-            DataRow dr;
-
-            dr = m_AnnotationTypeList.NewRow();
+            var dr = m_AnnotationTypeList.NewRow();
             {
                 dr["ID"] = 0;
                 dr["Display_Name"] = "---------";
@@ -187,8 +185,6 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
         public void PopulateListView()
         {
-            DataRow[] foundRows;
-
             lvwFiles.SelectedIndexChanged -= lvwFiles_SelectedIndexChanged;
 
             if (FileCollection.Count > 0)
@@ -201,7 +197,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
                     li.SubItems.Add(fli.OrganismName);
                     if (fli.AnnotationTypeID > 0)
                     {
-                        foundRows = m_AnnotationTypeList.Select("ID = " + fli.AnnotationTypeID);
+                        var foundRows = m_AnnotationTypeList.Select("ID = " + fli.AnnotationTypeID);
                         fli.AnnotationType = foundRows[0][1].ToString();
                         li.SubItems.Add(fli.AnnotationType);
                     }
@@ -253,14 +249,13 @@ namespace AppUI_OrfDBHandler.ProteinUpload
         private void cboOrganismPicker_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox cbo = (ComboBox)sender;
-            BatchUploadFromFileList.FileListInfo fli;
 
             if (lvwFiles.SelectedItems.Count > 0)
             {
                 foreach (ListViewItem li in lvwFiles.SelectedItems)
                 {
                     li.SubItems[2].Text = cbo.Text;
-                    fli = FileCollection[li.Text];
+                    var fli = FileCollection[li.Text];
                     fli.NamingAuthorityID = Convert.ToInt32(cbo.SelectedValue);
                     FileCollection[li.Text] = fli;
                 }
@@ -270,14 +265,13 @@ namespace AppUI_OrfDBHandler.ProteinUpload
         private void cboAnnotationType_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox cbo = (ComboBox)sender;
-            BatchUploadFromFileList.FileListInfo fli;
 
             if (lvwFiles.SelectedItems.Count > 0)
             {
                 foreach (ListViewItem li in lvwFiles.SelectedItems)
                 {
                     li.SubItems[3].Text = cbo.Text;
-                    fli = FileCollection[li.Text];
+                    var fli = FileCollection[li.Text];
                     fli.AnnotationTypeID = Convert.ToInt32(cbo.SelectedValue);
                     FileCollection[li.Text] = fli;
                 }
@@ -286,9 +280,6 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
         private void lvwFiles_SelectedIndexChanged(object sender, EventArgs e)
         {
-            BatchUploadFromFileList.FileListInfo fli;
-            ListViewItem li;
-
             cboAnnotationType.SelectedIndexChanged -= cboAnnotationType_SelectedIndexChanged;
             cboOrganismPicker.SelectedIndexChanged -= cboOrganismPicker_SelectedIndexChanged;
             if (lvwFiles.SelectedItems.Count == 0)
@@ -297,8 +288,8 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             }
             else if (lvwFiles.SelectedItems.Count == 1)
             {
-                li = lvwFiles.SelectedItems[0];
-                fli = FileCollection[li.Text];
+                var li = lvwFiles.SelectedItems[0];
+                var fli = FileCollection[li.Text];
                 if (fli.AnnotationTypeID > 0)
                 {
                     cboAnnotationType.SelectedValue = fli.AnnotationTypeID;

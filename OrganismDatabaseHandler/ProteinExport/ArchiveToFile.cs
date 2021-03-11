@@ -53,19 +53,9 @@ namespace OrganismDatabaseHandler.ProteinExport
             CollectionTypes archivedFileType,
             string proteinCollectionsList)
         {
-            string CollectionListHexHash;
-            string CollectionListHexHashInDB;
-
-            string ProteinCollectionsListFromDB;
-
             int ArchivedFileEntryID;
 
-            string archivePath;
             var fi = new FileInfo(sourceFilePath);
-            FileInfo destFI;
-            DirectoryInfo di;
-
-            int proteinCount;
 
             // Check for existence of Archive Entry
             var checkSQL = "SELECT Archived_File_ID, Archived_File_Path, IsNull(Protein_Collection_List, '') as Protein_Collection_List, IsNull(Collection_List_Hex_Hash, '') AS Collection_List_Hex_Hash " +
@@ -75,12 +65,12 @@ namespace OrganismDatabaseHandler.ProteinExport
                 "ORDER BY File_Modification_Date DESC";
 
             var tmpTable = m_DatabaseAccessor.GetTable(checkSQL);
-            CollectionListHexHash = GenerateHash(proteinCollectionsList + "/" + creationOptionsString);
+            var CollectionListHexHash = GenerateHash(proteinCollectionsList + "/" + creationOptionsString);
             if (tmpTable.Rows.Count == 0)
             {
-                proteinCount = GetProteinCount(sourceFilePath);
+                var proteinCount = GetProteinCount(sourceFilePath);
 
-                archivePath = GenerateArchivePath(
+                var archivePath = GenerateArchivePath(
                     sourceFilePath,
                     sourceAuthenticationHash,
                     archivedFileType, outputSequenceType);
@@ -96,8 +86,8 @@ namespace OrganismDatabaseHandler.ProteinExport
                 // Archived file entry already exists
 
                 ArchivedFileEntryID = Convert.ToInt32(tmpTable.Rows[0]["Archived_File_ID"]);
-                CollectionListHexHashInDB = tmpTable.Rows[0]["Collection_List_Hex_Hash"].ToString();
-                ProteinCollectionsListFromDB = tmpTable.Rows[0]["Protein_Collection_List"].ToString();
+                var CollectionListHexHashInDB = tmpTable.Rows[0]["Collection_List_Hex_Hash"].ToString();
+                var ProteinCollectionsListFromDB = tmpTable.Rows[0]["Protein_Collection_List"].ToString();
 
                 if (tmpTable.Rows[0]["Protein_Collection_List"].GetType().Name == "DBNull" ||
                     string.IsNullOrEmpty(CollectionListHexHashInDB) ||
@@ -112,8 +102,8 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             try
             {
-                di = new DirectoryInfo(Path.GetDirectoryName(m_Archived_File_Name));
-                destFI = new FileInfo(m_Archived_File_Name);
+                var di = new DirectoryInfo(Path.GetDirectoryName(m_Archived_File_Name));
+                var destFI = new FileInfo(m_Archived_File_Name);
                 if (!di.Exists)
                 {
                     di.Create();
@@ -160,8 +150,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             CollectionTypes archivedFileType,
             GetFASTAFromDMS.SequenceTypes outputSequenceType)
         {
-            string pathString;
-            pathString = Path.Combine(m_BaseArchivePath, Enum.GetName(typeof(CollectionTypes), archivedFileType));
+            var pathString = Path.Combine(m_BaseArchivePath, Enum.GetName(typeof(CollectionTypes), archivedFileType));
             pathString = Path.Combine(pathString, Enum.GetName(typeof(GetFASTAFromDMS.SequenceTypes), outputSequenceType));
             pathString = Path.Combine(pathString, "ID_00000_" + authentication_Hash + Path.GetExtension(sourceFilePath));
 

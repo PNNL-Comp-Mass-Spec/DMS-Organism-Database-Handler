@@ -27,17 +27,9 @@ namespace OrganismDatabaseHandler.ProteinExport
         // Options string looks like... "seq_direction=forward;filetype=fasta"
         public string ExtractOptions(string optionsString)
         {
-            string keywordTableSQL;
-            // string valuesTableSQL;
-            string creationValuesSQL;
             var optionsHash = new Dictionary<string, string>();
-            MatchCollection mCollection;
-
-            Regex optionsStringParser;
 
             DataRow[] foundRows;
-            DataRow[] checkRows;
-            StringBuilder errorString;
 
             string tmpKeyword;
             string tmpValue;
@@ -47,9 +39,9 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             var cleanOptionsString = new StringBuilder();
 
-            keywordTableSQL = "SELECT Keyword_ID, Keyword, Default_Value FROM T_Creation_Option_Keywords";
-            // valuesTableSQL = "SELECT Value_ID, Value_String, Keyword_ID FROM T_Creation_Option_Values";
-            creationValuesSQL = "SELECT Keyword, Value_String, String_Element FROM V_Creation_String_Lookup";
+            var keywordTableSQL = "SELECT Keyword_ID, Keyword, Default_Value FROM T_Creation_Option_Keywords";
+            //var valuesTableSQL = "SELECT Value_ID, Value_String, Keyword_ID FROM T_Creation_Option_Values";
+            var creationValuesSQL = "SELECT Keyword, Value_String, String_Element FROM V_Creation_String_Lookup";
 
             if (m_KeywordTable == null)
             {
@@ -65,12 +57,12 @@ namespace OrganismDatabaseHandler.ProteinExport
                 m_CreationValuesTable = m_DatabaseAccessor.GetTable(creationValuesSQL);
             }
 
-            // optionsStringParser = New System.Text.RegularExpressions.Regex(
-            // "(?<keyword>\S+)\s*=\s*(?<value>\S+),*?")
-            optionsStringParser = new Regex(
+            //var optionsStringParser = new System.Text.RegularExpressions.Regex(
+            //    "(?<keyword>\S+)\s*=\s*(?<value>\S+),*?")
+            var optionsStringParser = new Regex(
                 @"(?<keyword>[^,\s]*)\s*=\s*(?<value>[^,\s]+)");
 
-            mCollection = optionsStringParser.Matches(optionsString);
+            var mCollection = optionsStringParser.Matches(optionsString);
 
             foreach (Match m in mCollection)
             {
@@ -83,8 +75,8 @@ namespace OrganismDatabaseHandler.ProteinExport
                 if (foundRows.Length < 1)
                 {
                     // check if keyword or value is bad
-                    errorString = new StringBuilder();
-                    checkRows = m_CreationValuesTable.Select("Keyword = '" + tmpKeyword);
+                    var errorString = new StringBuilder();
+                    var checkRows = m_CreationValuesTable.Select("Keyword = '" + tmpKeyword);
                     if (checkRows.Length > 0)
                         validKeyword = true;
                     checkRows = m_CreationValuesTable.Select("Value_String = '" + tmpValue + "'");

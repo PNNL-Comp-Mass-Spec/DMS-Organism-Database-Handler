@@ -151,19 +151,16 @@ namespace AppUI_OrfDBHandler
                 // m_SelectedAuthorityID = 0
             }
 
-            int tmpAuthID;
-
             if (m_AuthID == -2)
             {
                 // Bring up addition dialog
                 var AuthAdd = new AddNamingAuthorityType(m_PSConnectionString);
                 AuthAdd.FormLocation = new Point(Left + 20, Top + 30);
-                tmpAuthID = AuthAdd.AddNamingAuthority();
+                var tmpAuthID = AuthAdd.AddNamingAuthority();
 
                 if (!AuthAdd.EntryExists & tmpAuthID > 0)
                 {
-                    DataRow dr;
-                    dr = m_AuthoritiesTable.NewRow();
+                    var dr = m_AuthoritiesTable.NewRow();
 
                     dr["ID"] = tmpAuthID;
                     dr["Display_Name"] = AuthAdd.ShortName;

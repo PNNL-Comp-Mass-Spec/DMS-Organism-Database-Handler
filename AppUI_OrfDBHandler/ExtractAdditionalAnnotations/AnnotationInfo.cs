@@ -33,9 +33,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             string NewName,
             int AnnotationGroupID)
         {
-            AnnotationDetails tmpDetails;
-
-            tmpDetails = m_AnnotationDetails[ProteinID];
+            var tmpDetails = m_AnnotationDetails[ProteinID];
             tmpDetails.AddNewName(AnnotationGroupID, NewName);
         }
 

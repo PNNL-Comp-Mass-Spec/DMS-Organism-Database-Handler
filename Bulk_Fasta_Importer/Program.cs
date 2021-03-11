@@ -31,9 +31,7 @@ namespace Bulk_Fasta_Importer
         {
             // Returns 0 if no error, error code if an error
 
-            int returnCode;
             var commandLineParser = new clsParseCommandLine();
-            bool proceed;
 
             // Initialize the options
             mInputFilePath = string.Empty;
@@ -44,7 +42,7 @@ namespace Bulk_Fasta_Importer
             mLogFilePath = string.Empty;
             try
             {
-                proceed = false;
+                var proceed = false;
                 if (commandLineParser.ParseCommandLine())
                 {
                     if (SetOptionsUsingCommandLineParameters(commandLineParser))
@@ -82,6 +80,7 @@ namespace Bulk_Fasta_Importer
                 string outputFolderNamePlaceholder = string.Empty;
                 string paramFilePathPlaceholder = string.Empty;
 
+                int returnCode;
                 if (fastaImporter.ProcessFilesWildcard(mInputFilePath, outputFolderNamePlaceholder, paramFilePathPlaceholder))
                 {
                     returnCode = 0;

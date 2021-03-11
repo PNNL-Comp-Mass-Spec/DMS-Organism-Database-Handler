@@ -101,18 +101,15 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             // Convert our plaintext into a byte array.
             // Let us assume that plaintext contains UTF8-encoded characters.
-            byte[] plainTextBytes;
-            plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+            var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
 
             // Define memory stream which will be used to hold encrypted data.
-            MemoryStream memoryStream;
-            memoryStream = new MemoryStream();
+            var memoryStream = new MemoryStream();
 
             // Define cryptographic stream (always use Write mode for encryption).
-            CryptoStream cryptoStream;
-            cryptoStream = new CryptoStream(memoryStream,
-                                            m_Encryptor,
-                                            CryptoStreamMode.Write);
+            var cryptoStream = new CryptoStream(memoryStream,
+                m_Encryptor,
+                CryptoStreamMode.Write);
             // Start encrypting.
             cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
 
@@ -120,16 +117,14 @@ namespace OrganismDatabaseHandler.ProteinExport
             cryptoStream.FlushFinalBlock();
 
             // Convert our encrypted data from a memory stream into a byte array.
-            byte[] cipherTextBytes;
-            cipherTextBytes = memoryStream.ToArray();
+            var cipherTextBytes = memoryStream.ToArray();
 
             // Close both streams.
             memoryStream.Close();
             cryptoStream.Close();
 
             // Convert encrypted data into a base64-encoded string.
-            string cipherText;
-            cipherText = Convert.ToBase64String(cipherTextBytes);
+            var cipherText = Convert.ToBase64String(cipherTextBytes);
 
             // Return encrypted string.
             return cipherText;
@@ -214,30 +209,25 @@ namespace OrganismDatabaseHandler.ProteinExport
             // saltValueBytes = Encoding.ASCII.GetBytes(saltValue)
 
             // Convert our ciphertext into a byte array.
-            byte[] cipherTextBytes;
-            cipherTextBytes = Convert.FromBase64String(cipherText);
+            var cipherTextBytes = Convert.FromBase64String(cipherText);
 
             // Define memory stream which will be used to hold encrypted data.
-            MemoryStream memoryStream;
-            memoryStream = new MemoryStream(cipherTextBytes);
+            var memoryStream = new MemoryStream(cipherTextBytes);
 
             // Define memory stream which will be used to hold encrypted data.
-            CryptoStream cryptoStream;
-            cryptoStream = new CryptoStream(memoryStream,
-                                            m_Decryptor,
-                                            CryptoStreamMode.Read);
+            var cryptoStream = new CryptoStream(memoryStream,
+                m_Decryptor,
+                CryptoStreamMode.Read);
 
             // Since at this point we don't know what the size of decrypted data
             // will be, allocate the buffer long enough to hold ciphertext;
             // plaintext is never longer than ciphertext.
-            byte[] plainTextBytes;
-            plainTextBytes = new byte[cipherTextBytes.Length];
+            var plainTextBytes = new byte[cipherTextBytes.Length];
 
             // Start decrypting.
-            int decryptedByteCount;
-            decryptedByteCount = cryptoStream.Read(plainTextBytes,
-                                                   0,
-                                                   plainTextBytes.Length);
+            var decryptedByteCount = cryptoStream.Read(plainTextBytes,
+                0,
+                plainTextBytes.Length);
 
             // Close both streams.
             memoryStream.Close();
@@ -245,10 +235,9 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             // Convert decrypted data into a string.
             // Let us assume that the original plaintext string was UTF8-encoded.
-            string plainText;
-            plainText = Encoding.UTF8.GetString(plainTextBytes,
-                                                0,
-                                                decryptedByteCount);
+            var plainText = Encoding.UTF8.GetString(plainTextBytes,
+                0,
+                decryptedByteCount);
 
             // Return decrypted string.
             return plainText;

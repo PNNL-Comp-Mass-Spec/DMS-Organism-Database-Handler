@@ -87,8 +87,7 @@ namespace AppUI_OrfDBHandler
                 m_Importer = new ImportHandler(m_ConnectionString);
             }
 
-            DataTable tmpAuthTable;
-            tmpAuthTable = m_Importer.LoadAuthorities();
+            var tmpAuthTable = m_Importer.LoadAuthorities();
 
             return tmpAuthTable;
         }

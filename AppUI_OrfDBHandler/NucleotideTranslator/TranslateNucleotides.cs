@@ -27,10 +27,6 @@ namespace AppUI_OrfDBHandler.NucleotideTranslator
 
             var members = m_GetSQLData.GetTable(selectSQL);
 
-            DataRow dr;
-            string tertSelect;
-            DataRow[] TertiaryRows;
-
             var PrimaryList = new ArrayList();
             var SecondaryList = new ArrayList();
             var TertiaryList = new ArrayList();
@@ -41,12 +37,12 @@ namespace AppUI_OrfDBHandler.NucleotideTranslator
                 {
                     foreach (var base_3 in BaseArray)
                     {
-                        tertSelect = "Base_1 = '" + base_1.ToString() +
-                            "' AND Base_2 = '" + base_2.ToString() +
-                            "' AND Base_3 = '" + base_3.ToString() + "'";
-                        TertiaryRows = members.Select(tertSelect);
+                        var tertSelect = "Base_1 = '" + base_1.ToString() +
+                                         "' AND Base_2 = '" + base_2.ToString() +
+                                         "' AND Base_3 = '" + base_3.ToString() + "'";
+                        var TertiaryRows = members.Select(tertSelect);
 
-                        dr = TertiaryRows[0];
+                        var dr = TertiaryRows[0];
 
                         TertiaryList.Add(new TranslationEntry(base_3.ToString(), dr["Coded_AA"].ToString()));
                     }

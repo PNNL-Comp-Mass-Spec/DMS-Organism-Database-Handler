@@ -85,9 +85,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
             m_BatchForm.FileCollection = m_CurrentFileList;
 
-            DialogResult r;
-
-            r = m_BatchForm.ShowDialog();
+            var r = m_BatchForm.ShowDialog();
 
             if (r == DialogResult.OK)
             {

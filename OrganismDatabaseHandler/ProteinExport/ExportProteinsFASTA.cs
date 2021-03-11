@@ -50,14 +50,6 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             using (var writer = new StreamWriter(destinationPath))
             {
-                int proteinPosition;
-                int proteinLength;
-
-                string tmpSeq;
-
-                string tmpDesc;
-                string seqLine;
-                ProteinStorageEntry tmpPC;
                 string tmpAltNames = string.Empty;
 
                 OnExportStart("Writing to FASTA File");
@@ -82,8 +74,8 @@ namespace OrganismDatabaseHandler.ProteinExport
                 {
                     OnExportStart("Writing: " + tmpName);
 
-                    tmpPC = proteins.GetProtein(tmpName);
-                    tmpSeq = tmpPC.Sequence;
+                    var tmpPC = proteins.GetProtein(tmpName);
+                    var tmpSeq = tmpPC.Sequence;
 
                     counter += 1;
 
@@ -92,14 +84,14 @@ namespace OrganismDatabaseHandler.ProteinExport
                         OnProgressUpdate("Processing: " + tmpName, Math.Round(counter / (double)counterMax, 3));
                     }
 
-                    proteinLength = tmpSeq.Length;
-                    tmpDesc = hexCodeFinder.Replace(tmpPC.Description, " ");
+                    var proteinLength = tmpSeq.Length;
+                    var tmpDesc = hexCodeFinder.Replace(tmpPC.Description, " ");
 
                     writer.WriteLine((">" + tmpPC.Reference + " " + tmpDesc + tmpAltNames).Trim());
 
-                    for (proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += m_seqLineLength)
+                    for (var proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += m_seqLineLength)
                     {
-                        seqLine = tmpSeq.Substring(proteinPosition, m_seqLineLength);
+                        var seqLine = tmpSeq.Substring(proteinPosition, m_seqLineLength);
                         writer.WriteLine(seqLine);
                     }
                 }
@@ -109,8 +101,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             var fi = new FileInfo(destinationPath);
 
-            string newDestinationPath;
-            newDestinationPath = Path.Combine(
+            var newDestinationPath = Path.Combine(
                 Path.GetDirectoryName(destinationPath),
                 fingerprint + Path.GetExtension(destinationPath));
 
@@ -174,19 +165,16 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             const int REQUIRED_SIZE_MB = 150;
 
-            int counterMax; // = ProteinTable.Rows.Count;
             var counter = default(int);
             int proteinsWritten = 0;
 
             var hexCodeFinder = new Regex(@"[\x00-\x1F\x7F-\xFF]", RegexOptions.Compiled);
 
             string tmpAltNames = string.Empty;
-            int EventTriggerThresh;
 
-            long currentFreeSpaceBytes;
             string errorMessage = string.Empty;
 
-            bool success = DiskInfo.GetDiskFreeSpace(destinationPath, out currentFreeSpaceBytes, out errorMessage);
+            bool success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out errorMessage);
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))
@@ -204,10 +192,10 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Open the output file for append
             using (var writer = new StreamWriter(new FileStream(destinationPath, FileMode.Append, FileAccess.Write, FileShare.Read)))
             {
-
                 // OnDetailedExportStart("Writing: " + proteinTable.TableName);
 
-                counterMax = proteinTable.Rows.Count;
+                var counterMax = proteinTable.Rows.Count;
+                int EventTriggerThresh;
                 if (counterMax <= 25)
                 {
                     EventTriggerThresh = 1;
@@ -260,8 +248,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             var fi = new FileInfo(destinationPath);
 
-            string newDestinationPath;
-            newDestinationPath = Path.Combine(
+            var newDestinationPath = Path.Combine(
                 Path.GetDirectoryName(destinationPath),
                 fingerprint + Path.GetExtension(destinationPath));
 

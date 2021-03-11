@@ -26,21 +26,18 @@ namespace OrganismDatabaseHandler.ProteinExport
             var sb = new StringBuilder(originalSequence.Length);
             string sequence = originalSequence;
 
-            int index;
-            int counter;
-
             if (m_RndNumGen == null)
             {
                 m_RndNumGen = new Random(collectionCount);
                 m_Naming_Suffix = "_scrambled_seed_" + collectionCount.ToString();
             }
 
-            counter = sequence.Length;
+            var counter = sequence.Length;
 
             while (counter > 0)
             {
                 Debug.Assert(counter == sequence.Length);
-                index = m_RndNumGen.Next(counter);
+                var index = m_RndNumGen.Next(counter);
                 sb.Append(sequence.Substring(index, 1));
 
                 if (index > 0)
