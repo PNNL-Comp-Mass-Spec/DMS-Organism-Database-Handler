@@ -21,8 +21,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// </summary>
         private readonly Dictionary<int, string> mAllCollections;
 
-        private Dictionary<string, string> mOrganismList;
-
         private int mCurrentFileProteinCount;
         private string mCurrentArchiveFileName;
 
@@ -45,7 +43,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             mDatabaseAccessor = databaseAccessor;
             mAllCollections = GetCollectionNameList();
-            mOrganismList = GetOrganismList();
 
             switch (databaseFormatType)
             {

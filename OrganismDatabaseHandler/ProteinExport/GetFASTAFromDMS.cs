@@ -41,7 +41,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         private ArchiveOutputFilesBase.CollectionTypes mCollectionType;
         private string mFinalOutputPath;
 
-        private List<string> mArchiveCollectionList;
         private readonly DBTask mDatabaseAccessor;
         private readonly SHA1Managed sha1Provider;
         private readonly FileTools mFileTools;
@@ -919,12 +918,6 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         private void OnFileGenerationCompleted(string outputPath)
         {
-            if (mArchiveCollectionList == null)
-            {
-                mArchiveCollectionList = new List<string>();
-            }
-
-            mArchiveCollectionList.Add(Path.GetFileName(outputPath));
             mFinalOutputPath = outputPath;
             OnDebugEvent("Saved fasta file to " + outputPath);
         }
