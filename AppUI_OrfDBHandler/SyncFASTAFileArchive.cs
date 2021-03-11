@@ -5,11 +5,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using OrganismDatabaseHandler.DatabaseTools;
+using OrganismDatabaseHandler.ProteinExport;
+using OrganismDatabaseHandler.ProteinImport;
+using OrganismDatabaseHandler.SequenceInfo;
 using PRISMDatabaseUtils;
-using Protein_Exporter;
-using Protein_Importer;
 using ProteinFileReader;
-using TableManipulationBase;
 
 namespace AppUI_OrfDBHandler
 {
@@ -542,7 +543,7 @@ namespace AppUI_OrfDBHandler
 
         private void UpdateProteinSequenceInfo(Dictionary<int, string> proteins)
         {
-            var si = new SequenceInfoCalculator.SequenceInfoCalculator();
+            var si = new SequenceInfoCalculator();
 
             foreach (var proteinID in proteins.Keys)
             {

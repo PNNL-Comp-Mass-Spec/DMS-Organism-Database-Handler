@@ -7,3 +7,4 @@ Release_DLL
 /Installer/Output
 
 Debug_DLL/*
+*.user

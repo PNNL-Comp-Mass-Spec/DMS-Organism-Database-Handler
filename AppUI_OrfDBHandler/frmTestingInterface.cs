@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using NucleotideTranslator;
-using Protein_Exporter;
-using Protein_Importer;
-using Protein_Uploader;
-using TranslationTableImport;
+using AppUI_OrfDBHandler.NucleotideTranslator;
+using AppUI_OrfDBHandler.ProteinUpload;
+using OrganismDatabaseHandler.ProteinExport;
+using OrganismDatabaseHandler.ProteinImport;
 
 namespace AppUI_OrfDBHandler
 {

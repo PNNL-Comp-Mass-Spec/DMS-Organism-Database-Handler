@@ -7,10 +7,10 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows.Forms;
+using AppUI_OrfDBHandler.ExtractAdditionalAnnotations;
 using AppUI_OrfDBHandler.Properties;
-using ExtractAnnotationFromDescription;
-using Protein_Importer;
-using Protein_Uploader;
+using OrganismDatabaseHandler.ProteinImport;
+using OrganismDatabaseHandler.ProteinUpload;
 using ValidateFastaFile;
 
 namespace AppUI_OrfDBHandler

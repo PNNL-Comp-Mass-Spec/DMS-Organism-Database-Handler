@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4CDAED86-D8C3-4C59-B11A-926AEAB89B74}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OrganismDatabaseHandler</RootNamespace>
+    <AssemblyName>OrganismDatabaseHandler</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\OrganismDatabaseHandler.xml</DocumentationFile>
+    <NoWarn>CS1591</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FlexibleFileSortUtility">
+      <HintPath>..\Lib\FlexibleFileSortUtility.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="ValidateFastaFile">
+      <HintPath>..\Lib\ValidateFastaFile.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DatabaseTools\DBTask.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProteinExport\ArchiveOutputFilesBase.cs" />
+    <Compile Include="ProteinExport\ArchiveToFile.cs" />
+    <Compile Include="ProteinExport\ArchiveToSubversion.cs" />
+    <Compile Include="ProteinExport\CRC32.cs" />
+    <Compile Include="ProteinExport\ExportProteins.cs" />
+    <Compile Include="ProteinExport\ExportProteinsFASTA.cs" />
+    <Compile Include="ProteinExport\ExportProteinsXTFASTA.cs" />
+    <Compile Include="ProteinExport\FileCreationOptions.cs" />
+    <Compile Include="ProteinExport\GetFASTAFromDMS.cs" />
+    <Compile Include="ProteinExport\GetFASTAFromDMSDecoy.cs" />
+    <Compile Include="ProteinExport\GetFASTAFromDMSDecoyX.cs" />
+    <Compile Include="ProteinExport\GetFASTAFromDMSForward.cs" />
+    <Compile Include="ProteinExport\GetFASTAFromDMSReversed.cs" />
+    <Compile Include="ProteinExport\GetFASTAFromDMSScrambled.cs" />
+    <Compile Include="ProteinExport\RijndaelEncryptionHandler.cs" />
+    <Compile Include="ProteinImport\AddUpdateEntries.cs" />
+    <Compile Include="ProteinImport\FASTAReader.cs" />
+    <Compile Include="ProteinImport\ImportAnnotations.cs" />
+    <Compile Include="ProteinImport\ImportHandler.cs" />
+    <Compile Include="ProteinImport\TinySeqXMLReader.cs" />
+    <Compile Include="ProteinStorage\ProteinStorage.cs" />
+    <Compile Include="ProteinStorage\ProteinStorageDMS.cs" />
+    <Compile Include="ProteinStorage\ProteinStorageEntry.cs" />
+    <Compile Include="ProteinUpload\CollectionEncryptor.cs" />
+    <Compile Include="ProteinUpload\PSUploadHandler.cs" />
+    <Compile Include="SequenceInfo\SequenceInfoCalculator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="PRISM-DatabaseUtils">
+      <Version>1.1.7</Version>
+    </PackageReference>
+    <PackageReference Include="PRISM-Library">
+      <Version>2.6.25</Version>
+    </PackageReference>
+    <PackageReference Include="PRISMWin-Library">
+      <Version>1.0.14</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if not exist "$(ProjectDir)..\Release_DLL" (mkdir "$(ProjectDir)..\Release_DLL")
+
+xcopy "$(TargetPath)" "$(ProjectDir)..\Release_DLL\" /y /d
+REM xcopy "$(TargetDir)$(TargetName).xml" "$(ProjectDir)..\Release_DLL\" /y /d</PostBuildEvent>
+  </PropertyGroup>
+</Project>

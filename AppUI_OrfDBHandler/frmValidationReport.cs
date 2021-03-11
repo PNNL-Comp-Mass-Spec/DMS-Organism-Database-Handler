@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Windows.Forms;
-using Protein_Uploader;
+using OrganismDatabaseHandler.ProteinUpload;
 using ValidateFastaFile;
 
 namespace AppUI_OrfDBHandler

@@ -7,8 +7,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using OrganismDatabaseHandler.ProteinUpload;
 using PRISMDatabaseUtils;
-using Protein_Uploader;
 using Raccoom.Windows.Forms;
 using ValidateFastaFile;
 

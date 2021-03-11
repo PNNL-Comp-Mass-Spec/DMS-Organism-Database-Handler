@@ -74,5 +74,11 @@
       <Version>1.0.14</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OrganismDatabaseHandler\OrganismDatabaseHandler.csproj">
+      <Project>{4cdaed86-d8c3-4c59-b11a-926aeab89b74}</Project>
+      <Name>OrganismDatabaseHandler</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -63,25 +63,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Protein_Exporter\Protein_Exporter.csproj">
-      <Project>{a698b58b-15b8-4893-81ad-116d57b9b404}</Project>
-      <Name>Protein_Exporter</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Protein_Importer\Protein_Importer.csproj">
-      <Project>{28d5a54e-b47d-41f3-95ab-96c4346ade38}</Project>
-      <Name>Protein_Importer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Protein_Uploader\Protein_Uploader.csproj">
-      <Project>{8989fdef-3ca5-42ed-b080-294ce455a72e}</Project>
-      <Name>Protein_Uploader</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SequenceInfoCalculator\SequenceInfoCalculator.csproj">
-      <Project>{99c5d78c-00da-49a5-bac8-19adfe95fabe}</Project>
-      <Name>SequenceInfoCalculator</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TableManipulationBase\TableManipulationBase.csproj">
-      <Project>{15939683-d5b9-4784-9e16-89b0c059d3c8}</Project>
-      <Name>TableManipulationBase</Name>
+    <ProjectReference Include="..\OrganismDatabaseHandler\OrganismDatabaseHandler.csproj">
+      <Project>{4cdaed86-d8c3-4c59-b11a-926aeab89b74}</Project>
+      <Name>OrganismDatabaseHandler</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

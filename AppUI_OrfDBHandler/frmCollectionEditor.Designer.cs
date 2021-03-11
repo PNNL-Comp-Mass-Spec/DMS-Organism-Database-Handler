@@ -1,4 +1,6 @@
-﻿namespace AppUI_OrfDBHandler
+﻿using AppUI_OrfDBHandler.Controls;
+
+namespace AppUI_OrfDBHandler
 {
     partial class frmCollectionEditor
     {
@@ -38,10 +40,10 @@
             this.pgbMain = new System.Windows.Forms.ProgressBar();
             this.pnlSource = new System.Windows.Forms.Panel();
             this.lblTargetServer = new System.Windows.Forms.Label();
-            this.cmdDestAdd = new UIControls.ImageButton();
-            this.cmdDestRemove = new UIControls.ImageButton();
-            this.cmdDestAddAll = new UIControls.ImageButton();
-            this.cmdDestRemoveAll = new UIControls.ImageButton();
+            this.cmdDestAdd = new ImageButton();
+            this.cmdDestRemove = new ImageButton();
+            this.cmdDestAddAll = new ImageButton();
+            this.cmdDestRemoveAll = new ImageButton();
             this.gbxSourceCollection = new System.Windows.Forms.GroupBox();
             this.cboAnnotationTypePicker = new System.Windows.Forms.ComboBox();
             this.lblAnnotationTypeFilter = new System.Windows.Forms.Label();
@@ -751,10 +753,10 @@
         private System.Windows.Forms.Label lblSourceMembers;
         private System.Windows.Forms.ColumnHeader colSrcName;
         private System.Windows.Forms.ColumnHeader colSrcDesc;
-        private UIControls.ImageButton cmdDestAdd;
-        private UIControls.ImageButton cmdDestRemove;
-        private UIControls.ImageButton cmdDestAddAll;
-        private UIControls.ImageButton cmdDestRemoveAll;
+        private ImageButton cmdDestAdd;
+        private ImageButton cmdDestRemove;
+        private ImageButton cmdDestAddAll;
+        private ImageButton cmdDestRemoveAll;
         private System.Windows.Forms.GroupBox gbxDestinationCollection;
         private System.Windows.Forms.Label lblCurrProteinCount;
         private System.Windows.Forms.ListView lvwDestination;

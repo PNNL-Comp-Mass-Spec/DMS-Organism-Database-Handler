@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Data;
 using System.Windows.Forms;
-using Protein_Importer;
-using TableManipulationBase;
+using OrganismDatabaseHandler.DatabaseTools;
+using OrganismDatabaseHandler.ProteinImport;
 
 namespace AppUI_OrfDBHandler
 {

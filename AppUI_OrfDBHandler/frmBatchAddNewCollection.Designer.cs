@@ -1,4 +1,6 @@
-﻿namespace AppUI_OrfDBHandler
+﻿using AppUI_OrfDBHandler.Controls;
+
+namespace AppUI_OrfDBHandler
 {
     partial class frmBatchAddNewCollection
     {
@@ -51,8 +53,8 @@
             this.colSource = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colAnnType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.lblSelectedFiles = new System.Windows.Forms.Label();
-            this.cmdAddFile = new UIControls.ImageButton();
-            this.cmdRemoveFile = new UIControls.ImageButton();
+            this.cmdAddFile = new ImageButton();
+            this.cmdRemoveFile = new ImageButton();
             this.cmdPreviewFile = new System.Windows.Forms.Button();
             this.chkEncryptionEnable = new System.Windows.Forms.CheckBox();
             this.lblPassphrase = new System.Windows.Forms.Label();
@@ -477,8 +479,8 @@
         private System.Windows.Forms.ColumnHeader colSelOrganism;
         private System.Windows.Forms.Label lblSelectedFiles;
         private System.Windows.Forms.ListView lvwSelectedFiles;
-        private UIControls.ImageButton cmdAddFile;
-        private UIControls.ImageButton cmdRemoveFile;
+        private ImageButton cmdAddFile;
+        private ImageButton cmdRemoveFile;
         private System.Windows.Forms.Label lblAnnAuth;
         private System.Windows.Forms.ColumnHeader colAnnType;
         private System.Windows.Forms.Button cmdPreviewFile;

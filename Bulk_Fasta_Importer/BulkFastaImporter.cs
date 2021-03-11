@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using OrganismDatabaseHandler.ProteinUpload;
 using PRISMDatabaseUtils;
-using Protein_Uploader;
 using ValidateFastaFile;
 
 // This class will read a text file specifying one or more fasta files to load into the Protein Sequences database

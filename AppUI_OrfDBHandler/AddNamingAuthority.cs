@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using Protein_Importer;
+using OrganismDatabaseHandler.ProteinImport;
 
 namespace AppUI_OrfDBHandler
 {

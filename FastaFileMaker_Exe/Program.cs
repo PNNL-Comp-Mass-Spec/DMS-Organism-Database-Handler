@@ -1,7 +1,7 @@
 ﻿using System;
 using FastaFileMaker_Exe.Properties;
+using OrganismDatabaseHandler.ProteinExport;
 using PRISM;
-using Protein_Exporter;
 
 namespace FastaFileMaker_Exe
 {

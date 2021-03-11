@@ -2,8 +2,8 @@
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Protein_Importer;
-using Protein_Storage;
+using OrganismDatabaseHandler.ProteinImport;
+using OrganismDatabaseHandler.ProteinStorage;
 
 namespace AppUI_OrfDBHandler
 {
