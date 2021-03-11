@@ -208,7 +208,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             protCollectionList = extraCommaCheckRegex.Replace(protCollectionList, ",");
 
-            if (protCollectionList.Length > 0 && !protCollectionList.ToLower().Equals("na"))
+            if (protCollectionList.Length > 0 && !protCollectionList.Equals("na", StringComparison.OrdinalIgnoreCase))
             {
                 // Parse out protein collections from "," delimited list
 
@@ -219,7 +219,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 return ExportProteinCollections(collectionList, cleanOptionsString, destinationFolderPath, 0, true, optionsParser.FileFormatType, optionsParser.SequenceDirection);
             }
-            else if (legacyFASTAFileName.Length > 0 && !legacyFASTAFileName.ToLower().Equals("na"))
+            else if (legacyFASTAFileName.Length > 0 && !legacyFASTAFileName.Equals("na", StringComparison.OrdinalIgnoreCase))
             {
                 return ExportLegacyFastaFile(legacyFASTAFileName, destinationFolderPath);
             }

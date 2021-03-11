@@ -5,7 +5,7 @@ using PRISM;
 
 namespace FastaFileMaker_Exe
 {
-    static class Program
+    internal static class Program
     {
         public const string ProgramDate = "March 11, 2021";
 
@@ -326,8 +326,8 @@ namespace FastaFileMaker_Exe
                             // User specified a non-switch parameter
                             // Assume it is a protein collection list
                             mProteinCollectionList = commandLineParser.RetrieveNonSwitchParameter(0);
-                            if (mProteinCollectionList.ToLower().EndsWith(".fasta") ||
-                                mProteinCollectionList.ToLower().EndsWith(".fasta\""))
+                            if (mProteinCollectionList.EndsWith(".fasta", StringComparison.OrdinalIgnoreCase) ||
+                                mProteinCollectionList.EndsWith(".fasta\"", StringComparison.OrdinalIgnoreCase))
                             {
                                 // User specified a .fasta file
                                 mLegacyFasta = string.Copy(mProteinCollectionList);
