@@ -4,7 +4,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class GetFASTAFromDMSDecoyX : GetFASTAFromDMSDecoy
     {
-        private const bool DECOY_PROTEINS_USE_XXX = true;
+        private const bool DecoyProteinsUseXXX = true;
 
         /// <summary>
         /// Constructor
@@ -14,12 +14,12 @@ namespace OrganismDatabaseHandler.ProteinExport
         public GetFASTAFromDMSDecoyX(
             DBTask databaseAccessor,
             GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType)
-            : base(databaseAccessor, databaseFormatType, DECOY_PROTEINS_USE_XXX)
+            : base(databaseAccessor, databaseFormatType, DecoyProteinsUseXXX)
         {
-            mRevGenerator = new GetFASTAFromDMSReversed(
+            RevGenerator = new GetFASTAFromDMSReversed(
                 databaseAccessor, databaseFormatType)
             {
-                UseXXX = DECOY_PROTEINS_USE_XXX
+                UseXXX = DecoyProteinsUseXXX
             };
         }
     }

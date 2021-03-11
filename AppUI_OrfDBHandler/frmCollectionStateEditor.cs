@@ -9,25 +9,25 @@ namespace AppUI_OrfDBHandler
 {
     public partial class frmCollectionStateEditor : Form
     {
-        public frmCollectionStateEditor(string ProteinStorageConnectionString)
+        public frmCollectionStateEditor(string proteinStorageConnectionString)
         {
-            SearchTimer = new System.Timers.Timer(2000d);
-            SearchTimer.Elapsed += TimerHandler;
+            searchTimer = new System.Timers.Timer(2000d);
+            searchTimer.Elapsed += TimerHandler;
 
             base.Load += frmCollectionStateEditor_Load;
 
             InitializeComponent();
 
-            mPSConnectionString = ProteinStorageConnectionString;
+            mPsConnectionString = proteinStorageConnectionString;
         }
 
-        private readonly System.Timers.Timer SearchTimer;
+        private readonly System.Timers.Timer searchTimer;
 
         private bool mSearchActive = false;
         private CollectionStatePickerHandler mHandler;
-        private readonly string mPSConnectionString;
+        private readonly string mPsConnectionString;
         private DataTable mStatesTable;
-        private int mSelectedNewStateID = 1;
+        private int mSelectedNewStateId = 1;
         private bool mSortOrderAsc = true;
         private int mSelectedCol = 0;
 
@@ -37,7 +37,7 @@ namespace AppUI_OrfDBHandler
         {
             if (mSearchActive)
             {
-                SearchTimer.Start();
+                searchTimer.Start();
             }
         }
 
@@ -61,7 +61,7 @@ namespace AppUI_OrfDBHandler
                 txtLiveSearch.ForeColor = SystemColors.InactiveCaption;
                 txtLiveSearch.Text = "Search";
                 mSearchActive = false;
-                SearchTimer.Stop();
+                searchTimer.Stop();
                 mHandler.FillListView(lvwCollections);
             }
         }
@@ -77,7 +77,7 @@ namespace AppUI_OrfDBHandler
 
         private void frmCollectionStateEditor_Load(object sender, EventArgs e)
         {
-            mHandler = new CollectionStatePickerHandler(mPSConnectionString);
+            mHandler = new CollectionStatePickerHandler(mPsConnectionString);
             mStatesTable = mHandler.GetStates();
 
             cboStateChanger.SelectedIndexChanged -= cboStateChanger_SelectedIndexChanged;
@@ -90,7 +90,7 @@ namespace AppUI_OrfDBHandler
 
             cboStateChanger.SelectedIndexChanged += cboStateChanger_SelectedIndexChanged;
 
-            cboStateChanger.SelectedValue = mSelectedNewStateID;
+            cboStateChanger.SelectedValue = mSelectedNewStateId;
 
             mHandler.FillListView(lvwCollections);
         }
@@ -98,7 +98,7 @@ namespace AppUI_OrfDBHandler
         private void cboStateChanger_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox cbo = (ComboBox)sender;
-            mSelectedNewStateID = Convert.ToInt32(cbo.SelectedValue);
+            mSelectedNewStateId = Convert.ToInt32(cbo.SelectedValue);
         }
 
         private void cmdStateChanger_Click(object sender, EventArgs e)
@@ -108,9 +108,9 @@ namespace AppUI_OrfDBHandler
             foreach (ListViewItem item in lvwCollections.SelectedItems)
                 al.Add(item.Tag);
 
-            mHandler.ChangeSelectedCollectionStates(mSelectedNewStateID, al);
+            mHandler.ChangeSelectedCollectionStates(mSelectedNewStateId, al);
 
-            mHandler.ForceIDTableReload = true;
+            mHandler.ForceIdTableReload = true;
 
             if (mSearchActive)
             {

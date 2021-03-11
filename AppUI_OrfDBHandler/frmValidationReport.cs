@@ -163,9 +163,9 @@ namespace AppUI_OrfDBHandler
             set => mOrganisms = value;
         }
 
-        private string GetOrganismName(int organismID)
+        private string GetOrganismName(int organismId)
         {
-            var foundRows = mOrganisms.Select("ID = " + organismID.ToString());
+            var foundRows = mOrganisms.Select("ID = " + organismId.ToString());
 
             return foundRows[0]["Display_Name"].ToString();
         }
@@ -251,11 +251,11 @@ namespace AppUI_OrfDBHandler
 
             foreach (var item in mFileValidList)
             {
-                string FileName = Path.GetFileName(item.Key);
+                string fileName = Path.GetFileName(item.Key);
                 var uploadInfo = item.Value;
 
-                var li = new ListViewItem(FileName);
-                li.SubItems.Add(GetOrganismName(uploadInfo.OrganismID));
+                var li = new ListViewItem(fileName);
+                li.SubItems.Add(GetOrganismName(uploadInfo.OrganismId));
                 li.SubItems.Add(uploadInfo.ProteinCount.ToString());
                 li.SubItems.Add(uploadInfo.ExportedProteinCount.ToString());
 
@@ -270,9 +270,9 @@ namespace AppUI_OrfDBHandler
             string fastaFileName,
             string messageType)
         {
-            var SaveDialog = new SaveFileDialog();
+            var saveDialog = new SaveFileDialog();
 
-            string SelectedSavePath;
+            string selectedSavePath;
 
             int intErrorCount = 0;
 
@@ -281,24 +281,24 @@ namespace AppUI_OrfDBHandler
                 messageType = "Error";
             }
 
-            SaveDialog.Title = "Save Protein Database File";
-            SaveDialog.DereferenceLinks = true;
-            SaveDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
-            SaveDialog.FilterIndex = 1;
-            SaveDialog.RestoreDirectory = true;
-            SaveDialog.OverwritePrompt = true;
-            SaveDialog.FileName = Path.GetFileNameWithoutExtension(fastaFileName) + "_" + messageType;
+            saveDialog.Title = "Save Protein Database File";
+            saveDialog.DereferenceLinks = true;
+            saveDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+            saveDialog.FilterIndex = 1;
+            saveDialog.RestoreDirectory = true;
+            saveDialog.OverwritePrompt = true;
+            saveDialog.FileName = Path.GetFileNameWithoutExtension(fastaFileName) + "_" + messageType;
 
-            if (SaveDialog.ShowDialog() == DialogResult.OK)
+            if (saveDialog.ShowDialog() == DialogResult.OK)
             {
-                SelectedSavePath = SaveDialog.FileName;
+                selectedSavePath = saveDialog.FileName;
             }
             else
             {
                 return;
             }
 
-            using (var writer = new StreamWriter(new FileStream(SelectedSavePath, FileMode.Create, FileAccess.Write, FileShare.Read)))
+            using (var writer = new StreamWriter(new FileStream(selectedSavePath, FileMode.Create, FileAccess.Write, FileShare.Read)))
             {
                 writer.WriteLine("Protein Name" + "\t" +
                                  "Line Number" + "\t" +
@@ -321,7 +321,7 @@ namespace AppUI_OrfDBHandler
                 writer.WriteLine();
             }
 
-            MessageBox.Show("Wrote " + intErrorCount.ToString() + " " + messageType + "s to " + SaveDialog.FileName, "Detailed " + messageType + " List", MessageBoxButtons.OK);
+            MessageBox.Show("Wrote " + intErrorCount.ToString() + " " + messageType + "s to " + saveDialog.FileName, "Detailed " + messageType + " List", MessageBoxButtons.OK);
         }
     }
 }

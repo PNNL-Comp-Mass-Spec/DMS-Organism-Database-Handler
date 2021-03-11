@@ -12,18 +12,18 @@ namespace AppUI_OrfDBHandler.ProteinUpload
     {
         private readonly DataTable mAnnotationTypeList;
         private readonly DataTable mOrganismList;
-        private const string mSaveFileName = "FASTAFile_NamingAuth_XRef.txt";
+        private const string SaveFileName = "FASTAFile_NamingAuth_XRef.txt";
         private readonly string mSavePath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
         public frmBatchUploadFromFileList(
-            DataTable AuthorityList,
-            DataTable AnnotationTypeList,
-            DataTable OrganismList)
+            DataTable authorityList,
+            DataTable annotationTypeList,
+            DataTable organismList)
         {
             base.Load += frmBatchUploadFromFileList_Load;
             base.Closing += frmBatchUploadFromFileList_Closing;
-            mAnnotationTypeList = AnnotationTypeList;
-            mOrganismList = OrganismList;
+            mAnnotationTypeList = annotationTypeList;
+            mOrganismList = organismList;
 
             InitializeComponent();
         }
@@ -47,7 +47,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
         private void SaveFileNamingAuthorities()
         {
-            string saveFilePath = Path.Combine(mSavePath, mSaveFileName);
+            string saveFilePath = Path.Combine(mSavePath, SaveFileName);
 
             var fi = new FileInfo(saveFilePath);
             if (fi.Exists)
@@ -55,15 +55,15 @@ namespace AppUI_OrfDBHandler.ProteinUpload
                 fi.Delete();
             }
 
-            using (var writer = new StreamWriter(Path.Combine(mSavePath, mSaveFileName)))
+            using (var writer = new StreamWriter(Path.Combine(mSavePath, SaveFileName)))
             {
                 foreach (var fli in FileCollection.Values)
                 {
-                    if (fli.AnnotationTypeID > 0)
+                    if (fli.AnnotationTypeId > 0)
                     {
                         writer.Write(fli.FileName);
                         writer.Write("\t");
-                        writer.Write(fli.AnnotationTypeID.ToString());
+                        writer.Write(fli.AnnotationTypeId.ToString());
                         writer.Flush();
                     }
                 }
@@ -108,7 +108,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
         private void LoadFileNamingAuthorities()
         {
-            string loadFilePath = Path.Combine(this.mSavePath, mSaveFileName);
+            string loadFilePath = Path.Combine(this.mSavePath, SaveFileName);
             FileInfo fi = new FileInfo(loadFilePath);
             // System.IO.TextReader tr;
             // string s;
@@ -195,9 +195,9 @@ namespace AppUI_OrfDBHandler.ProteinUpload
                     var li = new ListViewItem() { Text = fli.FileName };
                     li.SubItems.Add(fli.FullFilePath);
                     li.SubItems.Add(fli.OrganismName);
-                    if (fli.AnnotationTypeID > 0)
+                    if (fli.AnnotationTypeId > 0)
                     {
-                        var foundRows = mAnnotationTypeList.Select("ID = " + fli.AnnotationTypeID);
+                        var foundRows = mAnnotationTypeList.Select("ID = " + fli.AnnotationTypeId);
                         fli.AnnotationType = foundRows[0][1].ToString();
                         li.SubItems.Add(fli.AnnotationType);
                     }
@@ -256,7 +256,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
                 {
                     li.SubItems[2].Text = cbo.Text;
                     var fli = FileCollection[li.Text];
-                    fli.NamingAuthorityID = Convert.ToInt32(cbo.SelectedValue);
+                    fli.NamingAuthorityId = Convert.ToInt32(cbo.SelectedValue);
                     FileCollection[li.Text] = fli;
                 }
             }
@@ -272,7 +272,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
                 {
                     li.SubItems[3].Text = cbo.Text;
                     var fli = FileCollection[li.Text];
-                    fli.AnnotationTypeID = Convert.ToInt32(cbo.SelectedValue);
+                    fli.AnnotationTypeId = Convert.ToInt32(cbo.SelectedValue);
                     FileCollection[li.Text] = fli;
                 }
             }
@@ -290,14 +290,14 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             {
                 var li = lvwFiles.SelectedItems[0];
                 var fli = FileCollection[li.Text];
-                if (fli.AnnotationTypeID > 0)
+                if (fli.AnnotationTypeId > 0)
                 {
-                    cboAnnotationType.SelectedValue = fli.AnnotationTypeID;
+                    cboAnnotationType.SelectedValue = fli.AnnotationTypeId;
                 }
 
-                if (fli.OrganismID > 0)
+                if (fli.OrganismId > 0)
                 {
-                    cboOrganismPicker.SelectedValue = fli.OrganismID;
+                    cboOrganismPicker.SelectedValue = fli.OrganismId;
                 }
 
                 if (fli.FullFilePath.Length > 0)

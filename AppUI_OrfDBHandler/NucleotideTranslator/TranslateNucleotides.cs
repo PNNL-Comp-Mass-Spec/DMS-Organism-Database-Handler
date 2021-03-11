@@ -12,50 +12,50 @@ namespace AppUI_OrfDBHandler.NucleotideTranslator
         private string mTranTableListName = "T_DNA_Translation_Tables";
         private string mTransTableMembersName = "T_DNA_Translation_Table_Members";
 
-        public TranslateNucleotides(string DMSConnectionString)
+        public TranslateNucleotides(string dmsConnectionString)
         {
-            mGetSQLData = new DBTask(DMSConnectionString);
+            mGetSQLData = new DBTask(dmsConnectionString);
         }
 
-        public ArrayList LoadTransMatrix(int TranslationTableID)
+        public ArrayList LoadTransMatrix(int translationTableId)
         {
-            var BaseArray = "ATGC".ToCharArray();
+            var baseArray = "ATGC".ToCharArray();
 
-            string selectSQL =
+            string selectSql =
                 "SELECT * FROM " + mTransTableMembersName +
-                " WHERE DNA_Translation_Table_ID = " + TranslationTableID;
+                " WHERE DNA_Translation_Table_ID = " + translationTableId;
 
-            var members = mGetSQLData.GetTable(selectSQL);
+            var members = mGetSQLData.GetTable(selectSql);
 
-            var PrimaryList = new ArrayList();
-            var SecondaryList = new ArrayList();
-            var TertiaryList = new ArrayList();
+            var primaryList = new ArrayList();
+            var secondaryList = new ArrayList();
+            var tertiaryList = new ArrayList();
 
-            foreach (var base_1 in BaseArray)
+            foreach (var base1 in baseArray)
             {
-                foreach (var base_2 in BaseArray)
+                foreach (var base2 in baseArray)
                 {
-                    foreach (var base_3 in BaseArray)
+                    foreach (var base3 in baseArray)
                     {
-                        var tertSelect = "Base_1 = '" + base_1.ToString() +
-                                         "' AND Base_2 = '" + base_2.ToString() +
-                                         "' AND Base_3 = '" + base_3.ToString() + "'";
-                        var TertiaryRows = members.Select(tertSelect);
+                        var tertSelect = "Base_1 = '" + base1.ToString() +
+                                         "' AND Base_2 = '" + base2.ToString() +
+                                         "' AND Base_3 = '" + base3.ToString() + "'";
+                        var tertiaryRows = members.Select(tertSelect);
 
-                        var dr = TertiaryRows[0];
+                        var dr = tertiaryRows[0];
 
-                        TertiaryList.Add(new TranslationEntry(base_3.ToString(), dr["Coded_AA"].ToString()));
+                        tertiaryList.Add(new TranslationEntry(base3.ToString(), dr["Coded_AA"].ToString()));
                     }
 
-                    SecondaryList.Add(new TranslationEntry(base_2.ToString(), TertiaryList));
-                    TertiaryList = new ArrayList();
+                    secondaryList.Add(new TranslationEntry(base2.ToString(), tertiaryList));
+                    tertiaryList = new ArrayList();
                 }
 
-                PrimaryList.Add(new TranslationEntry(base_1.ToString(), SecondaryList));
-                SecondaryList = new ArrayList();
+                primaryList.Add(new TranslationEntry(base1.ToString(), secondaryList));
+                secondaryList = new ArrayList();
             }
 
-            return PrimaryList;
+            return primaryList;
         }
 
         protected int LoadNucPositions(string filePath)

@@ -30,18 +30,18 @@ namespace OrganismDatabaseHandler.ProteinUpload
             public UploadInfo(FileInfo inputFile, int orgId, int annotationType)
             {
                 FileInformation = inputFile;
-                OrganismID = orgId;
-                AnnotationTypeID = annotationType;
+                OrganismId = orgId;
+                AnnotationTypeId = annotationType;
                 EncryptionPassphrase = string.Empty;
                 Description = string.Empty;
                 Source = string.Empty;
             }
 
             public FileInfo FileInformation;
-            public int OrganismID;
+            public int OrganismId;
             public string Description;
             public string Source;
-            public int AnnotationTypeID;
+            public int AnnotationTypeId;
             public int ProteinCount;
             public List<string> ErrorList;
             public int ExportedProteinCount;
@@ -53,7 +53,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
             public string EncryptionPassphrase;
         }
 
-        private string mNormalizedFASTAFilePath;
+        private string mNormalizedFastaFilePath;
 
         private readonly DBTask mDatabaseAccessor;
         private readonly ImportHandler mImporter;
@@ -174,10 +174,10 @@ namespace OrganismDatabaseHandler.ProteinUpload
         //    LoadStart?.Invoke();
         //}
 
-        private void OnNormalizedFASTAGeneration(string newFASTAFilePath)
+        private void OnNormalizedFASTAGeneration(string newFastaFilePath)
         {
-            mNormalizedFASTAFilePath = newFASTAFilePath;
-            WroteLineEndNormalizedFASTA?.Invoke(newFASTAFilePath);
+            mNormalizedFastaFilePath = newFastaFilePath;
+            WroteLineEndNormalizedFASTA?.Invoke(newFastaFilePath);
         }
 
         private void OnFASTAFileWarnings(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> warningCollection)
@@ -208,8 +208,8 @@ namespace OrganismDatabaseHandler.ProteinUpload
             mUpload.LoadEnd += LoadEndHandler;
 
             mExport = new GetFASTAFromDMS(psConnectionString,
-                                           GetFASTAFromDMS.DatabaseFormatTypes.fasta,
-                                           GetFASTAFromDMS.SequenceTypes.forward);
+                                           GetFASTAFromDMS.DatabaseFormatTypes.Fasta,
+                                           GetFASTAFromDMS.SequenceTypes.Forward);
             mExport.FileGenerationCompleted += mExport_FileGenerationCompleted;
             mExport.FileGenerationProgress += mExport_FileGenerationProgress;
 
@@ -301,21 +301,21 @@ namespace OrganismDatabaseHandler.ProteinUpload
                 }
 
                 OnBatchProgressUpdate("Loading: " + currentFile.Name);
-                if (mNormalizedFASTAFilePath != null)
+                if (mNormalizedFastaFilePath != null)
                 {
-                    if ((currentFile.FullName ?? "") != (mNormalizedFASTAFilePath ?? ""))
+                    if ((currentFile.FullName ?? "") != (mNormalizedFastaFilePath ?? ""))
                     {
-                        upInfo.FileInformation = new FileInfo(mNormalizedFASTAFilePath);
+                        upInfo.FileInformation = new FileInfo(mNormalizedFastaFilePath);
                     }
                 }
 
                 string proteinCollectionName = Path.GetFileNameWithoutExtension(currentFile.Name);
 
-                int existingCollectionID = mUpload.GetProteinCollectionID(proteinCollectionName);
+                int existingCollectionId = mUpload.GetProteinCollectionId(proteinCollectionName);
                 DialogResult eResult;
-                if (existingCollectionID > 0)
+                if (existingCollectionId > 0)
                 {
-                    string collectionState = mUpload.GetProteinCollectionState(existingCollectionID);
+                    string collectionState = mUpload.GetProteinCollectionState(existingCollectionId);
 
                     string logMessageIfCancelled;
                     string logLabelIfCancelled;
@@ -385,7 +385,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
                             }
 
                             upInfo.ProteinCount = proteinStorage.ProteinCount;
-                            CollectionBatchUploadCoordinator(proteinStorage, currentFile.FullName, upInfo.OrganismID, upInfo.AnnotationTypeID, upInfo.Description, upInfo.Source);
+                            CollectionBatchUploadCoordinator(proteinStorage, currentFile.FullName, upInfo.OrganismId, upInfo.AnnotationTypeId, upInfo.Description, upInfo.Source);
                             // upInfo.ExportedProteinCount = mExport.ExportedProteinCount;
                             OnValidFASTAFileUpload(upInfo.FileInformation.FullName, upInfo);
                             proteinStorage.ClearProteinEntries();
@@ -408,15 +408,15 @@ namespace OrganismDatabaseHandler.ProteinUpload
             string description,
             string collectionSource,
             AddUpdateEntries.CollectionTypes collectionType,
-            int organismID,
-            int annotationTypeID)
+            int organismId,
+            int annotationTypeId)
         {
             // task 2a - Get Protein_Collection_ID or make a new one
 
             string proteinCollectionName = Path.GetFileNameWithoutExtension(filepath);
-            int existingCollectionID = mUpload.GetProteinCollectionID(proteinCollectionName);
+            int existingCollectionId = mUpload.GetProteinCollectionId(proteinCollectionName);
 
-            string collectionState = mUpload.GetProteinCollectionState(existingCollectionID);
+            string collectionState = mUpload.GetProteinCollectionState(existingCollectionId);
 
             if (collectionState != "Unknown" &&
                 collectionState != "New" &&
@@ -428,16 +428,16 @@ namespace OrganismDatabaseHandler.ProteinUpload
             int numProteins = selectedProteins.Count;
             int numResidues = mUpload.GetTotalResidueCount(fileContents, selectedProteins);
 
-            int collectionID;
+            int collectionId;
 
-            if (existingCollectionID <= 0)
+            if (existingCollectionId <= 0)
             {
                 // Note that we're storing 0 for NumResidues at this time
                 // That value will be updated later after all of the proteins have been added
                 int newCollectionId = mUpload.MakeNewProteinCollection(
                     proteinCollectionName, description,
                     collectionSource, collectionType,
-                    annotationTypeID, numProteins, 0);
+                    annotationTypeId, numProteins, 0);
 
                 if (newCollectionId <= 0)
                 {
@@ -448,40 +448,40 @@ namespace OrganismDatabaseHandler.ProteinUpload
                     return -1;
                 }
 
-                collectionID = newCollectionId;
+                collectionId = newCollectionId;
             }
             else
             {
                 // Make sure there are no proteins defined for this protein collection
                 // In addition, this will update NumResidues to be 0
-                mUpload.DeleteProteinCollectionMembers(existingCollectionID, numProteins);
-                collectionID = existingCollectionID;
+                mUpload.DeleteProteinCollectionMembers(existingCollectionId, numProteins);
+                collectionId = existingCollectionId;
             }
 
             // task 2b - Compare file to existing sequences and upload new sequences to T_Proteins
-            mUpload.CompareProteinID(fileContents, selectedProteins);
+            mUpload.CompareProteinId(fileContents, selectedProteins);
 
             // task 3 - Add Protein References to T_Protein_Names
-            mUpload.UpdateProteinNames(fileContents, selectedProteins, organismID, annotationTypeID);
+            mUpload.UpdateProteinNames(fileContents, selectedProteins, organismId, annotationTypeId);
 
             // task 4 - Add new collection members to T_Protein_Collection_Members
-            mUpload.UpdateProteinCollectionMembers(collectionID, fileContents, selectedProteins, numProteins, numResidues);
+            mUpload.UpdateProteinCollectionMembers(collectionId, fileContents, selectedProteins, numProteins, numResidues);
 
             OnLoadStart("Associating protein collection with organism using T_Collection_OrganismXref");
-            var XrefID = mUpload.AddCollectionOrganismXref(collectionID, organismID);
+            var xrefId = mUpload.AddCollectionOrganismXref(collectionId, organismId);
             OnLoadEnd();
 
-            if (XrefID < 1)
+            if (xrefId < 1)
             {
                 // Throw New Exception("Could not add Collection/Organism Xref")
-                MessageBox.Show("Could not add Collection/Organism Xref; mUpload.AddCollectionOrganismXref returned " + XrefID);
+                MessageBox.Show("Could not add Collection/Organism Xref; mUpload.AddCollectionOrganismXref returned " + xrefId);
             }
 
             // task 5 - Update encryption metadata (if applicable)
             if (fileContents.EncryptSequences)
             {
                 OnLoadStart("Storing encryption metadata");
-                mUpload.UpdateEncryptionMetadata(collectionID, fileContents.PassPhrase);
+                mUpload.UpdateEncryptionMetadata(collectionId, fileContents.PassPhrase);
                 OnLoadEnd();
             }
 
@@ -490,11 +490,11 @@ namespace OrganismDatabaseHandler.ProteinUpload
             // Dim tmpFi As System.IO.FileInfo = New System.IO.FileInfo(tmpFileName)
 
             OnLoadStart("Generating Hash fingerprint");
-            var fingerprint = mExport.ExportFASTAFile(collectionID, tmpFileName, GetFASTAFromDMS.DatabaseFormatTypes.fasta, GetFASTAFromDMS.SequenceTypes.forward);
+            var fingerprint = mExport.ExportFASTAFile(collectionId, tmpFileName, GetFASTAFromDMS.DatabaseFormatTypes.Fasta, GetFASTAFromDMS.SequenceTypes.Forward);
             OnLoadEnd();
 
             OnLoadStart("Storing fingerprint in T_Protein_Collections");
-            mUpload.AddAuthenticationHash(collectionID, fingerprint, numProteins, numResidues);
+            mUpload.AddAuthenticationHash(collectionId, fingerprint, numProteins, numResidues);
             OnLoadEnd();
 
             // TODO add in hash return
@@ -504,8 +504,8 @@ namespace OrganismDatabaseHandler.ProteinUpload
         protected int CollectionBatchUploadCoordinator(
             ProteinStorage.ProteinStorage fileContents,
             string filepath,
-            int organismID,
-            int annotationTypeID,
+            int organismId,
+            int annotationTypeId,
             string description,
             string source)
         {
@@ -520,7 +520,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
 
             return UploadCollection(
                 fileContents, selectedList, filepath, description, source,
-                AddUpdateEntries.CollectionTypes.prot_original_source, organismID, annotationTypeID);
+                AddUpdateEntries.CollectionTypes.ProtOriginalSource, organismId, annotationTypeId);
         }
 
         public void SetValidationOptions(ValidationOptionConstants eValidationOptionName, bool blnEnabled)

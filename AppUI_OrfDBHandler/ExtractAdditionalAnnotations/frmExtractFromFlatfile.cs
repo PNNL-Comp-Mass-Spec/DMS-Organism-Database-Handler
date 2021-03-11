@@ -7,10 +7,10 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 {
     public partial class frmExtractFromFlatfile : Form
     {
-        public frmExtractFromFlatfile(Dictionary<string, string> AuthorityList, string psConnectionString)
+        public frmExtractFromFlatfile(Dictionary<string, string> authorityList, string psConnectionString)
         {
             base.Load += frmExtractFromFlatfile_Load;
-            mAuthorityList = AuthorityList;
+            mAuthorityList = authorityList;
             mPSConnectionString = psConnectionString;
 
             InitializeComponent();
@@ -19,8 +19,8 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         private bool mUseHeaderInfo = false;
         private ExtractFromFlatFile mExtract;
         private Dictionary<string, string> mAuthorityList;
-        private int mCurrentAuthorityID;
-        private int mCurrentGroupID;
+        private int mCurrentAuthorityId;
+        private int mCurrentGroupId;
         private string mPSConnectionString;
 
         private void frmExtractFromFlatfile_Load(object sender, EventArgs e)
@@ -70,7 +70,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             System.Windows.Forms.ListView lvw = (System.Windows.Forms.ListView)sender;
             if (lvw.SelectedItems.Count > 0)
             {
-                mCurrentGroupID = Convert.ToInt32(lvw.SelectedItems[0].Text);
+                mCurrentGroupId = Convert.ToInt32(lvw.SelectedItems[0].Text);
                 cboNamingAuthority.SelectedValue = Convert.ToInt32(lvw.SelectedItems[0].Tag);
                 // cboNamingAuthority.Select();
             }
@@ -176,9 +176,9 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
             lvwNewNames.BeginUpdate();
             lvwNewNames.Items.Clear();;
-            for (var groupID = 1; groupID <= maxIndex; groupID++)
+            for (var groupId = 1; groupId <= maxIndex; groupId++)
             {
-                var lvItem = mExtract.GetListViewItemForGroup(groupID);
+                var lvItem = mExtract.GetListViewItemForGroup(groupId);
                 lvwNewNames.Items.Add(lvItem);
             }
 
@@ -214,7 +214,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
             if (lvwNewNames.SelectedItems.Count > 0)
             {
-                mExtract.ChangeAuthorityIDforGroup(mCurrentGroupID, Convert.ToInt32(cbo.SelectedValue));
+                mExtract.ChangeAuthorityIDforGroup(mCurrentGroupId, Convert.ToInt32(cbo.SelectedValue));
                 lvwNewNames.SelectedItems[0].SubItems[2].Text = cbo.Text;
                 lvwNewNames.SelectedItems[0].Tag = Convert.ToInt32(cbo.SelectedValue);
             }
@@ -224,30 +224,30 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         {
             public AuthorityContainer(string authName, int authId)
             {
-                AuthorityID = authId;
+                AuthorityId = authId;
                 AuthorityName = authName;
             }
 
             public string AuthorityName { get; private set; }
 
-            public int AuthorityID { get; private set; }
+            public int AuthorityId { get; private set; }
         }
 
         private class AuthorityContainerComparer : IComparer
         {
             public int Compare(object x, object y)
             {
-                AuthorityContainer auth_1 = (AuthorityContainer)x;
-                AuthorityContainer auth_2 = (AuthorityContainer)y;
+                AuthorityContainer auth1 = (AuthorityContainer)x;
+                AuthorityContainer auth2 = (AuthorityContainer)y;
 
-                string reference_1 = auth_1.AuthorityName;
-                string reference_2 = auth_2.AuthorityName;
+                string reference1 = auth1.AuthorityName;
+                string reference2 = auth2.AuthorityName;
 
-                if (string.Compare(reference_1, reference_2, StringComparison.Ordinal) > 0)
+                if (string.Compare(reference1, reference2, StringComparison.Ordinal) > 0)
                 {
                     return 1;
                 }
-                else if (string.Compare(reference_1, reference_2, StringComparison.Ordinal) < 0)
+                else if (string.Compare(reference1, reference2, StringComparison.Ordinal) < 0)
                 {
                     return -1;
                 }

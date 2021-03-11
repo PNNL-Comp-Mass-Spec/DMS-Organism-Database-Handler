@@ -17,9 +17,9 @@ namespace AppUI_OrfDBHandler
         private string mTypeName;
         private string mDescription;
         private string mExample;
-        private int mAuthID;
+        private int mAuthId;
         private DataTable mAuthoritiesTable;
-        private string mPSConnectionString;
+        private string mPsConnectionString;
 
         #region "Return Properties"
 
@@ -43,13 +43,13 @@ namespace AppUI_OrfDBHandler
 
         public int AuthorityID
         {
-            get => mAuthID;
-            set => mAuthID = value;
+            get => mAuthId;
+            set => mAuthId = value;
         }
 
         public string ConnectionString
         {
-            set => mPSConnectionString = value;
+            set => mPsConnectionString = value;
         }
 
         public DataTable AuthorityTable
@@ -78,9 +78,9 @@ namespace AppUI_OrfDBHandler
 
             LoadAuthoritiesList();
 
-            if (mAuthID > 0)
+            if (mAuthId > 0)
             {
-                cboAuthorityName.SelectedValue = mAuthID;
+                cboAuthorityName.SelectedValue = mAuthId;
                 cboAuthorityName.Select();
             }
         }
@@ -119,7 +119,7 @@ namespace AppUI_OrfDBHandler
             mTypeName = txtAnnTypeName.Text;
             mDescription = txtDescription.Text;
             mExample = txtTypeExample.Text;
-            mAuthID = Convert.ToInt32(cboAuthorityName.SelectedValue);
+            mAuthId = Convert.ToInt32(cboAuthorityName.SelectedValue);
 
             DialogResult = DialogResult.OK;
             Close();
@@ -144,35 +144,35 @@ namespace AppUI_OrfDBHandler
 
             if (ReferenceEquals(cbo.SelectedValue.GetType(), Type.GetType("System.Int32")))
             {
-                mAuthID = Convert.ToInt32(cbo.SelectedValue);
+                mAuthId = Convert.ToInt32(cbo.SelectedValue);
             }
             else
             {
                 // mSelectedAuthorityID = 0
             }
 
-            if (mAuthID == -2)
+            if (mAuthId == -2)
             {
                 // Bring up addition dialog
-                var AuthAdd = new AddNamingAuthorityType(mPSConnectionString);
-                AuthAdd.FormLocation = new Point(Left + 20, Top + 30);
-                var tmpAuthID = AuthAdd.AddNamingAuthority();
+                var authAdd = new AddNamingAuthorityType(mPsConnectionString);
+                authAdd.FormLocation = new Point(Left + 20, Top + 30);
+                var tmpAuthId = authAdd.AddNamingAuthority();
 
-                if (!AuthAdd.EntryExists & tmpAuthID > 0)
+                if (!authAdd.EntryExists & tmpAuthId > 0)
                 {
                     var dr = mAuthoritiesTable.NewRow();
 
-                    dr["ID"] = tmpAuthID;
-                    dr["Display_Name"] = AuthAdd.ShortName;
-                    dr["Details"] = AuthAdd.FullName;
+                    dr["ID"] = tmpAuthId;
+                    dr["Display_Name"] = authAdd.ShortName;
+                    dr["Details"] = authAdd.FullName;
 
                     mAuthoritiesTable.Rows.Add(dr);
                     mAuthoritiesTable.AcceptChanges();
                     LoadAuthoritiesList();
-                    mAuthID = tmpAuthID;
+                    mAuthId = tmpAuthId;
                 }
 
-                cboAuthorityName.SelectedValue = tmpAuthID;
+                cboAuthorityName.SelectedValue = tmpAuthId;
             }
 
             //if (lvwSelectedFiles.SelectedItems.Count > 0)

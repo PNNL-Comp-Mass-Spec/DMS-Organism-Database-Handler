@@ -6,7 +6,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class GetFASTAFromDMSDecoy : GetFASTAFromDMSForward
     {
-        protected GetFASTAFromDMSReversed mRevGenerator;
+        protected GetFASTAFromDMSReversed RevGenerator;
 
         /// <summary>
         /// Constructor
@@ -19,7 +19,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             bool decoyUsesXXX)
             : base(databaseAccessor, databaseFormatType)
         {
-            mRevGenerator = new GetFASTAFromDMSReversed(
+            RevGenerator = new GetFASTAFromDMSReversed(
                 databaseAccessor, databaseFormatType) { UseXXX = decoyUsesXXX };
         }
 
@@ -40,16 +40,16 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             var fwdFilePath = FullOutputPath;
 
-            mRevGenerator.ExportFASTAFile(protCollectionList,
+            RevGenerator.ExportFASTAFile(protCollectionList,
                                            destinationFolderPath, alternateAnnotationTypeID, padWithPrimaryAnnotation);
 
-            var revFilePath = mRevGenerator.FullOutputPath;
+            var revFilePath = RevGenerator.FullOutputPath;
 
-            var fwdFI = new FileInfo(fwdFilePath);
-            var revFI = new FileInfo(revFilePath);
+            var fwdFi = new FileInfo(fwdFilePath);
+            var revFi = new FileInfo(revFilePath);
 
-            using (var reverseReader = new StreamReader(new FileStream(revFI.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
-            using (var appender = new StreamWriter(new FileStream(fwdFI.FullName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)))
+            using (var reverseReader = new StreamReader(new FileStream(revFi.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+            using (var appender = new StreamWriter(new FileStream(fwdFi.FullName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)))
             {
                 while (!reverseReader.EndOfStream)
                 {
@@ -58,9 +58,9 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
             }
 
-            revFI.Delete();
+            revFi.Delete();
 
-            string crc32HashFinal = GetFileHash(fwdFI.FullName);
+            string crc32HashFinal = GetFileHash(fwdFi.FullName);
 
             return crc32HashFinal;
         }

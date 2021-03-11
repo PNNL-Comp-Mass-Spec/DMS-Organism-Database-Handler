@@ -7,11 +7,11 @@ namespace FastaFileMaker_Exe
 {
     static class Program
     {
-        public const string PROGRAM_DATE = "February 18, 2020";
+        public const string ProgramDate = "February 18, 2020";
 
-        private const int mDebugLevel = 4;
-        private const int FASTA_GEN_TIMEOUT_INTERVAL_MINUTES = 70;
-        private const string DEFAULT_COLLECTION_OPTIONS = "seq_direction=forward,filetype=fasta";
+        private const int DebugLevel = 4;
+        private const int FastaGenTimeoutIntervalMinutes = 70;
+        private const string DefaultCollectionOptions = "seq_direction=forward,filetype=fasta";
         private static GetFASTAFromDMS mFastaTools;
         private static string mFastaToolsCnStr = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;";
         private static string mmessage;
@@ -65,12 +65,12 @@ namespace FastaFileMaker_Exe
 
         private static void mFastaTools_FileGenerationProgress(string statusMsg, double fractionDone)
         {
-            const int MINIMUM_LOG_INTERVAL_SEC = 15;
+            const int minimumLogIntervalSec = 15;
 
-            if (mDebugLevel >= 3)
+            if (DebugLevel >= 3)
             {
-                // Limit the logging to once every MINIMUM_LOG_INTERVAL_SEC seconds
-                if (DateTime.UtcNow.Subtract(dtLastLogTime).TotalSeconds >= (double)MINIMUM_LOG_INTERVAL_SEC ||
+                // Limit the logging to once every minimumLogIntervalSec seconds
+                if (DateTime.UtcNow.Subtract(dtLastLogTime).TotalSeconds >= (double)minimumLogIntervalSec ||
                     fractionDone - dblFractionDoneSaved >= 0.25d)
                 {
                     dtLastLogTime = DateTime.UtcNow;
@@ -82,7 +82,7 @@ namespace FastaFileMaker_Exe
 
         private static void mFastaTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if (DateTime.UtcNow.Subtract(mFastaGenStartTime).TotalMinutes >= FASTA_GEN_TIMEOUT_INTERVAL_MINUTES)
+            if (DateTime.UtcNow.Subtract(mFastaGenStartTime).TotalMinutes >= FastaGenTimeoutIntervalMinutes)
             {
                 mFastaGenTimeOut = true;        // Set the timeout flag so an error will be reported
                 mGenerationComplete = true;     // Set the completion flag so the fasta generation wait loop will exit
@@ -134,7 +134,7 @@ namespace FastaFileMaker_Exe
 
                     if (mCreationOpts.Length == 0)
                     {
-                        mCreationOpts = DEFAULT_COLLECTION_OPTIONS;
+                        mCreationOpts = DefaultCollectionOptions;
                     }
 
                     if (mOutputDirectory.Length == 0)
@@ -364,7 +364,7 @@ namespace FastaFileMaker_Exe
                 Console.WriteLine(ConsoleMsgUtils.WrapParagraph(
                     "To export one or more protein collections, specify the protein collection names as a comma separated list after the /P switch. " +
                     "When exporting protein collections, use optional switch /C to change the protein collection export options. " +
-                    "The default is: " + DEFAULT_COLLECTION_OPTIONS));
+                    "The default is: " + DefaultCollectionOptions));
                 Console.WriteLine();
                 Console.WriteLine("To export a legacy fasta file, use /L, for example /L:FileName.fasta");
                 Console.WriteLine();
@@ -374,7 +374,7 @@ namespace FastaFileMaker_Exe
                 Console.WriteLine();
 
                 Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2009");
-                Console.WriteLine("Version: " + GetAppVersion(PROGRAM_DATE));
+                Console.WriteLine("Version: " + GetAppVersion(ProgramDate));
                 Console.WriteLine();
 
                 Console.WriteLine("E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov");
@@ -437,10 +437,10 @@ namespace FastaFileMaker_Exe
                 mFastaTimer.Start();
                 crc32Hash = mFastaTools.ExportFASTAFile(proteinCollectionList, creationOpts, legacyFasta, destinationDirectoryPath);
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                Console.WriteLine("clsAnalysisResources.CreateFastaFile(), Exception generating OrgDb file: " + Ex.Message);
-                Console.WriteLine(StackTraceFormatter.GetExceptionStackTraceMultiLine(Ex));
+                Console.WriteLine("clsAnalysisResources.CreateFastaFile(), Exception generating OrgDb file: " + ex.Message);
+                Console.WriteLine(StackTraceFormatter.GetExceptionStackTraceMultiLine(ex));
                 return false;
             }
 
@@ -448,7 +448,7 @@ namespace FastaFileMaker_Exe
             while (!mGenerationComplete)
             {
                 System.Threading.Thread.Sleep(2000);
-                if (DateTime.UtcNow.Subtract(mFastaGenStartTime).TotalMinutes >= FASTA_GEN_TIMEOUT_INTERVAL_MINUTES)
+                if (DateTime.UtcNow.Subtract(mFastaGenStartTime).TotalMinutes >= FastaGenTimeoutIntervalMinutes)
                 {
                     mFastaGenTimeOut = true;
                     break;
@@ -459,7 +459,7 @@ namespace FastaFileMaker_Exe
             if (mFastaGenTimeOut)
             {
                 // Fasta generator hung - report error and exit
-                mmessage = "Timeout error while generating OrdDb file (" + FASTA_GEN_TIMEOUT_INTERVAL_MINUTES.ToString() + " minutes have elapsed)";
+                mmessage = "Timeout error while generating OrdDb file (" + FastaGenTimeoutIntervalMinutes.ToString() + " minutes have elapsed)";
                 Console.WriteLine("clsAnalysisResources.CreateFastaFile(), " + mmessage);
 
                 return false;

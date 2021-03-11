@@ -31,7 +31,7 @@ namespace OrganismDatabaseHandler.ProteinStorage
             SHA1Hash = authenticationHash;
             SortingIndex = sortingIndex;
 
-            Protein_ID = 0;
+            ProteinId = 0;
         }
 
         private string mAlternateReference;
@@ -74,13 +74,13 @@ namespace OrganismDatabaseHandler.ProteinStorage
 
         public string SHA1Hash { get; set; }
 
-        public int Protein_ID { get; set; }
+        public int ProteinId { get; set; }
 
-        public int Reference_ID { get; set; }
+        public int ReferenceId { get; set; }
 
-        public int Member_ID { get; set; }
+        public int MemberId { get; set; }
 
-        public int Authority_ID { get; set; }
+        public int AuthorityId { get; set; }
 
         public int SortingIndex { get; set; }
 

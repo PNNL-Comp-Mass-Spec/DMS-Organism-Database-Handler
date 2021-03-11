@@ -9,12 +9,12 @@ namespace AppUI_OrfDBHandler
     public class AddAnnotationTypeType
     {
         private string mConnectionString;
-        private AddUpdateEntries mSPRunner;
+        private AddUpdateEntries mSpRunner;
 
         private string mTypeName;
         private string mDescription;
         private string mExample;
-        private int mAuthID;
+        private int mAuthId;
         private bool mEntryExists = false;
         private AddNamingAuthorityType mAuthAdd;
         private DataTable mAuthorities;
@@ -26,9 +26,9 @@ namespace AppUI_OrfDBHandler
 
         public string AnnotationExample => mExample;
 
-        public int AuthorityID => mAuthID;
+        public int AuthorityID => mAuthId;
 
-        public string DisplayName => GetDisplayName(mAuthID, mTypeName);
+        public string DisplayName => GetDisplayName(mAuthId, mTypeName);
 
         public bool EntryExists => mEntryExists;
 
@@ -45,10 +45,10 @@ namespace AppUI_OrfDBHandler
             mAuthorities = mAuthAdd.AuthoritiesTable;
         }
 
-        private string GetDisplayName(int authID, string authTypeName)
+        private string GetDisplayName(int authId, string authTypeName)
         {
             string authName;
-            var foundRows = mAuthorities.Select("ID = " + authID).ToList();
+            var foundRows = mAuthorities.Select("ID = " + authId).ToList();
 
             if (foundRows.Count > 0)
             {
@@ -65,10 +65,10 @@ namespace AppUI_OrfDBHandler
         public int AddAnnotationType()
         {
             var frmAnn = new frmAddAnnotationType();
-            int annTypeID;
-            if (mSPRunner == null)
+            int annTypeId;
+            if (mSpRunner == null)
             {
-                mSPRunner = new AddUpdateEntries(mConnectionString);
+                mSpRunner = new AddUpdateEntries(mConnectionString);
             }
 
             if (mAuthAdd == null)
@@ -86,20 +86,20 @@ namespace AppUI_OrfDBHandler
                 mTypeName = frmAnn.TypeName;
                 mDescription = frmAnn.Description;
                 mExample = frmAnn.Example;
-                mAuthID = frmAnn.AuthorityID;
+                mAuthId = frmAnn.AuthorityID;
 
-                annTypeID = mSPRunner.AddAnnotationType(
-                    mTypeName, mDescription, mExample, mAuthID);
+                annTypeId = mSpRunner.AddAnnotationType(
+                    mTypeName, mDescription, mExample, mAuthId);
 
-                if (annTypeID < 0)
+                if (annTypeId < 0)
                 {
-                    var authNames = mAuthorities.Select("Authority_ID = " + mAuthID.ToString());
+                    var authNames = mAuthorities.Select("Authority_ID = " + mAuthId.ToString());
                     var authName = authNames[0]["Name"].ToString();
                     MessageBox.Show(
                         "An entry called '" + mTypeName + "' for '" + authName + "' already exists in the Annotation Types table",
                         "Entry already exists!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2);
                     mEntryExists = true;
-                    annTypeID = -annTypeID;
+                    annTypeId = -annTypeId;
                 }
                 else
                 {
@@ -108,13 +108,13 @@ namespace AppUI_OrfDBHandler
             }
             else
             {
-                annTypeID = 0;
+                annTypeId = 0;
                 mEntryExists = true;
             }
 
-            mSPRunner = null;
+            mSpRunner = null;
 
-            return annTypeID;
+            return annTypeId;
         }
     }
 }

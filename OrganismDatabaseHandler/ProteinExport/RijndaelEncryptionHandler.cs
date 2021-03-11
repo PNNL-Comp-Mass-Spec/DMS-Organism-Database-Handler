@@ -53,7 +53,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         private readonly Rfc2898DeriveBytes mPassword;
 
         private readonly RijndaelManaged mSymmetricKey;
-        private SHA1Managed mSHA1Provider;
+        private SHA1Managed sha1Provider;
         private readonly ICryptoTransform mEncryptor;
         private readonly ICryptoTransform mDecryptor;
 
@@ -130,26 +130,26 @@ namespace OrganismDatabaseHandler.ProteinExport
             return cipherText;
         }
 
-        public string MakeArbitraryHash(string Sourcetext)
+        public string MakeArbitraryHash(string sourceText)
         {
-            if (mSHA1Provider == null)
+            if (sha1Provider == null)
             {
-                mSHA1Provider = new SHA1Managed();
+                sha1Provider = new SHA1Managed();
             }
 
             // Create an encoding object to ensure the encoding standard for the source text
-            var Ue = new ASCIIEncoding();
+            var ue = new ASCIIEncoding();
 
             // Retrieve a byte array based on the source text
-            var ByteSourceText = Ue.GetBytes(Sourcetext);
+            var byteSourceText = ue.GetBytes(sourceText);
 
             // Compute the hash value from the source
-            var SHA1_hash = mSHA1Provider.ComputeHash(ByteSourceText);
+            var sha1Hash = sha1Provider.ComputeHash(byteSourceText);
 
             // And convert it to String format for return
-            string SHA1string = ToHexString(SHA1_hash);
+            string sha1String = ToHexString(sha1Hash);
 
-            return SHA1string;
+            return sha1String;
         }
 
         // <summary>

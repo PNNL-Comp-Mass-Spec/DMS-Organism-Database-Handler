@@ -11,7 +11,7 @@ namespace OrganismDatabaseHandler.DatabaseTools
         #region "Member Variables"
 
 #pragma warning disable CS3003 // Type is not CLS-compliant
-        private readonly IDBTools mDBTools;
+        private readonly IDBTools mDbTools;
 #pragma warning restore CS3003 // Type is not CLS-compliant
 
         #endregion
@@ -22,14 +22,14 @@ namespace OrganismDatabaseHandler.DatabaseTools
         /// Database connection string
         /// </summary>
         /// <returns></returns>
-        public string ConnectionString => mDBTools.ConnectStr;
+        public string ConnectionString => mDbTools.ConnectStr;
 
         /// <summary>
         /// Database connection string
         /// </summary>
         /// <returns></returns>
 #pragma warning disable CS3003 // Type is not CLS-compliant
-        public IDBTools DBTools => mDBTools;
+        public IDBTools DbTools => mDbTools;
 #pragma warning restore CS3003 // Type is not CLS-compliant
 
         #endregion
@@ -40,15 +40,15 @@ namespace OrganismDatabaseHandler.DatabaseTools
         /// <param name="connectionString"></param>
         public DBTask(string connectionString)
         {
-            mDBTools = DbToolsFactory.GetDBTools(connectionString);
-            RegisterEvents(mDBTools);
+            mDbTools = DbToolsFactory.GetDBTools(connectionString);
+            RegisterEvents(mDbTools);
         }
 
 #pragma warning disable CS3001 // Argument type is not CLS-compliant
         public DBTask(IDBTools existingDbTools)
 #pragma warning restore CS3001 // Argument type is not CLS-compliant
         {
-            mDBTools = existingDbTools;
+            mDbTools = existingDbTools;
         }
 
         public DataTable GetTableTemplate(string tableName)
@@ -57,17 +57,17 @@ namespace OrganismDatabaseHandler.DatabaseTools
             return GetTable(sql);
         }
 
-        public DataTable GetTable(string selectSQL)
+        public DataTable GetTable(string selectSql)
         {
             int retryCount = 6;
             int retryDelaySeconds = 5;
             int timeoutSeconds = 600;
             DataTable queryResults = null;
-            bool success = mDBTools.GetQueryResultsDataTable(selectSQL, out queryResults, retryCount, retryDelaySeconds, timeoutSeconds);
+            bool success = mDbTools.GetQueryResultsDataTable(selectSql, out queryResults, retryCount, retryDelaySeconds, timeoutSeconds);
 
             if (!success)
             {
-                string errorMessage = "Could not get records after three tries; query: " + selectSQL;
+                string errorMessage = "Could not get records after three tries; query: " + selectSql;
                 OnErrorEvent(errorMessage);
                 throw new Exception(errorMessage);
             }

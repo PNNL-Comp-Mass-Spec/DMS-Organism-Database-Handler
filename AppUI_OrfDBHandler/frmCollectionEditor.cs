@@ -19,10 +19,10 @@ namespace AppUI_OrfDBHandler
     {
         public frmCollectionEditor()
         {
-            SearchTimer = new System.Timers.Timer(2000d);
-            SearchTimer.Elapsed += SearchTimerHandler;
-            MemberLoadTimer = new System.Timers.Timer(2000d);
-            MemberLoadTimer.Elapsed += MemberLoadTimerHandler;
+            searchTimer = new System.Timers.Timer(2000d);
+            searchTimer.Elapsed += SearchTimerHandler;
+            memberLoadTimer = new System.Timers.Timer(2000d);
+            memberLoadTimer.Elapsed += MemberLoadTimerHandler;
             base.Load += frmCollectionEditor_Load;
 
             InitializeComponent();
@@ -42,23 +42,23 @@ namespace AppUI_OrfDBHandler
             Application.Run(new frmCollectionEditor());
         }
 
-        private const string PROGRAM_DATE = "February 18, 2020";
+        private const string ProgramDate = "February 18, 2020";
 
         private DataTable mOrganisms;
         private DataTable mProteinCollections;
         private DataTable mProteinCollectionNames;
         private DataTable mAnnotationTypes;
         private DataTable mCollectionMembers;
-        private int mSelectedOrganismID;
-        private int mSelectedAnnotationTypeID;
+        private int mSelectedOrganismId;
+        private int mSelectedAnnotationTypeId;
         private string mSelectedFilePath;
-        private int mSelectedCollectionID;
-        private string mLastBatchULDirectoryPath;
+        private int mSelectedCollectionId;
+        private string mLastBatchUploadDirectoryPath;
 
         /// <summary>
         /// Protein sequences database connection string
         /// </summary>
-        private string mPSConnectionString = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;";
+        private string mPsConnectionString = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;";
 
         private string mLastSelectedOrganism = "";
         private string mLastSelectedAnnotationType = "";
@@ -105,8 +105,8 @@ namespace AppUI_OrfDBHandler
 
         private SyncFASTAFileArchive mSyncer;
         private readonly bool mEncryptSequences = false;
-        private readonly System.Timers.Timer SearchTimer;
-        private readonly System.Timers.Timer MemberLoadTimer;
+        private readonly System.Timers.Timer searchTimer;
+        private readonly System.Timers.Timer memberLoadTimer;
 
         /// <summary>
         /// Tracks the description and source that the user has entered for each FASTA file
@@ -125,12 +125,12 @@ namespace AppUI_OrfDBHandler
 
             if (!string.IsNullOrWhiteSpace(connectionString))
             {
-                mPSConnectionString = connectionString;
+                mPsConnectionString = connectionString;
             }
 
             UpdateServerNameLabel();
 
-            mImportHandler = new ImportHandler(mPSConnectionString);
+            mImportHandler = new ImportHandler(mPsConnectionString);
             mImportHandler.LoadStart += ImportStartHandler;
             mImportHandler.LoadProgress += ImportProgressHandler;
             mImportHandler.LoadEnd += ImportEndHandler;
@@ -191,32 +191,32 @@ namespace AppUI_OrfDBHandler
 
         private void RefreshCollectionList()
         {
-            if (mSelectedOrganismID != -1 & mSelectedCollectionID != -1)
+            if (mSelectedOrganismId != -1 & mSelectedCollectionId != -1)
             {
                 cboAnnotationTypePicker.SelectedIndexChanged -= cboAnnotationTypePicker_SelectedIndexChanged;
                 cboCollectionPicker.SelectedIndexChanged -= cboCollectionPicker_SelectedIndexChanged;
-                cboOrganismFilter.SelectedItem = mSelectedOrganismID;
+                cboOrganismFilter.SelectedItem = mSelectedOrganismId;
                 cboOrganismList_SelectedIndexChanged(this, null);
 
-                cboCollectionPicker.SelectedItem = mSelectedCollectionID;
-                cboAnnotationTypePicker.SelectedItem = mSelectedAnnotationTypeID;
+                cboCollectionPicker.SelectedItem = mSelectedCollectionId;
+                cboAnnotationTypePicker.SelectedItem = mSelectedAnnotationTypeId;
                 cboCollectionPicker.Select();
                 cboCollectionPicker.SelectedIndexChanged += cboCollectionPicker_SelectedIndexChanged;
                 cboAnnotationTypePicker.SelectedIndexChanged += cboAnnotationTypePicker_SelectedIndexChanged;
             }
         }
 
-        private void TriggerCollectionTableUpdate(bool RefreshTable)
+        private void TriggerCollectionTableUpdate(bool refreshTable)
         {
-            if (RefreshTable)
+            if (refreshTable)
             {
                 mImportHandler.TriggerProteinCollectionTableUpdate();
             }
             // CollectionLoadThread = New System.Threading.Thread(AddressOf mImportHandler.TriggerProteinCollectionsLoad)
             // CollectionLoadThread.Start()
-            if (mSelectedOrganismID > 0)
+            if (mSelectedOrganismId > 0)
             {
-                mImportHandler.TriggerProteinCollectionsLoad(mSelectedOrganismID);
+                mImportHandler.TriggerProteinCollectionsLoad(mSelectedOrganismId);
             }
             else
             {
@@ -306,8 +306,8 @@ namespace AppUI_OrfDBHandler
                 mOrganisms,
                 mAnnotationTypes,
                 mProteinCollectionNames,
-                mPSConnectionString,
-                mLastBatchULDirectoryPath,
+                mPsConnectionString,
+                mLastBatchUploadDirectoryPath,
                 mCachedFileDescriptions);
 
             lblBatchProgress.Text = "";
@@ -336,7 +336,7 @@ namespace AppUI_OrfDBHandler
             mLastValueForAllowDash = frmBatchUpload.ValidationAllowDash;
             mLastValueForMaxProteinNameLength = frmBatchUpload.ValidationMaxProteinNameLength;
 
-            mLastBatchULDirectoryPath = frmBatchUpload.CurrentDirectory;
+            mLastBatchUploadDirectoryPath = frmBatchUpload.CurrentDirectory;
 
             try
             {
@@ -353,10 +353,10 @@ namespace AppUI_OrfDBHandler
                     Settings.Default.LastSelectedAnnotationType = mLastSelectedAnnotationType;
                 }
 
-                if (!string.IsNullOrEmpty(mLastBatchULDirectoryPath))
+                if (!string.IsNullOrEmpty(mLastBatchUploadDirectoryPath))
                 {
                     //Interaction.SaveSetting("ProteinCollectionEditor", "UserOptions", "LastBatchULDirectoryPath", mLastBatchULDirectoryPath);
-                    Settings.Default.LastBatchULDirectoryPath = mLastBatchULDirectoryPath;
+                    Settings.Default.LastBatchULDirectoryPath = mLastBatchUploadDirectoryPath;
                 }
 
                 Settings.Default.Save();
@@ -392,11 +392,11 @@ namespace AppUI_OrfDBHandler
 
             if (mEncryptSequences)
             {
-                mUploadHandler = new PSUploadHandler(mPSConnectionString);
+                mUploadHandler = new PSUploadHandler(mPsConnectionString);
             }
             else
             {
-                mUploadHandler = new PSUploadHandler(mPSConnectionString);
+                mUploadHandler = new PSUploadHandler(mPsConnectionString);
             }
 
             mUploadHandler.BatchProgress += BatchImportProgressHandler;
@@ -462,7 +462,7 @@ namespace AppUI_OrfDBHandler
                 //mLastBatchULDirectoryPath = Interaction.GetSetting("ProteinCollectionEditor", "UserOptions", "LastBatchULDirectoryPath", "");
                 mLastSelectedOrganism = Settings.Default.LastSelectedOrganism ?? "";
                 mLastSelectedAnnotationType = Settings.Default.LastSelectedAnnotationType ?? "";
-                mLastBatchULDirectoryPath = Settings.Default.LastBatchULDirectoryPath ?? "";
+                mLastBatchUploadDirectoryPath = Settings.Default.LastBatchULDirectoryPath ?? "";
             }
             catch (Exception ex)
             {
@@ -477,7 +477,7 @@ namespace AppUI_OrfDBHandler
             //AboutBox.Location = mMainProcess.myAppSettings.AboutBoxLocation;
             //AboutBox.ShowDialog();
 
-            var strMessage = "This is version " + Application.ProductVersion + ", " + PROGRAM_DATE;
+            var strMessage = "This is version " + Application.ProductVersion + ", " + ProgramDate;
 
             MessageBox.Show(strMessage, "About Protein Collection Editor", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -486,14 +486,14 @@ namespace AppUI_OrfDBHandler
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(mPSConnectionString))
+                if (string.IsNullOrWhiteSpace(mPsConnectionString))
                 {
                     lblTargetServer.Text = "ERROR determining target server: mPSConnectionString is empty";
                     return;
                 }
 
                 var reExtractServerName = new Regex(@"Data Source\s*=\s*([^\s;]+)", RegexOptions.IgnoreCase);
-                var reMatch = reExtractServerName.Match(mPSConnectionString);
+                var reMatch = reExtractServerName.Match(mPsConnectionString);
 
                 if (reMatch.Success)
                 {
@@ -501,7 +501,7 @@ namespace AppUI_OrfDBHandler
                 }
                 else
                 {
-                    lblTargetServer.Text = "Target server: UNKNOWN -- name not found in " + mPSConnectionString;
+                    lblTargetServer.Text = "Target server: UNKNOWN -- name not found in " + mPsConnectionString;
                 }
             }
             catch (Exception ex)
@@ -523,7 +523,7 @@ namespace AppUI_OrfDBHandler
                 mProteinCollections.DefaultView.RowFilter = "";
             }
 
-            mSelectedOrganismID = Convert.ToInt32(cboOrganismFilter.SelectedValue);
+            mSelectedOrganismId = Convert.ToInt32(cboOrganismFilter.SelectedValue);
 
             BindCollectionListToControl(mProteinCollections.DefaultView);
 
@@ -537,12 +537,12 @@ namespace AppUI_OrfDBHandler
         {
             lvwSource.Items.Clear();
             mImportHandler.ClearProteinCollection();
-            mSelectedCollectionID = Convert.ToInt32(cboCollectionPicker.SelectedValue);
+            mSelectedCollectionId = Convert.ToInt32(cboCollectionPicker.SelectedValue);
 
-            if (mSelectedCollectionID > 0)
+            if (mSelectedCollectionId > 0)
             {
-                var foundRows = mProteinCollections.Select("[Protein_Collection_ID] = " + mSelectedCollectionID.ToString());
-                mSelectedAnnotationTypeID = Convert.ToInt32(foundRows[0]["Authority_ID"]);
+                var foundRows = mProteinCollections.Select("[Protein_Collection_ID] = " + mSelectedCollectionId.ToString());
+                mSelectedAnnotationTypeId = Convert.ToInt32(foundRows[0]["Authority_ID"]);
                 //mAnnotationTypes = mImportHandler.LoadAnnotationTypes(mSelectedCollectionID);
                 //mAnnotationTypes = mImportHandler.LoadAnnotationTypes();
                 cmdLoadProteins.Enabled = true;
@@ -566,17 +566,17 @@ namespace AppUI_OrfDBHandler
 
             if (ReferenceEquals(cboAnnotationTypePicker.SelectedValue.GetType(), Type.GetType("System.Int32")))
             {
-                mSelectedAnnotationTypeID = Convert.ToInt32(cboAnnotationTypePicker.SelectedValue);
+                mSelectedAnnotationTypeId = Convert.ToInt32(cboAnnotationTypePicker.SelectedValue);
             }
             else
             {
                 //mSelectedAuthorityID = 0;
             }
 
-            if (mSelectedCollectionID > 0)
+            if (mSelectedCollectionId > 0)
             {
-                var foundRows = mProteinCollections.Select("[Protein_Collection_ID] = " + mSelectedCollectionID.ToString());
-                mSelectedAnnotationTypeID = Convert.ToInt32(foundRows[0]["Authority_ID"]);
+                var foundRows = mProteinCollections.Select("[Protein_Collection_ID] = " + mSelectedCollectionId.ToString());
+                mSelectedAnnotationTypeId = Convert.ToInt32(foundRows[0]["Authority_ID"]);
             }
             //else if (mSelectedAuthorityID == -2)
             //{
@@ -644,8 +644,8 @@ namespace AppUI_OrfDBHandler
                 IsLocalFile = mLocalFileLoaded,
                 AnnotationTypes = mAnnotationTypes,
                 OrganismList = mOrganisms,
-                OrganismID = mSelectedOrganismID,
-                AnnotationTypeID = mSelectedAnnotationTypeID
+                OrganismID = mSelectedOrganismId,
+                AnnotationTypeID = mSelectedAnnotationTypeId
             };
 
             var eResult = frmAddCollection.ShowDialog();
@@ -655,14 +655,14 @@ namespace AppUI_OrfDBHandler
                 cboCollectionPicker.Enabled = true;
                 cboOrganismFilter.Enabled = true;
 
-                int tmpOrganismID = frmAddCollection.OrganismID;
-                int tmpAnnotationTypeID = frmAddCollection.AnnotationTypeID;
+                int tmpOrganismId = frmAddCollection.OrganismID;
+                int tmpAnnotationTypeId = frmAddCollection.AnnotationTypeID;
 
                 var tmpSelectedProteinList = ScanDestinationCollectionWindow(lvwDestination);
 
                 if (mUploadHandler == null)
                 {
-                    mUploadHandler = new PSUploadHandler(mPSConnectionString);
+                    mUploadHandler = new PSUploadHandler(mPsConnectionString);
                     mUploadHandler.BatchProgress += BatchImportProgressHandler;
                     mUploadHandler.ValidFASTAFileLoaded += ValidFASTAUploadHandler;
                     mUploadHandler.InvalidFASTAFile += InvalidFASTAFileHandler;
@@ -674,8 +674,8 @@ namespace AppUI_OrfDBHandler
                 mUploadHandler.UploadCollection(mImportHandler.CollectionMembers, tmpSelectedProteinList,
                                                  frmAddCollection.CollectionName, frmAddCollection.CollectionDescription,
                                                  frmAddCollection.CollectionSource,
-                                                 AddUpdateEntries.CollectionTypes.prot_original_source, tmpOrganismID,
-                                                 tmpAnnotationTypeID);
+                                                 AddUpdateEntries.CollectionTypes.ProtOriginalSource, tmpOrganismId,
+                                                 tmpAnnotationTypeId);
 
                 RefreshCollectionList();
 
@@ -683,7 +683,7 @@ namespace AppUI_OrfDBHandler
 
                 cboOrganismFilter.Enabled = true;
                 cboCollectionPicker.Enabled = true;
-                cboOrganismFilter.SelectedValue = tmpOrganismID;
+                cboOrganismFilter.SelectedValue = tmpOrganismId;
             }
 
             if (mUploadHandler != null)
@@ -748,7 +748,7 @@ namespace AppUI_OrfDBHandler
         {
             if (txtLiveSearch.Text.Length > 0 & txtLiveSearch.ForeColor.ToString() != "Color [InactiveCaption]")
             {
-                SearchTimer.Start();
+                searchTimer.Start();
             }
             else if (string.IsNullOrEmpty(txtLiveSearch.Text) & mSearchActive == false)
             {
@@ -757,7 +757,7 @@ namespace AppUI_OrfDBHandler
             else
             {
                 mSearchActive = false;
-                SearchTimer.Stop();
+                searchTimer.Stop();
                 //txtLiveSearch.Text = "Search";
                 //txtLiveSearch.ForeColor = System.Drawing.SystemColors.InactiveCaption;
             }
@@ -787,7 +787,7 @@ namespace AppUI_OrfDBHandler
                 txtLiveSearch.ForeColor = SystemColors.InactiveCaption;
                 txtLiveSearch.Text = "Search";
                 mSearchActive = false;
-                SearchTimer.Stop();
+                searchTimer.Stop();
                 mSourceListViewHandler.Load(mCollectionMembers);
             }
         }
@@ -810,7 +810,7 @@ namespace AppUI_OrfDBHandler
 
                 mSourceListViewHandler.Load(mCollectionMembers, txtLiveSearch.Text);
                 mSearchActive = false;
-                SearchTimer.Stop();
+                searchTimer.Stop();
             }
             else
             {
@@ -842,10 +842,10 @@ namespace AppUI_OrfDBHandler
             object sender,
             ElapsedEventArgs e)
         {
-            mSelectedCollectionID = Convert.ToInt32(cboCollectionPicker.SelectedValue);
-            mSelectedAnnotationTypeID = Convert.ToInt32(cboAnnotationTypePicker.SelectedValue);
+            mSelectedCollectionId = Convert.ToInt32(cboCollectionPicker.SelectedValue);
+            mSelectedAnnotationTypeId = Convert.ToInt32(cboAnnotationTypePicker.SelectedValue);
 
-            mCollectionMembers = mImportHandler.LoadCollectionMembersByID(mSelectedCollectionID, mSelectedAnnotationTypeID);
+            mCollectionMembers = mImportHandler.LoadCollectionMembersById(mSelectedCollectionId, mSelectedAnnotationTypeId);
             mLocalFileLoaded = false;
 
             //mSelectedAuthorityID = mImportHandler.
@@ -897,11 +897,11 @@ namespace AppUI_OrfDBHandler
             CheckTransferButtonsEnabledStatus();
         }
 
-        private void ScanSourceCollectionWindow(ListView lvwSrc, ListView lvwDest, bool SelectAll)
+        private void ScanSourceCollectionWindow(ListView lvwSrc, ListView lvwDest, bool selectAll)
         {
             ListViewItem entry;
 
-            if (SelectAll)
+            if (selectAll)
             {
                 foreach (ListViewItem currentEntry in lvwSrc.Items)
                 {
@@ -935,9 +935,9 @@ namespace AppUI_OrfDBHandler
             return selectedList;
         }
 
-        private void ClearFromDestinationCollectionWindow(ListView lvwDest, bool SelectAll)
+        private void ClearFromDestinationCollectionWindow(ListView lvwDest, bool selectAll)
         {
-            if (SelectAll)
+            if (selectAll)
             {
                 lvwDest.Items.Clear();
                 cmdSaveDestCollection.Enabled = false;
@@ -971,13 +971,13 @@ namespace AppUI_OrfDBHandler
 
         private void mnuToolsCollectionEdit_Click(object sender, EventArgs e)
         {
-            var cse = new frmCollectionStateEditor(mPSConnectionString);
+            var cse = new frmCollectionStateEditor(mPsConnectionString);
             cse.ShowDialog();
         }
 
         private void mnuToolsExtractFromFile_Click(object sender, EventArgs e)
         {
-            var f = new frmExtractFromFlatfile(mImportHandler.Authorities, mPSConnectionString);
+            var f = new frmExtractFromFlatfile(mImportHandler.Authorities, mPsConnectionString);
             f.ShowDialog();
         }
 
@@ -1082,49 +1082,49 @@ namespace AppUI_OrfDBHandler
         }
 
         private void ValidFASTAUploadHandler(
-            string FASTAFilePath,
-            PSUploadHandler.UploadInfo UploadInfo)
+            string fastaFilePath,
+            PSUploadHandler.UploadInfo uploadInfo)
         {
             if (mValidUploadsList == null)
             {
                 mValidUploadsList = new Dictionary<string, PSUploadHandler.UploadInfo>();
             }
 
-            mValidUploadsList.Add(FASTAFilePath, UploadInfo);
+            mValidUploadsList.Add(fastaFilePath, uploadInfo);
         }
 
-        private void InvalidFASTAFileHandler(string FASTAFilePath, List<CustomFastaValidator.ErrorInfoExtended> errorCollection)
+        private void InvalidFASTAFileHandler(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> errorCollection)
         {
             if (mFileErrorList == null)
             {
                 mFileErrorList = new Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>>();
             }
 
-            mFileErrorList.Add(Path.GetFileName(FASTAFilePath), errorCollection);
+            mFileErrorList.Add(Path.GetFileName(fastaFilePath), errorCollection);
 
             if (mSummarizedFileErrorList == null)
             {
                 mSummarizedFileErrorList = new Dictionary<string, Dictionary<string, int>>();
             }
 
-            mSummarizedFileErrorList.Add(Path.GetFileName(FASTAFilePath), SummarizeErrors(errorCollection));
+            mSummarizedFileErrorList.Add(Path.GetFileName(fastaFilePath), SummarizeErrors(errorCollection));
         }
 
-        private void FASTAFileWarningsHandler(string FASTAFilePath, List<CustomFastaValidator.ErrorInfoExtended> warningCollection)
+        private void FASTAFileWarningsHandler(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> warningCollection)
         {
             if (mFileWarningList == null)
             {
                 mFileWarningList = new Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>>();
             }
 
-            mFileWarningList.Add(Path.GetFileName(FASTAFilePath), warningCollection);
+            mFileWarningList.Add(Path.GetFileName(fastaFilePath), warningCollection);
 
             if (mSummarizedFileWarningList == null)
             {
                 mSummarizedFileWarningList = new Dictionary<string, Dictionary<string, int>>();
             }
 
-            mSummarizedFileWarningList.Add(Path.GetFileName(FASTAFilePath), SummarizeErrors(warningCollection));
+            mSummarizedFileWarningList.Add(Path.GetFileName(fastaFilePath), SummarizeErrors(warningCollection));
         }
 
         private Dictionary<string, int> SummarizeErrors(IReadOnlyCollection<CustomFastaValidator.ErrorInfoExtended> errorCollection)
@@ -1174,7 +1174,7 @@ namespace AppUI_OrfDBHandler
         {
             if (mSyncer == null)
             {
-                mSyncer = new SyncFASTAFileArchive(mPSConnectionString);
+                mSyncer = new SyncFASTAFileArchive(mPsConnectionString);
                 mSyncer.SyncProgress += SyncProgressHandler;
             }
 
@@ -1185,7 +1185,7 @@ namespace AppUI_OrfDBHandler
         {
             if (mSyncer == null)
             {
-                mSyncer = new SyncFASTAFileArchive(mPSConnectionString);
+                mSyncer = new SyncFASTAFileArchive(mPsConnectionString);
                 mSyncer.SyncProgress += SyncProgressHandler;
             }
 
@@ -1222,7 +1222,7 @@ namespace AppUI_OrfDBHandler
         {
             if (mSyncer == null)
             {
-                mSyncer = new SyncFASTAFileArchive(mPSConnectionString);
+                mSyncer = new SyncFASTAFileArchive(mPsConnectionString);
                 mSyncer.SyncProgress += SyncProgressHandler;
             }
 
@@ -1233,7 +1233,7 @@ namespace AppUI_OrfDBHandler
         {
             if (mSyncer == null)
             {
-                mSyncer = new SyncFASTAFileArchive(mPSConnectionString);
+                mSyncer = new SyncFASTAFileArchive(mPsConnectionString);
                 mSyncer.SyncProgress += SyncProgressHandler;
             }
 

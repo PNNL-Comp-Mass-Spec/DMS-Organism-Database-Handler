@@ -27,10 +27,10 @@ namespace Bulk_Fasta_Importer
     {
         #region "Constants and Enums"
 
-        public const string DMS_CONNECTION_STRING = "Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI;";
-        public const string PROTEINSEQS_CONNECTION_STRING = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;";
+        public const string DmsConnectionString = "Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI;";
+        public const string ProteinseqsConnectionString = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;";
 
-        public enum eBulkImporterErrorCodes
+        public enum BulkImporterErrorCodes
         {
             NoError = 0,
             DatabaseError = 1,
@@ -40,11 +40,11 @@ namespace Bulk_Fasta_Importer
         #endregion
 
         #region "Structures"
-        public struct udtFastaFileInfoType
+        public struct FastaFileInfoType
         {
             public string FilePath;
-            public int OrganismID;
-            public int AuthID;
+            public int OrganismId;
+            public int AuthId;
         }
         #endregion
 
@@ -71,7 +71,7 @@ namespace Bulk_Fasta_Importer
         private Dictionary<string, int> mProteinCollectionInfo;
 
         private bool mDatabaseDataLoaded;
-        private IDBTools mDbToolsDMS;
+        private IDBTools mDbToolsDms;
         private IDBTools mDbToolsProteinSeqs;
 
         private bool mAnnotationViewInfoShown;
@@ -79,7 +79,7 @@ namespace Bulk_Fasta_Importer
 
         private DateTime mLastProgressTime;
 
-        private eBulkImporterErrorCodes mLocalErrorCode;
+        private BulkImporterErrorCodes mLocalErrorCode;
 
         #endregion
 
@@ -104,12 +104,12 @@ namespace Bulk_Fasta_Importer
 
             if (string.IsNullOrWhiteSpace(dmsConnString))
             {
-                dmsConnString = DMS_CONNECTION_STRING;
+                dmsConnString = DmsConnectionString;
             }
 
             if (string.IsNullOrWhiteSpace(proteinSeqsConnString))
             {
-                proteinSeqsConnString = PROTEINSEQS_CONNECTION_STRING;
+                proteinSeqsConnString = ProteinseqsConnectionString;
             }
 
             DMSConnectionString = dmsConnString;
@@ -131,15 +131,15 @@ namespace Bulk_Fasta_Importer
             {
                 switch (mLocalErrorCode)
                 {
-                    case eBulkImporterErrorCodes.NoError:
+                    case BulkImporterErrorCodes.NoError:
                         errorMessage = "";
                         break;
 
-                    case eBulkImporterErrorCodes.DatabaseError:
+                    case BulkImporterErrorCodes.DatabaseError:
                         errorMessage = "Database query error";
                         break;
 
-                    case eBulkImporterErrorCodes.UnspecifiedError:
+                    case BulkImporterErrorCodes.UnspecifiedError:
                         errorMessage = "Unspecified localized error";
                         break;
 
@@ -164,13 +164,13 @@ namespace Bulk_Fasta_Importer
             mAnnotationTypeInfo = new Dictionary<string, int>(StringComparer.CurrentCultureIgnoreCase);
             mProteinCollectionInfo = new Dictionary<string, int>(StringComparer.CurrentCultureIgnoreCase);
 
-            mLocalErrorCode = eBulkImporterErrorCodes.NoError;
+            mLocalErrorCode = BulkImporterErrorCodes.NoError;
             mLastProgressTime = DateTime.UtcNow;
 
-            mDbToolsDMS = DbToolsFactory.GetDBTools(DMS_CONNECTION_STRING);
-            RegisterEvents(mDbToolsDMS);
+            mDbToolsDms = DbToolsFactory.GetDBTools(DmsConnectionString);
+            RegisterEvents(mDbToolsDms);
 
-            mDbToolsProteinSeqs = DbToolsFactory.GetDBTools(PROTEINSEQS_CONNECTION_STRING);
+            mDbToolsProteinSeqs = DbToolsFactory.GetDBTools(ProteinseqsConnectionString);
             RegisterEvents(mDbToolsProteinSeqs);
 
             ValidationAllowAllSymbolsInProteinNames = false;
@@ -179,11 +179,11 @@ namespace Bulk_Fasta_Importer
             ValidationMaxProteinNameLength = FastaValidator.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
         }
 
-        protected List<udtFastaFileInfoType> ParseFastaInfoFile(string fastaInfoFilePath)
+        protected List<FastaFileInfoType> ParseFastaInfoFile(string fastaInfoFilePath)
         {
             try
             {
-                var sourceFileList = new List<udtFastaFileInfoType>();
+                var sourceFileList = new List<FastaFileInfoType>();
                 var sourceFileNames = new SortedSet<string>(StringComparer.CurrentCultureIgnoreCase);
 
                 var fiInfoFile = new FileInfo(fastaInfoFilePath);
@@ -244,27 +244,27 @@ namespace Bulk_Fasta_Importer
                             continue;
                         }
 
-                        var udtFastaFileInfo = new udtFastaFileInfoType();
+                        var udtFastaFileInfo = new FastaFileInfoType();
                         udtFastaFileInfo.FilePath = fiFastaFile.FullName;
 
                         int organismID;
-                        if (!LookupOrganismID(dataCols[1], out organismID))
+                        if (!LookupOrganismId(dataCols[1], out organismID))
                         {
                             continue;
                         }
 
                         int annotationTypeId;
-                        if (!LookupAnnotationTypeID(dataCols[2], out annotationTypeId))
+                        if (!LookupAnnotationTypeId(dataCols[2], out annotationTypeId))
                         {
                             continue;
                         }
 
-                        udtFastaFileInfo.OrganismID = organismID;
-                        udtFastaFileInfo.AuthID = annotationTypeId;
+                        udtFastaFileInfo.OrganismId = organismID;
+                        udtFastaFileInfo.AuthId = annotationTypeId;
 
                         // Make sure the protein collection is not already in the Protein Sequences database
                         int proteinCollectionID;
-                        if (!LookupProteinCollectionID(Path.GetFileNameWithoutExtension(fiFastaFile.Name), out proteinCollectionID))
+                        if (!LookupProteinCollectionId(Path.GetFileNameWithoutExtension(fiFastaFile.Name), out proteinCollectionID))
                         {
                             continue;
                         }
@@ -296,7 +296,7 @@ namespace Bulk_Fasta_Importer
             catch (Exception ex)
             {
                 ShowErrorMessage("Error reading the Fasta Info File: " + ex.Message);
-                return new List<udtFastaFileInfoType>();
+                return new List<FastaFileInfoType>();
             }
         }
 
@@ -350,10 +350,10 @@ namespace Bulk_Fasta_Importer
 
                 foreach (DataRow resultRow in queryResults.Rows)
                 {
-                    int annotationTypeID = mDbToolsDMS.GetInteger(resultRow[0]);
-                    string annotationTypeName = mDbToolsDMS.GetString(resultRow[1]);
+                    int annotationTypeId = mDbToolsDms.GetInteger(resultRow[0]);
+                    string annotationTypeName = mDbToolsDms.GetString(resultRow[1]);
 
-                    mAnnotationTypeInfo.Add(annotationTypeName, annotationTypeID);
+                    mAnnotationTypeInfo.Add(annotationTypeName, annotationTypeId);
                 }
 
                 return true;
@@ -373,10 +373,10 @@ namespace Bulk_Fasta_Importer
 
                 mOrganismInfo.Clear();
 
-                var cmd = mDbToolsDMS.CreateCommand(sqlQuery);
+                var cmd = mDbToolsDms.CreateCommand(sqlQuery);
 
                 DataTable queryResults = null;
-                bool success = mDbToolsDMS.GetQueryResultsDataTable(cmd, out queryResults);
+                bool success = mDbToolsDms.GetQueryResultsDataTable(cmd, out queryResults);
 
                 if (!success)
                 {
@@ -386,10 +386,10 @@ namespace Bulk_Fasta_Importer
 
                 foreach (DataRow resultRow in queryResults.Rows)
                 {
-                    int organismID = mDbToolsDMS.GetInteger(resultRow[0]);
-                    string organismName = mDbToolsDMS.GetString(resultRow[1]);
+                    int organismId = mDbToolsDms.GetInteger(resultRow[0]);
+                    string organismName = mDbToolsDms.GetString(resultRow[1]);
 
-                    mOrganismInfo.Add(organismName, organismID);
+                    mOrganismInfo.Add(organismName, organismId);
                 }
 
                 return true;
@@ -422,12 +422,12 @@ namespace Bulk_Fasta_Importer
 
                 foreach (DataRow resultRow in queryResults.Rows)
                 {
-                    int proteinCollectionID = mDbToolsDMS.GetInteger(resultRow[0]);
-                    string proteinCollectionName = mDbToolsDMS.GetString(resultRow[1]);
+                    int proteinCollectionId = mDbToolsDms.GetInteger(resultRow[0]);
+                    string proteinCollectionName = mDbToolsDms.GetString(resultRow[1]);
 
                     if (!mProteinCollectionInfo.ContainsKey(proteinCollectionName))
                     {
-                        mProteinCollectionInfo.Add(proteinCollectionName, proteinCollectionID);
+                        mProteinCollectionInfo.Add(proteinCollectionName, proteinCollectionId);
                     }
                 }
 
@@ -440,7 +440,7 @@ namespace Bulk_Fasta_Importer
             }
         }
 
-        private bool LookupAnnotationTypeID(string annotationTypeNameOrID, out int annotationTypeId)
+        private bool LookupAnnotationTypeId(string annotationTypeNameOrId, out int annotationTypeId)
         {
             if (!mDatabaseDataLoaded)
             {
@@ -449,7 +449,7 @@ namespace Bulk_Fasta_Importer
                     return false;
             }
 
-            if (int.TryParse(annotationTypeNameOrID, out annotationTypeId))
+            if (int.TryParse(annotationTypeNameOrId, out annotationTypeId))
             {
                 // Make sure the ID is valid
                 if (!mAnnotationTypeInfo.ContainsValue(annotationTypeId))
@@ -467,12 +467,12 @@ namespace Bulk_Fasta_Importer
                 return true;
             }
 
-            if (mAnnotationTypeInfo.TryGetValue(annotationTypeNameOrID, out annotationTypeId))
+            if (mAnnotationTypeInfo.TryGetValue(annotationTypeNameOrId, out annotationTypeId))
             {
                 return true;
             }
 
-            ShowWarning("Invalid Annotation Name: " + annotationTypeNameOrID);
+            ShowWarning("Invalid Annotation Name: " + annotationTypeNameOrId);
             if (!mAnnotationViewInfoShown)
             {
                 Console.WriteLine("  ... see view V_Annotation_Type_Picker in the ProteinSeqs database");
@@ -482,7 +482,7 @@ namespace Bulk_Fasta_Importer
             return false;
         }
 
-        private bool LookupOrganismID(string organismNameOrID, out int organismId)
+        private bool LookupOrganismId(string organismNameOrId, out int organismId)
         {
             if (!mDatabaseDataLoaded)
             {
@@ -491,7 +491,7 @@ namespace Bulk_Fasta_Importer
                     return false;
             }
 
-            if (int.TryParse(organismNameOrID, out organismId))
+            if (int.TryParse(organismNameOrId, out organismId))
             {
                 // Make sure the ID is valid
                 if (!mOrganismInfo.ContainsValue(organismId))
@@ -509,12 +509,12 @@ namespace Bulk_Fasta_Importer
                 return true;
             }
 
-            if (mOrganismInfo.TryGetValue(organismNameOrID, out organismId))
+            if (mOrganismInfo.TryGetValue(organismNameOrId, out organismId))
             {
                 return true;
             }
 
-            ShowWarning("Invalid Organism Name: " + organismNameOrID);
+            ShowWarning("Invalid Organism Name: " + organismNameOrId);
             if (!mOrganismViewInfoShown)
             {
                 Console.WriteLine("  ... see view V_OrganismExport in the DMS5 database");
@@ -528,26 +528,26 @@ namespace Bulk_Fasta_Importer
         /// Lookup the protein collection ID using the protein collection name
         /// </summary>
         /// <param name="proteinCollectionName"></param>
-        /// <param name="proteinCollectionID">ID if a match; 0 if no match</param>
+        /// <param name="proteinCollectionId">ID if a match; 0 if no match</param>
         /// <returns></returns>
         /// <remarks>True if success (even if the protein collection does not exist); false if a database error</remarks>
-        private bool LookupProteinCollectionID(string proteinCollectionName, out int proteinCollectionID)
+        private bool LookupProteinCollectionId(string proteinCollectionName, out int proteinCollectionId)
         {
             if (!mDatabaseDataLoaded)
             {
-                proteinCollectionID = 0;
+                proteinCollectionId = 0;
                 if (!LoadDatabaseInfo())
                     return false;
             }
 
-            if (mProteinCollectionInfo.TryGetValue(proteinCollectionName, out proteinCollectionID))
+            if (mProteinCollectionInfo.TryGetValue(proteinCollectionName, out proteinCollectionId))
             {
                 // Collection exists
                 return true;
             }
 
             // Collection does not exist
-            proteinCollectionID = 0;
+            proteinCollectionId = 0;
             return true;
         }
 
@@ -571,21 +571,21 @@ namespace Bulk_Fasta_Importer
 
         private void ReportDatabaseError(string errorMessage)
         {
-            mLocalErrorCode = eBulkImporterErrorCodes.DatabaseError;
+            mLocalErrorCode = BulkImporterErrorCodes.DatabaseError;
             SetBaseClassErrorCode(ProcessFilesErrorCodes.LocalizedError);
             ShowErrorMessage(errorMessage);
         }
 
         [Obsolete("Unused")]
-        public bool UploadFastaFile(string fastaFilePath, int organismID, int authID)
+        public bool UploadFastaFile(string fastaFilePath, int organismId, int authId)
         {
-            var sourceFileList = new List<udtFastaFileInfoType>();
+            var sourceFileList = new List<FastaFileInfoType>();
 
-            var udtFastaFileInfo = new udtFastaFileInfoType()
+            var udtFastaFileInfo = new FastaFileInfoType()
             {
                 FilePath = fastaFilePath,
-                OrganismID = organismID,
-                AuthID = authID
+                OrganismId = organismId,
+                AuthId = authId
             };
 
             sourceFileList.Add(udtFastaFileInfo);
@@ -594,7 +594,7 @@ namespace Bulk_Fasta_Importer
             return success;
         }
 
-        public bool UploadFastaFileList(List<udtFastaFileInfoType> sourceFileList)
+        public bool UploadFastaFileList(List<FastaFileInfoType> sourceFileList)
         {
             var fileInfoList = new List<PSUploadHandler.UploadInfo>();
 
@@ -607,7 +607,7 @@ namespace Bulk_Fasta_Importer
                     continue;
                 }
 
-                var upInfo = new PSUploadHandler.UploadInfo(fiSourceFile, sourceFile.OrganismID, sourceFile.AuthID);
+                var upInfo = new PSUploadHandler.UploadInfo(fiSourceFile, sourceFile.OrganismId, sourceFile.AuthId);
                 fileInfoList.Add(upInfo);
             }
 

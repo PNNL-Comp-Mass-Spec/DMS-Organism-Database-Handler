@@ -31,20 +31,20 @@ namespace AppUI_OrfDBHandler
 
     public class TransTableHandler
     {
-        private DataTable mTranslation_Entries;
-        private DataTable mTranslation_Tables;
+        private DataTable mTranslationEntries;
+        private DataTable mTranslationTables;
         private string mConnectionString;
         private const string EntriesTableName = "T_DNA_Translation_Table_Members";
-        private const string IDTableName = "T_DNA_Translation_Tables";
+        private const string IdTableName = "T_DNA_Translation_Tables";
 
-        public TransTableHandler(string PIS_ConnectionString)
+        public TransTableHandler(string pisConnectionString)
         {
-            mConnectionString = PIS_ConnectionString;
+            mConnectionString = pisConnectionString;
         }
 
-        public DataTable GetAllTranslationTableEntries(string FilePath)
+        public DataTable GetAllTranslationTableEntries(string filePath)
         {
-            ScanFileForEntries(FilePath);
+            ScanFileForEntries(filePath);
 
             // Not implemented
             return new DataTable();
@@ -56,10 +56,10 @@ namespace AppUI_OrfDBHandler
             var dba = new DBTask(mConnectionString);
 
             string sqlQuery1 = "SELECT * FROM " + EntriesTableName;
-            mTranslation_Entries = dba.GetTable(sqlQuery1);
+            mTranslationEntries = dba.GetTable(sqlQuery1);
 
-            string sqlQuery2 = "SELECT * FROM " + IDTableName;
-            mTranslation_Tables = dba.GetTable(sqlQuery2);
+            string sqlQuery2 = "SELECT * FROM " + IdTableName;
+            mTranslationTables = dba.GetTable(sqlQuery2);
 
             var fi = new System.IO.FileInfo(filePath);
 
@@ -105,7 +105,7 @@ namespace AppUI_OrfDBHandler
         }
 
         [Obsolete("Unused")]
-        private void SyncLocalToDMS()
+        private void SyncLocalToDms()
         {
             var dba = new DBTask(mConnectionString);
 
@@ -118,11 +118,11 @@ namespace AppUI_OrfDBHandler
         {
             var id = default(int);
 
-            string AAList = string.Empty;
-            string StartList = string.Empty;
-            string Base1List = string.Empty;
-            string Base2List = string.Empty;
-            string Base3List = string.Empty;
+            string aaList = string.Empty;
+            string startList = string.Empty;
+            string base1List = string.Empty;
+            string base2List = string.Empty;
+            string base3List = string.Empty;
             var nameList = new List<string>();
 
             var tmpStartPos = default(int);
@@ -158,29 +158,29 @@ namespace AppUI_OrfDBHandler
                         tmpStartPos = tmp.IndexOf("\"") + 1;
                         tmp = tmp.Substring(tmpStartPos);
                         tmp = tmp.TrimEnd(trimChars);
-                        AAList = tmp;
+                        aaList = tmp;
                         break;
 
                     case "snc":
                         tmp = s.TrimStart();
                         tmp = tmp.Substring(tmpStartPos);
                         tmp = tmp.TrimEnd(trimChars);
-                        StartList = tmp;
+                        startList = tmp;
                         break;
 
                     case "-- ":
                         switch (s.Substring(0, 8) ?? "")
                         {
                             case "-- Base1":
-                                Base1List = ProcessBaseString(s);
+                                base1List = ProcessBaseString(s);
                                 break;
 
                             case "-- Base2":
-                                Base2List = ProcessBaseString(s);
+                                base2List = ProcessBaseString(s);
                                 break;
 
                             case "-- Base3":
-                                Base3List = ProcessBaseString(s);
+                                base3List = ProcessBaseString(s);
                                 break;
 
                             default:
@@ -194,7 +194,7 @@ namespace AppUI_OrfDBHandler
                 }
             }
 
-            bool success = SplitCodonEntries(AAList, StartList, Base1List, Base2List, Base3List, nameList, id);
+            bool success = SplitCodonEntries(aaList, startList, base1List, base2List, base3List, nameList, id);
         }
 
         private string ProcessBaseString(string rawBaseString)
@@ -207,21 +207,21 @@ namespace AppUI_OrfDBHandler
         }
 
         private bool SplitCodonEntries(
-            string AAString,
-            string StartString,
-            string Base1List,
-            string Base2List,
-            string Base3List,
-            List<string> NameList,
-            int ID)
+            string aaString,
+            string startString,
+            string base1List,
+            string base2List,
+            string base3List,
+            List<string> nameList,
+            int id)
         {
             // Check for length consistency
-            int baseLength = AAString.Length;
+            int baseLength = aaString.Length;
 
-            if (baseLength != StartString.Length ||
-                baseLength != Base1List.Length ||
-                baseLength != Base2List.Length ||
-                baseLength != Base3List.Length)
+            if (baseLength != startString.Length ||
+                baseLength != base1List.Length ||
+                baseLength != base2List.Length ||
+                baseLength != base3List.Length)
             {
                 return false;
             }
@@ -231,21 +231,21 @@ namespace AppUI_OrfDBHandler
             var counter = default(int);
             DataRow dr;
 
-            foreach (var tmpName in NameList)
+            foreach (var tmpName in nameList)
             {
-                dr = mTranslation_Tables.NewRow();
-                dr["Translation_Table_Name"] = tmpName.Trim() + " (ID = " + ID.ToString() + ")";
-                dr["DNA_Translation_Table_ID"] = ID;
-                mTranslation_Tables.Rows.Add(dr);
+                dr = mTranslationTables.NewRow();
+                dr["Translation_Table_Name"] = tmpName.Trim() + " (ID = " + id.ToString() + ")";
+                dr["DNA_Translation_Table_ID"] = id;
+                mTranslationTables.Rows.Add(dr);
             }
 
-            var arrAA = AAString.ToCharArray();
+            var arrAA = aaString.ToCharArray();
 
             foreach (var tmpAA in arrAA)
             {
-                dr = mTranslation_Entries.NewRow();
+                dr = mTranslationEntries.NewRow();
                 counter += 1;
-                var tmpStartString = StartString.Substring(counter, 1);
+                var tmpStartString = startString.Substring(counter, 1);
                 if (tmpStartString == "M")
                 {
                     tmpStart = true;
@@ -255,18 +255,18 @@ namespace AppUI_OrfDBHandler
                     tmpStart = false;
                 }
 
-                var Base1 = Base1List.Substring(counter, 1);
-                var Base2 = Base2List.Substring(counter, 1);
-                var Base3 = Base3List.Substring(counter, 1);
+                var base1 = base1List.Substring(counter, 1);
+                var base2 = base2List.Substring(counter, 1);
+                var base3 = base3List.Substring(counter, 1);
 
                 dr["Coded_AA"] = tmpAA;
                 dr["Start_Sequence"] = tmpStartString;
-                dr["Base_1"] = Base1;
-                dr["Base_2"] = Base2;
-                dr["Base_3"] = Base3;
-                dr["DNA_Translation_Table_ID"] = ID;
+                dr["Base_1"] = base1;
+                dr["Base_2"] = base2;
+                dr["Base_3"] = base3;
+                dr["DNA_Translation_Table_ID"] = id;
 
-                mTranslation_Entries.Rows.Add(dr);
+                mTranslationEntries.Rows.Add(dr);
             }
 
             return default;

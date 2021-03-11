@@ -8,16 +8,16 @@ namespace AppUI_OrfDBHandler.NucleotideTranslator
         private ArrayList mTransEntries;
         private string mTranslatedAA;
 
-        internal TranslationEntry(string NucleotideBase, ArrayList TranslationEntries)
+        internal TranslationEntry(string nucleotideBase, ArrayList translationEntries)
         {
-            mBase = NucleotideBase;
-            mTransEntries = TranslationEntries;
+            mBase = nucleotideBase;
+            mTransEntries = translationEntries;
         }
 
-        internal TranslationEntry(string NucleotideBase, string TranslatedAA) : base()
+        internal TranslationEntry(string nucleotideBase, string translatedAA) : base()
         {
-            mBase = NucleotideBase;
-            mTranslatedAA = TranslatedAA;
+            mBase = nucleotideBase;
+            mTranslatedAA = translatedAA;
         }
 
         internal string BaseLetter => mBase;

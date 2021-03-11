@@ -10,7 +10,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class ArchiveToFile : ArchiveOutputFilesBase
     {
-        private const string DEFAULT_BASE_ARCHIVE_PATH = @"\\gigasax\DMS_FASTA_File_Archive\";
+        private const string DefaultBaseArchivePath = @"\\gigasax\DMS_FASTA_File_Archive\";
 
         private readonly string mBaseArchivePath;
         private readonly SHA1Managed mSHA1Provider;
@@ -25,7 +25,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             if (databaseAccessor == null)
             {
-                mBaseArchivePath = DEFAULT_BASE_ARCHIVE_PATH;
+                mBaseArchivePath = DefaultBaseArchivePath;
             }
             else
             {
@@ -37,7 +37,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
                 else
                 {
-                    mBaseArchivePath = DEFAULT_BASE_ARCHIVE_PATH;
+                    mBaseArchivePath = DefaultBaseArchivePath;
                 }
             }
 
@@ -45,7 +45,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         }
 
         protected override int DispositionFile(
-            int proteinCollectionID,
+            int proteinCollectionId,
             string sourceFilePath,
             string creationOptionsString,
             string sourceAuthenticationHash,
@@ -53,19 +53,19 @@ namespace OrganismDatabaseHandler.ProteinExport
             CollectionTypes archivedFileType,
             string proteinCollectionsList)
         {
-            int ArchivedFileEntryID;
+            int archivedFileEntryId;
 
             var fi = new FileInfo(sourceFilePath);
 
             // Check for existence of Archive Entry
-            var checkSQL = "SELECT Archived_File_ID, Archived_File_Path, IsNull(Protein_Collection_List, '') as Protein_Collection_List, IsNull(Collection_List_Hex_Hash, '') AS Collection_List_Hex_Hash " +
+            var checkSql = "SELECT Archived_File_ID, Archived_File_Path, IsNull(Protein_Collection_List, '') as Protein_Collection_List, IsNull(Collection_List_Hex_Hash, '') AS Collection_List_Hex_Hash " +
                 "FROM T_Archived_Output_Files " +
                 "WHERE Authentication_Hash = '" + sourceAuthenticationHash + "' AND " +
                 "Archived_File_State_ID <> 3 " +
                 "ORDER BY File_Modification_Date DESC";
 
-            var tmpTable = mDatabaseAccessor.GetTable(checkSQL);
-            var CollectionListHexHash = GenerateHash(proteinCollectionsList + "/" + creationOptionsString);
+            var tmpTable = DatabaseAccessor.GetTable(checkSql);
+            var collectionListHexHash = GenerateHash(proteinCollectionsList + "/" + creationOptionsString);
             if (tmpTable.Rows.Count == 0)
             {
                 var proteinCount = GetProteinCount(sourceFilePath);
@@ -75,26 +75,26 @@ namespace OrganismDatabaseHandler.ProteinExport
                     sourceAuthenticationHash,
                     archivedFileType, outputSequenceType);
 
-                ArchivedFileEntryID = RunSP_AddOutputFileArchiveEntry(
-                    proteinCollectionID, creationOptionsString, sourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount,
-                    archivePath, Enum.GetName(typeof(CollectionTypes), archivedFileType), proteinCollectionsList, CollectionListHexHash);
+                archivedFileEntryId = RunSP_AddOutputFileArchiveEntry(
+                    proteinCollectionId, creationOptionsString, sourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount,
+                    archivePath, Enum.GetName(typeof(CollectionTypes), archivedFileType), proteinCollectionsList, collectionListHexHash);
 
-                tmpTable = mDatabaseAccessor.GetTable(checkSQL);
+                tmpTable = DatabaseAccessor.GetTable(checkSql);
             }
             else
             {
                 // Archived file entry already exists
 
-                ArchivedFileEntryID = Convert.ToInt32(tmpTable.Rows[0]["Archived_File_ID"]);
-                var CollectionListHexHashInDB = tmpTable.Rows[0]["Collection_List_Hex_Hash"].ToString();
-                var ProteinCollectionsListFromDB = tmpTable.Rows[0]["Protein_Collection_List"].ToString();
+                archivedFileEntryId = Convert.ToInt32(tmpTable.Rows[0]["Archived_File_ID"]);
+                var collectionListHexHashInDb = tmpTable.Rows[0]["Collection_List_Hex_Hash"].ToString();
+                var proteinCollectionsListFromDb = tmpTable.Rows[0]["Protein_Collection_List"].ToString();
 
                 if (tmpTable.Rows[0]["Protein_Collection_List"].GetType().Name == "DBNull" ||
-                    string.IsNullOrEmpty(CollectionListHexHashInDB) ||
-                    (ProteinCollectionsListFromDB ?? "") != (proteinCollectionsList ?? "") ||
-                    (CollectionListHexHashInDB ?? "") != (CollectionListHexHash ?? ""))
+                    string.IsNullOrEmpty(collectionListHexHashInDb) ||
+                    (proteinCollectionsListFromDb ?? "") != (proteinCollectionsList ?? "") ||
+                    (collectionListHexHashInDb ?? "") != (collectionListHexHash ?? ""))
                 {
-                    RunSP_UpdateFileArchiveEntryCollectionList(ArchivedFileEntryID, proteinCollectionsList, sourceAuthenticationHash, CollectionListHexHash);
+                    RunSP_UpdateFileArchiveEntryCollectionList(archivedFileEntryId, proteinCollectionsList, sourceAuthenticationHash, collectionListHexHash);
                 }
             }
 
@@ -103,13 +103,13 @@ namespace OrganismDatabaseHandler.ProteinExport
             try
             {
                 var di = new DirectoryInfo(Path.GetDirectoryName(mArchived_File_Name));
-                var destFI = new FileInfo(mArchived_File_Name);
+                var destFi = new FileInfo(mArchived_File_Name);
                 if (!di.Exists)
                 {
                     di.Create();
                 }
 
-                if (!destFI.Exists)
+                if (!destFi.Exists)
                 {
                     fi.CopyTo(mArchived_File_Name);
                 }
@@ -120,11 +120,11 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
             catch (Exception ex)
             {
-                mLastError = "File copying error: " + ex.Message;
+                LastError = "File copying error: " + ex.Message;
                 return 0;
             }
 
-            return ArchivedFileEntryID;
+            return archivedFileEntryId;
         }
 
         protected string GenerateHash(string sourceText)
@@ -146,24 +146,24 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         protected string GenerateArchivePath(
             string sourceFilePath,
-            string authentication_Hash,
+            string authenticationHash,
             CollectionTypes archivedFileType,
             GetFASTAFromDMS.SequenceTypes outputSequenceType)
         {
             var pathString = Path.Combine(mBaseArchivePath, Enum.GetName(typeof(CollectionTypes), archivedFileType));
             pathString = Path.Combine(pathString, Enum.GetName(typeof(GetFASTAFromDMS.SequenceTypes), outputSequenceType));
-            pathString = Path.Combine(pathString, "ID_00000_" + authentication_Hash + Path.GetExtension(sourceFilePath));
+            pathString = Path.Combine(pathString, "ID_00000_" + authenticationHash + Path.GetExtension(sourceFilePath));
 
             return pathString;
         }
 
         protected int RunSP_UpdateFileArchiveEntryCollectionList(
-            int archivedFileEntryID,
+            int archivedFileEntryId,
             string proteinCollectionsList,
             string collectionListHash,
             string collectionListHexHash)
         {
-            var dbTools = mDatabaseAccessor.DBTools;
+            var dbTools = DatabaseAccessor.DbTools;
 
             var cmdSave = dbTools.CreateCommand("UpdateFileArchiveEntryCollectionList", CommandType.StoredProcedure);
 
@@ -171,7 +171,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@Archived_File_Entry_ID", SqlType.Int).Value = archivedFileEntryID;
+            dbTools.AddParameter(cmdSave, "@Archived_File_Entry_ID", SqlType.Int).Value = archivedFileEntryId;
             dbTools.AddParameter(cmdSave, "@ProteinCollectionList", SqlType.VarChar, 8000).Value = proteinCollectionsList;
             dbTools.AddParameter(cmdSave, "@SHA1Hash", SqlType.VarChar, 28).Value = collectionListHash;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 512).Direction = ParameterDirection.Output;
@@ -187,9 +187,9 @@ namespace OrganismDatabaseHandler.ProteinExport
         }
 
         protected int RunSP_AddOutputFileArchiveEntry(
-            int proteinCollectionID,
+            int proteinCollectionId,
             string creationOptionsString,
-            string authentication_Hash,
+            string authenticationHash,
             DateTime fileModificationDate,
             long outputFileSize,
             int proteinCount,
@@ -198,7 +198,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             string proteinCollectionsList,
             string collectionListHexHash)
         {
-            var dbTools = mDatabaseAccessor.DBTools;
+            var dbTools = DatabaseAccessor.DbTools;
 
             var cmdSave = dbTools.CreateCommand("AddOutputFileArchiveEntry", CommandType.StoredProcedure);
 
@@ -206,8 +206,8 @@ namespace OrganismDatabaseHandler.ProteinExport
             var returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@protein_collection_ID", SqlType.Int).Value = proteinCollectionID;
-            dbTools.AddParameter(cmdSave, "@crc32_authentication", SqlType.VarChar, 40).Value = authentication_Hash;
+            dbTools.AddParameter(cmdSave, "@protein_collection_ID", SqlType.Int).Value = proteinCollectionId;
+            dbTools.AddParameter(cmdSave, "@crc32_authentication", SqlType.VarChar, 40).Value = authenticationHash;
             dbTools.AddParameter(cmdSave, "@file_modification_date", SqlType.DateTime).Value = fileModificationDate;
             dbTools.AddParameter(cmdSave, "@file_size", SqlType.BigInt).Value = outputFileSize;
             dbTools.AddParameter(cmdSave, "@protein_count", SqlType.Int).Value = proteinCount;

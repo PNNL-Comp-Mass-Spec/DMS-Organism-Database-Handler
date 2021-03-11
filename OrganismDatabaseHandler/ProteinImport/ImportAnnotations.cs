@@ -21,7 +21,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
     public class GeneOntologyEntry
     {
-        private string mID;
+        private string mId;
         private string mName;
         private string mNamespace;
         private string mDefinition;
@@ -33,10 +33,10 @@ namespace OrganismDatabaseHandler.ProteinImport
         private ArrayList mRelationship;
         private ArrayList mSubSet;
 
-        public string ID
+        public string Id
         {
-            get => mID;
-            set => mID = CleanUpLine(value);
+            get => mId;
+            set => mId = CleanUpLine(value);
         }
 
         public string Name
@@ -84,14 +84,14 @@ namespace OrganismDatabaseHandler.ProteinImport
             mExactSynonym.Add(CleanUpLine(synonym));
         }
 
-        public void Add_IsA_Entry(string IsAReference)
+        public void Add_IsA_Entry(string isAReference)
         {
-            mIsA.Add(IsAReference);
+            mIsA.Add(isAReference);
         }
 
-        public void Add_XRefAnalog_Entry(string XRef)
+        public void Add_XRefAnalog_Entry(string xref)
         {
-            mXRefAnalog.Add(XRef);
+            mXRefAnalog.Add(xref);
         }
 
         public void Add_RelationShip_Entry(string relationshipEntry)
@@ -115,22 +115,22 @@ namespace OrganismDatabaseHandler.ProteinImport
     {
 
         #region "Regular Expressions"
-        private Regex r_entryHeader;
-        private Regex r_IDLine;
-        private Regex r_NameLine;
-        private Regex r_NameSpaceLine;
-        private Regex r_DefinitionLine;
-        private Regex r_CommentLine;
-        private Regex r_IsObsoleteLine;
-        private Regex r_ExactSynonymLine;
-        private Regex r_IsALine;
-        private Regex r_XRefAnalogLine;
-        private Regex r_RelationshipLine;
-        private Regex r_SubsetLine;
+        private Regex rEntryHeader;
+        private Regex rIdLine;
+        private Regex rNameLine;
+        private Regex rNameSpaceLine;
+        private Regex rDefinitionLine;
+        private Regex rCommentLine;
+        private Regex rIsObsoleteLine;
+        private Regex rExactSynonymLine;
+        private Regex rIsALine;
+        private Regex rXrefAnalogLine;
+        private Regex rRelationshipLine;
+        private Regex rSubsetLine;
         #endregion
 
         // Send it the text block from a single entry
-        public GeneOntologyListOBO(List<string> GOEntryText)
+        public GeneOntologyListOBO(List<string> goEntryText)
         {
         }
 
@@ -138,7 +138,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         {
         }
 
-        protected void ProcessEntry(List<string> EntryCollection)
+        protected void ProcessEntry(List<string> entryCollection)
         {
         }
 
@@ -146,40 +146,40 @@ namespace OrganismDatabaseHandler.ProteinImport
         {
             var reOptions = RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled;
 
-            r_entryHeader = new Regex(
+            rEntryHeader = new Regex(
                 @"^\[Term\]$",
                 reOptions);
-            r_IDLine = new Regex(
+            rIdLine = new Regex(
                 @"^(?<tag>id):\s+(?<value>.+)$",
                 reOptions);
-            r_NameLine = new Regex(
+            rNameLine = new Regex(
                 @"^(?<tag>name):\s+(?<value>.+)$",
                 reOptions);
-            r_NameSpaceLine = new Regex(
+            rNameSpaceLine = new Regex(
                 @"^(?<tag>namespace):\s+(?<value>.+)$",
                 reOptions);
-            r_DefinitionLine = new Regex(
+            rDefinitionLine = new Regex(
                 @"^(?<tag>def):\s+\""+(?<value>.*)\""\s*\[*(?<xref>.*)\]*\s*",
                 reOptions);
-            r_CommentLine = new Regex(
+            rCommentLine = new Regex(
                 @"^(?<tag>comment):\s+(?<value>.+)$",
                 reOptions);
-            r_IsObsoleteLine = new Regex(
+            rIsObsoleteLine = new Regex(
                 @"^(?<tag>is_obsolete):\s+(?<value>true|false)$",
                 reOptions);
-            r_ExactSynonymLine = new Regex(
+            rExactSynonymLine = new Regex(
                 @"^(?<tag>exact_synonym):\s+\""+(?<value>.*)\""\s*\[(?<xref>.*)\]S*$",
                 reOptions);
-            r_IsALine = new Regex(
+            rIsALine = new Regex(
                 @"^(?<tag>is_a):\s+(?<value>\S+)\s*\!.*$",
                 reOptions);
-            r_RelationshipLine = new Regex(
+            rRelationshipLine = new Regex(
                 @"^(?<tag>relationship):\s+part_of\s+(?<value>\S+)\s*\!.*$",
                 reOptions);
-            r_XRefAnalogLine = new Regex(
+            rXrefAnalogLine = new Regex(
                 @"^(?<tag>xref_analog):\s+(?<value>.+)$",
                 reOptions);
-            r_SubsetLine = new Regex(
+            rSubsetLine = new Regex(
                 @"^(?<tag>subset):\s+(?<value>.+)$",
                 reOptions);
         }

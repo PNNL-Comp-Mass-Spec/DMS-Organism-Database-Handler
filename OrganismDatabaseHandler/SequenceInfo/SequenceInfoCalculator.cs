@@ -15,9 +15,9 @@ namespace OrganismDatabaseHandler.SequenceInfo
         private double mAverageMass;
         private int mLength;
         private string mMolFormula;
-        private string mSHA1Hash;
+        private string sha1Hash;
 
-        private static SHA1Managed mSHA1Provider;
+        private static SHA1Managed sha1Provider;
 
         private readonly string mDMSConnectionString = "Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI;";
 
@@ -28,9 +28,9 @@ namespace OrganismDatabaseHandler.SequenceInfo
                 InitializeFromDMS();
             }
 
-            if (mSHA1Provider == null)
+            if (sha1Provider == null)
             {
-                mSHA1Provider = new SHA1Managed();
+                sha1Provider = new SHA1Managed();
             }
         }
 
@@ -44,7 +44,7 @@ namespace OrganismDatabaseHandler.SequenceInfo
 
         public string MolecularFormula => mMolFormula;
 
-        public string SHA1Hash => mSHA1Hash;
+        public string SHA1Hash => sha1Hash;
 
         #endregion
 
@@ -55,7 +55,7 @@ namespace OrganismDatabaseHandler.SequenceInfo
             mAverageMass = tmpSeqInfo.AverageMass;
             mMolFormula = tmpSeqInfo.MolecularFormula;
             mLength = sequence.Length;
-            mSHA1Hash = GenerateHash(sequence);
+            sha1Hash = GenerateHash(sequence);
         }
 
         protected SequenceInfo SequenceInfo(string sequence, string description = "")
@@ -98,31 +98,31 @@ namespace OrganismDatabaseHandler.SequenceInfo
             }
         }
 
-        public string GenerateHash(string SourceText)
+        public string GenerateHash(string sourceText)
         {
             // Create an encoding object to ensure the encoding standard for the source text
-            var Ue = new ASCIIEncoding();
+            var ue = new ASCIIEncoding();
 
             // Retrieve a byte array based on the source text
-            var ByteSourceText = Ue.GetBytes(SourceText);
+            var byteSourceText = ue.GetBytes(sourceText);
 
             // Compute the hash value from the source
-            var SHA1_hash = mSHA1Provider.ComputeHash(ByteSourceText);
+            var sha1Hash = sha1Provider.ComputeHash(byteSourceText);
 
             // And convert it to String format for return
-            string SHA1string = ToHexString(SHA1_hash);
+            string sha1String = ToHexString(sha1Hash);
 
-            return SHA1string;
+            return sha1String;
         }
 
         private void InitializeFromDMS()
         {
             mAminoAcids = new Dictionary<string, AminoAcidInfo>(30);
 
-            var getSQL = new DBTask(mDMSConnectionString);
+            var getSql = new DBTask(mDMSConnectionString);
 
             string sqlString = "SELECT * FROM T_Residues WHERE [NumC] > 0";
-            var tmpAATable = getSQL.GetTable(sqlString);
+            var tmpAATable = getSql.GetTable(sqlString);
 
             foreach (DataRow dr in tmpAATable.Rows)
             {
@@ -148,9 +148,9 @@ namespace OrganismDatabaseHandler.SequenceInfo
         internal class AminoAcidInfo : SequenceInfo
         {
             public AminoAcidInfo(string seq, string name,
-                int C_Count, int H_Count, int N_Count, int O_Count, int S_Count,
+                int countC, int countH, int countN, int countO, int countS,
                 double average, double monoisotopic)
-                : base(seq, name, C_Count, H_Count, N_Count, O_Count, S_Count, average, monoisotopic)
+                : base(seq, name, countC, countH, countN, countO, countS, average, monoisotopic)
             {
                 if (seq.Length != 1)
                 {
@@ -174,15 +174,15 @@ namespace OrganismDatabaseHandler.SequenceInfo
 
     public class SequenceInfo
     {
-        private bool minvalidated = false;
-        private string msequence;
-        private int mC_Count;
-        private int mH_Count;
-        private int mN_Count;
-        private int mO_Count;
-        private int mS_Count;
-        private double mAverage_Mass;
-        private double mMonoisotopic_Mass;
+        private bool mInvalidated = false;
+        private string mSequence;
+        private int countC;
+        private int countH;
+        private int countN;
+        private int countO;
+        private int countS;
+        private double mAverageMass;
+        private double mMonoisotopicMass;
 
         /// <summary>
         /// Constructor
@@ -199,86 +199,86 @@ namespace OrganismDatabaseHandler.SequenceInfo
         /// </summary>
         /// <param name="seq"></param>
         /// <param name="seqName"></param>
-        /// <param name="C_Count"></param>
-        /// <param name="H_Count"></param>
-        /// <param name="N_Count"></param>
-        /// <param name="O_Count"></param>
-        /// <param name="S_Count"></param>
+        /// <param name="cCount"></param>
+        /// <param name="hCount"></param>
+        /// <param name="nCount"></param>
+        /// <param name="oCount"></param>
+        /// <param name="sCount"></param>
         /// <param name="average"></param>
         /// <param name="monoisotopic"></param>
         public SequenceInfo(string seq, string seqName,
-            int C_Count, int H_Count, int N_Count, int O_Count, int S_Count,
+            int cCount, int hCount, int nCount, int oCount, int sCount,
             double average, double monoisotopic)
         {
-            msequence = seq;
+            mSequence = seq;
             Name = seqName;
-            mC_Count = C_Count;
-            mH_Count = H_Count;
-            mN_Count = N_Count;
-            mO_Count = O_Count;
-            mS_Count = S_Count;
-            mAverage_Mass = average;
-            mMonoisotopic_Mass = monoisotopic;
+            countC = cCount;
+            countH = hCount;
+            countN = nCount;
+            countO = oCount;
+            countS = sCount;
+            mAverageMass = average;
+            mMonoisotopicMass = monoisotopic;
         }
 
-        public string Sequence => msequence;
+        public string Sequence => mSequence;
 
         public void Invalidate()
         {
-            minvalidated = true;
-            mAverage_Mass = 0d;
-            mC_Count = 0;
-            mH_Count = 0;
-            mMonoisotopic_Mass = 0d;
-            mN_Count = 0;
-            mO_Count = 0;
-            mS_Count = 0;
+            mInvalidated = true;
+            mAverageMass = 0d;
+            countC = 0;
+            countH = 0;
+            mMonoisotopicMass = 0d;
+            countN = 0;
+            countO = 0;
+            countS = 0;
         }
 
-        public bool Invalidated => minvalidated;
+        public bool Invalidated => mInvalidated;
 
         public string Name { get; private set; }
 
-        public int C_Count => mC_Count;
+        public int C => countC;
 
-        public int H_Count => mH_Count;
+        public int H => countH;
 
-        public int N_Count => mN_Count;
+        public int N => countN;
 
-        public int O_Count => mO_Count;
+        public int O => countO;
 
-        public int S_Count => mS_Count;
+        public int S => countS;
 
-        public double AverageMass => mAverage_Mass + 18.01528d;
+        public double AverageMass => mAverageMass + 18.01528d;
 
-        public double MonoisotopicMass => mMonoisotopic_Mass + 18.0105633d;
+        public double MonoisotopicMass => mMonoisotopicMass + 18.0105633d;
 
         public string MolecularFormula => GetMolecularFormula();
 
         private string GetMolecularFormula()
         {
-            string mf = "C" + mC_Count + " H" + mH_Count + " N" + mN_Count + " O" + mO_Count + " S" + mS_Count;
+            string mf = "C" + countC + " H" + countH + " N" + countN + " O" + countO + " S" + countS;
             return mf;
         }
 
         public void AddSequenceInfo(SequenceInfo info)
         {
-            if (msequence.Length == 0)
+            if (mSequence.Length == 0)
             {
-                mH_Count = 2;
-                mO_Count = 1;
+                countH = 2;
+                countO = 1;
             }
 
-            msequence = msequence + info.Sequence;
-            if (!minvalidated)
+            mSequence = mSequence + info.Sequence;
+            if (!mInvalidated)
             {
-                mC_Count = mC_Count + info.C_Count;
-                mH_Count = mH_Count + info.H_Count;
-                mN_Count = mN_Count + info.N_Count;
-                mO_Count = mO_Count + info.O_Count;
-                mS_Count = mS_Count + info.S_Count;
-                mMonoisotopic_Mass = mMonoisotopic_Mass + info.mMonoisotopic_Mass;
-                mAverage_Mass = mAverage_Mass + info.mAverage_Mass;
+                countC = countC + info.countC;
+                countH = countH + info.countH;
+                countN = countN + info.countN;
+                countO = countO + info.countO;
+                countS = countS + info.countS;
+                mMonoisotopicMass = mMonoisotopicMass + info.mMonoisotopicMass;
+                mAverageMass = mAverageMass + info.mAverageMass;
             }
         }
     }

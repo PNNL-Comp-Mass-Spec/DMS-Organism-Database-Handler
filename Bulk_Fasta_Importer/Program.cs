@@ -13,7 +13,7 @@ namespace Bulk_Fasta_Importer
     /// </summary>
     static class Program
     {
-        public const string PROGRAM_DATE = "February 18, 2020";
+        public const string ProgramDate = "February 18, 2020";
 
         private static string mInputFilePath;
         private static bool mPreviewMode;
@@ -123,7 +123,7 @@ namespace Bulk_Fasta_Importer
 
         private static string GetAppVersion()
         {
-            return Assembly.GetExecutingAssembly().GetName().Version.ToString() + " (" + PROGRAM_DATE + ")";
+            return Assembly.GetExecutingAssembly().GetName().Version.ToString() + " (" + ProgramDate + ")";
         }
 
         private static bool SetOptionsUsingCommandLineParameters(clsParseCommandLine commandLineParser)
@@ -234,8 +234,8 @@ namespace Bulk_Fasta_Importer
 
         private static void BulkImporter_ProgressChanged(string taskDescription, float percentComplete)
         {
-            const int PERCENT_REPORT_INTERVAL = 25;
-            const int PROGRESS_DOT_INTERVAL_MSEC = 250;
+            const int percentReportInterval = 25;
+            const int progressDotIntervalMsec = 250;
 
             if (percentComplete >= mLastProgressReportValue)
             {
@@ -245,10 +245,10 @@ namespace Bulk_Fasta_Importer
                 }
 
                 DisplayProgressPercent(mLastProgressReportValue, false);
-                mLastProgressReportValue += PERCENT_REPORT_INTERVAL;
+                mLastProgressReportValue += percentReportInterval;
                 mLastProgressReportTime = DateTime.UtcNow;
             }
-            else if (DateTime.UtcNow.Subtract(mLastProgressReportTime).TotalMilliseconds > PROGRESS_DOT_INTERVAL_MSEC)
+            else if (DateTime.UtcNow.Subtract(mLastProgressReportTime).TotalMilliseconds > progressDotIntervalMsec)
             {
                 mLastProgressReportTime = DateTime.UtcNow;
                 Console.Write(".");

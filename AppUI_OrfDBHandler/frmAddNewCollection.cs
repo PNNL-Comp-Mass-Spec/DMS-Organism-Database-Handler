@@ -18,13 +18,13 @@ namespace AppUI_OrfDBHandler
         private string mDescription;
         private string mCollectionSource;
 
-        private int mOrganismID;
-        private int mAnnotationTypeID;
+        private int mOrganismId;
+        private int mAnnotationTypeId;
 
         private DataTable mAnnotationTypes;
         private DataTable mOrganisms;
 
-        private bool mLocal_File;
+        private bool mLocalFile;
 
         private void frmAddNewCollection_Load(object sender, EventArgs e)
         {
@@ -51,9 +51,9 @@ namespace AppUI_OrfDBHandler
                 txtCollectionName.Visible = true;
                 txtCollectionName.Text = mCollectionName;
                 BindToCombo(cboOrganismPicker, mOrganisms, "Display_Name", "ID");
-                cboOrganismPicker.SelectedValue = mOrganismID;
+                cboOrganismPicker.SelectedValue = mOrganismId;
                 BindToCombo(cboAuthorityPicker, mAnnotationTypes, "Display_Name", "ID");
-                cboAuthorityPicker.SelectedValue = mAnnotationTypeID;
+                cboAuthorityPicker.SelectedValue = mAnnotationTypeId;
                 cboAuthorityPicker.Enabled = false;
                 cboOrganismPicker.Enabled = false;
             }
@@ -61,8 +61,8 @@ namespace AppUI_OrfDBHandler
 
         internal bool IsLocalFile
         {
-            get => mLocal_File;
-            set => mLocal_File = value;
+            get => mLocalFile;
+            set => mLocalFile = value;
         }
 
         internal string CollectionName
@@ -95,29 +95,29 @@ namespace AppUI_OrfDBHandler
 
         internal int OrganismID
         {
-            get => mOrganismID;
-            set => mOrganismID = value;
+            get => mOrganismId;
+            set => mOrganismId = value;
         }
 
         internal int AnnotationTypeID
         {
-            get => mAnnotationTypeID;
-            set => mAnnotationTypeID = value;
+            get => mAnnotationTypeId;
+            set => mAnnotationTypeId = value;
         }
 
         protected void BindToCombo(
             ComboBox cbo,
             DataTable list,
-            string DisplayMember,
-            string ValueMember)
+            string displayMember,
+            string valueMember)
         {
             //foreach (DataRow dr in list.Rows)
             //    Debug.WriteLine(dr[0].ToString() + ", " + dr[1].ToString() + ", " + dr[2].ToString() + ", ");
 
             cbo.DataSource = list;
-            cbo.DisplayMember = DisplayMember;
+            cbo.DisplayMember = displayMember;
             //cbo.DisplayMember = list.Columns["Display_Name"].ColumnName.ToString();
-            cbo.ValueMember = ValueMember;
+            cbo.ValueMember = valueMember;
             //cbo.ValueMember = list.Columns["ID"].ColumnName.ToString();
         }
 
@@ -130,8 +130,8 @@ namespace AppUI_OrfDBHandler
 
         private void cboOrganismPicker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            mOrganismID = Convert.ToInt32(cboOrganismPicker.SelectedValue);
-            if (mOrganismID == 0)
+            mOrganismId = Convert.ToInt32(cboOrganismPicker.SelectedValue);
+            if (mOrganismId == 0)
             {
                 cmdOK.Enabled = false;
             }
@@ -143,7 +143,7 @@ namespace AppUI_OrfDBHandler
 
         private void cboAuthorityPicker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            mAnnotationTypeID = Convert.ToInt32(cboAuthorityPicker.SelectedValue);
+            mAnnotationTypeId = Convert.ToInt32(cboAuthorityPicker.SelectedValue);
         }
 
         private void cmdAddOrganismClick(object sender, EventArgs e)
@@ -159,15 +159,15 @@ namespace AppUI_OrfDBHandler
             mCollectionName = txtCollectionName.Text;
             mDescription = txtDescription.Text;
             mCollectionSource = txtSource.Text;
-            mOrganismID = Convert.ToInt32(cboOrganismPicker.SelectedValue);
-            mAnnotationTypeID = Convert.ToInt32(cboAuthorityPicker.SelectedValue);
+            mOrganismId = Convert.ToInt32(cboOrganismPicker.SelectedValue);
+            mAnnotationTypeId = Convert.ToInt32(cboAuthorityPicker.SelectedValue);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             mCollectionName = null;
-            mOrganismID = default;
-            mAnnotationTypeID = default;
+            mOrganismId = default;
+            mAnnotationTypeId = default;
         }
 
         #endregion

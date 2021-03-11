@@ -2,7 +2,6 @@
 using System.Data;
 using System.IO;
 using System.Text.RegularExpressions;
-using OrganismDatabaseHandler.ProteinStorage;
 using PRISM;
 using PRISMWin;
 
@@ -28,7 +27,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             ProteinStorage.ProteinStorage proteins,
             ref string destinationPath)
         {
-            const int REQUIRED_SIZE_MB = 150;
+            const int requiredSizeMb = 150;
 
             long currentFreeSpaceBytes;
             string errorMessage = string.Empty;
@@ -41,7 +40,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 throw new IOException("Unable to save FASTA file at " + destinationPath + ". " + errorMessage);
             }
 
-            if (!FileTools.ValidateFreeDiskSpace(destinationPath, REQUIRED_SIZE_MB, currentFreeSpaceBytes, out errorMessage))
+            if (!FileTools.ValidateFreeDiskSpace(destinationPath, requiredSizeMb, currentFreeSpaceBytes, out errorMessage))
             {
                 if (string.IsNullOrEmpty(errorMessage))
                     errorMessage = "FileTools.ValidateFreeDiskSpace returned a blank error message";
@@ -58,14 +57,14 @@ namespace OrganismDatabaseHandler.ProteinExport
                 var counter = default(int);
                 var hexCodeFinder = new Regex(@"[\x00-\x1F\x7F-\xFF]", RegexOptions.Compiled);
 
-                int EventTriggerThresh;
+                int eventTriggerThresh;
                 if (counterMax <= 25)
                 {
-                    EventTriggerThresh = 1;
+                    eventTriggerThresh = 1;
                 }
                 else
                 {
-                    EventTriggerThresh = (int)Math.Round(counterMax / 25d);
+                    eventTriggerThresh = (int)Math.Round(counterMax / 25d);
                 }
 
                 var nameList = proteins.GetSortedProteinNames();
@@ -74,20 +73,20 @@ namespace OrganismDatabaseHandler.ProteinExport
                 {
                     OnExportStart("Writing: " + tmpName);
 
-                    var tmpPC = proteins.GetProtein(tmpName);
-                    var tmpSeq = tmpPC.Sequence;
+                    var tmpPc = proteins.GetProtein(tmpName);
+                    var tmpSeq = tmpPc.Sequence;
 
                     counter += 1;
 
-                    if (counter % EventTriggerThresh == 0)
+                    if (counter % eventTriggerThresh == 0)
                     {
                         OnProgressUpdate("Processing: " + tmpName, Math.Round(counter / (double)counterMax, 3));
                     }
 
                     var proteinLength = tmpSeq.Length;
-                    var tmpDesc = hexCodeFinder.Replace(tmpPC.Description, " ");
+                    var tmpDesc = hexCodeFinder.Replace(tmpPc.Description, " ");
 
-                    writer.WriteLine((">" + tmpPC.Reference + " " + tmpDesc + tmpAltNames).Trim());
+                    writer.WriteLine((">" + tmpPc.Reference + " " + tmpDesc + tmpAltNames).Trim());
 
                     for (var proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += mseqLineLength)
                     {
@@ -105,13 +104,13 @@ namespace OrganismDatabaseHandler.ProteinExport
                 Path.GetDirectoryName(destinationPath),
                 fingerprint + Path.GetExtension(destinationPath));
 
-            var targetFI = new FileInfo(newDestinationPath);
+            var targetFi = new FileInfo(newDestinationPath);
 
             if (fi.Exists)
             {
-                if (targetFI.Exists)
+                if (targetFi.Exists)
                 {
-                    targetFI.Delete();
+                    targetFi.Delete();
                 }
 
                 fi.MoveTo(newDestinationPath);
@@ -163,7 +162,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public int WriteFromDataTable(DataTable proteinTable, string destinationPath)
         {
-            const int REQUIRED_SIZE_MB = 150;
+            const int requiredSizeMb = 150;
 
             var counter = default(int);
             int proteinsWritten = 0;
@@ -182,7 +181,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 throw new IOException("Unable to append to FASTA file at " + destinationPath + ". " + errorMessage);
             }
 
-            if (!FileTools.ValidateFreeDiskSpace(destinationPath, REQUIRED_SIZE_MB, currentFreeSpaceBytes, out errorMessage))
+            if (!FileTools.ValidateFreeDiskSpace(destinationPath, requiredSizeMb, currentFreeSpaceBytes, out errorMessage))
             {
                 if (string.IsNullOrEmpty(errorMessage))
                     errorMessage = "FileTools.ValidateFreeDiskSpace returned a blank error message";
@@ -195,32 +194,32 @@ namespace OrganismDatabaseHandler.ProteinExport
                 // OnDetailedExportStart("Writing: " + proteinTable.TableName);
 
                 var counterMax = proteinTable.Rows.Count;
-                int EventTriggerThresh;
+                int eventTriggerThresh;
                 if (counterMax <= 25)
                 {
-                    EventTriggerThresh = 1;
+                    eventTriggerThresh = 1;
                 }
                 else
                 {
-                    EventTriggerThresh = (int)Math.Round(counterMax / 25d);
+                    eventTriggerThresh = (int)Math.Round(counterMax / 25d);
                 }
 
                 var foundRows = proteinTable.Select("");
 
                 foreach (var currentRow in foundRows)
                 {
-                    string tmpSeq = mExportComponent.SequenceExtender(currentRow["Sequence"].ToString(), proteinTable.Rows.Count);
+                    string tmpSeq = ExportComponent.SequenceExtender(currentRow["Sequence"].ToString(), proteinTable.Rows.Count);
 
                     counter += 1;
 
-                    if (counter % EventTriggerThresh == 0)
+                    if (counter % eventTriggerThresh == 0)
                     {
                         // OnDetailedProgressUpdate("Processing: " + tmpName, Math.Round(counter / (double)counterMax, 3));
                     }
 
                     int proteinLength = tmpSeq.Length;
                     string tmpDesc = hexCodeFinder.Replace(currentRow["Description"].ToString(), " ");
-                    string tmpName = mExportComponent.ReferenceExtender(currentRow["Name"].ToString());
+                    string tmpName = ExportComponent.ReferenceExtender(currentRow["Name"].ToString());
 
                     writer.WriteLine((">" + tmpName + " " + tmpDesc + tmpAltNames).Trim());
 
@@ -252,13 +251,13 @@ namespace OrganismDatabaseHandler.ProteinExport
                 Path.GetDirectoryName(destinationPath),
                 fingerprint + Path.GetExtension(destinationPath));
 
-            var targetFI = new FileInfo(newDestinationPath);
+            var targetFi = new FileInfo(newDestinationPath);
 
             if (fi.Exists)
             {
-                if (targetFI.Exists)
+                if (targetFi.Exists)
                 {
-                    targetFI.Delete();
+                    targetFi.Delete();
                 }
 
                 fi.MoveTo(newDestinationPath);

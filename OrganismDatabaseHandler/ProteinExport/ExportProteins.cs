@@ -6,11 +6,11 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public abstract class ExportProteins
     {
-        protected GetFASTAFromDMSForward mExportComponent;
+        protected GetFASTAFromDMSForward ExportComponent;
 
         public ExportProteins(GetFASTAFromDMSForward exportComponent)
         {
-            mExportComponent = exportComponent;
+            ExportComponent = exportComponent;
         }
 
         public event ExportStartEventHandler ExportStart;

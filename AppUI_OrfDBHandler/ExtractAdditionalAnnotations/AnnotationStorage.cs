@@ -8,7 +8,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         private Dictionary<string, int> mGroupNameLookup;
         private readonly SortedSet<string> mGlobalProteinNameList = new SortedSet<string>();
 
-        public void AddAnnotationGroup(int GroupID, string groupNameToAdd)
+        public void AddAnnotationGroup(int groupId, string groupNameToAdd)
         {
             if (mGroupNameLookup == null)
             {
@@ -22,8 +22,8 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
             var newGroup = new AnnotationGroup(groupNameToAdd);
             newGroup.ImportThisGroup = false;
-            mAnnotationGroups.Add(GroupID, newGroup);
-            mGroupNameLookup.Add(groupNameToAdd, GroupID);
+            mAnnotationGroups.Add(groupId, newGroup);
+            mGroupNameLookup.Add(groupNameToAdd, groupId);
         }
 
         public void ClearAnnotationGroups()
@@ -40,39 +40,39 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         }
 
         public void AddAnnotation(
-            int groupID,
-            string PrimaryReferenceName,
-            string XRefName)
+            int groupId,
+            string primaryReferenceName,
+            string xRefName)
         {
-            var ag = GetGroup(groupID);
-            ag.AddAnnotation(PrimaryReferenceName, XRefName);
-            mAnnotationGroups[groupID] = ag;
-            if (!mGlobalProteinNameList.Contains(PrimaryReferenceName))
+            var ag = GetGroup(groupId);
+            ag.AddAnnotation(primaryReferenceName, xRefName);
+            mAnnotationGroups[groupId] = ag;
+            if (!mGlobalProteinNameList.Contains(primaryReferenceName))
             {
-                mGlobalProteinNameList.Add(PrimaryReferenceName);
+                mGlobalProteinNameList.Add(primaryReferenceName);
             }
         }
 
         public void AddDelimiter(
-            int groupID,
+            int groupId,
             string newDelimiter)
         {
-            GetGroup(groupID).XRefDelimiter = newDelimiter;
+            GetGroup(groupId).XRefDelimiter = newDelimiter;
         }
 
-        public void SetAnnotationGroupStatus(int GroupID, bool NewState)
+        public void SetAnnotationGroupStatus(int groupId, bool newState)
         {
-            var group = mAnnotationGroups[GroupID];
-            group.ImportThisGroup = NewState;
-            mAnnotationGroups[GroupID] = group;
+            var group = mAnnotationGroups[groupId];
+            group.ImportThisGroup = newState;
+            mAnnotationGroups[groupId] = group;
             group = null;
         }
 
         // Controls the import state of the named annotation group
         public void SetAnnotationGroupStatus(string groupNameToUpdate, bool newStateForGroup)
         {
-            int groupID = mGroupNameLookup[groupNameToUpdate];
-            SetAnnotationGroupStatus(groupID, newStateForGroup);
+            int groupId = mGroupNameLookup[groupNameToUpdate];
+            SetAnnotationGroupStatus(groupId, newStateForGroup);
         }
 
         public SortedSet<string> GetAllPrimaryReferences()
@@ -82,66 +82,66 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         public int GroupCount => mAnnotationGroups.Count;
 
-        public string GetDelimiter(int GroupID)
+        public string GetDelimiter(int groupId)
         {
-            return GetGroup(GroupID).XRefDelimiter;
+            return GetGroup(groupId).XRefDelimiter;
         }
 
-        public int GetAnnotationAuthorityID(int GroupID)
+        public int GetAnnotationAuthorityId(int groupId)
         {
-            return mAnnotationGroups[GroupID].AnnotationAuthorityID;
+            return mAnnotationGroups[groupId].AnnotationAuthorityId;
         }
 
-        public void SetAnnotationAuthorityID(int GroupID, int value)
+        public void SetAnnotationAuthorityId(int groupId, int value)
         {
-            mAnnotationGroups[GroupID].AnnotationAuthorityID = value;
+            mAnnotationGroups[groupId].AnnotationAuthorityId = value;
         }
 
-        public string GetGroupName(int GroupID)
+        public string GetGroupName(int groupId)
         {
-            return GetGroup(GroupID).GroupName;
+            return GetGroup(groupId).GroupName;
         }
 
-        public void SetGroupName(int GroupID, string value)
+        public void SetGroupName(int groupId, string value)
         {
-            var group = GetGroup(GroupID);
+            var group = GetGroup(groupId);
             var oldName = @group.GroupName;
             group.GroupName = value;
-            mAnnotationGroups[GroupID] = group;
+            mAnnotationGroups[groupId] = group;
             mGroupNameLookup.Remove(oldName);
-            mGroupNameLookup[value] = GroupID;
+            mGroupNameLookup[value] = groupId;
         }
 
-        // public HashTable GetAnnotationGroup(string GroupName)
+        // public HashTable GetAnnotationGroup(string groupName)
         // {
-        //     var groupID = mGroupNameLookup(GroupName);
-        //     return GetAnnotationGroupData(groupID);
+        //     var groupId = mGroupNameLookup(groupName);
+        //     return GetAnnotationGroupData(groupId);
         // }
 
-        // public AnnotationGroup GetAnnotationGroupData(int GroupID)
+        // public AnnotationGroup GetAnnotationGroupData(int groupId)
         // {
-        //     return GetGroup(GroupID);
+        //     return GetGroup(groupId);
         // }
 
         /// <summary>
         /// Obtain dictionary containing all the added primary reference names as keys
         /// and SortedSets of their corresponding xref names for the specified Annotation group id
         /// </summary>
-        /// <param name="GroupID"></param>
+        /// <param name="groupId"></param>
         /// <returns></returns>
-        public Dictionary<string, SortedSet<string>> GetAllRawXRefs(int GroupID)
+        public Dictionary<string, SortedSet<string>> GetAllRawXRefs(int groupId)
         {
-            return GetGroup(GroupID).GetAllXRefs();
+            return GetGroup(groupId).GetAllXRefs();
         }
 
         // Returns a SortedSet containing all the xref names for the given
         // primary reference name
         public SortedSet<string> GetXRefs(
-            string PrimaryReferenceName,
-            int GroupID)
+            string primaryReferenceName,
+            int groupId)
         {
-            var group = GetGroup(GroupID);
-            return group.GetXRefs(PrimaryReferenceName);
+            var group = GetGroup(groupId);
+            return group.GetXRefs(primaryReferenceName);
         }
 
         public AnnotationGroup GetGroup(int groupid)

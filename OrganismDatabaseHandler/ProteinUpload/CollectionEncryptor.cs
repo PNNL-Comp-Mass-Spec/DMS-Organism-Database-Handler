@@ -21,9 +21,9 @@ namespace OrganismDatabaseHandler.ProteinUpload
 
         public delegate void EncryptionCompleteEventHandler();
 
-        public CollectionEncryptor(string PassPhrase, DBTask databaseAccessor)
+        public CollectionEncryptor(string passPhrase, DBTask databaseAccessor)
         {
-            mRijndaelEncryptor = new RijndaelEncryptionHandler(PassPhrase);
+            mRijndaelEncryptor = new RijndaelEncryptionHandler(passPhrase);
             mDatabaseAccessor = databaseAccessor;
         }
 
@@ -34,20 +34,20 @@ namespace OrganismDatabaseHandler.ProteinUpload
             OnEncryptionStart("Encrypting Sequences");
             int counter = 0;
             int counterMax = storageCollection.ProteinCount;
-            int EventTriggerThresh;
+            int eventTriggerThresh;
 
             if (counterMax <= 50)
             {
-                EventTriggerThresh = 1;
+                eventTriggerThresh = 1;
             }
             else
             {
-                EventTriggerThresh = (int)Math.Round(counterMax / 50d);
+                eventTriggerThresh = (int)Math.Round(counterMax / 50d);
             }
 
             while (e.MoveNext())
             {
-                if (counter % EventTriggerThresh == 0)
+                if (counter % eventTriggerThresh == 0)
                 {
                     OnEncryptionProgressUpdate(counter / (double)counterMax);
                 }

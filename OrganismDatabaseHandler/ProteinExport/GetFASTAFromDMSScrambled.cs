@@ -29,7 +29,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             if (mRndNumGen == null)
             {
                 mRndNumGen = new Random(collectionCount);
-                mNaming_Suffix = "_scrambled_seed_" + collectionCount.ToString();
+                NamingSuffix = "_scrambled_seed_" + collectionCount.ToString();
             }
 
             var counter = sequence.Length;

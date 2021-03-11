@@ -75,21 +75,21 @@ namespace AppUI_OrfDBHandler
 
         private void cmdBrowseTT_Click(object sender, EventArgs e)
         {
-            var OpenDialog = new OpenFileDialog();
+            var openDialog = new OpenFileDialog();
 
             Button proxy = (Button)sender;
 
-            OpenDialog.Title = "Open Translation Definitions File";
-            OpenDialog.DereferenceLinks = false;
-            OpenDialog.InitialDirectory = @"D:\Org_DB\";
-            OpenDialog.Filter = "All files (*.*)|*.*";
-            OpenDialog.FilterIndex = 1;
-            OpenDialog.RestoreDirectory = true;
-            OpenDialog.Multiselect = false;
+            openDialog.Title = "Open Translation Definitions File";
+            openDialog.DereferenceLinks = false;
+            openDialog.InitialDirectory = @"D:\Org_DB\";
+            openDialog.Filter = "All files (*.*)|*.*";
+            openDialog.FilterIndex = 1;
+            openDialog.RestoreDirectory = true;
+            openDialog.Multiselect = false;
 
-            if (OpenDialog.ShowDialog() == DialogResult.OK)
+            if (openDialog.ShowDialog() == DialogResult.OK)
             {
-                var newFilePath = OpenDialog.FileName;
+                var newFilePath = openDialog.FileName;
                 if (proxy.Name.ToString() == "cmdBrowseTT")
                 {
                     txtTransFilePath.Text = newFilePath;
@@ -194,9 +194,9 @@ namespace AppUI_OrfDBHandler
             }
         }
 
-        private string GetCollectionName(int ProteinCollectionID)
+        private string GetCollectionName(int proteinCollectionId)
         {
-            var foundRows = collectionList.Select("Protein_Collection_ID = " + ProteinCollectionID.ToString());
+            var foundRows = collectionList.Select("Protein_Collection_ID = " + proteinCollectionId.ToString());
             return foundRows[0]["FileName"].ToString();
         }
 

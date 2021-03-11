@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Text;
-using OrganismDatabaseHandler.ProteinStorage;
 using PRISM;
 using PRISMWin;
 
@@ -16,7 +15,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
         }
 
-        private const string HEADER_STRING = "xbang-pro-fasta-format";
+        private const string HeaderString = "xbang-pro-fasta-format";
 
         /// <summary>
         /// Export the proteins to the given file
@@ -28,9 +27,9 @@ namespace OrganismDatabaseHandler.ProteinExport
             ProteinStorage.ProteinStorage proteins,
             ref string destinationPath)
         {
-            const int REQUIRED_SIZE_MB = 150;
+            const int requiredSizeMb = 150;
 
-            var buffer = Encoding.Default.GetBytes(HEADER_STRING);
+            var buffer = Encoding.Default.GetBytes(HeaderString);
 
             Array.Resize(ref buffer, 256);
 
@@ -45,7 +44,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 throw new IOException("Unable to create FASTA file at " + destinationPath + ". " + errorMessage);
             }
 
-            if (!FileTools.ValidateFreeDiskSpace(destinationPath, REQUIRED_SIZE_MB, currentFreeSpaceBytes, out errorMessage))
+            if (!FileTools.ValidateFreeDiskSpace(destinationPath, requiredSizeMb, currentFreeSpaceBytes, out errorMessage))
             {
                 if (string.IsNullOrEmpty(errorMessage))
                     errorMessage = "FileTools.ValidateFreeDiskSpace returned a blank error message";
@@ -70,14 +69,14 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 var encoding = new ASCIIEncoding();
 
-                int EventTriggerThresh;
+                int eventTriggerThresh;
                 if (counterMax <= 25)
                 {
-                    EventTriggerThresh = 1;
+                    eventTriggerThresh = 1;
                 }
                 else
                 {
-                    EventTriggerThresh = (int)Math.Round(counterMax / 25d);
+                    eventTriggerThresh = (int)Math.Round(counterMax / 25d);
                 }
 
                 bw.Write(buffer);
@@ -85,12 +84,12 @@ namespace OrganismDatabaseHandler.ProteinExport
                 foreach (var tmpName in proteinArray)
                 {
                     OnExportStart("Writing: " + tmpName);
-                    var tmpPC = proteins.GetProtein(tmpName);
-                    var tmpSeq = tmpPC.Sequence;
+                    var tmpPc = proteins.GetProtein(tmpName);
+                    var tmpSeq = tmpPc.Sequence;
 
                     counter += 1;
 
-                    if (counter % EventTriggerThresh == 0)
+                    if (counter % eventTriggerThresh == 0)
                     {
                         OnProgressUpdate("Processing: " + tmpName, Math.Round(counter / (double)counterMax, 3));
                     }
@@ -136,9 +135,9 @@ namespace OrganismDatabaseHandler.ProteinExport
             DataSet proteinTables,
             ref string destinationPath)
         {
-            const int REQUIRED_SIZE_MB = 150;
+            const int requiredSizeMb = 150;
 
-            var buffer = Encoding.Default.GetBytes(HEADER_STRING);
+            var buffer = Encoding.Default.GetBytes(HeaderString);
 
             Array.Resize(ref buffer, 256);
 
@@ -153,7 +152,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 throw new IOException("Unable to create FASTA file at " + destinationPath + ". " + errorMessage);
             }
 
-            if (!FileTools.ValidateFreeDiskSpace(destinationPath, REQUIRED_SIZE_MB, currentFreeSpaceBytes, out errorMessage))
+            if (!FileTools.ValidateFreeDiskSpace(destinationPath, requiredSizeMb, currentFreeSpaceBytes, out errorMessage))
             {
                 if (string.IsNullOrEmpty(errorMessage))
                     errorMessage = "FileTools.ValidateFreeDiskSpace returned a blank error message";
@@ -179,14 +178,14 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                     var encoding = new ASCIIEncoding();
 
-                    int EventTriggerThresh;
+                    int eventTriggerThresh;
                     if (counterMax <= 25)
                     {
-                        EventTriggerThresh = 1;
+                        eventTriggerThresh = 1;
                     }
                     else
                     {
-                        EventTriggerThresh = (int)Math.Round(counterMax / 25d);
+                        eventTriggerThresh = (int)Math.Round(counterMax / 25d);
                     }
 
                     bw.Write(buffer);
@@ -201,7 +200,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                         counter += 1;
 
-                        if (counter % EventTriggerThresh == 0)
+                        if (counter % eventTriggerThresh == 0)
                         {
                             OnProgressUpdate("Processing: " + tmpName, Math.Round(counter / (double)counterMax, 3));
                         }

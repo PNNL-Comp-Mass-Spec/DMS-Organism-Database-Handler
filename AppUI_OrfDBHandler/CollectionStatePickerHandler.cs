@@ -12,24 +12,24 @@ namespace AppUI_OrfDBHandler
         private bool mforceReload = false;
         private DataTable mListViewData;
         private readonly DBTask mGetTables;
-        private readonly AddUpdateEntries mSPAccess;
+        private readonly AddUpdateEntries mSpAccess;
 
         public CollectionStatePickerHandler(string psConnectionString)
         {
             mGetTables = new DBTask(psConnectionString);
-            mSPAccess = new AddUpdateEntries(psConnectionString);
+            mSpAccess = new AddUpdateEntries(psConnectionString);
             mforceReload = true;
         }
 
-        public bool ForceIDTableReload
+        public bool ForceIdTableReload
         {
             set => mforceReload = value;
         }
 
-        public void ChangeSelectedCollectionStates(int newStateID, ArrayList selectedCollectionIDList)
+        public void ChangeSelectedCollectionStates(int newStateId, ArrayList selectedCollectionIdList)
         {
-            foreach (int ID in selectedCollectionIDList)
-                mSPAccess.UpdateProteinCollectionState(ID, newStateID);
+            foreach (int id in selectedCollectionIdList)
+                mSpAccess.UpdateProteinCollectionState(id, newStateId);
         }
 
         private void SetupPickerListView(ListView lvw, DataTable dt, string filterCriteria)
@@ -76,7 +76,7 @@ namespace AppUI_OrfDBHandler
             FillFilteredListView(listViewToFill, "");
         }
 
-        public void FillFilteredListView(ListView listViewToFill, string FilterString)
+        public void FillFilteredListView(ListView listViewToFill, string filterString)
         {
             listViewToFill.Items.Clear();
             if (mforceReload)
@@ -85,7 +85,7 @@ namespace AppUI_OrfDBHandler
                 mforceReload = false;
             }
 
-            SetupPickerListView(listViewToFill, mListViewData, FilterString);
+            SetupPickerListView(listViewToFill, mListViewData, filterString);
         }
 
         public DataTable GetCollectionTable()

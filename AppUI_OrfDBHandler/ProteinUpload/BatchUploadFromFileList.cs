@@ -20,8 +20,8 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
         private frmBatchUploadFromFileList mBatchForm;
 
-        private const string DMS_Org_DB_Table_Name = "V_Legacy_Static_File_Locations";
-        private const string Protein_Collections_Table_Name = "T_Protein_Collections";
+        private const string DmsOrgDbTableName = "V_Legacy_Static_File_Locations";
+        private const string ProteinCollectionsTableName = "T_Protein_Collections";
 
         public BatchUploadFromFileList(string psConnectionString)
         {
@@ -81,7 +81,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
             mBatchForm = new frmBatchUploadFromFileList(mAuthorityTable, mAnnotationTypeTable, mOrganismTable);
 
-            mCurrentFileList = GetDMSFileEntities();
+            mCurrentFileList = GetDmsFileEntities();
 
             mBatchForm.FileCollection = mCurrentFileList;
 
@@ -103,31 +103,31 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
         protected DataTable GetAuthorityTable()
         {
-            const string authSQL = "SELECT ID, Display_Name, Details FROM V_Authority_Picker";
-            return mDatabaseAccessor.GetTable(authSQL);
+            const string authSql = "SELECT ID, Display_Name, Details FROM V_Authority_Picker";
+            return mDatabaseAccessor.GetTable(authSql);
         }
 
         protected DataTable GetAnnotationTypeTable()
         {
-            const string annoSQL = "SELECT ID, Display_Name, Details FROM V_Annotation_Type_Picker";
-            return mDatabaseAccessor.GetTable(annoSQL);
+            const string annoSql = "SELECT ID, Display_Name, Details FROM V_Annotation_Type_Picker";
+            return mDatabaseAccessor.GetTable(annoSql);
         }
 
         protected DataTable GetOrganismsTable()
         {
-            const string orgSQL = "SELECT ID, Short_Name, Display_Name, OrganismName FROM V_OrganismPicker";
-            return mDatabaseAccessor.GetTable(orgSQL);
+            const string orgSql = "SELECT ID, Short_Name, Display_Name, OrganismName FROM V_OrganismPicker";
+            return mDatabaseAccessor.GetTable(orgSql);
         }
 
         private PSUploadHandler.UploadInfo TransformToUploadInfo(FileListInfo fli)
         {
             var fi = new FileInfo(fli.FullFilePath);
-            var ui = new PSUploadHandler.UploadInfo(fi, fli.OrganismID, fli.AnnotationTypeID);
+            var ui = new PSUploadHandler.UploadInfo(fi, fli.OrganismId, fli.AnnotationTypeId);
 
             return ui;
         }
 
-        protected Dictionary<string, FileListInfo> GetDMSFileEntities()
+        protected Dictionary<string, FileListInfo> GetDmsFileEntities()
         {
             var fileList = new Dictionary<string, FileListInfo>(StringComparer.OrdinalIgnoreCase);
             var collectionList = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -160,17 +160,17 @@ namespace AppUI_OrfDBHandler.ProteinUpload
                 {
                     string fileName = dr["FileName"].ToString();
                     string organismName = dr["OrganismName"].ToString();
-                    int organismID = Convert.ToInt32(dr["OrganismID"]);
+                    int organismId = Convert.ToInt32(dr["OrganismID"]);
                     string fullPath = dr["Full_Path"].ToString();
-                    int annotationTypeID = Convert.ToInt32(dr["Annotation_Type_ID"]);
-                    int authorityTypeID = Convert.ToInt32(dr["Authority_ID"]);
+                    int annotationTypeId = Convert.ToInt32(dr["Annotation_Type_ID"]);
+                    int authorityTypeId = Convert.ToInt32(dr["Authority_ID"]);
 
                     string baseName = Path.GetFileNameWithoutExtension(fileName);
 
                     if (!fileList.ContainsKey(fileName) & !collectionList.Contains(baseName))
                     {
                         fileList.Add(fileName,
-                                     new FileListInfo(fileName, fullPath, organismName, organismID, annotationTypeID, authorityTypeID));
+                                     new FileListInfo(fileName, fullPath, organismName, organismId, annotationTypeId, authorityTypeId));
                     }
                 }
 
@@ -187,7 +187,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             foreach (var fli in fileNameList.Values)
             {
                 var upInfoContainer = new PSUploadHandler.UploadInfo(
-                    new FileInfo(fli.FullFilePath), fli.OrganismID, fli.NamingAuthorityID);
+                    new FileInfo(fli.FullFilePath), fli.OrganismId, fli.NamingAuthorityId);
                 selectedFileList.Add(upInfoContainer);
             }
 
@@ -198,32 +198,32 @@ namespace AppUI_OrfDBHandler.ProteinUpload
         public class FileListInfo
         {
             public FileListInfo(
-                string FileName,
-                string FullFilePath,
-                string OrganismName,
-                int OrganismID)
+                string fileName,
+                string fullFilePath,
+                string organismName,
+                int organismId)
             {
-                this.FileName = FileName;
-                this.FullFilePath = FullFilePath;
-                this.OrganismName = OrganismName;
-                this.OrganismID = OrganismID;
+                this.FileName = fileName;
+                this.FullFilePath = fullFilePath;
+                this.OrganismName = organismName;
+                this.OrganismId = organismId;
                 AnnotationType = "";
             }
 
             public FileListInfo(
-                string FileName,
-                string FullFilePath,
-                string OrganismName,
-                int OrganismID,
-                int AnnotationTypeID,
-                int NamingAuthorityID)
+                string fileName,
+                string fullFilePath,
+                string organismName,
+                int organismId,
+                int annotationTypeId,
+                int namingAuthorityId)
             {
-                this.FileName = FileName;
-                this.FullFilePath = FullFilePath;
-                this.OrganismName = OrganismName;
-                this.OrganismID = OrganismID;
-                this.AnnotationTypeID = AnnotationTypeID;
-                this.NamingAuthorityID = NamingAuthorityID;
+                this.FileName = fileName;
+                this.FullFilePath = fullFilePath;
+                this.OrganismName = organismName;
+                this.OrganismId = organismId;
+                this.AnnotationTypeId = annotationTypeId;
+                this.NamingAuthorityId = namingAuthorityId;
                 AnnotationType = "";
             }
 
@@ -233,11 +233,11 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
             public string OrganismName { get; set; }
 
-            public int OrganismID { get; set; }
+            public int OrganismId { get; set; }
 
-            public int NamingAuthorityID { get; set; }
+            public int NamingAuthorityId { get; set; }
 
-            public int AnnotationTypeID { get; set; }
+            public int AnnotationTypeId { get; set; }
 
             public string AnnotationType { get; set; }
         }

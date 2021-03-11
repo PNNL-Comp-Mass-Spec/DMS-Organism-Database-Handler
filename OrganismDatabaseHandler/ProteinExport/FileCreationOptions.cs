@@ -149,15 +149,15 @@ namespace OrganismDatabaseHandler.ProteinExport
             GetFASTAFromDMS.SequenceTypes seqDirection,
             GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType)
         {
-            var creationOptionsSB = new StringBuilder();
+            var creationOptionsSb = new StringBuilder();
 
-            creationOptionsSB.Append("seq_direction=");
-            creationOptionsSB.Append(seqDirection.ToString());
-            creationOptionsSB.Append(",");
-            creationOptionsSB.Append("filetype=");
-            creationOptionsSB.Append(databaseFormatType.ToString());
+            creationOptionsSb.Append("seq_direction=");
+            creationOptionsSb.Append(seqDirection.ToString());
+            creationOptionsSb.Append(",");
+            creationOptionsSb.Append("filetype=");
+            creationOptionsSb.Append(databaseFormatType.ToString());
 
-            return creationOptionsSB.ToString();
+            return creationOptionsSb.ToString();
         }
     }
 }

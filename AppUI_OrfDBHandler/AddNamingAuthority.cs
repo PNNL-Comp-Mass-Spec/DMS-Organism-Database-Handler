@@ -8,7 +8,7 @@ namespace AppUI_OrfDBHandler
     public class AddNamingAuthorityType
     {
         private readonly string mConnectionString;
-        private AddUpdateEntries mSPRunner;
+        private AddUpdateEntries mSpRunner;
 
         private string mshortName;
         private string mfullName;
@@ -43,10 +43,10 @@ namespace AppUI_OrfDBHandler
         {
             var frmAuth = new frmAddNamingAuthority();
             frmAuth.DesktopLocation = mFormLocation;
-            int authID;
-            if (mSPRunner == null)
+            int authId;
+            if (mSpRunner == null)
             {
-                mSPRunner = new AddUpdateEntries(mConnectionString);
+                mSpRunner = new AddUpdateEntries(mConnectionString);
             }
 
             var r = frmAuth.ShowDialog();
@@ -56,14 +56,14 @@ namespace AppUI_OrfDBHandler
                 mshortName = frmAuth.ShortName;
                 mfullName = frmAuth.FullName;
                 mwebAddress = frmAuth.WebAddress;
-                authID = mSPRunner.AddNamingAuthority(mshortName, mfullName, mwebAddress);
-                if (authID < 0)
+                authId = mSpRunner.AddNamingAuthority(mshortName, mfullName, mwebAddress);
+                if (authId < 0)
                 {
                     MessageBox.Show(
                         "An entry for '" + mshortName + "' already exists in the Authorities table",
                         "Entry already exists!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2);
                     mEntryExists = true;
-                    authID = -authID;
+                    authId = -authId;
                 }
                 else
                 {
@@ -72,12 +72,12 @@ namespace AppUI_OrfDBHandler
             }
             else
             {
-                authID = -1;
+                authId = -1;
             }
 
-            mSPRunner = null;
+            mSpRunner = null;
 
-            return authID;
+            return authId;
         }
 
         private DataTable GetAuthoritiesList()

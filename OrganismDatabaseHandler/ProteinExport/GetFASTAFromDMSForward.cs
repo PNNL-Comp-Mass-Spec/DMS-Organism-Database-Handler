@@ -29,7 +29,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         private DataTable mCollectionsCache;
         private DataTable mOrganismCache;
 
-        protected string mNaming_Suffix = "_forward";
+        protected string NamingSuffix = "_forward";
         private string mExtension = "";
 
         private RijndaelEncryptionHandler mRijndaelDecryption;
@@ -49,12 +49,12 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             switch (databaseFormatType)
             {
-                case GetFASTAFromDMS.DatabaseFormatTypes.fasta:
+                case GetFASTAFromDMS.DatabaseFormatTypes.Fasta:
                     mfileDumper = new ExportProteinsFASTA(this);
                     mExtension = ".fasta";
                     break;
 
-                case GetFASTAFromDMS.DatabaseFormatTypes.fastapro:
+                case GetFASTAFromDMS.DatabaseFormatTypes.FastaPro:
                     mfileDumper = new ExportProteinsXTFASTA(this);
                     mExtension = ".fasta.pro";
                     break;
@@ -88,7 +88,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             string destinationFolderPath,
             string proteinCollectionName)
         {
-            return Path.Combine(destinationFolderPath, proteinCollectionName + mNaming_Suffix + mExtension);
+            return Path.Combine(destinationFolderPath, proteinCollectionName + NamingSuffix + mExtension);
         }
 
         public virtual string SequenceExtender(string originalSequence, int collectionCount)
@@ -106,19 +106,19 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// </summary>
         /// <param name="protCollectionList"></param>
         /// <param name="destinationFolderPath"></param>
-        /// <param name="alternateAnnotationTypeID"></param>
+        /// <param name="alternateAnnotationTypeId"></param>
         /// <param name="padWithPrimaryAnnotation"></param>
         /// <returns>CRC32 hash for the file</returns>
         public virtual string ExportFASTAFile(
             List<string> protCollectionList,
             string destinationFolderPath,
-            int alternateAnnotationTypeID,
+            int alternateAnnotationTypeId,
             bool padWithPrimaryAnnotation)
         {
             string trueName = string.Empty;
 
-            var tmpID = default(int);
-            var tmpIDListSB = new StringBuilder();
+            var tmpId = default(int);
+            var tmpIdListSb = new StringBuilder();
 
             var nameCheckRegex = new Regex(@"(?<collectionname>.+)(?<direction>_(forward|reversed|scrambled)).*\.(?<type>(fasta|fasta\.pro))");
 
@@ -128,7 +128,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
 
             var user = new WindowsPrincipal(WindowsIdentity.GetCurrent());
-            string user_ID = user.Identity.Name;
+            string userId = user.Identity.Name;
 
             // Dictionary mapping protein collection name to the associated passphrase
             var proteinCollectionPassphrases = new Dictionary<string, string>();
@@ -143,25 +143,25 @@ namespace OrganismDatabaseHandler.ProteinExport
                 if (encCheckRows.Length > 0)
                 {
                     // Determine the encrypted collections to which this user has access
-                    var authorizationSQL = "SELECT Protein_Collection_ID, Protein_Collection_Name " +
+                    var authorizationSql = "SELECT Protein_Collection_ID, Protein_Collection_Name " +
                                            "FROM V_Encrypted_Collection_Authorizations " +
-                                           "WHERE Login_Name = '" + user_ID + "'";
+                                           "WHERE Login_Name = '" + userId + "'";
 
-                    var authorizationTable = mDatabaseAccessor.GetTable(authorizationSQL);
+                    var authorizationTable = mDatabaseAccessor.GetTable(authorizationSql);
                     var authCheckRows = authorizationTable.Select("Protein_Collection_Name = '" + nameString + "' OR Protein_Collection_Name = 'Administrator'");
                     if (authCheckRows.Length > 0)
                     {
-                        tmpID = FindIDByName(nameString);
-                        var passPhraseSQL = "SELECT Passphrase " +
+                        tmpId = FindIdByName(nameString);
+                        var passPhraseSql = "SELECT Passphrase " +
                                             "FROM T_Encrypted_Collection_Passphrases " +
-                                            "WHERE Protein_Collection_ID = " + tmpID.ToString();
-                        var passPhraseTable = mDatabaseAccessor.GetTable(passPhraseSQL);
+                                            "WHERE Protein_Collection_ID = " + tmpId.ToString();
+                        var passPhraseTable = mDatabaseAccessor.GetTable(passPhraseSql);
 
                         proteinCollectionPassphrases.Add(nameString, passPhraseTable.Rows[0]["Passphrase"].ToString());
                     }
                     else
                     {
-                        throw new Exception("User " + user_ID + " does not have access to the encrypted collection '" + nameString + "'");
+                        throw new Exception("User " + userId + " does not have access to the encrypted collection '" + nameString + "'");
                     }
                 }
 
@@ -209,23 +209,23 @@ namespace OrganismDatabaseHandler.ProteinExport
                 int currentCollectionCount = 0;
 
                 // Make sure there are no leading or trailing spaces
-                var ProteinCollectionName = proteinCollName.Trim();
+                var proteinCollectionName = proteinCollName.Trim();
 
-                if (nameCheckRegex.IsMatch(ProteinCollectionName))
+                if (nameCheckRegex.IsMatch(proteinCollectionName))
                 {
-                    var m = nameCheckRegex.Match(ProteinCollectionName);
+                    var m = nameCheckRegex.Match(proteinCollectionName);
                     trueName = m.Groups["collectionname"].Value;
                 }
                 else
                 {
-                    trueName = ProteinCollectionName;
+                    trueName = proteinCollectionName;
                 }
 
                 // Lookup the number of proteins that should be in this protein collection
-                var lengthCheckSQL = "SELECT NumProteins FROM T_Protein_Collections " +
-                                     "WHERE FileName = '" + ProteinCollectionName + "'";
+                var lengthCheckSql = "SELECT NumProteins FROM T_Protein_Collections " +
+                                     "WHERE FileName = '" + proteinCollectionName + "'";
 
-                var lengthCheckTable = mDatabaseAccessor.GetTable(lengthCheckSQL);
+                var lengthCheckTable = mDatabaseAccessor.GetTable(lengthCheckSql);
                 int collectionLength;
 
                 if (lengthCheckTable.Rows.Count > 0)
@@ -244,30 +244,30 @@ namespace OrganismDatabaseHandler.ProteinExport
                     int sectionStart = currentCollectionPos;
                     int sectionEnd = sectionStart + 10000;
 
-                    string collectionSQL;
+                    string collectionSql;
                     if (padWithPrimaryAnnotation)
                     {
-                        tmpID = FindIDByName(trueName);
-                        collectionSQL =
+                        tmpId = FindIdByName(trueName);
+                        collectionSql =
                             "SELECT Name, Description, Sequence, Protein_ID " +
                             "FROM V_Protein_Database_Export " +
                             "WHERE " +
-                                "Protein_Collection_ID = " + tmpID.ToString() + " " +
+                                "Protein_Collection_ID = " + tmpId.ToString() + " " +
                                 "AND Sorting_Index BETWEEN " + sectionStart.ToString() + " AND " + sectionEnd.ToString() + " " +
                             "ORDER BY Sorting_Index";
                     }
                     else
                     {
-                        collectionSQL =
+                        collectionSql =
                             "SELECT Name, Description, Sequence, Protein_ID " +
                             "FROM V_Protein_Database_Export " +
-                            "WHERE Protein_Collection_ID = " + tmpID.ToString() + ") " +
-                                "AND Annotation_Type_ID = " + alternateAnnotationTypeID + " " +
+                            "WHERE Protein_Collection_ID = " + tmpId.ToString() + ") " +
+                                "AND Annotation_Type_ID = " + alternateAnnotationTypeId + " " +
                                 "AND Sorting_Index BETWEEN " + sectionStart.ToString() + " AND " + sectionEnd.ToString() + " " +
                             "ORDER BY Sorting_Index";
                     }
 
-                    collectionTable = mDatabaseAccessor.GetTable(collectionSQL);
+                    collectionTable = mDatabaseAccessor.GetTable(collectionSql);
 
                     string passPhraseForCollection = "";
                     if (proteinCollectionPassphrases.TryGetValue(trueName, out passPhraseForCollection))
@@ -312,14 +312,14 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
                 while (collectionTable.Rows.Count != 0);
 
-                tmpIDListSB.Append(tmpID.ToString("000000"));
-                tmpIDListSB.Append("+");
+                tmpIdListSb.Append(tmpId.ToString("000000"));
+                tmpIdListSb.Append("+");
                 if (currentCollectionCount != collectionLength)
                 {
                     throw new Exception(string.Format(
                         "The number of proteins exported for collection '{0}' does not match the expected value: " +
                         "{1} exported from T_Protein_Collection_Members vs. {2} listed in T_Protein_Collections",
-                        ProteinCollectionName, currentCollectionCount, collectionLength));
+                        proteinCollectionName, currentCollectionCount, collectionLength));
                 }
 
                 proteinCollectionsExported += 1;
@@ -327,14 +327,14 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             OnExportComplete(tmpOutputPath);
 
-            var tmpFI = new FileInfo(tmpOutputPath);
+            var tmpFi = new FileInfo(tmpOutputPath);
 
-            tmpIDListSB.Remove(tmpIDListSB.Length - 1, 1);
+            tmpIdListSb.Remove(tmpIdListSb.Length - 1, 1);
             string name; // = hash;
 
             if (protCollectionList.Count > 1)
             {
-                name = tmpIDListSB.ToString();
+                name = tmpIdListSb.ToString();
                 if (destinationFolderPath.Length + name.Length > 225)
                 {
                     // If exporting a large number of protein collections, name can be very long
@@ -368,16 +368,16 @@ namespace OrganismDatabaseHandler.ProteinExport
                 File.Delete(FullOutputPath);
             }
 
-            tmpFI.MoveTo(FullOutputPath);
+            tmpFi.MoveTo(FullOutputPath);
 
             // Assuming the final file now exists, delete the temporary file (if present)
             var finalOutputFile = new FileInfo(FullOutputPath);
             if (finalOutputFile.Exists)
             {
-                tmpFI = new FileInfo(tmpOutputPath);
-                if (tmpFI.Exists)
+                tmpFi = new FileInfo(tmpOutputPath);
+                if (tmpFi.Exists)
                 {
-                    tmpFI.Delete();
+                    tmpFi.Delete();
                 }
             }
 
@@ -412,7 +412,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             foreach (var name in protCollectionList)
             {
-                var id = FindIDByName(name);
+                var id = FindIdByName(name);
                 if (id < 1)
                 {
                     throw new Exception("The collection named '" + name + "' does not exist in the system");
@@ -457,7 +457,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             return mDatabaseAccessor.DataTableToDictionaryIntegerKeys(mCollectionsCache, "Protein_Collection_ID", "FileName");
         }
 
-        public Dictionary<string, string> GetCollectionsByOrganism(int organismID)
+        public Dictionary<string, string> GetCollectionsByOrganism(int organismId)
         {
             if (mDatabaseAccessor == null)
             {
@@ -469,14 +469,14 @@ namespace OrganismDatabaseHandler.ProteinExport
                 RefreshCollectionCache();
             }
 
-            return mDatabaseAccessor.DataTableToDictionary(mCollectionsCache, "Protein_Collection_ID", "FileName", "[OrganismID] = " + organismID.ToString());
+            return mDatabaseAccessor.DataTableToDictionary(mCollectionsCache, "Protein_Collection_ID", "FileName", "[OrganismID] = " + organismId.ToString());
         }
 
-        public DataTable GetCollectionsByOrganismTable(int organismID)
+        public DataTable GetCollectionsByOrganismTable(int organismId)
         {
             var tmpTable = mCollectionsCache.Clone();
 
-            var foundRows = mCollectionsCache.Select("[OrganismID] = " + organismID.ToString());
+            var foundRows = mCollectionsCache.Select("[OrganismID] = " + organismId.ToString());
 
             foreach (var dr in foundRows)
                 tmpTable.ImportRow(dr);
@@ -538,7 +538,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
         }
 
-        public int FindIDByName(string collectionName)
+        public int FindIdByName(string collectionName)
         {
             if (collectionName.Length == 0)
             {
@@ -567,14 +567,14 @@ namespace OrganismDatabaseHandler.ProteinExport
             return id;
         }
 
-        public string FindNameByID(int collectionID)
+        public string FindNameById(int collectionId)
         {
-            var foundRows = mCollectionsCache.Select("Protein_Collection_ID = " + collectionID.ToString()).ToList();
+            var foundRows = mCollectionsCache.Select("Protein_Collection_ID = " + collectionId.ToString()).ToList();
 
             if (foundRows.Count == 0)
             {
                 RefreshCollectionCache();
-                foundRows = mCollectionsCache.Select("Protein_Collection_ID = " + collectionID.ToString()).ToList();
+                foundRows = mCollectionsCache.Select("Protein_Collection_ID = " + collectionId.ToString()).ToList();
             }
 
             if (foundRows.Count > 0)
@@ -585,9 +585,10 @@ namespace OrganismDatabaseHandler.ProteinExport
             return string.Empty;
         }
 
-        protected int FindPrimaryAnnotationID(int collectionID)
+        protected int FindPrimaryAnnotationId(int collectionId)
         {
-            var foundRows = mCollectionsCache.Select("Protein_Collection_ID = " + collectionID.ToString()).ToList();
+            if (collectionId <= 0) throw new ArgumentOutOfRangeException(nameof(collectionId));
+            var foundRows = mCollectionsCache.Select("Protein_Collection_ID = " + collectionId.ToString()).ToList();
 
             if (foundRows.Count > 0)
             {
@@ -613,10 +614,10 @@ namespace OrganismDatabaseHandler.ProteinExport
             return foundRows[0]["Authentication_Hash"]?.ToString();
         }
 
-        public string GetStoredHash(int proteinCollectionID)
+        public string GetStoredHash(int proteinCollectionId)
         {
-            string ProteinCollectionName = mAllCollections[proteinCollectionID];
-            return GetStoredHash(ProteinCollectionName);
+            string proteinCollectionName = mAllCollections[proteinCollectionId];
+            return GetStoredHash(proteinCollectionName);
         }
 
         protected void OnExportStart(string taskMsg)

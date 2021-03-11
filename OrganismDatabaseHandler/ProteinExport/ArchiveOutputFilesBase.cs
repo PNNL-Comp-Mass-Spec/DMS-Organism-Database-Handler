@@ -11,13 +11,13 @@ namespace OrganismDatabaseHandler.ProteinExport
     {
         public enum CollectionTypes
         {
-            @static = 1,
-            dynamic = 2
+            Static = 1,
+            Dynamic = 2
         }
 
         private GetFASTAFromDMSForward mExporter;
-        protected readonly DBTask mDatabaseAccessor;
-        protected string mLastError;
+        protected readonly DBTask DatabaseAccessor;
+        protected string LastError;
         // Unused: protected GetFASTAFromDMS.SequenceTypes mOutputSequenceType;
         protected string mArchived_File_Name;
 
@@ -48,30 +48,30 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <param name="exporterModule"></param>
         public ArchiveOutputFilesBase(DBTask databaseAccessor, GetFASTAFromDMS exporterModule)
         {
-            mDatabaseAccessor = databaseAccessor;
+            DatabaseAccessor = databaseAccessor;
 
             mExporter = exporterModule.ExporterComponent;
         }
 
-        private string LastErrorMessage => mLastError;
+        private string LastErrorMessage => LastError;
 
         public string Archived_File_Name => mArchived_File_Name;
 
-        public int ArchiveCollection(int proteinCollectionID, CollectionTypes archivedFileType, GetFASTAFromDMS.SequenceTypes outputSequenceType, GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType, string sourceFilePath, string creationOptionsString, string authentication_Hash, string proteinCollectionList)
+        public int ArchiveCollection(int proteinCollectionId, CollectionTypes archivedFileType, GetFASTAFromDMS.SequenceTypes outputSequenceType, GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType, string sourceFilePath, string creationOptionsString, string authenticationHash, string proteinCollectionList)
         {
             OnArchiveStart();
 
-            return DispositionFile(proteinCollectionID, sourceFilePath, creationOptionsString, authentication_Hash, outputSequenceType, archivedFileType, proteinCollectionList);
+            return DispositionFile(proteinCollectionId, sourceFilePath, creationOptionsString, authenticationHash, outputSequenceType, archivedFileType, proteinCollectionList);
         }
 
-        public int ArchiveCollection(string proteinCollectionName, CollectionTypes archivedFileType, GetFASTAFromDMS.SequenceTypes outputSequenceType, GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType, string sourceFilePath, string creationOptionsString, string authentication_Hash, string proteinCollectionList)
+        public int ArchiveCollection(string proteinCollectionName, CollectionTypes archivedFileType, GetFASTAFromDMS.SequenceTypes outputSequenceType, GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType, string sourceFilePath, string creationOptionsString, string authenticationHash, string proteinCollectionList)
         {
-            int proteinCollectionID = GetProteinCollectionID(proteinCollectionName);
+            int proteinCollectionId = GetProteinCollectionId(proteinCollectionName);
 
-            return ArchiveCollection(proteinCollectionID, archivedFileType, outputSequenceType, databaseFormatType, sourceFilePath, creationOptionsString, authentication_Hash, proteinCollectionList);
+            return ArchiveCollection(proteinCollectionId, archivedFileType, outputSequenceType, databaseFormatType, sourceFilePath, creationOptionsString, authenticationHash, proteinCollectionList);
         }
 
-        protected abstract int DispositionFile(int proteinCollectionID, string sourceFilePath, string creationOptionsString, string sourceAuthenticationHash, GetFASTAFromDMS.SequenceTypes outputSequenceType, CollectionTypes archivedFileType, string ProteinCollectionsList);
+        protected abstract int DispositionFile(int proteinCollectionId, string sourceFilePath, string creationOptionsString, string sourceAuthenticationHash, GetFASTAFromDMS.SequenceTypes outputSequenceType, CollectionTypes archivedFileType, string proteinCollectionsList);
 
         protected int GetProteinCount(string sourceFilePath)
         {
@@ -123,13 +123,13 @@ namespace OrganismDatabaseHandler.ProteinExport
         //        return 0;
         //}
 
-        public void AddArchiveCollectionXRef(int proteinCollectionID, int archivedFileID)
+        public void AddArchiveCollectionXRef(int proteinCollectionId, int archivedFileId)
         {
-            int intReturn = RunSP_AddArchivedFileEntryXRef(proteinCollectionID, archivedFileID);
+            int intReturn = RunSP_AddArchivedFileEntryXRef(proteinCollectionId, archivedFileId);
 
             if (intReturn != 0)
             {
-                throw new Exception("Error calling RunSP_AddArchivedFileEntryXRef with ProteinCollectionID " + proteinCollectionID + " and ArchivedFileID " + archivedFileID + ", ReturnCode=" + intReturn);
+                throw new Exception("Error calling RunSP_AddArchivedFileEntryXRef with ProteinCollectionID " + proteinCollectionId + " and ArchivedFileID " + archivedFileId + ", ReturnCode=" + intReturn);
             }
         }
 
@@ -140,19 +140,19 @@ namespace OrganismDatabaseHandler.ProteinExport
         //}
 
         //// Unused
-        //protected string GetStoredFileAuthenticationHash(int ProteinCollectionID)
+        //protected string GetStoredFileAuthenticationHash(int ProteinCollectionId)
         //{
-        //    return mExporter.GetStoredHash(ProteinCollectionID);
+        //    return mExporter.GetStoredHash(ProteinCollectionId);
         //}
 
-        protected int GetProteinCollectionID(string proteinCollectionName)
+        protected int GetProteinCollectionId(string proteinCollectionName)
         {
-            return mExporter.FindIDByName(proteinCollectionName);
+            return mExporter.FindIdByName(proteinCollectionName);
         }
 
-        protected int RunSP_AddArchivedFileEntryXRef(int proteinCollectionID, int archivedFileID)
+        protected int RunSP_AddArchivedFileEntryXRef(int proteinCollectionId, int archivedFileId)
         {
-            var dbTools = mDatabaseAccessor.DBTools;
+            var dbTools = DatabaseAccessor.DbTools;
 
             var cmdSave = dbTools.CreateCommand("AddArchivedFileEntryXRef", CommandType.StoredProcedure);
 
@@ -160,9 +160,9 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue);
 
-            dbTools.AddParameter(cmdSave, "@Collection_ID", SqlType.Int).Value = proteinCollectionID;
+            dbTools.AddParameter(cmdSave, "@Collection_ID", SqlType.Int).Value = proteinCollectionId;
 
-            dbTools.AddParameter(cmdSave, "@Archived_File_ID", SqlType.Int).Value = archivedFileID;
+            dbTools.AddParameter(cmdSave, "@Archived_File_ID", SqlType.Int).Value = archivedFileId;
 
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 250, ParameterDirection.Output);
 

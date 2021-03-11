@@ -23,17 +23,17 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         private readonly Dictionary<string, string> mAuthorities;
         private AnnotationStorage mAnnotationStorage;
         private string mfirstLine;
-        private readonly string mPSConnectionString;
+        private readonly string mPsConnectionString;
         private AddUpdateEntries mUploader;
-        private Dictionary<string, int> mProteinIDLookup;
+        private Dictionary<string, int> mProteinIdLookup;
 
         private int mMaxProteinNameLength = 32;
 
         // AuthorityLookupHash key = AuthorityID, value = AuthorityName
-        public ExtractFromFlatFile(Dictionary<string, string> AuthorityList, string psConnectionString)
+        public ExtractFromFlatFile(Dictionary<string, string> authorityList, string psConnectionString)
         {
-            mAuthorities = AuthorityList;
-            mPSConnectionString = psConnectionString;
+            mAuthorities = authorityList;
+            mPsConnectionString = psConnectionString;
         }
 
         public List<Dictionary<int, string>> FileContents => mFileContents;
@@ -93,17 +93,17 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             var lineEntries = entryLine.Split(delimiter.ToCharArray());
             var valuesByColumnId = new Dictionary<int, string>(lineEntries.Length);
 
-            for (int columnID = 1; columnID <= lineEntries.Length; columnID++)
+            for (int columnId = 1; columnId <= lineEntries.Length; columnId++)
             {
-                string lineEntry = lineEntries[columnID - 1];
+                string lineEntry = lineEntries[columnId - 1];
 
                 if (lineEntry.Trim(' ').Length > 0)
                 {
-                    valuesByColumnId.Add(columnID, lineEntry);
+                    valuesByColumnId.Add(columnId, lineEntry);
                 }
                 else
                 {
-                    valuesByColumnId.Add(columnID, "---");
+                    valuesByColumnId.Add(columnId, "---");
                 }
             }
 
@@ -144,9 +144,9 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         public int LoadGroups(
             string delimiter,
-            bool UseHeaderLineInfo)
+            bool useHeaderLineInfo)
         {
-            ExtractGroupsFromLine(mfirstLine, delimiter, UseHeaderLineInfo);
+            ExtractGroupsFromLine(mfirstLine, delimiter, useHeaderLineInfo);
             return default;
         }
 
@@ -186,19 +186,19 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         /// <summary>
         ///
         /// </summary>
-        /// <param name="primaryReferenceNameColumnID">The number of the column with the name to use as primary</param>
+        /// <param name="primaryReferenceNameColumnId">The number of the column with the name to use as primary</param>
         /// <param name="authorityHash">Dictionary with columnID (number), and authority name for that column</param>
         public void ParseLoadedFile(
-            int primaryReferenceNameColumnID,
+            int primaryReferenceNameColumnId,
             Dictionary<string, string> authorityHash)
         {
             foreach (var dataLine in mFileContents)
             {
-                string primaryRef = dataLine[primaryReferenceNameColumnID];
+                string primaryRef = dataLine[primaryReferenceNameColumnId];
 
                 for (int columnNumber = 1; columnNumber <= dataLine.Count; columnNumber++)
                 {
-                    if (!columnNumber.Equals(primaryReferenceNameColumnID) &&
+                    if (!columnNumber.Equals(primaryReferenceNameColumnId) &&
                         !dataLine[columnNumber].Equals("---"))
                     {
                         mAnnotationStorage.AddAnnotation(
@@ -209,28 +209,28 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             }
         }
 
-        public string LookupAuthorityName(int AuthorityID)
+        public string LookupAuthorityName(int authorityId)
         {
-            return mAuthorities[AuthorityID.ToString()];
+            return mAuthorities[authorityId.ToString()];
         }
 
         public System.Windows.Forms.ListViewItem GetListViewItemForGroup(
-            int GroupID)
+            int groupId)
         {
-            var li = new System.Windows.Forms.ListViewItem(GroupID.ToString());
-            li.SubItems.Add(mAnnotationStorage.GetGroupName(GroupID));
-            if (mAnnotationStorage.GetAnnotationAuthorityID(GroupID) > 0)
+            var li = new System.Windows.Forms.ListViewItem(groupId.ToString());
+            li.SubItems.Add(mAnnotationStorage.GetGroupName(groupId));
+            if (mAnnotationStorage.GetAnnotationAuthorityId(groupId) > 0)
             {
-                li.SubItems.Add(mAuthorities[mAnnotationStorage.GetAnnotationAuthorityID(GroupID).ToString()].ToString());
+                li.SubItems.Add(mAuthorities[mAnnotationStorage.GetAnnotationAuthorityId(groupId).ToString()].ToString());
             }
             else
             {
                 li.SubItems.Add("-- None Selected --");
             }
 
-            if (mAnnotationStorage.GetDelimiter(GroupID) != null)
+            if (mAnnotationStorage.GetDelimiter(groupId) != null)
             {
-                li.SubItems.Add(mAnnotationStorage.GetDelimiter(GroupID).ToString());
+                li.SubItems.Add(mAnnotationStorage.GetDelimiter(groupId).ToString());
             }
             else
             {
@@ -240,26 +240,26 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             return li;
         }
 
-        public void ChangeAuthorityIDforGroup(int GroupID, int AuthorityID)
+        public void ChangeAuthorityIDforGroup(int groupId, int authorityId)
         {
-            mAnnotationStorage.SetAnnotationAuthorityID(GroupID, AuthorityID);
+            mAnnotationStorage.SetAnnotationAuthorityId(groupId, authorityId);
         }
 
-        public void UploadNewNames(int PrimaryReferenceNameColumnID)
+        public void UploadNewNames(int primaryReferenceNameColumnId)
         {
-            ParseLoadedFile(PrimaryReferenceNameColumnID, mAuthorities);
+            ParseLoadedFile(primaryReferenceNameColumnId, mAuthorities);
             if (mUploader == null)
             {
-                mUploader = new AddUpdateEntries(mPSConnectionString);
+                mUploader = new AddUpdateEntries(mPsConnectionString);
             }
 
             int groupCount = mAnnotationStorage.GroupCount;
 
-            mProteinIDLookup = GetProteinIDsForPrimaryReferences(mAnnotationStorage.GetAllPrimaryReferences());
+            mProteinIdLookup = GetProteinIDsForPrimaryReferences(mAnnotationStorage.GetAllPrimaryReferences());
 
             for (int columnCount = 1; columnCount <= groupCount; columnCount++)
             {
-                if (!columnCount.Equals(PrimaryReferenceNameColumnID))
+                if (!columnCount.Equals(primaryReferenceNameColumnId))
                 {
                     var ag = mAnnotationStorage.GetGroup(columnCount);
                     var referenceLookup = ag.GetAllXRefs();
@@ -268,34 +268,34 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
                             proteinName,
                             string.Empty,
                             0,
-                            ag.AnnotationAuthorityID,
-                            mProteinIDLookup[proteinName],
+                            ag.AnnotationAuthorityId,
+                            mProteinIdLookup[proteinName],
                             mMaxProteinNameLength);
                 }
             }
         }
 
-        private Dictionary<string, int> GetProteinIDsForPrimaryReferences(IReadOnlyCollection<string> PrimaryReferences)
+        private Dictionary<string, int> GetProteinIDsForPrimaryReferences(IReadOnlyCollection<string> primaryReferences)
         {
-            var ht = new Dictionary<string, int>(PrimaryReferences.Count);
+            var ht = new Dictionary<string, int>(primaryReferences.Count);
 
             if (mUploader == null)
             {
-                mUploader = new AddUpdateEntries(mPSConnectionString);
+                mUploader = new AddUpdateEntries(mPsConnectionString);
             }
 
-            foreach (var name in PrimaryReferences)
+            foreach (var name in primaryReferences)
             {
                 if (!ht.ContainsKey(name))
                 {
                     int id;
-                    if (mProteinIDLookup.ContainsKey(name))
+                    if (mProteinIdLookup.ContainsKey(name))
                     {
-                        id = mProteinIDLookup[name];
+                        id = mProteinIdLookup[name];
                     }
                     else
                     {
-                        id = mUploader.GetProteinIDFromName(name);
+                        id = mUploader.GetProteinIdFromName(name);
                     }
 
                     ht.Add(name, id);

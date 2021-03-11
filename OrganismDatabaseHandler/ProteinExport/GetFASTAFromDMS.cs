@@ -18,21 +18,21 @@ namespace OrganismDatabaseHandler.ProteinExport
     {
         public enum SequenceTypes
         {
-            forward = 1,
-            reversed = 2,
-            scrambled = 3,
-            decoy = 4,
-            decoyX = 5,
+            Forward = 1,
+            Reversed = 2,
+            Scrambled = 3,
+            Decoy = 4,
+            DecoyX = 5,
         }
 
         public enum DatabaseFormatTypes
         {
-            fasta,
-            fastapro,
+            Fasta,
+            FastaPro,
         }
 
-        public const string LOCK_FILE_PROGRESS_TEXT = "Lockfile";
-        public const string HASHCHECK_SUFFIX = ".hashcheck";
+        public const string LockFileProgressText = "Lockfile";
+        public const string HashcheckSuffix = ".hashcheck";
 
         private GetFASTAFromDMSForward mGetter;
         private ArchiveOutputFilesBase mArchiver;
@@ -43,7 +43,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         private List<string> mArchiveCollectionList;
         private readonly DBTask mDatabaseAccessor;
-        private readonly SHA1Managed mSHA1Provider;
+        private readonly SHA1Managed sha1Provider;
         private readonly FileTools mFileTools;
 
         private DateTime mLastLockQueueWaitTimeLog;
@@ -70,7 +70,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// </summary>
         /// <param name="dbConnectionString">Protein sequences database connection string</param>
         public GetFASTAFromDMS(string dbConnectionString)
-            : this(dbConnectionString, DatabaseFormatTypes.fasta, SequenceTypes.forward)
+            : this(dbConnectionString, DatabaseFormatTypes.Fasta, SequenceTypes.Forward)
         {
         }
 
@@ -83,7 +83,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <param name="decoyUsesXXX">When true, decoy proteins start with XXX_ instead of Reversed_</param>
         public GetFASTAFromDMS(string dbConnectionString, DatabaseFormatTypes databaseFormatType, SequenceTypes outputSequenceType, bool decoyUsesXXX = true)
         {
-            mSHA1Provider = new SHA1Managed();
+            sha1Provider = new SHA1Managed();
 
             if (string.IsNullOrWhiteSpace(dbConnectionString))
             {
@@ -116,29 +116,29 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             switch (outputSequenceType)
             {
-                case SequenceTypes.forward:
+                case SequenceTypes.Forward:
                     mGetter = new GetFASTAFromDMSForward(mDatabaseAccessor, databaseFormatType);
-                    mCollectionType = ArchiveOutputFilesBase.CollectionTypes.@static;
+                    mCollectionType = ArchiveOutputFilesBase.CollectionTypes.Static;
                     break;
 
-                case SequenceTypes.reversed:
+                case SequenceTypes.Reversed:
                     mGetter = new GetFASTAFromDMSReversed(mDatabaseAccessor, databaseFormatType);
-                    mCollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic;
+                    mCollectionType = ArchiveOutputFilesBase.CollectionTypes.Dynamic;
                     break;
 
-                case SequenceTypes.scrambled:
+                case SequenceTypes.Scrambled:
                     mGetter = new GetFASTAFromDMSScrambled(mDatabaseAccessor, databaseFormatType);
-                    mCollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic;
+                    mCollectionType = ArchiveOutputFilesBase.CollectionTypes.Dynamic;
                     break;
 
-                case SequenceTypes.decoy:
+                case SequenceTypes.Decoy:
                     mGetter = new GetFASTAFromDMSDecoy(mDatabaseAccessor, databaseFormatType, decoyUsesXXX);
-                    mCollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic;
+                    mCollectionType = ArchiveOutputFilesBase.CollectionTypes.Dynamic;
                     break;
 
-                case SequenceTypes.decoyX:
+                case SequenceTypes.DecoyX:
                     mGetter = new GetFASTAFromDMSDecoyX(mDatabaseAccessor, databaseFormatType);
-                    mCollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic;
+                    mCollectionType = ArchiveOutputFilesBase.CollectionTypes.Dynamic;
                     break;
             }
 
@@ -165,13 +165,13 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// Create the FASTA file for the given protein collection ID
         /// </summary>
         /// <param name="destinationFolderPath"></param>
-        /// <param name="proteinCollectionID">Protein collection ID</param>
+        /// <param name="proteinCollectionId">Protein collection ID</param>
         /// <param name="databaseFormatType">Typically fasta for .fasta files; fastapro will create a .fasta.pro file</param>
         /// <param name="outputSequenceType">Sequence type (forward, reverse, scrambled, decoy, or decoyX)</param>
         /// <returns>CRC32 hash of the generated (or retrieved) file</returns>
-        public string ExportFASTAFile(int proteinCollectionID, string destinationFolderPath, DatabaseFormatTypes databaseFormatType, SequenceTypes outputSequenceType)
+        public string ExportFASTAFile(int proteinCollectionId, string destinationFolderPath, DatabaseFormatTypes databaseFormatType, SequenceTypes outputSequenceType)
         {
-            string proteinCollectionName = GetProteinCollectionName(proteinCollectionID);
+            string proteinCollectionName = GetProteinCollectionName(proteinCollectionId);
 
             var creationOptionsHandler = new FileCreationOptions(mDatabaseAccessor);
 
@@ -357,14 +357,14 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             // Copy the .Fasta file from the remote computer to this computer
             // We're temporarily naming it with a SHA1 hash based on the filename
-            var InterimFastaFI = new FileInfo(Path.Combine(destinationFolderPath, filenameSha1Hash + "_" + Path.GetFileNameWithoutExtension(legacyStaticFilePath) + ".fasta"));
-            if (InterimFastaFI.Exists)
+            var interimFastaFi = new FileInfo(Path.Combine(destinationFolderPath, filenameSha1Hash + "_" + Path.GetFileNameWithoutExtension(legacyStaticFilePath) + ".fasta"));
+            if (interimFastaFi.Exists)
             {
-                InterimFastaFI.Delete();
+                interimFastaFi.Delete();
             }
 
             mLastLockQueueWaitTimeLog = DateTime.UtcNow;
-            mFileTools.CopyFileUsingLocks(fiSourceFile, InterimFastaFI.FullName, "OrgDBHandler", overWrite: false);
+            mFileTools.CopyFileUsingLocks(fiSourceFile, interimFastaFi.FullName, "OrgDBHandler", overWrite: false);
 
             // Now that the copy is done, rename the file to the final name
             fiFinalFile.Refresh();
@@ -375,7 +375,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 fiFinalFile.Delete();
             }
 
-            InterimFastaFI.MoveTo(fiFinalFile.FullName);
+            interimFastaFi.MoveTo(fiFinalFile.FullName);
 
             // File successfully copied to this computer
             // Update the hash validation file, and update the DB if the newly copied file's hash value differs from the DB
@@ -395,21 +395,21 @@ namespace OrganismDatabaseHandler.ProteinExport
             return crc32Hash;
         }
 
-        private bool ExportLegacyFastaValidateHash(FileSystemInfo finalFileFI, ref string finalFileHash, bool forceRegenerateHash)
+        private bool ExportLegacyFastaValidateHash(FileSystemInfo finalFileFi, ref string finalFileHash, bool forceRegenerateHash)
         {
             if (string.IsNullOrEmpty(finalFileHash))
             {
-                finalFileHash = GenerateAndStoreLegacyFileHash(finalFileFI.FullName);
+                finalFileHash = GenerateAndStoreLegacyFileHash(finalFileFi.FullName);
 
                 // Update the hash validation file
-                UpdateHashValidationFile(finalFileFI.FullName, finalFileHash);
+                UpdateHashValidationFile(finalFileFi.FullName, finalFileHash);
 
                 return true;
             }
             // ValidateMatchingHash will use GenerateFileAuthenticationHash() to generate a hash for the given file
             // Since this can be time consuming, we only do this every 48 hours
             // If the generated hash does not match the expected hash (finalFileHash) then we will re-generate the .fasta file
-            else if (ValidateMatchingHash(finalFileFI.FullName, ref finalFileHash, 48, forceRegenerateHash))
+            else if (ValidateMatchingHash(finalFileFi.FullName, ref finalFileHash, 48, forceRegenerateHash))
             {
                 return true;
             }
@@ -417,7 +417,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             return false;
         }
 
-        private string ExportProteinCollections(List<string> protCollectionList, string creationOptionsString, string destinationFolderPath, int alternateAnnotationTypeID, bool padWithPrimaryAnnotation, DatabaseFormatTypes databaseFormatType, SequenceTypes outputSequenceType)
+        private string ExportProteinCollections(List<string> protCollectionList, string creationOptionsString, string destinationFolderPath, int alternateAnnotationTypeId, bool padWithPrimaryAnnotation, DatabaseFormatTypes databaseFormatType, SequenceTypes outputSequenceType)
         {
             string proteinCollectionList = string.Join(",", protCollectionList);
 
@@ -448,15 +448,15 @@ namespace OrganismDatabaseHandler.ProteinExport
                 finalFileHash = string.Empty;
             }
 
-            FileInfo finalFileFI = null;
+            FileInfo finalFileFi = null;
 
             if (finalFileName.Length > 0)
             {
                 // Look for file finalFileName in folder destinationFolderPath
                 // If it exists, and if a .lock file does not exist, then we can safely assume the .Fasta file is ready for use
 
-                finalFileFI = new FileInfo(Path.Combine(destinationFolderPath, finalFileName));
-                if (finalFileFI.Exists && finalFileFI.Length > 0L)
+                finalFileFi = new FileInfo(Path.Combine(destinationFolderPath, finalFileName));
+                if (finalFileFi.Exists && finalFileFi.Length > 0L)
                 {
                     // Make sure a .lock file doesn't exist
                     // If it does exist, then another process on this computer is likely creating the .Fasta file
@@ -470,9 +470,9 @@ namespace OrganismDatabaseHandler.ProteinExport
                     // ValidateMatchingHash will use GenerateFileAuthenticationHash() to generate a hash for the given file
                     // Since this can be time consuming, we only do this every 48 hours
                     // If the generated hash does not match the expected hash (finalFileHash) then we will re-generate the .fasta file
-                    else if (ValidateMatchingHash(finalFileFI.FullName, ref finalFileHash, 48, false))
+                    else if (ValidateMatchingHash(finalFileFi.FullName, ref finalFileHash, 48, false))
                     {
-                        OnTaskCompletion(finalFileFI.FullName);
+                        OnTaskCompletion(finalFileFi.FullName);
                         return finalFileHash;
                     }
                 }
@@ -490,12 +490,12 @@ namespace OrganismDatabaseHandler.ProteinExport
                 throw new Exception(msg);
             }
 
-            if (finalFileFI != null)
+            if (finalFileFi != null)
             {
                 // Check again for the existence of the desired .Fasta file
                 // It's possible another process created the .Fasta file while this process was waiting for the other process's lock file to disappear
-                finalFileFI.Refresh();
-                if (finalFileFI.Exists && finalFileFI.Length > 0L)
+                finalFileFi.Refresh();
+                if (finalFileFi.Exists && finalFileFi.Length > 0L)
                 {
                     // The final file now does exist (and is non-zero in size); we're good to go
 
@@ -503,16 +503,16 @@ namespace OrganismDatabaseHandler.ProteinExport
                     {
                         // FinalFileHash is empty, which means the other process that just exported this file was the first process to actually use this file
                         // We need to return a non-empty hash value, so compute the SHA1 hash now
-                        finalFileHash = GenerateFileAuthenticationHash(finalFileFI.FullName);
+                        finalFileHash = GenerateFileAuthenticationHash(finalFileFi.FullName);
                     }
 
                     // ValidateMatchingHash will use GenerateFileAuthenticationHash() to generate a hash for the given file
                     // Since this can be time consuming, we only do this every 48 hours
                     // If the generated hash does not match the expected hash (finalFileHash) then we will re-generate the .fasta file
-                    if (ValidateMatchingHash(finalFileFI.FullName, ref finalFileHash, 48, false))
+                    if (ValidateMatchingHash(finalFileFi.FullName, ref finalFileHash, 48, false))
                     {
                         DeleteLockStream(destinationFolderPath, lockFileHash, lockStream);
-                        OnTaskCompletion(finalFileFI.FullName);
+                        OnTaskCompletion(finalFileFi.FullName);
                         return finalFileHash;
                     }
                 }
@@ -526,7 +526,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             // If more than one protein collection, then we're generating a dynamic protein collection
             if (protCollectionList.Count > 1)
             {
-                mCollectionType = ArchiveOutputFilesBase.CollectionTypes.dynamic;
+                mCollectionType = ArchiveOutputFilesBase.CollectionTypes.Dynamic;
             }
 
             string crc32Hash;
@@ -536,7 +536,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 OnDebugEvent("Retrieving fasta file for protein collections " + string.Join(",", protCollectionList.ToArray()));
 
                 // Export the fasta file
-                crc32Hash = mGetter.ExportFASTAFile(protCollectionList, destinationFolderPath, alternateAnnotationTypeID, padWithPrimaryAnnotation);
+                crc32Hash = mGetter.ExportFASTAFile(protCollectionList, destinationFolderPath, alternateAnnotationTypeId, padWithPrimaryAnnotation);
 
                 if (string.IsNullOrEmpty(crc32Hash))
                 {
@@ -569,8 +569,8 @@ namespace OrganismDatabaseHandler.ProteinExport
                     }
                     else
                     {
-                        int existingCollectionID = GetProteinCollectionID(collectionName);
-                        mArchiver.AddArchiveCollectionXRef(existingCollectionID, archivedFileId);
+                        int existingCollectionId = GetProteinCollectionId(collectionName);
+                        mArchiver.AddArchiveCollectionXRef(existingCollectionId, archivedFileId);
                     }
                 }
 
@@ -579,25 +579,25 @@ namespace OrganismDatabaseHandler.ProteinExport
                 var interimFastaFile = new FileInfo(mFinalOutputPath);
 
                 finalFileName = Path.GetFileName(mArchiver.Archived_File_Name);
-                finalFileFI = new FileInfo(Path.Combine(destinationFolderPath, finalFileName));
+                finalFileFi = new FileInfo(Path.Combine(destinationFolderPath, finalFileName));
 
-                if (finalFileFI.Exists)
+                if (finalFileFi.Exists)
                 {
                     // Somehow the final file has appeared in the folder (this shouldn't have happened with the lock file present)
                     // Delete it
-                    finalFileFI.Delete();
+                    finalFileFi.Delete();
                 }
 
                 // Delete any other files that exist with the same extension as finalFileFI.FullName
                 // These are likely index files used by Inspect or MSGF+ (aka MSGFDB) and they will need to be re-generated
-                DeleteFASTAIndexFiles(finalFileFI);
+                DeleteFASTAIndexFiles(finalFileFi);
 
-                interimFastaFile.MoveTo(finalFileFI.FullName);
+                interimFastaFile.MoveTo(finalFileFi.FullName);
 
-                OnStatusEvent("Created fasta file " + finalFileFI.FullName);
+                OnStatusEvent("Created fasta file " + finalFileFi.FullName);
 
                 // Update the hash validation file
-                UpdateHashValidationFile(finalFileFI.FullName, crc32Hash);
+                UpdateHashValidationFile(finalFileFi.FullName, crc32Hash);
             }
             catch
             {
@@ -607,7 +607,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             DeleteLockStream(destinationFolderPath, lockFileHash, lockStream);
 
-            OnTaskCompletion(finalFileFI.FullName);
+            OnTaskCompletion(finalFileFi.FullName);
             return crc32Hash;
         }
 
@@ -628,12 +628,12 @@ namespace OrganismDatabaseHandler.ProteinExport
                     lockFile.Refresh();
                     if (lockFile.Exists)
                     {
-                        var LockTimeoutTime = lockFile.LastWriteTimeUtc.AddMinutes(60d);
-                        string msg = LOCK_FILE_PROGRESS_TEXT + " found; waiting until it is deleted or until " + LockTimeoutTime.ToLocalTime().ToString() + ": " + lockFile.Name;
+                        var lockTimeoutTime = lockFile.LastWriteTimeUtc.AddMinutes(60d);
+                        string msg = LockFileProgressText + " found; waiting until it is deleted or until " + lockTimeoutTime.ToLocalTime().ToString() + ": " + lockFile.Name;
                         OnDebugEvent(msg);
                         OnFileGenerationProgressUpdate(msg, 0d);
 
-                        while (lockFile.Exists && DateTime.UtcNow < LockTimeoutTime)
+                        while (lockFile.Exists && DateTime.UtcNow < lockTimeoutTime)
                         {
                             Thread.Sleep(5000);
                             lockFile.Refresh();
@@ -646,7 +646,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                         lockFile.Refresh();
                         if (lockFile.Exists)
                         {
-                            string warningMsg = LOCK_FILE_PROGRESS_TEXT + " still exists; assuming another process timed out; thus, now deleting file " + lockFile.Name;
+                            string warningMsg = LockFileProgressText + " still exists; assuming another process timed out; thus, now deleting file " + lockFile.Name;
                             OnWarningEvent(warningMsg);
                             OnFileGenerationProgressUpdate(warningMsg, 0d);
                             lockFile.Delete();
@@ -663,7 +663,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
                 catch (Exception ex)
                 {
-                    string msg = "Exception while monitoring " + LOCK_FILE_PROGRESS_TEXT + " " + lockFile.FullName + ": " + ex.Message;
+                    string msg = "Exception while monitoring " + LockFileProgressText + " " + lockFile.FullName + ": " + ex.Message;
                     OnErrorEvent(msg);
                     OnFileGenerationProgressUpdate(msg, 0d);
                 }
@@ -681,7 +681,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     }
 
                     // Exception: Unable to create Lockfile required to export Protein collection ...
-                    string msg = "Unable to create " + LOCK_FILE_PROGRESS_TEXT + " required to export " + proteinCollectionListOrLegacyFastaFileName + "; tried 4 times without success";
+                    string msg = "Unable to create " + LockFileProgressText + " required to export " + proteinCollectionListOrLegacyFastaFileName + "; tried 4 times without success";
                     OnErrorEvent(msg);
                     throw new Exception(msg);
                 }
@@ -777,9 +777,9 @@ namespace OrganismDatabaseHandler.ProteinExport
         private bool LookupLegacyFastaFileDetails(string legacyFASTAFileName, out string legacyStaticFilePathOutput, out string crc32HashOutput)
         {
             // Lookup the details for LegacyFASTAFileName in the database
-            string legacyLocationsSQL = "SELECT FileName, Full_Path, Authentication_Hash FROM V_Legacy_Static_File_Locations WHERE FileName = '" + legacyFASTAFileName + "'";
+            string legacyLocationsSql = "SELECT FileName, Full_Path, Authentication_Hash FROM V_Legacy_Static_File_Locations WHERE FileName = '" + legacyFASTAFileName + "'";
 
-            var legacyStaticFileLocations = mDatabaseAccessor.GetTable(legacyLocationsSQL);
+            var legacyStaticFileLocations = mDatabaseAccessor.GetTable(legacyLocationsSql);
             if (legacyStaticFileLocations.Rows.Count == 0)
             {
                 string msg = "Legacy fasta file " + legacyFASTAFileName + " not found in V_Legacy_Static_File_Locations; unable to continue";
@@ -812,7 +812,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             string extensionToUse;
             if (string.IsNullOrWhiteSpace(hashcheckExtension))
             {
-                extensionToUse = HASHCHECK_SUFFIX;
+                extensionToUse = HashcheckSuffix;
             }
             else
             {
@@ -1001,14 +1001,14 @@ namespace OrganismDatabaseHandler.ProteinExport
             return mGetter.GetCollectionNameList();
         }
 
-        public Dictionary<string, string> GetCollectionsByOrganism(int organismID)
+        public Dictionary<string, string> GetCollectionsByOrganism(int organismId)
         {
-            return mGetter.GetCollectionsByOrganism(organismID);
+            return mGetter.GetCollectionsByOrganism(organismId);
         }
 
-        public DataTable GetCollectionsByOrganismTable(int organismID)
+        public DataTable GetCollectionsByOrganismTable(int organismId)
         {
-            return mGetter.GetCollectionsByOrganismTable(organismID);
+            return mGetter.GetCollectionsByOrganismTable(organismId);
         }
 
         public Dictionary<string, string> GetOrganismList()
@@ -1021,9 +1021,9 @@ namespace OrganismDatabaseHandler.ProteinExport
             return mGetter.GetOrganismListTable();
         }
 
-        public string GetStoredFileAuthenticationHash(int proteinCollectionID)
+        public string GetStoredFileAuthenticationHash(int proteinCollectionId)
         {
-            return mGetter.GetStoredHash(proteinCollectionID);
+            return mGetter.GetStoredHash(proteinCollectionId);
         }
 
         public string GetStoredFileAuthenticationHash(string proteinCollectionName)
@@ -1031,14 +1031,14 @@ namespace OrganismDatabaseHandler.ProteinExport
             return mGetter.GetStoredHash(proteinCollectionName);
         }
 
-        public int GetProteinCollectionID(string proteinCollectionName)
+        public int GetProteinCollectionId(string proteinCollectionName)
         {
-            return mGetter.FindIDByName(proteinCollectionName);
+            return mGetter.FindIdByName(proteinCollectionName);
         }
 
-        private string GetProteinCollectionName(int proteinCollectionID)
+        private string GetProteinCollectionName(int proteinCollectionId)
         {
-            return mGetter.FindNameByID(proteinCollectionID);
+            return mGetter.FindNameById(proteinCollectionId);
         }
 
         #endregion
@@ -1050,7 +1050,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 return 0;
             }
 
-            var dbTools = mDatabaseAccessor.DBTools;
+            var dbTools = mDatabaseAccessor.DbTools;
 
             var cmdSave = dbTools.CreateCommand("AddLegacyFileUploadRequest", CommandType.StoredProcedure);
 
@@ -1080,7 +1080,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var byteSourceText = encoding.GetBytes(sourceText);
 
             // Compute the hash value from the source
-            var sha1Hash = mSHA1Provider.ComputeHash(byteSourceText);
+            var sha1Hash = sha1Provider.ComputeHash(byteSourceText);
 
             // And convert it to String format for return
             string sha1String = BitConverter.ToString(sha1Hash).Replace("-", "").ToLower();
