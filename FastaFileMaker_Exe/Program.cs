@@ -7,7 +7,7 @@ namespace FastaFileMaker_Exe
 {
     static class Program
     {
-        public const string ProgramDate = "February 18, 2020";
+        public const string ProgramDate = "March 11, 2021";
 
         private const int DebugLevel = 4;
         private const int FastaGenTimeoutIntervalMinutes = 70;
