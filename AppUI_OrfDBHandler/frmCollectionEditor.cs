@@ -1164,7 +1164,12 @@ namespace AppUI_OrfDBHandler
             mSyncer.CorrectMasses();
         }
 
-        [Obsolete("Valid, but unused and could take a very long time")]
+        /// <summary>
+        /// Valid, but could take a very long time
+        /// Thus, the menu item is disabled
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void mnuAdminNameHashRefresh_Click(object sender, EventArgs e)
         {
             if (mSyncer == null)
@@ -1173,7 +1178,9 @@ namespace AppUI_OrfDBHandler
                 mSyncer.SyncProgress += SyncProgressHandler;
             }
 
+#pragma warning disable CS0618 // Type or member is obsolete
             mSyncer.RefreshNameHashes();
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         private void MenuItem5_Click(object sender, EventArgs e)

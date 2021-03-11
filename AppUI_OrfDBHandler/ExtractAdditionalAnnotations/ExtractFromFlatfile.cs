@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using OrganismDatabaseHandler.ProteinImport;
 
 namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 {
+    [Obsolete("Unused")]
     internal class ExtractFromFlatFile
     {
         /// <summary>

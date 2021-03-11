@@ -1,17 +1,19 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace OrganismDatabaseHandler.ProteinImport
 {
+    [Obsolete("Unused")]
     public interface IImportAnnotations
     {
-
         // Structure GOInfoCategories
         // End Structure
 
     }
 
+    [Obsolete("Unused")]
     public abstract class ImportAnnotationsBase
     {
         protected ImportAnnotationsBase()
@@ -19,6 +21,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         }
     }
 
+    [Obsolete("Unused")]
     public class GeneOntologyEntry
     {
         private string mId;

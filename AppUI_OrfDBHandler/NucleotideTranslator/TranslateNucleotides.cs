@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using OrganismDatabaseHandler.DatabaseTools;
 
 namespace AppUI_OrfDBHandler.NucleotideTranslator
 {
+    [Obsolete("Uses old table name")]
     public class TranslateNucleotides
     {
         private ArrayList mTranslationMatrix;
@@ -16,6 +18,7 @@ namespace AppUI_OrfDBHandler.NucleotideTranslator
             mGetSQLData = new DBTask(dmsConnectionString);
         }
 
+        [Obsolete("Uses old table name")]
         public ArrayList LoadTransMatrix(int translationTableId)
         {
             var baseArray = "ATGC".ToCharArray();

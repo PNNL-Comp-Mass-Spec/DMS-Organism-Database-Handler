@@ -3,6 +3,7 @@ using System.Windows.Forms;
 
 namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 {
+    [Obsolete("Unused")]
     public partial class frmRegexSpecifyFromDescription : Form
     {
         public frmRegexSpecifyFromDescription()
