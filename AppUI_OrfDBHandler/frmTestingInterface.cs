@@ -2,7 +2,6 @@
 using System.Data;
 using System.IO;
 using System.Windows.Forms;
-using AppUI_OrfDBHandler.NucleotideTranslator;
 using AppUI_OrfDBHandler.ProteinUpload;
 using OrganismDatabaseHandler.ProteinExport;
 using OrganismDatabaseHandler.ProteinImport;
@@ -101,12 +100,13 @@ namespace AppUI_OrfDBHandler
             }
         }
 
-        private void Button2_Click(object sender, EventArgs e)
-        {
-            var trans = new TranslateNucleotides(txtConnString.Text);
+        // Unused
+        //private void Button2_Click(object sender, EventArgs e)
+        //{
+        //    var trans = new TranslateNucleotides(txtConnString.Text);
 
-            trans.LoadTransMatrix(1);
-        }
+        //    trans.LoadTransMatrix(1);
+        //}
 
         private void cmdExportFASTA_Click(object sender, EventArgs e)
         {

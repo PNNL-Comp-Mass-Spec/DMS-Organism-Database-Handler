@@ -39,7 +39,6 @@
             this.txtConnString = new System.Windows.Forms.TextBox();
             this.gbxConnectionString = new System.Windows.Forms.GroupBox();
             this.GroupBox2 = new System.Windows.Forms.GroupBox();
-            this.Button2 = new System.Windows.Forms.Button();
             this.TextBox1 = new System.Windows.Forms.TextBox();
             this.GroupBox3 = new System.Windows.Forms.GroupBox();
             this.cmdBatchLoadDMS = new System.Windows.Forms.Button();
@@ -147,8 +146,7 @@
             this.txtConnString.Name = "txtConnString";
             this.txtConnString.Size = new System.Drawing.Size(590, 20);
             this.txtConnString.TabIndex = 7;
-            this.txtConnString.Text = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSP" +
-    "I;";
+            this.txtConnString.Text = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;";
             // 
             // gbxConnectionString
             // 
@@ -163,7 +161,6 @@
             // 
             // GroupBox2
             // 
-            this.GroupBox2.Controls.Add(this.Button2);
             this.GroupBox2.Controls.Add(this.TextBox1);
             this.GroupBox2.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.GroupBox2.Location = new System.Drawing.Point(8, 188);
@@ -172,16 +169,6 @@
             this.GroupBox2.TabIndex = 6;
             this.GroupBox2.TabStop = false;
             this.GroupBox2.Text = "Translation Table Import Test";
-            // 
-            // Button2
-            // 
-            this.Button2.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.Button2.Location = new System.Drawing.Point(696, 20);
-            this.Button2.Name = "Button2";
-            this.Button2.Size = new System.Drawing.Size(75, 23);
-            this.Button2.TabIndex = 4;
-            this.Button2.Text = "Load";
-            this.Button2.Click += new System.EventHandler(this.Button2_Click);
             // 
             // TextBox1
             // 
@@ -320,7 +307,6 @@
         private System.Windows.Forms.Button cmdBrowseFF;
         private System.Windows.Forms.Button cmdLoadFF;
         private System.Windows.Forms.GroupBox GroupBox2;
-        private System.Windows.Forms.Button Button2;
         private System.Windows.Forms.TextBox TextBox1;
         private System.Windows.Forms.GroupBox GroupBox3;
         private System.Windows.Forms.Button cmdExportFASTA;

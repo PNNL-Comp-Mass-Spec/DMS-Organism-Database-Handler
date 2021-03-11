@@ -74,7 +74,6 @@ namespace AppUI_OrfDBHandler
             this.mnuFileExit = new System.Windows.Forms.MenuItem();
             this.mnuTools = new System.Windows.Forms.MenuItem();
             this.mnuToolsCollectionEdit = new System.Windows.Forms.MenuItem();
-            this.mnuToolsExtractFromFile = new System.Windows.Forms.MenuItem();
             this.mnuToolsSep1 = new System.Windows.Forms.MenuItem();
             this.mnuAdmin = new System.Windows.Forms.MenuItem();
             this.mnuAdminBatchUploadFiles = new System.Windows.Forms.MenuItem();
@@ -537,7 +536,6 @@ namespace AppUI_OrfDBHandler
             this.mnuTools.Index = 1;
             this.mnuTools.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.mnuToolsCollectionEdit,
-            this.mnuToolsExtractFromFile,
             this.mnuToolsSep1});
             this.mnuTools.Text = "&Tools";
             // 
@@ -546,13 +544,6 @@ namespace AppUI_OrfDBHandler
             this.mnuToolsCollectionEdit.Index = 0;
             this.mnuToolsCollectionEdit.Text = "&Edit Collection States...";
             this.mnuToolsCollectionEdit.Click += new System.EventHandler(this.mnuToolsCollectionEdit_Click);
-            // 
-            // mnuToolsExtractFromFile
-            // 
-            this.mnuToolsExtractFromFile.Enabled = false;
-            this.mnuToolsExtractFromFile.Index = 1;
-            this.mnuToolsExtractFromFile.Text = "Extract Annotations from Text File...";
-            this.mnuToolsExtractFromFile.Click += new System.EventHandler(this.mnuToolsExtractFromFile_Click);
             // 
             // mnuToolsSep1
             // 
@@ -686,7 +677,6 @@ namespace AppUI_OrfDBHandler
         private System.Windows.Forms.MenuItem mnuAdmin;
         private System.Windows.Forms.MenuItem mnuFileExit;
         private System.Windows.Forms.MenuItem mnuToolsCollectionEdit;
-        private System.Windows.Forms.MenuItem mnuToolsExtractFromFile;
         private System.Windows.Forms.MenuItem mnuHelpAbout;
         private System.Windows.Forms.MenuItem mnuAdminNameHashRefresh;
         private System.Windows.Forms.MenuItem mnuToolsSep1;

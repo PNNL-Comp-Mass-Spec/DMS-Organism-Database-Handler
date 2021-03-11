@@ -7,7 +7,6 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows.Forms;
-using AppUI_OrfDBHandler.ExtractAdditionalAnnotations;
 using AppUI_OrfDBHandler.Properties;
 using OrganismDatabaseHandler.ProteinImport;
 using OrganismDatabaseHandler.ProteinUpload;
@@ -951,11 +950,12 @@ namespace AppUI_OrfDBHandler
             cse.ShowDialog();
         }
 
-        private void mnuToolsExtractFromFile_Click(object sender, EventArgs e)
-        {
-            var f = new frmExtractFromFlatFile(mImportHandler.Authorities, mPsConnectionString);
-            f.ShowDialog();
-        }
+        // Unused
+        //private void mnuToolsExtractFromFile_Click(object sender, EventArgs e)
+        //{
+        //    var f = new frmExtractFromFlatFile(mImportHandler.Authorities, mPsConnectionString);
+        //    f.ShowDialog();
+        //}
 
         // Unused
         //private void mnuToolsUpdateArchives_Click(object sender, EventArgs e)

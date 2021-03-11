@@ -52,10 +52,8 @@
     <Compile Include="ProteinExport\ArchiveOutputFilesBase.cs" />
     <Compile Include="ProteinExport\ArchiveToFile.cs" />
     <Compile Include="ProteinExport\ArchiveToSubversion.cs" />
-    <Compile Include="ProteinExport\CRC32.cs" />
     <Compile Include="ProteinExport\ExportProteins.cs" />
     <Compile Include="ProteinExport\ExportProteinsFASTA.cs" />
-    <Compile Include="ProteinExport\ExportProteinsXTFASTA.cs" />
     <Compile Include="ProteinExport\FileCreationOptions.cs" />
     <Compile Include="ProteinExport\GetFASTAFromDMS.cs" />
     <Compile Include="ProteinExport\GetFASTAFromDMSDecoy.cs" />
@@ -66,7 +64,6 @@
     <Compile Include="ProteinExport\RijndaelEncryptionHandler.cs" />
     <Compile Include="ProteinImport\AddUpdateEntries.cs" />
     <Compile Include="ProteinImport\FASTAReader.cs" />
-    <Compile Include="ProteinImport\ImportAnnotations.cs" />
     <Compile Include="ProteinImport\ImportHandler.cs" />
     <Compile Include="ProteinImport\TinySeqXMLReader.cs" />
     <Compile Include="ProteinStorage\ProteinStorage.cs" />
