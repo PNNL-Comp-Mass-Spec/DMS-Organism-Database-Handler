@@ -326,7 +326,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var sqlQuery =
                 "SELECT Protein_Collection_ID, Primary_Annotation_Type_ID " +
                 "FROM T_Protein_Collections " +
-                "WHERE FileName = " + collectionName + " ORDER BY Name";
+                "WHERE FileName = '" + collectionName + "' ORDER BY FileName";
 
             var tmpTable = mSQLAccess.GetTable(sqlQuery);
             var foundRow = tmpTable.Rows[0];
