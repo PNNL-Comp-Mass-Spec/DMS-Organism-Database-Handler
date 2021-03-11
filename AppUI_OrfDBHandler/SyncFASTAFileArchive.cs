@@ -16,7 +16,6 @@ namespace AppUI_OrfDBHandler
 {
     public class SyncFASTAFileArchive
     {
-
         // private IArchiveOutputFiles mFileArchiver;
         private readonly DBTask mDatabaseAccessor;
         private readonly AddUpdateEntries mImporter;
@@ -285,6 +284,7 @@ namespace AppUI_OrfDBHandler
             oReader.CloseFile();
         }
 
+        [Obsolete("Uses old table")]
         public void FixArchivedFilePaths()
         {
             var sql = "SELECT * FROM T_Temp_Archive_Path_Fix";
@@ -443,6 +443,7 @@ namespace AppUI_OrfDBHandler
             OnSyncCompletion();
         }
 
+        [Obsolete("Valid, but unused and could take a very long time")]
         public void RefreshNameHashes()
         {
             var nameCountSQL = "SELECT TOP 1 Reference_ID FROM T_Protein_Names ORDER BY Reference_ID DESC";

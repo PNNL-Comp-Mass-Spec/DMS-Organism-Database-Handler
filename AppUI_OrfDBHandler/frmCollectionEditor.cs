@@ -1164,6 +1164,7 @@ namespace AppUI_OrfDBHandler
             mSyncer.CorrectMasses();
         }
 
+        [Obsolete("Valid, but unused and could take a very long time")]
         private void mnuAdminNameHashRefresh_Click(object sender, EventArgs e)
         {
             if (mSyncer == null)
@@ -1181,6 +1182,7 @@ namespace AppUI_OrfDBHandler
             frmTesting.Show();
         }
 
+        [Obsolete("Uses old table")]
         private void MenuItem6_Click(object sender, EventArgs e)
         {
             if (mSyncer == null)
