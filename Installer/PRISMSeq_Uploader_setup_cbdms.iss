@@ -1,7 +1,7 @@
 ; This is an Inno Setup configuration file
 ; http://www.jrsoftware.org/isinfo.php
 
-#define ApplicationVersion GetFileVersion('..\Executables\Debug_CBDMS_GUI\PRISMSeq Uploader.exe')
+#define ApplicationVersion GetFileVersion('..\Executables\Debug_CBDMS_GUI\PRISMSeq_Uploader.exe')
 
 [CustomMessages]
 AppName=PRISMSeq Uploader
@@ -12,25 +12,27 @@ WelcomeLabel2=This will install [name/ver] on your computer. This version is cus
 ; WelcomeLabel2=Welcome message%n%nAdditional sentence
 [Files]
 
-Source: ..\Executables\Debug_CBDMS_GUI\PRISMSeq Uploader.exe                 ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\PRISMSeq Uploader.exe.config          ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\ExtractAnnotationFromDescription.dll  ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\FlexibleFileSortUtility.dll           ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\NucleotideTranslator.dll              ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\PRISM.dll                             ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\PRISMWin.dll                          ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\Protein_Exporter.dll                  ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\Protein_Importer.dll                  ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\Protein_Storage.dll                   ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\Protein_Uploader.dll                  ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\ProteinFileReader.dll                 ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\Raccoom.TreeViewFolderBrowser.DataProviders.dll   ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\Raccoom.TreeViewFolderBrowser.dll                 ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\SequenceInfoCalculator.dll            ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\TableManipulationBase.dll             ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\TranslationTableImport.dll            ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\UIControls.dll                        ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\ValidateFastaFile.dll                 ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\PRISMSeq_Uploader.exe                            ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\PRISMSeq_Uploader.exe.config                     ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\FlexibleFileSortUtility.dll                      ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Bcl.AsyncInterfaces.dll                ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Npgsql.dll                                       ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\OrganismDatabaseHandler.dll                      ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\PRISM.dll                                        ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\PRISMDatabaseUtils.dll                           ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\PRISMWin.dll                                     ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\ProteinFileReader.dll                            ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Raccoom.TreeViewFolderBrowser.DataProviders.dll  ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Raccoom.TreeViewFolderBrowser.dll                ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Buffers.dll                               ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Memory.dll                                ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Numerics.Vectors.dll                      ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Runtime.CompilerServices.Unsafe.dll       ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Text.Encodings.Web.dll                    ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Text.Json.dll                             ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Threading.Tasks.Extensions.dll            ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.ValueTuple.dll                            ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\ValidateFastaFile.dll                            ; DestDir: {app}
 
 Source: ..\Aux_Files\delete_16x.ico                                  ; DestDir: {app}
 Source: ..\AppUI_OrfDBHandler\PRISMSeq_Favicon.ico                   ; DestDir: {app}
