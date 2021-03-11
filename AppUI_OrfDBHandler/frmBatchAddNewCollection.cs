@@ -501,15 +501,13 @@ namespace AppUI_OrfDBHandler
                 {
                     var fastaFilePath = GetFolderContentsColumn(li, FolderContentsColumn.FilePath);
 
-                    var upInfo = new PSUploadHandler.UploadInfo()
+                    var upInfo = new PSUploadHandler.UploadInfo
                     {
                         FileInformation = mFileList[fastaFilePath],
                         OrganismId = (int)cboOrganismSelect.SelectedValue,
                         AnnotationTypeId = (int)cboAnnotationTypePicker.SelectedValue,
                         Description = string.Empty,
-                        Source = string.Empty,
-                        EncryptSequences = false,
-                        EncryptionPassphrase = string.Empty
+                        Source = string.Empty
                     };
 
                     var proteinCollection = Path.GetFileNameWithoutExtension(upInfo.FileInformation.Name);
@@ -606,12 +604,10 @@ namespace AppUI_OrfDBHandler
         }
 
         /// <summary>
-        ///
+        /// Get value of the specified column
         /// </summary>
         /// <param name="li"></param>
         /// <param name="eColumn"></param>
-        /// <returns></returns>
-        /// <remarks></remarks>
         private string GetSelectedFileColumn(ListViewItem li, SelectedFileColumn eColumn)
         {
             var value = li.SubItems[(int)eColumn].Text;
@@ -974,59 +970,10 @@ namespace AppUI_OrfDBHandler
                 }
             }
         }
-
-        private void chkEncryptionEnable_CheckedChanged(object sender, EventArgs e)
-        {
-            var chk = (CheckBox)sender;
-            var encryptSequences = false;
-
-            txtPassphrase.Enabled = chk.CheckState == CheckState.Checked;
-
-            CheckTransferEnable();
-
-            //if (lvwSelectedFiles.SelectedItems.Count > 0)
-            //{
-            //    foreach (ListViewItem li in lvwSelectedFiles.SelectedItems)
-            //    {
-            //        var fastaFilePath = li.SubItems[(int)eSelectedFileColumn.FilePath].Text;
-            //        var tmpUpInfo = (Protein_Uploader.PSUploadHandler.UploadInfo) mSelectedFileList[fastaFilePath];
-            //        if (encryptSequences)
-            //        {
-            //            tmpUpInfo.EncryptSequences = true;
-            //            tmpUpInfo.EncryptionPassphrase = passPhraseForm.Passphrase;
-            //            li.SubItems[(int) eSelectedFileColumn.Encrypt].Text = "Yes";
-            //        }
-            //        else
-            //        {
-            //            tmpUpInfo.EncryptSequences = false;
-            //            tmpUpInfo.EncryptionPassphrase = null;
-            //            li.SubItems[(int)eSelectedFileColumn.Encrypt].Text = "No";
-            //        }
-
-            //        mSelectedFileList[fastaFilePath] = tmpUpInfo;
-            //    }
-            //}
-        }
-
+        
         private void CheckTransferEnable()
         {
-            if (chkEncryptionEnable.Checked)
-            {
-                if (mSelectedOrganismId > 0 &&
-                    mSelectedAnnotationTypeId > 0 &&
-                    lvwFolderContents.SelectedItems.Count > 0 &&
-                    txtPassphrase.Text.Length > 0)
-                {
-                    mAllowAddFiles = true;
-                    mAllowAddFilesMessage = "";
-                }
-                else
-                {
-                    mAllowAddFiles = false;
-                    mAllowAddFilesMessage = AddFilesMessage + "  You also must define a passphrase for encryption.";
-                }
-            }
-            else if (mSelectedOrganismId > 0 && mSelectedAnnotationTypeId > 0 && lvwFolderContents.SelectedItems.Count > 0)
+            if (mSelectedOrganismId > 0 && mSelectedAnnotationTypeId > 0 && lvwFolderContents.SelectedItems.Count > 0)
             {
                 mAllowAddFiles = true;
                 mAllowAddFilesMessage = "";
@@ -1116,23 +1063,8 @@ namespace AppUI_OrfDBHandler
             var li = lvwSelectedFiles.SelectedItems[0];
 
             var selectedOrganism = GetSelectedFileColumn(li, SelectedFileColumn.Organism);
-
-            //if (li.SubItems[(int)eSelectedFileColumn.Encrypt].Text = "Yes")
-            //{
-            //    chkEncryptionEnable.CheckedChanged -= chkEncryptionEnable_CheckedChanged;
-            //    chkEncryptionEnable.CheckState = CheckState.Checked;
-            //    chkEncryptionEnable.CheckedChanged += chkEncryptionEnable_CheckedChanged;
-            //}
-            //else
-            //{
-            //    chkEncryptionEnable.CheckedChanged -= chkEncryptionEnable_CheckedChanged;
-            //    chkEncryptionEnable.CheckState = CheckState.Unchecked;
-            //    chkEncryptionEnable.CheckedChanged += chkEncryptionEnable_CheckedChanged;
-            //}
-
-            var selFileAnnotationType = GetSelectedFileColumn(li, SelectedFileColumn.AnnotationType);
-
-            cboAnnotationTypePicker.Text = selFileAnnotationType;
+            
+            cboAnnotationTypePicker.Text = GetSelectedFileColumn(li, SelectedFileColumn.AnnotationType);
             cboOrganismSelect.Text = selectedOrganism;
 
             CheckTransferEnable();
@@ -1179,32 +1111,7 @@ namespace AppUI_OrfDBHandler
                 mPreviewFormStatus = false;
             }
         }
-
-        //private void txtPassphrase_Validating(object sender, System.ComponentModel.CancelEventArgs e)
-        //{
-        //    TextBox txt = (TextBox)sender;
-
-        //    if (txt.Text.Length > 0)
-        //    {
-        //        if (lvwSelectedFiles.SelectedItems.Count == 0)
-        //            mCachedPassphrase = txt.Text;
-        //        else if (lvwSelectedFiles.SelectedItems.Count > 0)
-        //        {
-        //            foreach (ListViewItem li in lvwSelectedFiles.Items)
-        //            {
-        //                li.Tag = txt.Text;
-        //                li.SubItems[(int)eSelectedFileColumn.Encrypt].Text = "Yes";
-        //            }
-        //        }
-        //        CheckTransferEnable();
-        //    }
-        //    else
-        //    {
-        //        CheckTransferEnable();
-        //        return;
-        //    }
-        //}
-
+        
         private void txtMaximumProteinNameLength_Validating(object sender, CancelEventArgs e)
         {
             if (txtMaximumProteinNameLength.TextLength == 0)

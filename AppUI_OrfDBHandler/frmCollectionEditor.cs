@@ -104,7 +104,7 @@ namespace AppUI_OrfDBHandler
         private Dictionary<string, PSUploadHandler.UploadInfo> mValidUploadsList;
 
         private SyncFASTAFileArchive mSyncer;
-        private readonly bool mEncryptSequences = false;
+
         private readonly System.Timers.Timer searchTimer;
         private readonly System.Timers.Timer memberLoadTimer;
 
@@ -371,14 +371,7 @@ namespace AppUI_OrfDBHandler
                 mUploadHandler.WroteLineEndNormalizedFASTA -= NormalizedFASTAFileGenerationHandler;
             }
 
-            if (mEncryptSequences)
-            {
-                mUploadHandler = new PSUploadHandler(mPsConnectionString);
-            }
-            else
-            {
-                mUploadHandler = new PSUploadHandler(mPsConnectionString);
-            }
+            mUploadHandler = new PSUploadHandler(mPsConnectionString);
 
             mUploadHandler.BatchProgress += BatchImportProgressHandler;
             mUploadHandler.ValidFASTAFileLoaded += ValidFASTAUploadHandler;

@@ -53,12 +53,9 @@ namespace AppUI_OrfDBHandler
             this.colSource = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colAnnType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.lblSelectedFiles = new System.Windows.Forms.Label();
-            this.cmdAddFile = new ImageButton();
-            this.cmdRemoveFile = new ImageButton();
+            this.cmdAddFile = new AppUI_OrfDBHandler.Controls.ImageButton();
+            this.cmdRemoveFile = new AppUI_OrfDBHandler.Controls.ImageButton();
             this.cmdPreviewFile = new System.Windows.Forms.Button();
-            this.chkEncryptionEnable = new System.Windows.Forms.CheckBox();
-            this.lblPassphrase = new System.Windows.Forms.Label();
-            this.txtPassphrase = new System.Windows.Forms.TextBox();
             this.fraValidationOptions = new System.Windows.Forms.GroupBox();
             this.chkValidationAllowAllSymbolsInProteinNames = new System.Windows.Forms.CheckBox();
             this.txtMaximumProteinNameLength = new System.Windows.Forms.TextBox();
@@ -94,7 +91,7 @@ namespace AppUI_OrfDBHandler
             this.cboOrganismSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboOrganismSelect.Location = new System.Drawing.Point(6, 608);
             this.cboOrganismSelect.Name = "cboOrganismSelect";
-            this.cboOrganismSelect.Size = new System.Drawing.Size(778, 21);
+            this.cboOrganismSelect.Size = new System.Drawing.Size(778, 25);
             this.cboOrganismSelect.TabIndex = 11;
             this.cboOrganismSelect.SelectedIndexChanged += new System.EventHandler(this.cboOrganismSelect_SelectedIndexChanged);
             // 
@@ -197,7 +194,7 @@ namespace AppUI_OrfDBHandler
             this.cboAnnotationTypePicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboAnnotationTypePicker.Location = new System.Drawing.Point(801, 608);
             this.cboAnnotationTypePicker.Name = "cboAnnotationTypePicker";
-            this.cboAnnotationTypePicker.Size = new System.Drawing.Size(260, 21);
+            this.cboAnnotationTypePicker.Size = new System.Drawing.Size(260, 25);
             this.cboAnnotationTypePicker.TabIndex = 13;
             this.cboAnnotationTypePicker.SelectedIndexChanged += new System.EventHandler(this.cboAnnotationTypePicker_SelectedIndexChanged);
             // 
@@ -303,38 +300,6 @@ namespace AppUI_OrfDBHandler
             this.cmdPreviewFile.Text = "&Preview Selected File";
             this.cmdPreviewFile.Click += new System.EventHandler(this.cmdPreviewFile_Click);
             // 
-            // chkEncryptionEnable
-            // 
-            this.chkEncryptionEnable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.chkEncryptionEnable.Location = new System.Drawing.Point(505, 642);
-            this.chkEncryptionEnable.Name = "chkEncryptionEnable";
-            this.chkEncryptionEnable.Size = new System.Drawing.Size(124, 19);
-            this.chkEncryptionEnable.TabIndex = 16;
-            this.chkEncryptionEnable.Text = "Encrypt Sequences?";
-            this.chkEncryptionEnable.Visible = false;
-            this.chkEncryptionEnable.CheckedChanged += new System.EventHandler(this.chkEncryptionEnable_CheckedChanged);
-            // 
-            // lblPassphrase
-            // 
-            this.lblPassphrase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblPassphrase.Location = new System.Drawing.Point(502, 663);
-            this.lblPassphrase.Name = "lblPassphrase";
-            this.lblPassphrase.Size = new System.Drawing.Size(127, 16);
-            this.lblPassphrase.TabIndex = 17;
-            this.lblPassphrase.Text = "Encryption Passphrase";
-            this.lblPassphrase.Visible = false;
-            // 
-            // txtPassphrase
-            // 
-            this.txtPassphrase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtPassphrase.Enabled = false;
-            this.txtPassphrase.Location = new System.Drawing.Point(505, 679);
-            this.txtPassphrase.Name = "txtPassphrase";
-            this.txtPassphrase.PasswordChar = '•';
-            this.txtPassphrase.Size = new System.Drawing.Size(110, 21);
-            this.txtPassphrase.TabIndex = 18;
-            this.txtPassphrase.Visible = false;
-            // 
             // fraValidationOptions
             // 
             this.fraValidationOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -362,7 +327,7 @@ namespace AppUI_OrfDBHandler
             // 
             this.txtMaximumProteinNameLength.Location = new System.Drawing.Point(407, 17);
             this.txtMaximumProteinNameLength.Name = "txtMaximumProteinNameLength";
-            this.txtMaximumProteinNameLength.Size = new System.Drawing.Size(60, 21);
+            this.txtMaximumProteinNameLength.Size = new System.Drawing.Size(60, 24);
             this.txtMaximumProteinNameLength.TabIndex = 4;
             this.txtMaximumProteinNameLength.Text = "60";
             this.txtMaximumProteinNameLength.Validating += new System.ComponentModel.CancelEventHandler(this.txtMaximumProteinNameLength_Validating);
@@ -423,7 +388,7 @@ namespace AppUI_OrfDBHandler
             // frmBatchAddNewCollection
             // 
             this.AcceptButton = this.cmdUploadChecked;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(1199, 707);
@@ -435,9 +400,6 @@ namespace AppUI_OrfDBHandler
             this.Controls.Add(this.cmdUpdateDescription);
             this.Controls.Add(this.cmdRefreshFiles);
             this.Controls.Add(this.fraValidationOptions);
-            this.Controls.Add(this.txtPassphrase);
-            this.Controls.Add(this.lblPassphrase);
-            this.Controls.Add(this.chkEncryptionEnable);
             this.Controls.Add(this.cmdPreviewFile);
             this.Controls.Add(this.lvwSelectedFiles);
             this.Controls.Add(this.lvwFolderContents);
@@ -456,7 +418,6 @@ namespace AppUI_OrfDBHandler
             this.fraValidationOptions.ResumeLayout(false);
             this.fraValidationOptions.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -484,9 +445,6 @@ namespace AppUI_OrfDBHandler
         private System.Windows.Forms.Label lblAnnAuth;
         private System.Windows.Forms.ColumnHeader colAnnType;
         private System.Windows.Forms.Button cmdPreviewFile;
-        private System.Windows.Forms.CheckBox chkEncryptionEnable;
-        private System.Windows.Forms.Label lblPassphrase;
-        private System.Windows.Forms.TextBox txtPassphrase;
         private System.Windows.Forms.GroupBox fraValidationOptions;
         private System.Windows.Forms.CheckBox chkValidationAllowAsterisks;
         private System.Windows.Forms.Button cmdRefreshFiles;
