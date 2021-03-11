@@ -18,6 +18,14 @@ namespace AppUI_OrfDBHandler
     {
         public frmCollectionEditor()
         {
+            // Initialize Dictionaries
+            mFileErrorList = new Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>>();
+            mCachedFileDescriptions = new Dictionary<string, KeyValuePair<string, string>>();
+            mValidUploadsList = new Dictionary<string, PSUploadHandler.UploadInfo>();
+            mSummarizedFileErrorList = new Dictionary<string, Dictionary<string, int>>();
+            mFileWarningList = new Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>>();
+            mSummarizedFileWarningList = new Dictionary<string, Dictionary<string, int>>();
+
             searchTimer = new System.Timers.Timer(2000d);
             searchTimer.Elapsed += SearchTimerHandler;
             memberLoadTimer = new System.Timers.Timer(2000d);
@@ -27,8 +35,6 @@ namespace AppUI_OrfDBHandler
             InitializeComponent();
 
             CheckTransferButtonsEnabledStatus();
-
-            mCachedFileDescriptions = new Dictionary<string, KeyValuePair<string, string>>();
 
             ReadSettings();
         }
@@ -79,28 +85,28 @@ namespace AppUI_OrfDBHandler
         /// <summary>
         /// Keys are fasta file names, values are lists of errors
         /// </summary>
-        private Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> mFileErrorList;
+        private readonly Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> mFileErrorList;
 
         /// <summary>
         /// Keys are fasta file names, values are dictionaries of error messages, tracking the count of each error
         /// </summary>
-        private Dictionary<string, Dictionary<string, int>> mSummarizedFileErrorList;
+        private readonly Dictionary<string, Dictionary<string, int>> mSummarizedFileErrorList;
 
         /// <summary>
         /// Keys are fasta file names, values are lists of warnings
         /// </summary>
-        private Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> mFileWarningList;
+        private readonly Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> mFileWarningList;
 
         /// <summary>
         /// Keys are fasta file names, values are dictionaries of warning messages, tracking the count of each warning
         /// </summary>
-        private Dictionary<string, Dictionary<string, int>> mSummarizedFileWarningList;
+        private readonly Dictionary<string, Dictionary<string, int>> mSummarizedFileWarningList;
 
         /// <summary>
         /// Keys are FASTA file paths
         /// Values are upload info
         /// </summary>
-        private Dictionary<string, PSUploadHandler.UploadInfo> mValidUploadsList;
+        private readonly Dictionary<string, PSUploadHandler.UploadInfo> mValidUploadsList;
 
         private SyncFASTAFileArchive mSyncer;
 
@@ -1061,44 +1067,18 @@ namespace AppUI_OrfDBHandler
             string fastaFilePath,
             PSUploadHandler.UploadInfo uploadInfo)
         {
-            if (mValidUploadsList == null)
-            {
-                mValidUploadsList = new Dictionary<string, PSUploadHandler.UploadInfo>();
-            }
-
             mValidUploadsList.Add(fastaFilePath, uploadInfo);
         }
 
         private void InvalidFASTAFileHandler(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> errorCollection)
         {
-            if (mFileErrorList == null)
-            {
-                mFileErrorList = new Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>>();
-            }
-
             mFileErrorList.Add(Path.GetFileName(fastaFilePath), errorCollection);
-
-            if (mSummarizedFileErrorList == null)
-            {
-                mSummarizedFileErrorList = new Dictionary<string, Dictionary<string, int>>();
-            }
-
             mSummarizedFileErrorList.Add(Path.GetFileName(fastaFilePath), SummarizeErrors(errorCollection));
         }
 
         private void FASTAFileWarningsHandler(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> warningCollection)
         {
-            if (mFileWarningList == null)
-            {
-                mFileWarningList = new Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>>();
-            }
-
             mFileWarningList.Add(Path.GetFileName(fastaFilePath), warningCollection);
-
-            if (mSummarizedFileWarningList == null)
-            {
-                mSummarizedFileWarningList = new Dictionary<string, Dictionary<string, int>>();
-            }
 
             mSummarizedFileWarningList.Add(Path.GetFileName(fastaFilePath), SummarizeErrors(warningCollection));
         }
