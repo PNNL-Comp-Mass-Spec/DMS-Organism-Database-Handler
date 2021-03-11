@@ -8,6 +8,7 @@ using PRISMWin;
 
 namespace OrganismDatabaseHandler.ProteinExport
 {
+    [Obsolete("Unused")]
     public class ExportProteinsXTFASTA : ExportProteins
     {
         public ExportProteinsXTFASTA(GetFASTAFromDMSForward exportComponent)
@@ -265,6 +266,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             return m;
         }
 
+        [Obsolete("Unused")]
         public long ConvByteArrayToInteger(byte[] b, int ln = 0, int sidx = 0)
         {
             if (ln == 0)
