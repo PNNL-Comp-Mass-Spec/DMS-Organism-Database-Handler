@@ -499,7 +499,7 @@ namespace AppUI_OrfDBHandler
         {
             if (Convert.ToInt32(cboOrganismFilter.SelectedValue) != 0)
             {
-                mProteinCollections.DefaultView.RowFilter = "[OrganismID] = " + cboOrganismFilter.SelectedValue;
+                mProteinCollections.DefaultView.RowFilter = "[Organism_ID] = " + cboOrganismFilter.SelectedValue;
             }
             else
             {

@@ -468,7 +468,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
             // task 4 - Add new collection members to T_Protein_Collection_Members
             mUpload.UpdateProteinCollectionMembers(collectionId, fileContents, selectedProteins, numProteins, numResidues);
 
-            OnLoadStart("Associating protein collection with organism using T_Collection_OrganismXref");
+            OnLoadStart("Associating protein collection with organism using T_Collection_Organism_Xref");
             var xrefId = mUpload.AddCollectionOrganismXref(collectionId, organismId);
             OnLoadEnd();
 

@@ -469,14 +469,14 @@ namespace OrganismDatabaseHandler.ProteinExport
                 RefreshCollectionCache();
             }
 
-            return mDatabaseAccessor.DataTableToDictionary(mCollectionsCache, "Protein_Collection_ID", "FileName", "[OrganismID] = " + organismId);
+            return mDatabaseAccessor.DataTableToDictionary(mCollectionsCache, "Protein_Collection_ID", "FileName", "[Organism_ID] = " + organismId);
         }
 
         public DataTable GetCollectionsByOrganismTable(int organismId)
         {
             var tmpTable = mCollectionsCache.Clone();
 
-            var foundRows = mCollectionsCache.Select("[OrganismID] = " + organismId);
+            var foundRows = mCollectionsCache.Select("[Organism_ID] = " + organismId);
 
             foreach (var dr in foundRows)
                 tmpTable.ImportRow(dr);
@@ -496,7 +496,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 RefreshOrganismCache();
             }
 
-            return mDatabaseAccessor.DataTableToDictionary(mOrganismCache, "OrganismID", "Name");
+            return mDatabaseAccessor.DataTableToDictionary(mOrganismCache, "Organism_ID", "Name");
         }
 
         public DataTable GetOrganismListTable()
@@ -534,7 +534,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
             else
             {
-                mOrganismCache = mDatabaseAccessor.GetTable("SELECT ID as OrganismID, Short_Name as Name FROM V_OrganismPicker ORDER BY OrganismID");
+                mOrganismCache = mDatabaseAccessor.GetTable("SELECT ID as Organism_ID, Short_Name as Name FROM V_Organism_Picker ORDER BY Organism_ID");
             }
         }
 

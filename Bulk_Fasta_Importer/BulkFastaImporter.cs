@@ -363,7 +363,7 @@ namespace Bulk_Fasta_Importer
         {
             try
             {
-                const string sqlQuery = "SELECT OrganismID, Name FROM V_OrganismExport";
+                const string sqlQuery = "SELECT Organism_ID, Name FROM V_Organism_Export";
 
                 mOrganismInfo.Clear();
 
@@ -373,7 +373,7 @@ namespace Bulk_Fasta_Importer
 
                 if (!success)
                 {
-                    ReportDatabaseError("Error obtaining data from V_OrganismExport using GetQueryResultsDataTable");
+                    ReportDatabaseError("Error obtaining data from V_Organism_Export using GetQueryResultsDataTable");
                     return false;
                 }
 
@@ -491,7 +491,7 @@ namespace Bulk_Fasta_Importer
                     ShowWarning("Invalid Organism ID: " + organismId);
                     if (!mOrganismViewInfoShown)
                     {
-                        Console.WriteLine("  ... see view V_OrganismExport in the DMS5 database");
+                        Console.WriteLine("  ... see view V_Organism_Export in the DMS5 database");
                         mOrganismViewInfoShown = true;
                     }
 
@@ -509,7 +509,7 @@ namespace Bulk_Fasta_Importer
             ShowWarning("Invalid Organism Name: " + organismNameOrId);
             if (!mOrganismViewInfoShown)
             {
-                Console.WriteLine("  ... see view V_OrganismExport in the DMS5 database");
+                Console.WriteLine("  ... see view V_Organism_Export in the DMS5 database");
                 mOrganismViewInfoShown = true;
             }
 

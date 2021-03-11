@@ -115,7 +115,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
         protected DataTable GetOrganismsTable()
         {
-            const string orgSql = "SELECT ID, Short_Name, Display_Name, OrganismName FROM V_OrganismPicker";
+            const string orgSql = "SELECT ID, Short_Name, Display_Name, Organism_Name FROM V_Organism_Picker";
             return mDatabaseAccessor.GetTable(orgSql);
         }
 
@@ -143,7 +143,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             // int tmpAnnTypeID;
             // int tmpAuthTypeID;
 
-            var loadedCollectionsSQL = "SELECT FileName, Full_Path, OrganismName, OrganismID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered";
+            var loadedCollectionsSQL = "SELECT FileName, Full_Path, Organism_Name, Organism_ID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered";
 
             using (var fileTable = mDatabaseAccessor.GetTable(loadedCollectionsSQL))
             {
@@ -159,8 +159,8 @@ namespace AppUI_OrfDBHandler.ProteinUpload
                 foreach (DataRow dr in fileTable.Rows)
                 {
                     var fileName = dr["FileName"].ToString();
-                    var organismName = dr["OrganismName"].ToString();
-                    var organismId = Convert.ToInt32(dr["OrganismID"]);
+                    var organismName = dr["Organism_Name"].ToString();
+                    var organismId = Convert.ToInt32(dr["Organism_ID"]);
                     var fullPath = dr["Full_Path"].ToString();
                     var annotationTypeId = Convert.ToInt32(dr["Annotation_Type_ID"]);
                     var authorityTypeId = Convert.ToInt32(dr["Authority_ID"]);

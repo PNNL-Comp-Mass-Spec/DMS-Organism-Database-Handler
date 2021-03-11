@@ -110,7 +110,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public DataTable LoadOrganisms()
         {
-            var orgSQL = "SELECT * FROM V_OrganismPicker ORDER BY Short_Name";
+            var orgSQL = "SELECT * FROM V_Organism_Picker ORDER BY Short_Name";
             var tmpOrgTable = mSQLAccess.GetTable(orgSQL);
 
             var dr = tmpOrgTable.NewRow();
@@ -242,7 +242,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         public DataTable LoadProteinCollections()
         {
             var pcSql = "SELECT MIN(FileName) AS FileName, Protein_Collection_ID, " +
-                        "MIN(OrganismID) AS OrganismID, MIN(Authority_ID) AS Authority_ID, " +
+                        "MIN(Organism_ID) AS Organism_ID, MIN(Authority_ID) AS Authority_ID, " +
                         "MIN(Display) AS Display, MIN(Authentication_Hash) AS Authentication_Hash " +
                         "FROM V_Protein_Collections_By_Organism " +
                         "GROUP BY Protein_Collection_ID " +
@@ -263,9 +263,9 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         protected DataTable LoadProteinCollections(int organismId)
         {
-            var sqlQuery = "SELECT FileName, Protein_Collection_ID, OrganismID, Authority_ID, Display, Authentication_Hash" +
+            var sqlQuery = "SELECT FileName, Protein_Collection_ID, Organism_ID, Authority_ID, Display, Authentication_Hash" +
                            " FROM V_Protein_Collections_By_Organism" +
-                           " WHERE OrganismID = " + organismId +
+                           " WHERE Organism_ID = " + organismId +
                            " ORDER BY FileName";
             var tmpPcTable = mSQLAccess.GetTable(sqlQuery);
 

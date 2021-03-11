@@ -302,11 +302,11 @@ namespace AppUI_OrfDBHandler
 
         public void AddSortingIndices()
         {
-            var getCollectionsSQL = "SELECT Protein_Collection_ID, FileName, OrganismID FROM V_Protein_Collections_By_Organism WHERE Collection_Type_ID = 1 or Collection_Type_ID = 5";
+            var getCollectionsSQL = "SELECT Protein_Collection_ID, FileName, Organism_ID FROM V_Protein_Collections_By_Organism WHERE Collection_Type_ID = 1 or Collection_Type_ID = 5";
 
             var collectionTable = mDatabaseAccessor.GetTable(getCollectionsSQL);
 
-            var getLegacyFilesSQL = "SELECT DISTINCT FileName, Full_Path, OrganismID FROM V_Legacy_Static_File_Locations";
+            var getLegacyFilesSQL = "SELECT DISTINCT FileName, Full_Path, Organism_ID FROM V_Legacy_Static_File_Locations";
             var legacyTable = mDatabaseAccessor.GetTable(getLegacyFilesSQL);
 
             var dbTools = mDatabaseAccessor.DbTools;
@@ -320,9 +320,9 @@ namespace AppUI_OrfDBHandler
                     Debug.WriteLine("");
                 }
 
-                var tmpOrgId = Convert.ToInt32(collectionEntry["OrganismID"]);
+                var tmpOrgId = Convert.ToInt32(collectionEntry["Organism_ID"]);
 
-                var legacyFoundRows = legacyTable.Select("FileName = '" + tmpCollectionName + ".fasta' AND OrganismID = " + tmpOrgId);
+                var legacyFoundRows = legacyTable.Select("FileName = '" + tmpCollectionName + ".fasta' AND Organism_ID = " + tmpOrgId);
                 if (legacyFoundRows.Length > 0)
                 {
                     var getReferencesSql = "SELECT * FROM V_Tmp_Member_Name_Lookup WHERE Protein_Collection_ID = " + tmpCollectionId +

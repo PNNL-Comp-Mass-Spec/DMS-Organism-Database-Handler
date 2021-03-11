@@ -840,7 +840,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@description", SqlType.VarChar, 900).Value = description;
 
             // TODO (org fix) Remove this reference and fix associated stored procedure
-            // myParam = dbTools.AddParameter(cmdSave, "@organismID", SqlType.Int)
+            // myParam = dbTools.AddParameter(cmdSave, "@organism_ID", SqlType.Int)
             // myParam.Direction = ParameterDirection.Input
             // myParam.Value = OrganismID
 
@@ -939,7 +939,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             // Define parameters for the procedure's arguments
             dbTools.AddParameter(cmdSave, "@Protein_Collection_ID", SqlType.Int).Value = proteinCollectionId;
-            dbTools.AddParameter(cmdSave, "@OrganismID", SqlType.Int).Value = organismId;
+            dbTools.AddParameter(cmdSave, "@Organism_ID", SqlType.Int).Value = organismId;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
 
             // Execute the sp
