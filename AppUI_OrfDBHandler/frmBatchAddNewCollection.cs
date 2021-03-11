@@ -158,9 +158,7 @@ namespace AppUI_OrfDBHandler
             {
                 try
                 {
-                    var currentNode = ctlTreeViewFolderBrowser.SelectedNode as TreeNodePath;
-
-                    if (currentNode != null && !string.IsNullOrWhiteSpace(currentNode.Path))
+                    if (ctlTreeViewFolderBrowser.SelectedNode is TreeNodePath currentNode && !string.IsNullOrWhiteSpace(currentNode.Path))
                     {
                         return currentNode.Path;
                     }
@@ -982,14 +980,7 @@ namespace AppUI_OrfDBHandler
             var chk = (CheckBox)sender;
             var encryptSequences = false;
 
-            if (chk.CheckState == CheckState.Checked)
-            {
-                txtPassphrase.Enabled = true;
-            }
-            else
-            {
-                txtPassphrase.Enabled = false;
-            }
+            txtPassphrase.Enabled = chk.CheckState == CheckState.Checked;
 
             CheckTransferEnable();
 
@@ -1046,32 +1037,9 @@ namespace AppUI_OrfDBHandler
                 mAllowAddFilesMessage = AddFilesMessage;
             }
 
-            if (lvwSelectedFiles.Items.Count > 0)
-            {
-                cmdRemoveFile.Enabled = true;
-            }
-            else
-            {
-                cmdRemoveFile.Enabled = false;
-            }
-
-            if (lvwSelectedFiles.Items.Count > 0)
-            {
-                cmdUploadChecked.Enabled = true;
-            }
-            else
-            {
-                cmdUploadChecked.Enabled = false;
-            }
-
-            if (lvwFolderContents.SelectedItems.Count > 0)
-            {
-                cmdPreviewFile.Enabled = true;
-            }
-            else
-            {
-                cmdPreviewFile.Enabled = false;
-            }
+            cmdRemoveFile.Enabled = lvwSelectedFiles.Items.Count > 0;
+            cmdUploadChecked.Enabled = lvwSelectedFiles.Items.Count > 0;
+            cmdPreviewFile.Enabled = lvwFolderContents.SelectedItems.Count > 0;
         }
 
         private void cmdUploadChecked_Click(object sender, EventArgs e)
@@ -1181,14 +1149,8 @@ namespace AppUI_OrfDBHandler
             {
                 var r = MessageBox.Show("You have files selected for upload. Really close the form?",
                     "Files selected for upload", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-                if (r == DialogResult.No)
-                {
-                    e.Cancel = true;
-                }
-                else
-                {
-                    e.Cancel = false;
-                }
+
+                e.Cancel = r == DialogResult.No;
             }
 
             if (mFilePreviewer != null & mPreviewFormStatus == true)
@@ -1251,8 +1213,7 @@ namespace AppUI_OrfDBHandler
             }
             else
             {
-                var intValue = 0;
-                if (int.TryParse(txtMaximumProteinNameLength.Text, out intValue))
+                if (int.TryParse(txtMaximumProteinNameLength.Text, out var intValue))
                 {
                     if (intValue < 30)
                     {

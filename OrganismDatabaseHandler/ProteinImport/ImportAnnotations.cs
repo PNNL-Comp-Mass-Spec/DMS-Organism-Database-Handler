@@ -26,7 +26,6 @@ namespace OrganismDatabaseHandler.ProteinImport
         private string mNamespace;
         private string mDefinition;
         private string mComment;
-        private bool mIsObsolete;
         private ArrayList mExactSynonym;
         private ArrayList mIsA;
         private ArrayList mXRefAnalog;
@@ -63,11 +62,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             set => mComment = CleanUpLine(value);
         }
 
-        public bool IsObsolete
-        {
-            get => mIsObsolete;
-            set => mIsObsolete = value;
-        }
+        public bool IsObsolete { get; set; }
 
         public ArrayList ExactSynonymList => mExactSynonym;
 

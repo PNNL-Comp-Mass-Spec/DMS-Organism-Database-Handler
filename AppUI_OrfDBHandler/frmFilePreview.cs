@@ -92,14 +92,7 @@ namespace AppUI_OrfDBHandler
         private void txtLineCount_TextChanged(object sender, EventArgs e)
         {
             var countText = txtLineCount.Text;
-            if (validationRegex.IsMatch(countText))
-            {
-                cmdRefresh.Enabled = true;
-            }
-            else
-            {
-                cmdRefresh.Enabled = false;
-            }
+            cmdRefresh.Enabled = validationRegex.IsMatch(countText);
         }
 
         private void frmFilePreview_Closed(object sender, EventArgs e)

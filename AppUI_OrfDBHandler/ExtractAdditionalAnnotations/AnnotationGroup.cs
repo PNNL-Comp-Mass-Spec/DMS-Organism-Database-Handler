@@ -68,9 +68,9 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
                 foreach (var primeXRef in xrefList)
                 {
                     var additionalXRefs = primeXRef.Split(XRefDelimiter.ToCharArray());
-                    for (var xRefCount = 0; xRefCount < additionalXRefs.Length; xRefCount++)
+                    foreach (var xref in additionalXRefs)
                     {
-                        var newItem = additionalXRefs[xRefCount].ToString();
+                        var newItem = xref;
                         if (!newXRefList.Contains(newItem))
                         {
                             newXRefList.Add(newItem);

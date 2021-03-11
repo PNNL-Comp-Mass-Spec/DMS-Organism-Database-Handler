@@ -246,14 +246,7 @@ namespace AppUI_OrfDBHandler
                 dr = mTranslationEntries.NewRow();
                 counter += 1;
                 var tmpStartString = startString.Substring(counter, 1);
-                if (tmpStartString == "M")
-                {
-                    tmpStart = true;
-                }
-                else
-                {
-                    tmpStart = false;
-                }
+                tmpStart = tmpStartString == "M";
 
                 var base1 = base1List.Substring(counter, 1);
                 var base2 = base2List.Substring(counter, 1);

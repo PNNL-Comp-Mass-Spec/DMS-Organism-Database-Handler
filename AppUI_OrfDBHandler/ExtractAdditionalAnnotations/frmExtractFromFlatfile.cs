@@ -30,14 +30,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
             chkUseHeader.CheckedChanged -= chkUseHeader_CheckedChanged;
 
-            if (mUseHeaderInfo == true)
-            {
-                chkUseHeader.CheckState = System.Windows.Forms.CheckState.Checked;
-            }
-            else
-            {
-                chkUseHeader.CheckState = System.Windows.Forms.CheckState.Unchecked;
-            }
+            chkUseHeader.CheckState = mUseHeaderInfo ? CheckState.Checked : CheckState.Unchecked;
 
             chkUseHeader.CheckedChanged += chkUseHeader_CheckedChanged;
 
@@ -80,14 +73,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         {
             var chk = (System.Windows.Forms.CheckBox)sender;
 
-            if (chk.CheckState == System.Windows.Forms.CheckState.Checked)
-            {
-                mUseHeaderInfo = true;
-            }
-            else
-            {
-                mUseHeaderInfo = false;
-            }
+            mUseHeaderInfo = chk.CheckState == CheckState.Checked;
 
             mExtract.LoadGroups("\t", mUseHeaderInfo);
             RefreshRawFileListViewHeaders();

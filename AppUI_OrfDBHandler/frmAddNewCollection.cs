@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace AppUI_OrfDBHandler
@@ -14,17 +13,8 @@ namespace AppUI_OrfDBHandler
             InitializeComponent();
         }
 
-        private string mCollectionName;
-        private string mDescription;
-        private string mCollectionSource;
-
-        private int mOrganismId;
-        private int mAnnotationTypeId;
-
         private DataTable mAnnotationTypes;
         private DataTable mOrganisms;
-
-        private bool mLocalFile;
 
         private void frmAddNewCollection_Load(object sender, EventArgs e)
         {
@@ -33,7 +23,7 @@ namespace AppUI_OrfDBHandler
                 cboAuthorityPicker.Enabled = true;
                 cboOrganismPicker.Enabled = true;
                 // txtCollectionName.Visible = false;
-                txtCollectionName.Text = mCollectionName;
+                txtCollectionName.Text = CollectionName;
 
                 mOrganisms.Rows[0]["Display_Name"] = " -- Select an Organism --";
                 mOrganisms.Rows[0]["ID"] = 0;
@@ -49,39 +39,23 @@ namespace AppUI_OrfDBHandler
             else
             {
                 txtCollectionName.Visible = true;
-                txtCollectionName.Text = mCollectionName;
+                txtCollectionName.Text = CollectionName;
                 BindToCombo(cboOrganismPicker, mOrganisms, "Display_Name", "ID");
-                cboOrganismPicker.SelectedValue = mOrganismId;
+                cboOrganismPicker.SelectedValue = OrganismId;
                 BindToCombo(cboAuthorityPicker, mAnnotationTypes, "Display_Name", "ID");
-                cboAuthorityPicker.SelectedValue = mAnnotationTypeId;
+                cboAuthorityPicker.SelectedValue = AnnotationTypeId;
                 cboAuthorityPicker.Enabled = false;
                 cboOrganismPicker.Enabled = false;
             }
         }
 
-        internal bool IsLocalFile
-        {
-            get => mLocalFile;
-            set => mLocalFile = value;
-        }
+        internal bool IsLocalFile { get; set; }
 
-        internal string CollectionName
-        {
-            get => mCollectionName;
-            set => mCollectionName = value;
-        }
+        internal string CollectionName { get; set; }
 
-        internal string CollectionDescription
-        {
-            get => mDescription;
-            set => mDescription = value;
-        }
+        internal string CollectionDescription { get; set; }
 
-        internal string CollectionSource
-        {
-            get => mCollectionSource;
-            set => mCollectionSource = value;
-        }
+        internal string CollectionSource { get; set; }
 
         internal DataTable OrganismList
         {
@@ -93,17 +67,9 @@ namespace AppUI_OrfDBHandler
             set => mAnnotationTypes = value;
         }
 
-        internal int OrganismID
-        {
-            get => mOrganismId;
-            set => mOrganismId = value;
-        }
+        internal int OrganismId { get; set; }
 
-        internal int AnnotationTypeID
-        {
-            get => mAnnotationTypeId;
-            set => mAnnotationTypeId = value;
-        }
+        internal int AnnotationTypeId { get; set; }
 
         protected void BindToCombo(
             ComboBox cbo,
@@ -125,25 +91,18 @@ namespace AppUI_OrfDBHandler
 
         private void txtCollectionName_Leave(object sender, EventArgs e)
         {
-            mCollectionName = txtCollectionName.Text;
+            CollectionName = txtCollectionName.Text;
         }
 
         private void cboOrganismPicker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            mOrganismId = Convert.ToInt32(cboOrganismPicker.SelectedValue);
-            if (mOrganismId == 0)
-            {
-                cmdOK.Enabled = false;
-            }
-            else
-            {
-                cmdOK.Enabled = true;
-            }
+            OrganismId = Convert.ToInt32(cboOrganismPicker.SelectedValue);
+            cmdOK.Enabled = OrganismId != 0;
         }
 
         private void cboAuthorityPicker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            mAnnotationTypeId = Convert.ToInt32(cboAuthorityPicker.SelectedValue);
+            AnnotationTypeId = Convert.ToInt32(cboAuthorityPicker.SelectedValue);
         }
 
         private void cmdAddOrganismClick(object sender, EventArgs e)
@@ -156,18 +115,18 @@ namespace AppUI_OrfDBHandler
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            mCollectionName = txtCollectionName.Text;
-            mDescription = txtDescription.Text;
-            mCollectionSource = txtSource.Text;
-            mOrganismId = Convert.ToInt32(cboOrganismPicker.SelectedValue);
-            mAnnotationTypeId = Convert.ToInt32(cboAuthorityPicker.SelectedValue);
+            CollectionName = txtCollectionName.Text;
+            CollectionDescription = txtDescription.Text;
+            CollectionSource = txtSource.Text;
+            OrganismId = Convert.ToInt32(cboOrganismPicker.SelectedValue);
+            AnnotationTypeId = Convert.ToInt32(cboAuthorityPicker.SelectedValue);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            mCollectionName = null;
-            mOrganismId = default;
-            mAnnotationTypeId = default;
+            CollectionName = null;
+            OrganismId = default;
+            AnnotationTypeId = default;
         }
 
         #endregion

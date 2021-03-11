@@ -780,9 +780,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
 
             legacyStaticFilePathOutput = legacyStaticFileLocations.Rows[0]["Full_Path"].ToString();
-            crc32HashOutput = legacyStaticFileLocations.Rows[0]["Authentication_Hash"].ToString();
-            if (crc32HashOutput == null)
-                crc32HashOutput = string.Empty;
+            crc32HashOutput = legacyStaticFileLocations.Rows[0]["Authentication_Hash"].ToString() ?? string.Empty;
 
             return true;
         }
@@ -792,23 +790,23 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// </summary>
         /// <param name="strFastaFilePath"></param>
         /// <param name="crc32Hash"></param>
-        /// <param name="hashcheckExtension">Hashcheck file extension; if an empty string, the default of .hashcheck is used</param>
+        /// <param name="hashCheckExtension">Hashcheck file extension; if an empty string, the default of .hashcheck is used</param>
         /// <returns>FileInfo object for the .hashcheck file</returns>
         /// <remarks>
         /// Example .hashcheck filenames:
         /// ID_004137_23AA5A07.fasta.23AA5A07.hashcheck
         /// H_sapiens_Ensembl_v68_2013-01-08.fasta.DF687525.hashcheck
         /// </remarks>
-        private FileInfo GetHashFileValidationInfo(string strFastaFilePath, string crc32Hash, string hashcheckExtension = "")
+        private FileInfo GetHashFileValidationInfo(string strFastaFilePath, string crc32Hash, string hashCheckExtension = "")
         {
             string extensionToUse;
-            if (string.IsNullOrWhiteSpace(hashcheckExtension))
+            if (string.IsNullOrWhiteSpace(hashCheckExtension))
             {
                 extensionToUse = HashcheckSuffix;
             }
             else
             {
-                extensionToUse = hashcheckExtension;
+                extensionToUse = hashCheckExtension;
             }
 
             var fastaFile = new FileInfo(strFastaFilePath);

@@ -15,7 +15,6 @@ namespace AppUI_OrfDBHandler
         private string mWebAddress;
         private bool mEntryExists = false;
         private ImportHandler mImporter;
-        private readonly DataTable mAuthorityTable;
         private Point mFormLocation;
 
         public string ShortName => mShortName;
@@ -26,7 +25,7 @@ namespace AppUI_OrfDBHandler
 
         public bool EntryExists => mEntryExists;
 
-        public DataTable AuthoritiesTable => mAuthorityTable;
+        public DataTable AuthoritiesTable { get; }
 
         public Point FormLocation
         {
@@ -36,7 +35,7 @@ namespace AppUI_OrfDBHandler
         public AddNamingAuthorityType(string psConnectionString)
         {
             mConnectionString = psConnectionString;
-            mAuthorityTable = GetAuthoritiesList();
+            AuthoritiesTable = GetAuthoritiesList();
         }
 
         public int AddNamingAuthority()
