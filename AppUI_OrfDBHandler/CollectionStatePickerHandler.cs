@@ -95,7 +95,8 @@ namespace AppUI_OrfDBHandler
 
         public DataTable GetStates()
         {
-            var SQL = "SELECT State, Collection_State_ID as ID " + "FROM T_Protein_Collection_States ORDER BY Collection_State_ID";
+            var SQL = "SELECT State, Collection_State_ID as ID " +
+                      "FROM T_Protein_Collection_States ORDER BY Collection_State_ID";
             var sTable = mGetTables.GetTable(SQL);
 
             return sTable;

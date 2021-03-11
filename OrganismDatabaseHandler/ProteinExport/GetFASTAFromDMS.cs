@@ -944,7 +944,11 @@ namespace OrganismDatabaseHandler.ProteinExport
             if (DateTime.UtcNow.Subtract(mLastLockQueueWaitTimeLog).TotalSeconds >= 30d)
             {
                 mLastLockQueueWaitTimeLog = DateTime.UtcNow;
-                Console.WriteLine("Waiting for lockfile queue to fall below threshold to fall below threshold (Protein_Exporter); " + "SourceBacklog=" + sourceBacklogMB + " MB, " + "TargetBacklog=" + targetBacklogMB + " MB, " + "Source=" + sourceFilePath + ", " + "Target=" + targetFilePath);
+                Console.WriteLine("Waiting for lockfile queue to fall below threshold to fall below threshold (Protein_Exporter); " +
+                                  "SourceBacklog=" + sourceBacklogMB + " MB, " +
+                                  "TargetBacklog=" + targetBacklogMB + " MB, " +
+                                  "Source=" + sourceFilePath + ", " +
+                                  "Target=" + targetFilePath);
 
                 string strServers;
                 if (sourceBacklogMB > 0 && targetBacklogMB > 0)
