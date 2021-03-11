@@ -5,8 +5,6 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class GetFASTAFromDMSReversed : GetFASTAFromDMSForward
     {
-        private bool m_UseXXX;
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -22,15 +20,10 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         /// <summary>
         /// When true, reverse proteins start with XXX_
-        /// When false, they start with Reversed_
+        /// When false, they start with REV_
         /// </summary>
         /// <returns></returns>
-        public bool UseXXX
-        {
-            get => m_UseXXX;
-            // BUG: this is undoubtedly not the intended action. This can be an auto-property, but change this in a separate commit
-            set => m_UseXXX = true;
-        }
+        public bool UseXXX { get; set; } = true;
 
         public override string SequenceExtender(string originalSequence, int collectionCount)
         {
@@ -48,7 +41,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
             else
             {
-                return "Reversed_" + originalReference;
+                return "REV_" + originalReference;
             }
         }
     }
