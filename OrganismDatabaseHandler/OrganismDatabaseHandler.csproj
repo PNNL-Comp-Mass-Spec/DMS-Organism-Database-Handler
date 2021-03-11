@@ -88,9 +88,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if not exist "$(ProjectDir)..\Release_DLL" (mkdir "$(ProjectDir)..\Release_DLL")
-
-xcopy "$(TargetPath)" "$(ProjectDir)..\Release_DLL\" /y /d
-REM xcopy "$(TargetDir)$(TargetName).xml" "$(ProjectDir)..\Release_DLL\" /y /d</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

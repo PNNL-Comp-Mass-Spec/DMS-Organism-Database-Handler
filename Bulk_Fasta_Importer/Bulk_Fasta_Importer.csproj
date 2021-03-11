@@ -75,9 +75,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if not exist "$(SolutionDir)Executables\Release_CBDMS_BulkImporter" mkdir "$(SolutionDir)Executables\Release_CBDMS_BulkImporter"
-xcopy "$(TargetDir)*.exe"  "$(SolutionDir)Executables\Release_CBDMS_BulkImporter\" /d /y /f
-xcopy "$(TargetDir)*.dll" "$(SolutionDir)Executables\Release_CBDMS_BulkImporter\" /d /y /f
-xcopy "$(TargetDir)*.pdb"  "$(SolutionDir)Executables\Release_CBDMS_BulkImporter\" /d /y /f</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

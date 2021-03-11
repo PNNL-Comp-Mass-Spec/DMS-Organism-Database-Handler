@@ -218,7 +218,12 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if not exist "$(SolutionDir)Executables\Release_CBDMS_GUI" mkdir "$(SolutionDir)Executables\Debug_CBDMS_GUI"
+    <PostBuildEvent>if not exist "$(SolutionDir)Executables\Debug" mkdir "$(SolutionDir)Executables\Debug"
+xcopy "$(TargetDir)*.exe"  "$(SolutionDir)Executables\Debug\" /d /y /f
+xcopy "$(TargetDir)*.dll" "$(SolutionDir)Executables\Debug\" /d /y /f
+xcopy "$(TargetDir)*.pdb" "$(SolutionDir)Executables\Debug\" /d /y /f
+
+if not exist "$(SolutionDir)Executables\Debug_CBDMS_GUI" mkdir "$(SolutionDir)Executables\Debug_CBDMS_GUI"
 xcopy "$(TargetDir)*.exe"  "$(SolutionDir)Executables\Debug_CBDMS_GUI\" /d /y /f
 xcopy "$(TargetDir)*.dll" "$(SolutionDir)Executables\Debug_CBDMS_GUI\" /d /y /f
 xcopy "$(TargetDir)*.pdb" "$(SolutionDir)Executables\Debug_CBDMS_GUI\" /d /y /f
