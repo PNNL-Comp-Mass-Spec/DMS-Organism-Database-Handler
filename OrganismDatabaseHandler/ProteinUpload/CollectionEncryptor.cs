@@ -32,8 +32,8 @@ namespace OrganismDatabaseHandler.ProteinUpload
             var e = storageCollection.GetEnumerator();
 
             OnEncryptionStart("Encrypting Sequences");
-            int counter = 0;
-            int counterMax = storageCollection.ProteinCount;
+            var counter = 0;
+            var counterMax = storageCollection.ProteinCount;
             int eventTriggerThresh;
 
             if (counterMax <= 50)

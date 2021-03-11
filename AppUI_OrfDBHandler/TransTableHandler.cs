@@ -55,10 +55,10 @@ namespace AppUI_OrfDBHandler
             // Look through a given ASN.1 file and scan for translation table entries
             var dba = new DBTask(mConnectionString);
 
-            string sqlQuery1 = "SELECT * FROM " + EntriesTableName;
+            var sqlQuery1 = "SELECT * FROM " + EntriesTableName;
             mTranslationEntries = dba.GetTable(sqlQuery1);
 
-            string sqlQuery2 = "SELECT * FROM " + IdTableName;
+            var sqlQuery2 = "SELECT * FROM " + IdTableName;
             mTranslationTables = dba.GetTable(sqlQuery2);
 
             var fi = new System.IO.FileInfo(filePath);
@@ -109,7 +109,7 @@ namespace AppUI_OrfDBHandler
         {
             var dba = new DBTask(mConnectionString);
 
-            string sqlQuery = "SELECT * FROM " + EntriesTableName;
+            var sqlQuery = "SELECT * FROM " + EntriesTableName;
 
             var entriesTable = dba.GetTable(sqlQuery);
         }
@@ -118,16 +118,16 @@ namespace AppUI_OrfDBHandler
         {
             var id = default(int);
 
-            string aaList = string.Empty;
-            string startList = string.Empty;
-            string base1List = string.Empty;
-            string base2List = string.Empty;
-            string base3List = string.Empty;
+            var aaList = string.Empty;
+            var startList = string.Empty;
+            var base1List = string.Empty;
+            var base2List = string.Empty;
+            var base3List = string.Empty;
             var nameList = new List<string>();
 
             var tmpStartPos = default(int);
 
-            string trimString = " ,\"";
+            var trimString = " ,\"";
             var trimChars = trimString.ToCharArray();
 
             foreach (var str in rawEntryCollection)
@@ -194,7 +194,7 @@ namespace AppUI_OrfDBHandler
                 }
             }
 
-            bool success = SplitCodonEntries(aaList, startList, base1List, base2List, base3List, nameList, id);
+            var success = SplitCodonEntries(aaList, startList, base1List, base2List, base3List, nameList, id);
         }
 
         private string ProcessBaseString(string rawBaseString)
@@ -216,7 +216,7 @@ namespace AppUI_OrfDBHandler
             int id)
         {
             // Check for length consistency
-            int baseLength = aaString.Length;
+            var baseLength = aaString.Length;
 
             if (baseLength != startString.Length ||
                 baseLength != base1List.Length ||

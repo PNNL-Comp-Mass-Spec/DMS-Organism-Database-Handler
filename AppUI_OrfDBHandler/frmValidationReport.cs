@@ -251,7 +251,7 @@ namespace AppUI_OrfDBHandler
 
             foreach (var item in mFileValidList)
             {
-                string fileName = Path.GetFileName(item.Key);
+                var fileName = Path.GetFileName(item.Key);
                 var uploadInfo = item.Value;
 
                 var li = new ListViewItem(fileName);
@@ -274,7 +274,7 @@ namespace AppUI_OrfDBHandler
 
             string selectedSavePath;
 
-            int intErrorCount = 0;
+            var intErrorCount = 0;
 
             if (string.IsNullOrWhiteSpace(messageType))
             {

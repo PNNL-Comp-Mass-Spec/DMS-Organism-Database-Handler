@@ -121,7 +121,7 @@ namespace AppUI_OrfDBHandler
             // Get initial info - organism list, full collections list
 
             // Data Source=proteinseqs;Initial Catalog=Protein_Sequences
-            string connectionString = Settings.Default.ProteinSeqsDBConnectStr;
+            var connectionString = Settings.Default.ProteinSeqsDBConnectStr;
 
             if (!string.IsNullOrWhiteSpace(connectionString))
             {
@@ -655,8 +655,8 @@ namespace AppUI_OrfDBHandler
                 cboCollectionPicker.Enabled = true;
                 cboOrganismFilter.Enabled = true;
 
-                int tmpOrganismId = frmAddCollection.OrganismID;
-                int tmpAnnotationTypeId = frmAddCollection.AnnotationTypeID;
+                var tmpOrganismId = frmAddCollection.OrganismID;
+                var tmpAnnotationTypeId = frmAddCollection.AnnotationTypeID;
 
                 var tmpSelectedProteinList = ScanDestinationCollectionWindow(lvwDestination);
 
@@ -1136,7 +1136,7 @@ namespace AppUI_OrfDBHandler
             {
                 foreach (var errorEntry in errorCollection)
                 {
-                    string message = errorEntry.MessageText;
+                    var message = errorEntry.MessageText;
                     int currentCount;
 
                     if (errorSummary.TryGetValue(message, out currentCount))

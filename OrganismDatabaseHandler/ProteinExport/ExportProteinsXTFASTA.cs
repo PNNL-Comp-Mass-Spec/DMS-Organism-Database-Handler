@@ -34,9 +34,9 @@ namespace OrganismDatabaseHandler.ProteinExport
             Array.Resize(ref buffer, 256);
 
             long currentFreeSpaceBytes;
-            string errorMessage = string.Empty;
+            var errorMessage = string.Empty;
 
-            bool success = DiskInfo.GetDiskFreeSpace(destinationPath, out currentFreeSpaceBytes, out errorMessage);
+            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out currentFreeSpaceBytes, out errorMessage);
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))
@@ -57,7 +57,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 OnExportStart("Writing to X!Tandem formatted FASTA File");
 
-                int counterMax = proteins.ProteinCount;
+                var counterMax = proteins.ProteinCount;
                 var counter = default(int);
 
                 var proteinArray = new SortedSet<string>();
@@ -118,7 +118,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
             }
 
-            string fingerprint = GenerateFileAuthenticationHash(destinationPath);
+            var fingerprint = GenerateFileAuthenticationHash(destinationPath);
 
             OnExportEnd();
 
@@ -142,9 +142,9 @@ namespace OrganismDatabaseHandler.ProteinExport
             Array.Resize(ref buffer, 256);
 
             long currentFreeSpaceBytes;
-            string errorMessage = string.Empty;
+            var errorMessage = string.Empty;
 
-            bool success = DiskInfo.GetDiskFreeSpace(destinationPath, out currentFreeSpaceBytes, out errorMessage);
+            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out currentFreeSpaceBytes, out errorMessage);
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))
@@ -230,7 +230,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
             }
 
-            string fingerprint = GenerateFileAuthenticationHash(destinationPath);
+            var fingerprint = GenerateFileAuthenticationHash(destinationPath);
 
             OnExportEnd();
 

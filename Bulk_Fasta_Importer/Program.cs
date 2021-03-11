@@ -59,10 +59,10 @@ namespace Bulk_Fasta_Importer
                 }
 
                 // Data Source=proteinseqs;Initial Catalog=Protein_Sequences
-                string proteinSeqsConnectionString = Settings.Default.ProteinSeqsDBConnectStr;
+                var proteinSeqsConnectionString = Settings.Default.ProteinSeqsDBConnectStr;
 
                 // Data Source=dms5;Initial Catalog=Protein_Sequences
-                string dmsConnectionString = Settings.Default.DMSConnectStr;
+                var dmsConnectionString = Settings.Default.DMSConnectStr;
 
                 var fastaImporter = new BulkFastaImporter(dmsConnectionString, proteinSeqsConnectionString)
                 {
@@ -77,8 +77,8 @@ namespace Bulk_Fasta_Importer
                 if (!string.IsNullOrEmpty(mLogFilePath))
                     fastaImporter.LogFilePath = mLogFilePath;
 
-                string outputFolderNamePlaceholder = string.Empty;
-                string paramFilePathPlaceholder = string.Empty;
+                var outputFolderNamePlaceholder = string.Empty;
+                var paramFilePathPlaceholder = string.Empty;
 
                 int returnCode;
                 if (fastaImporter.ProcessFilesWildcard(mInputFilePath, outputFolderNamePlaceholder, paramFilePathPlaceholder))
@@ -130,7 +130,7 @@ namespace Bulk_Fasta_Importer
         {
             // Returns True if no problems; otherwise, returns false
 
-            string strValue = string.Empty;
+            var strValue = string.Empty;
             var strValidParameters = new string[] { "I", "L", "Preview", "MaxLength" };
             try
             {
@@ -184,7 +184,7 @@ namespace Bulk_Fasta_Importer
 
         private static void ShowErrorMessage(string strMessage)
         {
-            string strSeparator = "------------------------------------------------------------------------------";
+            var strSeparator = "------------------------------------------------------------------------------";
 
             Console.WriteLine();
             Console.WriteLine(strSeparator);

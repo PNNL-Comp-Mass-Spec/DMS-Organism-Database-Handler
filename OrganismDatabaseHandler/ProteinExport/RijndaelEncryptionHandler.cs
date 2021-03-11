@@ -147,7 +147,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var sha1Hash = sha1Provider.ComputeHash(byteSourceText);
 
             // And convert it to String format for return
-            string sha1String = ToHexString(sha1Hash);
+            var sha1String = ToHexString(sha1Hash);
 
             return sha1String;
         }

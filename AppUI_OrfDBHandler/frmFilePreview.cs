@@ -63,7 +63,7 @@ namespace AppUI_OrfDBHandler
 
         private void txtLineCount_Validating(object sender, CancelEventArgs e)
         {
-            string countText = txtLineCount.Text;
+            var countText = txtLineCount.Text;
 
             if (validationRegex.IsMatch(Convert.ToInt32(countText).ToString()))
             {
@@ -91,7 +91,7 @@ namespace AppUI_OrfDBHandler
 
         private void txtLineCount_TextChanged(object sender, EventArgs e)
         {
-            string countText = txtLineCount.Text;
+            var countText = txtLineCount.Text;
             if (validationRegex.IsMatch(countText))
             {
                 cmdRefresh.Enabled = true;

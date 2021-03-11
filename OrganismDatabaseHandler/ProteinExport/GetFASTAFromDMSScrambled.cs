@@ -24,7 +24,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         public override string SequenceExtender(string originalSequence, int collectionCount)
         {
             var sb = new StringBuilder(originalSequence.Length);
-            string sequence = originalSequence;
+            var sequence = originalSequence;
 
             if (mRndNumGen == null)
             {

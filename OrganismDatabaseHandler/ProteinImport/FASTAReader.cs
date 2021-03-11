@@ -60,13 +60,13 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public ProteinStorage.ProteinStorage LoadFASTAFile(string filePath, int numRecordsToLoad)
         {
-            int currentPosition = 0;
+            var currentPosition = 0;
 
             var fastaContents = new ProteinStorage.ProteinStorage(filePath);
 
-            string reference = string.Empty;
-            string description = string.Empty;
-            string sequence = string.Empty;
+            var reference = string.Empty;
+            var description = string.Empty;
+            var sequence = string.Empty;
 
             var seqInfo = new SequenceInfoCalculator();
 
@@ -74,7 +74,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             mFASTAFilePath = filePath;
 
-            int lineEndCharCount = LineEndCharacterCount(filePath);
+            var lineEndCharCount = LineEndCharacterCount(filePath);
 
             try
             {
@@ -86,7 +86,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
                     using (var fileReader = new StreamReader(new FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.Read)))
                     {
-                        string s = fileReader.ReadLine()?.Trim();
+                        var s = fileReader.ReadLine()?.Trim();
 
                         while (s != null)
                         {
@@ -161,7 +161,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             }
             catch (Exception ex)
             {
-                string stackTrace = PRISM.StackTraceFormatter.GetExceptionStackTrace(ex);
+                var stackTrace = PRISM.StackTraceFormatter.GetExceptionStackTrace(ex);
                 mLastError = ex.Message + "; " + stackTrace;
             }
 
@@ -177,7 +177,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                 {
                     while (!fileReader.EndOfStream)
                     {
-                        int testCode = fileReader.Read();
+                        var testCode = fileReader.Read();
                         if (testCode == 10 || testCode == 13)
                         {
                             if (fileReader.EndOfStream)
@@ -185,7 +185,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                                 return 1;
                             }
 
-                            int testCode2 = fileReader.Read();
+                            var testCode2 = fileReader.Read();
                             if (testCode2 == 10 | testCode2 == 13)
                             {
                                 return 2;

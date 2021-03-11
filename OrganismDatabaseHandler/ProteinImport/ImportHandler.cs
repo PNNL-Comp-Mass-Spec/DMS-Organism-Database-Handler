@@ -72,7 +72,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         {
             var foundRows = mCollectionsList.Select("Protein_Collection_ID = " + proteinCollectionId.ToString());
             var dr = foundRows[0];
-            string collectionName = mSQLAccess.DbTools.GetString(dr["FileName"]);
+            var collectionName = mSQLAccess.DbTools.GetString(dr["FileName"]);
 
             return collectionName;
         }
@@ -83,7 +83,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             // check for existence of current file
             var fastaContents = mImporter.GetProteinEntries(filePath);
 
-            string errorMessage = mImporter.LastErrorMessage;
+            var errorMessage = mImporter.LastErrorMessage;
 
             if (!string.IsNullOrWhiteSpace(errorMessage))
             {
@@ -110,7 +110,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public DataTable LoadOrganisms()
         {
-            string orgSQL = "SELECT * FROM V_OrganismPicker ORDER BY Short_Name";
+            var orgSQL = "SELECT * FROM V_OrganismPicker ORDER BY Short_Name";
             var tmpOrgTable = mSQLAccess.GetTable(orgSQL);
 
             var dr = tmpOrgTable.NewRow();
@@ -134,7 +134,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         public DataTable LoadAnnotationTypes(
             int proteinCollectionId)
         {
-            string sqlQuery =
+            var sqlQuery =
                 "SELECT Annotation_Type_ID " +
                 "FROM V_Protein_Collection_Authority " +
                 "WHERE Protein_Collection_ID = " + proteinCollectionId.ToString();
@@ -153,7 +153,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             authIdSb.Remove(authIdSb.Length - 2, 2);
 
-            string authSql =
+            var authSql =
                 "SELECT * FROM V_Annotation_Type_Picker " +
                 "WHERE ID IN (" + authIdSb.ToString() + ") " +
                 "ORDER BY Display_Name";
@@ -180,7 +180,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public DataTable LoadAnnotationTypes()
         {
-            string AuthSQL = "SELECT * FROM V_Annotation_Type_Picker ORDER BY Display_Name";
+            var AuthSQL = "SELECT * FROM V_Annotation_Type_Picker ORDER BY Display_Name";
             var tmpAnnTypeTable = mSQLAccess.GetTable(AuthSQL);
 
             var dr = tmpAnnTypeTable.NewRow();
@@ -201,7 +201,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public DataTable LoadAuthorities()
         {
-            string AuthSQL = "SELECT * FROM V_Authority_Picker ORDER BY Display_Name";
+            var AuthSQL = "SELECT * FROM V_Authority_Picker ORDER BY Display_Name";
             var tmpAuthTable = mSQLAccess.GetTable(AuthSQL);
 
             var dr = tmpAuthTable.NewRow();
@@ -285,7 +285,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public DataTable LoadProteinCollectionNames()
         {
-            string PCSQL =
+            var PCSQL =
                 "SELECT Protein_Collection_ID, FileName, Authority_ID " +
                 "FROM V_Protein_Collections_By_Organism " +
                 "ORDER BY FileName";
@@ -314,7 +314,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                 authorityId = mSQLAccess.DbTools.GetInteger(foundRows[0]["Authority_ID"]);
             }
 
-            string sqlQuery =
+            var sqlQuery =
                 "SELECT * From V_Protein_Storage_Entry_Import " +
                 "WHERE Protein_Collection_ID = " + collectionId + " " +
                 "AND Annotation_Type_ID = " + authorityId + " " +
@@ -326,14 +326,14 @@ namespace OrganismDatabaseHandler.ProteinImport
             string collectionName,
             int authorityId)
         {
-            string sqlQuery =
+            var sqlQuery =
                 "SELECT Protein_Collection_ID, Primary_Annotation_Type_ID " +
                 "FROM T_Protein_Collections " +
                 "WHERE FileName = " + collectionName + " ORDER BY Name";
 
             var tmpTable = mSQLAccess.GetTable(sqlQuery);
             var foundRow = tmpTable.Rows[0];
-            int collectionId = mSQLAccess.DbTools.GetInteger(foundRow["Protein_Collection_ID"]);
+            var collectionId = mSQLAccess.DbTools.GetInteger(foundRow["Protein_Collection_ID"]);
             //var authorityId = mSqlAccess.dbTools.GetInteger(foundRow.Item("Primary_Authority_ID"))
 
             return LoadCollectionMembersById(collectionId, authorityId);
@@ -369,7 +369,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             var dbTools = mSQLAccess.DbTools;
 
-            foreach (DataRow dr in proteinCollectionMembers)
+            foreach (var dr in proteinCollectionMembers)
             {
                 dbTools.GetInteger(dr["Authority_ID"]);
 
@@ -517,7 +517,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }

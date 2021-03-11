@@ -158,7 +158,7 @@ namespace AppUI_OrfDBHandler
             {
                 try
                 {
-                    TreeNodePath currentNode = ctlTreeViewFolderBrowser.SelectedNode as TreeNodePath;
+                    var currentNode = ctlTreeViewFolderBrowser.SelectedNode as TreeNodePath;
 
                     if (currentNode != null && !string.IsNullOrWhiteSpace(currentNode.Path))
                     {
@@ -275,7 +275,7 @@ namespace AppUI_OrfDBHandler
             var collectionInfo = new Dictionary<int, string>(dt.Rows.Count);
             var foundRows = dt.Select("", "Protein_Collection_ID");
 
-            foreach (DataRow dr in foundRows)
+            foreach (var dr in foundRows)
             {
                 var tmpId = DatabaseUtilsExtensions.GetInteger(null, dr["Protein_Collection_ID"]);
                 var tmpName = dr["FileName"].ToString();
@@ -314,7 +314,7 @@ namespace AppUI_OrfDBHandler
 
             foreach (var fi in foundFastaFiles)
             {
-                string fileExtension = Path.GetExtension(fi.Name);
+                var fileExtension = Path.GetExtension(fi.Name);
 
                 switch (fileExtension.ToLower() ?? "")
                 {
@@ -352,7 +352,7 @@ namespace AppUI_OrfDBHandler
 
             foreach (var fi in mFileList.Values)
             {
-                string proteinCollectionName = Path.GetFileNameWithoutExtension(fi.Name);
+                var proteinCollectionName = Path.GetFileNameWithoutExtension(fi.Name);
 
                 var li = new ListViewItem();
 
@@ -501,7 +501,7 @@ namespace AppUI_OrfDBHandler
 
                 foreach (ListViewItem li in lvwFolderContents.SelectedItems)
                 {
-                    string fastaFilePath = GetFolderContentsColumn(li, FolderContentsColumn.FilePath);
+                    var fastaFilePath = GetFolderContentsColumn(li, FolderContentsColumn.FilePath);
 
                     var upInfo = new PSUploadHandler.UploadInfo()
                     {
@@ -514,7 +514,7 @@ namespace AppUI_OrfDBHandler
                         EncryptionPassphrase = string.Empty
                     };
 
-                    string proteinCollection = Path.GetFileNameWithoutExtension(upInfo.FileInformation.Name);
+                    var proteinCollection = Path.GetFileNameWithoutExtension(upInfo.FileInformation.Name);
 
                     if (mSelectedFileList.ContainsKey(upInfo.FileInformation.FullName))
                     {
@@ -584,7 +584,7 @@ namespace AppUI_OrfDBHandler
 
         private void AfterNodeSelect()
         {
-            string folderPath = SelectedNodeFolderPath;
+            var folderPath = SelectedNodeFolderPath;
             if (string.IsNullOrWhiteSpace(folderPath))
                 return;
             ScanDirectory(folderPath);
@@ -605,7 +605,7 @@ namespace AppUI_OrfDBHandler
 
         private string GetFolderContentsColumn(ListViewItem li, FolderContentsColumn eColumn)
         {
-            string value = li.SubItems[(int)eColumn].Text;
+            var value = li.SubItems[(int)eColumn].Text;
             return value;
         }
 
@@ -618,7 +618,7 @@ namespace AppUI_OrfDBHandler
         /// <remarks></remarks>
         private string GetSelectedFileColumn(ListViewItem li, SelectedFileColumn eColumn)
         {
-            string value = li.SubItems[(int)eColumn].Text;
+            var value = li.SubItems[(int)eColumn].Text;
             return value;
         }
 
@@ -670,7 +670,7 @@ namespace AppUI_OrfDBHandler
 
             foreach (ListViewItem li in lvwSelectedFiles.Items)
             {
-                string fastaFilePath = GetSelectedFileColumn(li, SelectedFileColumn.FilePath);
+                var fastaFilePath = GetSelectedFileColumn(li, SelectedFileColumn.FilePath);
 
                 if (!tmpNameList.ContainsKey(fastaFilePath))
                 {
@@ -729,7 +729,7 @@ namespace AppUI_OrfDBHandler
             {
                 lvwSelectedFiles.Items.Remove(li);
 
-                string filePath = GetSelectedFileColumn(li, SelectedFileColumn.FilePath);
+                var filePath = GetSelectedFileColumn(li, SelectedFileColumn.FilePath);
                 if (mSelectedFileList.ContainsKey(filePath))
                 {
                     mSelectedFileList.Remove(filePath);
@@ -815,7 +815,7 @@ namespace AppUI_OrfDBHandler
         /// <remarks></remarks>
         private string StripWhiteSpace(string value)
         {
-            string updatedValue = value.Trim().Replace("\t", "; ").Replace(Environment.NewLine, "; ").Replace("\r", "; ").Replace("\n", "; ");
+            var updatedValue = value.Trim().Replace("\t", "; ").Replace(Environment.NewLine, "; ").Replace("\r", "; ").Replace("\n", "; ");
 
             return updatedValue;
         }
@@ -831,8 +831,8 @@ namespace AppUI_OrfDBHandler
             {
                 foreach (ListViewItem li in lvwSelectedFiles.SelectedItems)
                 {
-                    string descriptionCurrent = GetSelectedFileColumn(li, SelectedFileColumn.Description);
-                    string sourceCurrent = GetSelectedFileColumn(li, SelectedFileColumn.Source);
+                    var descriptionCurrent = GetSelectedFileColumn(li, SelectedFileColumn.Description);
+                    var sourceCurrent = GetSelectedFileColumn(li, SelectedFileColumn.Source);
 
                     if (!string.IsNullOrWhiteSpace(descriptionCurrent))
                     {
@@ -865,15 +865,15 @@ namespace AppUI_OrfDBHandler
 
             if (eDialogResult == DialogResult.OK)
             {
-                string updatedDescription = StripWhiteSpace(oMetadataWindow.Description);
-                string updatedSource = StripWhiteSpace(oMetadataWindow.Source);
+                var updatedDescription = StripWhiteSpace(oMetadataWindow.Description);
+                var updatedSource = StripWhiteSpace(oMetadataWindow.Source);
 
                 foreach (var li in itemsToUpdate)
                 {
                     li.SubItems[(int)SelectedFileColumn.Description].Text = updatedDescription;
                     li.SubItems[(int)SelectedFileColumn.Source].Text = updatedSource;
 
-                    string proteinCollection = li.SubItems[(int)SelectedFileColumn.ProteinCollectionName].Text;
+                    var proteinCollection = li.SubItems[(int)SelectedFileColumn.ProteinCollectionName].Text;
 
                     var kvDescriptionSource = new KeyValuePair<string, string>(updatedDescription, updatedSource);
 
@@ -893,7 +893,7 @@ namespace AppUI_OrfDBHandler
 
         private void cboOrganismSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ComboBox cbo = (ComboBox)sender;
+            var cbo = (ComboBox)sender;
 
             mSelectedOrganismId = (int)cbo.SelectedValue;
             CheckTransferEnable();
@@ -901,7 +901,7 @@ namespace AppUI_OrfDBHandler
             {
                 foreach (ListViewItem li in lvwSelectedFiles.SelectedItems)
                 {
-                    string fastaFilePath = GetSelectedFileColumn(li, SelectedFileColumn.FilePath);
+                    var fastaFilePath = GetSelectedFileColumn(li, SelectedFileColumn.FilePath);
 
                     // Update organism in mSelectedFileList
                     var tmpUpInfo = mSelectedFileList[fastaFilePath];
@@ -917,7 +917,7 @@ namespace AppUI_OrfDBHandler
 
         private void cboAnnotationTypePicker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ComboBox cbo = (ComboBox)sender;
+            var cbo = (ComboBox)sender;
 
             if (ReferenceEquals(cboAnnotationTypePicker.SelectedValue.GetType(), Type.GetType("System.Int32")))
             {
@@ -961,7 +961,7 @@ namespace AppUI_OrfDBHandler
                 foreach (ListViewItem li in lvwSelectedFiles.SelectedItems)
                 {
                     // Update annotation type in mSelectedFileList
-                    string fastaFilePath = GetSelectedFileColumn(li, SelectedFileColumn.FilePath);
+                    var fastaFilePath = GetSelectedFileColumn(li, SelectedFileColumn.FilePath);
                     var tmpUpInfo = mSelectedFileList[fastaFilePath];
 
                     mSelectedFileList[fastaFilePath] =
@@ -978,8 +978,8 @@ namespace AppUI_OrfDBHandler
 
         private void chkEncryptionEnable_CheckedChanged(object sender, EventArgs e)
         {
-            CheckBox chk = (CheckBox)sender;
-            bool encryptSequences = false;
+            var chk = (CheckBox)sender;
+            var encryptSequences = false;
 
             if (chk.CheckState == CheckState.Checked)
             {
@@ -1075,7 +1075,7 @@ namespace AppUI_OrfDBHandler
 
         private void cmdUploadChecked_Click(object sender, EventArgs e)
         {
-            bool validInfo = MakeCheckedFileList();
+            var validInfo = MakeCheckedFileList();
             if (!validInfo)
                 return;
             mReallyClose = true;
@@ -1123,7 +1123,7 @@ namespace AppUI_OrfDBHandler
             }
 
             var li = lvwFolderContents.SelectedItems[0];
-            string fullName = GetFolderContentsColumn(li, FolderContentsColumn.FilePath);
+            var fullName = GetFolderContentsColumn(li, FolderContentsColumn.FilePath);
 
             mFilePreviewer.ShowPreview(fullName, Left + Width + 10, Top, Height);
         }
@@ -1146,7 +1146,7 @@ namespace AppUI_OrfDBHandler
                 return;
             var li = lvwSelectedFiles.SelectedItems[0];
 
-            string selectedOrganism = GetSelectedFileColumn(li, SelectedFileColumn.Organism);
+            var selectedOrganism = GetSelectedFileColumn(li, SelectedFileColumn.Organism);
 
             //if (li.SubItems[(int)eSelectedFileColumn.Encrypt].Text = "Yes")
             //{
@@ -1161,7 +1161,7 @@ namespace AppUI_OrfDBHandler
             //    chkEncryptionEnable.CheckedChanged += chkEncryptionEnable_CheckedChanged;
             //}
 
-            string selFileAnnotationType = GetSelectedFileColumn(li, SelectedFileColumn.AnnotationType);
+            var selFileAnnotationType = GetSelectedFileColumn(li, SelectedFileColumn.AnnotationType);
 
             cboAnnotationTypePicker.Text = selFileAnnotationType;
             cboOrganismSelect.Text = selectedOrganism;
@@ -1250,7 +1250,7 @@ namespace AppUI_OrfDBHandler
             }
             else
             {
-                int intValue = 0;
+                var intValue = 0;
                 if (int.TryParse(txtMaximumProteinNameLength.Text, out intValue))
                 {
                     if (intValue < 30)
@@ -1287,7 +1287,7 @@ namespace AppUI_OrfDBHandler
 
         private void lvwFolderContents_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            bool isDateColumn = e.Column == (int)FolderContentsColumn.LastModified;
+            var isDateColumn = e.Column == (int)FolderContentsColumn.LastModified;
             SortListView(lvwFolderContents, mSortColumnFolderContents, e.Column, isDateColumn);
             mSortColumnFolderContents = e.Column;
         }
@@ -1310,7 +1310,7 @@ namespace AppUI_OrfDBHandler
         {
             if (e.Button == MouseButtons.Right)
             {
-                string folderPath = SelectedNodeFolderPath;
+                var folderPath = SelectedNodeFolderPath;
                 if (string.IsNullOrWhiteSpace(folderPath))
                     return;
                 Clipboard.SetText(folderPath);
@@ -1324,7 +1324,7 @@ namespace AppUI_OrfDBHandler
             {
                 try
                 {
-                    string folderPath = SelectedNodeFolderPath;
+                    var folderPath = SelectedNodeFolderPath;
                     if (string.IsNullOrWhiteSpace(folderPath))
                         return;
                     var currentFolder = new DirectoryInfo(folderPath);
@@ -1373,7 +1373,7 @@ namespace AppUI_OrfDBHandler
             public int Compare(object x, object y)
             {
                 var returnVal = default(int);
-                bool compared = false;
+                var compared = false;
 
                 if (mSortingDates)
                 {

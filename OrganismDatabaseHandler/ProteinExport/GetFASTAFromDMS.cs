@@ -171,11 +171,11 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <returns>CRC32 hash of the generated (or retrieved) file</returns>
         public string ExportFASTAFile(int proteinCollectionId, string destinationFolderPath, DatabaseFormatTypes databaseFormatType, SequenceTypes outputSequenceType)
         {
-            string proteinCollectionName = GetProteinCollectionName(proteinCollectionId);
+            var proteinCollectionName = GetProteinCollectionName(proteinCollectionId);
 
             var creationOptionsHandler = new FileCreationOptions(mDatabaseAccessor);
 
-            string creationOptions = creationOptionsHandler.MakeCreationOptionsString(outputSequenceType, databaseFormatType);
+            var creationOptions = creationOptionsHandler.MakeCreationOptionsString(outputSequenceType, databaseFormatType);
 
             var protCollectionList = new List<string>()
             {
@@ -230,11 +230,11 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         private string ExportLegacyFastaFile(string legacyFASTAFileName, string destinationFolderPath)
         {
-            string legacyStaticFilePath = "";
-            string crc32Hash = "";
+            var legacyStaticFilePath = "";
+            var crc32Hash = "";
 
-            string filenameSha1Hash = GenerateHash(legacyFASTAFileName);
-            string lockFileHash = filenameSha1Hash;
+            var filenameSha1Hash = GenerateHash(legacyFASTAFileName);
+            var lockFileHash = filenameSha1Hash;
 
             if (!LookupLegacyFastaFileDetails(legacyFASTAFileName, out legacyStaticFilePath, out crc32Hash))
             {
@@ -249,7 +249,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             {
                 // Be careful changing this message; the AnalysisResources class in the Analysis Manager
                 // looks for error messages that start with "Legacy fasta file not found:"
-                string msg = "Legacy fasta file not found: " + legacyStaticFilePath + " (path comes from V_Legacy_Static_File_Locations)";
+                var msg = "Legacy fasta file not found: " + legacyStaticFilePath + " (path comes from V_Legacy_Static_File_Locations)";
                 OnErrorEvent(msg);
                 throw new Exception(msg);
             }
@@ -285,25 +285,25 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             if (string.IsNullOrEmpty(legacyStaticFilePath))
             {
-                string msg = "Storage path for " + legacyFASTAFileName + " is empty according to V_Legacy_Static_File_Locations; unable to continue";
+                var msg = "Storage path for " + legacyFASTAFileName + " is empty according to V_Legacy_Static_File_Locations; unable to continue";
                 OnErrorEvent(msg);
                 throw new Exception(msg);
             }
 
             // Make sure we have enough disk free space
 
-            string destinationPath = Path.Combine(destinationFolderPath, "TargetFile.tmp");
-            string errorMessage = string.Empty;
-            double sourceFileSizeMB = fiSourceFile.Length / 1024.0d / 1024.0d;
+            var destinationPath = Path.Combine(destinationFolderPath, "TargetFile.tmp");
+            var errorMessage = string.Empty;
+            var sourceFileSizeMB = fiSourceFile.Length / 1024.0d / 1024.0d;
 
             long currentFreeSpaceBytes;
 
-            bool success = DiskInfo.GetDiskFreeSpace(destinationPath, out currentFreeSpaceBytes, out errorMessage);
+            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out currentFreeSpaceBytes, out errorMessage);
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))
                     errorMessage = "DiskInfo.GetDiskFreeSpace returned a blank error message";
-                string spaceValidationError = "Unable to copy legacy FASTA file to " + destinationFolderPath + ". " + errorMessage;
+                var spaceValidationError = "Unable to copy legacy FASTA file to " + destinationFolderPath + ". " + errorMessage;
                 OnErrorEvent(spaceValidationError);
                 throw new IOException(spaceValidationError);
             }
@@ -312,7 +312,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             {
                 if (string.IsNullOrEmpty(errorMessage))
                     errorMessage = "FileTools.ValidateFreeDiskSpace returned a blank error message";
-                string spaceValidationError = "Unable to copy legacy FASTA file to " + destinationFolderPath + ". " + errorMessage;
+                var spaceValidationError = "Unable to copy legacy FASTA file to " + destinationFolderPath + ". " + errorMessage;
                 OnErrorEvent(spaceValidationError);
                 throw new IOException(spaceValidationError);
             }
@@ -324,7 +324,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             if (lockStream == null)
             {
                 // Unable to create a lock stream; an exception has likely already been thrown
-                string msg = "Unable to create lock file required to export " + legacyFASTAFileName;
+                var msg = "Unable to create lock file required to export " + legacyFASTAFileName;
                 OnErrorEvent(msg);
                 throw new Exception(msg);
             }
@@ -419,11 +419,11 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         private string ExportProteinCollections(List<string> protCollectionList, string creationOptionsString, string destinationFolderPath, int alternateAnnotationTypeId, bool padWithPrimaryAnnotation, DatabaseFormatTypes databaseFormatType, SequenceTypes outputSequenceType)
         {
-            string proteinCollectionList = string.Join(",", protCollectionList);
+            var proteinCollectionList = string.Join(",", protCollectionList);
 
-            string stringToHash = proteinCollectionList + "/" + creationOptionsString;
-            string filenameSha1Hash = GenerateHash(stringToHash);
-            string lockFileHash = filenameSha1Hash;
+            var stringToHash = proteinCollectionList + "/" + creationOptionsString;
+            var filenameSha1Hash = GenerateHash(stringToHash);
+            var lockFileHash = filenameSha1Hash;
 
             string finalFileName;
             string finalFileHash;
@@ -485,7 +485,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             if (lockStream == null)
             {
                 // Unable to create a lock stream; an exception has likely already been thrown
-                string msg = "Unable to create lock file required to export " + finalFileName;
+                var msg = "Unable to create lock file required to export " + finalFileName;
                 OnErrorEvent(msg);
                 throw new Exception(msg);
             }
@@ -540,12 +540,12 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 if (string.IsNullOrEmpty(crc32Hash))
                 {
-                    string msg = "mGetter.ExportFASTAFile returned a blank string for the CRC32 authentication hash; this likely represents a problem";
+                    var msg = "mGetter.ExportFASTAFile returned a blank string for the CRC32 authentication hash; this likely represents a problem";
                     OnErrorEvent(msg);
                     throw new Exception(msg);
                 }
 
-                bool firstCollectionProcessed = false;
+                var firstCollectionProcessed = false;
                 var archivedFileId = default(int);
 
                 foreach (var collectionName in protCollectionList)
@@ -560,7 +560,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                         if (archivedFileId == 0)
                         {
                             // Error making an entry in T_Archived_Output_Files; abort
-                            string msg = "Error archiving collection; Archived_File_ID = 0";
+                            var msg = "Error archiving collection; Archived_File_ID = 0";
                             OnErrorEvent(msg);
                             throw new Exception(msg);
                         }
@@ -569,7 +569,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     }
                     else
                     {
-                        int existingCollectionId = GetProteinCollectionId(collectionName);
+                        var existingCollectionId = GetProteinCollectionId(collectionName);
                         mArchiver.AddArchiveCollectionXRef(existingCollectionId, archivedFileId);
                     }
                 }
@@ -617,7 +617,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             // If an existing file is not found, but a lock file was successfully created, then lockStream will be a valid file stream
 
             var startTime = DateTime.UtcNow;
-            int intAttemptCount = 0;
+            var intAttemptCount = 0;
 
             var lockFile = new FileInfo(Path.Combine(destinationFolderPath, lockFileHash + ".lock"));
             do
@@ -629,7 +629,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     if (lockFile.Exists)
                     {
                         var lockTimeoutTime = lockFile.LastWriteTimeUtc.AddMinutes(60d);
-                        string msg = LockFileProgressText + " found; waiting until it is deleted or until " + lockTimeoutTime.ToLocalTime().ToString() + ": " + lockFile.Name;
+                        var msg = LockFileProgressText + " found; waiting until it is deleted or until " + lockTimeoutTime.ToLocalTime().ToString() + ": " + lockFile.Name;
                         OnDebugEvent(msg);
                         OnFileGenerationProgressUpdate(msg, 0d);
 
@@ -646,7 +646,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                         lockFile.Refresh();
                         if (lockFile.Exists)
                         {
-                            string warningMsg = LockFileProgressText + " still exists; assuming another process timed out; thus, now deleting file " + lockFile.Name;
+                            var warningMsg = LockFileProgressText + " still exists; assuming another process timed out; thus, now deleting file " + lockFile.Name;
                             OnWarningEvent(warningMsg);
                             OnFileGenerationProgressUpdate(warningMsg, 0d);
                             lockFile.Delete();
@@ -663,7 +663,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
                 catch (Exception ex)
                 {
-                    string msg = "Exception while monitoring " + LockFileProgressText + " " + lockFile.FullName + ": " + ex.Message;
+                    var msg = "Exception while monitoring " + LockFileProgressText + " " + lockFile.FullName + ": " + ex.Message;
                     OnErrorEvent(msg);
                     OnFileGenerationProgressUpdate(msg, 0d);
                 }
@@ -681,7 +681,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     }
 
                     // Exception: Unable to create Lockfile required to export Protein collection ...
-                    string msg = "Unable to create " + LockFileProgressText + " required to export " + proteinCollectionListOrLegacyFastaFileName + "; tried 4 times without success";
+                    var msg = "Unable to create " + LockFileProgressText + " required to export " + proteinCollectionListOrLegacyFastaFileName + "; tried 4 times without success";
                     OnErrorEvent(msg);
                     throw new Exception(msg);
                 }
@@ -765,7 +765,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         private string GenerateAndStoreLegacyFileHash(string fastaFilePath)
         {
             // The database does not have a valid Authentication_Hash values for this .Fasta file; generate one now
-            string crc32Hash = GenerateFileAuthenticationHash(fastaFilePath);
+            var crc32Hash = GenerateFileAuthenticationHash(fastaFilePath);
 
             // Add an entry to T_Legacy_File_Upload_Requests
             // Also store the CRC32 hash for future use
@@ -777,12 +777,12 @@ namespace OrganismDatabaseHandler.ProteinExport
         private bool LookupLegacyFastaFileDetails(string legacyFASTAFileName, out string legacyStaticFilePathOutput, out string crc32HashOutput)
         {
             // Lookup the details for LegacyFASTAFileName in the database
-            string legacyLocationsSql = "SELECT FileName, Full_Path, Authentication_Hash FROM V_Legacy_Static_File_Locations WHERE FileName = '" + legacyFASTAFileName + "'";
+            var legacyLocationsSql = "SELECT FileName, Full_Path, Authentication_Hash FROM V_Legacy_Static_File_Locations WHERE FileName = '" + legacyFASTAFileName + "'";
 
             var legacyStaticFileLocations = mDatabaseAccessor.GetTable(legacyLocationsSql);
             if (legacyStaticFileLocations.Rows.Count == 0)
             {
-                string msg = "Legacy fasta file " + legacyFASTAFileName + " not found in V_Legacy_Static_File_Locations; unable to continue";
+                var msg = "Legacy fasta file " + legacyFASTAFileName + " not found in V_Legacy_Static_File_Locations; unable to continue";
                 OnErrorEvent(msg);
                 throw new Exception(msg);
             }
@@ -820,7 +820,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
 
             var fastaFile = new FileInfo(strFastaFilePath);
-            string hashValidationFileName = Path.Combine(fastaFile.DirectoryName, fastaFile.Name + "." + crc32Hash + extensionToUse);
+            var hashValidationFileName = Path.Combine(fastaFile.DirectoryName, fastaFile.Name + "." + crc32Hash + extensionToUse);
 
             return new FileInfo(hashValidationFileName);
         }
@@ -876,7 +876,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                     // Either the hash validation file doesn't exist, or it's too old, or forceRegenerateHash = True
                     // Regenerate the hash
-                    string crc32Hash = GenerateFileAuthenticationHash(fastaFile.FullName);
+                    var crc32Hash = GenerateFileAuthenticationHash(fastaFile.FullName);
 
                     if (string.Equals(expectedHash, crc32Hash) || forceRegenerateHash)
                     {
@@ -905,7 +905,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
             catch (Exception ex)
             {
-                string msg = "Exception while re-computing the hash of the fasta file: " + ex.Message;
+                var msg = "Exception while re-computing the hash of the fasta file: " + ex.Message;
                 OnErrorEvent(msg, ex);
                 OnFileGenerationProgressUpdate(msg, 0d);
             }
@@ -970,7 +970,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     strServers = mFileTools.GetServerShareBase(sourceFilePath);
                 }
 
-                string msg = "Waiting for lockfile queue on " + strServers + " to fall below threshold";
+                var msg = "Waiting for lockfile queue on " + strServers + " to fall below threshold";
                 OnDebugEvent(msg);
                 OnFileGenerationProgressUpdate(msg, 0d);
             }
@@ -1066,7 +1066,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }
@@ -1083,7 +1083,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var sha1Hash = sha1Provider.ComputeHash(byteSourceText);
 
             // And convert it to String format for return
-            string sha1String = BitConverter.ToString(sha1Hash).Replace("-", "").ToLower();
+            var sha1String = BitConverter.ToString(sha1Hash).Replace("-", "").ToLower();
 
             return sha1String;
         }

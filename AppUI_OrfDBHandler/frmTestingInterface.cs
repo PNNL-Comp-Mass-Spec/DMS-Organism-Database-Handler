@@ -77,7 +77,7 @@ namespace AppUI_OrfDBHandler
         {
             var openDialog = new OpenFileDialog();
 
-            Button proxy = (Button)sender;
+            var proxy = (Button)sender;
 
             openDialog.Title = "Open Translation Definitions File";
             openDialog.DereferenceLinks = false;
@@ -249,7 +249,7 @@ namespace AppUI_OrfDBHandler
         private void UpdateProgress(string statusMsg, double fractionDone)
         {
             mProgressMessage = statusMsg;
-            int percentComplete = (int)Math.Round(fractionDone * 100d);
+            var percentComplete = (int)Math.Round(fractionDone * 100d);
             if (fractionDone > 0d)
             {
                 pgbAdminConsole.Value = (int)Math.Round(fractionDone * 100d);

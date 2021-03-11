@@ -69,7 +69,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
             mAnnotationStorage.ClearAnnotationGroups();
 
-            for (int columnNumber = 1; columnNumber <= valuesByColumnId.Count; columnNumber++)
+            for (var columnNumber = 1; columnNumber <= valuesByColumnId.Count; columnNumber++)
             {
                 string columnName;
                 if (useContentsAsColumnNames)
@@ -93,9 +93,9 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             var lineEntries = entryLine.Split(delimiter.ToCharArray());
             var valuesByColumnId = new Dictionary<int, string>(lineEntries.Length);
 
-            for (int columnId = 1; columnId <= lineEntries.Length; columnId++)
+            for (var columnId = 1; columnId <= lineEntries.Length; columnId++)
             {
-                string lineEntry = lineEntries[columnId - 1];
+                var lineEntry = lineEntries[columnId - 1];
 
                 if (lineEntry.Trim(' ').Length > 0)
                 {
@@ -114,14 +114,14 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             Dictionary<int, string> dataLine,
             int lineCount)
         {
-            int columnCount = dataLine.Count;
+            var columnCount = dataLine.Count;
 
-            int maxColumnCount = ColumnNames.Count;
+            var maxColumnCount = ColumnNames.Count;
 
             var lvItem = new System.Windows.Forms.ListViewItem(dataLine[1]);
-            for (int columnNumber = 2; columnNumber <= columnCount; columnNumber++)
+            for (var columnNumber = 2; columnNumber <= columnCount; columnNumber++)
             {
-                string dataValue = dataLine[columnNumber];
+                var dataValue = dataLine[columnNumber];
                 if (dataValue.Length > 0)
                 {
                     lvItem.SubItems.Add(dataValue);
@@ -135,7 +135,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             var blankColumnCount = maxColumnCount - columnCount;
             if (blankColumnCount > 0)
             {
-                for (int columnNumber = 1; columnNumber <= blankColumnCount; columnNumber++)
+                for (var columnNumber = 1; columnNumber <= blankColumnCount; columnNumber++)
                     lvItem.SubItems.Add("---");
             }
 
@@ -162,10 +162,10 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
             using (var reader = new StreamReader(new FileStream(inputFile.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
             {
-                bool firstLineStored = false;
+                var firstLineStored = false;
                 while (!reader.EndOfStream)
                 {
-                    string entryLine = reader.ReadLine();
+                    var entryLine = reader.ReadLine();
                     if (!firstLineStored)
                     {
                         mfirstLine = entryLine;
@@ -194,9 +194,9 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         {
             foreach (var dataLine in mFileContents)
             {
-                string primaryRef = dataLine[primaryReferenceNameColumnId];
+                var primaryRef = dataLine[primaryReferenceNameColumnId];
 
-                for (int columnNumber = 1; columnNumber <= dataLine.Count; columnNumber++)
+                for (var columnNumber = 1; columnNumber <= dataLine.Count; columnNumber++)
                 {
                     if (!columnNumber.Equals(primaryReferenceNameColumnId) &&
                         !dataLine[columnNumber].Equals("---"))
@@ -253,11 +253,11 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
                 mUploader = new AddUpdateEntries(mPsConnectionString);
             }
 
-            int groupCount = mAnnotationStorage.GroupCount;
+            var groupCount = mAnnotationStorage.GroupCount;
 
             mProteinIdLookup = GetProteinIDsForPrimaryReferences(mAnnotationStorage.GetAllPrimaryReferences());
 
-            for (int columnCount = 1; columnCount <= groupCount; columnCount++)
+            for (var columnCount = 1; columnCount <= groupCount; columnCount++)
             {
                 if (!columnCount.Equals(primaryReferenceNameColumnId))
                 {

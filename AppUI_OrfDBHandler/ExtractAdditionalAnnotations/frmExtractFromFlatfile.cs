@@ -67,7 +67,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         private void lvwNewNames_SelectedIndexChanged(object sender, EventArgs e)
         {
-            System.Windows.Forms.ListView lvw = (System.Windows.Forms.ListView)sender;
+            var lvw = (System.Windows.Forms.ListView)sender;
             if (lvw.SelectedItems.Count > 0)
             {
                 mCurrentGroupId = Convert.ToInt32(lvw.SelectedItems[0].Text);
@@ -78,7 +78,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         private void chkUseHeader_CheckedChanged(object sender, EventArgs e)
         {
-            System.Windows.Forms.CheckBox chk = (System.Windows.Forms.CheckBox)sender;
+            var chk = (System.Windows.Forms.CheckBox)sender;
 
             if (chk.CheckState == System.Windows.Forms.CheckState.Checked)
             {
@@ -98,7 +98,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         {
             var columnCollection = mExtract.ColumnNames;
 
-            int columnCount = columnCollection.Count;
+            var columnCount = columnCollection.Count;
             for (var columnNumber = 1; columnNumber <= columnCount; columnNumber++)
                 lvwProteins.Columns[columnNumber - 1].Text = columnCollection[columnNumber];
 
@@ -115,8 +115,8 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         private void LoadRawFileListView()
         {
             var fc = mExtract.FileContents;
-            int maxIndex = fc.Count - 1;
-            int maxColumnCount = 0;
+            var maxIndex = fc.Count - 1;
+            var maxColumnCount = 0;
 
             foreach (var item in fc)
             {
@@ -133,7 +133,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             // Create Columns
             var columnCollection = mExtract.ColumnNames;
 
-            int columnCount = columnCollection.Count;
+            var columnCount = columnCollection.Count;
             for (var columnNumber = 1; columnNumber <= columnCount; columnNumber++)
             {
                 var ch = new System.Windows.Forms.ColumnHeader();
@@ -142,7 +142,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
                 lvwProteins.Columns.Add(ch);
             }
 
-            for (int lineCount = 0; lineCount <= maxIndex; lineCount++)
+            for (var lineCount = 0; lineCount <= maxIndex; lineCount++)
             {
                 var lineHash = fc[lineCount];
                 var lvItem = mExtract.DataLineToListViewItem(lineHash, lineCount);
@@ -172,7 +172,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         private void LoadAnnotationGroupListView()
         {
-            int maxIndex = mExtract.Annotations.GroupCount;
+            var maxIndex = mExtract.Annotations.GroupCount;
 
             lvwNewNames.BeginUpdate();
             lvwNewNames.Items.Clear();;
@@ -194,8 +194,8 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             cbo.BeginUpdate();
             foreach (var item in authorityList)
             {
-                string authorityName = item.Value.ToString();
-                int authorityId = Convert.ToInt32(item.Key);
+                var authorityName = item.Value.ToString();
+                var authorityId = Convert.ToInt32(item.Key);
                 a.Add(new AuthorityContainer(authorityName, authorityId));
             }
 
@@ -210,7 +210,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         private void cboNamingAuthority_SelectedIndexChanged(object sender, EventArgs e)
         {
-            System.Windows.Forms.ComboBox cbo = (System.Windows.Forms.ComboBox)sender;
+            var cbo = (System.Windows.Forms.ComboBox)sender;
 
             if (lvwNewNames.SelectedItems.Count > 0)
             {
@@ -237,11 +237,11 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         {
             public int Compare(object x, object y)
             {
-                AuthorityContainer auth1 = (AuthorityContainer)x;
-                AuthorityContainer auth2 = (AuthorityContainer)y;
+                var auth1 = (AuthorityContainer)x;
+                var auth2 = (AuthorityContainer)y;
 
-                string reference1 = auth1.AuthorityName;
-                string reference2 = auth2.AuthorityName;
+                var reference1 = auth1.AuthorityName;
+                var reference2 = auth2.AuthorityName;
 
                 if (string.Compare(reference1, reference2, StringComparison.Ordinal) > 0)
                 {

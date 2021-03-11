@@ -53,21 +53,21 @@ namespace OrganismDatabaseHandler.DatabaseTools
 
         public DataTable GetTableTemplate(string tableName)
         {
-            string sql = "SELECT * FROM " + tableName + " WHERE 1=0";
+            var sql = "SELECT * FROM " + tableName + " WHERE 1=0";
             return GetTable(sql);
         }
 
         public DataTable GetTable(string selectSql)
         {
-            int retryCount = 6;
-            int retryDelaySeconds = 5;
-            int timeoutSeconds = 600;
+            var retryCount = 6;
+            var retryDelaySeconds = 5;
+            var timeoutSeconds = 600;
             DataTable queryResults = null;
-            bool success = mDbTools.GetQueryResultsDataTable(selectSql, out queryResults, retryCount, retryDelaySeconds, timeoutSeconds);
+            var success = mDbTools.GetQueryResultsDataTable(selectSql, out queryResults, retryCount, retryDelaySeconds, timeoutSeconds);
 
             if (!success)
             {
-                string errorMessage = "Could not get records after three tries; query: " + selectSql;
+                var errorMessage = "Could not get records after three tries; query: " + selectSql;
                 OnErrorEvent(errorMessage);
                 throw new Exception(errorMessage);
             }
@@ -86,7 +86,7 @@ namespace OrganismDatabaseHandler.DatabaseTools
 
             foreach (var dr in foundRows)
             {
-                string key = dr[keyFieldName].ToString();
+                var key = dr[keyFieldName].ToString();
                 if (!dataDictionary.ContainsKey(key))
                 {
                     dataDictionary.Add(key, dr[valueFieldName].ToString());
@@ -107,7 +107,7 @@ namespace OrganismDatabaseHandler.DatabaseTools
 
             foreach (var dr in foundRows)
             {
-                string key = dr[keyFieldName].ToString();
+                var key = dr[keyFieldName].ToString();
                 int keyValue;
                 if (!int.TryParse(key, out keyValue))
                 {

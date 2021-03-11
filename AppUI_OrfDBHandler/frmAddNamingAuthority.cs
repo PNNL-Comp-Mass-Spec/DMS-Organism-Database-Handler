@@ -109,8 +109,8 @@ namespace AppUI_OrfDBHandler
 
         private void txtAuthWeb_Validating(object sender, CancelEventArgs e)
         {
-            TextBox txt = (TextBox)sender;
-            string tmpAddress = ValidateWebAddressFormat(txt.Text);
+            var txt = (TextBox)sender;
+            var tmpAddress = ValidateWebAddressFormat(txt.Text);
             txt.Text = tmpAddress;
         }
     }

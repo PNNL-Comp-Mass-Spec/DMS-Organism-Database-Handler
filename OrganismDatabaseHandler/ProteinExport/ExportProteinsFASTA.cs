@@ -30,9 +30,9 @@ namespace OrganismDatabaseHandler.ProteinExport
             const int requiredSizeMb = 150;
 
             long currentFreeSpaceBytes;
-            string errorMessage = string.Empty;
+            var errorMessage = string.Empty;
 
-            bool success = DiskInfo.GetDiskFreeSpace(destinationPath, out currentFreeSpaceBytes, out errorMessage);
+            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out currentFreeSpaceBytes, out errorMessage);
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))
@@ -49,11 +49,11 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             using (var writer = new StreamWriter(destinationPath))
             {
-                string tmpAltNames = string.Empty;
+                var tmpAltNames = string.Empty;
 
                 OnExportStart("Writing to FASTA File");
 
-                int counterMax = proteins.ProteinCount;
+                var counterMax = proteins.ProteinCount;
                 var counter = default(int);
                 var hexCodeFinder = new Regex(@"[\x00-\x1F\x7F-\xFF]", RegexOptions.Compiled);
 
@@ -96,7 +96,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
             }
 
-            string fingerprint = GenerateFileAuthenticationHash(destinationPath);
+            var fingerprint = GenerateFileAuthenticationHash(destinationPath);
 
             var fi = new FileInfo(destinationPath);
 
@@ -165,15 +165,15 @@ namespace OrganismDatabaseHandler.ProteinExport
             const int requiredSizeMb = 150;
 
             var counter = default(int);
-            int proteinsWritten = 0;
+            var proteinsWritten = 0;
 
             var hexCodeFinder = new Regex(@"[\x00-\x1F\x7F-\xFF]", RegexOptions.Compiled);
 
-            string tmpAltNames = string.Empty;
+            var tmpAltNames = string.Empty;
 
-            string errorMessage = string.Empty;
+            var errorMessage = string.Empty;
 
-            bool success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out errorMessage);
+            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out errorMessage);
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))
@@ -208,7 +208,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 foreach (var currentRow in foundRows)
                 {
-                    string tmpSeq = ExportComponent.SequenceExtender(currentRow["Sequence"].ToString(), proteinTable.Rows.Count);
+                    var tmpSeq = ExportComponent.SequenceExtender(currentRow["Sequence"].ToString(), proteinTable.Rows.Count);
 
                     counter += 1;
 
@@ -217,15 +217,15 @@ namespace OrganismDatabaseHandler.ProteinExport
                         // OnDetailedProgressUpdate("Processing: " + tmpName, Math.Round(counter / (double)counterMax, 3));
                     }
 
-                    int proteinLength = tmpSeq.Length;
-                    string tmpDesc = hexCodeFinder.Replace(currentRow["Description"].ToString(), " ");
-                    string tmpName = ExportComponent.ReferenceExtender(currentRow["Name"].ToString());
+                    var proteinLength = tmpSeq.Length;
+                    var tmpDesc = hexCodeFinder.Replace(currentRow["Description"].ToString(), " ");
+                    var tmpName = ExportComponent.ReferenceExtender(currentRow["Name"].ToString());
 
                     writer.WriteLine((">" + tmpName + " " + tmpDesc + tmpAltNames).Trim());
 
-                    for (int proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += mseqLineLength)
+                    for (var proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += mseqLineLength)
                     {
-                        string seqLinePortion = tmpSeq.Substring(proteinPosition, mseqLineLength);
+                        var seqLinePortion = tmpSeq.Substring(proteinPosition, mseqLineLength);
                         writer.WriteLine(seqLinePortion);
                     }
 
@@ -243,7 +243,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <returns>Fingerprint, e.g. 9B916A8B</returns>
         public string FinalizeFile(ref string destinationPath)
         {
-            string fingerprint = GenerateFileAuthenticationHash(destinationPath);
+            var fingerprint = GenerateFileAuthenticationHash(destinationPath);
 
             var fi = new FileInfo(destinationPath);
 

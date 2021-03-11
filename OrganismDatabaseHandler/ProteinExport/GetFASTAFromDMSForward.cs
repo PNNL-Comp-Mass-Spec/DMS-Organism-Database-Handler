@@ -115,7 +115,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             int alternateAnnotationTypeId,
             bool padWithPrimaryAnnotation)
         {
-            string trueName = string.Empty;
+            var trueName = string.Empty;
 
             var tmpId = default(int);
             var tmpIdListSb = new StringBuilder();
@@ -128,15 +128,15 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
 
             var user = new WindowsPrincipal(WindowsIdentity.GetCurrent());
-            string userId = user.Identity.Name;
+            var userId = user.Identity.Name;
 
             // Dictionary mapping protein collection name to the associated passphrase
             var proteinCollectionPassphrases = new Dictionary<string, string>();
 
-            string collectionNameList = string.Empty;
+            var collectionNameList = string.Empty;
 
             // Check each collection name for encryption of contents
-            foreach (string nameString in protCollectionList)
+            foreach (var nameString in protCollectionList)
             {
                 var encCheckRows = mCollectionsCache.Select("Filename = '" + nameString + "' AND Contents_Encrypted > 0");
 
@@ -178,7 +178,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             do
             {
-                string tmpOutputPathCandidate = Path.GetTempFileName();
+                var tmpOutputPathCandidate = Path.GetTempFileName();
                 try
                 {
                     // The GetTempFileName function created a temp file that we don't need; delete it now (but use try/catch just in case the deletion fails for some freak reason)
@@ -202,11 +202,11 @@ namespace OrganismDatabaseHandler.ProteinExport
                 OnExportStart("Exporting " + protCollectionList.Count + "protein collections: " + collectionNameList);
             }
 
-            int proteinCollectionsExported = 0;
+            var proteinCollectionsExported = 0;
             foreach (var proteinCollName in protCollectionList)
             {
-                int currentCollectionPos = 0;
-                int currentCollectionCount = 0;
+                var currentCollectionPos = 0;
+                var currentCollectionCount = 0;
 
                 // Make sure there are no leading or trailing spaces
                 var proteinCollectionName = proteinCollName.Trim();
@@ -241,8 +241,8 @@ namespace OrganismDatabaseHandler.ProteinExport
                 DataTable collectionTable;
                 do
                 {
-                    int sectionStart = currentCollectionPos;
-                    int sectionEnd = sectionStart + 10000;
+                    var sectionStart = currentCollectionPos;
+                    var sectionEnd = sectionStart + 10000;
 
                     string collectionSql;
                     if (padWithPrimaryAnnotation)
@@ -269,7 +269,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                     collectionTable = mDatabaseAccessor.GetTable(collectionSql);
 
-                    string passPhraseForCollection = "";
+                    var passPhraseForCollection = "";
                     if (proteinCollectionPassphrases.TryGetValue(trueName, out passPhraseForCollection))
                     {
                         mRijndaelDecryption = new RijndaelEncryptionHandler(passPhraseForCollection);
@@ -302,7 +302,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     currentCollectionPos = sectionEnd + 1;
                     currentCollectionCount += collectionTable.Rows.Count;
 
-                    double fractionDoneOverall = 0d;
+                    var fractionDoneOverall = 0d;
                     if (collectionLength > 0)
                     {
                         fractionDoneOverall = proteinCollectionsExported / (double)protCollectionList.Count + currentCollectionCount / (double)collectionLength / protCollectionList.Count;
@@ -384,7 +384,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Determine the CRC32 hash of the output file
             // This process will also rename the file, e.g. from "C:\Temp\SAR116_RBH_AA_012809_forward.fasta" to "C:\Temp\38FFACAC.fasta"
             var tempFullPath = FullOutputPath;
-            string crc32Hash = mfileDumper.Export(new DataTable(), ref tempFullPath);
+            var crc32Hash = mfileDumper.Export(new DataTable(), ref tempFullPath);
             FullOutputPath = FullOutputPath;
 
             OnExportComplete(FullOutputPath);
@@ -402,7 +402,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             List<string> protCollectionList,
             string destinationFolderPath)
         {
-            int primaryAuthorityID = 1;
+            var primaryAuthorityID = 1;
             const bool padWithPrimaryAnnotation = true;
 
             return ExportFASTAFile(protCollectionList, destinationFolderPath, primaryAuthorityID, padWithPrimaryAnnotation);
@@ -616,7 +616,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public string GetStoredHash(int proteinCollectionId)
         {
-            string proteinCollectionName = mAllCollections[proteinCollectionId];
+            var proteinCollectionName = mAllCollections[proteinCollectionId];
             return GetStoredHash(proteinCollectionName);
         }
 

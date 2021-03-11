@@ -268,7 +268,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
 
                 // Validate the fasta file (send full path)
                 // This function returns True if the file is successfully processed (even if it has errors)
-                bool fileValidated = mValidator.StartValidateFASTAFile(currentFile.FullName);
+                var fileValidated = mValidator.StartValidateFASTAFile(currentFile.FullName);
 
                 OnLoadEnd();
 
@@ -309,13 +309,13 @@ namespace OrganismDatabaseHandler.ProteinUpload
                     }
                 }
 
-                string proteinCollectionName = Path.GetFileNameWithoutExtension(currentFile.Name);
+                var proteinCollectionName = Path.GetFileNameWithoutExtension(currentFile.Name);
 
-                int existingCollectionId = mUpload.GetProteinCollectionId(proteinCollectionName);
+                var existingCollectionId = mUpload.GetProteinCollectionId(proteinCollectionName);
                 DialogResult eResult;
                 if (existingCollectionId > 0)
                 {
-                    string collectionState = mUpload.GetProteinCollectionState(existingCollectionId);
+                    var collectionState = mUpload.GetProteinCollectionState(existingCollectionId);
 
                     string logMessageIfCancelled;
                     string logLabelIfCancelled;
@@ -413,10 +413,10 @@ namespace OrganismDatabaseHandler.ProteinUpload
         {
             // task 2a - Get Protein_Collection_ID or make a new one
 
-            string proteinCollectionName = Path.GetFileNameWithoutExtension(filepath);
-            int existingCollectionId = mUpload.GetProteinCollectionId(proteinCollectionName);
+            var proteinCollectionName = Path.GetFileNameWithoutExtension(filepath);
+            var existingCollectionId = mUpload.GetProteinCollectionId(proteinCollectionName);
 
-            string collectionState = mUpload.GetProteinCollectionState(existingCollectionId);
+            var collectionState = mUpload.GetProteinCollectionState(existingCollectionId);
 
             if (collectionState != "Unknown" &&
                 collectionState != "New" &&
@@ -425,8 +425,8 @@ namespace OrganismDatabaseHandler.ProteinUpload
                 throw new Exception("Protein collections in state " + collectionState + " cannot be updated");
             }
 
-            int numProteins = selectedProteins.Count;
-            int numResidues = mUpload.GetTotalResidueCount(fileContents, selectedProteins);
+            var numProteins = selectedProteins.Count;
+            var numResidues = mUpload.GetTotalResidueCount(fileContents, selectedProteins);
 
             int collectionId;
 
@@ -434,7 +434,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
             {
                 // Note that we're storing 0 for NumResidues at this time
                 // That value will be updated later after all of the proteins have been added
-                int newCollectionId = mUpload.MakeNewProteinCollection(
+                var newCollectionId = mUpload.MakeNewProteinCollection(
                     proteinCollectionName, description,
                     collectionSource, collectionType,
                     annotationTypeId, numProteins, 0);
@@ -485,7 +485,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
                 OnLoadEnd();
             }
 
-            string tmpFileName = Path.GetTempPath();
+            var tmpFileName = Path.GetTempPath();
 
             // Dim tmpFi As System.IO.FileInfo = New System.IO.FileInfo(tmpFileName)
 

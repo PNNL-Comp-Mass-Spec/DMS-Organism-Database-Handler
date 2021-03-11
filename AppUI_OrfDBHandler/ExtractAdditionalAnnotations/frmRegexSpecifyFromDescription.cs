@@ -38,7 +38,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         private void rdbSourceSelect_CheckedChanged(object sender, EventArgs e)
         {
-            System.Windows.Forms.RadioButton rdb = (System.Windows.Forms.RadioButton)sender;
+            var rdb = (System.Windows.Forms.RadioButton)sender;
 
             if (rdb.Checked == true)
             {

@@ -66,7 +66,7 @@ namespace OrganismDatabaseHandler.SequenceInfo
 
             try
             {
-                foreach (char aa in aaString)
+                foreach (var aa in aaString)
                 {
                     AminoAcidInfo aaInfo = null;
 
@@ -110,7 +110,7 @@ namespace OrganismDatabaseHandler.SequenceInfo
             var sha1Hash = sha1Provider.ComputeHash(byteSourceText);
 
             // And convert it to String format for return
-            string sha1String = ToHexString(sha1Hash);
+            var sha1String = ToHexString(sha1Hash);
 
             return sha1String;
         }
@@ -121,20 +121,20 @@ namespace OrganismDatabaseHandler.SequenceInfo
 
             var getSql = new DBTask(mDMSConnectionString);
 
-            string sqlString = "SELECT * FROM T_Residues WHERE [NumC] > 0";
+            var sqlString = "SELECT * FROM T_Residues WHERE [NumC] > 0";
             var tmpAATable = getSql.GetTable(sqlString);
 
             foreach (DataRow dr in tmpAATable.Rows)
             {
-                string singleLetterSymbol = dr["Residue_Symbol"].ToString();
-                string description = dr["Description"].ToString();
-                int countC = Convert.ToInt32(dr["NumC"]);
-                int countH = Convert.ToInt32(dr["NumH"]);
-                int countN = Convert.ToInt32(dr["NumN"]);
-                int countO = Convert.ToInt32(dr["NumO"]);
-                int countS = Convert.ToInt32(dr["NumS"]);
-                double monoMass = Convert.ToDouble(dr["Monoisotopic_Mass"]);
-                double avgMass = Convert.ToDouble(dr["Average_Mass"]);
+                var singleLetterSymbol = dr["Residue_Symbol"].ToString();
+                var description = dr["Description"].ToString();
+                var countC = Convert.ToInt32(dr["NumC"]);
+                var countH = Convert.ToInt32(dr["NumH"]);
+                var countN = Convert.ToInt32(dr["NumN"]);
+                var countO = Convert.ToInt32(dr["NumO"]);
+                var countS = Convert.ToInt32(dr["NumS"]);
+                var monoMass = Convert.ToDouble(dr["Monoisotopic_Mass"]);
+                var avgMass = Convert.ToDouble(dr["Average_Mass"]);
 
                 AddAminoAcid(new AminoAcidInfo(singleLetterSymbol, description, countC, countH, countN, countO, countS, avgMass, monoMass));
             }
@@ -257,7 +257,7 @@ namespace OrganismDatabaseHandler.SequenceInfo
 
         private string GetMolecularFormula()
         {
-            string mf = "C" + countC + " H" + countH + " N" + countN + " O" + countO + " S" + countS;
+            var mf = "C" + countC + " H" + countH + " N" + countN + " O" + countO + " S" + countS;
             return mf;
         }
 

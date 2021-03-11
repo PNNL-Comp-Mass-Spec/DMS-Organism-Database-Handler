@@ -16,17 +16,17 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public uint GetCrc32(Stream stream)
         {
-            uint crc32Result = 0xFFFFFFFF;
+            var crc32Result = 0xFFFFFFFF;
 
             var buffer = new byte[1025];
-            int readSize = BUFFER_SIZE;
+            var readSize = BUFFER_SIZE;
 
-            int count = stream.Read(buffer, 0, readSize);
+            var count = stream.Read(buffer, 0, readSize);
             while (count > 0)
             {
-                for (int i = 0; i < count; i++)
+                for (var i = 0; i < count; i++)
                 {
-                    uint iLookup = crc32Result & 0xFF ^ buffer[i];
+                    var iLookup = crc32Result & 0xFF ^ buffer[i];
                     crc32Result = (crc32Result & 0xFFFFFF00) / 0x100 & 0xFFFFFF;   // nasty shr 8 with vb :/
                     crc32Result = crc32Result ^ crc32Table[iLookup];
                 }
@@ -42,15 +42,15 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             // This is the official polynomial used by CRC32 in PKZip.
             // Often the polynomial is shown reversed (04C11DB7).
-            uint dwPolynomial = 0xEDB88320;
+            var dwPolynomial = 0xEDB88320;
 
             crc32Table = new uint[257];
 
             for (uint i = 0; i <= 255; i++)
             {
-                uint dwCrc = i;
+                var dwCrc = i;
                 // ReSharper disable once RedundantAssignment
-                for (int j = 8; j >= 1; j -= 1)
+                for (var j = 8; j >= 1; j -= 1)
                 {
                     if (Convert.ToBoolean(dwCrc & 1))
                     {

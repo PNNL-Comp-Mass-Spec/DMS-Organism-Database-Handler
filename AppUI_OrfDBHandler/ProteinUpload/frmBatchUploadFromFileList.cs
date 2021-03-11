@@ -47,7 +47,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
         private void SaveFileNamingAuthorities()
         {
-            string saveFilePath = Path.Combine(mSavePath, SaveFileName);
+            var saveFilePath = Path.Combine(mSavePath, SaveFileName);
 
             var fi = new FileInfo(saveFilePath);
             if (fi.Exists)
@@ -108,8 +108,8 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
         private void LoadFileNamingAuthorities()
         {
-            string loadFilePath = Path.Combine(this.mSavePath, SaveFileName);
-            FileInfo fi = new FileInfo(loadFilePath);
+            var loadFilePath = Path.Combine(this.mSavePath, SaveFileName);
+            var fi = new FileInfo(loadFilePath);
             // System.IO.TextReader tr;
             // string s;
             //
@@ -227,7 +227,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
         private void cmdUploadFiles_Click(object sender, EventArgs e)
         {
-            int selectedCount = BuildSelectedFilesList();
+            var selectedCount = BuildSelectedFilesList();
             if (selectedCount > 0)
             {
                 DialogResult = DialogResult.OK;
@@ -248,7 +248,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
         private void cboOrganismPicker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ComboBox cbo = (ComboBox)sender;
+            var cbo = (ComboBox)sender;
 
             if (lvwFiles.SelectedItems.Count > 0)
             {
@@ -264,7 +264,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
         private void cboAnnotationType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ComboBox cbo = (ComboBox)sender;
+            var cbo = (ComboBox)sender;
 
             if (lvwFiles.SelectedItems.Count > 0)
             {

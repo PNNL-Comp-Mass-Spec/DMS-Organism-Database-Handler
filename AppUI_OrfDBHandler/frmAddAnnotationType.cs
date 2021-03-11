@@ -140,7 +140,7 @@ namespace AppUI_OrfDBHandler
 
         private void cboAuthorityName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ComboBox cbo = (ComboBox)sender;
+            var cbo = (ComboBox)sender;
 
             if (ReferenceEquals(cbo.SelectedValue.GetType(), Type.GetType("System.Int32")))
             {

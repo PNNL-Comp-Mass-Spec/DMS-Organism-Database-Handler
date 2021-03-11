@@ -157,7 +157,7 @@ namespace FastaFileMaker_Exe
                     }
 
                     // Data Source=proteinseqs;Initial Catalog=Protein_Sequences
-                    string proteinSeqsConnectionString = Settings.Default.ProteinSeqsDBConnectStr;
+                    var proteinSeqsConnectionString = Settings.Default.ProteinSeqsDBConnectStr;
 
                     if (!string.IsNullOrWhiteSpace(proteinSeqsConnectionString))
                     {
@@ -214,7 +214,7 @@ namespace FastaFileMaker_Exe
         {
             // Appends a new entry to the log file
 
-            bool blnWriteHeader = false;
+            var blnWriteHeader = false;
 
             try
             {
@@ -290,7 +290,7 @@ namespace FastaFileMaker_Exe
         {
             // Returns True if no problems; otherwise, returns false
 
-            string strValue = string.Empty;
+            var strValue = string.Empty;
             var strValidParameters = new string[] { "P", "C", "L", "O", "D" };
 
             try
@@ -350,7 +350,7 @@ namespace FastaFileMaker_Exe
         {
             try
             {
-                string exeName = System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                var exeName = System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
                 Console.WriteLine(ConsoleMsgUtils.WrapParagraph(
                     "This program can export protein collection(s) from the DMS Protein_Sequences database to create a .Fasta file. " +

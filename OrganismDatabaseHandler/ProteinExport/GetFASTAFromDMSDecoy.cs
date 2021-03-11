@@ -53,14 +53,14 @@ namespace OrganismDatabaseHandler.ProteinExport
             {
                 while (!reverseReader.EndOfStream)
                 {
-                    string dataLine = reverseReader.ReadLine();
+                    var dataLine = reverseReader.ReadLine();
                     appender.WriteLine(dataLine);
                 }
             }
 
             revFi.Delete();
 
-            string crc32HashFinal = GetFileHash(fwdFi.FullName);
+            var crc32HashFinal = GetFileHash(fwdFi.FullName);
 
             return crc32HashFinal;
         }

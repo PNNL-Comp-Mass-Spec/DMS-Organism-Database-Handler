@@ -14,8 +14,8 @@ namespace OrganismDatabaseHandler.ProteinStorage
 
         public override void AddProtein(ProteinStorageEntry proteinEntry)
         {
-            int proteinEntryId = proteinEntry.ProteinId;
-            string proteinEntryName = proteinEntry.Reference;
+            var proteinEntryId = proteinEntry.ProteinId;
+            var proteinEntryName = proteinEntry.Reference;
 
             SortedSet<string> nameList = null;
 

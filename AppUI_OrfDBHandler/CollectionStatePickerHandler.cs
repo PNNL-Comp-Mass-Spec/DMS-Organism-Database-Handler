@@ -38,7 +38,7 @@ namespace AppUI_OrfDBHandler
 
             var criteriaCollection = filterCriteria.Split(' ');
 
-            string filterString = string.Empty;
+            var filterString = string.Empty;
 
             if (criteriaCollection.Length > 0 & filterCriteria.Length > 0)
             {
@@ -90,14 +90,14 @@ namespace AppUI_OrfDBHandler
 
         public DataTable GetCollectionTable()
         {
-            string SQL = "SELECT * FROM V_Collection_State_Picker ORDER BY [Name]";
+            var SQL = "SELECT * FROM V_Collection_State_Picker ORDER BY [Name]";
             var cTable = mGetTables.GetTable(SQL);
             return cTable;
         }
 
         public DataTable GetStates()
         {
-            string SQL = "SELECT State, Collection_State_ID as ID " + "FROM T_Protein_Collection_States ORDER BY Collection_State_ID";
+            var SQL = "SELECT State, Collection_State_ID as ID " + "FROM T_Protein_Collection_States ORDER BY Collection_State_ID";
             var sTable = mGetTables.GetTable(SQL);
 
             return sTable;

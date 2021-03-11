@@ -27,7 +27,7 @@ namespace AppUI_OrfDBHandler
             DataTable dt,
             string filterCriteria = "")
         {
-            string filterString = string.Empty;
+            var filterString = string.Empty;
 
             if (filterCriteria.Length != 0)
             {

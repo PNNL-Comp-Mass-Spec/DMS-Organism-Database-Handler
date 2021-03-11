@@ -48,17 +48,17 @@ namespace AppUI_OrfDBHandler
 
         public int SyncCollectionsAndArchiveTables(string outputPath)
         {
-            string sql =
+            var sql =
                 "SELECT Protein_Collection_ID, FileName, Authentication_Hash, DateModified, Collection_Type_ID, NumProteins " +
                 "FROM V_Missing_Archive_Entries";
 
             // TODO add collection list string
-            string proteinCollectionList = "";
+            var proteinCollectionList = "";
 
             var dt = mDatabaseAccessor.GetTable(sql);
-            string CreationOptionsString = "seq_direction=forward,filetype=fasta";
+            var CreationOptionsString = "seq_direction=forward,filetype=fasta";
             var totalProteinsCount = default(int);
-            int currentCollectionProteinCount = 0;
+            var currentCollectionProteinCount = 0;
             foreach (DataRow dr in dt.Rows)
             {
                 mTotalProteinsCount += Convert.ToInt32(dr["NumProteins"]);
@@ -104,7 +104,7 @@ namespace AppUI_OrfDBHandler
 
             var elapsedTimeSb = new StringBuilder();
 
-            string tmpPath = Path.GetTempPath();
+            var tmpPath = Path.GetTempPath();
 
             string connectionString;
             if (mDatabaseAccessor == null || string.IsNullOrWhiteSpace(mDatabaseAccessor.ConnectionString))
@@ -180,8 +180,8 @@ namespace AppUI_OrfDBHandler
 
                 if (!tmpStoredSHA.Equals(tmpGenSHA))
                 {
-                    int currentFastaProteinCount = 0;
-                    int currentFastaResidueCount = 0;
+                    var currentFastaProteinCount = 0;
+                    var currentFastaResidueCount = 0;
 
                     if (!string.IsNullOrEmpty(mGeneratedFastaFilePath))
                     {
@@ -287,7 +287,7 @@ namespace AppUI_OrfDBHandler
 
         public void FixArchivedFilePaths()
         {
-            string sql = "SELECT * FROM T_Temp_Archive_Path_Fix";
+            var sql = "SELECT * FROM T_Temp_Archive_Path_Fix";
 
             var tmpTable = mDatabaseAccessor.GetTable(sql);
 
@@ -302,25 +302,25 @@ namespace AppUI_OrfDBHandler
 
         public void AddSortingIndices()
         {
-            string getCollectionsSQL = "SELECT Protein_Collection_ID, FileName, OrganismID FROM V_Protein_Collections_By_Organism WHERE Collection_Type_ID = 1 or Collection_Type_ID = 5";
+            var getCollectionsSQL = "SELECT Protein_Collection_ID, FileName, OrganismID FROM V_Protein_Collections_By_Organism WHERE Collection_Type_ID = 1 or Collection_Type_ID = 5";
 
             var collectionTable = mDatabaseAccessor.GetTable(getCollectionsSQL);
 
-            string getLegacyFilesSQL = "SELECT DISTINCT FileName, Full_Path, OrganismID FROM V_Legacy_Static_File_Locations";
+            var getLegacyFilesSQL = "SELECT DISTINCT FileName, Full_Path, OrganismID FROM V_Legacy_Static_File_Locations";
             var legacyTable = mDatabaseAccessor.GetTable(getLegacyFilesSQL);
 
             var dbTools = mDatabaseAccessor.DbTools;
 
             foreach (DataRow collectionEntry in collectionTable.Rows)
             {
-                string tmpCollectionName = collectionEntry["FileName"].ToString();
-                int tmpCollectionId = Convert.ToInt32(collectionEntry["Protein_Collection_ID"]);
+                var tmpCollectionName = collectionEntry["FileName"].ToString();
+                var tmpCollectionId = Convert.ToInt32(collectionEntry["Protein_Collection_ID"]);
                 if (tmpCollectionId == 1026)
                 {
                     Debug.WriteLine("");
                 }
 
-                int tmpOrgId = Convert.ToInt32(collectionEntry["OrganismID"]);
+                var tmpOrgId = Convert.ToInt32(collectionEntry["OrganismID"]);
 
                 var legacyFoundRows = legacyTable.Select("FileName = '" + tmpCollectionName + ".fasta' AND OrganismID = " + tmpOrgId);
                 if (legacyFoundRows.Length > 0)
@@ -331,17 +331,17 @@ namespace AppUI_OrfDBHandler
                     if (referencesTable.Rows.Count > 0)
                     {
                         var legacyFileEntry = legacyFoundRows[0];
-                        string legacyFullPath = legacyFileEntry["Full_Path"].ToString();
+                        var legacyFullPath = legacyFileEntry["Full_Path"].ToString();
                         var nameIndexHash = GetProteinSortingIndices(legacyFullPath);
 
                         foreach (DataRow referenceEntry in referencesTable.Rows)
                         {
-                            int tmpRefId = dbTools.GetInteger(referenceEntry["Reference_ID"]);
-                            int tmpProteinId = dbTools.GetInteger(referenceEntry["Protein_ID"]);
-                            string tmpRefName = dbTools.GetString(referenceEntry["Name"]);
+                            var tmpRefId = dbTools.GetInteger(referenceEntry["Reference_ID"]);
+                            var tmpProteinId = dbTools.GetInteger(referenceEntry["Protein_ID"]);
+                            var tmpRefName = dbTools.GetString(referenceEntry["Name"]);
 
                             //try {
-                            int tmpSortingIndex = nameIndexHash[tmpRefName.ToLower()];
+                            var tmpSortingIndex = nameIndexHash[tmpRefName.ToLower()];
 
                             if (tmpSortingIndex > 0)
                             {
@@ -396,16 +396,16 @@ namespace AppUI_OrfDBHandler
         {
             var proteinList = new Dictionary<int, string>();
             var counter = default(int);
-            int tmpRowCount = 1;
+            var tmpRowCount = 1;
 
             var tmpTableInfo = mDatabaseAccessor.GetTable(
                 "SELECT TOP 1 TableRowCount " +
                 "FROM V_Table_Row_Counts " +
                 "WHERE TableName = 'T_Proteins'");
 
-            DataRow pdr = tmpTableInfo.Rows[0];
+            var pdr = tmpTableInfo.Rows[0];
 
-            int tmpProteinCount = Convert.ToInt32(pdr["TableRowCount"]);
+            var tmpProteinCount = Convert.ToInt32(pdr["TableRowCount"]);
 
             OnSyncStart("Starting Mass Update");
 
@@ -443,13 +443,13 @@ namespace AppUI_OrfDBHandler
 
         public void RefreshNameHashes()
         {
-            string nameCountSQL = "SELECT TOP 1 Reference_ID FROM T_Protein_Names ORDER BY Reference_ID DESC";
+            var nameCountSQL = "SELECT TOP 1 Reference_ID FROM T_Protein_Names ORDER BY Reference_ID DESC";
 
             var nameCountResults = mDatabaseAccessor.GetTable(nameCountSQL);
             var totalNameCount = Convert.ToInt32(nameCountResults.Rows[0]["Reference_ID"]);
 
-            int startIndex = 0;
-            int stepValue = 10000;
+            var startIndex = 0;
+            var stepValue = 10000;
 
             if (totalNameCount <= stepValue)
             {
@@ -504,7 +504,7 @@ namespace AppUI_OrfDBHandler
 
             foreach (var proteinId in proteins.Keys)
             {
-                string sequence = proteins[proteinId];
+                var sequence = proteins[proteinId];
                 si.CalculateSequenceInfo(sequence);
                 mImporter.UpdateProteinSequenceInfo(
                     proteinId, sequence, sequence.Length,

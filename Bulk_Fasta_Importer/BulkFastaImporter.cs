@@ -195,13 +195,13 @@ namespace Bulk_Fasta_Importer
                 }
 
                 var requiredColsShown = default(bool);
-                int currentLine = 0;
+                var currentLine = 0;
 
                 using (var reader = new StreamReader(new FileStream(fiInfoFile.FullName, FileMode.Open, FileAccess.Read, FileShare.Read)))
                 {
                     while (!reader.EndOfStream)
                     {
-                        string dataLine = reader.ReadLine();
+                        var dataLine = reader.ReadLine();
                         currentLine += 1;
 
                         if (string.IsNullOrWhiteSpace(dataLine))
@@ -231,7 +231,7 @@ namespace Bulk_Fasta_Importer
                             continue;
                         }
 
-                        string fastaFilePath = dataCols[0];
+                        var fastaFilePath = dataCols[0];
                         if (!fastaFilePath.Contains(@"\"))
                         {
                             fastaFilePath = Path.Combine(fiInfoFile.DirectoryName, dataCols[0]);
@@ -340,7 +340,7 @@ namespace Bulk_Fasta_Importer
                 var cmd = mDbToolsProteinSeqs.CreateCommand(sqlQuery);
 
                 DataTable queryResults = null;
-                bool success = mDbToolsProteinSeqs.GetQueryResultsDataTable(cmd, out queryResults);
+                var success = mDbToolsProteinSeqs.GetQueryResultsDataTable(cmd, out queryResults);
 
                 if (!success)
                 {
@@ -350,8 +350,8 @@ namespace Bulk_Fasta_Importer
 
                 foreach (DataRow resultRow in queryResults.Rows)
                 {
-                    int annotationTypeId = mDbToolsDms.GetInteger(resultRow[0]);
-                    string annotationTypeName = mDbToolsDms.GetString(resultRow[1]);
+                    var annotationTypeId = mDbToolsDms.GetInteger(resultRow[0]);
+                    var annotationTypeName = mDbToolsDms.GetString(resultRow[1]);
 
                     mAnnotationTypeInfo.Add(annotationTypeName, annotationTypeId);
                 }
@@ -376,7 +376,7 @@ namespace Bulk_Fasta_Importer
                 var cmd = mDbToolsDms.CreateCommand(sqlQuery);
 
                 DataTable queryResults = null;
-                bool success = mDbToolsDms.GetQueryResultsDataTable(cmd, out queryResults);
+                var success = mDbToolsDms.GetQueryResultsDataTable(cmd, out queryResults);
 
                 if (!success)
                 {
@@ -386,8 +386,8 @@ namespace Bulk_Fasta_Importer
 
                 foreach (DataRow resultRow in queryResults.Rows)
                 {
-                    int organismId = mDbToolsDms.GetInteger(resultRow[0]);
-                    string organismName = mDbToolsDms.GetString(resultRow[1]);
+                    var organismId = mDbToolsDms.GetInteger(resultRow[0]);
+                    var organismName = mDbToolsDms.GetString(resultRow[1]);
 
                     mOrganismInfo.Add(organismName, organismId);
                 }
@@ -412,7 +412,7 @@ namespace Bulk_Fasta_Importer
                 var cmd = mDbToolsProteinSeqs.CreateCommand(sqlQuery);
 
                 DataTable queryResults = null;
-                bool success = mDbToolsProteinSeqs.GetQueryResultsDataTable(cmd, out queryResults);
+                var success = mDbToolsProteinSeqs.GetQueryResultsDataTable(cmd, out queryResults);
 
                 if (!success)
                 {
@@ -422,8 +422,8 @@ namespace Bulk_Fasta_Importer
 
                 foreach (DataRow resultRow in queryResults.Rows)
                 {
-                    int proteinCollectionId = mDbToolsDms.GetInteger(resultRow[0]);
-                    string proteinCollectionName = mDbToolsDms.GetString(resultRow[1]);
+                    var proteinCollectionId = mDbToolsDms.GetInteger(resultRow[0]);
+                    var proteinCollectionName = mDbToolsDms.GetString(resultRow[1]);
 
                     if (!mProteinCollectionInfo.ContainsKey(proteinCollectionName))
                     {
@@ -559,7 +559,7 @@ namespace Bulk_Fasta_Importer
 
                 if (sourceFileList.Count == 0)
                     return false;
-                bool success = UploadFastaFileList(sourceFileList);
+                var success = UploadFastaFileList(sourceFileList);
                 return success;
             }
             catch (Exception ex)
@@ -590,7 +590,7 @@ namespace Bulk_Fasta_Importer
 
             sourceFileList.Add(udtFastaFileInfo);
 
-            bool success = UploadFastaFileList(sourceFileList);
+            var success = UploadFastaFileList(sourceFileList);
             return success;
         }
 

@@ -71,7 +71,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         // Controls the import state of the named annotation group
         public void SetAnnotationGroupStatus(string groupNameToUpdate, bool newStateForGroup)
         {
-            int groupId = mGroupNameLookup[groupNameToUpdate];
+            var groupId = mGroupNameLookup[groupNameToUpdate];
             SetAnnotationGroupStatus(groupId, newStateForGroup);
         }
 

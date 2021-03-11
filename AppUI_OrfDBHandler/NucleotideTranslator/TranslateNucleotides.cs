@@ -21,7 +21,7 @@ namespace AppUI_OrfDBHandler.NucleotideTranslator
         {
             var baseArray = "ATGC".ToCharArray();
 
-            string selectSql =
+            var selectSql =
                 "SELECT * FROM " + mTransTableMembersName +
                 " WHERE DNA_Translation_Table_ID = " + translationTableId;
 

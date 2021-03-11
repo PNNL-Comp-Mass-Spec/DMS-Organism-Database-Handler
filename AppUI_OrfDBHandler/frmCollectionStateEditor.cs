@@ -97,7 +97,7 @@ namespace AppUI_OrfDBHandler
 
         private void cboStateChanger_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ComboBox cbo = (ComboBox)sender;
+            var cbo = (ComboBox)sender;
             mSelectedNewStateId = Convert.ToInt32(cbo.SelectedValue);
         }
 
@@ -164,8 +164,8 @@ namespace AppUI_OrfDBHandler
 
             public int Compare(object x, object y)
             {
-                ListViewItem item1 = x as ListViewItem;
-                ListViewItem item2 = y as ListViewItem;
+                var item1 = x as ListViewItem;
+                var item2 = y as ListViewItem;
 
                 if (item1 == null && item2 == null)
                 {

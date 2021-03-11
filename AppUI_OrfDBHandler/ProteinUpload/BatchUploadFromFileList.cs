@@ -143,7 +143,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             // int tmpAnnTypeID;
             // int tmpAuthTypeID;
 
-            string loadedCollectionsSQL = "SELECT FileName, Full_Path, OrganismName, OrganismID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered";
+            var loadedCollectionsSQL = "SELECT FileName, Full_Path, OrganismName, OrganismID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered";
 
             using (var fileTable = mDatabaseAccessor.GetTable(loadedCollectionsSQL))
             {
@@ -158,14 +158,14 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
                 foreach (DataRow dr in fileTable.Rows)
                 {
-                    string fileName = dr["FileName"].ToString();
-                    string organismName = dr["OrganismName"].ToString();
-                    int organismId = Convert.ToInt32(dr["OrganismID"]);
-                    string fullPath = dr["Full_Path"].ToString();
-                    int annotationTypeId = Convert.ToInt32(dr["Annotation_Type_ID"]);
-                    int authorityTypeId = Convert.ToInt32(dr["Authority_ID"]);
+                    var fileName = dr["FileName"].ToString();
+                    var organismName = dr["OrganismName"].ToString();
+                    var organismId = Convert.ToInt32(dr["OrganismID"]);
+                    var fullPath = dr["Full_Path"].ToString();
+                    var annotationTypeId = Convert.ToInt32(dr["Annotation_Type_ID"]);
+                    var authorityTypeId = Convert.ToInt32(dr["Authority_ID"]);
 
-                    string baseName = Path.GetFileNameWithoutExtension(fileName);
+                    var baseName = Path.GetFileNameWithoutExtension(fileName);
 
                     if (!fileList.ContainsKey(fileName) & !collectionList.Contains(baseName))
                     {

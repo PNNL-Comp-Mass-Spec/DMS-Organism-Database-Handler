@@ -126,9 +126,9 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             using (var f = fi.OpenRead())
             {
-                uint crc = PRISM.Crc32.Crc(f);
+                var crc = PRISM.Crc32.Crc(f);
 
-                string crcString = string.Format("{0:X8}", crc);
+                var crcString = string.Format("{0:X8}", crc);
 
                 return crcString;
             }

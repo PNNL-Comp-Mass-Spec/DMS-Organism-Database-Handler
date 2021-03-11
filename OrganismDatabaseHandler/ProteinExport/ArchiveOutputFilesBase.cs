@@ -66,7 +66,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public int ArchiveCollection(string proteinCollectionName, CollectionTypes archivedFileType, GetFASTAFromDMS.SequenceTypes outputSequenceType, GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType, string sourceFilePath, string creationOptionsString, string authenticationHash, string proteinCollectionList)
         {
-            int proteinCollectionId = GetProteinCollectionId(proteinCollectionName);
+            var proteinCollectionId = GetProteinCollectionId(proteinCollectionName);
 
             return ArchiveCollection(proteinCollectionId, archivedFileType, outputSequenceType, databaseFormatType, sourceFilePath, creationOptionsString, authenticationHash, proteinCollectionList);
         }
@@ -78,7 +78,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var idLineRegex = new Regex("^>.+", RegexOptions.Compiled);
 
             var fi = new FileInfo(sourceFilePath);
-            int counter = 0;
+            var counter = 0;
 
             if (fi.Exists)
             {
@@ -86,7 +86,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 {
                     while (!fileReader.EndOfStream)
                     {
-                        string dataLine = fileReader.ReadLine();
+                        var dataLine = fileReader.ReadLine();
                         if (idLineRegex.IsMatch(dataLine))
                         {
                             counter += 1;
@@ -125,7 +125,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public void AddArchiveCollectionXRef(int proteinCollectionId, int archivedFileId)
         {
-            int intReturn = RunSP_AddArchivedFileEntryXRef(proteinCollectionId, archivedFileId);
+            var intReturn = RunSP_AddArchivedFileEntryXRef(proteinCollectionId, archivedFileId);
 
             if (intReturn != 0)
             {
@@ -166,10 +166,10 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 250, ParameterDirection.Output);
 
-            string errorMessage = string.Empty;
+            var errorMessage = string.Empty;
 
             // Execute the sp
-            int returnValue = dbTools.ExecuteSP(cmdSave, out errorMessage);
+            var returnValue = dbTools.ExecuteSP(cmdSave, out errorMessage);
 
             return returnValue;
         }

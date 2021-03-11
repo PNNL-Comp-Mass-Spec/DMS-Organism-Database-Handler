@@ -106,7 +106,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         private string CleanUpLine(string entryLine)
         {
-            string tmpEntryLine = entryLine.Replace("\\", "");
+            var tmpEntryLine = entryLine.Replace("\\", "");
             return tmpEntryLine;
         }
     }

@@ -33,15 +33,15 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             var nameLookupTable = mDatabaseHelper.GetTable(sqlQuery1);
 
             // ReSharper disable once UnusedVariable
-            string collectionName = nameLookupTable.Rows[0]["Name"].ToString();
+            var collectionName = nameLookupTable.Rows[0]["Name"].ToString();
 
             // Get Naming Authority Lookup
 
-            string sqlQuery2 = "SELECT Authority_ID, Name FROM T_Naming_Authorities";
+            var sqlQuery2 = "SELECT Authority_ID, Name FROM T_Naming_Authorities";
             var authorityLookupTable = mDatabaseHelper.GetTable(sqlQuery2);
 
             var authorityLookupRows = authorityLookupTable.Select("");
-            foreach (DataRow dr in authorityLookupRows)
+            foreach (var dr in authorityLookupRows)
                 info.AddAuthorityNameToLookup(
                     DBTools.GetInteger(dr["Authority_ID"]),
                     DBTools.GetString(dr["Name"]));
@@ -70,13 +70,13 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
             var annotationTableRows = annotationTableLookup.Select("");
 
-            foreach (DataRow dr in annotationTableRows)
+            foreach (var dr in annotationTableRows)
             {
-                int tmpRefId = DBTools.GetInteger(dr["Reference_ID"]);
-                string tmpName = DBTools.GetString(dr["Name"]);
-                string tmpDesc = DBTools.GetString(dr["Description"]);
-                int tmpProtId = DBTools.GetInteger(dr["Protein_ID"]);
-                int tmpNameAuthId = DBTools.GetInteger(dr["Annotation_Type_ID"]);
+                var tmpRefId = DBTools.GetInteger(dr["Reference_ID"]);
+                var tmpName = DBTools.GetString(dr["Name"]);
+                var tmpDesc = DBTools.GetString(dr["Description"]);
+                var tmpProtId = DBTools.GetInteger(dr["Protein_ID"]);
+                var tmpNameAuthId = DBTools.GetInteger(dr["Annotation_Type_ID"]);
 
                 info.AddPrimaryAnnotation(
                     tmpProtId, tmpName, tmpDesc, tmpRefId, tmpNameAuthId);

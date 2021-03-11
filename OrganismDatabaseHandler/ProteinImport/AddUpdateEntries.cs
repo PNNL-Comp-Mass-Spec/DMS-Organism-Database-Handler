@@ -101,7 +101,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             List<string> selectedProteinList)
         {
             OnLoadStart("Comparing to existing sequences and adding new proteins");
-            int counterMax = selectedProteinList.Count;
+            var counterMax = selectedProteinList.Count;
             var counter = default(int);
 
             int eventTriggerThresh;
@@ -140,7 +140,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         {
             OnLoadStart("Storing Protein Names and Descriptions specific to this protein collection");
             var counter = default(int);
-            int counterMax = selectedProteinList.Count;
+            var counterMax = selectedProteinList.Count;
 
             int eventTriggerThresh;
             if (counterMax <= 100)
@@ -176,7 +176,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             int numProteinsExpected,
             int numResiduesExpected)
         {
-            int counterMax = selectedProteinList.Count;
+            var counterMax = selectedProteinList.Count;
 
             int eventTriggerThresh;
             if (counterMax <= 100)
@@ -332,7 +332,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var foundRows = hitsTable.Select("[SHA1_Hash] = '" + entry.SHA1Hash + "'");
             if (foundRows.Length > 0)
             {
-                foreach (DataRow testRow in foundRows)
+                foreach (var testRow in foundRows)
                 {
                     var tmpSeq = testRow["Sequence"].ToString();
                     if (tmpSeq.Equals(entry.Sequence))
@@ -447,7 +447,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var sha1Hash = mHasher.ComputeHash(byteSourceText);
 
             // And convert it to String format for return
-            string sha1String = RijndaelEncryptionHandler.ToHexString(sha1Hash);
+            var sha1String = RijndaelEncryptionHandler.ToHexString(sha1Hash);
 
             return sha1String;
         }
@@ -473,9 +473,9 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
-            string stateName = dbTools.GetString(stateNameParam.Value);
+            var stateName = dbTools.GetString(stateNameParam.Value);
 
             return stateName;
         }
@@ -490,7 +490,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             bool isEncrypted,
             SpModes mode)
         {
-            int encryptionFlag = 0;
+            var encryptionFlag = 0;
             if (isEncrypted)
             {
                 encryptionFlag = 1;
@@ -521,7 +521,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }
@@ -556,7 +556,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }
@@ -596,15 +596,15 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
             if (ret == 0)
             {
                 // A zero was returned for the protein collection ID; this indicates and error
                 // Raise an exception
 
-                string msg = "AddUpdateProteinCollection returned 0 for the Protein Collection ID";
+                var msg = "AddUpdateProteinCollection returned 0 for the Protein Collection ID";
 
-                string spMsg = dbTools.GetString(messageParam.Value);
+                var spMsg = dbTools.GetString(messageParam.Value);
 
                 if (!string.IsNullOrEmpty(spMsg))
                     msg += "; " + spMsg;
@@ -652,7 +652,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }
@@ -660,7 +660,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         protected int RunSP_AddUpdateEncryptionMetadata(
             string passphrase, int proteinCollectionId)
         {
-            string phraseHash = GenerateHash(passphrase);
+            var phraseHash = GenerateHash(passphrase);
 
             var dbTools = mDatabaseAccessor.DbTools;
 
@@ -679,7 +679,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }
@@ -706,7 +706,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }
@@ -735,7 +735,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }
@@ -760,7 +760,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }
@@ -792,7 +792,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }
@@ -813,7 +813,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }
@@ -847,7 +847,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@authority_ID", SqlType.Int).Value = authorityId;
             dbTools.AddParameter(cmdSave, "@protein_ID", SqlType.Int).Value = proteinId;
 
-            string textToHash = proteinName + "_" + description + "_" + proteinId.ToString();
+            var textToHash = proteinName + "_" + description + "_" + proteinId.ToString();
             dbTools.AddParameter(cmdSave, "@nameDescHash", SqlType.VarChar, 40).Value = GenerateHash(textToHash.ToLower());
 
             var messageParam = dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
@@ -857,15 +857,15 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
             if (ret == 0)
             {
                 // A zero was returned for the protein reference ID; this indicates an error
                 // Raise an exception
 
-                string msg = "AddProteinReference returned 0";
+                var msg = "AddProteinReference returned 0";
 
-                string spMsg = dbTools.GetString(messageParam.Value);
+                var spMsg = dbTools.GetString(messageParam.Value);
 
                 if (!string.IsNullOrEmpty(spMsg))
                     msg += "; " + spMsg;
@@ -892,7 +892,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }
@@ -921,7 +921,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }
@@ -946,7 +946,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }
@@ -958,7 +958,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             int proteinId)
         {
             var tmpHash = proteinName + "_" + description + "_" + proteinId.ToString();
-            string tmpGenSha = GenerateHash(tmpHash.ToLower());
+            var tmpGenSha = GenerateHash(tmpHash.ToLower());
 
             var dbTools = mDatabaseAccessor.DbTools;
 
@@ -976,7 +976,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }
@@ -1003,7 +1003,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }
@@ -1012,7 +1012,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             int proteinId,
             string proteinSequence)
         {
-            string tmpGenSha = GenerateHash(proteinSequence);
+            var tmpGenSha = GenerateHash(proteinSequence);
 
             var dbTools = mDatabaseAccessor.DbTools;
 
@@ -1030,7 +1030,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }
@@ -1051,7 +1051,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }

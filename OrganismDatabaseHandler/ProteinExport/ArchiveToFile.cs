@@ -29,7 +29,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
             else
             {
-                string connectionStringCheck = databaseAccessor.ConnectionString.ToLower().Replace(" ", "");
+                var connectionStringCheck = databaseAccessor.ConnectionString.ToLower().Replace(" ", "");
 
                 if (connectionStringCheck.Contains("source=cbdms"))
                 {
@@ -139,7 +139,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var sha1Hash = mSHA1Provider.ComputeHash(byteSourceText);
 
             // And convert it to String format for return
-            string sha1String = BitConverter.ToString(sha1Hash).Replace("-", "").ToLower();
+            var sha1String = BitConverter.ToString(sha1Hash).Replace("-", "").ToLower();
 
             return sha1String;
         }
@@ -181,7 +181,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }
@@ -224,7 +224,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             mArchived_File_Name = archivedFileFullPath;
 
             // Get return value
-            int ret = dbTools.GetInteger(returnParam.Value);
+            var ret = dbTools.GetInteger(returnParam.Value);
 
             return ret;
         }
