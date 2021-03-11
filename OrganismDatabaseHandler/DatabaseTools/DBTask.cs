@@ -62,8 +62,7 @@ namespace OrganismDatabaseHandler.DatabaseTools
             var retryCount = 6;
             var retryDelaySeconds = 5;
             var timeoutSeconds = 600;
-            DataTable queryResults = null;
-            var success = mDbTools.GetQueryResultsDataTable(selectSql, out queryResults, retryCount, retryDelaySeconds, timeoutSeconds);
+            var success = mDbTools.GetQueryResultsDataTable(selectSql, out var queryResults, retryCount, retryDelaySeconds, timeoutSeconds);
 
             if (!success)
             {

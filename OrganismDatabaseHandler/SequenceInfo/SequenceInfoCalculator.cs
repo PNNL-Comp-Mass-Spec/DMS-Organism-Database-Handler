@@ -68,9 +68,7 @@ namespace OrganismDatabaseHandler.SequenceInfo
             {
                 foreach (var aa in aaString)
                 {
-                    AminoAcidInfo aaInfo = null;
-
-                    if (!mAminoAcids.TryGetValue(aa.ToString(), out aaInfo))
+                    if (!mAminoAcids.TryGetValue(aa.ToString(), out var aaInfo))
                     {
                         result.AddSequenceInfo(new SequenceInfo(aa.ToString(), "Not Found, adding input"));
                     }

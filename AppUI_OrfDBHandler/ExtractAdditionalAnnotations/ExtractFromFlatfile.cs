@@ -22,7 +22,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         private readonly Dictionary<string, string> mAuthorities;
         private AnnotationStorage mAnnotationStorage;
-        private string mfirstLine;
+        private string mFirstLine;
         private readonly string mPsConnectionString;
         private AddUpdateEntries mUploader;
         private Dictionary<string, int> mProteinIdLookup;
@@ -146,7 +146,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             string delimiter,
             bool useHeaderLineInfo)
         {
-            ExtractGroupsFromLine(mfirstLine, delimiter, useHeaderLineInfo);
+            ExtractGroupsFromLine(mFirstLine, delimiter, useHeaderLineInfo);
             return default;
         }
 
@@ -168,7 +168,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
                     var entryLine = reader.ReadLine();
                     if (!firstLineStored)
                     {
-                        mfirstLine = entryLine;
+                        mFirstLine = entryLine;
                         firstLineStored = true;
                     }
 
@@ -178,7 +178,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             }
 
             // Get Column names if possible
-            ExtractGroupsFromLine(mfirstLine, delimiter, useHeaderLineInfo);
+            ExtractGroupsFromLine(mFirstLine, delimiter, useHeaderLineInfo);
 
             return mFileContents.Count;
         }
@@ -240,7 +240,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             return li;
         }
 
-        public void ChangeAuthorityIDforGroup(int groupId, int authorityId)
+        public void ChangeAuthorityIdForGroup(int groupId, int authorityId)
         {
             mAnnotationStorage.SetAnnotationAuthorityId(groupId, authorityId);
         }

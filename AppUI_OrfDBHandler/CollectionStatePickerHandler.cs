@@ -9,7 +9,7 @@ namespace AppUI_OrfDBHandler
 {
     public class CollectionStatePickerHandler
     {
-        private bool mforceReload = false;
+        private bool mForceReload = false;
         private DataTable mListViewData;
         private readonly DBTask mGetTables;
         private readonly AddUpdateEntries mSpAccess;
@@ -18,12 +18,12 @@ namespace AppUI_OrfDBHandler
         {
             mGetTables = new DBTask(psConnectionString);
             mSpAccess = new AddUpdateEntries(psConnectionString);
-            mforceReload = true;
+            mForceReload = true;
         }
 
         public bool ForceIdTableReload
         {
-            set => mforceReload = value;
+            set => mForceReload = value;
         }
 
         public void ChangeSelectedCollectionStates(int newStateId, ArrayList selectedCollectionIdList)
@@ -77,10 +77,10 @@ namespace AppUI_OrfDBHandler
         public void FillFilteredListView(ListView listViewToFill, string filterString)
         {
             listViewToFill.Items.Clear();
-            if (mforceReload)
+            if (mForceReload)
             {
                 mListViewData = GetCollectionTable();
-                mforceReload = false;
+                mForceReload = false;
             }
 
             SetupPickerListView(listViewToFill, mListViewData, filterString);

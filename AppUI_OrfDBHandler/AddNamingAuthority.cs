@@ -10,19 +10,19 @@ namespace AppUI_OrfDBHandler
         private readonly string mConnectionString;
         private AddUpdateEntries mSpRunner;
 
-        private string mshortName;
-        private string mfullName;
-        private string mwebAddress;
+        private string mShortName;
+        private string mFullName;
+        private string mWebAddress;
         private bool mEntryExists = false;
         private ImportHandler mImporter;
         private readonly DataTable mAuthorityTable;
         private Point mFormLocation;
 
-        public string ShortName => mshortName;
+        public string ShortName => mShortName;
 
-        public string FullName => mfullName;
+        public string FullName => mFullName;
 
-        public string WebAddress => mwebAddress;
+        public string WebAddress => mWebAddress;
 
         public bool EntryExists => mEntryExists;
 
@@ -52,14 +52,14 @@ namespace AppUI_OrfDBHandler
 
             if (r == DialogResult.OK)
             {
-                mshortName = frmAuth.ShortName;
-                mfullName = frmAuth.FullName;
-                mwebAddress = frmAuth.WebAddress;
-                authId = mSpRunner.AddNamingAuthority(mshortName, mfullName, mwebAddress);
+                mShortName = frmAuth.ShortName;
+                mFullName = frmAuth.FullName;
+                mWebAddress = frmAuth.WebAddress;
+                authId = mSpRunner.AddNamingAuthority(mShortName, mFullName, mWebAddress);
                 if (authId < 0)
                 {
                     MessageBox.Show(
-                        "An entry for '" + mshortName + "' already exists in the Authorities table",
+                        "An entry for '" + mShortName + "' already exists in the Authorities table",
                         "Entry already exists!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2);
                     mEntryExists = true;
                     authId = -authId;

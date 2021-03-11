@@ -230,13 +230,10 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         private string ExportLegacyFastaFile(string legacyFASTAFileName, string destinationFolderPath)
         {
-            var legacyStaticFilePath = "";
-            var crc32Hash = "";
-
             var filenameSha1Hash = GenerateHash(legacyFASTAFileName);
             var lockFileHash = filenameSha1Hash;
 
-            if (!LookupLegacyFastaFileDetails(legacyFASTAFileName, out legacyStaticFilePath, out crc32Hash))
+            if (!LookupLegacyFastaFileDetails(legacyFASTAFileName, out var legacyStaticFilePath, out var crc32Hash))
             {
                 // Could not find LegacyFASTAFileName in V_Legacy_Static_File_Locations
                 // An exception has probably already been thrown

@@ -5,9 +5,9 @@ using System.Windows.Forms;
 
 namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 {
-    public partial class frmExtractFromFlatfile : Form
+    public partial class frmExtractFromFlatFile : Form
     {
-        public frmExtractFromFlatfile(Dictionary<string, string> authorityList, string psConnectionString)
+        public frmExtractFromFlatFile(Dictionary<string, string> authorityList, string psConnectionString)
         {
             base.Load += frmExtractFromFlatfile_Load;
             mAuthorityList = authorityList;
@@ -212,7 +212,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
             if (lvwNewNames.SelectedItems.Count > 0)
             {
-                mExtract.ChangeAuthorityIDforGroup(mCurrentGroupId, Convert.ToInt32(cbo.SelectedValue));
+                mExtract.ChangeAuthorityIdForGroup(mCurrentGroupId, Convert.ToInt32(cbo.SelectedValue));
                 lvwNewNames.SelectedItems[0].SubItems[2].Text = cbo.Text;
                 lvwNewNames.SelectedItems[0].Tag = Convert.ToInt32(cbo.SelectedValue);
             }

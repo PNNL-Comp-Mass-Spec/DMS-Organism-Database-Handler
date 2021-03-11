@@ -11,8 +11,8 @@ namespace AppUI_OrfDBHandler
     {
         private ProteinStorage mProteins;
         private FASTAReader mLoader;
-        private string mcurrentFilePath;
-        private frmFilePreview mfrmPreview;
+        private string mCurrentFilePath;
+        private frmFilePreview mFrmPreview;
 
         public event FormStatusEventHandler FormStatus;
 
@@ -20,9 +20,9 @@ namespace AppUI_OrfDBHandler
 
         public FilePreviewHandler()
         {
-            mfrmPreview = new frmFilePreview();
-            mfrmPreview.RefreshRequest += FillPreview;
-            mfrmPreview.FormClosing += OnFormClose;
+            mFrmPreview = new frmFilePreview();
+            mFrmPreview.RefreshRequest += FillPreview;
+            mFrmPreview.FormClosing += OnFormClose;
         }
 
         private void GetProteins(
@@ -42,34 +42,34 @@ namespace AppUI_OrfDBHandler
                 li.SubItems.Add(protein.Description);
                 return li;
             }).ToArray();
-            mfrmPreview.SetPreviewItems(newPreviewContents);
+            mFrmPreview.SetPreviewItems(newPreviewContents);
         }
 
         private void FillPreview(int lineCount)
         {
-            GetProteins(mcurrentFilePath, lineCount);
+            GetProteins(mCurrentFilePath, lineCount);
         }
 
         public void ShowPreview(string filePath, int horizontalPos, int verticalPos, int height)
         {
-            mcurrentFilePath = filePath;
-            if (mfrmPreview == null)
+            mCurrentFilePath = filePath;
+            if (mFrmPreview == null)
             {
-                mfrmPreview = new frmFilePreview();
-                mfrmPreview.RefreshRequest += FillPreview;
-                mfrmPreview.FormClosing += OnFormClose;
+                mFrmPreview = new frmFilePreview();
+                mFrmPreview.RefreshRequest += FillPreview;
+                mFrmPreview.FormClosing += OnFormClose;
             }
 
-            mfrmPreview.DesktopLocation = new Point(horizontalPos, verticalPos);
-            mfrmPreview.Height = height;
-            mfrmPreview.WindowName = "Preview of: " + Path.GetFileName(filePath);
-            if (mfrmPreview.Visible == false)
+            mFrmPreview.DesktopLocation = new Point(horizontalPos, verticalPos);
+            mFrmPreview.Height = height;
+            mFrmPreview.WindowName = "Preview of: " + Path.GetFileName(filePath);
+            if (mFrmPreview.Visible == false)
             {
-                mfrmPreview.Show();
+                mFrmPreview.Show();
             }
             else
             {
-                FillPreview(mfrmPreview.GetLineCount());
+                FillPreview(mFrmPreview.GetLineCount());
             }
 
             FormStatus?.Invoke(true);
@@ -77,32 +77,32 @@ namespace AppUI_OrfDBHandler
 
         public void CloseForm()
         {
-            mfrmPreview.Close();
+            mFrmPreview.Close();
         }
 
         ~FilePreviewHandler()
         {
-            if (mfrmPreview != null)
+            if (mFrmPreview != null)
             {
-                mfrmPreview.RefreshRequest -= FillPreview;
-                mfrmPreview.FormClosing -= OnFormClose;
+                mFrmPreview.RefreshRequest -= FillPreview;
+                mFrmPreview.FormClosing -= OnFormClose;
             }
 
             mProteins = null;
             mLoader = null;
-            mfrmPreview = null;
+            mFrmPreview = null;
         }
 
         public void OnFormClose()
         {
             FormStatus?.Invoke(false);
 
-            if (mfrmPreview != null)
+            if (mFrmPreview != null)
             {
-                mfrmPreview.RefreshRequest -= FillPreview;
-                mfrmPreview.FormClosing -= OnFormClose;
+                mFrmPreview.RefreshRequest -= FillPreview;
+                mFrmPreview.FormClosing -= OnFormClose;
             }
-            mfrmPreview = null;
+            mFrmPreview = null;
         }
     }
 }

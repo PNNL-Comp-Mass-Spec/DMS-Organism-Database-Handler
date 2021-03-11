@@ -58,8 +58,8 @@ namespace OrganismDatabaseHandler.ProteinExport
         private readonly ICryptoTransform mDecryptor;
 
         private readonly byte[] mKeyBytes;
-        private readonly byte[] msaltValueBytes;
-        private readonly byte[] minitVectorBytes;
+        private readonly byte[] mSaltValueBytes;
+        private readonly byte[] mInitVectorBytes;
 
         public RijndaelEncryptionHandler(string passPhrase)
         {
@@ -68,15 +68,15 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Let us assume that strings only contain ASCII codes.
             // If strings include Unicode characters, use Unicode, UTF7, or UTF8
             // encoding.
-            minitVectorBytes = Encoding.ASCII.GetBytes(INIT_VECTOR);
+            mInitVectorBytes = Encoding.ASCII.GetBytes(INIT_VECTOR);
 
-            msaltValueBytes = Encoding.ASCII.GetBytes(SALT_VALUE);
+            mSaltValueBytes = Encoding.ASCII.GetBytes(SALT_VALUE);
 
             // First, we must create a password, from which the key will be derived.
             // This password will be generated from the specified passphrase and
             // salt value. The password will be created using the specified hash
             // algorithm. Password creation can be done in several iterations.
-            mPassword = new Rfc2898DeriveBytes(passPhrase, msaltValueBytes, NUM_PW_ITERATIONS);
+            mPassword = new Rfc2898DeriveBytes(passPhrase, mSaltValueBytes, NUM_PW_ITERATIONS);
 
             // Use the password to generate pseudo-random bytes for the encryption
             // key. Specify the size of the key in bytes (instead of bits).
@@ -93,9 +93,9 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Generate encryptor from the existing key bytes and initialization
             // vector. Key size will be defined based on the number of the key
             // bytes.
-            mEncryptor = mSymmetricKey.CreateEncryptor(mKeyBytes, minitVectorBytes);
+            mEncryptor = mSymmetricKey.CreateEncryptor(mKeyBytes, mInitVectorBytes);
 
-            mDecryptor = mSymmetricKey.CreateDecryptor(mKeyBytes, minitVectorBytes);
+            mDecryptor = mSymmetricKey.CreateDecryptor(mKeyBytes, mInitVectorBytes);
         }
 
         public string Encrypt(string plainText)

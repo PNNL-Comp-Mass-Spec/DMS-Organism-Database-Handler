@@ -282,11 +282,11 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public DataTable LoadProteinCollectionNames()
         {
-            var PCSQL =
+            var pcSql =
                 "SELECT Protein_Collection_ID, FileName, Authority_ID " +
                 "FROM V_Protein_Collections_By_Organism " +
                 "ORDER BY FileName";
-            var tmpPcTable = mSQLAccess.GetTable(PCSQL);
+            var tmpPcTable = mSQLAccess.GetTable(pcSql);
 
             var dr = tmpPcTable.NewRow();
 

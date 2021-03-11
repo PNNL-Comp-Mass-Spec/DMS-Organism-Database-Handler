@@ -686,8 +686,7 @@ namespace AppUI_OrfDBHandler
                 var upInfo = item.Value;
                 var fi = upInfo.FileInformation;
 
-                ProteinCollectionMetadata udtMetadata = default;
-                if (tmpNameList.TryGetValue(fi.FullName, out udtMetadata))
+                if (tmpNameList.TryGetValue(fi.FullName, out var udtMetadata))
                 {
                     upInfo.Description = udtMetadata.Description;
                     upInfo.Source = udtMetadata.Source;

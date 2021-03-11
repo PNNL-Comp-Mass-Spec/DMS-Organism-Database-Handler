@@ -28,7 +28,7 @@ namespace AppUI_OrfDBHandler
         public delegate void FormClosingEventHandler();
 
         private readonly Regex validationRegex;
-        private int mcurrentLineCount = 100;
+        private int mCurrentLineCount = 100;
 
         public string WindowName
         {
@@ -54,7 +54,7 @@ namespace AppUI_OrfDBHandler
 
         private void cmdRefresh_Click(object sender, EventArgs e)
         {
-            RefreshRequest?.Invoke(mcurrentLineCount);
+            RefreshRequest?.Invoke(mCurrentLineCount);
             if (cmdRefresh.Enabled == true)
             {
                 cmdRefresh.Enabled = false;
@@ -70,7 +70,7 @@ namespace AppUI_OrfDBHandler
                 var m = validationRegex.Match(Convert.ToInt32(countText).ToString());
                 var value = Convert.ToInt32(m.Groups[0].Value);
                 txtLineCount.Text = value.ToString();
-                mcurrentLineCount = value;
+                mCurrentLineCount = value;
                 if (cmdRefresh.Enabled == false)
                 {
                     cmdRefresh.Enabled = true;
@@ -78,15 +78,15 @@ namespace AppUI_OrfDBHandler
             }
             else
             {
-                txtLineCount.Text = mcurrentLineCount.ToString();
+                txtLineCount.Text = mCurrentLineCount.ToString();
                 e.Cancel = true;
             }
         }
 
         private void frmFilePreview_Load(object sender, EventArgs e)
         {
-            txtLineCount.Text = mcurrentLineCount.ToString();
-            RefreshRequest?.Invoke(mcurrentLineCount);
+            txtLineCount.Text = mCurrentLineCount.ToString();
+            RefreshRequest?.Invoke(mCurrentLineCount);
         }
 
         private void txtLineCount_TextChanged(object sender, EventArgs e)

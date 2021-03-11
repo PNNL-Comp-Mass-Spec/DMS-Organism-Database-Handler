@@ -110,9 +110,7 @@ namespace AppUI_OrfDBHandler
             objListView.Items.Clear();
             if (itemListByFile != null && itemListByFile.Count > 0)
             {
-                List<CustomFastaValidator.ErrorInfoExtended> itemList = null;
-
-                if (itemListByFile.TryGetValue(selectedItemText, out itemList))
+                if (itemListByFile.TryGetValue(selectedItemText, out var itemList))
                 {
                     itemCollection.AddRange(itemList);
                 }
@@ -124,9 +122,7 @@ namespace AppUI_OrfDBHandler
 
             if (summarizedItemList != null && summarizedItemList.Count > 0)
             {
-                Dictionary<string, int> itemSummary = null;
-
-                if (summarizedItemList.TryGetValue(selectedItemText, out itemSummary))
+                if (summarizedItemList.TryGetValue(selectedItemText, out var itemSummary))
                 {
                     FillErrorOrWarningListView(objListView, itemSummary);
                 }

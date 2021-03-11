@@ -13,7 +13,7 @@ namespace OrganismDatabaseHandler.ProteinExport
     public class GetFASTAFromDMSForward
     {
         private readonly DBTask mDatabaseAccessor;
-        private readonly ExportProteins mfileDumper;
+        private readonly ExportProteins mFileDumper;
 
         /// <summary>
         /// Keys are protein collection IDs
@@ -50,20 +50,20 @@ namespace OrganismDatabaseHandler.ProteinExport
             switch (databaseFormatType)
             {
                 case GetFASTAFromDMS.DatabaseFormatTypes.Fasta:
-                    mfileDumper = new ExportProteinsFASTA(this);
+                    mFileDumper = new ExportProteinsFASTA(this);
                     mExtension = ".fasta";
                     break;
 
                 case GetFASTAFromDMS.DatabaseFormatTypes.FastaPro:
-                    mfileDumper = new ExportProteinsXTFASTA(this);
+                    mFileDumper = new ExportProteinsXTFASTA(this);
                     mExtension = ".fasta.pro";
                     break;
             }
 
-            if (mfileDumper != null)
+            if (mFileDumper != null)
             {
-                mfileDumper.ExportStart += OnExportStart;
-                mfileDumper.ExportProgress += OnExportProgressUpdate;
+                mFileDumper.ExportStart += OnExportStart;
+                mFileDumper.ExportProgress += OnExportProgressUpdate;
             }
         }
 
@@ -269,8 +269,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                     collectionTable = mDatabaseAccessor.GetTable(collectionSql);
 
-                    var passPhraseForCollection = "";
-                    if (proteinCollectionPassphrases.TryGetValue(trueName, out passPhraseForCollection))
+                    if (proteinCollectionPassphrases.TryGetValue(trueName, out var passPhraseForCollection))
                     {
                         mRijndaelDecryption = new RijndaelEncryptionHandler(passPhraseForCollection);
                         foreach (DataRow decryptionRow in collectionTable.Rows)
@@ -297,7 +296,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     mCurrentFileProteinCount = collectionTable.Rows.Count;
 
                     // collection.Tables.Add(collectionTable)
-                    mfileDumper.Export(collectionTable, ref tmpOutputPath);
+                    mFileDumper.Export(collectionTable, ref tmpOutputPath);
 
                     currentCollectionPos = sectionEnd + 1;
                     currentCollectionCount += collectionTable.Rows.Count;
@@ -384,7 +383,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Determine the CRC32 hash of the output file
             // This process will also rename the file, e.g. from "C:\Temp\SAR116_RBH_AA_012809_forward.fasta" to "C:\Temp\38FFACAC.fasta"
             var tempFullPath = FullOutputPath;
-            var crc32Hash = mfileDumper.Export(new DataTable(), ref tempFullPath);
+            var crc32Hash = mFileDumper.Export(new DataTable(), ref tempFullPath);
             FullOutputPath = FullOutputPath;
 
             OnExportComplete(FullOutputPath);
@@ -605,7 +604,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <returns>File hash</returns>
         public string GetFileHash(string fullFilePath)
         {
-            return mfileDumper.GenerateFileAuthenticationHash(fullFilePath);
+            return mFileDumper.GenerateFileAuthenticationHash(fullFilePath);
         }
 
         public string GetStoredHash(string proteinCollectionName)

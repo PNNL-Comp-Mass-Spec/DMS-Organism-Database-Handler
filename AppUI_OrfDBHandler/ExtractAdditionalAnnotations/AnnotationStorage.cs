@@ -137,9 +137,9 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             return group.GetXRefs(primaryReferenceName);
         }
 
-        public AnnotationGroup GetGroup(int groupid)
+        public AnnotationGroup GetGroup(int groupId)
         {
-            var @group = mAnnotationGroups[groupid];
+            var @group = mAnnotationGroups[groupId];
             return group;
         }
     }

@@ -39,9 +39,7 @@ namespace OrganismDatabaseHandler.ProteinStorage
 
         public ProteinStorageEntry GetProtein(string reference)
         {
-            ProteinStorageEntry proteinEntry = null;
-
-            if (Proteins.TryGetValue(reference, out proteinEntry))
+            if (Proteins.TryGetValue(reference, out var proteinEntry))
             {
                 return proteinEntry;
             }

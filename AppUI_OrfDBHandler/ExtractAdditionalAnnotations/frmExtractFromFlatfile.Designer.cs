@@ -1,6 +1,6 @@
 ﻿namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 {
-    partial class frmExtractFromFlatfile
+    partial class frmExtractFromFlatFile
     {
         /// <summary>
         /// Required designer variable.
@@ -195,7 +195,7 @@
             this.Controls.Add(this.lblCurrentCollectionInfo);
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimumSize = new System.Drawing.Size(600, 586);
-            this.Name = "frmExtractFromFlatfile";
+            this.Name = "frmExtractFromFlatFile";
             this.Text = "Extract Annotations From Flatfile";
             this.ResumeLayout(false);
             this.PerformLayout();

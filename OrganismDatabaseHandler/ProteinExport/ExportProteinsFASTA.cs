@@ -9,7 +9,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class ExportProteinsFASTA : ExportProteins
     {
-        private readonly int mseqLineLength = 60;
+        private readonly int mSeqLineLength = 60;
 
         public ExportProteinsFASTA(GetFASTAFromDMSForward exportComponent)
             : base(exportComponent)
@@ -87,9 +87,9 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                     writer.WriteLine((">" + tmpPc.Reference + " " + tmpDesc + tmpAltNames).Trim());
 
-                    for (var proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += mseqLineLength)
+                    for (var proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += mSeqLineLength)
                     {
-                        var seqLine = tmpSeq.Substring(proteinPosition, mseqLineLength);
+                        var seqLine = tmpSeq.Substring(proteinPosition, mSeqLineLength);
                         writer.WriteLine(seqLine);
                     }
                 }
@@ -222,9 +222,9 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                     writer.WriteLine((">" + tmpName + " " + tmpDesc + tmpAltNames).Trim());
 
-                    for (var proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += mseqLineLength)
+                    for (var proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += mSeqLineLength)
                     {
-                        var seqLinePortion = tmpSeq.Substring(proteinPosition, mseqLineLength);
+                        var seqLinePortion = tmpSeq.Substring(proteinPosition, mSeqLineLength);
                         writer.WriteLine(seqLinePortion);
                     }
 

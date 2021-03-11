@@ -63,22 +63,22 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
             if (XRefDelimiter.Length > 0)
             {
-                var newXReflist = new SortedSet<string>();
+                var newXRefList = new SortedSet<string>();
 
                 foreach (var primeXRef in xrefList)
                 {
-                    var addnXRefs = primeXRef.Split(XRefDelimiter.ToCharArray());
-                    for (var xRefCount = 0; xRefCount < addnXRefs.Length; xRefCount++)
+                    var additionalXRefs = primeXRef.Split(XRefDelimiter.ToCharArray());
+                    for (var xRefCount = 0; xRefCount < additionalXRefs.Length; xRefCount++)
                     {
-                        var newItem = addnXRefs[xRefCount].ToString();
-                        if (!newXReflist.Contains(newItem))
+                        var newItem = additionalXRefs[xRefCount].ToString();
+                        if (!newXRefList.Contains(newItem))
                         {
-                            newXReflist.Add(newItem);
+                            newXRefList.Add(newItem);
                         }
                     }
                 }
 
-                xrefList = newXReflist;
+                xrefList = newXRefList;
             }
 
             return xrefList;

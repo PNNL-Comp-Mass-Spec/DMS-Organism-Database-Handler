@@ -14,7 +14,7 @@ namespace FastaFileMaker_Exe
         private const string DefaultCollectionOptions = "seq_direction=forward,filetype=fasta";
         private static GetFASTAFromDMS mFastaTools;
         private static string mFastaToolsCnStr = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;";
-        private static string mmessage;
+        private static string mMessage;
         private static string mFastaFileName;
         private static System.Timers.Timer mFastaTimer;
         private static bool mFastaGenTimeOut;
@@ -407,8 +407,8 @@ namespace FastaFileMaker_Exe
             {
                 if (string.IsNullOrEmpty(mFastaToolsCnStr))
                 {
-                    mmessage = "Protein database connection string not specified";
-                    Console.WriteLine("clsAnalysisResources.CreateFastaFile(), " + mmessage);
+                    mMessage = "Protein database connection string not specified";
+                    Console.WriteLine("clsAnalysisResources.CreateFastaFile(), " + mMessage);
                     return false;
                 }
 
@@ -459,8 +459,8 @@ namespace FastaFileMaker_Exe
             if (mFastaGenTimeOut)
             {
                 // Fasta generator hung - report error and exit
-                mmessage = "Timeout error while generating OrdDb file (" + FastaGenTimeoutIntervalMinutes.ToString() + " minutes have elapsed)";
-                Console.WriteLine("clsAnalysisResources.CreateFastaFile(), " + mmessage);
+                mMessage = "Timeout error while generating OrdDb file (" + FastaGenTimeoutIntervalMinutes.ToString() + " minutes have elapsed)";
+                Console.WriteLine("clsAnalysisResources.CreateFastaFile(), " + mMessage);
 
                 return false;
             }

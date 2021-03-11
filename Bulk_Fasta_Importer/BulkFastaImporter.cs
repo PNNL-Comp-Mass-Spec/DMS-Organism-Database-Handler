@@ -335,8 +335,7 @@ namespace Bulk_Fasta_Importer
 
                 var cmd = mDbToolsProteinSeqs.CreateCommand(sqlQuery);
 
-                DataTable queryResults = null;
-                var success = mDbToolsProteinSeqs.GetQueryResultsDataTable(cmd, out queryResults);
+                var success = mDbToolsProteinSeqs.GetQueryResultsDataTable(cmd, out var queryResults);
 
                 if (!success)
                 {
@@ -371,8 +370,7 @@ namespace Bulk_Fasta_Importer
 
                 var cmd = mDbToolsDms.CreateCommand(sqlQuery);
 
-                DataTable queryResults = null;
-                var success = mDbToolsDms.GetQueryResultsDataTable(cmd, out queryResults);
+                var success = mDbToolsDms.GetQueryResultsDataTable(cmd, out var queryResults);
 
                 if (!success)
                 {
@@ -407,8 +405,7 @@ namespace Bulk_Fasta_Importer
 
                 var cmd = mDbToolsProteinSeqs.CreateCommand(sqlQuery);
 
-                DataTable queryResults = null;
-                var success = mDbToolsProteinSeqs.GetQueryResultsDataTable(cmd, out queryResults);
+                var success = mDbToolsProteinSeqs.GetQueryResultsDataTable(cmd, out var queryResults);
 
                 if (!success)
                 {

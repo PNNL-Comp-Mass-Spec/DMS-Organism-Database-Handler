@@ -68,7 +68,7 @@ namespace AppUI_OrfDBHandler
         private ImportHandler mImportHandler;
         private PSUploadHandler mUploadHandler;
         private DataListViewHandler mSourceListViewHandler;
-        // Unused: private BatchUploadFromFileList mfileBatcher;
+        // Unused: private BatchUploadFromFileList mFileBatcher;
 
         private bool mLocalFileLoaded;
 
@@ -948,8 +948,8 @@ namespace AppUI_OrfDBHandler
         //private void mnuToolsFBatchUpload_Click(object sender, EventArgs e)
         //{
         //    //Steal this to use with file-directed loading
-        //    mfileBatcher = new BatchUploadFromFileList(mPSConnectionString);
-        //    mfileBatcher.UploadBatch();
+        //    mFileBatcher = new BatchUploadFromFileList(mPSConnectionString);
+        //    mFileBatcher.UploadBatch();
         //}
 
         private void mnuToolsCollectionEdit_Click(object sender, EventArgs e)
@@ -960,7 +960,7 @@ namespace AppUI_OrfDBHandler
 
         private void mnuToolsExtractFromFile_Click(object sender, EventArgs e)
         {
-            var f = new frmExtractFromFlatfile(mImportHandler.Authorities, mPsConnectionString);
+            var f = new frmExtractFromFlatFile(mImportHandler.Authorities, mPsConnectionString);
             f.ShowDialog();
         }
 
@@ -990,7 +990,7 @@ namespace AppUI_OrfDBHandler
         #region "Progress Event Handlers"
         private void ImportStartHandler(string taskTitle)
         {
-            //mfileBatcher.LoadStart();
+            //mFileBatcher.LoadStart();
 
             pnlProgBar.Visible = true;
             pgbMain.Visible = true;
@@ -1002,7 +1002,7 @@ namespace AppUI_OrfDBHandler
 
         private void ImportProgressHandler(double fractionDone)
         {
-            //mfileBatcher.ProgressUpdate()
+            //mFileBatcher.ProgressUpdate()
 
             pgbMain.Value = (int)Math.Round(fractionDone * 100d);
             Application.DoEvents();
@@ -1022,7 +1022,7 @@ namespace AppUI_OrfDBHandler
 
         private void ImportEndHandler()
         {
-            //mfileBatcher.LoadEnd()
+            //mFileBatcher.LoadEnd()
 
             lblCurrentTask.Text = "Complete: " + lblCurrentTask.Text;
             Invalidate();

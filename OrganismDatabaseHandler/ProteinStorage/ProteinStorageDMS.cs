@@ -17,9 +17,7 @@ namespace OrganismDatabaseHandler.ProteinStorage
             var proteinEntryId = proteinEntry.ProteinId;
             var proteinEntryName = proteinEntry.Reference;
 
-            SortedSet<string> nameList = null;
-
-            if (!mUniqueProteinIdList.TryGetValue(proteinEntryId, out nameList))
+            if (!mUniqueProteinIdList.TryGetValue(proteinEntryId, out var nameList))
             {
                 nameList = new SortedSet<string> {proteinEntryName};
                 mUniqueProteinIdList.Add(proteinEntryId, nameList);
