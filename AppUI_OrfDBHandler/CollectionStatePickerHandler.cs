@@ -59,9 +59,7 @@ namespace AppUI_OrfDBHandler
             {
                 var tmpCreated = Convert.ToDateTime(cRow["Created"]);
                 var tmpMod = Convert.ToDateTime(cRow["Modified"]);
-                var item = new ListViewItem();
-                item.Text = cRow["Name"].ToString();
-                item.Tag = cRow["ID"];
+                var item = new ListViewItem {Text = cRow["Name"].ToString(), Tag = cRow["ID"]};
                 item.SubItems.Add(tmpCreated.ToString("yyyy-MM-dd"));
                 item.SubItems.Add(tmpMod.ToString("yyyy-MM-dd"));
                 item.SubItems.Add(cRow["State"].ToString());

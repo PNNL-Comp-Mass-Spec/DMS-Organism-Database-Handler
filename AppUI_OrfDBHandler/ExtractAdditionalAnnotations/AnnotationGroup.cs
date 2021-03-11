@@ -30,8 +30,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
             if (!mAnnotationData.ContainsKey(primaryReferenceName))
             {
-                xrefList = new SortedSet<string>();
-                xrefList.Add(xRefName);
+                xrefList = new SortedSet<string> {xRefName};
             }
             else
             {

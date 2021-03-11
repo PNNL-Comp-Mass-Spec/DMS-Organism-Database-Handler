@@ -125,8 +125,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
                 this.ReferenceId = referenceId;
                 this.ProteinId = proteinId;
 
-                Names = new Dictionary<int, string>();
-                Names.Add(0, primaryName);
+                Names = new Dictionary<int, string> {{0, primaryName}};
             }
 
             public void AddNewName(int annotationGroupId, string annotationName)

@@ -108,8 +108,7 @@ namespace OrganismDatabaseHandler.DatabaseTools
             foreach (var dr in foundRows)
             {
                 var key = dr[keyFieldName].ToString();
-                int keyValue;
-                if (!int.TryParse(key, out keyValue))
+                if (!int.TryParse(key, out var keyValue))
                 {
                     continue;
                 }

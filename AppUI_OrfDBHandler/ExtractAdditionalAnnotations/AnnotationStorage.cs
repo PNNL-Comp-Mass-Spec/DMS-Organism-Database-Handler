@@ -20,23 +20,16 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
                 mAnnotationGroups = new Dictionary<int, AnnotationGroup>();
             }
 
-            var newGroup = new AnnotationGroup(groupNameToAdd);
-            newGroup.ImportThisGroup = false;
+            var newGroup = new AnnotationGroup(groupNameToAdd) {ImportThisGroup = false};
             mAnnotationGroups.Add(groupId, newGroup);
             mGroupNameLookup.Add(groupNameToAdd, groupId);
         }
 
         public void ClearAnnotationGroups()
         {
-            if (mAnnotationGroups != null)
-            {
-                mAnnotationGroups.Clear();
-            }
+            mAnnotationGroups?.Clear();
 
-            if (mGroupNameLookup != null)
-            {
-                mGroupNameLookup.Clear();
-            }
+            mGroupNameLookup?.Clear();
         }
 
         public void AddAnnotation(

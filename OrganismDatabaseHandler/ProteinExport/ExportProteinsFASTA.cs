@@ -29,10 +29,9 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             const int requiredSizeMb = 150;
 
-            long currentFreeSpaceBytes;
             var errorMessage = string.Empty;
 
-            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out currentFreeSpaceBytes, out errorMessage);
+            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out errorMessage);
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))

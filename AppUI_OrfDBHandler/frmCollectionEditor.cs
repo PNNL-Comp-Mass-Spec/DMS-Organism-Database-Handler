@@ -277,30 +277,11 @@ namespace AppUI_OrfDBHandler
         private void BatchLoadController()
         {
             mProteinCollectionNames = mImportHandler.LoadProteinCollectionNames();
-            if (mFileErrorList != null)
-            {
-                mFileErrorList.Clear();
-            }
-
-            if (mFileWarningList != null)
-            {
-                mFileWarningList.Clear();
-            }
-
-            if (mValidUploadsList != null)
-            {
-                mValidUploadsList.Clear();
-            }
-
-            if (mSummarizedFileErrorList != null)
-            {
-                mSummarizedFileErrorList.Clear();
-            }
-
-            if (mSummarizedFileWarningList != null)
-            {
-                mSummarizedFileWarningList.Clear();
-            }
+            mFileErrorList?.Clear();
+            mFileWarningList?.Clear();
+            mValidUploadsList?.Clear();
+            mSummarizedFileErrorList?.Clear();
+            mSummarizedFileWarningList?.Clear();
 
             var frmBatchUpload = new frmBatchAddNewCollection(
                 mOrganisms,
@@ -425,13 +406,15 @@ namespace AppUI_OrfDBHandler
             pnlProgBar.Visible = false;
 
             // Display any errors that occurred
-            var errorDisplay = new frmValidationReport();
-            errorDisplay.FileErrorList = mFileErrorList;
-            errorDisplay.FileWarningList = mFileWarningList;
-            errorDisplay.FileValidList = mValidUploadsList;
-            errorDisplay.ErrorSummaryList = mSummarizedFileErrorList;
-            errorDisplay.WarningSummaryList = mSummarizedFileWarningList;
-            errorDisplay.OrganismList = mOrganisms;
+            var errorDisplay = new frmValidationReport
+            {
+                FileErrorList = mFileErrorList,
+                FileWarningList = mFileWarningList,
+                FileValidList = mValidUploadsList,
+                ErrorSummaryList = mSummarizedFileErrorList,
+                WarningSummaryList = mSummarizedFileWarningList,
+                OrganismList = mOrganisms
+            };
             errorDisplay.ShowDialog();
 
             lblBatchProgress.Text = "Updating Protein Collections List...";
@@ -1137,9 +1120,8 @@ namespace AppUI_OrfDBHandler
                 foreach (var errorEntry in errorCollection)
                 {
                     var message = errorEntry.MessageText;
-                    int currentCount;
 
-                    if (errorSummary.TryGetValue(message, out currentCount))
+                    if (errorSummary.TryGetValue(message, out var currentCount))
                     {
                         errorSummary[message] = currentCount + 1;
                     }

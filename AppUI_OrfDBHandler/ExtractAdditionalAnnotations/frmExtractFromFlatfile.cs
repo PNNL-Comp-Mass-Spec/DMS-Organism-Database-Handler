@@ -136,9 +136,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             var columnCount = columnCollection.Count;
             for (var columnNumber = 1; columnNumber <= columnCount; columnNumber++)
             {
-                var ch = new System.Windows.Forms.ColumnHeader();
-                ch.Text = columnCollection[columnNumber];
-                ch.Width = 70;
+                var ch = new System.Windows.Forms.ColumnHeader {Text = columnCollection[columnNumber], Width = 70};
                 lvwProteins.Columns.Add(ch);
             }
 

@@ -220,10 +220,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public void ClearProteinCollection()
         {
-            if (mFileContents != null)
-            {
-                mFileContents.ClearProteinEntries();
-            }
+            mFileContents?.ClearProteinEntries();
         }
 
         public void TriggerProteinCollectionsLoad()
@@ -244,14 +241,14 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public DataTable LoadProteinCollections()
         {
-            var PCSQL = "SELECT MIN(FileName) AS FileName, Protein_Collection_ID, " +
+            var pcSql = "SELECT MIN(FileName) AS FileName, Protein_Collection_ID, " +
                         "MIN(OrganismID) AS OrganismID, MIN(Authority_ID) AS Authority_ID, " +
                         "MIN(Display) AS Display, MIN(Authentication_Hash) AS Authentication_Hash " +
                         "FROM V_Protein_Collections_By_Organism " +
                         "GROUP BY Protein_Collection_ID " +
                         "ORDER BY MIN(FileName)";
 
-            var tmpPcTable = mSQLAccess.GetTable(PCSQL);
+            var tmpPcTable = mSQLAccess.GetTable(pcSql);
 
             var dr = tmpPcTable.NewRow();
 

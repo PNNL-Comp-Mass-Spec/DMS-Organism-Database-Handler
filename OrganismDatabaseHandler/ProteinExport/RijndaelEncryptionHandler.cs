@@ -83,11 +83,12 @@ namespace OrganismDatabaseHandler.ProteinExport
             mKeyBytes = mPassword.GetBytes((int)Math.Round(KEY_SIZE / 8d));
 
             // Create uninitialized Rijndael encryption object.
-            mSymmetricKey = new RijndaelManaged();
-
-            // It is reasonable to set encryption mode to Cipher Block Chaining
-            // (CBC). Use default options for other symmetric key parameters.
-            mSymmetricKey.Mode = CipherMode.CBC;
+            mSymmetricKey = new RijndaelManaged
+            {
+                // It is reasonable to set encryption mode to Cipher Block Chaining
+                // (CBC). Use default options for other symmetric key parameters.
+                Mode = CipherMode.CBC,
+            };
 
             // Generate encryptor from the existing key bytes and initialization
             // vector. Key size will be defined based on the number of the key

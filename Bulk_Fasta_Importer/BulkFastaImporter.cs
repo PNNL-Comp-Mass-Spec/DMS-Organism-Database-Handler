@@ -244,17 +244,14 @@ namespace Bulk_Fasta_Importer
                             continue;
                         }
 
-                        var udtFastaFileInfo = new FastaFileInfoType();
-                        udtFastaFileInfo.FilePath = fiFastaFile.FullName;
+                        var udtFastaFileInfo = new FastaFileInfoType {FilePath = fiFastaFile.FullName};
 
-                        int organismID;
-                        if (!LookupOrganismId(dataCols[1], out organismID))
+                        if (!LookupOrganismId(dataCols[1], out var organismID))
                         {
                             continue;
                         }
 
-                        int annotationTypeId;
-                        if (!LookupAnnotationTypeId(dataCols[2], out annotationTypeId))
+                        if (!LookupAnnotationTypeId(dataCols[2], out var annotationTypeId))
                         {
                             continue;
                         }
@@ -263,8 +260,7 @@ namespace Bulk_Fasta_Importer
                         udtFastaFileInfo.AuthId = annotationTypeId;
 
                         // Make sure the protein collection is not already in the Protein Sequences database
-                        int proteinCollectionID;
-                        if (!LookupProteinCollectionId(Path.GetFileNameWithoutExtension(fiFastaFile.Name), out proteinCollectionID))
+                        if (!LookupProteinCollectionId(Path.GetFileNameWithoutExtension(fiFastaFile.Name), out var proteinCollectionID))
                         {
                             continue;
                         }

@@ -21,8 +21,7 @@ namespace OrganismDatabaseHandler.ProteinStorage
 
             if (!mUniqueProteinIdList.TryGetValue(proteinEntryId, out nameList))
             {
-                nameList = new SortedSet<string>();
-                nameList.Add(proteinEntryName);
+                nameList = new SortedSet<string> {proteinEntryName};
                 mUniqueProteinIdList.Add(proteinEntryId, nameList);
                 ResidueCount += proteinEntry.Sequence.Length;
             }

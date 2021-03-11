@@ -154,8 +154,10 @@ namespace AppUI_OrfDBHandler
             if (mAuthId == -2)
             {
                 // Bring up addition dialog
-                var authAdd = new AddNamingAuthorityType(mPsConnectionString);
-                authAdd.FormLocation = new Point(Left + 20, Top + 30);
+                var authAdd = new AddNamingAuthorityType(mPsConnectionString)
+                {
+                    FormLocation = new Point(Left + 20, Top + 30)
+                };
                 var tmpAuthId = authAdd.AddNamingAuthority();
 
                 if (!authAdd.EntryExists & tmpAuthId > 0)

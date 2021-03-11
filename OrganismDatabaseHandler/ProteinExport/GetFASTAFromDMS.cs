@@ -296,9 +296,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var errorMessage = string.Empty;
             var sourceFileSizeMB = fiSourceFile.Length / 1024.0d / 1024.0d;
 
-            long currentFreeSpaceBytes;
-
-            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out currentFreeSpaceBytes, out errorMessage);
+            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out errorMessage);
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))
@@ -747,10 +745,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         private void DeleteLockStream(string destinationFolderPath, string lockFileHash, Stream lockStream)
         {
-            if (lockStream != null)
-            {
-                lockStream.Close();
-            }
+            lockStream?.Close();
 
             var lockFi = new FileInfo(Path.Combine(destinationFolderPath, lockFileHash + ".lock"));
             if (lockFi != null)

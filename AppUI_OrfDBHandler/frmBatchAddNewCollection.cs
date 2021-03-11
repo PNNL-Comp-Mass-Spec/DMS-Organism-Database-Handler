@@ -228,8 +228,7 @@ namespace AppUI_OrfDBHandler
         {
             get
             {
-                int intValue;
-                if (int.TryParse(txtMaximumProteinNameLength.Text, out intValue))
+                if (int.TryParse(txtMaximumProteinNameLength.Text, out var intValue))
                 {
                     return intValue;
                 }
@@ -354,10 +353,11 @@ namespace AppUI_OrfDBHandler
             {
                 var proteinCollectionName = Path.GetFileNameWithoutExtension(fi.Name);
 
-                var li = new ListViewItem();
-
-                // Fasta file name (with the extension)
-                li.Text = fi.Name;
+                var li = new ListViewItem
+                {
+                    // Fasta file name (with the extension)
+                    Text = fi.Name
+                };
 
                 // Last Write Time
                 li.SubItems.Add(fi.LastWriteTime.ToString("g"));
@@ -528,11 +528,10 @@ namespace AppUI_OrfDBHandler
                         }
                     }
 
-                    KeyValuePair<string, string> kvDescriptionSource = default;
                     string fileDescription;
                     string fileSource;
 
-                    if (mCachedFileDescriptions.TryGetValue(proteinCollection, out kvDescriptionSource))
+                    if (mCachedFileDescriptions.TryGetValue(proteinCollection, out var kvDescriptionSource))
                     {
                         fileDescription = kvDescriptionSource.Key;
                         fileSource = kvDescriptionSource.Value;
@@ -571,8 +570,7 @@ namespace AppUI_OrfDBHandler
 
         private void AddUpdateDictionaryItem(IDictionary<string, int> itemList, string newItem)
         {
-            int itemCount;
-            if (itemList.TryGetValue(newItem, out itemCount))
+            if (itemList.TryGetValue(newItem, out var itemCount))
             {
                 itemList[newItem] = itemCount + 1;
             }
@@ -674,9 +672,11 @@ namespace AppUI_OrfDBHandler
 
                 if (!tmpNameList.ContainsKey(fastaFilePath))
                 {
-                    var udtMetadata = new ProteinCollectionMetadata();
-                    udtMetadata.Description = GetSelectedFileColumn(li, SelectedFileColumn.Description);
-                    udtMetadata.Source = GetSelectedFileColumn(li, SelectedFileColumn.Source);
+                    var udtMetadata = new ProteinCollectionMetadata
+                    {
+                        Description = GetSelectedFileColumn(li, SelectedFileColumn.Description),
+                        Source = GetSelectedFileColumn(li, SelectedFileColumn.Source)
+                    };
                     tmpNameList.Add(fastaFilePath, udtMetadata);
                 }
             }
@@ -933,8 +933,10 @@ namespace AppUI_OrfDBHandler
             if (mSelectedAnnotationTypeId == -2)
             {
                 // Bring up an additional dialog
-                var annTypeAdd = new AddAnnotationTypeType(mPsConnectionString);
-                annTypeAdd.FormLocation = new Point(Left + Width + 10, Top);
+                var annTypeAdd = new AddAnnotationTypeType(mPsConnectionString)
+                {
+                    FormLocation = new Point(Left + Width + 10, Top)
+                };
                 var tmpAnnTypeId = annTypeAdd.AddAnnotationType();
                 // Dim AuthAdd As New AddNamingAuthority(mPSConnectionString)
                 // tmpAuthID = AuthAdd.AddNamingAuthority

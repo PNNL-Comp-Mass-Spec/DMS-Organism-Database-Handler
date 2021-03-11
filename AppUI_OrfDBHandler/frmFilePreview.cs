@@ -25,7 +25,7 @@ namespace AppUI_OrfDBHandler
 
         public new event FormClosingEventHandler FormClosing;
 
-        public new delegate void FormClosingEventHandler();
+        public delegate void FormClosingEventHandler();
 
         private readonly Regex validationRegex;
         private int mcurrentLineCount = 100;

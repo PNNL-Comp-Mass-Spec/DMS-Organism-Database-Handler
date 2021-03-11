@@ -110,15 +110,15 @@ namespace AppUI_OrfDBHandler
 
         private void cmdExportFASTA_Click(object sender, EventArgs e)
         {
-            var sd = new FolderBrowserDialog();
-
             //Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS exporter;
             //var tmpNameList = new ArrayList();
 
-            //sd.DefaultExt = ".fasta";
-            //sd.FileName = cboCollectionsList.Text + ".fasta";
-
-            sd.SelectedPath = mLastOutputDirectory;
+            var sd = new FolderBrowserDialog
+            {
+                //DefaultExt = ".fasta",
+                //FileName = cboCollectionsList.Text + ".fasta",
+                SelectedPath = mLastOutputDirectory,
+            };
 
             var r = sd.ShowDialog();
 

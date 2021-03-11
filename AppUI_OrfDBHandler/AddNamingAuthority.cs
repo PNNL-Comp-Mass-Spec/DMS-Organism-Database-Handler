@@ -41,8 +41,7 @@ namespace AppUI_OrfDBHandler
 
         public int AddNamingAuthority()
         {
-            var frmAuth = new frmAddNamingAuthority();
-            frmAuth.DesktopLocation = mFormLocation;
+            var frmAuth = new frmAddNamingAuthority {DesktopLocation = mFormLocation};
             int authId;
             if (mSpRunner == null)
             {

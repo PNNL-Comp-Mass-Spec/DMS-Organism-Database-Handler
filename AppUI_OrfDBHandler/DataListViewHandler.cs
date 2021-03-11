@@ -47,8 +47,7 @@ namespace AppUI_OrfDBHandler
 
             foreach (var itemRow in itemRows)
             {
-                var item = new ListViewItem();
-                item.Text = itemRow[0].ToString();
+                var item = new ListViewItem {Text = itemRow[0].ToString()};
                 item.SubItems.Add(itemRow[1].ToString());
                 lvw.Items.Add(item);
             }
