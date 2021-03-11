@@ -342,7 +342,7 @@ namespace AppUI_OrfDBHandler
 
                 Settings.Default.Save();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Ignore errors here
             }
@@ -447,7 +447,7 @@ namespace AppUI_OrfDBHandler
                 mLastSelectedAnnotationType = Settings.Default.LastSelectedAnnotationType ?? "";
                 mLastBatchUploadDirectoryPath = Settings.Default.LastBatchULDirectoryPath ?? "";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Ignore errors here
             }

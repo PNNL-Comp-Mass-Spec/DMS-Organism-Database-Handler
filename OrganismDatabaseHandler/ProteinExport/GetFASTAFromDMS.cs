@@ -722,7 +722,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 foreach (FileInfo fiFileToDelete in fiFinalFastaFile.Directory.GetFiles(strBaseName + "_shuffle*.*"))
                     DeleteFastaIndexFile(fiFileToDelete.FullName);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Ignore errors here
             }
@@ -736,7 +736,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
             catch (Exception ex)
             {
-                OnErrorEvent("Error deleting file: " + ex.Message, ex);
+                OnErrorEvent("Error deleting file", ex);
             }
         }
 

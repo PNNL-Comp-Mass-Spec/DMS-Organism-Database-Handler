@@ -559,8 +559,9 @@ namespace OrganismDatabaseHandler.ProteinExport
             {
                 id = Convert.ToInt32(foundRows[0]["Protein_Collection_ID"]);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
+                // Ignore errors here
                 id = -1;
             }
 

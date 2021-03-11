@@ -6,8 +6,6 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 {
     internal class ExtractFromFlatFile
     {
-        private string mFilePath;
-
         /// <summary>
         /// Each entry in this list is a dictionary where keys are column name (1-based) and values are the value for that column
         /// </summary>
@@ -183,13 +181,11 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         }
 
         /// <summary>
-        ///
+        ///Parse loaded file
         /// </summary>
         /// <param name="primaryReferenceNameColumnId">The number of the column with the name to use as primary</param>
-        /// <param name="authorityHash">Dictionary with columnID (number), and authority name for that column</param>
         public void ParseLoadedFile(
-            int primaryReferenceNameColumnId,
-            Dictionary<string, string> authorityHash)
+            int primaryReferenceNameColumnId)
         {
             foreach (var dataLine in mFileContents)
             {
@@ -246,7 +242,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
         public void UploadNewNames(int primaryReferenceNameColumnId)
         {
-            ParseLoadedFile(primaryReferenceNameColumnId, mAuthorities);
+            ParseLoadedFile(primaryReferenceNameColumnId);
             if (mUploader == null)
             {
                 mUploader = new AddUpdateEntries(mPsConnectionString);

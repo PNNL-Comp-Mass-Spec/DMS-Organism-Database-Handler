@@ -163,7 +163,7 @@ namespace AppUI_OrfDBHandler
                         return currentNode.Path;
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     // Ignore errors
                 }
@@ -764,7 +764,7 @@ namespace AppUI_OrfDBHandler
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Ignore errors here
             }

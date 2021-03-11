@@ -110,7 +110,6 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             internal string Description;
             internal int ReferenceId;
             internal int ProteinId;
-            internal int NamingAuthorityId;
             internal Dictionary<int, string> Names;
 
             // Key is AnnotationGroupID, Value is Name

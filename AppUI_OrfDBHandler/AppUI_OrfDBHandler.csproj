@@ -143,6 +143,7 @@
     <Compile Include="frmValidationReport.Designer.cs">
       <DependentUpon>frmValidationReport.cs</DependentUpon>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="NucleotideTranslator\frmNucTransGUI.cs">
       <SubType>Form</SubType>
     </Compile>

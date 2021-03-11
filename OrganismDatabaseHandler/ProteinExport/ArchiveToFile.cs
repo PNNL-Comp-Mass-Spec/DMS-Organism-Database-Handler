@@ -114,7 +114,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     fi.CopyTo(mArchived_File_Name);
                 }
             }
-            catch (UnauthorizedAccessException exUnauthorized)
+            catch (UnauthorizedAccessException)
             {
                 Console.WriteLine("  Warning: access denied copying file to " + mArchived_File_Name);
             }

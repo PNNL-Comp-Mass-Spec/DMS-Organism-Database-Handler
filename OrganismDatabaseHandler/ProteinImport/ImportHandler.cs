@@ -95,7 +95,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                         proteinsLoaded = fastaContents.ProteinCount;
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     // Ignore errors here
                 }

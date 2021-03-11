@@ -676,7 +676,7 @@ namespace Bulk_Fasta_Importer
                 foreach (var item in warningCollection)
                     ShowMessage("  ... Warning: " + item.MessageText + ": " + item.ProteinName);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Console.WriteLine("warningCollection is not type ValidateFastaFile.CustomFastaValidator.ErrorInfoExtended");
             }
@@ -707,7 +707,7 @@ namespace Bulk_Fasta_Importer
                 foreach (var item in errorCollection)
                     ShowMessage("  ... Error: " + item.MessageText + ": " + item.ProteinName);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Console.WriteLine("errorCollection is not type ValidateFastaFile.CustomFastaValidator.ErrorInfoExtended");
             }
