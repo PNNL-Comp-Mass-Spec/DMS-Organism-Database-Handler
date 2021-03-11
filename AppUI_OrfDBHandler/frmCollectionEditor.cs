@@ -1175,26 +1175,6 @@ namespace AppUI_OrfDBHandler
             mSyncer.RefreshNameHashes();
         }
 
-        private void mnuToolsNucToProt_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void mnuToolsConvert_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void mnuToolsConvertF2A_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void mnuToolsConvertA2F_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void mnuToolsFCheckup_Click(object sender, EventArgs e)
-        {
-        }
-
         private void MenuItem5_Click(object sender, EventArgs e)
         {
             var frmTesting = new frmTestingInterface();
@@ -1228,13 +1208,5 @@ namespace AppUI_OrfDBHandler
         {
             ShowAboutBox();
         }
-
-        private void mnuToolsOptions_Click(object sender, EventArgs e)
-        {
-        }
-
-        //private void mnuAdminUpdateZeroedMasses_Click(object sender, EventArgs e)
-        //{
-        //}
     }
 }

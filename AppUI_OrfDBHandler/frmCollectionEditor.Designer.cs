@@ -40,10 +40,10 @@ namespace AppUI_OrfDBHandler
             this.pgbMain = new System.Windows.Forms.ProgressBar();
             this.pnlSource = new System.Windows.Forms.Panel();
             this.lblTargetServer = new System.Windows.Forms.Label();
-            this.cmdDestAdd = new ImageButton();
-            this.cmdDestRemove = new ImageButton();
-            this.cmdDestAddAll = new ImageButton();
-            this.cmdDestRemoveAll = new ImageButton();
+            this.cmdDestAdd = new AppUI_OrfDBHandler.Controls.ImageButton();
+            this.cmdDestRemove = new AppUI_OrfDBHandler.Controls.ImageButton();
+            this.cmdDestAddAll = new AppUI_OrfDBHandler.Controls.ImageButton();
+            this.cmdDestRemoveAll = new AppUI_OrfDBHandler.Controls.ImageButton();
             this.gbxSourceCollection = new System.Windows.Forms.GroupBox();
             this.cboAnnotationTypePicker = new System.Windows.Forms.ComboBox();
             this.lblAnnotationTypeFilter = new System.Windows.Forms.Label();
@@ -74,24 +74,14 @@ namespace AppUI_OrfDBHandler
             this.mnuFileExit = new System.Windows.Forms.MenuItem();
             this.mnuTools = new System.Windows.Forms.MenuItem();
             this.mnuToolsCollectionEdit = new System.Windows.Forms.MenuItem();
-            this.mnuToolsNucToProt = new System.Windows.Forms.MenuItem();
-            this.mnuToolsConvert = new System.Windows.Forms.MenuItem();
-            this.mnuToolsConvertF2A = new System.Windows.Forms.MenuItem();
-            this.mnuToolsConvertA2F = new System.Windows.Forms.MenuItem();
-            this.mnuToolsFCheckup = new System.Windows.Forms.MenuItem();
-            this.mnuToolsCompareDBs = new System.Windows.Forms.MenuItem();
             this.mnuToolsExtractFromFile = new System.Windows.Forms.MenuItem();
             this.mnuToolsSep1 = new System.Windows.Forms.MenuItem();
-            this.mnuToolsOptions = new System.Windows.Forms.MenuItem();
             this.mnuAdmin = new System.Windows.Forms.MenuItem();
             this.mnuAdminBatchUploadFiles = new System.Windows.Forms.MenuItem();
             this.mnuAdminNameHashRefresh = new System.Windows.Forms.MenuItem();
             this.mnuAdminUpdateSHA = new System.Windows.Forms.MenuItem();
             this.mnuAdminUpdateCollectionsArchive = new System.Windows.Forms.MenuItem();
-            this.mnuAdminUpdateZeroedMasses = new System.Windows.Forms.MenuItem();
             this.mnuAdminTestingInterface = new System.Windows.Forms.MenuItem();
-            this.mnuAdminFixArchivePaths = new System.Windows.Forms.MenuItem();
-            this.mnuAdminAddSortingIndexes = new System.Windows.Forms.MenuItem();
             this.mnuHelp = new System.Windows.Forms.MenuItem();
             this.mnuHelpAbout = new System.Windows.Forms.MenuItem();
             this.pnlProgBar.SuspendLayout();
@@ -279,7 +269,7 @@ namespace AppUI_OrfDBHandler
             this.cboAnnotationTypePicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboAnnotationTypePicker.Location = new System.Drawing.Point(240, 46);
             this.cboAnnotationTypePicker.Name = "cboAnnotationTypePicker";
-            this.cboAnnotationTypePicker.Size = new System.Drawing.Size(216, 21);
+            this.cboAnnotationTypePicker.Size = new System.Drawing.Size(216, 25);
             this.cboAnnotationTypePicker.TabIndex = 17;
             // 
             // lblAnnotationTypeFilter
@@ -340,7 +330,7 @@ namespace AppUI_OrfDBHandler
             this.txtLiveSearch.ForeColor = System.Drawing.SystemColors.InactiveCaption;
             this.txtLiveSearch.Location = new System.Drawing.Point(38, 360);
             this.txtLiveSearch.Name = "txtLiveSearch";
-            this.txtLiveSearch.Size = new System.Drawing.Size(107, 14);
+            this.txtLiveSearch.Size = new System.Drawing.Size(107, 17);
             this.txtLiveSearch.TabIndex = 8;
             this.txtLiveSearch.Text = "Search";
             this.txtLiveSearch.Click += new System.EventHandler(this.txtLiveSearch_Click);
@@ -354,7 +344,7 @@ namespace AppUI_OrfDBHandler
             this.cboCollectionPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCollectionPicker.Location = new System.Drawing.Point(14, 85);
             this.cboCollectionPicker.Name = "cboCollectionPicker";
-            this.cboCollectionPicker.Size = new System.Drawing.Size(328, 21);
+            this.cboCollectionPicker.Size = new System.Drawing.Size(328, 25);
             this.cboCollectionPicker.TabIndex = 1;
             // 
             // cboOrganismFilter
@@ -364,7 +354,7 @@ namespace AppUI_OrfDBHandler
             this.cboOrganismFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboOrganismFilter.Location = new System.Drawing.Point(14, 46);
             this.cboOrganismFilter.Name = "cboOrganismFilter";
-            this.cboOrganismFilter.Size = new System.Drawing.Size(216, 21);
+            this.cboOrganismFilter.Size = new System.Drawing.Size(216, 25);
             this.cboOrganismFilter.TabIndex = 0;
             // 
             // lblOrganismFilter
@@ -547,13 +537,8 @@ namespace AppUI_OrfDBHandler
             this.mnuTools.Index = 1;
             this.mnuTools.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.mnuToolsCollectionEdit,
-            this.mnuToolsNucToProt,
-            this.mnuToolsConvert,
-            this.mnuToolsFCheckup,
-            this.mnuToolsCompareDBs,
             this.mnuToolsExtractFromFile,
-            this.mnuToolsSep1,
-            this.mnuToolsOptions});
+            this.mnuToolsSep1});
             this.mnuTools.Text = "&Tools";
             // 
             // mnuToolsCollectionEdit
@@ -562,66 +547,17 @@ namespace AppUI_OrfDBHandler
             this.mnuToolsCollectionEdit.Text = "&Edit Collection States...";
             this.mnuToolsCollectionEdit.Click += new System.EventHandler(this.mnuToolsCollectionEdit_Click);
             // 
-            // mnuToolsNucToProt
-            // 
-            this.mnuToolsNucToProt.Index = 1;
-            this.mnuToolsNucToProt.Text = "Translate Nucleotides to Proteins...";
-            this.mnuToolsNucToProt.Visible = false;
-            this.mnuToolsNucToProt.Click += new System.EventHandler(this.mnuToolsNucToProt_Click);
-            // 
-            // mnuToolsConvert
-            // 
-            this.mnuToolsConvert.Index = 2;
-            this.mnuToolsConvert.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.mnuToolsConvertF2A,
-            this.mnuToolsConvertA2F});
-            this.mnuToolsConvert.Text = "Convert Database Format...";
-            this.mnuToolsConvert.Visible = false;
-            this.mnuToolsConvert.Click += new System.EventHandler(this.mnuToolsConvert_Click);
-            // 
-            // mnuToolsConvertF2A
-            // 
-            this.mnuToolsConvertF2A.Index = 0;
-            this.mnuToolsConvertF2A.Text = "FASTA to Access...";
-            this.mnuToolsConvertF2A.Click += new System.EventHandler(this.mnuToolsConvertF2A_Click);
-            // 
-            // mnuToolsConvertA2F
-            // 
-            this.mnuToolsConvertA2F.Index = 1;
-            this.mnuToolsConvertA2F.Text = "Access to FASTA...";
-            this.mnuToolsConvertA2F.Click += new System.EventHandler(this.mnuToolsConvertA2F_Click);
-            // 
-            // mnuToolsFCheckup
-            // 
-            this.mnuToolsFCheckup.Index = 3;
-            this.mnuToolsFCheckup.Text = "Perform FASTA File Checkup...";
-            this.mnuToolsFCheckup.Visible = false;
-            this.mnuToolsFCheckup.Click += new System.EventHandler(this.mnuToolsFCheckup_Click);
-            // 
-            // mnuToolsCompareDBs
-            // 
-            this.mnuToolsCompareDBs.Index = 4;
-            this.mnuToolsCompareDBs.Text = "Compare Databases...";
-            this.mnuToolsCompareDBs.Visible = false;
-            // 
             // mnuToolsExtractFromFile
             // 
             this.mnuToolsExtractFromFile.Enabled = false;
-            this.mnuToolsExtractFromFile.Index = 5;
+            this.mnuToolsExtractFromFile.Index = 1;
             this.mnuToolsExtractFromFile.Text = "Extract Annotations from Text File...";
             this.mnuToolsExtractFromFile.Click += new System.EventHandler(this.mnuToolsExtractFromFile_Click);
             // 
             // mnuToolsSep1
             // 
-            this.mnuToolsSep1.Index = 6;
+            this.mnuToolsSep1.Index = 2;
             this.mnuToolsSep1.Text = "-";
-            // 
-            // mnuToolsOptions
-            // 
-            this.mnuToolsOptions.Enabled = false;
-            this.mnuToolsOptions.Index = 7;
-            this.mnuToolsOptions.Text = "Options...";
-            this.mnuToolsOptions.Click += new System.EventHandler(this.mnuToolsOptions_Click);
             // 
             // mnuAdmin
             // 
@@ -631,10 +567,7 @@ namespace AppUI_OrfDBHandler
             this.mnuAdminNameHashRefresh,
             this.mnuAdminUpdateSHA,
             this.mnuAdminUpdateCollectionsArchive,
-            this.mnuAdminUpdateZeroedMasses,
-            this.mnuAdminTestingInterface,
-            this.mnuAdminFixArchivePaths,
-            this.mnuAdminAddSortingIndexes});
+            this.mnuAdminTestingInterface});
             this.mnuAdmin.Text = "Admin";
             // 
             // mnuAdminBatchUploadFiles
@@ -663,33 +596,11 @@ namespace AppUI_OrfDBHandler
             this.mnuAdminUpdateCollectionsArchive.Text = "Update Collections Archive";
             this.mnuAdminUpdateCollectionsArchive.Visible = false;
             // 
-            // mnuAdminUpdateZeroedMasses
-            // 
-            this.mnuAdminUpdateZeroedMasses.Index = 4;
-            this.mnuAdminUpdateZeroedMasses.Text = "Update Zeroed Masses";
-            this.mnuAdminUpdateZeroedMasses.Visible = false;
-            this.mnuAdminUpdateZeroedMasses.Click += new System.EventHandler(this.mnuAdminUpdateZeroedMasses_Click);
-            // 
             // mnuAdminTestingInterface
             // 
-            this.mnuAdminTestingInterface.Index = 5;
+            this.mnuAdminTestingInterface.Index = 4;
             this.mnuAdminTestingInterface.Text = "Testing Interface Window...";
             this.mnuAdminTestingInterface.Click += new System.EventHandler(this.MenuItem5_Click);
-            // 
-            // mnuAdminFixArchivePaths
-            // 
-            this.mnuAdminFixArchivePaths.Enabled = false;
-            this.mnuAdminFixArchivePaths.Index = 6;
-            this.mnuAdminFixArchivePaths.Text = "Fix Archive Path Names";
-            this.mnuAdminFixArchivePaths.Visible = false;
-            this.mnuAdminFixArchivePaths.Click += new System.EventHandler(this.MenuItem6_Click);
-            // 
-            // mnuAdminAddSortingIndexes
-            // 
-            this.mnuAdminAddSortingIndexes.Index = 7;
-            this.mnuAdminAddSortingIndexes.Text = "Add Sorting Indexes";
-            this.mnuAdminAddSortingIndexes.Visible = false;
-            this.mnuAdminAddSortingIndexes.Click += new System.EventHandler(this.MenuItem8_Click);
             // 
             // mnuHelp
             // 
@@ -706,7 +617,7 @@ namespace AppUI_OrfDBHandler
             // 
             // frmCollectionEditor
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1132, 524);
             this.Controls.Add(this.pnlDest);
@@ -774,14 +685,7 @@ namespace AppUI_OrfDBHandler
         private System.Windows.Forms.MenuItem mnuTools;
         private System.Windows.Forms.MenuItem mnuAdmin;
         private System.Windows.Forms.MenuItem mnuFileExit;
-        private System.Windows.Forms.MenuItem mnuToolsNucToProt;
-        private System.Windows.Forms.MenuItem mnuToolsConvert;
-        private System.Windows.Forms.MenuItem mnuToolsConvertF2A;
-        private System.Windows.Forms.MenuItem mnuToolsConvertA2F;
-        private System.Windows.Forms.MenuItem mnuToolsFCheckup;
-        private System.Windows.Forms.MenuItem mnuToolsOptions;
         private System.Windows.Forms.MenuItem mnuToolsCollectionEdit;
-        private System.Windows.Forms.MenuItem mnuToolsCompareDBs;
         private System.Windows.Forms.MenuItem mnuToolsExtractFromFile;
         private System.Windows.Forms.MenuItem mnuHelpAbout;
         private System.Windows.Forms.MenuItem mnuAdminNameHashRefresh;
@@ -789,10 +693,7 @@ namespace AppUI_OrfDBHandler
         private System.Windows.Forms.MenuItem mnuAdminBatchUploadFiles;
         private System.Windows.Forms.MenuItem mnuAdminUpdateSHA;
         private System.Windows.Forms.MenuItem mnuAdminUpdateCollectionsArchive;
-        private System.Windows.Forms.MenuItem mnuAdminUpdateZeroedMasses;
         private System.Windows.Forms.MenuItem mnuAdminTestingInterface;
-        private System.Windows.Forms.MenuItem mnuAdminFixArchivePaths;
-        private System.Windows.Forms.MenuItem mnuAdminAddSortingIndexes;
         private System.Windows.Forms.Label lblBatchProgress;
         private System.Windows.Forms.Button cmdExportToFile;
         private System.Windows.Forms.Label lblTargetServer;
