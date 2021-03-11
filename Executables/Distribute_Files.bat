@@ -6,7 +6,7 @@ set Iteration=1
 :Loop
 echo Copying to %TargetBase%
 xcopy Debug\* %TargetBase% /d /y
-xcopy ..\Bulk_Fasta_Importer\bin\Debug\* %TargetBase%\Bulk_Fasta_Importer /d /y
+xcopy ..\Bulk_Fasta_Importer\bin\* %TargetBase%\Bulk_Fasta_Importer /d /y
 xcopy ..\FastaFileMaker_Exe\bin\*.exe %TargetBase%\FASTAFileMaker /d /y
 xcopy ..\FastaFileMaker_Exe\bin\*.dll %TargetBase%\FASTAFileMaker /d /y
 xcopy ..\FastaFileMaker_Exe\bin\*.pdb %TargetBase%\FASTAFileMaker /d /y
@@ -33,9 +33,7 @@ echo Copying the CBDMS executable to \\cbdms\DMS_Programs\PRISMSeq_Uploader
 xcopy Debug_CBDMS_GUI\* \\cbdms\DMS_Programs\PRISMSeq_Uploader /d /y
 
 echo.
-echo Copying DLLs to the AnalysisManager
-xcopy Debug\Protein_Exporter.dll ..\..\..\DataMining\DMS_Managers\Analysis_Manager\AM_Common /d /y
-xcopy Debug\Protein_Storage.dll ..\..\..\DataMining\DMS_Managers\Analysis_Manager\AM_Common /d /y
-xcopy Debug\TableManipulationBase.dll ..\..\..\DataMining\DMS_Managers\Analysis_Manager\AM_Common /d /y
+echo Copying DLL to the AnalysisManager
+xcopy Debug\OrganismDatabaseHandler.dll ..\..\..\DataMining\DMS_Managers\Analysis_Manager\AM_Common /d /y
 
 pause
