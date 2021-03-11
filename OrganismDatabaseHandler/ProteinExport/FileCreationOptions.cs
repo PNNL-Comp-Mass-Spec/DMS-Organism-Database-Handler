@@ -126,7 +126,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     tmpValue = dr["Default_Value"].ToString();
                 }
 
-                switch (tmpKeyword ?? "")
+                switch (tmpKeyword)
                 {
                     case "seq_direction":
                         mSeqDirection = (GetFASTAFromDMS.SequenceTypes)Enum.Parse(typeof(GetFASTAFromDMS.SequenceTypes), tmpValue);

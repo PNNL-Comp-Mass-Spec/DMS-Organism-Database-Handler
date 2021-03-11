@@ -91,8 +91,8 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 if (tmpTable.Rows[0]["Protein_Collection_List"].GetType().Name == "DBNull" ||
                     string.IsNullOrEmpty(collectionListHexHashInDb) ||
-                    (proteinCollectionsListFromDb ?? "") != (proteinCollectionsList ?? "") ||
-                    (collectionListHexHashInDb ?? "") != (collectionListHexHash ?? ""))
+                    proteinCollectionsListFromDb != (proteinCollectionsList ?? "") ||
+                    collectionListHexHashInDb != (collectionListHexHash ?? ""))
                 {
                     RunSP_UpdateFileArchiveEntryCollectionList(archivedFileEntryId, proteinCollectionsList, sourceAuthenticationHash, collectionListHexHash);
                 }

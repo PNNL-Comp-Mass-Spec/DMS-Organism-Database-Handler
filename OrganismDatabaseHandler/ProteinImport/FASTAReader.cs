@@ -80,7 +80,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             {
                 var fi = new FileInfo(mFASTAFilePath);
                 var fileLength = (int)fi.Length;
-                if (fi.Exists & fileLength > 0)
+                if (fi.Exists && fileLength > 0)
                 {
                     LoadStart?.Invoke("Reading Source File..."); // Trigger the setup of the pgb
 
@@ -131,7 +131,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                                 sequence += s;
                             }
 
-                            if (numRecordsToLoad > 0 & recordCount >= numRecordsToLoad - 1)
+                            if (numRecordsToLoad > 0 && recordCount >= numRecordsToLoad - 1)
                             {
                                 break;
                             }
@@ -186,7 +186,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                             }
 
                             var testCode2 = fileReader.Read();
-                            if (testCode2 == 10 | testCode2 == 13)
+                            if (testCode2 == 10 || testCode2 == 13)
                             {
                                 return 2;
                             }

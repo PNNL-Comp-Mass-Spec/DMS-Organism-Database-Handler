@@ -83,7 +83,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
         //
         //     BatchUploadFromFileList.FileListInfo fli;
         //
-        //     if (fi.Exists & !this.mFileCollection == null)
+        //     if (fi.Exists && !this.mFileCollection == null)
         //     {
         //         tr = fi.OpenText();
         //         s = tr.ReadLine();
@@ -119,7 +119,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             //
             // BatchUploadFromFileList.FileListInfo fli;
             //
-            // if (fi.Exists & !this.mFileCollection == null)
+            // if (fi.Exists && !this.mFileCollection == null)
             // {
             //     tr = fi.OpenText();
             //     s = tr.ReadLine();

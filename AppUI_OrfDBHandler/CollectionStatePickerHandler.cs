@@ -40,7 +40,7 @@ namespace AppUI_OrfDBHandler
 
             var filterString = string.Empty;
 
-            if (criteriaCollection.Length > 0 & filterCriteria.Length > 0)
+            if (criteriaCollection.Length > 0 && filterCriteria.Length > 0)
             {
                 foreach (var filterElement in criteriaCollection)
                     filterString += "[Name] LIKE '%" + filterElement + "%' OR [State] LIKE '%" + filterElement + "%' OR ";

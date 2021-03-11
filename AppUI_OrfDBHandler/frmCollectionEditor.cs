@@ -191,7 +191,7 @@ namespace AppUI_OrfDBHandler
 
         private void RefreshCollectionList()
         {
-            if (mSelectedOrganismId != -1 & mSelectedCollectionId != -1)
+            if (mSelectedOrganismId != -1 && mSelectedCollectionId != -1)
             {
                 cboAnnotationTypePicker.SelectedIndexChanged -= cboAnnotationTypePicker_SelectedIndexChanged;
                 cboCollectionPicker.SelectedIndexChanged -= cboCollectionPicker_SelectedIndexChanged;
@@ -729,11 +729,11 @@ namespace AppUI_OrfDBHandler
 
         private void txtLiveSearch_TextChanged(object sender, EventArgs e)
         {
-            if (txtLiveSearch.Text.Length > 0 & txtLiveSearch.ForeColor.ToString() != "Color [InactiveCaption]")
+            if (txtLiveSearch.Text.Length > 0 && txtLiveSearch.ForeColor.ToString() != "Color [InactiveCaption]")
             {
                 searchTimer.Start();
             }
-            else if (string.IsNullOrEmpty(txtLiveSearch.Text) & mSearchActive == false)
+            else if (string.IsNullOrEmpty(txtLiveSearch.Text) && !mSearchActive)
             {
                 pbxLiveSearchCancel_Click(this, null);
             }

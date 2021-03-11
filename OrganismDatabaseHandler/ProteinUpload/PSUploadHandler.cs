@@ -321,7 +321,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
                     string logMessageIfCancelled;
                     string logLabelIfCancelled;
 
-                    if (collectionState == "New" | collectionState == "Provisional")
+                    if (collectionState == "New" || collectionState == "Provisional")
                     {
                         var warningMessage = "The Collection '" + proteinCollectionName + "' has been declared '" +
                                              collectionState + "'. Are you sure you want to replace its contents?";

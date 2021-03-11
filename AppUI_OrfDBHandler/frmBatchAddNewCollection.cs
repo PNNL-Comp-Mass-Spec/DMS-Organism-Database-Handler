@@ -313,7 +313,7 @@ namespace AppUI_OrfDBHandler
             {
                 var fileExtension = Path.GetExtension(fi.Name);
 
-                switch (fileExtension.ToLower() ?? "")
+                switch (fileExtension.ToLower())
                 {
                     case ".fasta":
                     case ".fst":
@@ -519,7 +519,7 @@ namespace AppUI_OrfDBHandler
                         mSelectedFileList.Remove(upInfo.FileInformation.FullName);
                         foreach (ListViewItem si in lvwSelectedFiles.Items)
                         {
-                            if ((si.Text ?? "") == (proteinCollection ?? ""))
+                            if ((si.Text ?? "") == proteinCollection)
                             {
                                 lvwSelectedFiles.Items.Remove(si);
                             }
@@ -755,7 +755,7 @@ namespace AppUI_OrfDBHandler
 
                         if (!DBNull.Value.Equals(objRow[intDataColumnIndexToCheck]))
                         {
-                            if ((objRow[intDataColumnIndexToCheck]?.ToString() ?? "") == (strValue ?? ""))
+                            if ((objRow[intDataColumnIndexToCheck]?.ToString() ?? "") == strValue)
                             {
                                 objComboBox.SelectedIndex = intIndex;
                                 break;
@@ -938,7 +938,7 @@ namespace AppUI_OrfDBHandler
                 // Dim AuthAdd As New AddNamingAuthority(mPSConnectionString)
                 // tmpAuthID = AuthAdd.AddNamingAuthority
 
-                if (!annTypeAdd.EntryExists & tmpAnnTypeId > 0)
+                if (!annTypeAdd.EntryExists && tmpAnnTypeId > 0)
                 {
                     var dr = mAnnotationTypeList.NewRow();
 
@@ -1010,7 +1010,7 @@ namespace AppUI_OrfDBHandler
 
         private void CheckTransferEnable()
         {
-            if (chkEncryptionEnable.Checked == true)
+            if (chkEncryptionEnable.Checked)
             {
                 if (mSelectedOrganismId > 0 &&
                     mSelectedAnnotationTypeId > 0 &&
@@ -1145,7 +1145,7 @@ namespace AppUI_OrfDBHandler
 
         private void frmBatchAddNewCollection_Closing(object sender, CancelEventArgs e)
         {
-            if (lvwSelectedFiles.Items.Count > 0 & !mReallyClose)
+            if (lvwSelectedFiles.Items.Count > 0 && !mReallyClose)
             {
                 var r = MessageBox.Show("You have files selected for upload. Really close the form?",
                     "Files selected for upload", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
@@ -1153,7 +1153,7 @@ namespace AppUI_OrfDBHandler
                 e.Cancel = r == DialogResult.No;
             }
 
-            if (mFilePreviewer != null & mPreviewFormStatus == true)
+            if (mFilePreviewer != null && mPreviewFormStatus)
             {
                 mFilePreviewer.CloseForm();
                 mFilePreviewer.FormStatus -= OnPreviewFormStatusChange;
@@ -1168,7 +1168,7 @@ namespace AppUI_OrfDBHandler
 
         public void OnPreviewFormStatusChange(bool visibility)
         {
-            if (visibility == true)
+            if (visibility)
             {
                 cmdPreviewFile.Enabled = false;
                 mPreviewFormStatus = true;

@@ -133,7 +133,7 @@ namespace AppUI_OrfDBHandler
             {
                 var s = str.Trim();
                 string tmp;
-                switch (s.Substring(0, 3) ?? "")
+                switch (s.Substring(0, 3))
                 {
                     case "nam":
                         tmp = s.TrimStart();
@@ -168,7 +168,7 @@ namespace AppUI_OrfDBHandler
                         break;
 
                     case "-- ":
-                        switch (s.Substring(0, 8) ?? "")
+                        switch (s.Substring(0, 8))
                         {
                             case "-- Base1":
                                 base1List = ProcessBaseString(s);

@@ -160,7 +160,7 @@ namespace AppUI_OrfDBHandler
                 };
                 var tmpAuthId = authAdd.AddNamingAuthority();
 
-                if (!authAdd.EntryExists & tmpAuthId > 0)
+                if (!authAdd.EntryExists && tmpAuthId > 0)
                 {
                     var dr = mAuthoritiesTable.NewRow();
 

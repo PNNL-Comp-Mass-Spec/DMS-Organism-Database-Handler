@@ -167,7 +167,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
                     var baseName = Path.GetFileNameWithoutExtension(fileName);
 
-                    if (!fileList.ContainsKey(fileName) & !collectionList.Contains(baseName))
+                    if (!fileList.ContainsKey(fileName) && !collectionList.Contains(baseName))
                     {
                         fileList.Add(fileName,
                                      new FileListInfo(fileName, fullPath, organismName, organismId, annotationTypeId, authorityTypeId));

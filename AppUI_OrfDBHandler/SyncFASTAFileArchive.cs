@@ -136,7 +136,7 @@ namespace AppUI_OrfDBHandler
 
                 elapsedTimeSb.Remove(0, elapsedTimeSb.Length);
                 var elapsedTime = DateTime.UtcNow.Subtract(startTime);
-                if (elapsedTime.Minutes < 1 & elapsedTime.Hours == 0)
+                if (elapsedTime.Minutes < 1 && elapsedTime.Hours == 0)
                 {
                     elapsedTimeSb.Append("less than ");
                 }

@@ -209,7 +209,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             protCollectionList = extraCommaCheckRegex.Replace(protCollectionList, ",");
 
-            if (protCollectionList.Length > 0 & !protCollectionList.ToLower().Equals("na"))
+            if (protCollectionList.Length > 0 && !protCollectionList.ToLower().Equals("na"))
             {
                 // Parse out protein collections from "," delimited list
 
@@ -220,7 +220,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 return ExportProteinCollections(collectionList, cleanOptionsString, destinationFolderPath, 0, true, optionsParser.FileFormatType, optionsParser.SequenceDirection);
             }
-            else if (legacyFASTAFileName.Length > 0 & !legacyFASTAFileName.ToLower().Equals("na"))
+            else if (legacyFASTAFileName.Length > 0 && !legacyFASTAFileName.ToLower().Equals("na"))
             {
                 return ExportLegacyFastaFile(legacyFASTAFileName, destinationFolderPath);
             }
@@ -854,7 +854,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 {
                     var hashValidationFile = GetHashFileValidationInfo(fastaFilePath, expectedHash, hashcheckExtension);
 
-                    if (hashValidationFile.Exists & !forceRegenerateHash)
+                    if (hashValidationFile.Exists && !forceRegenerateHash)
                     {
                         if (DateTime.UtcNow.Subtract(hashValidationFile.LastWriteTimeUtc).TotalHours <= retryHoldoffHours)
                         {
@@ -873,7 +873,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                         // Update the hash validation file
                         UpdateHashValidationFile(fastaFilePath, crc32Hash, hashcheckExtension);
 
-                        if ((expectedHash ?? "") != (crc32Hash ?? "") & forceRegenerateHash)
+                        if ((expectedHash ?? "") != (crc32Hash ?? "") && forceRegenerateHash)
                         {
                             // Hash values don't match, but forceRegenerateHash=True
                             // Update the hash value stored in T_Legacy_File_Upload_Requests for this fasta file

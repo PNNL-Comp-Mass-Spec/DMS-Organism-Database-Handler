@@ -40,7 +40,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
         {
             var rdb = (System.Windows.Forms.RadioButton)sender;
 
-            if (rdb.Checked == true)
+            if (rdb.Checked)
             {
                 if ((rdb.Name ?? "") == (rdbNameSelect.Name ?? ""))
                 {
