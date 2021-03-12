@@ -112,40 +112,21 @@ namespace Bulk_Fasta_Importer
         /// <summary>
         /// Get the error message, or an empty string if no error
         /// </summary>
-        /// <returns></returns>
         public override string GetErrorMessage()
         {
-            string errorMessage;
-
             if (ErrorCode == ProcessFilesErrorCodes.LocalizedError ||
                 ErrorCode == ProcessFilesErrorCodes.NoError)
             {
-                switch (mLocalErrorCode)
+                return mLocalErrorCode switch
                 {
-                    case BulkImporterErrorCodes.NoError:
-                        errorMessage = "";
-                        break;
-
-                    case BulkImporterErrorCodes.DatabaseError:
-                        errorMessage = "Database query error";
-                        break;
-
-                    case BulkImporterErrorCodes.UnspecifiedError:
-                        errorMessage = "Unspecified localized error";
-                        break;
-
-                    default:
-                        // This shouldn't happen
-                        errorMessage = "Unknown error state";
-                        break;
-                }
-            }
-            else
-            {
-                errorMessage = GetBaseClassErrorMessage();
+                    BulkImporterErrorCodes.NoError => "",
+                    BulkImporterErrorCodes.DatabaseError => "Database query error",
+                    BulkImporterErrorCodes.UnspecifiedError => "Unspecified localized error",
+                    _ => "Unknown error state"
+                };
             }
 
-            return errorMessage;
+            return GetBaseClassErrorMessage();
         }
 
         protected void InitializeLocalVariables()
