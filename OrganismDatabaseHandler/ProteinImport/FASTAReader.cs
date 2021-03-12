@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using OrganismDatabaseHandler.ProteinStorage;
 using OrganismDatabaseHandler.SequenceInfo;
@@ -66,7 +67,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             var reference = string.Empty;
             var description = string.Empty;
-            var sequence = string.Empty;
+            var sequence = new StringBuilder();
 
             var seqInfo = new SequenceInfoCalculator();
 
@@ -78,86 +79,94 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             try
             {
-                var fi = new FileInfo(mFASTAFilePath);
-                var fileLength = (int)fi.Length;
-                if (fi.Exists && fileLength > 0)
+                var fastaFile = new FileInfo(mFASTAFilePath);
+                var fileLength = fastaFile.Length;
+
+                if (!fastaFile.Exists || fileLength <= 0)
                 {
-                    LoadStart?.Invoke("Reading Source File..."); // Trigger the setup of the pgb
+                    return fastaContents;
+                }
 
-                    using (var fileReader = new StreamReader(new FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.Read)))
+                // Trigger the setup of the progress bar
+                LoadStart?.Invoke("Reading Source File...");
+
+                using var fileReader = new StreamReader(new FileStream(fastaFile.FullName, FileMode.Open, FileAccess.Read, FileShare.Read));
+
+                while (!fileReader.EndOfStream)
+                {
+                    var dataLine = fileReader.ReadLine()?.Trim();
+
+                    if (string.IsNullOrWhiteSpace(dataLine))
+                        continue;
+
+                    if (mDescLineMatcher.IsMatch(dataLine))
                     {
-                        var s = fileReader.ReadLine()?.Trim();
-
-                        while (s != null)
+                        // DescriptionLine, new record
+                        if (currentPosition > 0) // dump current record
                         {
-                            if (mDescLineMatcher.IsMatch(s))
+                            seqInfo.CalculateSequenceInfo(sequence.ToString());
+                            recordCount++;
+                            if (recordCount % 100 == 0)
                             {
-                                // DescriptionLine, new record
-                                if (currentPosition > 0) // dump current record
-                                {
-                                    seqInfo.CalculateSequenceInfo(sequence);
-                                    recordCount++;
-                                    if (recordCount % 100 == 0)
-                                    {
-                                        LoadProgress?.Invoke((float)(currentPosition / (double)fileLength));     // trigger pgb update every 10th record
-                                    }
-
-                                    fastaContents.AddProtein(new ProteinStorageEntry(
-                                        reference, description, sequence, seqInfo.SequenceLength,
-                                        seqInfo.MonoisotopicMass, seqInfo.AverageMass,
-                                        seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount));
-                                }
-
-                                reference = string.Empty;
-                                description = string.Empty;
-                                sequence = string.Empty;
-
-                                Match descMatch;
-                                if (mDescLineRegEx.IsMatch(s))
-                                {
-                                    descMatch = mDescLineRegEx.Match(s);
-                                    reference = descMatch.Groups["name"].Value;
-                                    description = descMatch.Groups["description"].Value;
-                                }
-                                else if (mNoDescLineRegEx.IsMatch(s))
-                                {
-                                    descMatch = mNoDescLineRegEx.Match(s);
-                                    reference = descMatch.Groups[1].Value;
-                                    description = string.Empty;
-                                }
-                            }
-                            else
-                            {
-                                sequence += s;
+                                // trigger progress bar update every 100th record
+                                LoadProgress?.Invoke((float)(currentPosition / (double)fileLength));
                             }
 
-                            if (numRecordsToLoad > 0 && recordCount >= numRecordsToLoad - 1)
-                            {
-                                break;
-                            }
-
-                            currentPosition += s.Length + lineEndCharCount;
-
-                            if (fileReader.EndOfStream)
-                            {
-                                break;
-                            }
-
-                            s = fileReader.ReadLine()?.Trim();
+                            fastaContents.AddProtein(new ProteinStorageEntry(
+                                reference, description, sequence.ToString(), seqInfo.SequenceLength,
+                                seqInfo.MonoisotopicMass, seqInfo.AverageMass,
+                                seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount));
                         }
 
-                        // dump the last record
-                        seqInfo.CalculateSequenceInfo(sequence);
-                        recordCount++;
+                        reference = string.Empty;
+                        description = string.Empty;
+                        sequence.Clear();
 
-                        fastaContents.AddProtein(new ProteinStorageEntry(
-                            reference, description, sequence, seqInfo.SequenceLength,
-                            seqInfo.MonoisotopicMass, seqInfo.AverageMass,
-                            seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount));
+                        Match descMatch;
+                        if (mDescLineRegEx.IsMatch(dataLine))
+                        {
+                            descMatch = mDescLineRegEx.Match(dataLine);
+                            reference = descMatch.Groups["name"].Value;
+                            description = descMatch.Groups["description"].Value;
+                        }
+                        else if (mNoDescLineRegEx.IsMatch(dataLine))
+                        {
+                            descMatch = mNoDescLineRegEx.Match(dataLine);
+                            reference = descMatch.Groups[1].Value;
+                            description = string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        sequence.Append(dataLine);
+                    }
 
-                        LoadEnd?.Invoke();
+                    if (numRecordsToLoad > 0 && recordCount >= numRecordsToLoad - 1)
+                    {
+                        break;
+                    }
+
+                    currentPosition += dataLine.Length + lineEndCharCount;
+
+                    if (fileReader.EndOfStream)
+                    {
+                        break;
                     }
                 }
+
+                if (sequence.Length > 0)
+                {
+                    // dump the last record
+                    seqInfo.CalculateSequenceInfo(sequence.ToString());
+                    recordCount++;
+
+                    fastaContents.AddProtein(new ProteinStorageEntry(
+                        reference, description, sequence.ToString(), seqInfo.SequenceLength,
+                        seqInfo.MonoisotopicMass, seqInfo.AverageMass,
+                        seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount));
+                }
+
+                LoadEnd?.Invoke();
             }
             catch (Exception ex)
             {
