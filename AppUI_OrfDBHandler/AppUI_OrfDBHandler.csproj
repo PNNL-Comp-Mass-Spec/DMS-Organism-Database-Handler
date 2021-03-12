@@ -10,6 +10,7 @@
     <RootNamespace>AppUI_OrfDBHandler</RootNamespace>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <LangVersion>latest</LangVersion>
     <StartupObject>AppUI_OrfDBHandler.frmCollectionEditor</StartupObject>
     <ApplicationIcon>PRISMSeq_Favicon.ico</ApplicationIcon>
   </PropertyGroup>
@@ -141,12 +142,15 @@
     <Compile Include="TransTableHandler.cs" />
     <EmbeddedResource Include="frmBatchAddNewCollection.resx">
       <DependentUpon>frmBatchAddNewCollection.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmCollectionEditor.resx">
       <DependentUpon>frmCollectionEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmCollectionStateEditor.resx">
       <DependentUpon>frmCollectionStateEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmValidationReport.resx">
       <DependentUpon>frmValidationReport.cs</DependentUpon>
