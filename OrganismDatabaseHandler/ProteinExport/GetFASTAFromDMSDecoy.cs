@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using OrganismDatabaseHandler.DatabaseTools;
 
@@ -16,14 +17,26 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
         /// <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
         /// <param name="decoyUsesXXX"></param>
+        [Obsolete("Use the constructor that does not take databaseFormatType")]
         public GetFASTAFromDMSDecoy(
             DBTask databaseAccessor,
             GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType,
             bool decoyUsesXXX)
-            : base(databaseAccessor, databaseFormatType)
+            : this(databaseAccessor, decoyUsesXXX)
+        { }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
+        /// <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
+        /// <param name="decoyUsesXXX"></param>
+        public GetFASTAFromDMSDecoy(
+            DBTask databaseAccessor,
+            bool decoyUsesXXX)
+            : base(databaseAccessor)
         {
-            RevGenerator = new GetFASTAFromDMSReversed(
-                databaseAccessor, databaseFormatType) { UseXXX = decoyUsesXXX };
+            RevGenerator = new GetFASTAFromDMSReversed(databaseAccessor) { UseXXX = decoyUsesXXX };
         }
 
         /// <summary>

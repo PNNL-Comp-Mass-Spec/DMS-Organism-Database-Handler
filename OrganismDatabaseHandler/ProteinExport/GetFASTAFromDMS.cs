@@ -27,6 +27,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             DecoyX = 5,
         }
 
+        [Obsolete("Deprecated: only .fasta files are supported")]
         public enum DatabaseFormatTypes
         {
             Fasta,
@@ -38,7 +39,6 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         private GetFASTAFromDMSForward mGetter;
         private ArchiveOutputFilesBase mArchiver;
-        private DatabaseFormatTypes mDatabaseFormatType;
         private SequenceTypes mOutputSequenceType;
         private ArchiveOutputFilesBase.CollectionTypes mCollectionType;
         private string mFinalOutputPath;
@@ -71,7 +71,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// </summary>
         /// <param name="dbConnectionString">Protein sequences database connection string</param>
         public GetFASTAFromDMS(string dbConnectionString)
-            : this(dbConnectionString, DatabaseFormatTypes.Fasta, SequenceTypes.Forward)
+            : this(dbConnectionString, SequenceTypes.Forward)
         {
         }
 
@@ -82,7 +82,19 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <param name="databaseFormatType"></param>
         /// <param name="outputSequenceType"></param>
         /// <param name="decoyUsesXXX">When true, decoy proteins start with XXX_ instead of Reversed_</param>
+        [Obsolete("Use the constructor that does not have databaseFormatType")]
         public GetFASTAFromDMS(string dbConnectionString, DatabaseFormatTypes databaseFormatType, SequenceTypes outputSequenceType, bool decoyUsesXXX = true)
+             : this(dbConnectionString, outputSequenceType, decoyUsesXXX)
+        {
+        }
+
+        /// <summary>
+        /// Constructor that takes connection string, database format type, and output sequence type
+        /// </summary>
+        /// <param name="dbConnectionString">Database connection string; empty string if offline and only planning to use ValidateMatchingHash</param>
+        /// <param name="outputSequenceType"></param>
+        /// <param name="decoyUsesXXX">When true, decoy proteins start with XXX_ instead of Reversed_</param>
+        public GetFASTAFromDMS(string dbConnectionString, SequenceTypes outputSequenceType, bool decoyUsesXXX = true)
         {
             sha1Provider = new SHA1Managed();
 
@@ -96,14 +108,14 @@ namespace OrganismDatabaseHandler.ProteinExport
                 RegisterEvents(mDatabaseAccessor);
             }
 
-            ClassSelector(databaseFormatType, outputSequenceType, decoyUsesXXX);
+            ClassSelector(outputSequenceType, decoyUsesXXX);
 
             mFileTools = new FileTools();
             mFileTools.WaitingForLockQueue += FileTools_WaitingForLockQueue;
             RegisterEvents(mFileTools);
         }
 
-        private void ClassSelector(DatabaseFormatTypes databaseFormatType, SequenceTypes outputSequenceType, bool decoyUsesXXX)
+        private void ClassSelector(SequenceTypes outputSequenceType, bool decoyUsesXXX)
         {
             if (mGetter != null)
             {
@@ -112,33 +124,32 @@ namespace OrganismDatabaseHandler.ProteinExport
                 mGetter.FileGenerationProgress -= OnFileGenerationProgressUpdate;
             }
 
-            mDatabaseFormatType = databaseFormatType;
             mOutputSequenceType = outputSequenceType;
 
             switch (outputSequenceType)
             {
                 case SequenceTypes.Forward:
-                    mGetter = new GetFASTAFromDMSForward(mDatabaseAccessor, databaseFormatType);
+                    mGetter = new GetFASTAFromDMSForward(mDatabaseAccessor);
                     mCollectionType = ArchiveOutputFilesBase.CollectionTypes.Static;
                     break;
 
                 case SequenceTypes.Reversed:
-                    mGetter = new GetFASTAFromDMSReversed(mDatabaseAccessor, databaseFormatType);
+                    mGetter = new GetFASTAFromDMSReversed(mDatabaseAccessor);
                     mCollectionType = ArchiveOutputFilesBase.CollectionTypes.Dynamic;
                     break;
 
                 case SequenceTypes.Scrambled:
-                    mGetter = new GetFASTAFromDMSScrambled(mDatabaseAccessor, databaseFormatType);
+                    mGetter = new GetFASTAFromDMSScrambled(mDatabaseAccessor);
                     mCollectionType = ArchiveOutputFilesBase.CollectionTypes.Dynamic;
                     break;
 
                 case SequenceTypes.Decoy:
-                    mGetter = new GetFASTAFromDMSDecoy(mDatabaseAccessor, databaseFormatType, decoyUsesXXX);
+                    mGetter = new GetFASTAFromDMSDecoy(mDatabaseAccessor, decoyUsesXXX);
                     mCollectionType = ArchiveOutputFilesBase.CollectionTypes.Dynamic;
                     break;
 
                 case SequenceTypes.DecoyX:
-                    mGetter = new GetFASTAFromDMSDecoyX(mDatabaseAccessor, databaseFormatType);
+                    mGetter = new GetFASTAFromDMSDecoyX(mDatabaseAccessor);
                     mCollectionType = ArchiveOutputFilesBase.CollectionTypes.Dynamic;
                     break;
             }
@@ -165,25 +176,38 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <summary>
         /// Create the FASTA file for the given protein collection ID
         /// </summary>
-        /// <param name="destinationFolderPath"></param>
         /// <param name="proteinCollectionId">Protein collection ID</param>
+        /// <param name="destinationFolderPath"></param>
         /// <param name="databaseFormatType">Typically fasta for .fasta files; fastapro will create a .fasta.pro file</param>
         /// <param name="outputSequenceType">Sequence type (forward, reverse, scrambled, decoy, or decoyX)</param>
         /// <returns>CRC32 hash of the generated (or retrieved) file</returns>
+        [Obsolete("Use the method that does not take databaseFormatType")]
         public string ExportFASTAFile(int proteinCollectionId, string destinationFolderPath, DatabaseFormatTypes databaseFormatType, SequenceTypes outputSequenceType)
+        {
+            return ExportFASTAFile(proteinCollectionId, destinationFolderPath, outputSequenceType);
+        }
+
+        /// <summary>
+        /// Create the FASTA file for the given protein collection ID
+        /// </summary>
+        /// <param name="proteinCollectionId">Protein collection ID</param>
+        /// <param name="destinationFolderPath"></param>
+        /// <param name="outputSequenceType">Sequence type (forward, reverse, scrambled, decoy, or decoyX)</param>
+        /// <returns>CRC32 hash of the generated (or retrieved) file</returns>
+        public string ExportFASTAFile(int proteinCollectionId, string destinationFolderPath, SequenceTypes outputSequenceType)
         {
             var proteinCollectionName = GetProteinCollectionName(proteinCollectionId);
 
             var creationOptionsHandler = new FileCreationOptions(mDatabaseAccessor);
 
-            var creationOptions = creationOptionsHandler.MakeCreationOptionsString(outputSequenceType, databaseFormatType);
+            var creationOptions = creationOptionsHandler.MakeCreationOptionsString(outputSequenceType);
 
             var protCollectionList = new List<string>()
             {
                 proteinCollectionName
             };
 
-            return ExportProteinCollections(protCollectionList, creationOptions, destinationFolderPath, 0, true, databaseFormatType, outputSequenceType);
+            return ExportProteinCollections(protCollectionList, creationOptions, destinationFolderPath, 0, true, outputSequenceType);
         }
 
         /// <summary>
@@ -219,7 +243,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 // Parse options string
                 var cleanOptionsString = optionsParser.ExtractOptions(creationOptions);
 
-                return ExportProteinCollections(collectionList, cleanOptionsString, destinationFolderPath, 0, true, optionsParser.FileFormatType, optionsParser.SequenceDirection);
+                return ExportProteinCollections(collectionList, cleanOptionsString, destinationFolderPath, 0, true, optionsParser.SequenceDirection);
             }
             else if (legacyFASTAFileName.Length > 0 && !legacyFASTAFileName.Equals("na", StringComparison.OrdinalIgnoreCase))
             {
@@ -327,7 +351,6 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             if (fiFinalFile != null)
             {
-
                 // Check again for the existence of the desired .Fasta file
                 // It's possible another process created .Fasta file while this process was waiting for the other process's lock file to disappear
                 fiFinalFile.Refresh();
@@ -413,7 +436,13 @@ namespace OrganismDatabaseHandler.ProteinExport
             return false;
         }
 
-        private string ExportProteinCollections(List<string> protCollectionList, string creationOptionsString, string destinationFolderPath, int alternateAnnotationTypeId, bool padWithPrimaryAnnotation, DatabaseFormatTypes databaseFormatType, SequenceTypes outputSequenceType)
+        private string ExportProteinCollections(
+            List<string> protCollectionList,
+            string creationOptionsString,
+            string destinationFolderPath,
+            int alternateAnnotationTypeId,
+            bool padWithPrimaryAnnotation,
+            SequenceTypes outputSequenceType)
         {
             var proteinCollectionList = string.Join(",", protCollectionList);
 
@@ -517,7 +546,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             // We're finally ready to generate the .Fasta file
 
             // Initialize the ClassSelector
-            ClassSelector(databaseFormatType, outputSequenceType, DecoyProteinsUseXXX);
+            ClassSelector(outputSequenceType, DecoyProteinsUseXXX);
 
             // If more than one protein collection, then we're generating a dynamic protein collection
             if (protCollectionList.Count > 1)
@@ -550,7 +579,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     {
                         archivedFileId = mArchiver.ArchiveCollection(
                             collectionName, mCollectionType, mOutputSequenceType,
-                            mDatabaseFormatType, mFinalOutputPath,
+                            mFinalOutputPath,
                             creationOptionsString, crc32Hash, proteinCollectionList);
 
                         if (archivedFileId == 0)

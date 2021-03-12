@@ -125,16 +125,16 @@ namespace AppUI_OrfDBHandler
                 mLastOutputDirectory = filePath;
 
                 //tmpNameList.Add(cboCollectionsList.Text.ToString());
-                //exporter = new Protein_Exporter.GetFASTAFromDMS(txtConnString.Text, Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.FASTA, Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward_sequence);
+                //exporter = new Protein_Exporter.GetFASTAFromDMS(txtConnString.Text, SequenceTypes.forward_sequence);
                 //exporter = new Protein_Exporter.GetFASTAFromDMS(
                 //    txtConnString.Text,
-                //    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.FASTA,
-                //    GetCollectionName(CInt(cboCollectionsList.SelectedValue)) + "_scrambled.fasta");
+                //    DatabaseFormatTypes.Fasta,
+                //    GetCollectionName((int)cboCollectionsList.SelectedValue) + "_scrambled.fasta");
 
                 //mExporter = New Protein_Exporter.GetFASTAFromDMS(
                 //    txtConnString.Text,
-                //    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.DatabaseFormatTypes.fasta,
-                //    Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS.SequenceTypes.forward);
+                //    DatabaseFormatTypes.Fasta,
+                //    SequenceTypes.forward);
                 mExporter = new GetFASTAFromDMS(txtConnString.Text);
                 mExporter.FileGenerationStarted += StartTask;
                 mExporter.FileGenerationProgress += UpdateProgress;

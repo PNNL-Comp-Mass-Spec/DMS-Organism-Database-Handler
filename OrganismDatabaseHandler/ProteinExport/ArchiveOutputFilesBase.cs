@@ -43,18 +43,65 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public string Archived_File_Name => mArchived_File_Name;
 
-        public int ArchiveCollection(int proteinCollectionId, CollectionTypes archivedFileType, GetFASTAFromDMS.SequenceTypes outputSequenceType, GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType, string sourceFilePath, string creationOptionsString, string authenticationHash, string proteinCollectionList)
+        [Obsolete("Use the method that does not take databaseFormatType")]
+        public int ArchiveCollection(
+            int proteinCollectionId,
+            CollectionTypes archivedFileType,
+            GetFASTAFromDMS.SequenceTypes outputSequenceType,
+            GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType,
+            string sourceFilePath,
+            string creationOptionsString,
+            string authenticationHash,
+            string proteinCollectionList)
+        {
+            return ArchiveCollection(proteinCollectionId, archivedFileType, outputSequenceType, sourceFilePath, creationOptionsString, authenticationHash, proteinCollectionList);
+        }
+
+        public int ArchiveCollection(
+            int proteinCollectionId,
+            CollectionTypes archivedFileType,
+            GetFASTAFromDMS.SequenceTypes outputSequenceType,
+            string sourceFilePath,
+            string creationOptionsString,
+            string authenticationHash,
+            string proteinCollectionList)
         {
             OnArchiveStart();
 
             return DispositionFile(proteinCollectionId, sourceFilePath, creationOptionsString, authenticationHash, outputSequenceType, archivedFileType, proteinCollectionList);
         }
 
-        public int ArchiveCollection(string proteinCollectionName, CollectionTypes archivedFileType, GetFASTAFromDMS.SequenceTypes outputSequenceType, GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType, string sourceFilePath, string creationOptionsString, string authenticationHash, string proteinCollectionList)
+        [Obsolete("Use the method that does not take databaseFormatType")]
+        public int ArchiveCollection(
+            string proteinCollectionName,
+            CollectionTypes archivedFileType,
+            GetFASTAFromDMS.SequenceTypes outputSequenceType,
+            GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType,
+            string sourceFilePath,
+            string creationOptionsString,
+            string authenticationHash,
+            string proteinCollectionList)
+        {
+            return ArchiveCollection(proteinCollectionName, archivedFileType, outputSequenceType, sourceFilePath, creationOptionsString, authenticationHash, proteinCollectionList);
+        }
+
+        public int ArchiveCollection(
+            string proteinCollectionName,
+            CollectionTypes archivedFileType,
+            GetFASTAFromDMS.SequenceTypes outputSequenceType,
+            string sourceFilePath,
+            string creationOptionsString,
+            string authenticationHash,
+            string proteinCollectionList)
         {
             var proteinCollectionId = GetProteinCollectionId(proteinCollectionName);
+            if (proteinCollectionId <= 0)
+            {
+                PRISM.ConsoleMsgUtils.ShowWarning("Protein collection not found: " + proteinCollectionName);
+                return 0;
+            }
 
-            return ArchiveCollection(proteinCollectionId, archivedFileType, outputSequenceType, databaseFormatType, sourceFilePath, creationOptionsString, authenticationHash, proteinCollectionList);
+            return ArchiveCollection(proteinCollectionId, archivedFileType, outputSequenceType, sourceFilePath, creationOptionsString, authenticationHash, proteinCollectionList);
         }
 
         protected abstract int DispositionFile(int proteinCollectionId, string sourceFilePath, string creationOptionsString, string sourceAuthenticationHash, GetFASTAFromDMS.SequenceTypes outputSequenceType, CollectionTypes archivedFileType, string proteinCollectionsList);

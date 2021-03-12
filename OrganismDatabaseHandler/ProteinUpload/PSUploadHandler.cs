@@ -199,9 +199,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
             mUpload.LoadProgress += LoadProgressHandler;
             mUpload.LoadEnd += LoadEndHandler;
 
-            mExport = new GetFASTAFromDMS(psConnectionString,
-                                           GetFASTAFromDMS.DatabaseFormatTypes.Fasta,
-                                           GetFASTAFromDMS.SequenceTypes.Forward);
+            mExport = new GetFASTAFromDMS(psConnectionString, GetFASTAFromDMS.SequenceTypes.Forward);
             mExport.FileGenerationCompleted += Export_FileGenerationCompleted;
             mExport.FileGenerationProgress += Export_FileGenerationProgress;
 
@@ -479,10 +477,8 @@ namespace OrganismDatabaseHandler.ProteinUpload
 
             var tmpFileName = Path.GetTempPath();
 
-            // Dim tmpFi As System.IO.FileInfo = New System.IO.FileInfo(tmpFileName)
-
             OnLoadStart("Generating Hash fingerprint");
-            var fingerprint = mExport.ExportFASTAFile(collectionId, tmpFileName, GetFASTAFromDMS.DatabaseFormatTypes.Fasta, GetFASTAFromDMS.SequenceTypes.Forward);
+            var fingerprint = mExport.ExportFASTAFile(collectionId, tmpFileName, GetFASTAFromDMS.SequenceTypes.Forward);
             OnLoadEnd();
 
             OnLoadStart("Storing fingerprint in T_Protein_Collections");

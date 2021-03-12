@@ -13,7 +13,6 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         private readonly DBTask mDatabaseAccessor;
         private GetFASTAFromDMS.SequenceTypes mSeqDirection;
-        private GetFASTAFromDMS.DatabaseFormatTypes mFileType;
         private DataTable mCreationValuesTable;
         private DataTable mKeywordTable;
 
@@ -24,7 +23,8 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public GetFASTAFromDMS.SequenceTypes SequenceDirection => mSeqDirection;
 
-        public GetFASTAFromDMS.DatabaseFormatTypes FileFormatType => mFileType;
+        [Obsolete("Obsolete: only .fasta files are supported")]
+        public GetFASTAFromDMS.DatabaseFormatTypes FileFormatType => GetFASTAFromDMS.DatabaseFormatTypes.Fasta;
 
         // Options string looks like... "seq_direction=forward;filetype=fasta"
         public string ExtractOptions(string optionsString)
@@ -78,9 +78,11 @@ namespace OrganismDatabaseHandler.ProteinExport
                 {
                     // check if keyword or value is bad
                     var errorString = new StringBuilder();
+
                     var checkRows = mCreationValuesTable.Select("Keyword = '" + tmpKeyword);
                     if (checkRows.Length > 0)
                         validKeyword = true;
+
                     checkRows = mCreationValuesTable.Select("Value_String = '" + tmpValue + "'");
                     if (checkRows.Length > 0)
                         validValue = true;
@@ -136,7 +138,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                         break;
 
                     case "filetype":
-                        mFileType = (GetFASTAFromDMS.DatabaseFormatTypes)Enum.Parse(typeof(GetFASTAFromDMS.DatabaseFormatTypes), tmpValue);
+                        // Deprecated; ignore
                         break;
                 }
 
@@ -148,17 +150,23 @@ namespace OrganismDatabaseHandler.ProteinExport
             return cleanOptionsString.ToString();
         }
 
+        [Obsolete("Use the method that does not take databaseFormatType")]
         public string MakeCreationOptionsString(
             GetFASTAFromDMS.SequenceTypes seqDirection,
             GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType)
+        {
+            return MakeCreationOptionsString(seqDirection);
+        }
+
+        public string MakeCreationOptionsString(
+            GetFASTAFromDMS.SequenceTypes seqDirection)
         {
             var creationOptionsSb = new StringBuilder();
 
             creationOptionsSb.Append("seq_direction=");
             creationOptionsSb.Append(seqDirection.ToString());
             creationOptionsSb.Append(",");
-            creationOptionsSb.Append("filetype=");
-            creationOptionsSb.Append(databaseFormatType.ToString());
+            creationOptionsSb.Append("filetype=fasta");
 
             return creationOptionsSb.ToString();
         }

@@ -81,7 +81,7 @@ namespace AppUI_OrfDBHandler
                 fileArchiver.ArchiveCollection(
                     proteinCollectionId,
                     ArchiveOutputFilesBase.CollectionTypes.Static,
-                    outputSequenceType, databaseFormatType, sourceFilePath, CreationOptionsString, sha1, proteinCollectionList);
+                    outputSequenceType, sourceFilePath, CreationOptionsString, sha1, proteinCollectionList);
             }
 
             OnSyncCompletion();
@@ -115,9 +115,7 @@ namespace AppUI_OrfDBHandler
                 connectionString = mDatabaseAccessor.ConnectionString;
             }
 
-            mExporter = new GetFASTAFromDMS(
-                connectionString, GetFASTAFromDMS.DatabaseFormatTypes.Fasta,
-                GetFASTAFromDMS.SequenceTypes.Forward);
+            mExporter = new GetFASTAFromDMS(connectionString, GetFASTAFromDMS.SequenceTypes.Forward);
             mExporter.FileGenerationCompleted += Exporter_FileGenerationCompleted;
 
             const string creationOptionsString = "seq_direction=forward,filetype=fasta";
@@ -173,9 +171,7 @@ namespace AppUI_OrfDBHandler
                 var tmpFullPath = Path.Combine(tmpPath, tmpFilename + ".fasta");
                 // Debug.WriteLine("Start: " + tmpFilename + ": " + startTime.ToLongTimeString());
 
-                var tmpGenSHA = mExporter.ExportFASTAFile(tmpId, tmpPath,
-                    GetFASTAFromDMS.DatabaseFormatTypes.Fasta,
-                    GetFASTAFromDMS.SequenceTypes.Forward);
+                var tmpGenSHA = mExporter.ExportFASTAFile(tmpId, tmpPath, GetFASTAFromDMS.SequenceTypes.Forward);
 
                 if (!tmpStoredSHA.Equals(tmpGenSHA))
                 {
@@ -197,7 +193,6 @@ namespace AppUI_OrfDBHandler
                     tmpId,
                     ArchiveOutputFilesBase.CollectionTypes.Static,
                     GetFASTAFromDMS.SequenceTypes.Forward,
-                    GetFASTAFromDMS.DatabaseFormatTypes.Fasta,
                     tmpFullPath, creationOptionsString, tmpGenSHA, "");
                 // ArchiveCollection(
                 //     tmpID,
