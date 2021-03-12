@@ -20,9 +20,6 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
         private frmBatchUploadFromFileList mBatchForm;
 
-        private const string DmsOrgDbTableName = "V_Legacy_Static_File_Locations";
-        private const string ProteinCollectionsTableName = "T_Protein_Collections";
-
         public BatchUploadFromFileList(string psConnectionString)
         {
             mUploader = new PSUploadHandler(psConnectionString);
@@ -145,7 +142,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             // int tmpAnnTypeID;
             // int tmpAuthTypeID;
 
-            var loadedCollectionsSQL = "SELECT FileName, Full_Path, Organism_Name, Organism_ID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered";
+            const string loadedCollectionsSQL = "SELECT FileName, Full_Path, Organism_Name, Organism_ID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered";
 
             using (var fileTable = mDatabaseAccessor.GetTable(loadedCollectionsSQL))
             {

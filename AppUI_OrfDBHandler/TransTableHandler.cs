@@ -54,10 +54,10 @@ namespace AppUI_OrfDBHandler
             // Look through a given ASN.1 file and scan for translation table entries
             var dba = new DBTask(mConnectionString);
 
-            var sqlQuery1 = "SELECT * FROM " + EntriesTableName;
+            const string sqlQuery1 = "SELECT * FROM " + EntriesTableName;
             mTranslationEntries = dba.GetTable(sqlQuery1);
 
-            var sqlQuery2 = "SELECT * FROM " + IdTableName;
+            const string sqlQuery2 = "SELECT * FROM " + IdTableName;
             mTranslationTables = dba.GetTable(sqlQuery2);
 
             var fi = new System.IO.FileInfo(filePath);
@@ -126,7 +126,7 @@ namespace AppUI_OrfDBHandler
 
             var tmpStartPos = default(int);
 
-            var trimString = " ,\"";
+            const string trimString = " ,\"";
             var trimChars = trimString.ToCharArray();
 
             foreach (var str in rawEntryCollection)

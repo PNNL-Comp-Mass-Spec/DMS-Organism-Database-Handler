@@ -47,24 +47,23 @@ namespace AppUI_OrfDBHandler
 
         public int SyncCollectionsAndArchiveTables(string outputPath)
         {
-            var sql =
+            const string sql =
                 "SELECT Protein_Collection_ID, FileName, Authentication_Hash, DateModified, Collection_Type_ID, NumProteins " +
                 "FROM V_Missing_Archive_Entries";
 
             // TODO add collection list string
-            var proteinCollectionList = "";
+            const string proteinCollectionList = "";
 
             var dt = mDatabaseAccessor.GetTable(sql);
-            var CreationOptionsString = "seq_direction=forward,filetype=fasta";
-            var totalProteinsCount = default(int);
+            const string CreationOptionsString = "seq_direction=forward,filetype=fasta";
+
             var currentCollectionProteinCount = 0;
             foreach (DataRow dr in dt.Rows)
             {
                 mTotalProteinsCount += Convert.ToInt32(dr["NumProteins"]);
             }
 
-            var outputSequenceType = GetFASTAFromDMS.SequenceTypes.Forward;
-            var databaseFormatType = GetFASTAFromDMS.DatabaseFormatTypes.Fasta;
+            const GetFASTAFromDMS.SequenceTypes outputSequenceType = GetFASTAFromDMS.SequenceTypes.Forward;
 
             OnSyncStart("Synchronizing Archive Table with Collections Table");
 
@@ -91,7 +90,7 @@ namespace AppUI_OrfDBHandler
 
         public void UpdateSHA1Hashes() // Implements IArchiveOutputFiles.UpdateSHA1Hashes
         {
-            var sql = "SELECT Protein_Collection_ID, FileName, Authentication_Hash, NumProteins " +
+            const string sql = "SELECT Protein_Collection_ID, FileName, Authentication_Hash, NumProteins " +
                       "FROM V_Missing_Archive_Entries";
 
             var dt = mDatabaseAccessor.GetTable(sql);
@@ -120,7 +119,7 @@ namespace AppUI_OrfDBHandler
                 GetFASTAFromDMS.SequenceTypes.Forward);
             mExporter.FileGenerationCompleted += Exporter_FileGenerationCompleted;
 
-            var creationOptionsString = "seq_direction=forward,filetype=fasta";
+            const string creationOptionsString = "seq_direction=forward,filetype=fasta";
             OnSyncStart("Updating Collections and Archive Entries");
             var startTime = DateTime.UtcNow;
 
@@ -287,7 +286,7 @@ namespace AppUI_OrfDBHandler
         [Obsolete("Uses old table")]
         public void FixArchivedFilePaths()
         {
-            var sql = "SELECT * FROM T_Temp_Archive_Path_Fix";
+            const string sql = "SELECT * FROM T_Temp_Archive_Path_Fix";
 
             var tmpTable = mDatabaseAccessor.GetTable(sql);
 
@@ -303,11 +302,11 @@ namespace AppUI_OrfDBHandler
         [Obsolete("Unused: uses an old view")]
         public void AddSortingIndices()
         {
-            var getCollectionsSQL = "SELECT Protein_Collection_ID, FileName, Organism_ID FROM V_Protein_Collections_By_Organism WHERE Collection_Type_ID = 1 or Collection_Type_ID = 5";
+            const string getCollectionsSQL = "SELECT Protein_Collection_ID, FileName, Organism_ID FROM V_Protein_Collections_By_Organism WHERE Collection_Type_ID = 1 or Collection_Type_ID = 5";
 
             var collectionTable = mDatabaseAccessor.GetTable(getCollectionsSQL);
 
-            var getLegacyFilesSQL = "SELECT DISTINCT FileName, Full_Path, Organism_ID FROM V_Legacy_Static_File_Locations";
+            const string getLegacyFilesSQL = "SELECT DISTINCT FileName, Full_Path, Organism_ID FROM V_Legacy_Static_File_Locations";
             var legacyTable = mDatabaseAccessor.GetTable(getLegacyFilesSQL);
 
             var dbTools = mDatabaseAccessor.DbTools;
@@ -446,7 +445,7 @@ namespace AppUI_OrfDBHandler
         [Obsolete("Valid, but unused and could take a very long time")]
         public void RefreshNameHashes()
         {
-            var nameCountSQL = "SELECT TOP 1 Reference_ID FROM T_Protein_Names ORDER BY Reference_ID DESC";
+            const string nameCountSQL = "SELECT TOP 1 Reference_ID FROM T_Protein_Names ORDER BY Reference_ID DESC";
 
             var nameCountResults = mDatabaseAccessor.GetTable(nameCountSQL);
             var totalNameCount = Convert.ToInt32(nameCountResults.Rows[0]["Reference_ID"]);

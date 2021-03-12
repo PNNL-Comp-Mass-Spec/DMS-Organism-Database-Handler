@@ -534,7 +534,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 if (string.IsNullOrEmpty(crc32Hash))
                 {
-                    var msg = "mGetter.ExportFASTAFile returned a blank string for the CRC32 authentication hash; this likely represents a problem";
+                    const string msg = "mGetter.ExportFASTAFile returned a blank string for the CRC32 authentication hash; this likely represents a problem";
                     OnErrorEvent(msg);
                     throw new Exception(msg);
                 }
@@ -554,7 +554,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                         if (archivedFileId == 0)
                         {
                             // Error making an entry in T_Archived_Output_Files; abort
-                            var msg = "Error archiving collection; Archived_File_ID = 0";
+                            const string msg = "Error archiving collection; Archived_File_ID = 0";
                             OnErrorEvent(msg);
                             throw new Exception(msg);
                         }

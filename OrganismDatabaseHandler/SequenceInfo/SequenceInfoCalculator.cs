@@ -119,7 +119,7 @@ namespace OrganismDatabaseHandler.SequenceInfo
 
             var getSql = new DBTask(mDMSConnectionString);
 
-            var sqlString = "SELECT * FROM T_Residues WHERE [NumC] > 0";
+            const string sqlString = "SELECT * FROM T_Residues WHERE [NumC] > 0";
             var tmpAATable = getSql.GetTable(sqlString);
 
             foreach (DataRow dr in tmpAATable.Rows)

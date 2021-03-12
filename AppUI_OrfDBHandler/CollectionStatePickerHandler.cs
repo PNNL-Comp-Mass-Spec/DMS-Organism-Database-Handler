@@ -88,14 +88,14 @@ namespace AppUI_OrfDBHandler
 
         public DataTable GetCollectionTable()
         {
-            var SQL = "SELECT * FROM V_Collection_State_Picker ORDER BY [Name]";
+            const string SQL = "SELECT * FROM V_Collection_State_Picker ORDER BY [Name]";
             var cTable = mGetTables.GetTable(SQL);
             return cTable;
         }
 
         public DataTable GetStates()
         {
-            var SQL = "SELECT State, Collection_State_ID as ID " +
+            const string SQL = "SELECT State, Collection_State_ID as ID " +
                       "FROM T_Protein_Collection_States ORDER BY Collection_State_ID";
             var sTable = mGetTables.GetTable(SQL);
 

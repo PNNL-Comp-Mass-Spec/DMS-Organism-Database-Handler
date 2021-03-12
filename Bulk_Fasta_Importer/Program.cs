@@ -184,7 +184,7 @@ namespace Bulk_Fasta_Importer
 
         private static void ShowErrorMessage(string strMessage)
         {
-            var strSeparator = "------------------------------------------------------------------------------";
+            const string strSeparator = "------------------------------------------------------------------------------";
 
             Console.WriteLine();
             Console.WriteLine(strSeparator);

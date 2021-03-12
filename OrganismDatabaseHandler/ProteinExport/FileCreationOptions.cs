@@ -39,9 +39,9 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             var cleanOptionsString = new StringBuilder();
 
-            var keywordTableSQL = "SELECT Keyword_ID, Keyword, Default_Value FROM T_Creation_Option_Keywords";
+            const string keywordTableSQL = "SELECT Keyword_ID, Keyword, Default_Value FROM T_Creation_Option_Keywords";
             //var valuesTableSQL = "SELECT Value_ID, Value_String, Keyword_ID FROM T_Creation_Option_Values";
-            var creationValuesSQL = "SELECT Keyword, Value_String, String_Element FROM V_Creation_String_Lookup";
+            const string creationValuesSQL = "SELECT Keyword, Value_String, String_Element FROM V_Creation_String_Lookup";
 
             if (mKeywordTable == null)
             {

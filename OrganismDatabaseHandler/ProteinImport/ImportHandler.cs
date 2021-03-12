@@ -106,7 +106,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public DataTable LoadOrganisms()
         {
-            var orgSQL = "SELECT * FROM V_Organism_Picker ORDER BY Short_Name";
+            const string orgSQL = "SELECT * FROM V_Organism_Picker ORDER BY Short_Name";
             var tmpOrgTable = mSQLAccess.GetTable(orgSQL);
 
             var dr = tmpOrgTable.NewRow();
@@ -176,7 +176,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public DataTable LoadAnnotationTypes()
         {
-            var AuthSQL = "SELECT * FROM V_Annotation_Type_Picker ORDER BY Display_Name";
+            const string AuthSQL = "SELECT * FROM V_Annotation_Type_Picker ORDER BY Display_Name";
             var tmpAnnTypeTable = mSQLAccess.GetTable(AuthSQL);
 
             var dr = tmpAnnTypeTable.NewRow();
@@ -197,7 +197,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public DataTable LoadAuthorities()
         {
-            var AuthSQL = "SELECT * FROM V_Authority_Picker ORDER BY Display_Name";
+            const string AuthSQL = "SELECT * FROM V_Authority_Picker ORDER BY Display_Name";
             var tmpAuthTable = mSQLAccess.GetTable(AuthSQL);
 
             var dr = tmpAuthTable.NewRow();
@@ -237,7 +237,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public DataTable LoadProteinCollections()
         {
-            var pcSql = "SELECT MIN(FileName) AS FileName, Protein_Collection_ID, " +
+            const string pcSql = "SELECT MIN(FileName) AS FileName, Protein_Collection_ID, " +
                         "MIN(Organism_ID) AS Organism_ID, MIN(Authority_ID) AS Authority_ID, " +
                         "MIN(Display) AS Display, MIN(Authentication_Hash) AS Authentication_Hash " +
                         "FROM V_Protein_Collections_By_Organism " +
@@ -278,7 +278,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public DataTable LoadProteinCollectionNames()
         {
-            var pcSql =
+            const string pcSql =
                 "SELECT Protein_Collection_ID, FileName, Authority_ID " +
                 "FROM V_Protein_Collections_By_Organism " +
                 "ORDER BY FileName";

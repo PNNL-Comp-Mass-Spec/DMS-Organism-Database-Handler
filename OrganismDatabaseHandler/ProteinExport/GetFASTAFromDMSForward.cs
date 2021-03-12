@@ -399,7 +399,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             List<string> protCollectionList,
             string destinationFolderPath)
         {
-            var primaryAuthorityID = 1;
+            const int primaryAuthorityID = 1;
             const bool padWithPrimaryAnnotation = true;
 
             return ExportFASTAFile(protCollectionList, destinationFolderPath, primaryAuthorityID, padWithPrimaryAnnotation);
