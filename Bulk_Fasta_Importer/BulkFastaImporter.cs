@@ -175,7 +175,7 @@ namespace Bulk_Fasta_Importer
             try
             {
                 var sourceFileList = new List<FastaFileInfoType>();
-                var sourceFileNames = new SortedSet<string>(StringComparer.CurrentCultureIgnoreCase);
+                var sourceFileNames = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
 
                 var fiInfoFile = new FileInfo(fastaInfoFilePath);
                 if (!fiInfoFile.Exists)
