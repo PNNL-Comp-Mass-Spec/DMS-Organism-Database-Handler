@@ -21,7 +21,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// </summary>
         private readonly Dictionary<int, string> mAllCollections;
 
-        private int mCurrentFileProteinCount;
         private DataTable mCollectionsCache;
         private DataTable mOrganismCache;
 
@@ -232,6 +231,8 @@ namespace OrganismDatabaseHandler.ProteinExport
                     collectionLength = -1;
                 }
 
+                int currentFileProteinCount = 0;
+
                 do
                 {
                     var sectionStart = currentCollectionPos;
@@ -260,7 +261,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                             "ORDER BY Sorting_Index";
                     }
 
-                    collectionTable = mDatabaseAccessor.GetTable(collectionSql);
+                    var collectionTable = mDatabaseAccessor.GetTable(collectionSql);
 
                     if (proteinCollectionPassphrases.TryGetValue(trueName, out var passPhraseForCollection))
                     {
@@ -286,13 +287,13 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                     collectionTable.TableName = tableName;
 
-                    mCurrentFileProteinCount = collectionTable.Rows.Count;
+                    currentFileProteinCount = collectionTable.Rows.Count;
 
                     // collection.Tables.Add(collectionTable)
                     mFileDumper.Export(collectionTable, ref tmpOutputPath);
 
                     currentCollectionPos = sectionEnd + 1;
-                    currentCollectionCount += collectionTable.Rows.Count;
+                    currentCollectionCount += currentFileProteinCount;
 
                     var fractionDoneOverall = 0d;
                     if (collectionLength > 0)
@@ -302,7 +303,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                     OnExportProgressUpdate(currentCollectionCount + " entries exported, collection " + (proteinCollectionsExported + 1) + " of " + protCollectionList.Count, fractionDoneOverall);
                 }
-                while (collectionTable.Rows.Count != 0);
+                while (currentFileProteinCount > 0);
 
                 tmpIdListSb.Append(tmpId.ToString("000000"));
                 tmpIdListSb.Append("+");
