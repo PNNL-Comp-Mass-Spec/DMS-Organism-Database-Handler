@@ -94,10 +94,6 @@ namespace OrganismDatabaseHandler.ProteinUpload
 
         public delegate void FASTAFileWarningsEventHandler(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> warningCollection);
 
-        public event FASTAValidationCompleteEventHandler FASTAValidationComplete;
-
-        public delegate void FASTAValidationCompleteEventHandler(string fastaFilePath, UploadInfo uploadInfo);
-
         public event WroteLineEndNormalizedFASTAEventHandler WroteLineEndNormalizedFASTA;
 
         public delegate void WroteLineEndNormalizedFASTAEventHandler(string newFilePath);
@@ -143,11 +139,6 @@ namespace OrganismDatabaseHandler.ProteinUpload
         private void OnBatchProgressUpdate(string status)
         {
             BatchProgress?.Invoke(status);
-        }
-
-        private void OnFileValidationComplete(string fastaFilePath, UploadInfo uploadInfo)
-        {
-            FASTAValidationComplete?.Invoke(fastaFilePath, uploadInfo);
         }
 
         private void LoadStartHandler(string taskTitle)

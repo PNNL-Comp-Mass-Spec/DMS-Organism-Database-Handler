@@ -103,16 +103,6 @@ namespace AppUI_OrfDBHandler
             }
         }
 
-        [Obsolete("Unused")]
-        private void SyncLocalToDms()
-        {
-            var dba = new DBTask(mConnectionString);
-
-            var sqlQuery = "SELECT * FROM " + EntriesTableName;
-
-            var entriesTable = dba.GetTable(sqlQuery);
-        }
-
         private void ProcessTranslationEntry(IEnumerable<string> rawEntryCollection)
         {
             var id = default(int);

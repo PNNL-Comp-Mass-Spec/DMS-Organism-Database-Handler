@@ -673,22 +673,6 @@ namespace Bulk_Fasta_Importer
             }
         }
 
-        private void mUploadHandler_FASTAValidationComplete(string fastaFilePath, PSUploadHandler.UploadInfo uploadInfo)
-        {
-            ShowMessage("Validated " + fastaFilePath);
-            ShowMessage("  ... ProteinCount: " + uploadInfo.ProteinCount);
-            try
-            {
-                if (uploadInfo.ErrorList != null && uploadInfo.ErrorList.Count > 0)
-                {
-                    ShowMessage("  ... Error count: " + uploadInfo.ErrorList.Count);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Exception examining UploadInfo.ErrorList: " + ex.Message);
-            }
-        }
         private void UploadHandler_InvalidFASTAFile(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> errorCollection)
         {
             ShowWarning("Invalid fasta file: " + fastaFilePath);
