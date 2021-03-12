@@ -270,6 +270,7 @@ namespace Bulk_Fasta_Importer
                     }
 
                     sourceFileList.Add(udtFastaFileInfo);
+                    sourceFileNames.Add(fastaFile.Name);
                 }
 
                 if (sourceFileList.Count == 0)
