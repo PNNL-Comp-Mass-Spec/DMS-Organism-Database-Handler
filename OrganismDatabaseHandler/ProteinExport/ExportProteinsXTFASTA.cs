@@ -87,7 +87,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     var tmpPc = proteins.GetProtein(tmpName);
                     var tmpSeq = tmpPc.Sequence;
 
-                    counter += 1;
+                    counter++;
 
                     if (counter % eventTriggerThresh == 0)
                     {
@@ -197,7 +197,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                         var tmpName = dr["Name"].ToString();
                         // tmpDesc = dr.Item("Description").ToString();
 
-                        counter += 1;
+                        counter++;
 
                         if (counter % eventTriggerThresh == 0)
                         {
@@ -246,7 +246,6 @@ namespace OrganismDatabaseHandler.ProteinExport
             DataTable proteinTable,
             ref string destinationPath)
         {
-
             // Not implemented for this class
             return string.Empty;
         }
@@ -257,9 +256,9 @@ namespace OrganismDatabaseHandler.ProteinExport
             var m = new byte[lg];
             var h = n.ToString("X").PadLeft(16, '0');
             var k = 16;
-            for (var i = lg - 1; i >= 0; i -= 1)
+            for (var i = lg - 1; i >= 0; --i)
             {
-                k = k - 2;
+                k -= 2;
                 m[i] = Convert.ToByte("&H" + h.Substring(k, 2));
             }
 
@@ -274,10 +273,10 @@ namespace OrganismDatabaseHandler.ProteinExport
             ln = sidx + ln - 1;
             var k = 1L;
             long j = b[ln];
-            for (var i = ln - 1; i >= sidx; i -= 1)
+            for (var i = ln - 1; i >= sidx; --i)
             {
                 k = 256L * k;
-                j = j + k * b[i];
+                j += k * b[i];
             }
 
             return j;

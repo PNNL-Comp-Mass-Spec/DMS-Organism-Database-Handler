@@ -75,7 +75,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     var tmpPc = proteins.GetProtein(tmpName);
                     var tmpSeq = tmpPc.Sequence;
 
-                    counter += 1;
+                    counter++;
 
                     if (counter % eventTriggerThresh == 0)
                     {
@@ -209,7 +209,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 {
                     var tmpSeq = ExportComponent.SequenceExtender(currentRow["Sequence"].ToString(), proteinTable.Rows.Count);
 
-                    counter += 1;
+                    counter++;
 
                     if (counter % eventTriggerThresh == 0)
                     {
@@ -228,7 +228,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                         writer.WriteLine(seqLinePortion);
                     }
 
-                    proteinsWritten += 1;
+                    proteinsWritten++;
                 }
             }
 

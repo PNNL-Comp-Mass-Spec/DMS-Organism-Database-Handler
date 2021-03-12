@@ -319,7 +319,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                         proteinCollectionName, currentCollectionCount, collectionLength));
                 }
 
-                proteinCollectionsExported += 1;
+                proteinCollectionsExported++;
             }
 
             OnExportComplete(tmpOutputPath);

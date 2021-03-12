@@ -310,7 +310,7 @@ namespace AppUI_OrfDBHandler
                             errorDetail.LineNumber + "\t" +
                             errorDetail.Type + "\t" +
                             errorDetail.MessageText);
-                        intErrorCount += 1;
+                        intErrorCount++;
                     }
                 }
 

@@ -56,7 +56,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     sequence = sequence.Substring(index + 1);
                 }
 
-                counter -= 1;
+                counter--;
             }
 
             return sb.ToString();

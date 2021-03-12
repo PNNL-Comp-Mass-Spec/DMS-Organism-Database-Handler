@@ -243,7 +243,7 @@ namespace AppUI_OrfDBHandler
             foreach (var tmpAA in arrAA)
             {
                 dr = mTranslationEntries.NewRow();
-                counter += 1;
+                counter++;
                 var tmpStartString = startString.Substring(counter, 1);
                 tmpStart = tmpStartString == "M";
 

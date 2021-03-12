@@ -271,17 +271,17 @@ namespace AppUI_OrfDBHandler
             proteinCount = 0;
             residueCount = 0;
 
-            var oReader = new FastaFileReader();
-            if (oReader.OpenFile(fastaFilePath))
+            var reader = new FastaFileReader();
+            if (reader.OpenFile(fastaFilePath))
             {
-                while (oReader.ReadNextProteinEntry())
+                while (reader.ReadNextProteinEntry())
                 {
-                    proteinCount += 1;
-                    residueCount += oReader.ProteinSequence.Length;
+                    proteinCount++;
+                    residueCount += reader.ProteinSequence.Length;
                 }
             }
 
-            oReader.CloseFile();
+            reader.CloseFile();
         }
 
         [Obsolete("Uses old table")]
@@ -376,7 +376,7 @@ namespace AppUI_OrfDBHandler
             {
                 if (nameRegex.IsMatch(s))
                 {
-                    counter += 1;
+                    counter++;
                     var m = nameRegex.Match(s);
                     var tmpName = m.Groups["name"].Value;
                     if (!nameHash.ContainsKey(tmpName.ToLower()))
@@ -415,7 +415,7 @@ namespace AppUI_OrfDBHandler
             {
                 proteinList.Clear();
                 var startCount = counter;
-                counter = counter + 10000;
+                counter += 10000;
 
                 var proteinSelectSql = "SELECT Protein_ID, Sequence FROM T_Proteins " +
                                        "WHERE Protein_ID <= " + counter + " AND Protein_ID > " + startCount;

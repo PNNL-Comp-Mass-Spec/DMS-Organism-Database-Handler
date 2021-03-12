@@ -267,16 +267,16 @@ namespace OrganismDatabaseHandler.SequenceInfo
                 countO = 1;
             }
 
-            mSequence = mSequence + info.Sequence;
+            mSequence += info.Sequence;
             if (!mInvalidated)
             {
-                countC = countC + info.countC;
-                countH = countH + info.countH;
-                countN = countN + info.countN;
-                countO = countO + info.countO;
-                countS = countS + info.countS;
-                mMonoisotopicMass = mMonoisotopicMass + info.mMonoisotopicMass;
-                mAverageMass = mAverageMass + info.mAverageMass;
+                countC += info.countC;
+                countH += info.countH;
+                countN += info.countN;
+                countO += info.countO;
+                countS += info.countS;
+                mMonoisotopicMass += info.mMonoisotopicMass;
+                mAverageMass += info.mAverageMass;
             }
         }
     }

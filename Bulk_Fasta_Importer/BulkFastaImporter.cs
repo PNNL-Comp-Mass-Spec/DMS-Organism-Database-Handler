@@ -201,7 +201,7 @@ namespace Bulk_Fasta_Importer
                     while (!reader.EndOfStream)
                     {
                         var dataLine = reader.ReadLine();
-                        currentLine += 1;
+                        currentLine++;
 
                         if (string.IsNullOrWhiteSpace(dataLine))
                         {

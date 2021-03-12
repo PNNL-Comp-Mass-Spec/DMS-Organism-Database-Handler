@@ -53,7 +53,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
                 ce.Sequence = mRijndaelEncryptor.Encrypt(ce.Sequence);
                 ce.SHA1Hash = mRijndaelEncryptor.MakeArbitraryHash(ce.Sequence);
                 ce.IsEncrypted = true;
-                counter += 1;
+                counter++;
             }
         }
 

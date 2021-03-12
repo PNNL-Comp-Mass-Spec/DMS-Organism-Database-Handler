@@ -120,7 +120,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             {
                 var tmpPc = pc.GetProtein(s);
 
-                counter += 1;
+                counter++;
                 if (counter % eventTriggerThresh == 0)
                 {
                     OnProgressUpdate(counter / (double)counterMax);
@@ -157,7 +157,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             foreach (var s in selectedProteinList)
             {
                 var tmpPc = pc.GetProtein(s);
-                counter += 1;
+                counter++;
                 if (counter % eventTriggerThresh == 0)
                 {
                     OnProgressUpdate(counter / (double)counterMax);
@@ -198,7 +198,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             foreach (var s in selectedProteinList)
             {
                 var tmpPc = pc.GetProtein(s);
-                numProteinsActual += 1;
+                numProteinsActual++;
                 if (numProteinsActual % eventTriggerThresh == 0)
                 {
                     OnProgressUpdate(numProteinsActual / (double)counterMax);

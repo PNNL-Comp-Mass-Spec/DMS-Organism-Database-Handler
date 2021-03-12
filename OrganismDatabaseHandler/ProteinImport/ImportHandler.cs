@@ -385,7 +385,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
                 ce.ProteinId = dbTools.GetInteger(dr["Protein_ID"]);
                 tmpPs.AddProtein(ce);
-                counter += 1;
+                counter++;
             }
 
             return tmpPs;
@@ -440,7 +440,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                     Task_LoadProgress((float)(counter / (double)proteinCount));
                 }
 
-                counter += 1;
+                counter++;
             }
 
             Task_LoadEnd();

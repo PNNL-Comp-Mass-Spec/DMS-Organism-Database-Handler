@@ -96,7 +96,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                                 if (currentPosition > 0) // dump current record
                                 {
                                     seqInfo.CalculateSequenceInfo(sequence);
-                                    recordCount += 1;
+                                    recordCount++;
                                     if (recordCount % 100 == 0)
                                     {
                                         LoadProgress?.Invoke((float)(currentPosition / (double)fileLength));     // trigger pgb update every 10th record
@@ -148,7 +148,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
                         // dump the last record
                         seqInfo.CalculateSequenceInfo(sequence);
-                        recordCount += 1;
+                        recordCount++;
 
                         fastaContents.AddProtein(new ProteinStorageEntry(
                             reference, description, sequence, seqInfo.SequenceLength,

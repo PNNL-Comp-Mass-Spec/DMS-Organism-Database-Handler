@@ -77,7 +77,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     {
                         if (idLineRegex.IsMatch(dataLine))
                         {
-                            counter += 1;
+                            counter++;
                         }
                     }
                 }

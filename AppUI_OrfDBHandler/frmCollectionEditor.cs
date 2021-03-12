@@ -1058,7 +1058,7 @@ namespace AppUI_OrfDBHandler
 
         private void BatchImportProgressHandler(string status)
         {
-            mBatchLoadCurrentCount += 1;
+            mBatchLoadCurrentCount++;
             lblBatchProgress.Text = status + " (File " + mBatchLoadCurrentCount + " of " + mBatchLoadTotalCount + ")";
             Application.DoEvents();
         }

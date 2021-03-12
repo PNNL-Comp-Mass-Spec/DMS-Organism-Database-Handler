@@ -442,7 +442,7 @@ namespace AppUI_OrfDBHandler
             bSize[7] = "ZB"; // Zettabytes
             bSize[8] = "YB"; // Yottabytes
 
-            for (var i = bSize.Length; i >= 0; i -= 1)
+            for (var i = bSize.Length; i >= 0; --i)
             {
                 if (b >= Math.Pow(1024d, i))
                 {
