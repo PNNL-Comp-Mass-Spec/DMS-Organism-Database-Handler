@@ -164,7 +164,9 @@ namespace OrganismDatabaseHandler.SequenceInfo
             var sb = new StringBuilder();
 
             foreach (var b in bytes)
-                sb.Append(string.Format("{0:X2}", b));
+            {
+                sb.AppendFormat("{0:X2}", b);
+            }
 
             return sb.ToString();
         }

@@ -234,7 +234,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             cryptoStream.Close();
 
             // Convert decrypted data into a string.
-            // Let us assume that the original plaintext string was UTF8-encoded.
+            // Let us assume that the original plain text string was UTF8-encoded.
             var plainText = Encoding.UTF8.GetString(plainTextBytes,
                 0,
                 decryptedByteCount);
@@ -248,7 +248,9 @@ namespace OrganismDatabaseHandler.ProteinExport
             var sb = new StringBuilder();
 
             foreach (var b in bytes)
-                sb.Append(string.Format("{0:X2}", b));
+            {
+                sb.AppendFormat("{0:X2}", b);
+            }
 
             return sb.ToString();
         }
