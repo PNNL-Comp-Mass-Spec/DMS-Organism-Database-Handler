@@ -32,11 +32,11 @@ namespace OrganismDatabaseHandler.ProteinStorage
             SortingIndex = sortingIndex;
 
             ProteinId = 0;
+
+            NameXRefs = new List<string>();
         }
 
         private string mAlternateReference;
-
-        private List<string> mXRefList;
 
         public string Reference { get; private set; }
 
@@ -84,16 +84,11 @@ namespace OrganismDatabaseHandler.ProteinStorage
 
         public int SortingIndex { get; set; }
 
-        public List<string> NameXRefs => mXRefList;
+        public List<string> NameXRefs { get; }
 
         public void AddXRef(string newReference)
         {
-            if (mXRefList == null)
-            {
-                mXRefList = new List<string>();
-            }
-
-            mXRefList.Add(newReference);
+            NameXRefs.Add(newReference);
         }
 
         public void SetReferenceName(string newName)
