@@ -16,6 +16,8 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class GetFASTAFromDMS : EventNotifier
     {
+        // Ignore Spelling: Lockfile, fastapro, filetype, Desc, Ensembl
+
         public enum SequenceTypes
         {
             Forward = 1,
@@ -427,7 +429,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                               "WHERE Collection_List_Hex_Hash = '" + filenameSha1Hash + "' AND " +
                                      "Protein_Collection_List = '" + proteinCollectionList + "' AND " +
                                      "Archived_File_State_ID <> 3 " +
-                              "ORDER BY File_Modification_Date desc";
+                              "ORDER BY File_Modification_Date Desc";
 
             var fileNameTable = mDatabaseAccessor.GetTable(fileNameSql);
             if (fileNameTable.Rows.Count >= 1)

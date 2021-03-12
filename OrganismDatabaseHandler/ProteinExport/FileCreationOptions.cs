@@ -9,6 +9,8 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     internal class FileCreationOptions
     {
+        // Ignore Spelling: filetype
+
         private readonly DBTask mDatabaseAccessor;
         private GetFASTAFromDMS.SequenceTypes mSeqDirection;
         private GetFASTAFromDMS.DatabaseFormatTypes mFileType;

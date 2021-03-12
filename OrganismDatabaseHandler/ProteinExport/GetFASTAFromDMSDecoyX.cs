@@ -4,6 +4,8 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class GetFASTAFromDMSDecoyX : GetFASTAFromDMSDecoy
     {
+        // Ignore Spelling: fastapro
+
         private const bool DecoyProteinsUseXXX = true;
 
         /// <summary>

@@ -6,25 +6,29 @@ using OrganismDatabaseHandler.ProteinUpload;
 using PRISMDatabaseUtils;
 using ValidateFastaFile;
 
-// This class will read a text file specifying one or more fasta files to load into the Protein Sequences database
-//
-// -------------------------------------------------------------------------------
-// Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
-// Program started October 10, 2014
-
-// E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
-// Website: http://panomics.pnnl.gov/ or http://omics.pnl.gov
-// -------------------------------------------------------------------------------
-//
-// Licensed under the Apache License, Version 2.0; you may not use this file except
-// in compliance with the License.  You may obtain a copy of the License at
-// http://www.apache.org/licenses/LICENSE-2.0
-
 namespace Bulk_Fasta_Importer
 {
+    /// <summary>
+    /// This class reads a text file specifying one or more fasta files to load into the Protein Sequences database
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
+    /// Program started October 10, 2014
+    /// </para>
+    /// <para>
+    /// E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
+    /// Website: http://panomics.pnnl.gov/ or http://omics.pnl.gov
+    /// </para>
+    /// <para>
+    /// Licensed under the Apache License, Version 2.0; you may not use this file except
+    /// in compliance with the License.  You may obtain a copy of the License at
+    /// http://www.apache.org/licenses/LICENSE-2.0
+    /// </para>
+    /// </remarks>
     public class BulkFastaImporter : PRISM.FileProcessor.ProcessFilesBase
     {
-        #region "Constants and Enums"
+        // Ignore Spelling: uploader, ProteinSeqs
 
         public const string DmsConnectionString = "Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI;";
         public const string ProteinseqsConnectionString = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;";
@@ -36,18 +40,12 @@ namespace Bulk_Fasta_Importer
             UnspecifiedError = -1,
         }
 
-        #endregion
-
-        #region "Structures"
         public struct FastaFileInfoType
         {
             public string FilePath;
             public int OrganismId;
             public int AuthId;
         }
-        #endregion
-
-        #region "Classwide Variables"
 
         private PSUploadHandler mUploadHandler;
 
@@ -80,10 +78,6 @@ namespace Bulk_Fasta_Importer
 
         private BulkImporterErrorCodes mLocalErrorCode;
 
-        #endregion
-
-        #region "Properties"
-
         public string DMSConnectionString { get; }
 
         public bool PreviewMode { get; set; }
@@ -94,8 +88,6 @@ namespace Bulk_Fasta_Importer
         public bool ValidationAllowAsterisks { get; set; }
         public bool ValidationAllowDash { get; set; }
         public int ValidationMaxProteinNameLength { get; set; }
-
-        #endregion
 
         public BulkFastaImporter(string dmsConnString, string proteinSeqsConnString)
         {

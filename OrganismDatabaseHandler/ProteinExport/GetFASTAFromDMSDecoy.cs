@@ -6,6 +6,8 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class GetFASTAFromDMSDecoy : GetFASTAFromDMSForward
     {
+        // Ignore Spelling: fastapro
+
         protected GetFASTAFromDMSReversed RevGenerator;
 
         /// <summary>

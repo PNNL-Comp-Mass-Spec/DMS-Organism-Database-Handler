@@ -5,6 +5,8 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class GetFASTAFromDMSReversed : GetFASTAFromDMSForward
     {
+        // Ignore Spelling: fastapro
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -27,7 +29,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public override string SequenceExtender(string originalSequence, int collectionCount)
         {
-            // Note: Not safe for some unicode characters, but those probably should exist in a protein sequence anyway.
+            // Note: Not safe for some Unicode characters, but those probably should exist in a protein sequence anyway.
             var charArray = originalSequence.ToCharArray();
             Array.Reverse(charArray);
             return new string(charArray);

@@ -16,7 +16,8 @@ namespace AppUI_OrfDBHandler
 {
     public class SyncFASTAFileArchive
     {
-        // private IArchiveOutputFiles mFileArchiver;
+        // Ignore Spelling: filetype
+
         private readonly DBTask mDatabaseAccessor;
         private readonly AddUpdateEntries mImporter;
         private GetFASTAFromDMS mExporter;
