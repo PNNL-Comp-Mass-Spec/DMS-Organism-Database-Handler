@@ -124,14 +124,11 @@ namespace OrganismDatabaseHandler.ProteinExport
             if (!fi.Exists)
                 return string.Empty;
 
-            using (var f = fi.OpenRead())
-            {
-                var crc = PRISM.Crc32.Crc(f);
+            using var f = fi.OpenRead();
 
-                var crcString = string.Format("{0:X8}", crc);
+            var crc = PRISM.Crc32.Crc(f);
 
-                return crcString;
-            }
+            return string.Format("{0:X8}", crc);
         }
 
         // /// <summary>

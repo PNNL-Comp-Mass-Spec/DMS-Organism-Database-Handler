@@ -294,28 +294,27 @@ namespace AppUI_OrfDBHandler
                 return;
             }
 
-            using (var writer = new StreamWriter(new FileStream(selectedSavePath, FileMode.Create, FileAccess.Write, FileShare.Read)))
+            using var writer = new StreamWriter(new FileStream(selectedSavePath, FileMode.Create, FileAccess.Write, FileShare.Read));
+
+            writer.WriteLine("Protein Name" + "\t" +
+                             "Line Number" + "\t" +
+                             "Message Type" + "\t" +
+                             "Message");
+
+            if (errorList != null && errorList.Count > 0)
             {
-                writer.WriteLine("Protein Name" + "\t" +
-                                 "Line Number" + "\t" +
-                                 "Message Type" + "\t" +
-                                 "Message");
-
-                if (errorList != null && errorList.Count > 0)
+                foreach (var errorDetail in errorList)
                 {
-                    foreach (var errorDetail in errorList)
-                    {
-                        writer.WriteLine(
-                            errorDetail.ProteinName + "\t" +
-                            errorDetail.LineNumber + "\t" +
-                            errorDetail.Type + "\t" +
-                            errorDetail.MessageText);
-                        intErrorCount++;
-                    }
+                    writer.WriteLine(
+                        errorDetail.ProteinName + "\t" +
+                        errorDetail.LineNumber + "\t" +
+                        errorDetail.Type + "\t" +
+                        errorDetail.MessageText);
+                    intErrorCount++;
                 }
-
-                writer.WriteLine();
             }
+
+            writer.WriteLine();
 
             MessageBox.Show("Wrote " + intErrorCount + " " + messageType + "s to " + saveDialog.FileName, "Detailed " + messageType + " List", MessageBoxButtons.OK);
         }

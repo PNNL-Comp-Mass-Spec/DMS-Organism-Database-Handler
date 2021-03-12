@@ -854,11 +854,10 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             var fiHashValidationFile = GetHashFileValidationInfo(strFastaFilePath, crc32Hash, hashcheckExtension);
 
-            using (var swOutFile = new StreamWriter(new FileStream(fiHashValidationFile.FullName, FileMode.Create, FileAccess.Write, FileShare.Read)))
-            {
-                swOutFile.WriteLine("Hash validated " + DateTime.Now);
-                swOutFile.WriteLine("Validated on " + Environment.MachineName);
-            }
+            using var writer = new StreamWriter(new FileStream(fiHashValidationFile.FullName, FileMode.Create, FileAccess.Write, FileShare.Read));
+
+            writer.WriteLine("Hash validated " + DateTime.Now);
+            writer.WriteLine("Validated on " + Environment.MachineName);
         }
 
         /// <summary>

@@ -170,32 +170,29 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         protected int LineEndCharacterCount(string filePath)
         {
-            var fi = new FileInfo(mFASTAFilePath);
-            if (fi.Exists)
-            {
-                using (var fileReader = new StreamReader(new FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
-                {
-                    while (!fileReader.EndOfStream)
-                    {
-                        var testCode = fileReader.Read();
-                        if (testCode == 10 || testCode == 13)
-                        {
-                            if (fileReader.EndOfStream)
-                            {
-                                return 1;
-                            }
+            var fastaFile = new FileInfo(filePath);
+            if (!fastaFile.Exists)
+                return 2;
 
-                            var testCode2 = fileReader.Read();
-                            if (testCode2 == 10 || testCode2 == 13)
-                            {
-                                return 2;
-                            }
-                            else
-                            {
-                                return 1;
-                            }
-                        }
+            using var fileReader = new StreamReader(new FileStream(fastaFile.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
+
+            while (!fileReader.EndOfStream)
+            {
+                var testCode = fileReader.Read();
+                if (testCode == 10 || testCode == 13)
+                {
+                    if (fileReader.EndOfStream)
+                    {
+                        return 1;
                     }
+
+                    var testCode2 = fileReader.Read();
+                    if (testCode2 == 10 || testCode2 == 13)
+                    {
+                        return 2;
+                    }
+
+                    return 1;
                 }
             }
 

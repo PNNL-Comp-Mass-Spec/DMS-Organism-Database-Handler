@@ -110,21 +110,21 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             var idLineRegex = new Regex("^>.+", RegexOptions.Compiled);
 
-            var fi = new FileInfo(sourceFilePath);
+            var sourceFile = new FileInfo(sourceFilePath);
+
+            if (!sourceFile.Exists) 
+                return 0;
+
+            using var fileReader = new StreamReader(new FileStream(sourceFile.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
+
+            string dataLine;
             var counter = 0;
 
-            if (fi.Exists)
+            while ((dataLine = fileReader.ReadLine()) != null)
             {
-                using (var fileReader = new StreamReader(new FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+                if (idLineRegex.IsMatch(dataLine))
                 {
-                    string dataLine;
-                    while ((dataLine = fileReader.ReadLine()) != null)
-                    {
-                        if (idLineRegex.IsMatch(dataLine))
-                        {
-                            counter++;
-                        }
-                    }
+                    counter++;
                 }
             }
 

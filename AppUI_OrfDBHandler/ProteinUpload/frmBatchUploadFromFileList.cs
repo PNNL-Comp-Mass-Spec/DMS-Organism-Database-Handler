@@ -55,17 +55,16 @@ namespace AppUI_OrfDBHandler.ProteinUpload
                 fi.Delete();
             }
 
-            using (var writer = new StreamWriter(Path.Combine(mSavePath, SaveFileName)))
+            using var writer = new StreamWriter(Path.Combine(mSavePath, SaveFileName));
+
+            foreach (var fli in FileCollection.Values)
             {
-                foreach (var fli in FileCollection.Values)
+                if (fli.AnnotationTypeId > 0)
                 {
-                    if (fli.AnnotationTypeId > 0)
-                    {
-                        writer.Write(fli.FileName);
-                        writer.Write("\t");
-                        writer.Write(fli.AnnotationTypeId.ToString());
-                        writer.Flush();
-                    }
+                    writer.Write(fli.FileName);
+                    writer.Write("\t");
+                    writer.Write(fli.AnnotationTypeId.ToString());
+                    writer.Flush();
                 }
             }
         }

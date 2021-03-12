@@ -144,37 +144,36 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
             const string loadedCollectionsSQL = "SELECT FileName, Full_Path, Organism_Name, Organism_ID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered";
 
-            using (var fileTable = mDatabaseAccessor.GetTable(loadedCollectionsSQL))
+            using var fileTable = mDatabaseAccessor.GetTable(loadedCollectionsSQL);
+
+            if (mCurrentFileList == null)
             {
-                if (mCurrentFileList == null)
-                {
-                    mCurrentFileList = new Dictionary<string, FileListInfo>();
-                }
-                else
-                {
-                    mCurrentFileList.Clear();
-                }
-
-                foreach (DataRow dr in fileTable.Rows)
-                {
-                    var fileName = dr["FileName"].ToString();
-                    var organismName = dr["Organism_Name"].ToString();
-                    var organismId = Convert.ToInt32(dr["Organism_ID"]);
-                    var fullPath = dr["Full_Path"].ToString();
-                    var annotationTypeId = Convert.ToInt32(dr["Annotation_Type_ID"]);
-                    var authorityTypeId = Convert.ToInt32(dr["Authority_ID"]);
-
-                    var baseName = Path.GetFileNameWithoutExtension(fileName);
-
-                    if (!fileList.ContainsKey(fileName) && !collectionList.Contains(baseName))
-                    {
-                        fileList.Add(fileName,
-                                     new FileListInfo(fileName, fullPath, organismName, organismId, annotationTypeId, authorityTypeId));
-                    }
-                }
-
-                fileTable.Clear();
+                mCurrentFileList = new Dictionary<string, FileListInfo>();
             }
+            else
+            {
+                mCurrentFileList.Clear();
+            }
+
+            foreach (DataRow dr in fileTable.Rows)
+            {
+                var fileName = dr["FileName"].ToString();
+                var organismName = dr["Organism_Name"].ToString();
+                var organismId = Convert.ToInt32(dr["Organism_ID"]);
+                var fullPath = dr["Full_Path"].ToString();
+                var annotationTypeId = Convert.ToInt32(dr["Annotation_Type_ID"]);
+                var authorityTypeId = Convert.ToInt32(dr["Authority_ID"]);
+
+                var baseName = Path.GetFileNameWithoutExtension(fileName);
+
+                if (!fileList.ContainsKey(fileName) && !collectionList.Contains(baseName))
+                {
+                    fileList.Add(fileName,
+                        new FileListInfo(fileName, fullPath, organismName, organismId, annotationTypeId, authorityTypeId));
+                }
+            }
+
+            fileTable.Clear();
 
             return fileList;
         }

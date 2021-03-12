@@ -186,48 +186,47 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
 
             // Open the output file for append
-            using (var writer = new StreamWriter(new FileStream(destinationPath, FileMode.Append, FileAccess.Write, FileShare.Read)))
+            using var writer = new StreamWriter(new FileStream(destinationPath, FileMode.Append, FileAccess.Write, FileShare.Read));
+
+            // OnDetailedExportStart("Writing: " + proteinTable.TableName);
+
+            var counterMax = proteinTable.Rows.Count;
+            int eventTriggerThresh;
+            if (counterMax <= 25)
             {
-                // OnDetailedExportStart("Writing: " + proteinTable.TableName);
+                eventTriggerThresh = 1;
+            }
+            else
+            {
+                eventTriggerThresh = (int)Math.Round(counterMax / 25d);
+            }
 
-                var counterMax = proteinTable.Rows.Count;
-                int eventTriggerThresh;
-                if (counterMax <= 25)
+            var foundRows = proteinTable.Select("");
+
+            foreach (var currentRow in foundRows)
+            {
+                var tmpSeq = ExportComponent.SequenceExtender(currentRow["Sequence"].ToString(), proteinTable.Rows.Count);
+
+                counter++;
+
+                if (counter % eventTriggerThresh == 0)
                 {
-                    eventTriggerThresh = 1;
+                    // OnDetailedProgressUpdate("Processing: " + tmpName, Math.Round(counter / (double)counterMax, 3));
                 }
-                else
+
+                var proteinLength = tmpSeq.Length;
+                var tmpDesc = hexCodeFinder.Replace(currentRow["Description"].ToString(), " ");
+                var tmpName = ExportComponent.ReferenceExtender(currentRow["Name"].ToString());
+
+                writer.WriteLine((">" + tmpName + " " + tmpDesc + tmpAltNames).Trim());
+
+                for (var proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += mSeqLineLength)
                 {
-                    eventTriggerThresh = (int)Math.Round(counterMax / 25d);
+                    var seqLinePortion = tmpSeq.Substring(proteinPosition, mSeqLineLength);
+                    writer.WriteLine(seqLinePortion);
                 }
 
-                var foundRows = proteinTable.Select("");
-
-                foreach (var currentRow in foundRows)
-                {
-                    var tmpSeq = ExportComponent.SequenceExtender(currentRow["Sequence"].ToString(), proteinTable.Rows.Count);
-
-                    counter++;
-
-                    if (counter % eventTriggerThresh == 0)
-                    {
-                        // OnDetailedProgressUpdate("Processing: " + tmpName, Math.Round(counter / (double)counterMax, 3));
-                    }
-
-                    var proteinLength = tmpSeq.Length;
-                    var tmpDesc = hexCodeFinder.Replace(currentRow["Description"].ToString(), " ");
-                    var tmpName = ExportComponent.ReferenceExtender(currentRow["Name"].ToString());
-
-                    writer.WriteLine((">" + tmpName + " " + tmpDesc + tmpAltNames).Trim());
-
-                    for (var proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += mSeqLineLength)
-                    {
-                        var seqLinePortion = tmpSeq.Substring(proteinPosition, mSeqLineLength);
-                        writer.WriteLine(seqLinePortion);
-                    }
-
-                    proteinsWritten++;
-                }
+                proteinsWritten++;
             }
 
             return proteinsWritten;

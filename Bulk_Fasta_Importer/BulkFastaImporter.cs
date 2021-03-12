@@ -188,89 +188,88 @@ namespace Bulk_Fasta_Importer
                 var requiredColsShown = default(bool);
                 var currentLine = 0;
 
-                using (var reader = new StreamReader(new FileStream(fiInfoFile.FullName, FileMode.Open, FileAccess.Read, FileShare.Read)))
+                using var reader = new StreamReader(new FileStream(fiInfoFile.FullName, FileMode.Open, FileAccess.Read, FileShare.Read));
+
+                while (!reader.EndOfStream)
                 {
-                    while (!reader.EndOfStream)
+                    var dataLine = reader.ReadLine();
+                    currentLine++;
+
+                    if (string.IsNullOrWhiteSpace(dataLine))
                     {
-                        var dataLine = reader.ReadLine();
-                        currentLine++;
-
-                        if (string.IsNullOrWhiteSpace(dataLine))
-                        {
-                            continue;
-                        }
-
-                        // Required columns are:
-                        // FastaFilePath, OrganismName_or_ID, AnnotationTypeName_or_ID
-
-                        var dataCols = dataLine.Split('\t');
-                        if (dataCols.Length < 3)
-                        {
-                            ShowWarning("Invalid row; does not have 3 columns: " + dataLine);
-                            if (!requiredColsShown)
-                            {
-                                ShowMessage("Required columns are: FastaFilePath, OrganismName_or_ID, and AnnotationTypeName_or_ID");
-                                requiredColsShown = true;
-                            }
-
-                            continue;
-                        }
-
-                        if (string.IsNullOrWhiteSpace(dataCols[0]))
-                        {
-                            ShowWarning("Fasta file path is empty for line: " + currentLine);
-                            continue;
-                        }
-
-                        var fastaFilePath = dataCols[0];
-                        if (!fastaFilePath.Contains(@"\"))
-                        {
-                            fastaFilePath = Path.Combine(fiInfoFile.DirectoryName, dataCols[0]);
-                        }
-
-                        var fiFastaFile = new FileInfo(fastaFilePath);
-                        if (!fiFastaFile.Exists)
-                        {
-                            ShowWarning("Fasta file not found: " + fastaFilePath);
-                            continue;
-                        }
-
-                        var udtFastaFileInfo = new FastaFileInfoType {FilePath = fiFastaFile.FullName};
-
-                        if (!LookupOrganismId(dataCols[1], out var organismID))
-                        {
-                            continue;
-                        }
-
-                        if (!LookupAnnotationTypeId(dataCols[2], out var annotationTypeId))
-                        {
-                            continue;
-                        }
-
-                        udtFastaFileInfo.OrganismId = organismID;
-                        udtFastaFileInfo.AuthId = annotationTypeId;
-
-                        // Make sure the protein collection is not already in the Protein Sequences database
-                        if (!LookupProteinCollectionId(Path.GetFileNameWithoutExtension(fiFastaFile.Name), out var proteinCollectionID))
-                        {
-                            continue;
-                        }
-
-                        if (proteinCollectionID > 0)
-                        {
-                            ShowWarning("Fasta file already exists as a protein collection; skipping " + fiFastaFile.Name);
-                            continue;
-                        }
-
-                        // Make sure we don't add duplicate files to sourceFileList
-                        if (sourceFileNames.Contains(fiFastaFile.Name))
-                        {
-                            ShowWarning("Skipping duplicate file: " + fiFastaFile.Name);
-                            continue;
-                        }
-
-                        sourceFileList.Add(udtFastaFileInfo);
+                        continue;
                     }
+
+                    // Required columns are:
+                    // FastaFilePath, OrganismName_or_ID, AnnotationTypeName_or_ID
+
+                    var dataCols = dataLine.Split('\t');
+                    if (dataCols.Length < 3)
+                    {
+                        ShowWarning("Invalid row; does not have 3 columns: " + dataLine);
+                        if (!requiredColsShown)
+                        {
+                            ShowMessage("Required columns are: FastaFilePath, OrganismName_or_ID, and AnnotationTypeName_or_ID");
+                            requiredColsShown = true;
+                        }
+
+                        continue;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(dataCols[0]))
+                    {
+                        ShowWarning("Fasta file path is empty for line: " + currentLine);
+                        continue;
+                    }
+
+                    var fastaFilePath = dataCols[0];
+                    if (fastaFilePath.IndexOf(Path.DirectorySeparatorChar) < 0 && fiInfoFile.DirectoryName != null)
+                    {
+                        fastaFilePath = Path.Combine(fiInfoFile.DirectoryName, dataCols[0]);
+                    }
+
+                    var fastaFile = new FileInfo(fastaFilePath);
+                    if (!fastaFile.Exists)
+                    {
+                        ShowWarning("Fasta file not found: " + fastaFilePath);
+                        continue;
+                    }
+
+                    var udtFastaFileInfo = new FastaFileInfoType {FilePath = fastaFile.FullName};
+
+                    if (!LookupOrganismId(dataCols[1], out var organismID))
+                    {
+                        continue;
+                    }
+
+                    if (!LookupAnnotationTypeId(dataCols[2], out var annotationTypeId))
+                    {
+                        continue;
+                    }
+
+                    udtFastaFileInfo.OrganismId = organismID;
+                    udtFastaFileInfo.AuthId = annotationTypeId;
+
+                    // Make sure the protein collection is not already in the Protein Sequences database
+                    if (!LookupProteinCollectionId(Path.GetFileNameWithoutExtension(fastaFile.Name), out var proteinCollectionID))
+                    {
+                        continue;
+                    }
+
+                    if (proteinCollectionID > 0)
+                    {
+                        ShowWarning("Fasta file already exists as a protein collection; skipping " + fastaFile.Name);
+                        continue;
+                    }
+
+                    // Make sure we don't add duplicate files to sourceFileList
+                    if (sourceFileNames.Contains(fastaFile.Name))
+                    {
+                        ShowWarning("Skipping duplicate file: " + fastaFile.Name);
+                        continue;
+                    }
+
+                    sourceFileList.Add(udtFastaFileInfo);
                 }
 
                 if (sourceFileList.Count == 0)
