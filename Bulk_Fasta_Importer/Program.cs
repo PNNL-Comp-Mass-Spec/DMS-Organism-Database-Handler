@@ -11,7 +11,7 @@ namespace Bulk_Fasta_Importer
     /// <summary>
     /// This program can be used to load one or more FASTA files into the Protein Sequences database
     /// </summary>
-    static class Program
+    internal static class Program
     {
         public const string ProgramDate = "March 11, 2021";
 

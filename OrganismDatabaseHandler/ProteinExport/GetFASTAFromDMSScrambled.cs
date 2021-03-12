@@ -38,7 +38,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             {
                 Debug.Assert(counter == sequence.Length);
                 var index = mRndNumGen.Next(counter);
-                sb.Append(sequence.Substring(index, 1));
+                sb.Append(sequence, index, 1);
 
                 if (index > 0)
                 {

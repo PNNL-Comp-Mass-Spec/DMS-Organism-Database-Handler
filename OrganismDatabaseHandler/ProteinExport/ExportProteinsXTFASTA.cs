@@ -34,9 +34,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             Array.Resize(ref buffer, 256);
 
-            var errorMessage = string.Empty;
-
-            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out errorMessage);
+            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out var errorMessage);
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))
@@ -141,9 +139,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             Array.Resize(ref buffer, 256);
 
-            var errorMessage = string.Empty;
-
-            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out errorMessage);
+            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out var errorMessage);
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))

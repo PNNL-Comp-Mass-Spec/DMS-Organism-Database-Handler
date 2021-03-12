@@ -42,9 +42,11 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
 
             var authorityLookupRows = authorityLookupTable.Select("");
             foreach (var dr in authorityLookupRows)
+            {
                 info.AddAuthorityNameToLookup(
                     DBTools.GetInteger(dr["Authority_ID"]),
                     DBTools.GetString(dr["Name"]));
+            }
 
             // Get Annotation Group Information
 
@@ -55,9 +57,11 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             var annotationGroupLookup = mDatabaseHelper.GetTable(sqlQuery3);
 
             foreach (DataRow dr in annotationGroupLookup.Rows)
+            {
                 info.AddAnnotationGroupLookup(
                     DBTools.GetInteger(dr["Annotation_Group"]),
                     DBTools.GetInteger(dr["Authority_ID"]));
+            }
 
             // Get Collection Member Primary Information
 

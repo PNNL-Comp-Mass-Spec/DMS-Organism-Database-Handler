@@ -20,12 +20,9 @@ namespace AppUI_OrfDBHandler
         private ImportHandler importer;
         private DataTable collectionList;
         private string mLastOutputDirectory = @"D:\outbox\output_test\";
-        private string mAppPath = Application.ExecutablePath;
 
         private SyncFASTAFileArchive mSyncer;
         private GetFASTAFromDMS mExporter;
-
-        private string mFullOutputPath;
 
         private string mTaskMessage;
         private string mProgressMessage;
@@ -280,7 +277,6 @@ namespace AppUI_OrfDBHandler
                 Path.GetFileName(fullOutputPath) +
                 " to " + Path.GetDirectoryName(fullOutputPath);
             lblProgress.Visible = true;
-            mFullOutputPath = fullOutputPath;
         }
     }
 }

@@ -63,7 +63,6 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public RijndaelEncryptionHandler(string passPhrase)
         {
-
             // Convert strings into byte arrays.
             // Let us assume that strings only contain ASCII codes.
             // If strings include Unicode characters, use Unicode, UTF7, or UTF8

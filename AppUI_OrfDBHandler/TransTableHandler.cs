@@ -193,16 +193,14 @@ namespace AppUI_OrfDBHandler
                 }
             }
 
-            var success = SplitCodonEntries(aaList, startList, base1List, base2List, base3List, nameList, id);
+            SplitCodonEntries(aaList, startList, base1List, base2List, base3List, nameList, id);
         }
 
         private string ProcessBaseString(string rawBaseString)
         {
             var tmpString = rawBaseString.TrimStart();
 
-            tmpString = tmpString.Substring(11);
-
-            return tmpString;
+            return tmpString.Substring(11);
         }
 
         private bool SplitCodonEntries(

@@ -41,8 +41,6 @@ namespace OrganismDatabaseHandler.ProteinExport
             mExporter = exporterModule.ExporterComponent;
         }
 
-        private string LastErrorMessage => LastError;
-
         public string Archived_File_Name => mArchived_File_Name;
 
         public int ArchiveCollection(int proteinCollectionId, CollectionTypes archivedFileType, GetFASTAFromDMS.SequenceTypes outputSequenceType, GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType, string sourceFilePath, string creationOptionsString, string authenticationHash, string proteinCollectionList)
@@ -154,12 +152,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 250, ParameterDirection.Output);
 
-            var errorMessage = string.Empty;
-
-            // Execute the sp
-            var returnValue = dbTools.ExecuteSP(cmdSave, out errorMessage);
-
-            return returnValue;
+            return dbTools.ExecuteSP(cmdSave, out _);
         }
 
         protected void OnArchiveStart()

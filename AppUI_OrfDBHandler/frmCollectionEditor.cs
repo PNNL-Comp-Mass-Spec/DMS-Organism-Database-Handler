@@ -748,17 +748,15 @@ namespace AppUI_OrfDBHandler
         {
             if (mSearchActive)
             {
+                return;
             }
-            else
-            {
-                txtLiveSearch.TextChanged -= txtLiveSearch_TextChanged;
-                txtLiveSearch.Text = null;
-                txtLiveSearch.ForeColor = SystemColors.ControlText;
-                mSearchActive = true;
-                pbxLiveSearchCancel.Visible = true;
-                txtLiveSearch.TextChanged += txtLiveSearch_TextChanged;
-                //Debug.WriteLine("inactive.click");
-            }
+
+            txtLiveSearch.TextChanged -= txtLiveSearch_TextChanged;
+            txtLiveSearch.Text = null;
+            txtLiveSearch.ForeColor = SystemColors.ControlText;
+            mSearchActive = true;
+            pbxLiveSearchCancel.Visible = true;
+            txtLiveSearch.TextChanged += txtLiveSearch_TextChanged;
         }
 
         private void txtLiveSearch_Leave(object sender, EventArgs e)
@@ -1088,7 +1086,7 @@ namespace AppUI_OrfDBHandler
             // Keys are error messages, values are the number of times the error was reported
             var errorSummary = new Dictionary<string, int>();
 
-            if (errorCollection != null && errorCollection.Count > 0)
+            if (errorCollection?.Count > 0)
             {
                 foreach (var errorEntry in errorCollection)
                 {

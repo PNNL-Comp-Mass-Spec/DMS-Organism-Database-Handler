@@ -739,7 +739,7 @@ namespace Bulk_Fasta_Importer
             ShowMessage("  ... ProteinCount: " + uploadData.ProteinCount);
             try
             {
-                if (uploadData.ErrorList != null && uploadData.ErrorList.Count > 0)
+                if (uploadData.ErrorList?.Count > 0)
                 {
                     ShowMessage("  ... Error count: " + uploadData.ErrorList.Count);
                 }

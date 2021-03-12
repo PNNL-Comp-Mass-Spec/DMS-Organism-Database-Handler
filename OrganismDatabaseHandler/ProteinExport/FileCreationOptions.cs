@@ -82,16 +82,17 @@ namespace OrganismDatabaseHandler.ProteinExport
                     checkRows = mCreationValuesTable.Select("Value_String = '" + tmpValue + "'");
                     if (checkRows.Length > 0)
                         validValue = true;
+
                     if (!validKeyword)
                     {
-                        errorString.Append("Keyword: " + tmpKeyword + " is not valid");
+                        errorString.AppendFormat("Keyword: {0} is not valid", tmpKeyword);
                     }
 
                     if (!validValue)
                     {
                         if (errorString.ToString().Length > 0)
                             errorString.Append(", ");
-                        errorString.Append("Value: " + tmpValue + "is not a valid option");
+                        errorString.AppendFormat("Value: {0} is not a valid option", tmpValue);
                     }
 
                     throw new Exception(errorString.ToString());

@@ -145,7 +145,7 @@ namespace AppUI_OrfDBHandler
 
                 if (elapsedTime.Hours > 0)
                 {
-                    elapsedTimeSb.Append(elapsedTime.Hours + " hours, ");
+                    elapsedTimeSb.AppendFormat("{0} hours, ", elapsedTime.Hours);
                 }
 
                 if (elapsedTime.Minutes <= 1)
@@ -154,7 +154,7 @@ namespace AppUI_OrfDBHandler
                 }
                 else
                 {
-                    elapsedTimeSb.Append(elapsedTime.Minutes + " minutes");
+                    elapsedTimeSb.AppendFormat("{0} minutes", elapsedTime.Minutes);
                 }
 
                 // OnSyncProgressUpdate(

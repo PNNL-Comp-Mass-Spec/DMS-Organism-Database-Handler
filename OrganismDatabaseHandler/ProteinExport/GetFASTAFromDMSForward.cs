@@ -22,8 +22,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         private readonly Dictionary<int, string> mAllCollections;
 
         private int mCurrentFileProteinCount;
-        private string mCurrentArchiveFileName;
-
         private DataTable mCollectionsCache;
         private DataTable mOrganismCache;
 
@@ -357,7 +355,6 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
 
             FullOutputPath = ExtendedExportPath(destinationFolderPath, name);
-            mCurrentArchiveFileName = name;
 
             // Rename (move) the temporary file to the final, full name
             if (File.Exists(FullOutputPath))

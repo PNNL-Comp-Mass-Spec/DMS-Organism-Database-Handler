@@ -289,10 +289,10 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Make sure we have enough disk free space
 
             var destinationPath = Path.Combine(destinationFolderPath, "TargetFile.tmp");
-            var errorMessage = string.Empty;
+
             var sourceFileSizeMB = fiSourceFile.Length / 1024.0d / 1024.0d;
 
-            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out errorMessage);
+            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out var errorMessage);
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))
@@ -614,9 +614,9 @@ namespace OrganismDatabaseHandler.ProteinExport
             var intAttemptCount = 0;
 
             var lockFile = new FileInfo(Path.Combine(destinationFolderPath, lockFileHash + ".lock"));
-            do
+            while (true)
             {
-                intAttemptCount += 1;
+                intAttemptCount++;
                 try
                 {
                     lockFile.Refresh();
@@ -680,7 +680,6 @@ namespace OrganismDatabaseHandler.ProteinExport
                     throw new Exception(msg);
                 }
             }
-            while (true);
         }
 
         private void DeleteFASTAIndexFiles(FileInfo fiFinalFastaFile)

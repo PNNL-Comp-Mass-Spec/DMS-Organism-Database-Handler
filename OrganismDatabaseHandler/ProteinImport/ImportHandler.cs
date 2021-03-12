@@ -75,7 +75,6 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         protected ProteinStorage.ProteinStorage LoadFASTA(string filePath)
         {
-
             // check for existence of current file
             var fastaContents = mImporter.GetProteinEntries(filePath);
 
@@ -144,8 +143,6 @@ namespace OrganismDatabaseHandler.ProteinImport
                 authIdSb.Append(dr["Annotation_Type_ID"]);
                 authIdSb.Append(", ");
             }
-
-            tmpAnnTypeIdTable = null;
 
             authIdSb.Remove(authIdSb.Length - 2, 2);
 
