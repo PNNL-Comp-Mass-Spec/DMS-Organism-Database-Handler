@@ -16,7 +16,6 @@ namespace AppUI_OrfDBHandler.ProteinUpload
         private readonly string mSavePath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
         public frmBatchUploadFromFileList(
-            DataTable authorityList,
             DataTable annotationTypeList,
             DataTable organismList)
         {

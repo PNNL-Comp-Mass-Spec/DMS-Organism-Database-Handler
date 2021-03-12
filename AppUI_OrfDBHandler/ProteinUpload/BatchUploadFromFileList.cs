@@ -14,7 +14,6 @@ namespace AppUI_OrfDBHandler.ProteinUpload
         private readonly DBTask mDatabaseAccessor;
         private Dictionary<string, FileListInfo> mCurrentFileList;
 
-        private DataTable mAuthorityTable;
         private DataTable mAnnotationTypeTable;
         private DataTable mOrganismTable;
 
@@ -74,10 +73,9 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             var uiList = new List<PSUploadHandler.UploadInfo>();
 
             mAnnotationTypeTable = GetAnnotationTypeTable();
-            mAuthorityTable = GetAuthorityTable();
             mOrganismTable = GetOrganismsTable();
 
-            mBatchForm = new frmBatchUploadFromFileList(mAuthorityTable, mAnnotationTypeTable, mOrganismTable);
+            mBatchForm = new frmBatchUploadFromFileList(mAnnotationTypeTable, mOrganismTable);
 
             mCurrentFileList = GetDmsFileEntities();
 
@@ -99,6 +97,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             }
         }
 
+        // ReSharper disable once UnusedMember.Global
         protected DataTable GetAuthorityTable()
         {
             const string authSql = "SELECT ID, Display_Name, Details FROM V_Authority_Picker";
