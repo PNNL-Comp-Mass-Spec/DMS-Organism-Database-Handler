@@ -1,9 +1,9 @@
 ﻿using System;
-using FastaFileMaker_Exe.Properties;
+using FastaFileMaker.Properties;
 using OrganismDatabaseHandler.ProteinExport;
 using PRISM;
 
-namespace FastaFileMaker_Exe
+namespace FastaFileMaker
 {
     internal static class Program
     {
