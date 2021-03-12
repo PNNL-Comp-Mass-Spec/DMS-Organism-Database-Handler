@@ -118,7 +118,7 @@ namespace AppUI_OrfDBHandler
             mExporter = new GetFASTAFromDMS(
                 connectionString, GetFASTAFromDMS.DatabaseFormatTypes.Fasta,
                 GetFASTAFromDMS.SequenceTypes.Forward);
-            mExporter.FileGenerationCompleted += mExporter_FileGenerationCompleted;
+            mExporter.FileGenerationCompleted += Exporter_FileGenerationCompleted;
 
             var creationOptionsString = "seq_direction=forward,filetype=fasta";
             OnSyncStart("Updating Collections and Archive Entries");
@@ -532,7 +532,7 @@ namespace AppUI_OrfDBHandler
             SyncComplete?.Invoke();
         }
 
-        private void mExporter_FileGenerationCompleted(string fullOutputPath)
+        private void Exporter_FileGenerationCompleted(string fullOutputPath)
         {
             mGeneratedFastaFilePath = fullOutputPath;
         }

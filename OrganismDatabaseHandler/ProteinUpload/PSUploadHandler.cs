@@ -211,8 +211,8 @@ namespace OrganismDatabaseHandler.ProteinUpload
             mExport = new GetFASTAFromDMS(psConnectionString,
                                            GetFASTAFromDMS.DatabaseFormatTypes.Fasta,
                                            GetFASTAFromDMS.SequenceTypes.Forward);
-            mExport.FileGenerationCompleted += mExport_FileGenerationCompleted;
-            mExport.FileGenerationProgress += mExport_FileGenerationProgress;
+            mExport.FileGenerationCompleted += Export_FileGenerationCompleted;
+            mExport.FileGenerationProgress += Export_FileGenerationProgress;
 
             mValidator = new CustomFastaValidator();
             mValidator.ProgressUpdate += Task_LoadProgress;
@@ -525,11 +525,11 @@ namespace OrganismDatabaseHandler.ProteinUpload
             mValidationOptions[(int)eValidationOptionName] = blnEnabled;
         }
 
-        private void mExport_FileGenerationCompleted(string fullOutputPath)
+        private void Export_FileGenerationCompleted(string fullOutputPath)
         {
         }
 
-        private void mExport_FileGenerationProgress(string statusMsg, double fractionDone)
+        private void Export_FileGenerationProgress(string statusMsg, double fractionDone)
         {
             OnProgressUpdate(fractionDone);
         }

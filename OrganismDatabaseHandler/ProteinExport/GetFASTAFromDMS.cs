@@ -97,7 +97,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             ClassSelector(databaseFormatType, outputSequenceType, decoyUsesXXX);
 
             mFileTools = new FileTools();
-            mFileTools.WaitingForLockQueue += mFileTools_WaitingForLockQueue;
+            mFileTools.WaitingForLockQueue += FileTools_WaitingForLockQueue;
             RegisterEvents(mFileTools);
         }
 
@@ -932,7 +932,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             FileGenerationCompleted?.Invoke(finalOutputPath);
         }
 
-        private void mFileTools_WaitingForLockQueue(string sourceFilePath, string targetFilePath, int sourceBacklogMB, int targetBacklogMB)
+        private void FileTools_WaitingForLockQueue(string sourceFilePath, string targetFilePath, int sourceBacklogMB, int targetBacklogMB)
         {
             if (DateTime.UtcNow.Subtract(mLastLockQueueWaitTimeLog).TotalSeconds >= 30d)
             {

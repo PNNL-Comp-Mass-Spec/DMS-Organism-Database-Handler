@@ -30,31 +30,31 @@ namespace FastaFileMaker
 
         #region "Event handlers"
 
-        private static void mFastaTools_DebugEvent(string message)
+        private static void FastaTools_DebugEvent(string message)
         {
             ConsoleMsgUtils.ShowDebug(message);
         }
 
-        private static void mFastaTools_ErrorEvent(string message, Exception ex)
+        private static void FastaTools_ErrorEvent(string message, Exception ex)
         {
             ConsoleMsgUtils.ShowError(message, ex);
         }
 
-        private static void mFastaTools_StatusEvent(string message)
+        private static void FastaTools_StatusEvent(string message)
         {
             Console.WriteLine(message);
         }
 
-        private static void mFastaTools_WarningEvent(string message)
+        private static void FastaTools_WarningEvent(string message)
         {
             ConsoleMsgUtils.ShowWarning(message);
         }
 
-        private static void mFastaTools_FileGenerationStarted(string taskMsg)
+        private static void FastaTools_FileGenerationStarted(string taskMsg)
         {
         }
 
-        private static void mFastaTools_FileGenerationCompleted(string fullOutputPath)
+        private static void FastaTools_FileGenerationCompleted(string fullOutputPath)
         {
             mFastaFileName = System.IO.Path.GetFileName(fullOutputPath);  // Get the name of the fasta file that was generated
             mGenerationComplete = true;     // Set the completion flag
@@ -63,7 +63,7 @@ namespace FastaFileMaker
         private static DateTime dtLastLogTime = DateTime.MinValue;
         private static double dblFractionDoneSaved = -1;
 
-        private static void mFastaTools_FileGenerationProgress(string statusMsg, double fractionDone)
+        private static void FastaTools_FileGenerationProgress(string statusMsg, double fractionDone)
         {
             const int minimumLogIntervalSec = 15;
 
@@ -80,7 +80,7 @@ namespace FastaFileMaker
             }
         }
 
-        private static void mFastaTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private static void FastaTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             if (DateTime.UtcNow.Subtract(mFastaGenStartTime).TotalMinutes >= FastaGenTimeoutIntervalMinutes)
             {
@@ -214,43 +214,43 @@ namespace FastaFileMaker
         {
             // Appends a new entry to the log file
 
-            var blnWriteHeader = false;
+            var writeHeader = false;
 
             try
             {
                 // Create a new log file each day
-                var strLogFileName = "FastaFileMakerLog_" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+                var logFileName = "FastaFileMakerLog_" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
 
-                string strLogFilePath;
+                string logFilePath;
                 if (!string.IsNullOrEmpty(logDirectoryPath))
                 {
-                    strLogFilePath = System.IO.Path.Combine(logDirectoryPath, strLogFileName);
+                    logFilePath = System.IO.Path.Combine(logDirectoryPath, logFileName);
                 }
                 else
                 {
-                    strLogFilePath = string.Copy(strLogFileName);
+                    logFilePath = string.Copy(logFileName);
                 }
 
-                if (!System.IO.File.Exists(strLogFilePath))
+                if (!System.IO.File.Exists(logFilePath))
                 {
-                    blnWriteHeader = true;
+                    writeHeader = true;
                 }
 
-                var swOutFile = new System.IO.StreamWriter(new System.IO.FileStream(strLogFilePath, System.IO.FileMode.Append, System.IO.FileAccess.Write, System.IO.FileShare.Read));
+                using var writer = new System.IO.StreamWriter(new System.IO.FileStream(logFilePath, System.IO.FileMode.Append, System.IO.FileAccess.Write, System.IO.FileShare.Read));
 
-                if (blnWriteHeader)
+                if (writeHeader)
                 {
-                    swOutFile.WriteLine("Date" + "\t" +
-                                        "Time" + "\t" +
-                                        "Protein_Collection_List" + "\t" +
-                                        "Creation_Options" + "\t" +
-                                        "Legacy_Fasta_Name" + "\t" +
-                                        "Hash_String" + "\t" +
-                                        "Fasta_File_Name" + "\t" +
-                                        "Fasta_File_Last_Modified" + "\t" +
-                                        "Fasta_File_Created" + "\t" +
-                                        "Fasta_File_Size_Bytes" + "\t" +
-                                        "Fasta_File_Age_vs_PresentTime");
+                    writer.WriteLine("Date" + "\t" +
+                                     "Time" + "\t" +
+                                     "Protein_Collection_List" + "\t" +
+                                     "Creation_Options" + "\t" +
+                                     "Legacy_Fasta_Name" + "\t" +
+                                     "Hash_String" + "\t" +
+                                     "Fasta_File_Name" + "\t" +
+                                     "Fasta_File_Last_Modified" + "\t" +
+                                     "Fasta_File_Created" + "\t" +
+                                     "Fasta_File_Size_Bytes" + "\t" +
+                                     "Fasta_File_Age_vs_PresentTime");
                 }
 
                 System.IO.FileInfo fiFastaFile;
@@ -263,22 +263,17 @@ namespace FastaFileMaker
                     fiFastaFile = new System.IO.FileInfo(fastaFileName);
                 }
 
-                swOutFile.WriteLine(DateTime.Now.ToString("yyyy-MM-dd") + "\t" +
-                                    DateTime.Now.ToString("hh:mm:ss tt") + "\t" +
-                                    proteinCollectionList + "\t" +
-                                    creationOpts + "\t" +
-                                    legacyFasta + "\t" +
-                                    crc32Hash + "\t" +
-                                    fastaFileName + "\t" +
-                                    fiFastaFile.LastWriteTime + "\t" +
-                                    fiFastaFile.CreationTime + "\t" +
-                                    fiFastaFile.Length + "\t" +
-                                    GetHumanReadableTimeInterval(DateTime.UtcNow.Subtract(fiFastaFile.LastWriteTimeUtc)));
-
-                if (swOutFile != null)
-                {
-                    swOutFile.Close();
-                }
+                writer.WriteLine(DateTime.Now.ToString("yyyy-MM-dd") + "\t" +
+                                 DateTime.Now.ToString("hh:mm:ss tt") + "\t" +
+                                 proteinCollectionList + "\t" +
+                                 creationOpts + "\t" +
+                                 legacyFasta + "\t" +
+                                 crc32Hash + "\t" +
+                                 fastaFileName + "\t" +
+                                 fiFastaFile.LastWriteTime + "\t" +
+                                 fiFastaFile.CreationTime + "\t" +
+                                 fiFastaFile.Length + "\t" +
+                                 GetHumanReadableTimeInterval(DateTime.UtcNow.Subtract(fiFastaFile.LastWriteTimeUtc)));
             }
             catch
             {
@@ -290,8 +285,7 @@ namespace FastaFileMaker
         {
             // Returns True if no problems; otherwise, returns false
 
-            var strValue = string.Empty;
-            var strValidParameters = new string[] { "P", "C", "L", "O", "D" };
+            var strValidParameters = new[] { "P", "C", "L", "O", "D" };
 
             try
             {
@@ -303,16 +297,21 @@ namespace FastaFileMaker
                 else
                 {
                     // Query commandLineParser to see if various parameters are present
-                    if (commandLineParser.RetrieveValueForParameter("P", out strValue))
-                        mProteinCollectionList = strValue;
-                    if (commandLineParser.RetrieveValueForParameter("C", out strValue))
-                        mCreationOpts = strValue;
-                    if (commandLineParser.RetrieveValueForParameter("L", out strValue))
-                        mLegacyFasta = strValue;
-                    if (commandLineParser.RetrieveValueForParameter("O", out strValue))
-                        mOutputDirectory = strValue;
-                    if (commandLineParser.RetrieveValueForParameter("D", out strValue))
+                    if (commandLineParser.RetrieveValueForParameter("P", out var proteinCollectionList))
+                        mProteinCollectionList = proteinCollectionList;
+
+                    if (commandLineParser.RetrieveValueForParameter("C", out var creationOptions))
+                        mCreationOpts = creationOptions;
+
+                    if (commandLineParser.RetrieveValueForParameter("L", out var legacyFasta))
+                        mLegacyFasta = legacyFasta;
+
+                    if (commandLineParser.RetrieveValueForParameter("O", out var outputDirectory))
+                        mOutputDirectory = outputDirectory;
+
+                    if (commandLineParser.IsParameterPresent("D"))
                         mLogProteinFileDetails = true;
+
                     if (mProteinCollectionList.Length > 0)
                     {
                         mLegacyFasta = string.Empty;
@@ -413,17 +412,17 @@ namespace FastaFileMaker
                 }
 
                 mFastaTools = new GetFASTAFromDMS(mFastaToolsCnStr);
-                mFastaTools.DebugEvent += mFastaTools_DebugEvent;
-                mFastaTools.ErrorEvent += mFastaTools_ErrorEvent;
-                mFastaTools.StatusEvent += mFastaTools_StatusEvent;
-                mFastaTools.WarningEvent += mFastaTools_WarningEvent;
-                mFastaTools.FileGenerationStarted += mFastaTools_FileGenerationStarted;
-                mFastaTools.FileGenerationCompleted += mFastaTools_FileGenerationCompleted;
-                mFastaTools.FileGenerationProgress += mFastaTools_FileGenerationProgress;
+                mFastaTools.DebugEvent += FastaTools_DebugEvent;
+                mFastaTools.ErrorEvent += FastaTools_ErrorEvent;
+                mFastaTools.StatusEvent += FastaTools_StatusEvent;
+                mFastaTools.WarningEvent += FastaTools_WarningEvent;
+                mFastaTools.FileGenerationStarted += FastaTools_FileGenerationStarted;
+                mFastaTools.FileGenerationCompleted += FastaTools_FileGenerationCompleted;
+                mFastaTools.FileGenerationProgress += FastaTools_FileGenerationProgress;
             }
 
             mFastaTimer = new System.Timers.Timer();
-            mFastaTimer.Elapsed += mFastaTimer_Elapsed;
+            mFastaTimer.Elapsed += FastaTimer_Elapsed;
             mFastaTimer.Interval = 5000d;
             mFastaTimer.AutoReset = true;
 
@@ -459,7 +458,7 @@ namespace FastaFileMaker
             if (mFastaGenTimeOut)
             {
                 // Fasta generator hung - report error and exit
-                mMessage = "Timeout error while generating OrdDb file (" + FastaGenTimeoutIntervalMinutes + " minutes have elapsed)";
+                mMessage = "Timeout error while generating FASTA file (" + FastaGenTimeoutIntervalMinutes + " minutes have elapsed)";
                 Console.WriteLine("clsAnalysisResources.CreateFastaFile(), " + mMessage);
 
                 return false;
