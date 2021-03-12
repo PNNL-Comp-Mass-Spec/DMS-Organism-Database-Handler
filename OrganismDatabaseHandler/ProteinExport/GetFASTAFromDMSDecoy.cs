@@ -63,11 +63,11 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             var revFilePath = RevGenerator.FullOutputPath;
 
-            var fwdFi = new FileInfo(fwdFilePath);
-            var revFi = new FileInfo(revFilePath);
+            var forwardFile = new FileInfo(fwdFilePath);
+            var reverseFile = new FileInfo(revFilePath);
 
-            using (var reverseReader = new StreamReader(new FileStream(revFi.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
-            using (var appender = new StreamWriter(new FileStream(fwdFi.FullName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)))
+            using (var reverseReader = new StreamReader(new FileStream(reverseFile.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+            using (var appender = new StreamWriter(new FileStream(forwardFile.FullName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)))
             {
                 while (!reverseReader.EndOfStream)
                 {
@@ -76,11 +76,9 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
             }
 
-            revFi.Delete();
+            reverseFile.Delete();
 
-            var crc32HashFinal = GetFileHash(fwdFi.FullName);
-
-            return crc32HashFinal;
+            return GetFileHash(forwardFile.FullName);
         }
     }
 }

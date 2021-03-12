@@ -144,13 +144,13 @@ namespace OrganismDatabaseHandler.ProteinExport
         //        Enum.GetName(typeof(IArchiveOutputFiles.CollectionTypes), archivedFileType) +
         //        "' AND " + "Creation_Options = '" + creationOptionsString + "'";
 
-        //    DataTable dt;
-        //    dt = mDatabaseAccessor.GetTable(SQL);
+        //    DataTable resultsTable;
+        //    resultsTable = mDatabaseAccessor.GetTable(SQL);
 
-        //    if (dt.Rows.Count > 0)
+        //    if (resultsTable.Rows.Count > 0)
         //    {
-        //        mArchived_File_Name = dt.Rows[0]["Archived_File_Path"].ToString();
-        //        return System.Convert.ToInt32(dt.Rows[0]["Archived_File_ID"]);
+        //        mArchived_File_Name = resultsTable.Rows[0]["Archived_File_Path"].ToString();
+        //        return System.Convert.ToInt32(resultsTable.Rows[0]["Archived_File_ID"]);
         //    }
         //    else
         //        return 0;

@@ -49,9 +49,9 @@ namespace OrganismDatabaseHandler.ProteinExport
                 throw new IOException("Unable to create FASTA file at " + destinationPath + ". " + errorMessage);
             }
 
-            using (var bw = new BinaryWriter(File.OpenWrite(destinationPath)))
+            using (var writer = new BinaryWriter(File.OpenWrite(destinationPath)))
             {
-                bw.BaseStream.Seek(0L, SeekOrigin.Begin);
+                writer.BaseStream.Seek(0L, SeekOrigin.Begin);
 
                 OnExportStart("Writing to X!Tandem formatted FASTA File");
 
@@ -77,7 +77,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     eventTriggerThresh = (int)Math.Round(counterMax / 25d);
                 }
 
-                bw.Write(buffer);
+                writer.Write(buffer);
 
                 foreach (var tmpName in proteinArray)
                 {
@@ -99,20 +99,20 @@ namespace OrganismDatabaseHandler.ProteinExport
                     buffer = ConvIntegerToByteArray(tmpNum, 4);
                     Array.Reverse(buffer);
 
-                    bw.Write(buffer);
+                    writer.Write(buffer);
                     buffer = encoding.GetBytes(tmpName);
-                    bw.Write(buffer);
-                    bw.Write(ConvIntegerToByteArray(0L, 1));
+                    writer.Write(buffer);
+                    writer.Write(ConvIntegerToByteArray(0L, 1));
 
                     Array.Clear(buffer, 0, 4);
                     tmpNum = proteinLength + 1;
                     buffer = ConvIntegerToByteArray(tmpNum, 4);
                     Array.Reverse(buffer);
 
-                    bw.Write(buffer);
+                    writer.Write(buffer);
                     buffer = encoding.GetBytes(tmpSeq);
-                    bw.Write(buffer);
-                    bw.Write(ConvIntegerToByteArray(0L, 1));
+                    writer.Write(buffer);
+                    writer.Write(ConvIntegerToByteArray(0L, 1));
                 }
             }
 
@@ -154,9 +154,9 @@ namespace OrganismDatabaseHandler.ProteinExport
                 throw new IOException("Unable to create FASTA file at " + destinationPath + ". " + errorMessage);
             }
 
-            using (var bw = new BinaryWriter(File.OpenWrite(destinationPath)))
+            using (var writer = new BinaryWriter(File.OpenWrite(destinationPath)))
             {
-                bw.BaseStream.Seek(0L, SeekOrigin.Begin);
+                writer.BaseStream.Seek(0L, SeekOrigin.Begin);
 
                 // IEnumerator e = Proteins.GetEnumerator;
 
@@ -183,7 +183,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                         eventTriggerThresh = (int)Math.Round(counterMax / 25d);
                     }
 
-                    bw.Write(buffer);
+                    writer.Write(buffer);
 
                     foreach (var dr in foundRows)
                     {
@@ -207,20 +207,20 @@ namespace OrganismDatabaseHandler.ProteinExport
                         buffer = ConvIntegerToByteArray(tmpNum, 4);
                         Array.Reverse(buffer);
 
-                        bw.Write(buffer);
+                        writer.Write(buffer);
                         buffer = encoding.GetBytes(tmpName);
-                        bw.Write(buffer);
-                        bw.Write(ConvIntegerToByteArray(0L, 1));
+                        writer.Write(buffer);
+                        writer.Write(ConvIntegerToByteArray(0L, 1));
 
                         Array.Clear(buffer, 0, 4);
                         tmpNum = proteinLength + 1;
                         buffer = ConvIntegerToByteArray(tmpNum, 4);
                         Array.Reverse(buffer);
 
-                        bw.Write(buffer);
+                        writer.Write(buffer);
                         buffer = encoding.GetBytes(tmpSeq);
-                        bw.Write(buffer);
-                        bw.Write(ConvIntegerToByteArray(0L, 1));
+                        writer.Write(buffer);
+                        writer.Write(ConvIntegerToByteArray(0L, 1));
                     }
                 }
             }
