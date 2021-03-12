@@ -130,29 +130,5 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             return string.Format("{0:X8}", crc);
         }
-
-        // /// <summary>
-        // /// Compute the MD5 hash for the file
-        // /// </summary>
-        // /// <param name="fullFilePath"></param>
-        // /// <returns>File hash</returns>
-        // protected string GetFileHashMD5(string fullFilePath)
-        // {
-        //     var md5Gen = new MD5CryptoServiceProvider();
-        //
-        //     var fi = new FileInfo(fullFilePath);
-        //
-        //     if (!fi.Exists)
-        //     {
-        //         return string.Empty;
-        //     }
-        //
-        //     using (var f = fi.OpenRead())
-        //     {
-        //         var tmpHash = md5Gen.ComputeHash(f);
-        //         string md5String = RijndaelEncryptionHandler.ToHexString(tmpHash);
-        //         return md5String;
-        //     }
-        // }
     }
 }
