@@ -108,7 +108,7 @@ namespace AppUI_OrfDBHandler
             List<CustomFastaValidator.ErrorInfoExtended> itemCollection)
         {
             objListView.Items.Clear();
-            if (itemListByFile != null && itemListByFile.Count > 0)
+            if (itemListByFile?.Count > 0)
             {
                 if (itemListByFile.TryGetValue(selectedItemText, out var itemList))
                 {
@@ -120,7 +120,7 @@ namespace AppUI_OrfDBHandler
                 }
             }
 
-            if (summarizedItemList != null && summarizedItemList.Count > 0)
+            if (summarizedItemList?.Count > 0)
             {
                 if (summarizedItemList.TryGetValue(selectedItemText, out var itemSummary))
                 {
@@ -301,7 +301,7 @@ namespace AppUI_OrfDBHandler
                              "Message Type" + "\t" +
                              "Message");
 
-            if (errorList != null && errorList.Count > 0)
+            if (errorList?.Count > 0)
             {
                 foreach (var errorDetail in errorList)
                 {

@@ -168,9 +168,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             var tmpAltNames = string.Empty;
 
-            var errorMessage = string.Empty;
-
-            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out errorMessage);
+            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out var errorMessage);
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))
