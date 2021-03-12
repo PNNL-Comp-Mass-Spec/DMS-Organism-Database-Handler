@@ -72,7 +72,7 @@ namespace AppUI_OrfDBHandler
 
             foreach (DataRow dr in dt.Rows)
             {
-                OnSyncProgressUpdate("Processing - '" + dr["FileName"] + "'", currentCollectionProteinCount / (double)totalProteinsCount);
+                OnSyncProgressUpdate("Processing - '" + dr["FileName"] + "'", currentCollectionProteinCount / (double)mTotalProteinsCount);
                 currentCollectionProteinCount = Convert.ToInt32(dr["NumProteins"]);
                 var proteinCollectionId = Convert.ToInt32(dr["Protein_Collection_ID"]);
                 var sourceFilePath = Path.Combine(outputPath, dr["FileName"] + ".fasta");
