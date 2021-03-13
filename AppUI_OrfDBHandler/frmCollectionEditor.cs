@@ -327,13 +327,13 @@ namespace AppUI_OrfDBHandler
             try
             {
                 // Save these settings to the registry
-                if (!string.IsNullOrEmpty(mLastSelectedOrganism))
+                if (!string.IsNullOrEmpty(mLastSelectedOrganism) && !mLastSelectedOrganism.Equals(" - "))
                 {
                     //Interaction.SaveSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedOrganism", mLastSelectedOrganism);
                     Settings.Default.LastSelectedOrganism = mLastSelectedOrganism;
                 }
 
-                if (!string.IsNullOrEmpty(mLastSelectedAnnotationType))
+                if (!string.IsNullOrEmpty(mLastSelectedAnnotationType) && !mLastSelectedAnnotationType.StartsWith(" -- None"))
                 {
                     //Interaction.SaveSetting("ProteinCollectionEditor", "UserOptions", "LastSelectedAnnotationType", mLastSelectedAnnotationType);
                     Settings.Default.LastSelectedAnnotationType = mLastSelectedAnnotationType;
