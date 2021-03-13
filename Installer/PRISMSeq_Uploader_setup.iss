@@ -11,8 +11,8 @@ AppName=PRISMSeq Uploader
 WelcomeLabel2=This will install [name/ver] on your computer.
 ; Example with multiple lines:
 ; WelcomeLabel2=Welcome message%n%nAdditional sentence
-[Files]
 
+[Files]
 Source: ..\Executables\Debug\PRISMSeq_Uploader.exe                            ; DestDir: {app}
 Source: ..\Executables\Debug\PRISMSeq_Uploader.exe.config                     ; DestDir: {app}
 Source: ..\Executables\Debug\FlexibleFileSortUtility.dll                      ; DestDir: {app}
@@ -59,6 +59,7 @@ AppPublisher=Pacific Northwest National Laboratory
 AppPublisherURL=http://omics.pnl.gov/software
 AppSupportURL=http://omics.pnl.gov/software
 AppUpdatesURL=http://omics.pnl.gov/software
+ArchitecturesInstallIn64BitMode=x64
 DefaultDirName={autopf}\PRISMSeq_Uploader
 DefaultGroupName=PAST Toolkit
 AppCopyright=© PNNL
@@ -80,9 +81,11 @@ SetupIconFile=..\AppUI_OrfDBHandler\PRISMSeq_Favicon.ico
 UninstallDisplayIcon={app}\delete_16x.ico
 ShowTasksTreeLines=true
 OutputDir=.\Output
+
 [Registry]
 ;Root: HKCR; Subkey: MageFile; ValueType: string; ValueName: ; ValueData:Mage File; Flags: uninsdeletekey
 ;Root: HKCR; Subkey: MageSetting\DefaultIcon; ValueType: string; ValueData: {app}\wand.ico,0; Flags: uninsdeletevalue
+
 [UninstallDelete]
 Name: {app}; Type: filesandordirs
 
