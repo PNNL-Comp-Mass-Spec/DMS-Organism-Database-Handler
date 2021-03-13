@@ -147,11 +147,6 @@ namespace OrganismDatabaseHandler.ProteinImport
                     }
 
                     currentPosition += dataLine.Length + lineEndCharCount;
-
-                    if (fileReader.EndOfStream)
-                    {
-                        break;
-                    }
                 }
 
                 if (sequence.Length > 0)
