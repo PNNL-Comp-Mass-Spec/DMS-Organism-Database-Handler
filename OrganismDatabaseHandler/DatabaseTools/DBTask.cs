@@ -8,11 +8,8 @@ namespace OrganismDatabaseHandler.DatabaseTools
 {
     public class DBTask : EventNotifier
     {
-        #region "Member Variables"
 
-#pragma warning disable CS3003 // Type is not CLS-compliant
-        private readonly IDBTools mDbTools;
-#pragma warning restore CS3003 // Type is not CLS-compliant
+#region "Member Variables"
 
         #endregion
 
@@ -21,13 +18,13 @@ namespace OrganismDatabaseHandler.DatabaseTools
         /// <summary>
         /// Database connection string
         /// </summary>
-        public string ConnectionString => mDbTools.ConnectStr;
+        public string ConnectionString => DbTools.ConnectStr;
 
         /// <summary>
         /// Database connection string
         /// </summary>
 #pragma warning disable CS3003 // Type is not CLS-compliant
-        public IDBTools DbTools => mDbTools;
+        public IDBTools DbTools { get; }
 #pragma warning restore CS3003 // Type is not CLS-compliant
 
         #endregion
@@ -38,15 +35,15 @@ namespace OrganismDatabaseHandler.DatabaseTools
         /// <param name="connectionString"></param>
         public DBTask(string connectionString)
         {
-            mDbTools = DbToolsFactory.GetDBTools(connectionString);
-            RegisterEvents(mDbTools);
+            DbTools = DbToolsFactory.GetDBTools(connectionString);
+            RegisterEvents(DbTools);
         }
 
 #pragma warning disable CS3001 // Argument type is not CLS-compliant
         public DBTask(IDBTools existingDbTools)
 #pragma warning restore CS3001 // Argument type is not CLS-compliant
         {
-            mDbTools = existingDbTools;
+            DbTools = existingDbTools;
         }
 
         public DataTable GetTableTemplate(string tableName)
@@ -60,7 +57,7 @@ namespace OrganismDatabaseHandler.DatabaseTools
             const int retryCount = 6;
             const int retryDelaySeconds = 5;
             const int timeoutSeconds = 600;
-            var success = mDbTools.GetQueryResultsDataTable(selectSql, out var queryResults, retryCount, retryDelaySeconds, timeoutSeconds);
+            var success = DbTools.GetQueryResultsDataTable(selectSql, out var queryResults, retryCount, retryDelaySeconds, timeoutSeconds);
 
             if (!success)
             {
