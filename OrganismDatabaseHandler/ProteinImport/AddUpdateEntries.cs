@@ -30,7 +30,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Unused: ModifiedSource = 2,
             // Unused: RunTimeCombinedCollection = 3,
             // Unused: LoadTimeCombinedCollection = 4,
-            // Unused: NucOriginalSource = 5,
+            // Unused: NucleotideOriginalSource = 5,
         }
 
         private readonly DBTask mDatabaseAccessor;

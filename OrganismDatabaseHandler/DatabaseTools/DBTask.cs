@@ -119,12 +119,15 @@ namespace OrganismDatabaseHandler.DatabaseTools
             return dataDictionary;
         }
 
+        // ReSharper disable once UnusedMember.Local
+#pragma warning disable IDE0051 // Remove unused private members
         private void ShowTrace(string message)
         {
             if (!ShowTraceMessages)
                 return;
             Console.WriteLine("  " + message);
         }
+#pragma warning restore IDE0051 // Remove unused private members
 
         public bool ShowTraceMessages { get; set; }
     }

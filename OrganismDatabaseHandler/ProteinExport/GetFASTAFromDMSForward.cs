@@ -327,6 +327,9 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             if (protCollectionList.Count > 1)
             {
+                // Generate a filename composed of the protein collection IDs, separated by plus signs
+                // For example, "002041+001810"
+
                 name = tmpIdListSb.ToString();
                 if (destinationFolderPath.Length + name.Length > 225)
                 {

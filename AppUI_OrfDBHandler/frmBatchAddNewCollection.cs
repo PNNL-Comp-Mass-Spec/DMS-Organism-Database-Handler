@@ -16,6 +16,8 @@ namespace AppUI_OrfDBHandler
 {
     public partial class frmBatchAddNewCollection : Form
     {
+        // Ignore spelling: lvw, uploader, Passphrase, terabytes, petabytes, exabytes, zettabytes, yottabytes
+
         public frmBatchAddNewCollection(
             DataTable organismList,
             DataTable annotationTypeList,
@@ -432,14 +434,14 @@ namespace AppUI_OrfDBHandler
             var bSize = new string[9];
 
             bSize[0] = "Bytes";
-            bSize[1] = "KB"; // Kilobytes
-            bSize[2] = "MB"; // Megabytes
-            bSize[3] = "GB"; // Gigabytes
-            bSize[4] = "TB"; // Terabytes
-            bSize[5] = "PB"; // Petabytes
-            bSize[6] = "EB"; // Exabytes
-            bSize[7] = "ZB"; // Zettabytes
-            bSize[8] = "YB"; // Yottabytes
+            bSize[1] = "KB"; // kilobytes
+            bSize[2] = "MB"; // megabytes
+            bSize[3] = "GB"; // gigabytes
+            bSize[4] = "TB"; // terabytes
+            bSize[5] = "PB"; // petabytes
+            bSize[6] = "EB"; // exabytes
+            bSize[7] = "ZB"; // zettabytes
+            bSize[8] = "YB"; // yottabytes
 
             for (var i = bSize.Length; i >= 0; --i)
             {
@@ -735,8 +737,8 @@ namespace AppUI_OrfDBHandler
 
         private void SelectComboBoxItemByName(ComboBox objComboBox, string strValue, int intDataColumnIndexToCheck)
         {
-            // Look for strValue in a combobox that has a data table attached via the .DataSource property
-            // If the value is found, then the given item in the combobox is selected
+            // Look for strValue in a ComboBox that has a data table attached via the .DataSource property
+            // If the value is found, then the given item in the ComboBox is selected
 
             try
             {
@@ -926,8 +928,8 @@ namespace AppUI_OrfDBHandler
                     FormLocation = new Point(Left + Width + 10, Top)
                 };
                 var tmpAnnTypeId = annTypeAdd.AddAnnotationType();
-                // Dim AuthAdd As New AddNamingAuthority(mPSConnectionString)
-                // tmpAuthID = AuthAdd.AddNamingAuthority
+                // Dim AuthorityAdd As New AddNamingAuthority(mPSConnectionString)
+                // tempAuthorityID = AuthAdd.AddNamingAuthority
 
                 if (!annTypeAdd.EntryExists && tmpAnnTypeId > 0)
                 {

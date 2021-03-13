@@ -608,7 +608,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 if (finalFileFi.Exists)
                 {
-                    // Somehow the final file has appeared in the folder (this shouldn't have happened with the lock file present)
+                    // Somehow the final file has appeared in the directory (this shouldn't have happened with the lock file present)
                     // Delete it
                     finalFileFi.Delete();
                 }
