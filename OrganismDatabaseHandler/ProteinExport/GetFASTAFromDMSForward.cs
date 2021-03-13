@@ -380,7 +380,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             // This process will also rename the file, e.g. from "C:\Temp\SAR116_RBH_AA_012809_forward.fasta" to "C:\Temp\38FFACAC.fasta"
             var tempFullPath = FullOutputPath;
             var crc32Hash = mFileDumper.Export(new DataTable(), ref tempFullPath);
-            FullOutputPath = FullOutputPath;
+            FullOutputPath = tempFullPath;
 
             OnExportComplete(FullOutputPath);
 
