@@ -955,7 +955,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// Raises event FileGenerationCompleted is raised once the fasta file is done being created
         /// </summary>
         /// <param name="finalOutputPath"></param>
-        /// <remarks></remarks>
         private void OnTaskCompletion(string finalOutputPath)
         {
             FileGenerationCompleted?.Invoke(finalOutputPath);

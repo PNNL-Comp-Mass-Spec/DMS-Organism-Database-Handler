@@ -21,8 +21,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// </summary>
         /// <param name="proteins"></param>
         /// <param name="destinationPath">Destination file path; will get updated with the final path</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
         public override string Export(
             ProteinStorage.ProteinStorage proteins,
             ref string destinationPath)
@@ -124,7 +122,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// </summary>
         /// <param name="proteinTables"></param>
         /// <param name="destinationPath">Destination file path; will get updated with the final path</param>
-        /// <returns></returns>
         public override string Export(
             DataSet proteinTables,
             ref string destinationPath)
@@ -140,7 +137,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// </summary>
         /// <param name="proteinTable"></param>
         /// <param name="destinationPath">Destination file path; will get updated with the final path</param>
-        /// <returns></returns>
         public override string Export(
             DataTable proteinTable,
             ref string destinationPath)

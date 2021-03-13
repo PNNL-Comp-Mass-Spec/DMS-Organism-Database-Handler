@@ -494,7 +494,6 @@ namespace Bulk_Fasta_Importer
         /// </summary>
         /// <param name="proteinCollectionName"></param>
         /// <param name="proteinCollectionId">ID if a match; 0 if no match</param>
-        /// <returns></returns>
         /// <remarks>True if success (even if the protein collection does not exist); false if a database error</remarks>
         private bool LookupProteinCollectionId(string proteinCollectionName, out int proteinCollectionId)
         {

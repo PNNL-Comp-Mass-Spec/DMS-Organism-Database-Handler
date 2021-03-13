@@ -33,7 +33,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// When true, reverse proteins start with XXX_
         /// When false, they start with REV_
         /// </summary>
-        /// <returns></returns>
         public bool UseXXX { get; set; } = true;
 
         public override string SequenceExtender(string originalSequence, int collectionCount)

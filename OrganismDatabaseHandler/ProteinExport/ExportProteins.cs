@@ -31,7 +31,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <param name="proteins"></param>
         /// <param name="destinationPath">Destination file path; will get updated with the final path</param>
         /// <param name="selectedProteinList"></param>
-        /// <returns></returns>
         protected string Export(
             ProteinStorage.ProteinStorage proteins,
             ref string destinationPath,
@@ -50,7 +49,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// </summary>
         /// <param name="proteins"></param>
         /// <param name="destinationPath">Destination file path; will get updated with the final path</param>
-        /// <returns></returns>
         public abstract string Export(
             ProteinStorage.ProteinStorage proteins,
             ref string destinationPath);
@@ -60,7 +58,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// </summary>
         /// <param name="proteinTables"></param>
         /// <param name="destinationPath">Destination file path; will get updated with the final path</param>
-        /// <returns></returns>
         public abstract string Export(
             DataSet proteinTables,
             ref string destinationPath);
@@ -70,7 +67,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// </summary>
         /// <param name="proteinTable"></param>
         /// <param name="destinationPath">Destination file path; will get updated with the final path</param>
-        /// <returns></returns>
         public abstract string Export(
             DataTable proteinTable,
             ref string destinationPath);

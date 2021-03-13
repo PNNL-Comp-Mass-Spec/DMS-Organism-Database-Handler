@@ -335,7 +335,6 @@ namespace AppUI_OrfDBHandler
         /// <summary>
         /// Populate the top ListView with fasta files in the selected folder
         /// </summary>
-        /// <remarks></remarks>
         private void LoadListView()
         {
             lvwFolderContents.BeginUpdate();
@@ -457,7 +456,6 @@ namespace AppUI_OrfDBHandler
         /// Return the value formatted to include one or two digits after the decimal point
         /// </summary>
         /// <param name="value"></param>
-        /// <returns></returns>
         /// <remarks>
         /// Examples:
         /// 1
@@ -655,7 +653,6 @@ namespace AppUI_OrfDBHandler
         /// Populates mCheckedFileList
         /// </summary>
         /// <returns>True if success, false if no protein collections are selected or if one or more is missing a description and/or source</returns>
-        /// <remarks></remarks>
         private bool MakeCheckedFileList()
         {
             var tmpNameList = new Dictionary<string, ProteinCollectionMetadata>();
@@ -804,8 +801,6 @@ namespace AppUI_OrfDBHandler
         /// Replace tabs and carriage returns with semicolons
         /// </summary>
         /// <param name="value"></param>
-        /// <returns></returns>
-        /// <remarks></remarks>
         private string StripWhiteSpace(string value)
         {
             var updatedValue = value.Trim().Replace("\t", "; ").Replace(Environment.NewLine, "; ").Replace("\r", "; ").Replace("\n", "; ");
@@ -970,7 +965,7 @@ namespace AppUI_OrfDBHandler
                 }
             }
         }
-        
+
         private void CheckTransferEnable()
         {
             if (mSelectedOrganismId > 0 && mSelectedAnnotationTypeId > 0 && lvwFolderContents.SelectedItems.Count > 0)
@@ -1063,7 +1058,7 @@ namespace AppUI_OrfDBHandler
             var li = lvwSelectedFiles.SelectedItems[0];
 
             var selectedOrganism = GetSelectedFileColumn(li, SelectedFileColumn.Organism);
-            
+
             cboAnnotationTypePicker.Text = GetSelectedFileColumn(li, SelectedFileColumn.AnnotationType);
             cboOrganismSelect.Text = selectedOrganism;
 
@@ -1111,7 +1106,7 @@ namespace AppUI_OrfDBHandler
                 mPreviewFormStatus = false;
             }
         }
-        
+
         private void txtMaximumProteinNameLength_Validating(object sender, CancelEventArgs e)
         {
             if (txtMaximumProteinNameLength.TextLength == 0)

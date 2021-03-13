@@ -95,7 +95,6 @@ namespace OrganismDatabaseHandler.ProteinImport
         /// </summary>
         /// <param name="pc"></param>
         /// <param name="selectedProteinList"></param>
-        /// <remarks></remarks>
         public void CompareProteinId(
             ProteinStorage.ProteinStorage pc,
             List<string> selectedProteinList)
@@ -359,7 +358,6 @@ namespace OrganismDatabaseHandler.ProteinImport
         /// </summary>
         /// <param name="proteinCollectionId"></param>
         /// <param name="numProteins"></param>
-        /// <remarks></remarks>
         public void DeleteProteinCollectionMembers(int proteinCollectionId, int numProteins)
         {
             RunSP_DeleteProteinCollectionMembers(proteinCollectionId, numProteins);

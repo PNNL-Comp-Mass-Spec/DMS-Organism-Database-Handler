@@ -21,13 +21,11 @@ namespace OrganismDatabaseHandler.DatabaseTools
         /// <summary>
         /// Database connection string
         /// </summary>
-        /// <returns></returns>
         public string ConnectionString => mDbTools.ConnectStr;
 
         /// <summary>
         /// Database connection string
         /// </summary>
-        /// <returns></returns>
 #pragma warning disable CS3003 // Type is not CLS-compliant
         public IDBTools DbTools => mDbTools;
 #pragma warning restore CS3003 // Type is not CLS-compliant
