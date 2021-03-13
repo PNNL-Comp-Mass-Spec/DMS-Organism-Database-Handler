@@ -119,18 +119,18 @@ namespace OrganismDatabaseHandler.SequenceInfo
 
             var getSql = new DBTask(mDMSConnectionString);
 
-            const string sqlString = "SELECT * FROM T_Residues WHERE [NumC] > 0";
+            const string sqlString = "SELECT * FROM T_Residues WHERE [Num_C] > 0";
             var tmpAATable = getSql.GetTable(sqlString);
 
             foreach (DataRow dr in tmpAATable.Rows)
             {
                 var singleLetterSymbol = dr["Residue_Symbol"].ToString();
                 var description = dr["Description"].ToString();
-                var countC = Convert.ToInt32(dr["NumC"]);
-                var countH = Convert.ToInt32(dr["NumH"]);
-                var countN = Convert.ToInt32(dr["NumN"]);
-                var countO = Convert.ToInt32(dr["NumO"]);
-                var countS = Convert.ToInt32(dr["NumS"]);
+                var countC = Convert.ToInt32(dr["Num_C"]);
+                var countH = Convert.ToInt32(dr["Num_H"]);
+                var countN = Convert.ToInt32(dr["Num_N"]);
+                var countO = Convert.ToInt32(dr["Num_O"]);
+                var countS = Convert.ToInt32(dr["Num_S"]);
                 var monoMass = Convert.ToDouble(dr["Monoisotopic_Mass"]);
                 var avgMass = Convert.ToDouble(dr["Average_Mass"]);
 
