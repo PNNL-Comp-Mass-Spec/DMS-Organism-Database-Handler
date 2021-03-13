@@ -9,7 +9,7 @@ namespace FastaFileMaker
     {
         // Ignore Spelling: filetype, Shewanella, yyyy-MM-dd, hh:mm:ss tt
 
-        public const string ProgramDate = "March 11, 2021";
+        public const string ProgramDate = "March 12, 2021";
 
         private const int DebugLevel = 4;
         private const int FastaGenTimeoutIntervalMinutes = 70;

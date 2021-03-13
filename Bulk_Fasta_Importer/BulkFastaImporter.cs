@@ -91,7 +91,7 @@ namespace Bulk_Fasta_Importer
 
         public BulkFastaImporter(string dmsConnString, string proteinSeqsConnString)
         {
-            mFileDate = "March 11, 2021";
+            mFileDate = "March 12, 2021";
 
             if (string.IsNullOrWhiteSpace(dmsConnString))
             {

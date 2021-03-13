@@ -13,7 +13,7 @@ namespace Bulk_Fasta_Importer
     /// </summary>
     internal static class Program
     {
-        public const string ProgramDate = "March 11, 2021";
+        public const string ProgramDate = "March 12, 2021";
 
         private static string mInputFilePath;
         private static bool mPreviewMode;
