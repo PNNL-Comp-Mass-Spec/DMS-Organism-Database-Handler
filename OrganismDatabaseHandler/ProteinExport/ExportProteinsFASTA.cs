@@ -216,9 +216,10 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 writer.WriteLine((">" + tmpName + " " + tmpDesc + tmpAltNames).Trim());
 
-                for (var proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += mSeqLineLength)
+                for (var startIndex = 0; startIndex < proteinLength; startIndex += mSeqLineLength)
                 {
-                    var seqLinePortion = tmpSeq.Substring(proteinPosition, mSeqLineLength);
+                    var charLength = Math.Min(mSeqLineLength, proteinLength - startIndex);
+                    var seqLinePortion = tmpSeq.Substring(startIndex, charLength);
                     writer.WriteLine(seqLinePortion);
                 }
 
