@@ -112,7 +112,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             var sourceFile = new FileInfo(sourceFilePath);
 
-            if (!sourceFile.Exists) 
+            if (!sourceFile.Exists)
                 return 0;
 
             using var fileReader = new StreamReader(new FileStream(sourceFile.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
@@ -158,11 +158,11 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public void AddArchiveCollectionXRef(int proteinCollectionId, int archivedFileId)
         {
-            var intReturn = RunSP_AddArchivedFileEntryXRef(proteinCollectionId, archivedFileId);
+            var returnCode = RunSP_AddArchivedFileEntryXRef(proteinCollectionId, archivedFileId);
 
-            if (intReturn != 0)
+            if (returnCode != 0)
             {
-                throw new Exception("Error calling RunSP_AddArchivedFileEntryXRef with ProteinCollectionID " + proteinCollectionId + " and ArchivedFileID " + archivedFileId + ", ReturnCode=" + intReturn);
+                throw new Exception("Error calling RunSP_AddArchivedFileEntryXRef with ProteinCollectionID " + proteinCollectionId + " and ArchivedFileID " + archivedFileId + ", ReturnCode=" + returnCode);
             }
         }
 

@@ -32,7 +32,7 @@ namespace AppUI_OrfDBHandler
             InitializeComponent();
 
             mStatusResetTimer = new Timer() { Interval = 1000 };
-            mStatusResetTimer.Tick += mStatusResetTimer_Tick;
+            mStatusResetTimer.Tick += StatusResetTimer_Tick;
 
             mStatusResetTimer.Start();
 
@@ -1214,7 +1214,7 @@ namespace AppUI_OrfDBHandler
             }
         }
 
-        private void mStatusResetTimer_Tick(object sender, EventArgs e)
+        private void StatusResetTimer_Tick(object sender, EventArgs e)
         {
             if (mStatusResetRequired && DateTime.UtcNow > mStatusClearTime)
             {
