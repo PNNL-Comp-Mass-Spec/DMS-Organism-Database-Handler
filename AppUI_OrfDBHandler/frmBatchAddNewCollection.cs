@@ -867,14 +867,8 @@ namespace AppUI_OrfDBHandler
 
                     var kvDescriptionSource = new KeyValuePair<string, string>(updatedDescription, updatedSource);
 
-                    if (mCachedFileDescriptions.ContainsKey(proteinCollection))
-                    {
-                        mCachedFileDescriptions[proteinCollection] = kvDescriptionSource;
-                    }
-                    else
-                    {
-                        mCachedFileDescriptions.Add(proteinCollection, kvDescriptionSource);
-                    }
+                    // Add/update the dictionary item
+                    mCachedFileDescriptions[proteinCollection] = kvDescriptionSource;
                 }
             }
         }
@@ -1262,8 +1256,8 @@ namespace AppUI_OrfDBHandler
                 if (!compared)
                 {
                     // Compare the two items as a string.
-                    returnVal = string.Compare(((ListViewItem)x).SubItems[mColIndex].Text,
-                                               ((ListViewItem)y).SubItems[mColIndex].Text, StringComparison.Ordinal);
+                    returnVal = string.CompareOrdinal(((ListViewItem)x).SubItems[mColIndex].Text,
+                                               ((ListViewItem)y).SubItems[mColIndex].Text);
                 }
 
                 if (mSortOrder == SortOrder.Descending)

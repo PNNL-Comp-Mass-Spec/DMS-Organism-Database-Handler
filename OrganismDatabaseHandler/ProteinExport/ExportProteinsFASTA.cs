@@ -127,7 +127,9 @@ namespace OrganismDatabaseHandler.ProteinExport
             ref string destinationPath)
         {
             foreach (DataTable proteinTable in proteinTables.Tables)
+            {
                 WriteFromDataTable(proteinTable, destinationPath);
+            }
 
             return FinalizeFile(ref destinationPath);
         }
