@@ -134,7 +134,8 @@ namespace OrganismDatabaseHandler.ProteinExport
                 switch (tmpKeyword)
                 {
                     case "seq_direction":
-                        mSeqDirection = (GetFASTAFromDMS.SequenceTypes)Enum.Parse(typeof(GetFASTAFromDMS.SequenceTypes), tmpValue);
+                        // Convert from string to an enum (case insensitive matching to enum value names)
+                        mSeqDirection = (GetFASTAFromDMS.SequenceTypes)Enum.Parse(typeof(GetFASTAFromDMS.SequenceTypes), tmpValue, true);
                         break;
 
                     case "filetype":
