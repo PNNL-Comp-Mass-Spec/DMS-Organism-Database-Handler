@@ -152,7 +152,7 @@ namespace AppUI_OrfDBHandler
 
                     case "snc":
                         tmp = s.TrimStart();
-                        tmp = tmp.Substring(tmpStartPos);
+                        tmp = tmp.Substring(tmpStartPos); // TODO: This either does nothing, or undesirable things.
                         tmp = tmp.TrimEnd(trimChars);
                         startList = tmp;
                         break;
@@ -190,7 +190,7 @@ namespace AppUI_OrfDBHandler
         {
             var tmpString = rawBaseString.TrimStart();
 
-            return tmpString.Substring(11);
+            return tmpString.Substring(10);
         }
 
         private bool SplitCodonEntries(
@@ -215,7 +215,7 @@ namespace AppUI_OrfDBHandler
 
             bool tmpStart;
 
-            var counter = default(int);
+            var counter = 0;
             DataRow dr;
 
             foreach (var tmpName in nameList)
@@ -231,7 +231,6 @@ namespace AppUI_OrfDBHandler
             foreach (var tmpAA in arrAA)
             {
                 dr = mTranslationEntries.NewRow();
-                counter++;
                 var tmpStartString = startString.Substring(counter, 1);
                 tmpStart = tmpStartString == "M";
 
@@ -247,6 +246,7 @@ namespace AppUI_OrfDBHandler
                 dr["DNA_Translation_Table_ID"] = id;
 
                 mTranslationEntries.Rows.Add(dr);
+                counter++;
             }
 
             return default;

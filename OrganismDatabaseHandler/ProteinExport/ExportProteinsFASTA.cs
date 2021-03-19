@@ -83,9 +83,9 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                     writer.WriteLine((">" + tmpPc.Reference + " " + tmpDesc + tmpAltNames).Trim());
 
-                    for (var proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition += mSeqLineLength)
+                    for (var startIndex = 0; startIndex < proteinLength; startIndex += mSeqLineLength)
                     {
-                        var seqLine = tmpSeq.Substring(proteinPosition, mSeqLineLength);
+                        var seqLine = tmpSeq.Substring(startIndex, mSeqLineLength);
                         writer.WriteLine(seqLine);
                     }
                 }
