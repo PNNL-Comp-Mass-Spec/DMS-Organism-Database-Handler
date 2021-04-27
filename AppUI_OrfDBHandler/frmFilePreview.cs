@@ -10,7 +10,6 @@ namespace AppUI_OrfDBHandler
         public frmFilePreview()
         {
             base.Load += frmFilePreview_Load;
-            base.Closed += frmFilePreview_Closed;
 
             InitializeComponent();
 
@@ -18,10 +17,6 @@ namespace AppUI_OrfDBHandler
         }
 
         public event RefreshRequestEventHandler RefreshRequest;
-
-        public new event FormClosingEventHandler FormClosing;
-
-        public delegate void FormClosingEventHandler();
 
         private readonly Regex validationRegex;
         private int mCurrentLineCount = 100;
@@ -89,11 +84,6 @@ namespace AppUI_OrfDBHandler
         {
             var countText = txtLineCount.Text;
             cmdRefresh.Enabled = validationRegex.IsMatch(countText);
-        }
-
-        private void frmFilePreview_Closed(object sender, EventArgs e)
-        {
-            FormClosing?.Invoke();
         }
 
         private void cmdClose_Click(object sender, EventArgs e)

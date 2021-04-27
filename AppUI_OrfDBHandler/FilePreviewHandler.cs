@@ -20,7 +20,7 @@ namespace AppUI_OrfDBHandler
         {
             mFrmPreview = new frmFilePreview();
             mFrmPreview.RefreshRequest += FillPreview;
-            mFrmPreview.FormClosing += OnFormClose;
+            mFrmPreview.FormClosed += OnFormClose;
         }
 
         private void GetProteins(
@@ -55,7 +55,7 @@ namespace AppUI_OrfDBHandler
             {
                 mFrmPreview = new frmFilePreview();
                 mFrmPreview.RefreshRequest += FillPreview;
-                mFrmPreview.FormClosing += OnFormClose;
+                mFrmPreview.FormClosed += OnFormClose;
             }
 
             mFrmPreview.DesktopLocation = new Point(horizontalPos, verticalPos);
@@ -83,7 +83,7 @@ namespace AppUI_OrfDBHandler
             if (mFrmPreview != null)
             {
                 mFrmPreview.RefreshRequest -= FillPreview;
-                mFrmPreview.FormClosing -= OnFormClose;
+                mFrmPreview.FormClosed -= OnFormClose;
             }
 
             mProteins = null;
@@ -91,14 +91,14 @@ namespace AppUI_OrfDBHandler
             mFrmPreview = null;
         }
 
-        public void OnFormClose()
+        public void OnFormClose(object sender, FormClosedEventArgs e)
         {
             FormStatus?.Invoke(false);
 
             if (mFrmPreview != null)
             {
                 mFrmPreview.RefreshRequest -= FillPreview;
-                mFrmPreview.FormClosing -= OnFormClose;
+                mFrmPreview.FormClosed -= OnFormClose;
             }
             mFrmPreview = null;
         }
