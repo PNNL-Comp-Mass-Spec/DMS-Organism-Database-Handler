@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Windows.Forms;
+using OrganismDatabaseHandler;
 using OrganismDatabaseHandler.DatabaseTools;
 using OrganismDatabaseHandler.ProteinUpload;
 
@@ -32,20 +33,9 @@ namespace AppUI_OrfDBHandler.ProteinUpload
         }
 
         public event ProgressUpdateEventHandler ProgressUpdate;
-
-        public delegate void ProgressUpdateEventHandler(double fractionDone);
-
         public event TaskChangeEventHandler TaskChange;
-
-        public delegate void TaskChangeEventHandler(string currentTaskTitle);
-
         public event LoadStartEventHandler LoadStart;
-
-        public delegate void LoadStartEventHandler(string taskTitle);
-
         public event LoadEndEventHandler LoadEnd;
-
-        public delegate void LoadEndEventHandler();
 
         private void OnTaskChange(string currentTaskTitle)
         {

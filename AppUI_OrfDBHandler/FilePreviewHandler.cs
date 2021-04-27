@@ -16,8 +16,6 @@ namespace AppUI_OrfDBHandler
 
         public event FormStatusEventHandler FormStatus;
 
-        public delegate void FormStatusEventHandler(bool visible);
-
         public FilePreviewHandler()
         {
             mFrmPreview = new frmFilePreview();

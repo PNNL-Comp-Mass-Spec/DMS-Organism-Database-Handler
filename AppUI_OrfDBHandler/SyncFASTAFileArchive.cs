@@ -23,16 +23,8 @@ namespace AppUI_OrfDBHandler
         private GetFASTAFromDMS mExporter;
 
         public event SyncStartEventHandler SyncStart;
-
-        public delegate void SyncStartEventHandler(string statusMsg);
-
         public event SyncProgressEventHandler SyncProgress;
-
-        public delegate void SyncProgressEventHandler(string statusMsg, double fractionDone);
-
         public event SyncCompleteEventHandler SyncComplete;
-
-        public delegate void SyncCompleteEventHandler();
 
         private string mCurrentStatusMsg;
         private int mCurrentProteinCount;

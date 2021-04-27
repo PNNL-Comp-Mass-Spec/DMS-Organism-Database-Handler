@@ -934,16 +934,8 @@ namespace OrganismDatabaseHandler.ProteinExport
         #region "Events and Event Handlers"
 
         public event FileGenerationCompletedEventHandler FileGenerationCompleted;
-
-        public delegate void FileGenerationCompletedEventHandler(string outputPath);
-
         public event FileGenerationProgressEventHandler FileGenerationProgress;
-
-        public delegate void FileGenerationProgressEventHandler(string statusMsg, double fractionDone);
-
         public event FileGenerationStartedEventHandler FileGenerationStarted;
-
-        public delegate void FileGenerationStartedEventHandler(string taskMsg);
 
         private void OnFileGenerationCompleted(string outputPath)
         {

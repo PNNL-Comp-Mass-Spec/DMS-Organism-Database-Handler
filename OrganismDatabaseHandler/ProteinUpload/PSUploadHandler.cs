@@ -63,40 +63,14 @@ namespace OrganismDatabaseHandler.ProteinUpload
         private readonly CustomFastaValidator mValidator;
 
         public event LoadStartEventHandler LoadStart;
-
-        public delegate void LoadStartEventHandler(string taskTitle);
-
         public event LoadProgressEventHandler LoadProgress;
-
-        public delegate void LoadProgressEventHandler(double fractionDone);
-
         public event LoadEndEventHandler LoadEnd;
-
-        public delegate void LoadEndEventHandler();
-
         public event BatchProgressEventHandler BatchProgress;
-
-        public delegate void BatchProgressEventHandler(string status);
-
         public event ValidationProgressEventHandler ValidationProgress;
-
-        public delegate void ValidationProgressEventHandler(string taskTitle, double fractionDone);
-
         public event ValidFASTAFileLoadedEventHandler ValidFASTAFileLoaded;
-
-        public delegate void ValidFASTAFileLoadedEventHandler(string fastaFilePath, UploadInfo uploadData);
-
         public event InvalidFASTAFileEventHandler InvalidFASTAFile;
-
-        public delegate void InvalidFASTAFileEventHandler(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> errorCollection);
-
         public event FASTAFileWarningsEventHandler FASTAFileWarnings;
-
-        public delegate void FASTAFileWarningsEventHandler(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> warningCollection);
-
         public event WroteLineEndNormalizedFASTAEventHandler WroteLineEndNormalizedFASTA;
-
-        public delegate void WroteLineEndNormalizedFASTAEventHandler(string newFilePath);
 
         private int mMaximumProteinNameLength = FastaValidator.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
 

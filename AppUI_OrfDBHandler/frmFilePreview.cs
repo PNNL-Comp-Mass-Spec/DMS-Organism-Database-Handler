@@ -19,8 +19,6 @@ namespace AppUI_OrfDBHandler
 
         public event RefreshRequestEventHandler RefreshRequest;
 
-        public delegate void RefreshRequestEventHandler(int lineCount);
-
         public new event FormClosingEventHandler FormClosing;
 
         public delegate void FormClosingEventHandler();

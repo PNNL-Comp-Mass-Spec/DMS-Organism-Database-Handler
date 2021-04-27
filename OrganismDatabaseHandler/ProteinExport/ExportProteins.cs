@@ -14,16 +14,8 @@ namespace OrganismDatabaseHandler.ProteinExport
         }
 
         public event ExportStartEventHandler ExportStart;
-
-        public delegate void ExportStartEventHandler(string taskTitle);
-
         public event ExportProgressEventHandler ExportProgress;
-
-        public delegate void ExportProgressEventHandler(string statusMsg, double fractionDone);
-
         public event ExportEndEventHandler ExportEnd;
-
-        public delegate void ExportEndEventHandler();
 
         /// <summary>
         /// Export the proteins to the given file

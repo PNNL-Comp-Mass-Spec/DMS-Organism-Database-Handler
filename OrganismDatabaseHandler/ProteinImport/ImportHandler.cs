@@ -35,20 +35,9 @@ namespace OrganismDatabaseHandler.ProteinImport
         private DataTable mAuthoritiesTable;
 
         public event LoadStartEventHandler LoadStart;
-
-        public delegate void LoadStartEventHandler(string taskTitle);
-
         public event LoadProgressEventHandler LoadProgress;
-
-        public delegate void LoadProgressEventHandler(double fractionDone);
-
         public event LoadEndEventHandler LoadEnd;
-
-        public delegate void LoadEndEventHandler();
-
         public event CollectionLoadCompleteEventHandler CollectionLoadComplete;
-
-        public delegate void CollectionLoadCompleteEventHandler(DataTable collectionsTable);
 
         public ImportHandler(string psConnectionString)
         {

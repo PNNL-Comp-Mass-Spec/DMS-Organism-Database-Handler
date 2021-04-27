@@ -10,16 +10,8 @@ namespace OrganismDatabaseHandler.ProteinUpload
         private readonly DBTask mDatabaseAccessor;
 
         public event EncryptionStartEventHandler EncryptionStart;
-
-        public delegate void EncryptionStartEventHandler(string taskMsg);
-
         public event EncryptionProgressEventHandler EncryptionProgress;
-
-        public delegate void EncryptionProgressEventHandler(string statusMsg, double fractionDone);
-
         public event EncryptionCompleteEventHandler EncryptionComplete;
-
-        public delegate void EncryptionCompleteEventHandler();
 
         public CollectionEncryptor(string passPhrase, DBTask databaseAccessor)
         {

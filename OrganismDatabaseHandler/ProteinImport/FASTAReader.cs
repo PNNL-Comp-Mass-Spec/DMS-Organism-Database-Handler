@@ -19,16 +19,8 @@ namespace OrganismDatabaseHandler.ProteinImport
         #region "Events"
 
         public event LoadStartEventHandler LoadStart;
-
-        public delegate void LoadStartEventHandler(string taskTitle);
-
         public event LoadEndEventHandler LoadEnd;
-
-        public delegate void LoadEndEventHandler();
-
         public event LoadProgressEventHandler LoadProgress;
-
-        public delegate void LoadProgressEventHandler(double fractionDone);
 
         #endregion
 

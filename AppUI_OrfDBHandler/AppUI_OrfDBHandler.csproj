@@ -66,6 +66,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DataListViewHandler.cs" />
+    <Compile Include="EventDelegates.cs" />
     <Compile Include="FilePreviewHandler.cs" />
     <Compile Include="frmAddAnnotationType.cs">
       <SubType>Form</SubType>
