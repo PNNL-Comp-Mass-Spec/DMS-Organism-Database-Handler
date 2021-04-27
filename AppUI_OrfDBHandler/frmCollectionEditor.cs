@@ -47,7 +47,7 @@ namespace AppUI_OrfDBHandler
             Application.Run(new frmCollectionEditor());
         }
 
-        private const string ProgramDate = "March 12, 2021";
+        private const string ProgramDate = "April 27, 2021";
 
         private DataTable mOrganisms;
         private DataTable mProteinCollections;
@@ -385,7 +385,10 @@ namespace AppUI_OrfDBHandler
             mUploadHandler.ValidationProgress += ValidationProgressHandler;
             mUploadHandler.WroteLineEndNormalizedFASTA += NormalizedFASTAFileGenerationHandler;
 
+            pgbMain.Value = 0;
+            lblCurrentTask.Text = "";
             pnlProgBar.Visible = true;
+
             try
             {
                 mUploadHandler.SetValidationOptions(PSUploadHandler.ValidationOptionConstants.AllowAllSymbolsInProteinNames, frmBatchUpload.ValidationAllowAllSymbolsInProteinNames);
@@ -989,11 +992,9 @@ namespace AppUI_OrfDBHandler
         {
             //mFileBatcher.LoadStart();
 
-            pnlProgBar.Visible = true;
-            pgbMain.Visible = true;
             pgbMain.Value = 0;
             lblCurrentTask.Text = taskTitle;
-            lblCurrentTask.Visible = true;
+            pnlProgBar.Visible = true;
             Application.DoEvents();
         }
 

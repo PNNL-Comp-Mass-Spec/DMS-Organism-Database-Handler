@@ -135,7 +135,6 @@ namespace AppUI_OrfDBHandler
             this.lblCurrentTask.TabIndex = 0;
             this.lblCurrentTask.Text = "Reading Source File...";
             this.lblCurrentTask.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-            this.lblCurrentTask.Visible = false;
             // 
             // pnlProgBarLower
             // 
@@ -154,7 +153,6 @@ namespace AppUI_OrfDBHandler
             this.pgbMain.Name = "pgbMain";
             this.pgbMain.Size = new System.Drawing.Size(1120, 22);
             this.pgbMain.TabIndex = 14;
-            this.pgbMain.Visible = false;
             // 
             // pnlSource
             // 
