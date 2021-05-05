@@ -770,6 +770,11 @@
             </summary>
             <remarks>Used by CustomValidateFastaFiles</remarks>
         </member>
+        <member name="F:ValidateFastaFile.FastaValidator.mProteinAccessionSepChars">
+            <summary>
+            This array has a space and a non-breaking space
+            </summary>
+        </member>
         <member name="F:ValidateFastaFile.FastaValidator.mCheckForDuplicateProteinSequences">
             <summary>
             Check for duplicate protein sequences
