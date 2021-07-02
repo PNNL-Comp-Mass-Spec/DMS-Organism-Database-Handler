@@ -90,7 +90,7 @@ namespace AppUI_OrfDBHandler
 
             foreach (DataRow dr in dt.Rows)
             {
-                mTotalProteinsCount += Convert.ToInt32(dr["Numproteins"]);
+                mTotalProteinsCount += Convert.ToInt32(dr["NumProteins"]);
             }
 
             var elapsedTimeSb = new StringBuilder();

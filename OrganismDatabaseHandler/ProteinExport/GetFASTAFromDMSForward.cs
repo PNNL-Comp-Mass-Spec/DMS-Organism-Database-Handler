@@ -92,7 +92,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var tmpId = default(int);
             var tmpIdListSb = new StringBuilder();
 
-            var nameCheckRegex = new Regex(@"(?<collectionname>.+)(?<direction>_(forward|reversed|scrambled)).*\.(?<type>(fasta|fasta\.pro))");
+            var nameCheckRegex = new Regex(@"(?<CollectionName>.+)(?<direction>_(forward|reversed|scrambled)).*\.(?<type>(fasta|fasta\.pro))");
 
             if (!CheckProteinCollectionNameValidity(protCollectionList))
             {
@@ -139,6 +139,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 if (collectionNameList.Length > 0)
                     collectionNameList += ", ";
+
                 collectionNameList += nameString;
             }
 
@@ -187,7 +188,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 if (nameCheckRegex.IsMatch(proteinCollectionName))
                 {
                     var m = nameCheckRegex.Match(proteinCollectionName);
-                    trueName = m.Groups["collectionname"].Value;
+                    trueName = m.Groups["CollectionName"].Value;
                 }
                 else
                 {
