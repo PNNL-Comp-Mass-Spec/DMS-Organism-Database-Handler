@@ -295,7 +295,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
                     {
                         var errorCollection = new List<CustomFastaValidator.ErrorInfoExtended>()
                         {
-                            new CustomFastaValidator.ErrorInfoExtended(
+                            new(
                                 0, " N/A ", logMessageIfCancelled, "", logLabelIfCancelled)
                         };
                         OnInvalidFASTAFile(currentFile.FullName, errorCollection);
@@ -317,7 +317,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
 
                             var errorCollection = new List<CustomFastaValidator.ErrorInfoExtended>()
                             {
-                                new CustomFastaValidator.ErrorInfoExtended(
+                                new(
                                     0, " N/A ", "No valid proteins were loaded from the .Fasta file", "", "Error")
                             };
 

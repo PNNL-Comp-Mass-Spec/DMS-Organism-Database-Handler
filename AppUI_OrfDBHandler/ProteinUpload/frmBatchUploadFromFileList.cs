@@ -68,7 +68,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             }
         }
 
-        public Dictionary<string, BatchUploadFromFileList.FileListInfo> SelectedFilesCollection { get; } = new Dictionary<string, BatchUploadFromFileList.FileListInfo>(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, BatchUploadFromFileList.FileListInfo> SelectedFilesCollection { get; } = new(StringComparer.OrdinalIgnoreCase);
 
         private void PopulateDropDowns()
         {
