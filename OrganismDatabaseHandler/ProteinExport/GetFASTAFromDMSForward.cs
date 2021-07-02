@@ -211,7 +211,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     collectionLength = -1;
                 }
 
-                int currentFileProteinCount = 0;
+                int currentFileProteinCount;
 
                 do
                 {

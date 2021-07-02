@@ -176,8 +176,8 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             OnLoadStart("Storing Protein Collection Members");
 
-            var numProteinsActual = default(int);
-            var numResiduesActual = default(int);
+            var numProteinsActual = 0;
+            var numResiduesActual = 0;
 
             foreach (var s in selectedProteinList)
             {
