@@ -213,7 +213,8 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             {
                 return;
             }
-            else if (lvwFiles.SelectedItems.Count == 1)
+
+            if (lvwFiles.SelectedItems.Count == 1)
             {
                 var li = lvwFiles.SelectedItems[0];
                 var fli = FileCollection[li.Text];

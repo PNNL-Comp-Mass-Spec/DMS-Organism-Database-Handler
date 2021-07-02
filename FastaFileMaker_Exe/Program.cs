@@ -189,21 +189,21 @@ namespace FastaFileMaker
                 // Report Days
                 return dtInterval.TotalDays.ToString("0.00") + " days";
             }
-            else if (dtInterval.TotalHours >= 1d)
+
+            if (dtInterval.TotalHours >= 1d)
             {
                 // Report hours
                 return dtInterval.TotalHours.ToString("0.00") + " hours";
             }
-            else if (dtInterval.TotalMinutes >= 1d)
+
+            if (dtInterval.TotalMinutes >= 1d)
             {
                 // Report minutes
                 return dtInterval.TotalMinutes.ToString("0.00") + " minutes";
             }
-            else
-            {
-                // Report seconds
-                return dtInterval.TotalSeconds.ToString("0.0") + " seconds";
-            }
+
+            // Report seconds
+            return dtInterval.TotalSeconds.ToString("0.0") + " seconds";
         }
 
         private static void LogProteinFileDetails(string proteinCollectionList,
@@ -296,49 +296,47 @@ namespace FastaFileMaker
                 {
                     return false;
                 }
-                else
+
+                // Query commandLineParser to see if various parameters are present
+                if (commandLineParser.RetrieveValueForParameter("P", out var proteinCollectionList))
+                    mProteinCollectionList = proteinCollectionList;
+
+                if (commandLineParser.RetrieveValueForParameter("C", out var creationOptions))
+                    mCreationOpts = creationOptions;
+
+                if (commandLineParser.RetrieveValueForParameter("L", out var legacyFasta))
+                    mLegacyFasta = legacyFasta;
+
+                if (commandLineParser.RetrieveValueForParameter("O", out var outputDirectory))
+                    mOutputDirectory = outputDirectory;
+
+                if (commandLineParser.IsParameterPresent("D"))
+                    mLogProteinFileDetails = true;
+
+                if (mProteinCollectionList.Length > 0)
                 {
-                    // Query commandLineParser to see if various parameters are present
-                    if (commandLineParser.RetrieveValueForParameter("P", out var proteinCollectionList))
-                        mProteinCollectionList = proteinCollectionList;
+                    mLegacyFasta = string.Empty;
+                }
+                else if (mLegacyFasta.Length == 0)
+                {
+                    // Neither /P nor /L were used
 
-                    if (commandLineParser.RetrieveValueForParameter("C", out var creationOptions))
-                        mCreationOpts = creationOptions;
-
-                    if (commandLineParser.RetrieveValueForParameter("L", out var legacyFasta))
-                        mLegacyFasta = legacyFasta;
-
-                    if (commandLineParser.RetrieveValueForParameter("O", out var outputDirectory))
-                        mOutputDirectory = outputDirectory;
-
-                    if (commandLineParser.IsParameterPresent("D"))
-                        mLogProteinFileDetails = true;
-
-                    if (mProteinCollectionList.Length > 0)
+                    if (commandLineParser.NonSwitchParameterCount > 0)
                     {
-                        mLegacyFasta = string.Empty;
-                    }
-                    else if (mLegacyFasta.Length == 0)
-                    {
-                        // Neither /P nor /L were used
-
-                        if (commandLineParser.NonSwitchParameterCount > 0)
+                        // User specified a non-switch parameter
+                        // Assume it is a protein collection list
+                        mProteinCollectionList = commandLineParser.RetrieveNonSwitchParameter(0);
+                        if (mProteinCollectionList.EndsWith(".fasta", StringComparison.OrdinalIgnoreCase) ||
+                            mProteinCollectionList.EndsWith(".fasta\"", StringComparison.OrdinalIgnoreCase))
                         {
-                            // User specified a non-switch parameter
-                            // Assume it is a protein collection list
-                            mProteinCollectionList = commandLineParser.RetrieveNonSwitchParameter(0);
-                            if (mProteinCollectionList.EndsWith(".fasta", StringComparison.OrdinalIgnoreCase) ||
-                                mProteinCollectionList.EndsWith(".fasta\"", StringComparison.OrdinalIgnoreCase))
-                            {
-                                // User specified a .fasta file
-                                mLegacyFasta = string.Copy(mProteinCollectionList);
-                                mProteinCollectionList = string.Empty;
-                            }
+                            // User specified a .fasta file
+                            mLegacyFasta = string.Copy(mProteinCollectionList);
+                            mProteinCollectionList = string.Empty;
                         }
                     }
-
-                    return true;
                 }
+
+                return true;
             }
             catch (Exception ex)
             {

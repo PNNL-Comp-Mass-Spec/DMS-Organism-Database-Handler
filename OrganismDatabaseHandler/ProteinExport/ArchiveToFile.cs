@@ -98,25 +98,26 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
             }
 
-            mArchived_File_Name = tmpTable.Rows[0]["Archived_File_Path"].ToString();
+            mArchivedFilePath = tmpTable.Rows[0]["Archived_File_Path"].ToString();
 
             try
             {
-                var di = new DirectoryInfo(Path.GetDirectoryName(mArchived_File_Name));
-                var destFi = new FileInfo(mArchived_File_Name);
-                if (!di.Exists)
+                var destinationFile = new FileInfo(mArchivedFilePath);
+
+                // ReSharper disable once MergeIntoPattern
+                if (destinationFile.Directory != null && !destinationFile.Directory.Exists)
                 {
-                    di.Create();
+                    destinationFile.Directory.Create();
                 }
 
-                if (!destFi.Exists)
+                if (!destinationFile.Exists)
                 {
-                    fi.CopyTo(mArchived_File_Name);
+                    fi.CopyTo(mArchivedFilePath);
                 }
             }
             catch (UnauthorizedAccessException)
             {
-                Console.WriteLine("  Warning: access denied copying file to " + mArchived_File_Name);
+                Console.WriteLine("  Warning: access denied copying file to " + mArchivedFilePath);
             }
             catch (Exception ex)
             {
@@ -221,7 +222,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Execute the sp
             dbTools.ExecuteSP(cmdSave);
 
-            mArchived_File_Name = archivedFileFullPath;
+            mArchivedFilePath = archivedFileFullPath;
 
             // Get return value
             var ret = dbTools.GetInteger(returnParam.Value);

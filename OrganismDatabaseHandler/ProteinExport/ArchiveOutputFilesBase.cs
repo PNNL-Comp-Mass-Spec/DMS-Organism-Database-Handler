@@ -19,7 +19,8 @@ namespace OrganismDatabaseHandler.ProteinExport
         protected readonly DBTask DatabaseAccessor;
         protected string LastError;
         // Unused: protected GetFASTAFromDMS.SequenceTypes mOutputSequenceType;
-        protected string mArchived_File_Name;
+
+        protected string mArchivedFilePath;
 
         protected event ArchiveStartEventHandler ArchiveStart;
 
@@ -41,7 +42,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             mExporter = exporterModule.ExporterComponent;
         }
 
-        public string Archived_File_Name => mArchived_File_Name;
+        public string Archived_File_Name => mArchivedFilePath;
 
         public int ArchiveCollection(
             int proteinCollectionId,

@@ -171,10 +171,8 @@ namespace AppUI_OrfDBHandler
                 {
                     return cboOrganismSelect.Text;
                 }
-                else
-                {
-                    return string.Empty;
-                }
+
+                return string.Empty;
             }
             set => mLastSelectedOrganism = value;
         }
@@ -187,10 +185,8 @@ namespace AppUI_OrfDBHandler
                 {
                     return cboAnnotationTypePicker.Text;
                 }
-                else
-                {
-                    return string.Empty;
-                }
+
+                return string.Empty;
             }
             set => mLastSelectedAnnotationType = value;
         }
@@ -221,10 +217,8 @@ namespace AppUI_OrfDBHandler
                 {
                     return intValue;
                 }
-                else
-                {
-                    return FastaValidator.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
-                }
+
+                return FastaValidator.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
             }
             set
             {
@@ -341,32 +335,32 @@ namespace AppUI_OrfDBHandler
             {
                 var proteinCollectionName = Path.GetFileNameWithoutExtension(fi.Name);
 
-                var li = new ListViewItem
+                var item = new ListViewItem
                 {
                     // Fasta file name (with the extension)
                     Text = fi.Name
                 };
 
                 // Last Write Time
-                li.SubItems.Add(fi.LastWriteTime.ToString("g"));
+                item.SubItems.Add(fi.LastWriteTime.ToString("g"));
 
                 // File Size
-                li.SubItems.Add(Numeric2Bytes(fi.Length));
+                item.SubItems.Add(Numeric2Bytes(fi.Length));
 
                 // Whether or not the fasta file is already a protein collection
                 if (mCollectionsList.ContainsValue(proteinCollectionName))
                 {
-                    li.SubItems.Add("Yes");
+                    item.SubItems.Add("Yes");
                 }
                 else
                 {
-                    li.SubItems.Add("No");
+                    item.SubItems.Add("No");
                 }
 
                 // Full file path
-                li.SubItems.Add(fi.FullName);
+                item.SubItems.Add(fi.FullName);
 
-                lvwFolderContents.Items.Add(li);
+                lvwFolderContents.Items.Add(item);
             }
 
             lvwFolderContents.EndUpdate();
@@ -463,16 +457,15 @@ namespace AppUI_OrfDBHandler
                 // No digits after the decimal
                 return ((int)Math.Round(value)).ToString();
             }
-            else if (value >= 1d)
+
+            if (value >= 1d)
             {
                 // One digit after the decimal
                 return value.ToString("0.0");
             }
-            else
-            {
-                // Two digits after the decimal
-                return value.ToString("0.00");
-            }
+
+            // Two digits after the decimal
+            return value.ToString("0.00");
         }
 
         #endregion
@@ -1249,10 +1242,8 @@ namespace AppUI_OrfDBHandler
                 {
                     return returnVal * -1;
                 }
-                else
-                {
-                    return returnVal;
-                }
+
+                return returnVal;
             }
         }
     }

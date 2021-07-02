@@ -198,7 +198,8 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 return ExportProteinCollections(collectionList, cleanOptionsString, destinationFolderPath, 0, true, optionsParser.SequenceDirection);
             }
-            else if (legacyFASTAFileName.Length > 0 && !legacyFASTAFileName.Equals("na", StringComparison.OrdinalIgnoreCase))
+
+            if (legacyFASTAFileName.Length > 0 && !legacyFASTAFileName.Equals("na", StringComparison.OrdinalIgnoreCase))
             {
                 return ExportLegacyFastaFile(legacyFASTAFileName, destinationFolderPath);
             }
@@ -218,9 +219,9 @@ namespace OrganismDatabaseHandler.ProteinExport
                 return null;
             }
 
-            var fiSourceFile = new FileInfo(legacyStaticFilePath);
+            var sourceFile = new FileInfo(legacyStaticFilePath);
 
-            if (!fiSourceFile.Exists)
+            if (!sourceFile.Exists)
             {
                 // Be careful changing this message; the AnalysisResources class in the Analysis Manager
                 // looks for error messages that start with "Legacy fasta file not found:"
@@ -232,8 +233,8 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Look for file LegacyFASTAFileName in folder destinationFolderPath
             // If it exists, and if a .lock file does not exist, then compare file sizes and file modification dates
 
-            var fiFinalFile = new FileInfo(Path.Combine(destinationFolderPath, legacyFASTAFileName));
-            if (fiFinalFile.Exists && fiFinalFile.Length > 0L)
+            var finalFile = new FileInfo(Path.Combine(destinationFolderPath, legacyFASTAFileName));
+            if (finalFile.Exists && finalFile.Length > 0L)
             {
                 // Make sure a .lock file doesn't exist
                 // If it does exist, then another process on this computer is likely creating the .Fasta file
@@ -245,11 +246,11 @@ namespace OrganismDatabaseHandler.ProteinExport
                     // Another program is creating a .Fasta file; cannot assume it is ready-for-use
                 }
                 // Make sure the file sizes match and that the local file is not older than the source file
-                else if (fiSourceFile.Length == fiFinalFile.Length && fiFinalFile.LastWriteTimeUtc >= fiSourceFile.LastWriteTimeUtc.AddSeconds(-0.1d))
+                else if (sourceFile.Length == finalFile.Length && finalFile.LastWriteTimeUtc >= sourceFile.LastWriteTimeUtc.AddSeconds(-0.1d))
                 {
-                    if (ExportLegacyFastaValidateHash(fiFinalFile, ref crc32Hash, false))
+                    if (ExportLegacyFastaValidateHash(finalFile, ref crc32Hash, false))
                     {
-                        OnTaskCompletion(fiFinalFile.FullName);
+                        OnTaskCompletion(finalFile.FullName);
                         return crc32Hash;
                     }
                 }
@@ -269,7 +270,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             var destinationPath = Path.Combine(destinationFolderPath, "TargetFile.tmp");
 
-            var sourceFileSizeMB = fiSourceFile.Length / 1024.0d / 1024.0d;
+            var sourceFileSizeMB = sourceFile.Length / 1024.0d / 1024.0d;
 
             var success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out var errorMessage);
             if (!success)
@@ -302,67 +303,64 @@ namespace OrganismDatabaseHandler.ProteinExport
                 throw new Exception(msg);
             }
 
-            if (fiFinalFile != null)
+            // Check again for the existence of the desired .Fasta file
+            // It's possible another process created .Fasta file while this process was waiting for the other process's lock file to disappear
+            finalFile.Refresh();
+            if (finalFile.Exists && sourceFile.Length == finalFile.Length && finalFile.LastWriteTimeUtc >= sourceFile.LastWriteTimeUtc.AddSeconds(-0.1d))
             {
-                // Check again for the existence of the desired .Fasta file
-                // It's possible another process created .Fasta file while this process was waiting for the other process's lock file to disappear
-                fiFinalFile.Refresh();
-                if (fiFinalFile.Exists && fiSourceFile.Length == fiFinalFile.Length && fiFinalFile.LastWriteTimeUtc >= fiSourceFile.LastWriteTimeUtc.AddSeconds(-0.1d))
+                // The final file now does exist (and has the correct size / date)
+                // The other process that made the file should have updated the database with the file hash; determine the hash now
+                if (!LookupLegacyFastaFileDetails(legacyFASTAFileName, out legacyStaticFilePath, out crc32Hash))
                 {
-                    // The final file now does exist (and has the correct size / date)
-                    // The other process that made the file should have updated the database with the file hash; determine the hash now
-                    if (!LookupLegacyFastaFileDetails(legacyFASTAFileName, out legacyStaticFilePath, out crc32Hash))
-                    {
-                        // Could not find LegacyFASTAFileName in V_Legacy_Static_File_Locations
-                        // An exception has probably already been thrown
-                        return null;
-                    }
+                    // Could not find LegacyFASTAFileName in V_Legacy_Static_File_Locations
+                    // An exception has probably already been thrown
+                    return null;
+                }
 
-                    if (ExportLegacyFastaValidateHash(fiFinalFile, ref crc32Hash, false))
-                    {
-                        DeleteLockStream(destinationFolderPath, lockFileHash, lockStream);
-                        OnTaskCompletion(fiFinalFile.FullName);
-                        return crc32Hash;
-                    }
+                if (ExportLegacyFastaValidateHash(finalFile, ref crc32Hash, false))
+                {
+                    DeleteLockStream(destinationFolderPath, lockFileHash, lockStream);
+                    OnTaskCompletion(finalFile.FullName);
+                    return crc32Hash;
                 }
             }
 
             // Copy the .Fasta file from the remote computer to this computer
             // We're temporarily naming it with a SHA1 hash based on the filename
-            var interimFastaFi = new FileInfo(Path.Combine(destinationFolderPath, filenameSha1Hash + "_" + Path.GetFileNameWithoutExtension(legacyStaticFilePath) + ".fasta"));
-            if (interimFastaFi.Exists)
+            var interimFastaFile = new FileInfo(Path.Combine(destinationFolderPath, filenameSha1Hash + "_" + Path.GetFileNameWithoutExtension(legacyStaticFilePath) + ".fasta"));
+            if (interimFastaFile.Exists)
             {
-                interimFastaFi.Delete();
+                interimFastaFile.Delete();
             }
 
             mLastLockQueueWaitTimeLog = DateTime.UtcNow;
-            mFileTools.CopyFileUsingLocks(fiSourceFile, interimFastaFi.FullName, "OrgDBHandler", overWrite: false);
+            mFileTools.CopyFileUsingLocks(sourceFile, interimFastaFile.FullName, "OrgDBHandler", overWrite: false);
 
             // Now that the copy is done, rename the file to the final name
-            fiFinalFile.Refresh();
-            if (fiFinalFile.Exists)
+            finalFile.Refresh();
+            if (finalFile.Exists)
             {
                 // Somehow the final file has appeared in the folder; it could be a corrupt version of the .fasta file
                 // Delete it
-                fiFinalFile.Delete();
+                finalFile.Delete();
             }
 
-            interimFastaFi.MoveTo(fiFinalFile.FullName);
+            interimFastaFile.MoveTo(finalFile.FullName);
 
             // File successfully copied to this computer
             // Update the hash validation file, and update the DB if the newly copied file's hash value differs from the DB
-            if (ExportLegacyFastaValidateHash(fiFinalFile, ref crc32Hash, true))
+            if (ExportLegacyFastaValidateHash(finalFile, ref crc32Hash, true))
             {
                 DeleteLockStream(destinationFolderPath, lockFileHash, lockStream);
-                OnTaskCompletion(fiFinalFile.FullName);
+                OnTaskCompletion(finalFile.FullName);
                 return crc32Hash;
             }
 
             // This code will only get reached if an error occurred in ExportLegacyFastaValidateHash()
             // We'll go ahead and return the hash anyway
             DeleteLockStream(destinationFolderPath, lockFileHash, lockStream);
-            OnFileGenerationCompleted(fiFinalFile.FullName);
-            OnTaskCompletion(fiFinalFile.FullName);
+            OnFileGenerationCompleted(finalFile.FullName);
+            OnTaskCompletion(finalFile.FullName);
 
             return crc32Hash;
         }
@@ -378,10 +376,11 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 return true;
             }
+
             // ValidateMatchingHash will use GenerateFileAuthenticationHash() to generate a hash for the given file
             // Since this can be time consuming, we only do this every 48 hours
             // If the generated hash does not match the expected hash (finalFileHash) then we will re-generate the .fasta file
-            else if (ValidateMatchingHash(finalFileFi.FullName, ref finalFileHash, 48, forceRegenerateHash))
+            if (ValidateMatchingHash(finalFileFi.FullName, ref finalFileHash, 48, forceRegenerateHash))
             {
                 return true;
             }
@@ -666,11 +665,11 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
         }
 
-        private void DeleteFASTAIndexFiles(FileInfo fiFinalFastaFile)
+        private void DeleteFASTAIndexFiles(FileInfo finalFastaFile)
         {
             try
             {
-                var strBaseName = Path.GetFileNameWithoutExtension(fiFinalFastaFile.Name);
+                var baseName = Path.GetFileNameWithoutExtension(finalFastaFile.Name);
 
                 // Delete files with the same name but different extensions
                 // For example, Inspect's PrepDB.py script creates these files:
@@ -698,11 +697,16 @@ namespace OrganismDatabaseHandler.ProteinExport
                 // This code will also delete the .hashcheck file; that's OK
                 // e.g., ID_002750_1363538A.fasta.1363538A.hashcheck
 
-                foreach (FileInfo fiFileToDelete in fiFinalFastaFile.Directory.GetFiles(strBaseName + ".*"))
-                    DeleteFastaIndexFile(fiFileToDelete.FullName);
 
-                foreach (FileInfo fiFileToDelete in fiFinalFastaFile.Directory.GetFiles(strBaseName + "_shuffle*.*"))
-                    DeleteFastaIndexFile(fiFileToDelete.FullName);
+                foreach (var fileToDelete in finalFastaFile.Directory.GetFiles(baseName + ".*"))
+                {
+                    DeleteFastaIndexFile(fileToDelete.FullName);
+                }
+
+                foreach (var fileToDelete in finalFastaFile.Directory.GetFiles(baseName + "_shuffle*.*"))
+                {
+                    DeleteFastaIndexFile(fileToDelete.FullName);
+                }
             }
             catch (Exception)
             {
@@ -726,13 +730,10 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             lockStream?.Close();
 
-            var lockFi = new FileInfo(Path.Combine(destinationFolderPath, lockFileHash + ".lock"));
-            if (lockFi != null)
+            var lockFile = new FileInfo(Path.Combine(destinationFolderPath, lockFileHash + ".lock"));
+            if (lockFile.Exists)
             {
-                if (lockFi.Exists)
-                {
-                    lockFi.Delete();
-                }
+                lockFile.Delete();
             }
         }
 
@@ -792,9 +793,17 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
 
             var fastaFile = new FileInfo(strFastaFilePath);
-            var hashValidationFileName = Path.Combine(fastaFile.DirectoryName, fastaFile.Name + "." + crc32Hash + extensionToUse);
 
-            return new FileInfo(hashValidationFileName);
+            var hashFileName = fastaFile.Name + "." + crc32Hash + extensionToUse;
+
+            if (fastaFile.DirectoryName != null)
+            {
+                return new FileInfo(Path.Combine(fastaFile.DirectoryName, hashFileName));
+            }
+
+            ConsoleMsgUtils.ShowWarning("GetHashFileValidationInfo cannot determine the parent directory of " + fastaFile.FullName);
+            return new FileInfo(hashFileName);
+
         }
 
         /// <summary>

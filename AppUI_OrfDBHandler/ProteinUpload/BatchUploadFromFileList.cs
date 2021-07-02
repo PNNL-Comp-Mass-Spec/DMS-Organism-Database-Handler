@@ -60,8 +60,8 @@ namespace AppUI_OrfDBHandler.ProteinUpload
 
         protected DataTable GetAnnotationTypeTable()
         {
-            const string annoSql = "SELECT ID, Display_Name, Details FROM V_Annotation_Type_Picker";
-            return mDatabaseAccessor.GetTable(annoSql);
+            const string annotationSql = "SELECT ID, Display_Name, Details FROM V_Annotation_Type_Picker";
+            return mDatabaseAccessor.GetTable(annotationSql);
         }
 
         protected DataTable GetOrganismsTable()

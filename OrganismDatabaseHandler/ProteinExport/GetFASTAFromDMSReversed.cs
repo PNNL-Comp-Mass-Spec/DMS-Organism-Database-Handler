@@ -35,10 +35,8 @@ namespace OrganismDatabaseHandler.ProteinExport
             {
                 return "XXX_" + originalReference;
             }
-            else
-            {
-                return "REV_" + originalReference;
-            }
+
+            return "REV_" + originalReference;
         }
     }
 }

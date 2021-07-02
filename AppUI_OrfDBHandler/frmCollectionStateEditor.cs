@@ -190,10 +190,8 @@ namespace AppUI_OrfDBHandler
                 {
                     return compareResult;
                 }
-                else
-                {
-                    return -compareResult;
-                }
+
+                return -compareResult;
             }
         }
     }

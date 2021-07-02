@@ -102,10 +102,8 @@ namespace OrganismDatabaseHandler.ProteinExport
                 {
                     throw new Exception(tmpKeyword + " is a duplicate keyword");
                 }
-                else
-                {
-                    optionsHash.Add(tmpKeyword, tmpValue);
-                }
+
+                optionsHash.Add(tmpKeyword, tmpValue);
             }
 
             // Parse dictionary into canonical options string for return
