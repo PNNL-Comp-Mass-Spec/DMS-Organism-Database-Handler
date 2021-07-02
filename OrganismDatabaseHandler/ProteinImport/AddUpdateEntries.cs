@@ -194,6 +194,27 @@ namespace OrganismDatabaseHandler.ProteinImport
                 tmpPc.MemberId = AddProteinCollectionMember(tmpPc.ReferenceId, tmpPc.ProteinId, tmpPc.SortingIndex, proteinCollectionId);
             }
 
+            if (numProteinsActual != numProteinsExpected)
+            {
+                ConsoleMsgUtils.ShowWarning(
+                    "Number of proteins in selectedProteinList does not match the expected value: {0} actual vs. {1} expected",
+                    numProteinsActual,
+                    numProteinsExpected);
+            }
+
+            if (numResiduesActual != numResiduesExpected)
+            {
+                ConsoleMsgUtils.ShowWarning(
+                    "Number of residues in the proteins in selectedProteinList does not match the expected value: {0} actual vs. {1} expected",
+                    numResiduesActual,
+                    numResiduesExpected);
+            }
+
+            if (numResiduesActual == 0 && numResiduesExpected > 0)
+            {
+                numResiduesActual = numResiduesExpected;
+            }
+
             RunSP_UpdateProteinCollectionCounts(numProteinsActual, numResiduesActual, proteinCollectionId);
 
             OnLoadEnd();
