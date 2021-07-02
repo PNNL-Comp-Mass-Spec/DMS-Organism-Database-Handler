@@ -448,7 +448,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     // ValidateMatchingHash will use GenerateFileAuthenticationHash() to generate a hash for the given file
                     // Since this can be time consuming, we only do this every 48 hours
                     // If the generated hash does not match the expected hash (finalFileHash) then we will re-generate the .fasta file
-                    else if (ValidateMatchingHash(finalFileFi.FullName, ref finalFileHash, 48, false))
+                    else if (ValidateMatchingHash(finalFileFi.FullName, ref finalFileHash))
                     {
                         OnTaskCompletion(finalFileFi.FullName);
                         return finalFileHash;
@@ -487,7 +487,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     // ValidateMatchingHash will use GenerateFileAuthenticationHash() to generate a hash for the given file
                     // Since this can be time consuming, we only do this every 48 hours
                     // If the generated hash does not match the expected hash (finalFileHash) then we will re-generate the .fasta file
-                    if (ValidateMatchingHash(finalFileFi.FullName, ref finalFileHash, 48, false))
+                    if (ValidateMatchingHash(finalFileFi.FullName, ref finalFileHash))
                     {
                         DeleteLockStream(destinationFolderPath, lockFileHash, lockStream);
                         OnTaskCompletion(finalFileFi.FullName);
