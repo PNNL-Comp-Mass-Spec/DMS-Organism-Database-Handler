@@ -32,6 +32,8 @@ namespace AppUI_OrfDBHandler
             mSearchTimer = new System.Timers.Timer(2000d);
             mSearchTimer.Elapsed += SearchTimerHandler;
 
+            Load += frmCollectionEditor_Load;
+
             InitializeComponent();
 
             CheckTransferButtonsEnabledStatus();
