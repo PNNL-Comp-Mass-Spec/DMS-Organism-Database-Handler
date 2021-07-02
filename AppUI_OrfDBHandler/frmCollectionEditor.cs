@@ -26,9 +26,8 @@ namespace AppUI_OrfDBHandler
             mFileWarningList = new Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>>();
             mSummarizedFileWarningList = new Dictionary<string, Dictionary<string, int>>();
 
-            searchTimer = new System.Timers.Timer(2000d);
-            searchTimer.Elapsed += SearchTimerHandler;
-            base.Load += frmCollectionEditor_Load;
+            mSearchTimer = new System.Timers.Timer(2000d);
+            mSearchTimer.Elapsed += SearchTimerHandler;
 
             InitializeComponent();
 
@@ -108,7 +107,7 @@ namespace AppUI_OrfDBHandler
 
         private SyncFASTAFileArchive mSyncer;
 
-        private readonly System.Timers.Timer searchTimer;
+        private readonly System.Timers.Timer mSearchTimer;
 
         /// <summary>
         /// Tracks the description and source that the user has entered for each FASTA file
@@ -675,7 +674,7 @@ namespace AppUI_OrfDBHandler
         {
             if (txtLiveSearch.Text.Length > 0 && txtLiveSearch.ForeColor.ToString() != "Color [InactiveCaption]")
             {
-                searchTimer.Start();
+                mSearchTimer.Start();
             }
             else if (string.IsNullOrEmpty(txtLiveSearch.Text) && !mSearchActive)
             {
@@ -684,7 +683,7 @@ namespace AppUI_OrfDBHandler
             else
             {
                 mSearchActive = false;
-                searchTimer.Stop();
+                mSearchTimer.Stop();
             }
         }
 
@@ -710,7 +709,7 @@ namespace AppUI_OrfDBHandler
                 txtLiveSearch.ForeColor = SystemColors.InactiveCaption;
                 txtLiveSearch.Text = "Search";
                 mSearchActive = false;
-                searchTimer.Stop();
+                mSearchTimer.Stop();
                 mSourceListViewHandler.Load(mCollectionMembers);
             }
         }
