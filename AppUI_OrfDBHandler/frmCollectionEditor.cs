@@ -28,8 +28,6 @@ namespace AppUI_OrfDBHandler
 
             searchTimer = new System.Timers.Timer(2000d);
             searchTimer.Elapsed += SearchTimerHandler;
-            memberLoadTimer = new System.Timers.Timer(2000d);
-            memberLoadTimer.Elapsed += MemberLoadTimerHandler;
             base.Load += frmCollectionEditor_Load;
 
             InitializeComponent();
@@ -111,7 +109,6 @@ namespace AppUI_OrfDBHandler
         private SyncFASTAFileArchive mSyncer;
 
         private readonly System.Timers.Timer searchTimer;
-        private readonly System.Timers.Timer memberLoadTimer;
 
         /// <summary>
         /// Tracks the description and source that the user has entered for each FASTA file
@@ -571,7 +568,8 @@ namespace AppUI_OrfDBHandler
                 mProteinCollections.Select("Protein_Collection_ID = " + cboCollectionPicker.SelectedValue);
             ImportProgressHandler(0.5d);
             mSelectedFilePath = foundRows[0]["FileName"].ToString();
-            MemberLoadTimerHandler(this, null);
+            UpdateCachedInfoAfterLoadingProteins();
+
             ImportProgressHandler(1.0d);
             txtLiveSearch.Visible = true;
             pbxLiveSearchBkg.Visible = true;
@@ -756,9 +754,7 @@ namespace AppUI_OrfDBHandler
             ClearFromDestinationCollectionWindow(lvwDestination, false);
         }
 
-        internal void MemberLoadTimerHandler(
-            object sender,
-            ElapsedEventArgs e)
+        internal void UpdateCachedInfoAfterLoadingProteins()
         {
             mSelectedCollectionId = Convert.ToInt32(cboCollectionPicker.SelectedValue);
             mSelectedAnnotationTypeId = Convert.ToInt32(cboAnnotationTypePicker.SelectedValue);
