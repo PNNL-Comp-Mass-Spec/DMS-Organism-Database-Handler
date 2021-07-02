@@ -214,5 +214,14 @@ namespace AppUI_OrfDBHandler
             // sourceClass.ProgressUpdate += OnProgressUpdate;
         }
 
+        private void OnWarningEvent(string message)
+        {
+            MessageBox.Show("Warning: " + message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
+        private void OnErrorEvent(string message, Exception ex)
+        {
+            MessageBox.Show("Error: " + message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
     }
 }
