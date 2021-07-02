@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using OrganismDatabaseHandler.DatabaseTools;
 using OrganismDatabaseHandler.ProteinExport;
 using OrganismDatabaseHandler.ProteinImport;
+using PRISM;
 using ValidateFastaFile;
 
 namespace OrganismDatabaseHandler.ProteinUpload
 {
-    public class PSUploadHandler
+    public class PSUploadHandler : EventNotifier
     {
         // Ignore Spelling: validator, Xref
 
@@ -158,6 +158,8 @@ namespace OrganismDatabaseHandler.ProteinUpload
             mValidationOptions = new bool[11];
 
             mUpload = new AddUpdateEntries(psConnectionString);
+            RegisterEvents(mUpload);
+
             mUpload.LoadStart += LoadStartHandler;
             mUpload.LoadProgress += LoadProgressHandler;
             mUpload.LoadEnd += LoadEndHandler;

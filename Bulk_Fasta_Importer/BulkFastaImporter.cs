@@ -584,6 +584,8 @@ namespace Bulk_Fasta_Importer
             {
                 // Initialize the uploader
                 mUploadHandler = new PSUploadHandler(ProteinSeqsConnectionString);
+                RegisterEvents(mUploadHandler);
+
                 mUploadHandler.BatchProgress += UploadHandler_BatchProgress;
                 mUploadHandler.FASTAFileWarnings += UploadHandler_FASTAFileWarnings;
                 mUploadHandler.InvalidFASTAFile += UploadHandler_InvalidFASTAFile;

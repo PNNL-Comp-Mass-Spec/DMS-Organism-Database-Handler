@@ -4,10 +4,11 @@ using System.Linq;
 using System.Windows.Forms;
 using OrganismDatabaseHandler.ProteinImport;
 using OrganismDatabaseHandler.ProteinStorage;
+using PRISM;
 
 namespace AppUI_OrfDBHandler
 {
-    public class FilePreviewHandler
+    public class FilePreviewHandler : EventNotifier
     {
         private ProteinStorage mProteins;
         private FASTAReader mLoader;
@@ -30,6 +31,7 @@ namespace AppUI_OrfDBHandler
             if (mLoader == null)
             {
                 mLoader = new FASTAReader();
+                RegisterEvents(mLoader);
             }
 
             mProteins = mLoader.GetProteinEntries(filePath, lineCount);

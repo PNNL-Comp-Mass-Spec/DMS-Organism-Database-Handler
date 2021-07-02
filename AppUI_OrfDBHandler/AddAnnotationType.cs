@@ -3,10 +3,11 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using OrganismDatabaseHandler.ProteinImport;
+using PRISM;
 
 namespace AppUI_OrfDBHandler
 {
-    public class AddAnnotationTypeType
+    public class AddAnnotationTypeType : EventNotifier
     {
         private readonly string mConnectionString;
         private AddUpdateEntries mSpRunner;
@@ -37,6 +38,8 @@ namespace AppUI_OrfDBHandler
             mConnectionString = psConnectionString;
 
             mAuthAdd = new AddNamingAuthorityType(mConnectionString);
+            RegisterEvents(mAuthAdd);
+
             mAuthorities = mAuthAdd.AuthoritiesTable;
         }
 
@@ -61,14 +64,17 @@ namespace AppUI_OrfDBHandler
         {
             var frmAnn = new frmAddAnnotationType();
             int annTypeId;
+
             if (mSpRunner == null)
             {
                 mSpRunner = new AddUpdateEntries(mConnectionString);
+                RegisterEvents(mSpRunner);
             }
 
             if (mAuthAdd == null)
             {
                 mAuthAdd = new AddNamingAuthorityType(mConnectionString);
+                RegisterEvents(mAuthAdd);
             }
 
             frmAnn.AuthorityTable = mAuthorities;

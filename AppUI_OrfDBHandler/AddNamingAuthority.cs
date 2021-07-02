@@ -2,10 +2,11 @@
 using System.Drawing;
 using System.Windows.Forms;
 using OrganismDatabaseHandler.ProteinImport;
+using PRISM;
 
 namespace AppUI_OrfDBHandler
 {
-    public class AddNamingAuthorityType
+    public class AddNamingAuthorityType : EventNotifier
     {
         private readonly string mConnectionString;
         private AddUpdateEntries mSpRunner;
@@ -37,9 +38,11 @@ namespace AppUI_OrfDBHandler
         {
             var frmAuth = new frmAddNamingAuthority {DesktopLocation = mFormLocation};
             int authId;
+
             if (mSpRunner == null)
             {
                 mSpRunner = new AddUpdateEntries(mConnectionString);
+                RegisterEvents(mSpRunner);
             }
 
             var r = frmAuth.ShowDialog();

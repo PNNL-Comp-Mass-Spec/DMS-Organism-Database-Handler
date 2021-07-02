@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using OrganismDatabaseHandler;
 using OrganismDatabaseHandler.DatabaseTools;
 using OrganismDatabaseHandler.ProteinUpload;
+using PRISM;
 
 namespace AppUI_OrfDBHandler.ProteinUpload
 {
-    public class BatchUploadFromFileList
+    public class BatchUploadFromFileList : EventNotifier
     {
         private readonly PSUploadHandler mUploader;
         private readonly DBTask mDatabaseAccessor;
@@ -16,6 +16,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
         public BatchUploadFromFileList(string psConnectionString)
         {
             mUploader = new PSUploadHandler(psConnectionString);
+            RegisterEvents(mUploader);
 
             mUploader.BatchProgress += OnTaskChange;
             mUploader.LoadProgress += OnLoadProgress;
@@ -24,6 +25,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             mUploader.LoadStart += OnLoadStart;
 
             mDatabaseAccessor = new DBTask(psConnectionString);
+            RegisterEvents(mDatabaseAccessor);
         }
 
         public event LoadProgressEventHandler LoadProgress;

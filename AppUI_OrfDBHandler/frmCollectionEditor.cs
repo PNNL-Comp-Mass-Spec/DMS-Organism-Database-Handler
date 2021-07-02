@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using AppUI_OrfDBHandler.Properties;
 using OrganismDatabaseHandler.ProteinImport;
 using OrganismDatabaseHandler.ProteinUpload;
+using PRISM;
 using ValidateFastaFile;
 
 namespace AppUI_OrfDBHandler
@@ -375,6 +376,7 @@ namespace AppUI_OrfDBHandler
             }
 
             mUploadHandler = new PSUploadHandler(mPsConnectionString);
+            RegisterEvents(mUploadHandler);
 
             mUploadHandler.BatchProgress += BatchImportProgressHandler;
             mUploadHandler.ValidFASTAFileLoaded += ValidFASTAUploadHandler;
@@ -632,6 +634,8 @@ namespace AppUI_OrfDBHandler
                 if (mUploadHandler == null)
                 {
                     mUploadHandler = new PSUploadHandler(mPsConnectionString);
+                    RegisterEvents(mUploadHandler);
+
                     mUploadHandler.BatchProgress += BatchImportProgressHandler;
                     mUploadHandler.ValidFASTAFileLoaded += ValidFASTAUploadHandler;
                     mUploadHandler.InvalidFASTAFile += InvalidFASTAFileHandler;
@@ -1035,11 +1039,24 @@ namespace AppUI_OrfDBHandler
         {
         }
 
-        #endregion
+        /// <summary>
+        /// Use this method to chain events between classes
+        /// </summary>
+        /// <param name="sourceClass"></param>
+        protected void RegisterEvents(EventNotifier sourceClass)
+        {
+            // sourceClass.DebugEvent += OnDebugEvent;
+            // sourceClass.StatusEvent += OnStatusEvent;
+            sourceClass.ErrorEvent += OnErrorEvent;
+            sourceClass.WarningEvent += OnWarningEvent;
+            // sourceClass.ProgressUpdate += OnProgressUpdate;
+        }
 
         {
 
         }
+
+        #endregion
 
         /// <summary>
         /// Valid, but could take a very long time

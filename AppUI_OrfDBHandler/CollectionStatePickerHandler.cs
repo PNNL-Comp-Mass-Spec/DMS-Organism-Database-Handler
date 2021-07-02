@@ -4,10 +4,11 @@ using System.Data;
 using System.Windows.Forms;
 using OrganismDatabaseHandler.DatabaseTools;
 using OrganismDatabaseHandler.ProteinImport;
+using PRISM;
 
 namespace AppUI_OrfDBHandler
 {
-    public class CollectionStatePickerHandler
+    public class CollectionStatePickerHandler : EventNotifier
     {
         // Ignore Spelling: yyyy-MM-dd
 
@@ -19,7 +20,11 @@ namespace AppUI_OrfDBHandler
         public CollectionStatePickerHandler(string psConnectionString)
         {
             mGetTables = new DBTask(psConnectionString);
+            RegisterEvents(mGetTables);
+
             mSpAccess = new AddUpdateEntries(psConnectionString);
+            RegisterEvents(mSpAccess);
+
             mForceReload = true;
         }
 

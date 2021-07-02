@@ -2,6 +2,7 @@
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
+using PRISM;
 
 namespace AppUI_OrfDBHandler
 {
@@ -123,10 +124,11 @@ namespace AppUI_OrfDBHandler
             if (AuthorityID == -2)
             {
                 // Bring up addition dialog
-                var authAdd = new AddNamingAuthorityType(mPsConnectionString)
-                {
-                    FormLocation = new Point(Left + 20, Top + 30)
-                };
+                var authAdd = new AddNamingAuthorityType(mPsConnectionString);
+                RegisterEvents(authAdd);
+
+                authAdd.FormLocation = new Point(Left + 20, Top + 30);
+
                 var tmpAuthId = authAdd.AddNamingAuthority();
 
                 if (!authAdd.EntryExists && tmpAuthId > 0)
@@ -145,6 +147,20 @@ namespace AppUI_OrfDBHandler
 
                 cboAuthorityName.SelectedValue = tmpAuthId;
             }
+        }
+
+        /// <summary>
+        /// Use this method to chain events between classes
+        /// </summary>
+        /// <param name="sourceClass"></param>
+        protected void RegisterEvents(EventNotifier sourceClass)
+        {
+            // sourceClass.DebugEvent += OnDebugEvent;
+            // sourceClass.StatusEvent += OnStatusEvent;
+            sourceClass.ErrorEvent += OnErrorEvent;
+            sourceClass.WarningEvent += OnWarningEvent;
+            // sourceClass.ProgressUpdate += OnProgressUpdate;
+        }
 
 
         }

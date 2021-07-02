@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using OrganismDatabaseHandler.ProteinUpload;
+using PRISM;
 using PRISMDatabaseUtils;
 using Raccoom.Windows.Forms;
 using ValidateFastaFile;
@@ -360,6 +361,7 @@ namespace AppUI_OrfDBHandler
             lvwFolderContents.EndUpdate();
         }
 
+        // ReSharper disable once SuggestBaseTypeForParameter
         private void LoadOrganismPicker(ComboBox cbo, DataView orgList)
         {
             cboOrganismSelect.SelectedIndexChanged -= cboOrganismSelect_SelectedIndexChanged;
@@ -892,10 +894,11 @@ namespace AppUI_OrfDBHandler
             if (SelectedAnnotationTypeID == -2)
             {
                 // Bring up an additional dialog
-                var annTypeAdd = new AddAnnotationTypeType(mPsConnectionString)
-                {
-                    FormLocation = new Point(Left + Width + 10, Top)
-                };
+                var annTypeAdd = new AddAnnotationTypeType(mPsConnectionString);
+                RegisterEvents(annTypeAdd);
+
+                annTypeAdd.FormLocation = new Point(Left + Width + 10, Top);
+
                 var tmpAnnTypeId = annTypeAdd.AddAnnotationType();
                 // Dim AuthorityAdd As New AddNamingAuthority(mPSConnectionString)
                 // tempAuthorityID = AuthAdd.AddNamingAuthority
@@ -995,6 +998,8 @@ namespace AppUI_OrfDBHandler
             if (mFilePreviewer == null)
             {
                 mFilePreviewer = new FilePreviewHandler();
+                RegisterEvents(mFilePreviewer);
+
                 mFilePreviewer.FormStatus += OnPreviewFormStatusChange;
             }
 
@@ -1246,5 +1251,19 @@ namespace AppUI_OrfDBHandler
                 return returnVal;
             }
         }
+
+        /// <summary>
+        /// Use this method to chain events between classes
+        /// </summary>
+        /// <param name="sourceClass"></param>
+        protected void RegisterEvents(EventNotifier sourceClass)
+        {
+            // sourceClass.DebugEvent += OnDebugEvent;
+            // sourceClass.StatusEvent += OnStatusEvent;
+            sourceClass.ErrorEvent += OnErrorEvent;
+            sourceClass.WarningEvent += OnWarningEvent;
+            // sourceClass.ProgressUpdate += OnProgressUpdate;
+        }
+
     }
 }

@@ -9,12 +9,13 @@ using OrganismDatabaseHandler.DatabaseTools;
 using OrganismDatabaseHandler.ProteinExport;
 using OrganismDatabaseHandler.ProteinImport;
 using OrganismDatabaseHandler.SequenceInfo;
+using PRISM;
 using PRISMDatabaseUtils;
 using ProteinFileReader;
 
 namespace AppUI_OrfDBHandler
 {
-    public class SyncFASTAFileArchive
+    public class SyncFASTAFileArchive : EventNotifier
     {
         // Ignore Spelling: filetype
 
@@ -35,7 +36,10 @@ namespace AppUI_OrfDBHandler
         public SyncFASTAFileArchive(string psConnectionString)
         {
             mDatabaseAccessor = new DBTask(psConnectionString);
+            RegisterEvents(mDatabaseAccessor);
+
             mImporter = new AddUpdateEntries(psConnectionString);
+            RegisterEvents(mImporter);
         }
 
         public int SyncCollectionsAndArchiveTables(string outputPath)
@@ -186,6 +190,7 @@ namespace AppUI_OrfDBHandler
                     ArchiveOutputFilesBase.CollectionTypes.Static,
                     GetFASTAFromDMS.SequenceTypes.Forward,
                     tmpFullPath, creationOptionsString, tmpGenSHA, "");
+
                 // ArchiveCollection(
                 //     tmpID,
                 //     IArchiveOutputFiles.CollectionTypes.static,

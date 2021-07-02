@@ -4,11 +4,12 @@ using System.Data;
 using System.Windows.Forms;
 using OrganismDatabaseHandler.DatabaseTools;
 using OrganismDatabaseHandler.ProteinStorage;
+using PRISM;
 using PRISMDatabaseUtils;
 
 namespace OrganismDatabaseHandler.ProteinImport
 {
-    public class ImportHandler
+    public class ImportHandler : EventNotifier
     {
         public enum ProteinImportFileTypes
         {
@@ -40,7 +41,11 @@ namespace OrganismDatabaseHandler.ProteinImport
         public ImportHandler(string psConnectionString)
         {
             mSQLAccess = new DBTask(psConnectionString);
+            RegisterEvents(mSQLAccess);
+
             mImporter = new FASTAReader();
+            RegisterEvents(mImporter);
+
             mImporter.LoadStart += Task_LoadStart;
             mImporter.LoadProgress += Task_LoadProgress;
             mImporter.LoadEnd += Task_LoadEnd;

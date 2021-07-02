@@ -4,11 +4,12 @@ using System.Data;
 using OrganismDatabaseHandler.DatabaseTools;
 using OrganismDatabaseHandler.ProteinExport;
 using OrganismDatabaseHandler.ProteinStorage;
+using PRISM;
 using PRISMDatabaseUtils;
 
 namespace OrganismDatabaseHandler.ProteinImport
 {
-    public class AddUpdateEntries
+    public class AddUpdateEntries : EventNotifier
     {
         public enum SpModes
         {
@@ -68,9 +69,9 @@ namespace OrganismDatabaseHandler.ProteinImport
         public AddUpdateEntries(string pisConnectionString)
         {
             mDatabaseAccessor = new DBTask(pisConnectionString);
-            mHasher = new System.Security.Cryptography.SHA1Managed();
-        }
+            RegisterEvents(mDatabaseAccessor);
 
+            mHasher = new System.Security.Cryptography.SHA1Managed();
         }
 
         /// <summary>

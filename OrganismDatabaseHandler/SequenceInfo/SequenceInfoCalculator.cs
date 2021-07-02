@@ -4,10 +4,11 @@ using System.Data;
 using System.Security.Cryptography;
 using System.Text;
 using OrganismDatabaseHandler.DatabaseTools;
+using PRISM;
 
 namespace OrganismDatabaseHandler.SequenceInfo
 {
-    public class SequenceInfoCalculator
+    public class SequenceInfoCalculator : EventNotifier
     {
         private static Dictionary<string, AminoAcidInfo> mAminoAcids;
 
@@ -109,6 +110,7 @@ namespace OrganismDatabaseHandler.SequenceInfo
             mAminoAcids = new Dictionary<string, AminoAcidInfo>(30);
 
             var getSql = new DBTask(mDMSConnectionString);
+            RegisterEvents(getSql);
 
             const string sqlString = "SELECT * FROM T_Residues WHERE [Num_C] > 0";
             var tmpAATable = getSql.GetTable(sqlString);

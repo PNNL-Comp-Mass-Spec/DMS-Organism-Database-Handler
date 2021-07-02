@@ -4,10 +4,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using OrganismDatabaseHandler.ProteinStorage;
 using OrganismDatabaseHandler.SequenceInfo;
+using PRISM;
 
 namespace OrganismDatabaseHandler.ProteinImport
 {
-    public class FASTAReader
+    public class FASTAReader : EventNotifier
     {
         private string mFASTAFilePath;
 
@@ -61,6 +62,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var sequence = new StringBuilder();
 
             var seqInfo = new SequenceInfoCalculator();
+            RegisterEvents(seqInfo);
 
             var recordCount = default(int);
 

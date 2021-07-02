@@ -4,6 +4,7 @@ using System.Data;
 using System.Drawing;
 using System.Timers;
 using System.Windows.Forms;
+using PRISM;
 
 namespace AppUI_OrfDBHandler
 {
@@ -78,6 +79,8 @@ namespace AppUI_OrfDBHandler
         private void frmCollectionStateEditor_Load(object sender, EventArgs e)
         {
             mHandler = new CollectionStatePickerHandler(mPsConnectionString);
+            RegisterEvents(mHandler);
+
             mStatesTable = mHandler.GetStates();
 
             cboStateChanger.SelectedIndexChanged -= cboStateChanger_SelectedIndexChanged;
@@ -196,5 +199,20 @@ namespace AppUI_OrfDBHandler
                 return -compareResult;
             }
         }
+
+
+        /// <summary>
+        /// Use this method to chain events between classes
+        /// </summary>
+        /// <param name="sourceClass"></param>
+        protected void RegisterEvents(EventNotifier sourceClass)
+        {
+            // sourceClass.DebugEvent += OnDebugEvent;
+            // sourceClass.StatusEvent += OnStatusEvent;
+            sourceClass.ErrorEvent += OnErrorEvent;
+            sourceClass.WarningEvent += OnWarningEvent;
+            // sourceClass.ProgressUpdate += OnProgressUpdate;
+        }
+
     }
 }
