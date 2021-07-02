@@ -30,7 +30,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         public const string LockFileProgressText = "Lockfile";
         public const string HashcheckSuffix = ".hashcheck";
 
-        private GetFASTAFromDMSForward mGetter;
         private ArchiveOutputFilesBase mArchiver;
         private SequenceTypes mOutputSequenceType;
         private ArchiveOutputFilesBase.CollectionTypes mCollectionType;
@@ -44,10 +43,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public bool DecoyProteinsUseXXX { get; set; } = true;
 
-        public GetFASTAFromDMSForward ExporterComponent => mGetter;
-
-        // Unused
-        // public bool WaitingForLockFile => mWaitingForLockFile;
+        public GetFASTAFromDMSForward ExporterComponent { get; private set; }
 
         // ReSharper disable once UnusedMember.Global
         /// <summary>
@@ -97,11 +93,11 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         private void ClassSelector(SequenceTypes outputSequenceType, bool decoyUsesXXX)
         {
-            if (mGetter != null)
+            if (ExporterComponent != null)
             {
-                mGetter.FileGenerationCompleted -= OnFileGenerationCompleted;
-                mGetter.FileGenerationStarted -= OnFileGenerationStarted;
-                mGetter.FileGenerationProgress -= OnFileGenerationProgressUpdate;
+                ExporterComponent.FileGenerationCompleted -= OnFileGenerationCompleted;
+                ExporterComponent.FileGenerationStarted -= OnFileGenerationStarted;
+                ExporterComponent.FileGenerationProgress -= OnFileGenerationProgressUpdate;
             }
 
             mOutputSequenceType = outputSequenceType;
@@ -109,36 +105,36 @@ namespace OrganismDatabaseHandler.ProteinExport
             switch (outputSequenceType)
             {
                 case SequenceTypes.Forward:
-                    mGetter = new GetFASTAFromDMSForward(mDatabaseAccessor);
+                    ExporterComponent = new GetFASTAFromDMSForward(mDatabaseAccessor);
                     mCollectionType = ArchiveOutputFilesBase.CollectionTypes.Static;
                     break;
 
                 case SequenceTypes.Reversed:
-                    mGetter = new GetFASTAFromDMSReversed(mDatabaseAccessor);
+                    ExporterComponent = new GetFASTAFromDMSReversed(mDatabaseAccessor);
                     mCollectionType = ArchiveOutputFilesBase.CollectionTypes.Dynamic;
                     break;
 
                 case SequenceTypes.Scrambled:
-                    mGetter = new GetFASTAFromDMSScrambled(mDatabaseAccessor);
+                    ExporterComponent = new GetFASTAFromDMSScrambled(mDatabaseAccessor);
                     mCollectionType = ArchiveOutputFilesBase.CollectionTypes.Dynamic;
                     break;
 
                 case SequenceTypes.Decoy:
-                    mGetter = new GetFASTAFromDMSDecoy(mDatabaseAccessor, decoyUsesXXX);
+                    ExporterComponent = new GetFASTAFromDMSDecoy(mDatabaseAccessor, decoyUsesXXX);
                     mCollectionType = ArchiveOutputFilesBase.CollectionTypes.Dynamic;
                     break;
 
                 case SequenceTypes.DecoyX:
-                    mGetter = new GetFASTAFromDMSDecoyX(mDatabaseAccessor);
+                    ExporterComponent = new GetFASTAFromDMSDecoyX(mDatabaseAccessor);
                     mCollectionType = ArchiveOutputFilesBase.CollectionTypes.Dynamic;
                     break;
             }
 
-            if (mGetter != null)
+            if (ExporterComponent != null)
             {
-                mGetter.FileGenerationCompleted += OnFileGenerationCompleted;
-                mGetter.FileGenerationStarted += OnFileGenerationStarted;
-                mGetter.FileGenerationProgress += OnFileGenerationProgressUpdate;
+                ExporterComponent.FileGenerationCompleted += OnFileGenerationCompleted;
+                ExporterComponent.FileGenerationStarted += OnFileGenerationStarted;
+                ExporterComponent.FileGenerationProgress += OnFileGenerationProgressUpdate;
             }
 
             mArchiver = new ArchiveToFile(mDatabaseAccessor, this);
@@ -518,7 +514,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 OnDebugEvent("Retrieving fasta file for protein collections " + string.Join(",", protCollectionList.ToArray()));
 
                 // Export the fasta file
-                crc32Hash = mGetter.ExportFASTAFile(protCollectionList, destinationFolderPath, alternateAnnotationTypeId, padWithPrimaryAnnotation);
+                crc32Hash = ExporterComponent.ExportFASTAFile(protCollectionList, destinationFolderPath, alternateAnnotationTypeId, padWithPrimaryAnnotation);
 
                 if (string.IsNullOrEmpty(crc32Hash))
                 {
@@ -957,52 +953,59 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <returns>File hash</returns>
         public string GenerateFileAuthenticationHash(string fullFilePath)
         {
-            return mGetter.GetFileHash(fullFilePath);
+            return ExporterComponent.GetFileHash(fullFilePath);
         }
 
+        [Obsolete("Unused")]
         public Dictionary<int, string> GetAllCollections()
         {
-            return mGetter.GetCollectionNameList();
+            return ExporterComponent.GetCollectionNameList();
         }
 
+        [Obsolete("Unused")]
         public Dictionary<string, string> GetCollectionsByOrganism(int organismId)
         {
-            return mGetter.GetCollectionsByOrganism(organismId);
+            return ExporterComponent.GetCollectionsByOrganism(organismId);
         }
 
+        [Obsolete("Unused")]
         public DataTable GetCollectionsByOrganismTable(int organismId)
         {
-            return mGetter.GetCollectionsByOrganismTable(organismId);
+            return ExporterComponent.GetCollectionsByOrganismTable(organismId);
         }
 
+        [Obsolete("Unused")]
         public Dictionary<string, string> GetOrganismList()
         {
-            return mGetter.GetOrganismList();
+            return ExporterComponent.GetOrganismList();
         }
 
+        [Obsolete("Unused")]
         public DataTable GetOrganismListTable()
         {
-            return mGetter.GetOrganismListTable();
+            return ExporterComponent.GetOrganismListTable();
         }
 
+        [Obsolete("Unused")]
         public string GetStoredFileAuthenticationHash(int proteinCollectionId)
         {
-            return mGetter.GetStoredHash(proteinCollectionId);
+            return ExporterComponent.GetStoredHash(proteinCollectionId);
         }
 
+        [Obsolete("Unused")]
         public string GetStoredFileAuthenticationHash(string proteinCollectionName)
         {
-            return mGetter.GetStoredHash(proteinCollectionName);
+            return ExporterComponent.GetStoredHash(proteinCollectionName);
         }
 
         public int GetProteinCollectionId(string proteinCollectionName)
         {
-            return mGetter.FindIdByName(proteinCollectionName);
+            return ExporterComponent.FindIdByName(proteinCollectionName);
         }
 
         private string GetProteinCollectionName(int proteinCollectionId)
         {
-            return mGetter.FindNameById(proteinCollectionId);
+            return ExporterComponent.FindNameById(proteinCollectionId);
         }
 
         #endregion

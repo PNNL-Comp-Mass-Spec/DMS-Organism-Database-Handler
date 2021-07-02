@@ -15,55 +15,39 @@ namespace AppUI_OrfDBHandler
             InitializeComponent();
         }
 
-        private string mShortName;
-        private string mFullName;
-        private string mWebAddress;
-
         #region "Return Properties"
 
-        public string ShortName
-        {
-            get => mShortName;
-            set => mShortName = value;
-        }
+        public string ShortName { get; set; }
 
-        public string FullName
-        {
-            get => mFullName;
-            set => mFullName = value;
-        }
+        public string FullName { get; set; }
 
-        public string WebAddress
-        {
-            get => mWebAddress;
-            set => mWebAddress = value;
-        }
+        public string WebAddress { get; set; }
 
         #endregion
 
         private void frmAddNamingAuthority_Load(object sender, EventArgs e)
         {
-            if (mShortName != null)
+            if (ShortName != null)
             {
-                txtAuthName.Text = mShortName;
+                txtAuthName.Text = ShortName;
             }
 
-            if (mFullName != null)
+            if (FullName != null)
             {
-                txtAuthFullName.Text = mFullName;
+                txtAuthFullName.Text = FullName;
             }
 
-            if (mWebAddress != null)
+            if (WebAddress != null)
             {
-                txtAuthWeb.Text = mWebAddress;
+                txtAuthWeb.Text = WebAddress;
             }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            mShortName = txtAuthName.Text;
-            mFullName = txtAuthFullName.Text;
-            mWebAddress = txtAuthWeb.Text;
+            ShortName = txtAuthName.Text;
+            FullName = txtAuthFullName.Text;
+            WebAddress = txtAuthWeb.Text;
 
             DialogResult = DialogResult.OK;
             Close();

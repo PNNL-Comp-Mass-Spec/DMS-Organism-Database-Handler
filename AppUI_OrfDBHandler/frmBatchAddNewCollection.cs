@@ -79,7 +79,6 @@ namespace AppUI_OrfDBHandler
             public string Source;
         }
 
-        private string mLastUsedDirectory;
         private string mLastSelectedOrganism = string.Empty;
         private string mLastSelectedAnnotationType = string.Empty;
 
@@ -89,12 +88,9 @@ namespace AppUI_OrfDBHandler
         /// </summary>
         private Dictionary<string, FileInfo> mFileList;
 
-        private List<PSUploadHandler.UploadInfo> mCheckedFileList;
-
         // Keys are file paths, values are UploadInfo objects
         private Dictionary<string, PSUploadHandler.UploadInfo> mSelectedFileList;
 
-        private readonly DataTable mOrganismList;
         private readonly DataView mOrganismListSorted;
 
         private readonly DataTable mAnnotationTypeList;
@@ -106,8 +102,6 @@ namespace AppUI_OrfDBHandler
         /// </summary>
         private Dictionary<int, string> mCollectionsList;
 
-        private int mSelectedOrganismId;
-        private int mSelectedAnnotationTypeId;
         private readonly string mPsConnectionString;
         private bool mReallyClose = false;
         private FilePreviewHandler mFilePreviewer;
@@ -141,17 +135,13 @@ namespace AppUI_OrfDBHandler
 
         #region "Properties"
 
-        public List<PSUploadHandler.UploadInfo> FileList => mCheckedFileList;
+        public List<PSUploadHandler.UploadInfo> FileList { get; private set; }
 
-        public int SelectedOrganismID => mSelectedOrganismId;
+        public int SelectedOrganismID { get; private set; }
 
-        public int SelectedAnnotationTypeID => mSelectedAnnotationTypeId;
+        public int SelectedAnnotationTypeID { get; private set; }
 
-        public string CurrentDirectory
-        {
-            get => mLastUsedDirectory;
-            set => mLastUsedDirectory = value;
-        }
+        public string CurrentDirectory { get; set; }
 
         private string SelectedNodeFolderPath
         {
@@ -255,7 +245,7 @@ namespace AppUI_OrfDBHandler
                 mFileList = new Dictionary<string, FileInfo>();
             }
 
-            mCheckedFileList = new List<PSUploadHandler.UploadInfo>();
+            FileList = new List<PSUploadHandler.UploadInfo>();
             LoadOrganismPicker(cboOrganismSelect, mOrganismListSorted);
             LoadAnnotationTypePicker(cboAnnotationTypePicker, mAnnotationTypeList);
             cmdUploadChecked.Enabled = false;
@@ -297,7 +287,7 @@ namespace AppUI_OrfDBHandler
                 return;
             }
 
-            mLastUsedDirectory = directoryPath;
+            CurrentDirectory = directoryPath;
 
             var foundFastaFiles = di.GetFiles();
 
@@ -689,11 +679,11 @@ namespace AppUI_OrfDBHandler
                         return false;
                     }
 
-                    mCheckedFileList.Add(upInfo);
+                    FileList.Add(upInfo);
                 }
             }
 
-            if (mCheckedFileList.Count == 0)
+            if (FileList.Count == 0)
             {
                 MessageBox.Show("No fasta files are selected", "Nothing to Do", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return false;
@@ -878,7 +868,7 @@ namespace AppUI_OrfDBHandler
         {
             var cbo = (ComboBox)sender;
 
-            mSelectedOrganismId = (int)cbo.SelectedValue;
+            SelectedOrganismID = (int)cbo.SelectedValue;
             CheckTransferEnable();
             if (lvwSelectedFiles.SelectedItems.Count > 0)
             {
@@ -888,7 +878,7 @@ namespace AppUI_OrfDBHandler
 
                     // Update organism in mSelectedFileList
                     var tmpUpInfo = mSelectedFileList[fastaFilePath];
-                    tmpUpInfo.OrganismId = mSelectedOrganismId;
+                    tmpUpInfo.OrganismId = SelectedOrganismID;
 
                     mSelectedFileList[fastaFilePath] = tmpUpInfo;
 
@@ -904,16 +894,12 @@ namespace AppUI_OrfDBHandler
 
             if (ReferenceEquals(cboAnnotationTypePicker.SelectedValue.GetType(), Type.GetType("System.Int32")))
             {
-                mSelectedAnnotationTypeId = (int)Math.Round(Convert.ToDouble(cboAnnotationTypePicker.SelectedValue));
-            }
-            else
-            {
-                // mSelectedAuthorityID = 0
+                SelectedAnnotationTypeID = (int)Math.Round(Convert.ToDouble(cboAnnotationTypePicker.SelectedValue));
             }
 
             CheckTransferEnable();
 
-            if (mSelectedAnnotationTypeId == -2)
+            if (SelectedAnnotationTypeID == -2)
             {
                 // Bring up an additional dialog
                 var annTypeAdd = new AddAnnotationTypeType(mPsConnectionString)
@@ -935,7 +921,7 @@ namespace AppUI_OrfDBHandler
                     mAnnotationTypeList.Rows.Add(dr);
                     mAnnotationTypeList.AcceptChanges();
                     LoadAnnotationTypePicker(cboAnnotationTypePicker, mAnnotationTypeList);
-                    mSelectedAnnotationTypeId = tmpAnnTypeId;
+                    SelectedAnnotationTypeID = tmpAnnTypeId;
 
                     cboAnnotationTypePicker.SelectedValue = tmpAnnTypeId;
                 }
@@ -952,8 +938,8 @@ namespace AppUI_OrfDBHandler
                     mSelectedFileList[fastaFilePath] =
                         new PSUploadHandler.UploadInfo(
                             tmpUpInfo.FileInformation,
-                            mSelectedOrganismId,
-                            mSelectedAnnotationTypeId);
+                            SelectedOrganismID,
+                            SelectedAnnotationTypeID);
 
                     // Update annotation type in lvwSelectedFiles
                     li.SubItems[(int)SelectedFileColumn.AnnotationType].Text = cbo.Text;
@@ -963,7 +949,7 @@ namespace AppUI_OrfDBHandler
 
         private void CheckTransferEnable()
         {
-            if (mSelectedOrganismId > 0 && mSelectedAnnotationTypeId > 0 && lvwFolderContents.SelectedItems.Count > 0)
+            if (SelectedOrganismID > 0 && SelectedAnnotationTypeID > 0 && lvwFolderContents.SelectedItems.Count > 0)
             {
                 mAllowAddFiles = true;
                 mAllowAddFilesMessage = "";
@@ -1036,7 +1022,7 @@ namespace AppUI_OrfDBHandler
 
         private void cmdRefreshFiles_Click(object sender, EventArgs e)
         {
-            InitializeTreeView(mLastUsedDirectory);
+            InitializeTreeView(CurrentDirectory);
         }
 
         private void cmdUpdateDescription_Click(object sender, EventArgs e)

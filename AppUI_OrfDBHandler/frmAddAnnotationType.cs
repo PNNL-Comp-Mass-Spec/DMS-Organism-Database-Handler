@@ -14,38 +14,18 @@ namespace AppUI_OrfDBHandler
             InitializeComponent();
         }
 
-        private string mTypeName;
-        private string mDescription;
-        private string mExample;
-        private int mAuthId;
         private DataTable mAuthoritiesTable;
         private string mPsConnectionString;
 
         #region "Return Properties"
 
-        public string TypeName
-        {
-            get => mTypeName;
-            set => mTypeName = value;
-        }
+        public string TypeName { get; set; }
 
-        public string Description
-        {
-            get => mDescription;
-            set => mDescription = value;
-        }
+        public string Description { get; set; }
 
-        public string Example
-        {
-            get => mExample;
-            set => mExample = value;
-        }
+        public string Example { get; set; }
 
-        public int AuthorityID
-        {
-            get => mAuthId;
-            set => mAuthId = value;
-        }
+        public int AuthorityID { get; set; }
 
         public string ConnectionString
         {
@@ -61,26 +41,26 @@ namespace AppUI_OrfDBHandler
 
         private void frmAddAnnotationType_Load(object sender, EventArgs e)
         {
-            if (mTypeName != null)
+            if (TypeName != null)
             {
-                txtAnnTypeName.Text = mTypeName;
+                txtAnnTypeName.Text = TypeName;
             }
 
-            if (mDescription != null)
+            if (Description != null)
             {
-                txtDescription.Text = mDescription;
+                txtDescription.Text = Description;
             }
 
-            if (mExample != null)
+            if (Example != null)
             {
-                txtTypeExample.Text = mExample;
+                txtTypeExample.Text = Example;
             }
 
             LoadAuthoritiesList();
 
-            if (mAuthId > 0)
+            if (AuthorityID > 0)
             {
-                cboAuthorityName.SelectedValue = mAuthId;
+                cboAuthorityName.SelectedValue = AuthorityID;
                 cboAuthorityName.Select();
             }
         }
@@ -116,10 +96,10 @@ namespace AppUI_OrfDBHandler
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            mTypeName = txtAnnTypeName.Text;
-            mDescription = txtDescription.Text;
-            mExample = txtTypeExample.Text;
-            mAuthId = Convert.ToInt32(cboAuthorityName.SelectedValue);
+            TypeName = txtAnnTypeName.Text;
+            Description = txtDescription.Text;
+            Example = txtTypeExample.Text;
+            AuthorityID = Convert.ToInt32(cboAuthorityName.SelectedValue);
 
             DialogResult = DialogResult.OK;
             Close();
@@ -137,14 +117,10 @@ namespace AppUI_OrfDBHandler
 
             if (ReferenceEquals(cbo.SelectedValue.GetType(), Type.GetType("System.Int32")))
             {
-                mAuthId = Convert.ToInt32(cbo.SelectedValue);
-            }
-            else
-            {
-                // mSelectedAuthorityID = 0
+                AuthorityID = Convert.ToInt32(cbo.SelectedValue);
             }
 
-            if (mAuthId == -2)
+            if (AuthorityID == -2)
             {
                 // Bring up addition dialog
                 var authAdd = new AddNamingAuthorityType(mPsConnectionString)
@@ -164,7 +140,7 @@ namespace AppUI_OrfDBHandler
                     mAuthoritiesTable.Rows.Add(dr);
                     mAuthoritiesTable.AcceptChanges();
                     LoadAuthoritiesList();
-                    mAuthId = tmpAuthId;
+                    AuthorityID = tmpAuthId;
                 }
 
                 cboAuthorityName.SelectedValue = tmpAuthId;

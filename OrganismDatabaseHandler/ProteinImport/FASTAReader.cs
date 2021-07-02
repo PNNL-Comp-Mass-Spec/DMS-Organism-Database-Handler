@@ -11,7 +11,6 @@ namespace OrganismDatabaseHandler.ProteinImport
     {
         private string mFASTAFilePath;
 
-        private string mLastError;
         private readonly Regex mDescLineRegEx;
         private readonly Regex mNoDescLineRegEx;
         private readonly Regex mDescLineMatcher;
@@ -34,7 +33,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             mNoDescLineRegEx = new Regex(@"^\>(?<name>\S+)$");
         }
 
-        public string LastErrorMessage => mLastError;
+        public string LastErrorMessage { get; private set; }
 
         public ProteinStorage.ProteinStorage GetProteinEntries(string filePath)
         {
@@ -158,7 +157,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             catch (Exception ex)
             {
                 var stackTrace = PRISM.StackTraceFormatter.GetExceptionStackTrace(ex);
-                mLastError = ex.Message + "; " + stackTrace;
+                LastErrorMessage = ex.Message + "; " + stackTrace;
             }
 
             return fastaContents;

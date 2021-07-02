@@ -11,26 +11,21 @@ namespace AppUI_OrfDBHandler
         private readonly string mConnectionString;
         private AddUpdateEntries mSpRunner;
 
-        private string mTypeName;
-        private string mDescription;
-        private string mExample;
-        private int mAuthId;
-        private bool mEntryExists = false;
         private AddNamingAuthorityType mAuthAdd;
         private readonly DataTable mAuthorities;
         private Point mFormLocation;
 
-        public string TypeName => mTypeName;
+        public string TypeName { get; private set; }
 
-        public string Description => mDescription;
+        public string Description { get; private set; }
 
-        public string AnnotationExample => mExample;
+        public string AnnotationExample { get; private set; }
 
-        public int AuthorityID => mAuthId;
+        public int AuthorityID { get; private set; }
 
-        public string DisplayName => GetDisplayName(mAuthId, mTypeName);
+        public string DisplayName => GetDisplayName(AuthorityID, TypeName);
 
-        public bool EntryExists => mEntryExists;
+        public bool EntryExists { get; private set; }
 
         public Point FormLocation
         {
@@ -83,33 +78,33 @@ namespace AppUI_OrfDBHandler
 
             if (r == DialogResult.OK)
             {
-                mTypeName = frmAnn.TypeName;
-                mDescription = frmAnn.Description;
-                mExample = frmAnn.Example;
-                mAuthId = frmAnn.AuthorityID;
+                TypeName = frmAnn.TypeName;
+                Description = frmAnn.Description;
+                AnnotationExample = frmAnn.Example;
+                AuthorityID = frmAnn.AuthorityID;
 
                 annTypeId = mSpRunner.AddAnnotationType(
-                    mTypeName, mDescription, mExample, mAuthId);
+                    TypeName, Description, AnnotationExample, AuthorityID);
 
                 if (annTypeId < 0)
                 {
-                    var authNames = mAuthorities.Select("Authority_ID = " + mAuthId);
+                    var authNames = mAuthorities.Select("Authority_ID = " + AuthorityID);
                     var authName = authNames[0]["Name"].ToString();
                     MessageBox.Show(
-                        "An entry called '" + mTypeName + "' for '" + authName + "' already exists in the Annotation Types table",
+                        "An entry called '" + TypeName + "' for '" + authName + "' already exists in the Annotation Types table",
                         "Entry already exists!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2);
-                    mEntryExists = true;
+                    EntryExists = true;
                     annTypeId = -annTypeId;
                 }
                 else
                 {
-                    mEntryExists = false;
+                    EntryExists = false;
                 }
             }
             else
             {
                 annTypeId = 0;
-                mEntryExists = true;
+                EntryExists = true;
             }
 
             mSpRunner = null;

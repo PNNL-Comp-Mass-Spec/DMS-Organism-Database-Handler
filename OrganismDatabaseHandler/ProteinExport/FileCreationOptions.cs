@@ -12,7 +12,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         // Ignore Spelling: filetype
 
         private readonly DBTask mDatabaseAccessor;
-        private GetFASTAFromDMS.SequenceTypes mSeqDirection;
         private DataTable mCreationValuesTable;
         private DataTable mKeywordTable;
 
@@ -21,8 +20,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             mDatabaseAccessor = databaseAccessor;
         }
 
-        public GetFASTAFromDMS.SequenceTypes SequenceDirection => mSeqDirection;
-
+        public GetFASTAFromDMS.SequenceTypes SequenceDirection { get; private set; }
 
         // Options string looks like... "seq_direction=forward;filetype=fasta"
         public string ExtractOptions(string optionsString)
@@ -133,7 +131,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 {
                     case "seq_direction":
                         // Convert from string to an enum (case insensitive matching to enum value names)
-                        mSeqDirection = (GetFASTAFromDMS.SequenceTypes)Enum.Parse(typeof(GetFASTAFromDMS.SequenceTypes), tmpValue, true);
+                        SequenceDirection = (GetFASTAFromDMS.SequenceTypes)Enum.Parse(typeof(GetFASTAFromDMS.SequenceTypes), tmpValue, true);
                         break;
 
                     case "filetype":

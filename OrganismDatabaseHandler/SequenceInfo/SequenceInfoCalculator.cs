@@ -11,12 +11,6 @@ namespace OrganismDatabaseHandler.SequenceInfo
     {
         private static Dictionary<string, AminoAcidInfo> mAminoAcids;
 
-        private double mMonoisotopicMass;
-        private double mAverageMass;
-        private int mLength;
-        private string mMolFormula;
-        private string sha1Hash;
-
         private static SHA1Managed sha1Provider;
 
         private readonly string mDMSConnectionString = "Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI;";
@@ -36,26 +30,26 @@ namespace OrganismDatabaseHandler.SequenceInfo
 
         #region "Ken's Added Properties "
 
-        public double MonoisotopicMass => mMonoisotopicMass;
+        public double MonoisotopicMass { get; private set; }
 
-        public double AverageMass => mAverageMass;
+        public double AverageMass { get; private set; }
 
-        public int SequenceLength => mLength;
+        public int SequenceLength { get; private set; }
 
-        public string MolecularFormula => mMolFormula;
+        public string MolecularFormula { get; private set; }
 
-        public string SHA1Hash => sha1Hash;
+        public string SHA1Hash { get; private set; }
 
         #endregion
 
         public void CalculateSequenceInfo(string sequence)
         {
             var tmpSeqInfo = SequenceInfo(sequence);
-            mMonoisotopicMass = tmpSeqInfo.MonoisotopicMass;
-            mAverageMass = tmpSeqInfo.AverageMass;
-            mMolFormula = tmpSeqInfo.MolecularFormula;
-            mLength = sequence.Length;
-            sha1Hash = GenerateHash(sequence);
+            MonoisotopicMass = tmpSeqInfo.MonoisotopicMass;
+            AverageMass = tmpSeqInfo.AverageMass;
+            MolecularFormula = tmpSeqInfo.MolecularFormula;
+            SequenceLength = sequence.Length;
+            SHA1Hash = GenerateHash(sequence);
         }
 
         protected SequenceInfo SequenceInfo(string sequence, string description = "")
@@ -174,13 +168,6 @@ namespace OrganismDatabaseHandler.SequenceInfo
 
     public class SequenceInfo
     {
-        private bool mInvalidated = false;
-        private string mSequence;
-        private int countC;
-        private int countH;
-        private int countN;
-        private int countO;
-        private int countS;
         private double mAverageMass;
         private double mMonoisotopicMass;
 
@@ -210,44 +197,59 @@ namespace OrganismDatabaseHandler.SequenceInfo
             int cCount, int hCount, int nCount, int oCount, int sCount,
             double average, double monoisotopic)
         {
-            mSequence = seq;
+            Sequence = seq;
             Name = seqName;
-            countC = cCount;
-            countH = hCount;
-            countN = nCount;
-            countO = oCount;
-            countS = sCount;
+            C = cCount;
+            H = hCount;
+            N = nCount;
+            O = oCount;
+            S = sCount;
             mAverageMass = average;
             mMonoisotopicMass = monoisotopic;
         }
 
-        public string Sequence => mSequence;
+        public string Sequence { get; private set; }
 
         public void Invalidate()
         {
-            mInvalidated = true;
+            Invalidated = true;
             mAverageMass = 0d;
-            countC = 0;
-            countH = 0;
+            C = 0;
+            H = 0;
             mMonoisotopicMass = 0d;
-            countN = 0;
-            countO = 0;
-            countS = 0;
+            N = 0;
+            O = 0;
+            S = 0;
         }
 
-        public bool Invalidated => mInvalidated;
+        public bool Invalidated { get; private set; }
 
         public string Name { get; }
 
-        public int C => countC;
+        /// <summary>
+        /// Number of C atoms
+        /// </summary>
+        public int C { get; private set; }
 
-        public int H => countH;
+        /// <summary>
+        /// Number of H atoms
+        /// </summary>
+        public int H { get; private set; }
 
-        public int N => countN;
+        /// <summary>
+        /// Number of N atoms
+        /// </summary>
+        public int N { get; private set; }
 
-        public int O => countO;
+        /// <summary>
+        /// Number of O atoms
+        /// </summary>
+        public int O { get; private set; }
 
-        public int S => countS;
+        /// <summary>
+        /// Number of S atoms
+        /// </summary>
+        public int S { get; private set; }
 
         public double AverageMass => mAverageMass + 18.01528d;
 
@@ -257,26 +259,25 @@ namespace OrganismDatabaseHandler.SequenceInfo
 
         private string GetMolecularFormula()
         {
-            var mf = "C" + countC + " H" + countH + " N" + countN + " O" + countO + " S" + countS;
-            return mf;
+            return string.Format("C{0} H{1} N{2} O{3} S{4}", C, H, N, O, S);
         }
 
         public void AddSequenceInfo(SequenceInfo info)
         {
-            if (mSequence.Length == 0)
+            if (Sequence.Length == 0)
             {
-                countH = 2;
-                countO = 1;
+                H = 2;
+                O = 1;
             }
 
-            mSequence += info.Sequence;
-            if (!mInvalidated)
+            Sequence += info.Sequence;
+            if (!Invalidated)
             {
-                countC += info.countC;
-                countH += info.countH;
-                countN += info.countN;
-                countO += info.countO;
-                countS += info.countS;
+                C += info.C;
+                H += info.H;
+                N += info.N;
+                O += info.O;
+                S += info.S;
                 mMonoisotopicMass += info.mMonoisotopicMass;
                 mAverageMass += info.mAverageMass;
             }

@@ -10,20 +10,15 @@ namespace AppUI_OrfDBHandler
         private readonly string mConnectionString;
         private AddUpdateEntries mSpRunner;
 
-        private string mShortName;
-        private string mFullName;
         private string mWebAddress;
-        private bool mEntryExists = false;
         private ImportHandler mImporter;
         private Point mFormLocation;
 
-        public string ShortName => mShortName;
+        public string ShortName { get; private set; }
 
-        public string FullName => mFullName;
+        public string FullName { get; private set; }
 
-        public string WebAddress => mWebAddress;
-
-        public bool EntryExists => mEntryExists;
+        public bool EntryExists { get; private set; }
 
         public DataTable AuthoritiesTable { get; }
 
@@ -51,21 +46,21 @@ namespace AppUI_OrfDBHandler
 
             if (r == DialogResult.OK)
             {
-                mShortName = frmAuth.ShortName;
-                mFullName = frmAuth.FullName;
+                ShortName = frmAuth.ShortName;
+                FullName = frmAuth.FullName;
                 mWebAddress = frmAuth.WebAddress;
-                authId = mSpRunner.AddNamingAuthority(mShortName, mFullName, mWebAddress);
+                authId = mSpRunner.AddNamingAuthority(ShortName, FullName, mWebAddress);
                 if (authId < 0)
                 {
                     MessageBox.Show(
-                        "An entry for '" + mShortName + "' already exists in the Authorities table",
+                        "An entry for '" + ShortName + "' already exists in the Authorities table",
                         "Entry already exists!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2);
-                    mEntryExists = true;
+                    EntryExists = true;
                     authId = -authId;
                 }
                 else
                 {
-                    mEntryExists = false;
+                    EntryExists = false;
                 }
             }
             else
