@@ -370,6 +370,7 @@ namespace AppUI_OrfDBHandler
             if (mUploadHandler != null)
             {
                 mUploadHandler.BatchProgress -= BatchImportProgressHandler;
+                mUploadHandler.LoadProgress -= ImportProgressHandler;
                 mUploadHandler.ValidFASTAFileLoaded -= ValidFASTAUploadHandler;
                 mUploadHandler.InvalidFASTAFile -= InvalidFASTAFileHandler;
                 mUploadHandler.FASTAFileWarnings -= FASTAFileWarningsHandler;
@@ -381,6 +382,7 @@ namespace AppUI_OrfDBHandler
             RegisterEvents(mUploadHandler);
 
             mUploadHandler.BatchProgress += BatchImportProgressHandler;
+            mUploadHandler.LoadProgress += ImportProgressHandler;
             mUploadHandler.ValidFASTAFileLoaded += ValidFASTAUploadHandler;
             mUploadHandler.InvalidFASTAFile += InvalidFASTAFileHandler;
             mUploadHandler.FASTAFileWarnings += FASTAFileWarningsHandler;
@@ -600,6 +602,7 @@ namespace AppUI_OrfDBHandler
                 if (mUploadHandler != null)
                 {
                     mUploadHandler.BatchProgress -= BatchImportProgressHandler;
+                    mUploadHandler.LoadProgress -= ImportProgressHandler;
                     mUploadHandler.ValidFASTAFileLoaded -= ValidFASTAUploadHandler;
                     mUploadHandler.InvalidFASTAFile -= InvalidFASTAFileHandler;
                     mUploadHandler.FASTAFileWarnings -= FASTAFileWarningsHandler;
@@ -639,6 +642,7 @@ namespace AppUI_OrfDBHandler
                     RegisterEvents(mUploadHandler);
 
                     mUploadHandler.BatchProgress += BatchImportProgressHandler;
+                    mUploadHandler.LoadProgress += ImportProgressHandler;
                     mUploadHandler.ValidFASTAFileLoaded += ValidFASTAUploadHandler;
                     mUploadHandler.InvalidFASTAFile += InvalidFASTAFileHandler;
                     mUploadHandler.FASTAFileWarnings += FASTAFileWarningsHandler;
@@ -664,6 +668,7 @@ namespace AppUI_OrfDBHandler
             if (mUploadHandler != null)
             {
                 mUploadHandler.BatchProgress -= BatchImportProgressHandler;
+                mUploadHandler.LoadProgress -= ImportProgressHandler;
                 mUploadHandler.ValidFASTAFileLoaded -= ValidFASTAUploadHandler;
                 mUploadHandler.InvalidFASTAFile -= InvalidFASTAFileHandler;
                 mUploadHandler.FASTAFileWarnings -= FASTAFileWarningsHandler;
