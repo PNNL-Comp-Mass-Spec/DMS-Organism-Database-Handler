@@ -931,7 +931,6 @@ namespace AppUI_OrfDBHandler
         private void ImportProgressHandler(double fractionDone)
         {
             //mFileBatcher.ProgressUpdate()
-
             pgbMain.Value = (int)Math.Round(fractionDone * 100d);
             Application.DoEvents();
         }
@@ -944,8 +943,7 @@ namespace AppUI_OrfDBHandler
                 fractionDone = 1.0d;
             }
 
-            pgbMain.Value = (int)Math.Round(fractionDone * 100d);
-            Application.DoEvents();
+            ImportProgressHandler(fractionDone);
         }
 
         private void ImportEndHandler()
@@ -1038,8 +1036,7 @@ namespace AppUI_OrfDBHandler
                 lblCurrentTask.Text = taskTitle;
             }
 
-            pgbMain.Value = (int)Math.Round(fractionDone * 100d);
-            Application.DoEvents();
+            ImportProgressHandler(fractionDone);
         }
 
         private void NormalizedFASTAFileGenerationHandler(string newFilePath)
