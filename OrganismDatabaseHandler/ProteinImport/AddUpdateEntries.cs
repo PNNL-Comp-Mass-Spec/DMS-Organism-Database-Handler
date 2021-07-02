@@ -565,6 +565,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             return RunSP_AddUpdateProteinCollectionMember(referenceId, proteinId, sortingIndex, proteinCollectionId, "Add");
         }
 
+        [Obsolete("Unused")]
         protected int RunSP_UpdateProteinCollectionMember(
             int referenceId, int proteinId,
             int sortingIndex, int proteinCollectionId)
@@ -729,6 +730,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             return dbTools.GetInteger(returnParam.Value);
         }
 
+        [Obsolete("Unused")]
         protected int RunSP_GetProteinCollectionMemberCount(int proteinCollectionId)
         {
             var dbTools = mDatabaseAccessor.DbTools;
@@ -788,6 +790,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             // Get return value
             var ret = dbTools.GetInteger(returnParam.Value);
+
             if (ret == 0)
             {
                 // A zero was returned for the protein reference ID; this indicates an error
@@ -799,6 +802,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
                 if (!string.IsNullOrEmpty(spMsg))
                     msg += "; " + spMsg;
+
                 throw new ConstraintException(msg);
             }
 
@@ -929,6 +933,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             return dbTools.GetInteger(returnParam.Value);
         }
 
+        [Obsolete("Unused")]
         protected int RunSP_UpdateProteinSequenceHash(
             int proteinId,
             string proteinSequence)
