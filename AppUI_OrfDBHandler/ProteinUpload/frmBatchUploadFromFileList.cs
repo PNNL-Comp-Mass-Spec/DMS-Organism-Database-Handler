@@ -19,8 +19,8 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             DataTable annotationTypeList,
             DataTable organismList)
         {
-            base.Load += frmBatchUploadFromFileList_Load;
-            base.Closing += frmBatchUploadFromFileList_Closing;
+            Load += frmBatchUploadFromFileList_Load;
+            Closing += frmBatchUploadFromFileList_Closing;
             mAnnotationTypeList = annotationTypeList;
             mOrganismList = organismList;
 
@@ -147,7 +147,9 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             SelectedFilesCollection.Clear();
 
             foreach (ListViewItem li in lvwFiles.CheckedItems)
+            {
                 SelectedFilesCollection.Add(li.Text, FileCollection[li.Text]);
+            }
 
             return lvwFiles.CheckedItems.Count;
         }
@@ -164,13 +166,17 @@ namespace AppUI_OrfDBHandler.ProteinUpload
         private void cmdCheckAll_Click(object sender, EventArgs e)
         {
             foreach (ListViewItem li in lvwFiles.Items)
+            {
                 li.Checked = true;
+            }
         }
 
         private void cmdUncheckAll_Click(object sender, EventArgs e)
         {
             foreach (ListViewItem li in lvwFiles.Items)
+            {
                 li.Checked = false;
+            }
         }
 
         private void cboOrganismPicker_SelectedIndexChanged(object sender, EventArgs e)

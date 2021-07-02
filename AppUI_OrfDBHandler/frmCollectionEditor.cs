@@ -38,7 +38,7 @@ namespace AppUI_OrfDBHandler
             ReadSettings();
         }
 
-        [STAThread()]
+        [STAThread]
         public static void Main()
         {
             Application.EnableVisualStyles();
@@ -64,10 +64,10 @@ namespace AppUI_OrfDBHandler
         /// </summary>
         private string mPsConnectionString = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;";
 
-        private string mLastSelectedOrganism = "";
-        private string mLastSelectedAnnotationType = "";
-        private bool mLastValueForAllowAsterisks = false;
-        private bool mLastValueForAllowDash = false;
+        private string mLastSelectedOrganism = string.Empty;
+        private string mLastSelectedAnnotationType = string.Empty;
+        private bool mLastValueForAllowAsterisks;
+        private bool mLastValueForAllowDash;
         private int mLastValueForMaxProteinNameLength = FastaValidator.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
         private ImportHandler mImportHandler;
         private PSUploadHandler mUploadHandler;
@@ -76,7 +76,7 @@ namespace AppUI_OrfDBHandler
 
         private bool mLocalFileLoaded;
 
-        private bool mSearchActive = false;
+        private bool mSearchActive;
 
         private int mBatchLoadTotalCount;
         private int mBatchLoadCurrentCount;
@@ -153,12 +153,12 @@ namespace AppUI_OrfDBHandler
             txtLiveSearch.Visible = false;
             pbxLiveSearchBkg.Visible = false;
             pbxLiveSearchCancel.Visible = false;
-            lblSearchCount.Text = "";
+            lblSearchCount.Text = string.Empty;
             cmdExportToFile.Enabled = false;
             cmdSaveDestCollection.Enabled = false;
 
             cboAnnotationTypePicker.SelectedIndexChanged += cboAnnotationTypePicker_SelectedIndexChanged;
-            lblBatchProgress.Text = "";
+            lblBatchProgress.Text = string.Empty;
 
             CheckTransferButtonsEnabledStatus();
 
@@ -294,7 +294,7 @@ namespace AppUI_OrfDBHandler
                 mLastBatchUploadDirectoryPath,
                 mCachedFileDescriptions);
 
-            lblBatchProgress.Text = "";
+            lblBatchProgress.Text = string.Empty;
 
             if (!string.IsNullOrEmpty(mLastSelectedOrganism))
             {
@@ -384,7 +384,7 @@ namespace AppUI_OrfDBHandler
             mUploadHandler.WroteLineEndNormalizedFASTA += NormalizedFASTAFileGenerationHandler;
 
             pgbMain.Value = 0;
-            lblCurrentTask.Text = "";
+            lblCurrentTask.Text = string.Empty;
             pnlProgBar.Visible = true;
 
             try
@@ -424,7 +424,7 @@ namespace AppUI_OrfDBHandler
             RefreshCollectionList();
             mUploadHandler.ResetErrorList();
 
-            lblBatchProgress.Text = "";
+            lblBatchProgress.Text = string.Empty;
             gbxSourceCollection.Enabled = true;
             gbxDestinationCollection.Enabled = true;
             cmdDestAdd.Enabled = true;
@@ -502,7 +502,7 @@ namespace AppUI_OrfDBHandler
             }
             else
             {
-                mProteinCollections.DefaultView.RowFilter = "";
+                mProteinCollections.DefaultView.RowFilter = string.Empty;
             }
 
             mSelectedOrganismId = Convert.ToInt32(cboOrganismFilter.SelectedValue);
@@ -565,8 +565,8 @@ namespace AppUI_OrfDBHandler
         private void cmdLoadProteins_Click(object sender, EventArgs e)
         {
             ImportStartHandler("Retrieving Protein Entries..");
-            var foundRows =
-                mProteinCollections.Select("Protein_Collection_ID = " + cboCollectionPicker.SelectedValue);
+            var foundRows = mProteinCollections.Select("Protein_Collection_ID = " + cboCollectionPicker.SelectedValue);
+
             ImportProgressHandler(0.5d);
             mSelectedFilePath = foundRows[0]["FileName"].ToString();
             UpdateCachedInfoAfterLoadingProteins();
@@ -718,7 +718,7 @@ namespace AppUI_OrfDBHandler
 
         private void pbxLiveSearchCancel_Click(object sender, EventArgs e)
         {
-            txtLiveSearch.Text = "";
+            txtLiveSearch.Text = string.Empty;
             txtLiveSearch_Leave(this, null);
             lvwSource.Focus();
             pbxLiveSearchCancel.Visible = false;
@@ -827,7 +827,9 @@ namespace AppUI_OrfDBHandler
             var selectedList = new List<string>();
 
             foreach (ListViewItem li in lvwDest.Items)
+            {
                 selectedList.Add(li.Text);
+            }
 
             return selectedList;
         }
@@ -843,7 +845,9 @@ namespace AppUI_OrfDBHandler
             else
             {
                 foreach (ListViewItem entry in lvwDest.SelectedItems)
+                {
                     entry.Remove();
+                }
             }
 
             lblCurrProteinCount.Text = "Protein Count: " + lvwDest.Items.Count;
@@ -883,7 +887,7 @@ namespace AppUI_OrfDBHandler
         //private void mnuToolsUpdateArchives_Click(object sender, EventArgs e)
         //{
         //    var f = new FolderBrowserDialog();
-        //    string outputPath = "";
+        //    string outputPath = string.Empty;
 
         //    if (mSyncer == null)
         //        mSyncer = new SyncFASTAFileArchive(mPSConnectionString);
@@ -953,11 +957,11 @@ namespace AppUI_OrfDBHandler
 
             BindOrganismListToControl(mOrganisms);
             BindAnnotationTypeListToControl(mAnnotationTypes);
-            mProteinCollections.DefaultView.RowFilter = "";
+            mProteinCollections.DefaultView.RowFilter = string.Empty;
             BindCollectionListToControl(mProteinCollections.DefaultView);
             cboCollectionPicker.Enabled = true;
             cboOrganismFilter.Enabled = true;
-            lblBatchProgress.Text = "";
+            lblBatchProgress.Text = string.Empty;
             //mnuToolsFBatchUpload.Enabled = true;
 
             cboOrganismFilter.SelectedIndexChanged += cboOrganismList_SelectedIndexChanged;

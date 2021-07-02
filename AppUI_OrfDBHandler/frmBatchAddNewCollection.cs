@@ -26,12 +26,12 @@ namespace AppUI_OrfDBHandler
             string selectedFolderPath,
             Dictionary<string, KeyValuePair<string, string>> cachedFileDescriptions)
         {
-            base.Load += frmBatchAddNewCollection_Load;
-            base.Closing += frmBatchAddNewCollection_Closing;
+            Load += frmBatchAddNewCollection_Load;
+            Closing += frmBatchAddNewCollection_Closing;
 
             InitializeComponent();
 
-            mStatusResetTimer = new Timer() { Interval = 1000 };
+            mStatusResetTimer = new Timer { Interval = 1000 };
             mStatusResetTimer.Tick += StatusResetTimer_Tick;
 
             mStatusResetTimer.Start();
@@ -103,7 +103,7 @@ namespace AppUI_OrfDBHandler
         private Dictionary<int, string> mCollectionsList;
 
         private readonly string mPsConnectionString;
-        private bool mReallyClose = false;
+        private bool mReallyClose;
         private FilePreviewHandler mFilePreviewer;
 
         private bool mPreviewFormStatus;
@@ -596,7 +596,9 @@ namespace AppUI_OrfDBHandler
                     var currentFolder = new DirectoryInfo(selectedDirectoryPath);
 
                     while (!currentFolder.Exists && currentFolder.Parent != null)
+                    {
                         currentFolder = currentFolder.Parent;
+                    }
 
                     if (string.Equals(SelectedNodeFolderPath, currentFolder.FullName, StringComparison.OrdinalIgnoreCase))
                     {
@@ -705,7 +707,9 @@ namespace AppUI_OrfDBHandler
         private void SelectAllRows(ListView lv)
         {
             foreach (ListViewItem li in lv.Items)
+            {
                 li.Selected = true;
+            }
         }
 
         private void SelectComboBoxItemByName(ComboBox objComboBox, string strValue, int intDataColumnIndexToCheck)
@@ -813,7 +817,9 @@ namespace AppUI_OrfDBHandler
             else
             {
                 foreach (ListViewItem li in lvwSelectedFiles.Items)
+                {
                     itemsToUpdate.Add(li);
+                }
             }
 
             // Show a window with the most commonly used description and source
@@ -936,7 +942,7 @@ namespace AppUI_OrfDBHandler
             if (SelectedOrganismID > 0 && SelectedAnnotationTypeID > 0 && lvwFolderContents.SelectedItems.Count > 0)
             {
                 mAllowAddFiles = true;
-                mAllowAddFilesMessage = "";
+                mAllowAddFilesMessage = string.Empty;
             }
             else
             {
@@ -1159,7 +1165,9 @@ namespace AppUI_OrfDBHandler
                     var currentFolder = new DirectoryInfo(folderPath);
 
                     while (!currentFolder.Exists && currentFolder.Parent != null)
+                    {
                         currentFolder = currentFolder.Parent;
+                    }
 
                     ctlTreeViewFolderBrowser.Populate(currentFolder.FullName);
 

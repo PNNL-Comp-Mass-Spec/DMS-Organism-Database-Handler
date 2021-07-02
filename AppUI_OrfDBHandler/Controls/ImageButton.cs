@@ -262,7 +262,9 @@ namespace AppUI_OrfDBHandler.Controls
                         for (var i = 0; i < lastImageInList.Height; ++i)
                         {
                             for (var j = 0; j < lastImageInList.Width; ++j)
+                            {
                                 scan0_2[j] = scan0_1[j];
+                            }
 
                             scan0_1 += bitmapdata1.Stride >> 2;
                             scan0_2 += bitmapdata2.Stride >> 2;

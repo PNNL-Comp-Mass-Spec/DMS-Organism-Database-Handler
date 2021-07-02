@@ -132,7 +132,10 @@ namespace AppUI_OrfDBHandler
                         tmp = tmp.Trim(trimChars);
                         var tmpNameList = tmp.Split(";".ToCharArray());
                         foreach (var tmpName in tmpNameList)
+                        {
                             nameList.Add(tmpName);
+                        }
+
                         break;
 
                     case "id ":

@@ -31,7 +31,9 @@ namespace AppUI_OrfDBHandler
         public void ChangeSelectedCollectionStates(int newStateId, ArrayList selectedCollectionIdList)
         {
             foreach (int id in selectedCollectionIdList)
+            {
                 mSpAccess.UpdateProteinCollectionState(id, newStateId);
+            }
         }
 
         private void SetupPickerListView(ListView lvw, DataTable dt, string filterCriteria)
@@ -45,13 +47,16 @@ namespace AppUI_OrfDBHandler
             if (criteriaCollection.Length > 0 && filterCriteria.Length > 0)
             {
                 foreach (var filterElement in criteriaCollection)
+                {
                     filterString += "[Name] LIKE '%" + filterElement + "%' OR [State] LIKE '%" + filterElement + "%' OR ";
+                }
+
                 // Trim off final " OR "
                 filterString = filterString.Substring(0, filterString.Length - 4);
             }
             else
             {
-                filterString = "";
+                filterString = string.Empty;
             }
 
             var collectionRows = dt.Select(filterString);

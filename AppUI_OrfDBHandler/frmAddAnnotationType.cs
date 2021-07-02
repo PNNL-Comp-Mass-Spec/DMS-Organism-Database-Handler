@@ -9,7 +9,7 @@ namespace AppUI_OrfDBHandler
     {
         public frmAddAnnotationType()
         {
-            base.Load += frmAddAnnotationType_Load;
+            Load += frmAddAnnotationType_Load;
 
             InitializeComponent();
         }

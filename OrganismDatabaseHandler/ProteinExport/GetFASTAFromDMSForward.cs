@@ -27,7 +27,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         private DataTable mOrganismCache;
 
         protected string NamingSuffix = "_forward";
-        private readonly string mExtension = "";
+        private readonly string mExtension;
 
         private RijndaelEncryptionHandler mRijndaelDecryption;
 
@@ -454,7 +454,9 @@ namespace OrganismDatabaseHandler.ProteinExport
             var foundRows = mCollectionsCache.Select("[Organism_ID] = " + organismId);
 
             foreach (var dr in foundRows)
+            {
                 tmpTable.ImportRow(dr);
+            }
 
             return tmpTable;
         }

@@ -14,7 +14,7 @@ namespace AppUI_OrfDBHandler
             searchTimer = new System.Timers.Timer(2000d);
             searchTimer.Elapsed += TimerHandler;
 
-            base.Load += frmCollectionStateEditor_Load;
+            Load += frmCollectionStateEditor_Load;
 
             InitializeComponent();
 
@@ -23,13 +23,13 @@ namespace AppUI_OrfDBHandler
 
         private readonly System.Timers.Timer searchTimer;
 
-        private bool mSearchActive = false;
+        private bool mSearchActive;
         private CollectionStatePickerHandler mHandler;
         private readonly string mPsConnectionString;
         private DataTable mStatesTable;
         private int mSelectedNewStateId = 1;
         private bool mSortOrderAsc = true;
-        private int mSelectedCol = 0;
+        private int mSelectedCol;
 
         #region "Live Search Handler"
 
@@ -106,7 +106,9 @@ namespace AppUI_OrfDBHandler
             var al = new ArrayList();
 
             foreach (ListViewItem item in lvwCollections.SelectedItems)
+            {
                 al.Add(item.Tag);
+            }
 
             mHandler.ChangeSelectedCollectionStates(mSelectedNewStateId, al);
 
@@ -147,7 +149,7 @@ namespace AppUI_OrfDBHandler
         private class ListViewItemComparer : IComparer
         {
             // Implements the manual sorting of items by columns.
-            private readonly bool mSortAscending = true;
+            private readonly bool mSortAscending;
 
             private readonly int colIndex;
 

@@ -101,11 +101,11 @@ namespace AppUI_OrfDBHandler.ProteinUpload
                 string organismName,
                 int organismId)
             {
-                this.FileName = fileName;
-                this.FullFilePath = fullFilePath;
-                this.OrganismName = organismName;
-                this.OrganismId = organismId;
-                AnnotationType = "";
+                FileName = fileName;
+                FullFilePath = fullFilePath;
+                OrganismName = organismName;
+                OrganismId = organismId;
+                AnnotationType = string.Empty;
             }
 
             public FileListInfo(
@@ -116,13 +116,13 @@ namespace AppUI_OrfDBHandler.ProteinUpload
                 int annotationTypeId,
                 int namingAuthorityId)
             {
-                this.FileName = fileName;
-                this.FullFilePath = fullFilePath;
-                this.OrganismName = organismName;
-                this.OrganismId = organismId;
-                this.AnnotationTypeId = annotationTypeId;
-                this.NamingAuthorityId = namingAuthorityId;
-                AnnotationType = "";
+                FileName = fileName;
+                FullFilePath = fullFilePath;
+                OrganismName = organismName;
+                OrganismId = organismId;
+                AnnotationTypeId = annotationTypeId;
+                NamingAuthorityId = namingAuthorityId;
+                AnnotationType = string.Empty;
             }
 
             public string FileName { get; set; }

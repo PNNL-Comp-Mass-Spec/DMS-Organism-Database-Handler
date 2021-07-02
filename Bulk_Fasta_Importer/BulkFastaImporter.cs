@@ -612,7 +612,9 @@ namespace Bulk_Fasta_Importer
                 {
                     ShowMessage("Previewing upload of " + fileInfoList.Count + " file(s)");
                     foreach (var fileInfo in fileInfoList)
+                    {
                         Console.WriteLine(fileInfo.FileInformation.FullName);
+                    }
 
                     return true;
                 }
@@ -645,7 +647,9 @@ namespace Bulk_Fasta_Importer
             try
             {
                 foreach (var item in warningCollection)
+                {
                     ShowMessage("  ... Warning: " + item.MessageText + ": " + item.ProteinName);
+                }
             }
             catch (Exception)
             {
@@ -659,7 +663,9 @@ namespace Bulk_Fasta_Importer
             try
             {
                 foreach (var item in errorCollection)
+                {
                     ShowMessage("  ... Error: " + item.MessageText + ": " + item.ProteinName);
+                }
             }
             catch (Exception)
             {

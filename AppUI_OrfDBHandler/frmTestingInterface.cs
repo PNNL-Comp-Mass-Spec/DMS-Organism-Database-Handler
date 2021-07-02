@@ -196,7 +196,7 @@ namespace AppUI_OrfDBHandler
                 mSyncer.SyncComplete += CompletedTask;
             }
 
-            //string outputPath = "";
+            //string outputPath = string.Empty;
             //var f = new FolderBrowserDialog();
             //f.RootFolder = Environment.SpecialFolder.MyComputer;
             //f.ShowNewFolderButton = true;
@@ -242,7 +242,7 @@ namespace AppUI_OrfDBHandler
         private void CompletedTask()
         {
             pgbAdminConsole.Visible = false;
-            lblProgress.Text = "";
+            lblProgress.Text = string.Empty;
             lblProgress.Visible = false;
         }
 

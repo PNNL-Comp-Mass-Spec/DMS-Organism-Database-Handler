@@ -175,7 +175,9 @@ namespace AppUI_OrfDBHandler
                 cboFileListErrors.BeginUpdate();
 
                 foreach (var item in contents)
+                {
                     cboFileListErrors.Items.Add(item.Key);
+                }
 
                 cboFileListErrors.EndUpdate();
             }
@@ -198,7 +200,9 @@ namespace AppUI_OrfDBHandler
                 cboFileListWarnings.BeginUpdate();
 
                 foreach (var item in contents)
+                {
                     cboFileListWarnings.Items.Add(item.Key);
+                }
 
                 cboFileListWarnings.EndUpdate();
             }
