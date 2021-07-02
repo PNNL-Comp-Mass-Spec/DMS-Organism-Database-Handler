@@ -142,9 +142,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var sha1Hash = mSHA1Provider.ComputeHash(byteSourceText);
 
             // And convert it to String format for return
-            var sha1String = BitConverter.ToString(sha1Hash).Replace("-", "").ToLower();
-
-            return sha1String;
+            return BitConverter.ToString(sha1Hash).Replace("-", "").ToLower();
         }
 
         protected string GenerateArchivePath(

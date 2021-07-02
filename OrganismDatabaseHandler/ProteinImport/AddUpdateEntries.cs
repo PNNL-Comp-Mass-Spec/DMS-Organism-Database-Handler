@@ -215,7 +215,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         protected int AddProteinSequence(ProteinStorageEntry protein)
         {
-            var proteinId = RunSP_AddProteinSequence(
+            return RunSP_AddProteinSequence(
                 protein.Sequence,
                 protein.Length,
                 protein.MolecularFormula,
@@ -224,8 +224,6 @@ namespace OrganismDatabaseHandler.ProteinImport
                 protein.SHA1Hash,
                 protein.IsEncrypted,
                 SpModes.Add);
-
-            return proteinId;
         }
 
         public int UpdateProteinSequenceInfo(
@@ -254,12 +252,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             string fullName,
             string webAddress)
         {
-            var tmpAuthId = RunSP_AddNamingAuthority(
-                shortName,
-                fullName,
-                webAddress);
-
-            return tmpAuthId;
+            return RunSP_AddNamingAuthority(shortName, fullName, webAddress);
         }
 
         public int AddAnnotationType(
@@ -268,10 +261,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             string example,
             int authorityId)
         {
-            var tmpAnnTypeId = RunSP_AddAnnotationType(
-                typeName, description, example, authorityId);
-
-            return tmpAnnTypeId;
+            return RunSP_AddAnnotationType(typeName, description, example, authorityId);
         }
 
         public int MakeNewProteinCollection(
@@ -283,11 +273,9 @@ namespace OrganismDatabaseHandler.ProteinImport
             int numProteins,
             int numResidues)
         {
-            var tmpProteinCollectionId = RunSP_AddUpdateProteinCollection(
+            return RunSP_AddUpdateProteinCollection(
                 proteinCollectionName, description, collectionSource, collectionType, CollectionStates.NewEntry,
                 annotationTypeId, numProteins, numResidues, SpModes.Add);
-
-            return tmpProteinCollectionId;
         }
 
         public int UpdateEncryptionMetadata(
@@ -346,8 +334,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             int proteinId,
             int maxProteinNameLength)
         {
-            var refId = RunSP_AddProteinReference(proteinName, description, organismId, authorityId, proteinId, maxProteinNameLength);
-            return refId;
+            return RunSP_AddProteinReference(proteinName, description, organismId, authorityId, proteinId, maxProteinNameLength);
         }
 
         public int AddAuthenticationHash(
@@ -380,9 +367,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var sha1Hash = mHasher.ComputeHash(byteSourceText);
 
             // And convert it to String format for return
-            var sha1String = RijndaelEncryptionHandler.ToHexString(sha1Hash);
-
-            return sha1String;
+            return RijndaelEncryptionHandler.ToHexString(sha1Hash);
         }
 
         #region "Stored Procedure Access"
@@ -454,9 +439,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            return dbTools.GetInteger(returnParam.Value);
         }
 
         protected int RunSP_UpdateProteinSequenceInfo(
@@ -489,9 +472,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            return dbTools.GetInteger(returnParam.Value);
         }
 
         protected int RunSP_AddUpdateProteinCollection(
@@ -585,9 +566,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            return dbTools.GetInteger(returnParam.Value);
         }
 
         protected int RunSP_AddUpdateEncryptionMetadata(
@@ -612,9 +591,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            return dbTools.GetInteger(returnParam.Value);
         }
 
         protected int RunSP_AddNamingAuthority(
@@ -639,9 +616,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            return dbTools.GetInteger(returnParam.Value);
         }
 
         protected int RunSP_AddAnnotationType(
@@ -668,9 +643,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            return dbTools.GetInteger(returnParam.Value);
         }
 
         protected int RunSP_UpdateProteinCollectionStates(
@@ -693,9 +666,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            return dbTools.GetInteger(returnParam.Value);
         }
 
         /// <summary>
@@ -725,9 +696,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            return dbTools.GetInteger(returnParam.Value);
         }
 
         protected int RunSP_GetProteinCollectionMemberCount(int proteinCollectionId)
@@ -746,9 +715,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            return dbTools.GetInteger(returnParam.Value);
         }
 
         protected int RunSP_AddProteinReference(
@@ -825,9 +792,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
+            return dbTools.GetInteger(returnParam.Value);
 
-            return ret;
         }
 
         protected int RunSP_AddCRC32FileAuthentication(
@@ -854,9 +820,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            return dbTools.GetInteger(returnParam.Value);
         }
 
         protected int RunSP_AddCollectionOrganismXref(
@@ -879,9 +843,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            return dbTools.GetInteger(returnParam.Value);
         }
 
         protected int RunSP_UpdateProteinNameHash(
@@ -909,9 +871,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            return dbTools.GetInteger(returnParam.Value);
         }
 
         protected int RunSP_UpdateProteinCollectionCounts(
@@ -936,9 +896,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            return dbTools.GetInteger(returnParam.Value);
         }
 
         protected int RunSP_UpdateProteinSequenceHash(
@@ -963,9 +921,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            return dbTools.GetInteger(returnParam.Value);
         }
 
         protected int RunSP_GetProteinIDFromName(string proteinName)
@@ -984,9 +940,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            return dbTools.GetInteger(returnParam.Value);
         }
 
         #endregion
