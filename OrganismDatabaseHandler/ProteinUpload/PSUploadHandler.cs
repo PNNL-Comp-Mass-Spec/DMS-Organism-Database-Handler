@@ -23,7 +23,6 @@ namespace OrganismDatabaseHandler.ProteinUpload
         {
             public UploadInfo()
             {
-                EncryptionPassphrase = string.Empty;
                 Description = string.Empty;
                 Source = string.Empty;
             }
@@ -33,7 +32,6 @@ namespace OrganismDatabaseHandler.ProteinUpload
                 FileInformation = inputFile;
                 OrganismId = orgId;
                 AnnotationTypeId = annotationType;
-                EncryptionPassphrase = string.Empty;
                 Description = string.Empty;
                 Source = string.Empty;
             }
@@ -46,17 +44,10 @@ namespace OrganismDatabaseHandler.ProteinUpload
             public int ProteinCount;
             public List<string> ErrorList;
             public int ExportedProteinCount;
-
-            // [Obsolete("No longer supported")]
-            public bool EncryptSequences;
-
-            // [Obsolete("No longer supported")]
-            public string EncryptionPassphrase;
         }
 
         private string mNormalizedFastaFilePath;
 
-        private readonly DBTask mDatabaseAccessor;
         private readonly ImportHandler mImporter;
         private readonly AddUpdateEntries mUpload;
         private readonly GetFASTAFromDMS mExport;
@@ -73,8 +64,6 @@ namespace OrganismDatabaseHandler.ProteinUpload
         public event WroteLineEndNormalizedFASTAEventHandler WroteLineEndNormalizedFASTA;
 
         private int mMaximumProteinNameLength = FastaValidator.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH;
-
-        private CollectionEncryptor mEncryptor;
 
         // Note: this array gets initialized with space for 10 items
         // If ValidationOptionConstants gets more than 10 entries, then this array will need to be expanded
@@ -163,8 +152,6 @@ namespace OrganismDatabaseHandler.ProteinUpload
 
         public PSUploadHandler(string psConnectionString)
         {
-            mDatabaseAccessor = new DBTask(psConnectionString);
-
             // Reserve space for tracking up to 10 validation updates (expand later if needed)
             mValidationOptions = new bool[11];
 
@@ -181,7 +168,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
             mValidator.ProgressUpdate += Task_LoadProgress;
             mValidator.WroteLineEndNormalizedFASTA += OnNormalizedFASTAGeneration;
 
-            mImporter = new ImportHandler(mDatabaseAccessor.ConnectionString);
+            mImporter = new ImportHandler(psConnectionString);
             mImporter.LoadStart += LoadStartHandler;
             mImporter.LoadProgress += LoadProgressHandler;
             mImporter.LoadEnd += LoadEndHandler;
@@ -191,8 +178,6 @@ namespace OrganismDatabaseHandler.ProteinUpload
         public void BatchUpload(
             IEnumerable<UploadInfo> fileInfoList)
         {
-            var databaseAccessor = new DBTask(mDatabaseAccessor.ConnectionString);
-
             foreach (var upInfo in fileInfoList)
             {
                 // upInfo.OriginalFileInformation = upInfo.FileInformation
@@ -340,14 +325,6 @@ namespace OrganismDatabaseHandler.ProteinUpload
                         }
                         else
                         {
-                            if (upInfo.EncryptSequences && !string.IsNullOrEmpty(upInfo.EncryptionPassphrase))
-                            {
-                                mEncryptor = new CollectionEncryptor(upInfo.EncryptionPassphrase, databaseAccessor);
-                                mEncryptor.EncryptStorageCollectionSequences(proteinStorage);
-                                proteinStorage.EncryptSequences = true;
-                                proteinStorage.PassPhrase = upInfo.EncryptionPassphrase;
-                            }
-
                             upInfo.ProteinCount = proteinStorage.ProteinCount;
                             CollectionBatchUploadCoordinator(proteinStorage, currentFile.FullName, upInfo.OrganismId, upInfo.AnnotationTypeId, upInfo.Description, upInfo.Source);
                             // upInfo.ExportedProteinCount = mExport.ExportedProteinCount;

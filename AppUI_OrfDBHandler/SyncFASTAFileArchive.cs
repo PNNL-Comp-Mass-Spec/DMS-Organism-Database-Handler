@@ -198,59 +198,6 @@ namespace AppUI_OrfDBHandler
             }
 
             OnSyncCompletion();
-
-            // OnSyncStart("Updating ProteinNames");
-
-            // // Update T_Protein_Names
-            // int tmpRefID;
-            // string tmpName;
-            // string tmpFingerprint;
-            // int tmpProtID;
-            // int errorCode;
-            // int counter = 0;
-
-            // sql = "SELECT Reference_ID, Name, Reference_Fingerprint, Protein_ID " +
-            //       "FROM T_Protein_Names";
-
-            // dt = mDatabaseAccessor.GetTable(sql);
-
-            // var dbTools = mDatabaseAccessor.DBTools;
-
-            // foreach (DataRow dr in dt.Rows)
-            // {
-            //     counter += 1;
-            //     tmpRefID = dbTools.GetInteger(dr["Reference_ID"]);
-            //     tmpName = dbTools.GetString(dr["Name"]);
-            //     tmpFingerprint = dbTools.GetString(dr["Reference_Fingerprint"]);
-            //     tmpProtID = dbTools.GetInteger(dr["Protein_ID"]);
-
-            //     // tmpGenSHA = mImporter.GenerateArbitraryHash(tmpName + tmpProtID.ToString)
-            //     errorCode = mImporter.UpdateProteinNameHash(tmpRefID, tmpName, tmpProtID);
-            //     if (counter % 2000 == 0)
-            //         Debug.WriteLine(counter.ToString());
-            // }
-
-            // // Update T_Proteins
-
-            // string tmpSeq;
-            // counter = 0;
-
-            // sql = "SELECT Protein_ID, Sequence " +
-            //       "FROM T_Proteins";
-
-            // dt = mDatabaseAccessor.GetTable(sql);
-
-            // foreach (DataRow dr in dt.Rows)
-            // {
-            //     counter += 1;
-            //     tmpProtID = dbTools.GetInteger(dr["Protein_ID");
-            //     tmpSeq = dbTools.GetString(dr["Sequence");
-
-            //     errorCode = mImporter.UpdateProteinSequenceHash(tmpProtID, tmpSeq);
-
-            //     if (counter % 2000 == 0)
-            //         Debug.WriteLine(counter.ToString());
-            // }
         }
 
         private void CountProteinsAndResidues(string fastaFilePath, out int proteinCount, out int residueCount)
@@ -269,81 +216,6 @@ namespace AppUI_OrfDBHandler
             }
 
             reader.CloseFile();
-        }
-
-        [Obsolete("Uses old table")]
-        public void FixArchivedFilePaths()
-        {
-            const string sql = "SELECT * FROM T_Temp_Archive_Path_Fix";
-
-            var tmpTable = mDatabaseAccessor.GetTable(sql);
-
-            foreach (DataRow dr in tmpTable.Rows)
-            {
-                var tmpOldPath = dr["Archived_File_Path"].ToString();
-                var tmpNewPath = dr["Newpath"].ToString();
-
-                File.Move(tmpOldPath, tmpNewPath);
-            }
-        }
-
-        [Obsolete("Unused: uses an old view")]
-        public void AddSortingIndices()
-        {
-            const string getCollectionsSQL = "SELECT Protein_Collection_ID, FileName, Organism_ID FROM V_Protein_Collections_By_Organism WHERE Collection_Type_ID = 1 or Collection_Type_ID = 5";
-
-            var collectionTable = mDatabaseAccessor.GetTable(getCollectionsSQL);
-
-            const string getLegacyFilesSQL = "SELECT DISTINCT FileName, Full_Path, Organism_ID FROM V_Legacy_Static_File_Locations";
-            var legacyTable = mDatabaseAccessor.GetTable(getLegacyFilesSQL);
-
-            var dbTools = mDatabaseAccessor.DbTools;
-
-            foreach (DataRow collectionEntry in collectionTable.Rows)
-            {
-                var tmpCollectionName = collectionEntry["FileName"].ToString();
-                var tmpCollectionId = Convert.ToInt32(collectionEntry["Protein_Collection_ID"]);
-                if (tmpCollectionId == 1026)
-                {
-                    Debug.WriteLine("");
-                }
-
-                var tmpOrgId = Convert.ToInt32(collectionEntry["Organism_ID"]);
-
-                var legacyFoundRows = legacyTable.Select("FileName = '" + tmpCollectionName + ".fasta' AND Organism_ID = " + tmpOrgId);
-                if (legacyFoundRows.Length > 0)
-                {
-                    var getReferencesSql = "SELECT * FROM V_Tmp_Member_Name_Lookup WHERE Protein_Collection_ID = " + tmpCollectionId +
-                                           " AND Sorting_Index == null";
-                    var referencesTable = mDatabaseAccessor.GetTable(getReferencesSql);
-                    if (referencesTable.Rows.Count > 0)
-                    {
-                        var legacyFileEntry = legacyFoundRows[0];
-                        var legacyFullPath = legacyFileEntry["Full_Path"].ToString();
-                        var nameIndexHash = GetProteinSortingIndices(legacyFullPath);
-
-                        foreach (DataRow referenceEntry in referencesTable.Rows)
-                        {
-                            var tmpRefId = dbTools.GetInteger(referenceEntry["Reference_ID"]);
-                            var tmpProteinId = dbTools.GetInteger(referenceEntry["Protein_ID"]);
-                            var tmpRefName = dbTools.GetString(referenceEntry["Name"]);
-
-                            //try {
-                            var tmpSortingIndex = nameIndexHash[tmpRefName.ToLower()];
-
-                            if (tmpSortingIndex > 0)
-                            {
-                                mImporter.UpdateProteinCollectionMember(
-                                    tmpRefId, tmpProteinId,
-                                    tmpSortingIndex, tmpCollectionId);
-                            }
-
-                            //} catch (Exception ex) {
-                            //}
-                        }
-                    }
-                }
-            }
         }
 
         private Dictionary<string, int> GetProteinSortingIndices(string filePath)
@@ -378,56 +250,6 @@ namespace AppUI_OrfDBHandler
             tr.Close();
 
             return nameHash;
-        }
-
-        [Obsolete("Unused")]
-        public void CorrectMasses()
-        {
-            var proteinList = new Dictionary<int, string>();
-            var counter = default(int);
-            var tmpRowCount = 1;
-
-            var tmpTableInfo = mDatabaseAccessor.GetTable(
-                "SELECT TOP 1 TableRowCount " +
-                "FROM V_Table_Row_Counts " +
-                "WHERE TableName = 'T_Proteins'");
-
-            var pdr = tmpTableInfo.Rows[0];
-
-            var tmpProteinCount = Convert.ToInt32(pdr["TableRowCount"]);
-
-            OnSyncStart("Starting Mass Update");
-
-            while (tmpRowCount > 0)
-            {
-                proteinList.Clear();
-                var startCount = counter;
-                counter += 10000;
-
-                var proteinSelectSql = "SELECT Protein_ID, Sequence FROM T_Proteins " +
-                                       "WHERE Protein_ID <= " + counter + " AND Protein_ID > " + startCount;
-
-                // proteinSelectSQL = "SELECT Protein_ID, Sequence FROM T_Proteins " +
-                //                    "WHERE Protein_ID = 285130";
-                //     "WHERE Protein_ID <= " + counter.ToString();
-
-                var proteinTable = mDatabaseAccessor.GetTable(proteinSelectSql);
-
-                tmpRowCount = proteinTable.Rows.Count;
-
-                foreach (DataRow dr in proteinTable.Rows)
-                {
-                    proteinList.Add(Convert.ToInt32(dr["Protein_ID"]), dr["Sequence"].ToString());
-                }
-
-                OnSyncProgressUpdate("Processing Protein_ID " + startCount + "-" + counter + " of " + tmpProteinCount, counter / (double)tmpProteinCount);
-                if (proteinList.Count > 0)
-                {
-                    UpdateProteinSequenceInfo(proteinList);
-                }
-            }
-
-            OnSyncCompletion();
         }
 
         [Obsolete("Valid, but unused and could take a very long time")]
@@ -486,22 +308,6 @@ namespace AppUI_OrfDBHandler
             }
 
             OnSyncCompletion();
-        }
-
-        [Obsolete("Unused")]
-        private void UpdateProteinSequenceInfo(Dictionary<int, string> proteins)
-        {
-            var si = new SequenceInfoCalculator();
-
-            foreach (var proteinId in proteins.Keys)
-            {
-                var sequence = proteins[proteinId];
-                si.CalculateSequenceInfo(sequence);
-                mImporter.UpdateProteinSequenceInfo(
-                    proteinId, sequence, sequence.Length,
-                    si.MolecularFormula, si.MonoisotopicMass,
-                    si.AverageMass, si.SHA1Hash);
-            }
         }
 
         private void OnSyncStart(string statusMsg)

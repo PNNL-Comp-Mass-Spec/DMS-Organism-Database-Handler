@@ -33,17 +33,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// Constructor
         /// </summary>
         /// <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
-        /// <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
-        [Obsolete("Use the constructor that does not take databaseFormatType")]
-        public GetFASTAFromDMSForward(
-            DBTask databaseAccessor,
-            GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType) : this(databaseAccessor)
-        { }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
         public GetFASTAFromDMSForward(DBTask databaseAccessor)
         {
             mDatabaseAccessor = databaseAccessor;
@@ -64,9 +53,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         public event FileGenerationStartedEventHandler FileGenerationStarted;
 
         public string FullOutputPath { get; set; }
-
-        // Unused
-        // public readonly string ArchivalName => mCurrentArchiveFileName;
 
         protected virtual string ExtendedExportPath(
             string destinationFolderPath,

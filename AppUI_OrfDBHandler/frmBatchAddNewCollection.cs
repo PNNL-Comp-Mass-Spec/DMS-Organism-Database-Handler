@@ -38,8 +38,7 @@ namespace AppUI_OrfDBHandler
 
             ClearStatus();
 
-            mOrganismList = organismList;
-            mOrganismListSorted = new DataView(mOrganismList) { Sort = "Display_Name" };
+            mOrganismListSorted = new DataView(organismList) { Sort = "Display_Name" };
 
             mAnnotationTypeList = annotationTypeList;
             mCollectionsTable = existingCollectionsList;

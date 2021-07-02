@@ -131,13 +131,6 @@ namespace AppUI_OrfDBHandler
             Close();
         }
 
-        //private void txtAuthWeb_Validating(object sender, System.ComponentModel.CancelEventArgs e)
-        //{
-        //    TextBox txt = (TextBox)sender;
-        //    var tmpAddress = ValidateWebAddressFormat(txt.Text;
-        //    txt.Text = tmpAddress;
-        //}
-
         private void cboAuthorityName_SelectedIndexChanged(object sender, EventArgs e)
         {
             var cbo = (ComboBox)sender;
@@ -177,16 +170,6 @@ namespace AppUI_OrfDBHandler
                 cboAuthorityName.SelectedValue = tmpAuthId;
             }
 
-            //if (lvwSelectedFiles.SelectedItems.Count > 0)
-            //{
-            //    foreach (ListViewItem li In lvwSelectedFiles.SelectedItems)
-            //    {
-            //        tmpUpInfo = (Protein_Uploader.PSUploadHandler.UploadInfo) mSelectedFileList[li.SubItems[3].Text];
-            //        mSelectedFileList[li.SubItems[3].Text] =
-            //            new Protein_Uploader.PSUploadHandler.UploadInfo(tmpUpInfo.FileInformation, mSelectedOrganismID, tmpUpInfo.AuthorityID);
-            //        li.SubItems[2].Text = cbo.Text;
-            //    }
-            //}
 
         }
     }

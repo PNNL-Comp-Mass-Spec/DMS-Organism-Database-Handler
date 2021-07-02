@@ -5,20 +5,6 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class GetFASTAFromDMSReversed : GetFASTAFromDMSForward
     {
-        // Ignore Spelling: fastapro
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="databaseAccessor">Object for retrieving data from the protein sequences database</param>
-        /// <param name="databaseFormatType">Typically fasta; but also supports fastapro to create .fasta.pro files</param>
-        [Obsolete("Use the constructor that does not take databaseFormatType")]
-        public GetFASTAFromDMSReversed(
-            DBTask databaseAccessor,
-            GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType)
-            : base(databaseAccessor)
-        { }
-
         /// <summary>
         /// Constructor
         /// </summary>

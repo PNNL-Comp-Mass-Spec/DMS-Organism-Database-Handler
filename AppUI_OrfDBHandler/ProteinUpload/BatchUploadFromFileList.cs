@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Windows.Forms;
 using OrganismDatabaseHandler;
 using OrganismDatabaseHandler.DatabaseTools;
 using OrganismDatabaseHandler.ProteinUpload;
@@ -13,12 +12,6 @@ namespace AppUI_OrfDBHandler.ProteinUpload
     {
         private readonly PSUploadHandler mUploader;
         private readonly DBTask mDatabaseAccessor;
-        private Dictionary<string, FileListInfo> mCurrentFileList;
-
-        private DataTable mAnnotationTypeTable;
-        private DataTable mOrganismTable;
-
-        private frmBatchUploadFromFileList mBatchForm;
 
         public BatchUploadFromFileList(string psConnectionString)
         {
@@ -57,36 +50,6 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             LoadEnd?.Invoke();
         }
 
-        [Obsolete("Unused: GetDmsFileEntities uses an old view")]
-        public void UploadBatch()
-        {
-            var uiList = new List<PSUploadHandler.UploadInfo>();
-
-            mAnnotationTypeTable = GetAnnotationTypeTable();
-            mOrganismTable = GetOrganismsTable();
-
-            mBatchForm = new frmBatchUploadFromFileList(mAnnotationTypeTable, mOrganismTable);
-
-            mCurrentFileList = GetDmsFileEntities();
-
-            mBatchForm.FileCollection = mCurrentFileList;
-
-            var r = mBatchForm.ShowDialog();
-
-            if (r == DialogResult.OK)
-            {
-                var fileCollection = mBatchForm.SelectedFilesCollection;
-
-                foreach (var fce in fileCollection.Values)
-                {
-                    var ui = TransformToUploadInfo(fce);
-                    uiList.Add(ui);
-                }
-
-                mUploader.BatchUpload(uiList);
-            }
-        }
-
         // ReSharper disable once UnusedMember.Global
         protected DataTable GetAuthorityTable()
         {
@@ -112,59 +75,6 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             var ui = new PSUploadHandler.UploadInfo(fi, fli.OrganismId, fli.AnnotationTypeId);
 
             return ui;
-        }
-
-        [Obsolete("Unused: uses an old view")]
-        protected Dictionary<string, FileListInfo> GetDmsFileEntities()
-        {
-            var fileList = new Dictionary<string, FileListInfo>(StringComparer.OrdinalIgnoreCase);
-            var collectionList = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
-
-            // DataRow dr;
-
-            // string LoadedCollectionsSQL;
-
-            // string tmpFileName;
-            // string tmpOrganismName;
-            // int tmpOrganismID;
-            // string tmpFullPath;
-            // int tmpAnnTypeID;
-            // int tmpAuthTypeID;
-
-            const string loadedCollectionsSQL = "SELECT FileName, Full_Path, Organism_Name, Organism_ID, Annotation_Type_ID, Authority_ID FROM V_Collections_Reload_Filtered";
-
-            using var fileTable = mDatabaseAccessor.GetTable(loadedCollectionsSQL);
-
-            if (mCurrentFileList == null)
-            {
-                mCurrentFileList = new Dictionary<string, FileListInfo>();
-            }
-            else
-            {
-                mCurrentFileList.Clear();
-            }
-
-            foreach (DataRow dr in fileTable.Rows)
-            {
-                var fileName = dr["FileName"].ToString();
-                var organismName = dr["Organism_Name"].ToString();
-                var organismId = Convert.ToInt32(dr["Organism_ID"]);
-                var fullPath = dr["Full_Path"].ToString();
-                var annotationTypeId = Convert.ToInt32(dr["Annotation_Type_ID"]);
-                var authorityTypeId = Convert.ToInt32(dr["Authority_ID"]);
-
-                var baseName = Path.GetFileNameWithoutExtension(fileName);
-
-                if (!fileList.ContainsKey(fileName) && !collectionList.Contains(baseName))
-                {
-                    fileList.Add(fileName,
-                        new FileListInfo(fileName, fullPath, organismName, organismId, annotationTypeId, authorityTypeId));
-                }
-            }
-
-            fileTable.Clear();
-
-            return fileList;
         }
 
         protected int UploadSelectedFiles(Dictionary<string, FileListInfo> fileNameList)

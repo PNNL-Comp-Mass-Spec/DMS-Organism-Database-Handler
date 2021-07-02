@@ -43,20 +43,6 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public string Archived_File_Name => mArchived_File_Name;
 
-        [Obsolete("Use the method that does not take databaseFormatType")]
-        public int ArchiveCollection(
-            int proteinCollectionId,
-            CollectionTypes archivedFileType,
-            GetFASTAFromDMS.SequenceTypes outputSequenceType,
-            GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType,
-            string sourceFilePath,
-            string creationOptionsString,
-            string authenticationHash,
-            string proteinCollectionList)
-        {
-            return ArchiveCollection(proteinCollectionId, archivedFileType, outputSequenceType, sourceFilePath, creationOptionsString, authenticationHash, proteinCollectionList);
-        }
-
         public int ArchiveCollection(
             int proteinCollectionId,
             CollectionTypes archivedFileType,
@@ -69,20 +55,6 @@ namespace OrganismDatabaseHandler.ProteinExport
             OnArchiveStart();
 
             return DispositionFile(proteinCollectionId, sourceFilePath, creationOptionsString, authenticationHash, outputSequenceType, archivedFileType, proteinCollectionList);
-        }
-
-        [Obsolete("Use the method that does not take databaseFormatType")]
-        public int ArchiveCollection(
-            string proteinCollectionName,
-            CollectionTypes archivedFileType,
-            GetFASTAFromDMS.SequenceTypes outputSequenceType,
-            GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType,
-            string sourceFilePath,
-            string creationOptionsString,
-            string authenticationHash,
-            string proteinCollectionList)
-        {
-            return ArchiveCollection(proteinCollectionName, archivedFileType, outputSequenceType, sourceFilePath, creationOptionsString, authenticationHash, proteinCollectionList);
         }
 
         public int ArchiveCollection(
@@ -131,31 +103,6 @@ namespace OrganismDatabaseHandler.ProteinExport
             return counter;
         }
 
-        //Unused
-        //protected int CheckForExistingArchiveEntry(
-        //    string authentication_Hash,
-        //    IArchiveOutputFiles.CollectionTypes archivedFileType,
-        //    string creationOptionsString)
-        //{
-        //    var SQL = "SELECT Archived_File_ID,  Archived_File_Path " +
-        //        "FROM V_Archived_Output_Files " +
-        //        "WHERE Authentication_Hash = '" + authentication_Hash + "' AND " +
-        //        "Archived_File_Type = '" +
-        //        Enum.GetName(typeof(IArchiveOutputFiles.CollectionTypes), archivedFileType) +
-        //        "' AND " + "Creation_Options = '" + creationOptionsString + "'";
-
-        //    DataTable resultsTable;
-        //    resultsTable = mDatabaseAccessor.GetTable(SQL);
-
-        //    if (resultsTable.Rows.Count > 0)
-        //    {
-        //        mArchived_File_Name = resultsTable.Rows[0]["Archived_File_Path"].ToString();
-        //        return System.Convert.ToInt32(resultsTable.Rows[0]["Archived_File_ID"]);
-        //    }
-        //    else
-        //        return 0;
-        //}
-
         public void AddArchiveCollectionXRef(int proteinCollectionId, int archivedFileId)
         {
             var returnCode = RunSP_AddArchivedFileEntryXRef(proteinCollectionId, archivedFileId);
@@ -165,18 +112,6 @@ namespace OrganismDatabaseHandler.ProteinExport
                 throw new Exception("Error calling RunSP_AddArchivedFileEntryXRef with ProteinCollectionID " + proteinCollectionId + " and ArchivedFileID " + archivedFileId + ", ReturnCode=" + returnCode);
             }
         }
-
-        // Unused
-        //protected string GetFileAuthenticationHash(string sourcePath)
-        //{
-        //    return mExporter.GetFileHash(sourcePath);
-        //}
-
-        //// Unused
-        //protected string GetStoredFileAuthenticationHash(int ProteinCollectionId)
-        //{
-        //    return mExporter.GetStoredHash(ProteinCollectionId);
-        //}
 
         protected int GetProteinCollectionId(string proteinCollectionName)
         {

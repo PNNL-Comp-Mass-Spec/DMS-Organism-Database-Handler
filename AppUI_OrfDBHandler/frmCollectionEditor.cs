@@ -552,26 +552,12 @@ namespace AppUI_OrfDBHandler
             {
                 mSelectedAnnotationTypeId = Convert.ToInt32(cboAnnotationTypePicker.SelectedValue);
             }
-            else
-            {
-                //mSelectedAuthorityID = 0;
-            }
 
             if (mSelectedCollectionId > 0)
             {
                 var foundRows = mProteinCollections.Select("[Protein_Collection_ID] = " + mSelectedCollectionId);
                 mSelectedAnnotationTypeId = Convert.ToInt32(foundRows[0]["Authority_ID"]);
             }
-            //else if (mSelectedAuthorityID == -2)
-            //{
-            //    //Bring up addition dialog
-            //    var AuthAdd = new AddNamingAuthority(mPSConnectionString);
-            //    tmpAuthID = AuthAdd.AddNamingAuthority;
-            //    mAuthorities = mImportHandler.LoadAuthorities();
-            //    BindAuthorityListToControl(mAuthorities);
-            //    mSelectedAuthorityID = tmpAuthID;
-            //    cboAuthorityPicker.SelectedValue = tmpAuthID;
-            //}
         }
 
         #endregion
@@ -683,47 +669,6 @@ namespace AppUI_OrfDBHandler
             mUploadHandler = null;
         }
 
-        //private void cmdExportToFile_Click(System.Object sender, System.EventArgs e)
-        //{
-        //    SaveFileDialog SaveDialog = new SaveFileDialog();
-        //    Protein_Importer.IImportProteins.ProteinImportFileTypes fileType;
-        //    string SelectedSavePath;
-        //    ArrayList tmpSelectedProteinList;
-        //    Protein_Storage.ProteinStorage tmpProteinCollection;
-
-        //    SaveDialog.Title = "Save Protein Database File";
-        //    SaveDialog.DereferenceLinks = true;
-        //    SaveDialog.Filter = "FASTA Files (*.fasta)|*.fasta|Microsoft Access Databases (*.mdb)|*.mdb|All Files (*.*)|*.*";
-        //    SaveDialog.FilterIndex = 1;
-        //    SaveDialog.RestoreDirectory = true;
-        //    SaveDialog.OverwritePrompt = true;e
-        //    //SaveDialog.FileName = mImportHandler.CollectionMembers.FileName;
-
-        //    if (SaveDialog.ShowDialog == DialogResult.OK)
-        //        SelectedSavePath = SaveDialog.FileName;
-        //    else
-        //        return;
-
-        //    if (System.IO.Path.GetExtension(mSelectedFilePath) == ".fasta")
-        //        fileType = Protein_Importer.IImportProteins.ProteinImportFileTypes.FASTA;
-        //    else if (System.IO.Path.GetExtension(mSelectedFilePath) == ".mdb")
-        //        fileType = Protein_Importer.IImportProteins.ProteinImportFileTypes.Access;
-
-        //    if (fileType == Protein_Importer.IImportProteins.ProteinImportFileTypes.FASTA)
-        //        mProteinExporter = new Protein_Exporter.ExportProteinsFASTA();
-        //    else
-        //        return;
-
-        //    tmpProteinCollection = new Protein_Storage.ProteinStorage(SelectedSavePath);
-
-        //    tmpSelectedProteinList = ScanDestinationCollectionWindow(lvwDestination);
-
-        //    foreach (var tmpProteinReference in tmpSelectedProteinList)
-        //        tmpProteinCollection.AddProtein(mImportHandler.CollectionMembers.GetProtein(tmpProteinReference));
-
-        //    mProteinExporter.Export(mImportHandler.CollectionMembers, SelectedSavePath);
-        //}
-
         #endregion
 
         #region "LiveSearch Handlers"
@@ -742,8 +687,6 @@ namespace AppUI_OrfDBHandler
             {
                 mSearchActive = false;
                 searchTimer.Stop();
-                //txtLiveSearch.Text = "Search";
-                //txtLiveSearch.ForeColor = System.Drawing.SystemColors.InactiveCaption;
             }
         }
 
@@ -788,15 +731,8 @@ namespace AppUI_OrfDBHandler
         {
             if (mSearchActive)
             {
-                //Debug.WriteLine("SearchTimer.active.kick");
-
                 mSourceListViewHandler.Load(mCollectionMembers, txtLiveSearch.Text);
                 mSearchActive = false;
-                searchTimer.Stop();
-            }
-            else
-            {
-                //Debug.WriteLine("SearchTimer.inactive.kick");
 
             }
         }
@@ -830,28 +766,10 @@ namespace AppUI_OrfDBHandler
             mCollectionMembers = mImportHandler.LoadCollectionMembersById(mSelectedCollectionId, mSelectedAnnotationTypeId);
             mLocalFileLoaded = false;
 
-            //mSelectedAuthorityID = mImportHandler.
-
             mSourceListViewHandler.Load(mCollectionMembers);
             lvwSource.Focus();
             lvwSource.Enabled = true;
-
-            //MemberLoadTimer.Stop();
-
         }
-
-        //Update the selected collection
-        //private void lvwSource_SelectedIndexChanged(
-        //    object sender,
-        //    EventArgs e)
-        //{
-        //}
-
-        //private void lvwDestination_SelectedIndexChanged(
-        //    object sender,
-        //    EventArgs e)
-        //{
-        //}
 
         //DoubleClick to Move the selected member to the destination collection
 
@@ -1124,16 +1042,8 @@ namespace AppUI_OrfDBHandler
 
         #endregion
 
-        [Obsolete("Unused")]
-        private void mnuAdminUpdateZeroedMasses_Click(object sender, EventArgs e)
         {
-            if (mSyncer == null)
-            {
-                mSyncer = new SyncFASTAFileArchive(mPsConnectionString);
-                mSyncer.SyncProgress += SyncProgressHandler;
-            }
 
-            mSyncer.CorrectMasses();
         }
 
         /// <summary>
@@ -1159,30 +1069,6 @@ namespace AppUI_OrfDBHandler
         {
             var frmTesting = new frmTestingInterface();
             frmTesting.Show();
-        }
-
-        [Obsolete("Uses old table")]
-        private void MenuItem6_Click(object sender, EventArgs e)
-        {
-            if (mSyncer == null)
-            {
-                mSyncer = new SyncFASTAFileArchive(mPsConnectionString);
-                mSyncer.SyncProgress += SyncProgressHandler;
-            }
-
-            mSyncer.FixArchivedFilePaths();
-        }
-
-        [Obsolete("Unused: AddSortingIndices uses an old view")]
-        private void MenuItem8_Click(object sender, EventArgs e)
-        {
-            if (mSyncer == null)
-            {
-                mSyncer = new SyncFASTAFileArchive(mPsConnectionString);
-                mSyncer.SyncProgress += SyncProgressHandler;
-            }
-
-            mSyncer.AddSortingIndices();
         }
 
         private void mnuHelpAbout_Click(object sender, EventArgs e)

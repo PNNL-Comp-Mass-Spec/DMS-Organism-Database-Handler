@@ -23,8 +23,6 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public GetFASTAFromDMS.SequenceTypes SequenceDirection => mSeqDirection;
 
-        [Obsolete("Obsolete: only .fasta files are supported")]
-        public GetFASTAFromDMS.DatabaseFormatTypes FileFormatType => GetFASTAFromDMS.DatabaseFormatTypes.Fasta;
 
         // Options string looks like... "seq_direction=forward;filetype=fasta"
         public string ExtractOptions(string optionsString)
@@ -149,14 +147,6 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
 
             return cleanOptionsString.ToString();
-        }
-
-        [Obsolete("Use the method that does not take databaseFormatType")]
-        public string MakeCreationOptionsString(
-            GetFASTAFromDMS.SequenceTypes seqDirection,
-            GetFASTAFromDMS.DatabaseFormatTypes databaseFormatType)
-        {
-            return MakeCreationOptionsString(seqDirection);
         }
 
         public string MakeCreationOptionsString(

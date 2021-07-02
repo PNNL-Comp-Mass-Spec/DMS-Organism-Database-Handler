@@ -124,17 +124,6 @@ namespace AppUI_OrfDBHandler
                 var filePath = sd.SelectedPath;
                 mLastOutputDirectory = filePath;
 
-                //tmpNameList.Add(cboCollectionsList.Text.ToString());
-                //exporter = new Protein_Exporter.GetFASTAFromDMS(txtConnString.Text, SequenceTypes.forward_sequence);
-                //exporter = new Protein_Exporter.GetFASTAFromDMS(
-                //    txtConnString.Text,
-                //    DatabaseFormatTypes.Fasta,
-                //    GetCollectionName((int)cboCollectionsList.SelectedValue) + "_scrambled.fasta");
-
-                //mExporter = New Protein_Exporter.GetFASTAFromDMS(
-                //    txtConnString.Text,
-                //    DatabaseFormatTypes.Fasta,
-                //    SequenceTypes.forward);
                 mExporter = new GetFASTAFromDMS(txtConnString.Text);
                 mExporter.FileGenerationStarted += StartTask;
                 mExporter.FileGenerationProgress += UpdateProgress;
@@ -189,20 +178,6 @@ namespace AppUI_OrfDBHandler
                 mExporter.FileGenerationProgress -= UpdateProgress;
                 mExporter.FileGenerationCompleted -= CompletedTask;
             }
-        }
-
-        [Obsolete("Unused")]
-        private string GetCollectionName(int proteinCollectionId)
-        {
-            var foundRows = collectionList.Select("Protein_Collection_ID = " + proteinCollectionId);
-            return foundRows[0]["FileName"].ToString();
-        }
-
-        [Obsolete("Unused: UploadBatch uses an old view")]
-        private void cmdBatchLoadDMS_Click(object sender, EventArgs e)
-        {
-            var fileBatcher = new BatchUploadFromFileList(txtConnString.Text);
-            fileBatcher.UploadBatch();
         }
 
         private void cmdBatchLoadDMS_Click_1(object sender, EventArgs e)

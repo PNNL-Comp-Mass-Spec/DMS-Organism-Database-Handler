@@ -34,12 +34,8 @@ namespace OrganismDatabaseHandler.ProteinImport
         }
 
         private readonly DBTask mDatabaseAccessor;
-        // Unused: protected int OrganismId;
-        // Unused: protected HashTable ProteinLengths;
 
         private readonly System.Security.Cryptography.SHA1Managed mHasher;
-        // Unused: protected Threading.Thread ProteinHashThread;
-        // Unused: protected Threading.Thread ReferenceHashThread;
 
         #region "Properties"
 
@@ -75,9 +71,6 @@ namespace OrganismDatabaseHandler.ProteinImport
             mHasher = new System.Security.Cryptography.SHA1Managed();
         }
 
-        [Obsolete("No longer used")]
-        public void CloseConnection()
-        {
         }
 
         /// <summary>
@@ -316,35 +309,6 @@ namespace OrganismDatabaseHandler.ProteinImport
             return RunSP_GetProteinCollectionState(proteinCollectionId);
         }
 
-        protected int GetProteinId(ProteinStorageEntry entry, DataTable hitsTable)
-        {
-            var tmpProteinId = default(int);
-
-            var foundRows = hitsTable.Select("[SHA1_Hash] = '" + entry.SHA1Hash + "'");
-            if (foundRows.Length > 0)
-            {
-                foreach (var testRow in foundRows)
-                {
-                    var tmpSeq = testRow["Sequence"].ToString();
-                    if (tmpSeq.Equals(entry.Sequence))
-                    {
-                        tmpProteinId = Convert.ToInt32(testRow["Protein_ID"]);
-                    }
-                }
-            }
-            else
-            {
-                tmpProteinId = 0;
-            }
-
-            return tmpProteinId;
-        }
-
-        public int GetProteinIdFromName(string proteinName)
-        {
-            return RunSP_GetProteinIDFromName(proteinName);
-        }
-
         /// <summary>
         /// Deletes the proteins for the given protein collection in preparation for re-uploading the proteins
         /// </summary>
@@ -360,11 +324,6 @@ namespace OrganismDatabaseHandler.ProteinImport
             return RunSP_GetProteinCollectionID(proteinCollectionName);
         }
 
-        public int CountProteinCollectionMembers(int proteinCollectionId)
-        {
-            return RunSP_GetProteinCollectionMemberCount(proteinCollectionId);
-        }
-
         public int AddCollectionOrganismXref(int proteinCollectionId, int organismId)
         {
             return RunSP_AddCollectionOrganismXref(proteinCollectionId, organismId);
@@ -377,15 +336,6 @@ namespace OrganismDatabaseHandler.ProteinImport
             int proteinCollectionId)
         {
             return RunSP_AddProteinCollectionMember(referenceId, proteinId, sortingIndex, proteinCollectionId);
-        }
-
-        public int UpdateProteinCollectionMember(
-            int referenceId,
-            int proteinId,
-            int sortingIndex,
-            int proteinCollectionId)
-        {
-            return RunSP_UpdateProteinCollectionMember(referenceId, proteinId, sortingIndex, proteinCollectionId);
         }
 
         public int AddProteinReference(
@@ -416,13 +366,6 @@ namespace OrganismDatabaseHandler.ProteinImport
             int proteinId)
         {
             return RunSP_UpdateProteinNameHash(referenceId, proteinName, description, proteinId);
-        }
-
-        public int UpdateProteinSequenceHash(
-            int proteinId,
-            string proteinSequence)
-        {
-            return RunSP_UpdateProteinSequenceHash(proteinId, proteinSequence);
         }
 
         public string GenerateHash(string sourceText)

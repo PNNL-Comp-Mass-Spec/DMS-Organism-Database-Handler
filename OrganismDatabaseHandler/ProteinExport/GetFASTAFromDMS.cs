@@ -27,13 +27,6 @@ namespace OrganismDatabaseHandler.ProteinExport
             DecoyX = 5,
         }
 
-        [Obsolete("Deprecated: only .fasta files are supported")]
-        public enum DatabaseFormatTypes
-        {
-            Fasta,
-            FastaPro,
-        }
-
         public const string LockFileProgressText = "Lockfile";
         public const string HashcheckSuffix = ".hashcheck";
 
@@ -72,19 +65,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <param name="dbConnectionString">Protein sequences database connection string</param>
         public GetFASTAFromDMS(string dbConnectionString)
             : this(dbConnectionString, SequenceTypes.Forward)
-        {
-        }
-
-        /// <summary>
-        /// Constructor that takes connection string, database format type, and output sequence type
-        /// </summary>
-        /// <param name="dbConnectionString">Database connection string; empty string if offline and only planning to use ValidateMatchingHash</param>
-        /// <param name="databaseFormatType"></param>
-        /// <param name="outputSequenceType"></param>
-        /// <param name="decoyUsesXXX">When true, decoy proteins start with XXX_ instead of Reversed_</param>
-        [Obsolete("Use the constructor that does not have databaseFormatType")]
-        public GetFASTAFromDMS(string dbConnectionString, DatabaseFormatTypes databaseFormatType, SequenceTypes outputSequenceType, bool decoyUsesXXX = true)
-             : this(dbConnectionString, outputSequenceType, decoyUsesXXX)
         {
         }
 
@@ -162,29 +142,6 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
 
             mArchiver = new ArchiveToFile(mDatabaseAccessor, this);
-        }
-
-        // Unused
-        // protected virtual DataTable GetCollectionTable(string selectionSQL)
-        // {
-        //     if (mDatabaseAccessor == null)
-        //         mDatabaseAccessor = new DBTask(mPSConnectionString, true);
-
-        //     return mDatabaseAccessor.GetTable(selectionSQL);
-        // }
-
-        /// <summary>
-        /// Create the FASTA file for the given protein collection ID
-        /// </summary>
-        /// <param name="proteinCollectionId">Protein collection ID</param>
-        /// <param name="destinationFolderPath"></param>
-        /// <param name="databaseFormatType">Typically fasta for .fasta files; fastapro will create a .fasta.pro file</param>
-        /// <param name="outputSequenceType">Sequence type (forward, reverse, scrambled, decoy, or decoyX)</param>
-        /// <returns>CRC32 hash of the generated (or retrieved) file</returns>
-        [Obsolete("Use the method that does not take databaseFormatType")]
-        public string ExportFASTAFile(int proteinCollectionId, string destinationFolderPath, DatabaseFormatTypes databaseFormatType, SequenceTypes outputSequenceType)
-        {
-            return ExportFASTAFile(proteinCollectionId, destinationFolderPath, outputSequenceType);
         }
 
         /// <summary>
