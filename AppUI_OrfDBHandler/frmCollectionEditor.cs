@@ -743,7 +743,7 @@ namespace AppUI_OrfDBHandler
             {
                 mSourceListViewHandler.Load(mCollectionMembers, txtLiveSearch.Text);
                 mSearchActive = false;
-
+                mSearchTimer.Stop();
             }
         }
 
