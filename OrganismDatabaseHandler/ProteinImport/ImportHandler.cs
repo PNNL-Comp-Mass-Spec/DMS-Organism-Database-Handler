@@ -349,8 +349,6 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             foreach (var dr in proteinCollectionMembers)
             {
-                dbTools.GetInteger(dr["Authority_ID"]);
-
                 var ce = new ProteinStorageEntry(
                     dbTools.GetString(dr["Name"]),
                     dbTools.GetString(dr["Description"]),
