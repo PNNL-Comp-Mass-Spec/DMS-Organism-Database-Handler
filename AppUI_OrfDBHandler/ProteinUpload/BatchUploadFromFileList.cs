@@ -16,8 +16,9 @@ namespace AppUI_OrfDBHandler.ProteinUpload
         public BatchUploadFromFileList(string psConnectionString)
         {
             mUploader = new PSUploadHandler(psConnectionString);
+
             mUploader.BatchProgress += OnTaskChange;
-            mUploader.LoadProgress += OnProgressUpdate;
+            mUploader.LoadProgress += OnLoadProgress;
             mUploader.LoadStart += OnLoadStart;
             mUploader.LoadEnd += OnLoadEnd;
             mUploader.LoadStart += OnLoadStart;
@@ -25,7 +26,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             mDatabaseAccessor = new DBTask(psConnectionString);
         }
 
-        public event ProgressUpdateEventHandler ProgressUpdate;
+        public event LoadProgressEventHandler LoadProgress;
         public event TaskChangeEventHandler TaskChange;
         public event LoadStartEventHandler LoadStart;
         public event LoadEndEventHandler LoadEnd;
@@ -35,9 +36,9 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             TaskChange?.Invoke(currentTaskTitle);
         }
 
-        private void OnProgressUpdate(double fractionDone)
+        private void OnLoadProgress(double fractionDone)
         {
-            ProgressUpdate?.Invoke(fractionDone);
+            LoadProgress?.Invoke(fractionDone);
         }
 
         private void OnLoadStart(string taskTitle)
