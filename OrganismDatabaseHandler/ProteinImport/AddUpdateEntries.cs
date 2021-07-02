@@ -418,11 +418,13 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
+            var returnValue = dbTools.GetInteger(returnParam.Value);
+            if (returnValue != 0)
+            {
+                OnWarningEvent("Stored procedure GetProteinCollectionState returned a non-zero return code: " + returnValue);
+            }
 
-            var stateName = dbTools.GetString(stateNameParam.Value);
-
-            return stateName;
+            return dbTools.GetString(stateNameParam.Value);
         }
 
         protected int RunSP_AddProteinSequence(
@@ -538,6 +540,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             // Get return value
             var ret = dbTools.GetInteger(returnParam.Value);
+
             if (ret == 0)
             {
                 // A zero was returned for the protein collection ID; this indicates and error
