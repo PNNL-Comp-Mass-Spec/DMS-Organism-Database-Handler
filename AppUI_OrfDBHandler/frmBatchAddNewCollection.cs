@@ -234,10 +234,7 @@ namespace AppUI_OrfDBHandler
         {
             mCollectionsList = CollectionsTableToList(mCollectionsTable);
 
-            if (mFileList == null)
-            {
-                mFileList = new Dictionary<string, FileInfo>();
-            }
+            mFileList ??= new Dictionary<string, FileInfo>();
 
             FileList = new List<PSUploadHandler.UploadInfo>();
             LoadOrganismPicker(cboOrganismSelect, mOrganismListSorted);
@@ -326,10 +323,7 @@ namespace AppUI_OrfDBHandler
 
             lvwFolderContents.Items.Clear();
 
-            if (mCollectionsList == null)
-            {
-                mCollectionsList = new Dictionary<int, string>();
-            }
+            mCollectionsList ??= new Dictionary<int, string>();
 
             foreach (var fi in mFileList.Values)
             {
@@ -474,10 +468,7 @@ namespace AppUI_OrfDBHandler
         {
             try
             {
-                if (mSelectedFileList == null)
-                {
-                    mSelectedFileList = new Dictionary<string, PSUploadHandler.UploadInfo>(StringComparer.CurrentCultureIgnoreCase);
-                }
+                mSelectedFileList ??= new Dictionary<string, PSUploadHandler.UploadInfo>(StringComparer.CurrentCultureIgnoreCase);
 
                 foreach (ListViewItem li in lvwFolderContents.SelectedItems)
                 {

@@ -75,14 +75,9 @@ namespace AppUI_OrfDBHandler
 
         private DataTable GetAuthoritiesList()
         {
-            if (mImporter == null)
-            {
-                mImporter = new ImportHandler(mConnectionString);
-            }
+            mImporter ??= new ImportHandler(mConnectionString);
 
-            var tmpAuthTable = mImporter.LoadAuthorities();
-
-            return tmpAuthTable;
+            return mImporter.LoadAuthorities();
         }
     }
 }

@@ -41,19 +41,13 @@ namespace OrganismDatabaseHandler.ProteinExport
             //var valuesTableSQL = "SELECT Value_ID, Value_String, Keyword_ID FROM T_Creation_Option_Values";
             const string creationValuesSQL = "SELECT Keyword, Value_String, String_Element FROM V_Creation_String_Lookup";
 
-            if (mKeywordTable == null)
-            {
-                mKeywordTable = mDatabaseAccessor.GetTable(keywordTableSQL);
-            }
+            mKeywordTable ??= mDatabaseAccessor.GetTable(keywordTableSQL);
 
             // If mValuesTable Is Nothing Then
             // mValuesTable = mDatabaseAccessor.GetTable(valuesTableSQL)
             // End If
 
-            if (mCreationValuesTable == null)
-            {
-                mCreationValuesTable = mDatabaseAccessor.GetTable(creationValuesSQL);
-            }
+            mCreationValuesTable ??= mDatabaseAccessor.GetTable(creationValuesSQL);
 
             //var optionsStringParser = new System.Text.RegularExpressions.Regex(
             //    "(?<keyword>\S+)\s*=\s*(?<value>\S+),*?")

@@ -950,15 +950,9 @@ namespace AppUI_OrfDBHandler
         private void CollectionLoadHandler(DataTable collectionTable)
         {
             mProteinCollections = collectionTable;
-            if (mOrganisms == null)
-            {
-                mOrganisms = mImportHandler.LoadOrganisms();
-            }
+            mOrganisms ??= mImportHandler.LoadOrganisms();
 
-            if (mAnnotationTypes == null)
-            {
-                mAnnotationTypes = mImportHandler.LoadAnnotationTypes();
-            }
+            mAnnotationTypes ??= mImportHandler.LoadAnnotationTypes();
 
             BindOrganismListToControl(mOrganisms);
             BindAnnotationTypeListToControl(mAnnotationTypes);

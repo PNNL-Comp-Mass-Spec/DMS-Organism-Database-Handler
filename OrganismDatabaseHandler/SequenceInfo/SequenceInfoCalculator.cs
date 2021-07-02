@@ -22,10 +22,7 @@ namespace OrganismDatabaseHandler.SequenceInfo
                 InitializeFromDMS();
             }
 
-            if (sha1Provider == null)
-            {
-                sha1Provider = new SHA1Managed();
-            }
+            sha1Provider ??= new SHA1Managed();
         }
 
         #region "Ken's Added Properties "

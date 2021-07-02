@@ -652,10 +652,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 {
                     // Something went wrong 4 times in a row (typically either creating or deleting the .Lock file)
                     // Give up trying to export
-                    if (proteinCollectionListOrLegacyFastaFileName == null)
-                    {
-                        proteinCollectionListOrLegacyFastaFileName = "??";
-                    }
+                    proteinCollectionListOrLegacyFastaFileName ??= "??";
 
                     // Exception: Unable to create Lockfile required to export Protein collection ...
                     var msg = "Unable to create " + LockFileProgressText + " required to export " + proteinCollectionListOrLegacyFastaFileName + "; tried 4 times without success";
