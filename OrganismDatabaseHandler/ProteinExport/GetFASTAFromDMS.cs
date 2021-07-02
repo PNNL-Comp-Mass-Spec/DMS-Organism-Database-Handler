@@ -695,6 +695,10 @@ namespace OrganismDatabaseHandler.ProteinExport
                 // This code will also delete the .hashcheck file; that's OK
                 // e.g., ID_002750_1363538A.fasta.1363538A.hashcheck
 
+                if (finalFastaFile.Directory == null)
+                {
+                    return;
+                }
 
                 foreach (var fileToDelete in finalFastaFile.Directory.GetFiles(baseName + ".*"))
                 {

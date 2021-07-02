@@ -1216,9 +1216,9 @@ namespace AppUI_OrfDBHandler
                 {
                     try
                     {
-                        // Parse the two objects passed as a parameter as a DateTi
-                        var dateA = DateTime.Parse(((ListViewItem)x).SubItems[mColIndex].Text);
-                        var dateB = DateTime.Parse(((ListViewItem)y).SubItems[mColIndex].Text);
+                        // Parse the two objects passed as a parameter as a DateTime
+                        var dateA = DateTime.Parse(((ListViewItem)x)?.SubItems[mColIndex].Text);
+                        var dateB = DateTime.Parse(((ListViewItem)y)?.SubItems[mColIndex].Text);
 
                         // Compare the two dates.
                         returnVal = DateTime.Compare(dateA, dateB);
@@ -1233,8 +1233,9 @@ namespace AppUI_OrfDBHandler
                 if (!compared)
                 {
                     // Compare the two items as a string.
-                    returnVal = string.CompareOrdinal(((ListViewItem)x).SubItems[mColIndex].Text,
-                                               ((ListViewItem)y).SubItems[mColIndex].Text);
+                    returnVal = string.CompareOrdinal(
+                        ((ListViewItem)x)?.SubItems[mColIndex].Text,
+                        ((ListViewItem)y)?.SubItems[mColIndex].Text);
                 }
 
                 if (mSortOrder == SortOrder.Descending)

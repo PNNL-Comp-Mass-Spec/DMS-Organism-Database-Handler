@@ -151,8 +151,8 @@ namespace OrganismDatabaseHandler.ProteinExport
             CollectionTypes archivedFileType,
             GetFASTAFromDMS.SequenceTypes outputSequenceType)
         {
-            var pathString = Path.Combine(mBaseArchivePath, Enum.GetName(typeof(CollectionTypes), archivedFileType));
-            pathString = Path.Combine(pathString, Enum.GetName(typeof(GetFASTAFromDMS.SequenceTypes), outputSequenceType));
+            var pathString = Path.Combine(mBaseArchivePath, Enum.GetName(typeof(CollectionTypes), archivedFileType) ?? string.Empty);
+            pathString = Path.Combine(pathString, Enum.GetName(typeof(GetFASTAFromDMS.SequenceTypes), outputSequenceType) ?? string.Empty);
             pathString = Path.Combine(pathString, "ID_00000_" + authenticationHash + Path.GetExtension(sourceFilePath));
 
             return pathString;

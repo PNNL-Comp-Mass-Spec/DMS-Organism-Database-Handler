@@ -13,7 +13,7 @@ namespace AppUI_OrfDBHandler.ProteinUpload
         private readonly DataTable mAnnotationTypeList;
         private readonly DataTable mOrganismList;
         private const string SaveFileName = "FASTAFile_NamingAuth_XRef.txt";
-        private readonly string mSavePath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+        private readonly string mSavePath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
 
         public frmBatchUploadFromFileList(
             DataTable annotationTypeList,
