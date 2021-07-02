@@ -486,7 +486,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Define parameters for the procedure's arguments
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
 
-            // Execute the sp
+            // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value

@@ -292,7 +292,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 throw new IOException(spaceValidationError);
             }
 
-            // If we get here, then finalFileName = "" or the file is not present or the LockFile is present
+            // If we get here, then finalFileName is empty or the file is not present or the LockFile is present
             // Try to create a lock file, then either wait for an existing lock file to go away or export the database
             var lockStream = CreateLockStream(destinationFolderPath, lockFileHash, legacyFASTAFileName);
 
@@ -456,7 +456,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
             }
 
-            // If we get here, then finalFileName = "" or the file is not present or the LockFile is present or the hash file is out-of-date
+            // If we get here, then finalFileName is empty or the file is not present or the LockFile is present or the hash file is out-of-date
             // Try to create a lock file, then either wait for an existing lock file to go away or export the database
             var lockStream = CreateLockStream(destinationFolderPath, lockFileHash, "Protein collection list " + proteinCollectionList);
 
@@ -1036,7 +1036,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256).Direction = ParameterDirection.Output;
             dbTools.AddParameter(cmdSave, "@AuthenticationHash", SqlType.VarChar, 8).Value = authenticationHash;
 
-            // Execute the sp
+            // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value

@@ -492,7 +492,7 @@ namespace AppUI_OrfDBHandler
             }
         }
 
-        #region "Combobox handlers"
+        #region "ComboBox handlers"
 
         private void cboOrganismList_SelectedIndexChanged(object sender, EventArgs e)
         {

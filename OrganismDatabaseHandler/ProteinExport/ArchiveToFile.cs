@@ -178,7 +178,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 512).Direction = ParameterDirection.Output;
             dbTools.AddParameter(cmdSave, "@CollectionListHexHash", SqlType.VarChar, 128).Value = collectionListHexHash;
 
-            // Execute the sp
+            // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
@@ -219,7 +219,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             dbTools.AddParameter(cmdSave, "@archived_file_path", SqlType.VarChar, 250).Value = archivedFileFullPath;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 512).Direction = ParameterDirection.Output;
 
-            // Execute the sp
+            // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
             mArchivedFilePath = archivedFileFullPath;

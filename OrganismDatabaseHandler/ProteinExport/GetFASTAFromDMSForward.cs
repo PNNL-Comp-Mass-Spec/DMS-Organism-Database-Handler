@@ -102,7 +102,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var user = new WindowsPrincipal(WindowsIdentity.GetCurrent());
             var userId = user.Identity.Name;
 
-            // Dictionary mapping protein collection name to the associated passphrase
+            // Dictionary mapping protein collection name to the associated pass phrase
             var proteinCollectionPassphrases = new Dictionary<string, string>();
 
             var collectionNameList = string.Empty;

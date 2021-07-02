@@ -65,7 +65,7 @@
             this.txtTransFilePath.Name = "txtTransFilePath";
             this.txtTransFilePath.Size = new System.Drawing.Size(590, 20);
             this.txtTransFilePath.TabIndex = 0;
-            this.txtTransFilePath.Text = "C:\\Documents and Settings\\d3k857\\My Documents\\Visual Studio Projects\\Organism Dat" +
+            this.txtTransFilePath.Text = "C:\\Documents and Settings\\d3k857\\My Documents\\Visual Studio Projects\\OrganismData" +
     "abase Handler\\Aux_Files\\gc.ptr";
             // 
             // cmdLoadTT

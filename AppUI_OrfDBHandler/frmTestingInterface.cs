@@ -64,7 +64,7 @@ namespace AppUI_OrfDBHandler
             //FASTAHandler.ProteinTable = sqlData.GetTable(SQL, dmsDA, dmsCB);
             //FASTAHandler.GetProteinEntries(txtFASTAFilePath.Text);
 
-            //foreach (DataRow dr in FASTAHandler.ProteinTable)
+            //for each (DataRow dataRow in FASTAHandler.ProteinTable)
             //{
             //}
 
@@ -156,13 +156,13 @@ namespace AppUI_OrfDBHandler
 
                 mExporter.ExportFASTAFile("Phycomyces_blakesleeanus_v2_filtered_2009-12-16", "seq_direction=forward,filetype=fasta", "", filePath);
 
-                //Protein collection from cbo exported forward
+                //Protein collection from ComboBox exported forward
                 //fingerprint = mExporter.ExportFASTAFile(GetCollectionName(CInt(cboCollectionsList.SelectedValue)), "seq_direction=forward,filetype=fasta", "na", filePath)
 
-                //Protein Collection from cbo exported reversed
+                //Protein Collection from ComboBox exported reversed
                 //fingerprint = mExporter.ExportFASTAFile(GetCollectionName(CInt(cboCollectionsList.SelectedValue)), "seq_direction=reversed,filetype=fasta", "na", filePath)
 
-                //Protein Collection from cbo exported scrambled
+                //Protein Collection from ComboBox exported scrambled
                 //fingerprint = mExporter.ExportFASTAFile(GetCollectionName(CInt(cboCollectionsList.SelectedValue)), "seq_direction=scrambled,filetype=fasta", "na", filePath)
 
                 //fingerprint = exporter.ExportFASTAFile(CInt(cboCollectionsList.SelectedValue), filePath)
