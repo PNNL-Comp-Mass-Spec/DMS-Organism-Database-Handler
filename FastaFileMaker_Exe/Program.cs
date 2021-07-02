@@ -7,7 +7,7 @@ namespace FastaFileMaker
 {
     internal static class Program
     {
-        // Ignore Spelling: filetype, Shewanella, yyyy-MM-dd, hh:mm:ss tt
+        // Ignore Spelling: filetype, na, proteinseqs, Shewanella, yyyy-MM-dd, hh:mm:ss tt
 
         public const string ProgramDate = "May 5, 2021";
 

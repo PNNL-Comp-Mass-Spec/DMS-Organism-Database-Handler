@@ -10,6 +10,8 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class ArchiveToFile : ArchiveOutputFilesBase
     {
+        // Ignore Spelling: cbdms
+
         private const string DefaultBaseArchivePath = @"\\gigasax\DMS_FASTA_File_Archive\";
 
         private readonly string mBaseArchivePath;

@@ -9,7 +9,9 @@ namespace AppUI_OrfDBHandler
 {
     public class CollectionStatePickerHandler
     {
-        private bool mForceReload = false;
+        // Ignore Spelling: yyyy-MM-dd
+
+        private bool mForceReload;
         private DataTable mListViewData;
         private readonly DBTask mGetTables;
         private readonly AddUpdateEntries mSpAccess;

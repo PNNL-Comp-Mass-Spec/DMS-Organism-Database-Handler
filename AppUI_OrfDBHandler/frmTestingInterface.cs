@@ -10,6 +10,8 @@ namespace AppUI_OrfDBHandler
 {
     public partial class frmTestingInterface : Form
     {
+        // Ignore Spelling: filetype, na, outbox
+
         public frmTestingInterface()
         {
             base.Load += frmTestingInterface_Load;

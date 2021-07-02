@@ -2,6 +2,8 @@
 {
     partial class frmTestingInterface
     {
+        // Ignore Spelling: proteinseqs, shewanella
+
         /// <summary>
         /// Required designer variable.
         /// </summary>

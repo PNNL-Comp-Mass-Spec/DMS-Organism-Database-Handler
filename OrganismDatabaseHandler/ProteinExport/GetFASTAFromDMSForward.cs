@@ -12,6 +12,8 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class GetFASTAFromDMSForward
     {
+        // Ignore Spelling: fastapro, passphrase
+
         private readonly DBTask mDatabaseAccessor;
         private readonly ExportProteins mFileDumper;
 

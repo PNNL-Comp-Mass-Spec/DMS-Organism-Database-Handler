@@ -12,7 +12,9 @@ namespace OrganismDatabaseHandler.ProteinUpload
 {
     public class PSUploadHandler
     {
-        public enum ValidationOptionConstants : int
+        // Ignore Spelling: validator, Xref
+
+        public enum ValidationOptionConstants
         {
             AllowAsterisksInResidues = 0,
             AllowDashInResidues = 1,

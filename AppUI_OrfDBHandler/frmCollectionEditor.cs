@@ -16,6 +16,8 @@ namespace AppUI_OrfDBHandler
 {
     public partial class frmCollectionEditor : Form
     {
+        // Ignore Spelling: proteinseqs
+
         public frmCollectionEditor()
         {
             // Initialize Dictionaries
