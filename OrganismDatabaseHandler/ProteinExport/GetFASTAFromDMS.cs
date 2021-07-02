@@ -697,6 +697,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 if (finalFastaFile.Directory == null)
                 {
+                    OnWarningEvent("DeleteFASTAIndexFiles cannot determine the parent directory of " + finalFastaFile.FullName);
                     return;
                 }
 
@@ -803,7 +804,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 return new FileInfo(Path.Combine(fastaFile.DirectoryName, hashFileName));
             }
 
-            ConsoleMsgUtils.ShowWarning("GetHashFileValidationInfo cannot determine the parent directory of " + fastaFile.FullName);
+            OnWarningEvent("GetHashFileValidationInfo cannot determine the parent directory of " + fastaFile.FullName);
             return new FileInfo(hashFileName);
 
         }
