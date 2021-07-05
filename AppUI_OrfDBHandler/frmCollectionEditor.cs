@@ -129,6 +129,9 @@ namespace AppUI_OrfDBHandler
             // Data Source=proteinseqs;Initial Catalog=Protein_Sequences
             var connectionString = Settings.Default.ProteinSeqsDBConnectStr;
 
+            // Uncomment to upload to the test database
+            // connectionString = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences_T3;Integrated Security=SSPI";
+
             if (!string.IsNullOrWhiteSpace(connectionString))
             {
                 mPsConnectionString = connectionString;
