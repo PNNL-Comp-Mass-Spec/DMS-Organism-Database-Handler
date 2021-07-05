@@ -39,11 +39,7 @@ namespace AppUI_OrfDBHandler
             this.pnlProgBarLower = new System.Windows.Forms.Panel();
             this.pgbMain = new System.Windows.Forms.ProgressBar();
             this.pnlSource = new System.Windows.Forms.Panel();
-            this.lblTargetServer = new System.Windows.Forms.Label();
-            this.cmdDestAdd = new AppUI_OrfDBHandler.Controls.ImageButton();
-            this.cmdDestRemove = new AppUI_OrfDBHandler.Controls.ImageButton();
-            this.cmdDestAddAll = new AppUI_OrfDBHandler.Controls.ImageButton();
-            this.cmdDestRemoveAll = new AppUI_OrfDBHandler.Controls.ImageButton();
+            this.lblTargetDatabase = new System.Windows.Forms.Label();
             this.gbxSourceCollection = new System.Windows.Forms.GroupBox();
             this.cboAnnotationTypePicker = new System.Windows.Forms.ComboBox();
             this.lblAnnotationTypeFilter = new System.Windows.Forms.Label();
@@ -83,6 +79,10 @@ namespace AppUI_OrfDBHandler
             this.mnuAdminTestingInterface = new System.Windows.Forms.MenuItem();
             this.mnuHelp = new System.Windows.Forms.MenuItem();
             this.mnuHelpAbout = new System.Windows.Forms.MenuItem();
+            this.cmdDestAdd = new AppUI_OrfDBHandler.Controls.ImageButton();
+            this.cmdDestRemove = new AppUI_OrfDBHandler.Controls.ImageButton();
+            this.cmdDestAddAll = new AppUI_OrfDBHandler.Controls.ImageButton();
+            this.cmdDestRemoveAll = new AppUI_OrfDBHandler.Controls.ImageButton();
             this.pnlProgBar.SuspendLayout();
             this.pnlProgBarUpper.SuspendLayout();
             this.pnlProgBarLower.SuspendLayout();
@@ -99,7 +99,7 @@ namespace AppUI_OrfDBHandler
             this.pnlProgBar.Controls.Add(this.pnlProgBarUpper);
             this.pnlProgBar.Controls.Add(this.pnlProgBarLower);
             this.pnlProgBar.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlProgBar.Location = new System.Drawing.Point(0, 448);
+            this.pnlProgBar.Location = new System.Drawing.Point(0, 396);
             this.pnlProgBar.Name = "pnlProgBar";
             this.pnlProgBar.Size = new System.Drawing.Size(1132, 76);
             this.pnlProgBar.TabIndex = 0;
@@ -156,7 +156,7 @@ namespace AppUI_OrfDBHandler
             // 
             // pnlSource
             // 
-            this.pnlSource.Controls.Add(this.lblTargetServer);
+            this.pnlSource.Controls.Add(this.lblTargetDatabase);
             this.pnlSource.Controls.Add(this.cmdDestAdd);
             this.pnlSource.Controls.Add(this.cmdDestRemove);
             this.pnlSource.Controls.Add(this.cmdDestAddAll);
@@ -166,73 +166,17 @@ namespace AppUI_OrfDBHandler
             this.pnlSource.Location = new System.Drawing.Point(0, 0);
             this.pnlSource.Name = "pnlSource";
             this.pnlSource.Padding = new System.Windows.Forms.Padding(8, 8, 8, 10);
-            this.pnlSource.Size = new System.Drawing.Size(544, 448);
+            this.pnlSource.Size = new System.Drawing.Size(544, 396);
             this.pnlSource.TabIndex = 0;
             // 
-            // lblTargetServer
+            // lblTargetDatabase
             // 
-            this.lblTargetServer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblTargetServer.Location = new System.Drawing.Point(9, 412);
-            this.lblTargetServer.Name = "lblTargetServer";
-            this.lblTargetServer.Size = new System.Drawing.Size(215, 15);
-            this.lblTargetServer.TabIndex = 21;
-            this.lblTargetServer.Text = "Target server: ";
-            // 
-            // cmdDestAdd
-            // 
-            this.cmdDestAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdDestAdd.Enabled = false;
-            this.cmdDestAdd.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.cmdDestAdd.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdDestAdd.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.cmdDestAdd.Location = new System.Drawing.Point(491, 153);
-            this.cmdDestAdd.Name = "cmdDestAdd";
-            this.cmdDestAdd.Size = new System.Drawing.Size(39, 31);
-            this.cmdDestAdd.TabIndex = 5;
-            this.cmdDestAdd.ThemedImage = ((System.Drawing.Bitmap)(resources.GetObject("cmdDestAdd.ThemedImage")));
-            this.cmdDestAdd.Click += new System.EventHandler(this.cmdDestAdd_Click);
-            // 
-            // cmdDestRemove
-            // 
-            this.cmdDestRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdDestRemove.Enabled = false;
-            this.cmdDestRemove.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.cmdDestRemove.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdDestRemove.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.cmdDestRemove.Location = new System.Drawing.Point(491, 202);
-            this.cmdDestRemove.Name = "cmdDestRemove";
-            this.cmdDestRemove.Size = new System.Drawing.Size(39, 33);
-            this.cmdDestRemove.TabIndex = 6;
-            this.cmdDestRemove.ThemedImage = ((System.Drawing.Bitmap)(resources.GetObject("cmdDestRemove.ThemedImage")));
-            this.cmdDestRemove.Click += new System.EventHandler(this.cmdDestRemove_Click);
-            // 
-            // cmdDestAddAll
-            // 
-            this.cmdDestAddAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdDestAddAll.Enabled = false;
-            this.cmdDestAddAll.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.cmdDestAddAll.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdDestAddAll.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.cmdDestAddAll.Location = new System.Drawing.Point(491, 103);
-            this.cmdDestAddAll.Name = "cmdDestAddAll";
-            this.cmdDestAddAll.Size = new System.Drawing.Size(39, 33);
-            this.cmdDestAddAll.TabIndex = 3;
-            this.cmdDestAddAll.ThemedImage = ((System.Drawing.Bitmap)(resources.GetObject("cmdDestAddAll.ThemedImage")));
-            this.cmdDestAddAll.Click += new System.EventHandler(this.cmdDestAddAll_Click);
-            // 
-            // cmdDestRemoveAll
-            // 
-            this.cmdDestRemoveAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdDestRemoveAll.Enabled = false;
-            this.cmdDestRemoveAll.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.cmdDestRemoveAll.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdDestRemoveAll.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.cmdDestRemoveAll.Location = new System.Drawing.Point(491, 252);
-            this.cmdDestRemoveAll.Name = "cmdDestRemoveAll";
-            this.cmdDestRemoveAll.Size = new System.Drawing.Size(39, 32);
-            this.cmdDestRemoveAll.TabIndex = 4;
-            this.cmdDestRemoveAll.ThemedImage = ((System.Drawing.Bitmap)(resources.GetObject("cmdDestRemoveAll.ThemedImage")));
-            this.cmdDestRemoveAll.Click += new System.EventHandler(this.cmdDestRemoveAll_Click);
+            this.lblTargetDatabase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblTargetDatabase.Location = new System.Drawing.Point(9, 360);
+            this.lblTargetDatabase.Name = "lblTargetDatabase";
+            this.lblTargetDatabase.Size = new System.Drawing.Size(500, 18);
+            this.lblTargetDatabase.TabIndex = 21;
+            this.lblTargetDatabase.Text = "Target database: ";
             // 
             // gbxSourceCollection
             // 
@@ -255,7 +199,7 @@ namespace AppUI_OrfDBHandler
             this.gbxSourceCollection.Controls.Add(this.lblSourceMembers);
             this.gbxSourceCollection.Location = new System.Drawing.Point(8, 8);
             this.gbxSourceCollection.Name = "gbxSourceCollection";
-            this.gbxSourceCollection.Size = new System.Drawing.Size(472, 389);
+            this.gbxSourceCollection.Size = new System.Drawing.Size(472, 337);
             this.gbxSourceCollection.TabIndex = 1;
             this.gbxSourceCollection.TabStop = false;
             this.gbxSourceCollection.Text = "Source Collection";
@@ -283,7 +227,7 @@ namespace AppUI_OrfDBHandler
             this.pbxLiveSearchCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pbxLiveSearchCancel.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.pbxLiveSearchCancel.Image = ((System.Drawing.Image)(resources.GetObject("pbxLiveSearchCancel.Image")));
-            this.pbxLiveSearchCancel.Location = new System.Drawing.Point(194, 359);
+            this.pbxLiveSearchCancel.Location = new System.Drawing.Point(194, 307);
             this.pbxLiveSearchCancel.Name = "pbxLiveSearchCancel";
             this.pbxLiveSearchCancel.Size = new System.Drawing.Size(16, 16);
             this.pbxLiveSearchCancel.TabIndex = 16;
@@ -293,7 +237,7 @@ namespace AppUI_OrfDBHandler
             // lblSearchCount
             // 
             this.lblSearchCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSearchCount.Location = new System.Drawing.Point(224, 363);
+            this.lblSearchCount.Location = new System.Drawing.Point(224, 311);
             this.lblSearchCount.Name = "lblSearchCount";
             this.lblSearchCount.Size = new System.Drawing.Size(88, 16);
             this.lblSearchCount.TabIndex = 15;
@@ -313,7 +257,7 @@ namespace AppUI_OrfDBHandler
             // cmdLoadFile
             // 
             this.cmdLoadFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdLoadFile.Location = new System.Drawing.Point(316, 356);
+            this.cmdLoadFile.Location = new System.Drawing.Point(316, 304);
             this.cmdLoadFile.Name = "cmdLoadFile";
             this.cmdLoadFile.Size = new System.Drawing.Size(140, 23);
             this.cmdLoadFile.TabIndex = 10;
@@ -325,7 +269,7 @@ namespace AppUI_OrfDBHandler
             this.txtLiveSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtLiveSearch.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtLiveSearch.ForeColor = System.Drawing.SystemColors.InactiveCaption;
-            this.txtLiveSearch.Location = new System.Drawing.Point(38, 360);
+            this.txtLiveSearch.Location = new System.Drawing.Point(38, 308);
             this.txtLiveSearch.Name = "txtLiveSearch";
             this.txtLiveSearch.Size = new System.Drawing.Size(107, 17);
             this.txtLiveSearch.TabIndex = 8;
@@ -376,7 +320,7 @@ namespace AppUI_OrfDBHandler
             // 
             this.pbxLiveSearchBkg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pbxLiveSearchBkg.Image = ((System.Drawing.Image)(resources.GetObject("pbxLiveSearchBkg.Image")));
-            this.pbxLiveSearchBkg.Location = new System.Drawing.Point(16, 355);
+            this.pbxLiveSearchBkg.Location = new System.Drawing.Point(16, 303);
             this.pbxLiveSearchBkg.Name = "pbxLiveSearchBkg";
             this.pbxLiveSearchBkg.Size = new System.Drawing.Size(200, 26);
             this.pbxLiveSearchBkg.TabIndex = 9;
@@ -395,7 +339,7 @@ namespace AppUI_OrfDBHandler
             this.lvwSource.HideSelection = false;
             this.lvwSource.Location = new System.Drawing.Point(14, 130);
             this.lvwSource.Name = "lvwSource";
-            this.lvwSource.Size = new System.Drawing.Size(442, 217);
+            this.lvwSource.Size = new System.Drawing.Size(442, 165);
             this.lvwSource.TabIndex = 2;
             this.lvwSource.UseCompatibleStateImageBehavior = false;
             this.lvwSource.View = System.Windows.Forms.View.Details;
@@ -426,7 +370,7 @@ namespace AppUI_OrfDBHandler
             this.SourceDestSplit.MinExtra = 265;
             this.SourceDestSplit.MinSize = 450;
             this.SourceDestSplit.Name = "SourceDestSplit";
-            this.SourceDestSplit.Size = new System.Drawing.Size(3, 448);
+            this.SourceDestSplit.Size = new System.Drawing.Size(3, 396);
             this.SourceDestSplit.TabIndex = 2;
             this.SourceDestSplit.TabStop = false;
             // 
@@ -437,7 +381,7 @@ namespace AppUI_OrfDBHandler
             this.pnlDest.Location = new System.Drawing.Point(547, 0);
             this.pnlDest.Name = "pnlDest";
             this.pnlDest.Padding = new System.Windows.Forms.Padding(8, 8, 8, 10);
-            this.pnlDest.Size = new System.Drawing.Size(585, 448);
+            this.pnlDest.Size = new System.Drawing.Size(585, 396);
             this.pnlDest.TabIndex = 1;
             // 
             // gbxDestinationCollection
@@ -451,7 +395,7 @@ namespace AppUI_OrfDBHandler
             this.gbxDestinationCollection.Controls.Add(this.lvwDestination);
             this.gbxDestinationCollection.Location = new System.Drawing.Point(8, 8);
             this.gbxDestinationCollection.Name = "gbxDestinationCollection";
-            this.gbxDestinationCollection.Size = new System.Drawing.Size(569, 430);
+            this.gbxDestinationCollection.Size = new System.Drawing.Size(569, 378);
             this.gbxDestinationCollection.TabIndex = 2;
             this.gbxDestinationCollection.TabStop = false;
             this.gbxDestinationCollection.Text = "Destination Collection";
@@ -459,7 +403,7 @@ namespace AppUI_OrfDBHandler
             // cmdSaveDestCollection
             // 
             this.cmdSaveDestCollection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdSaveDestCollection.Location = new System.Drawing.Point(444, 395);
+            this.cmdSaveDestCollection.Location = new System.Drawing.Point(444, 343);
             this.cmdSaveDestCollection.Name = "cmdSaveDestCollection";
             this.cmdSaveDestCollection.Size = new System.Drawing.Size(113, 24);
             this.cmdSaveDestCollection.TabIndex = 4;
@@ -470,7 +414,7 @@ namespace AppUI_OrfDBHandler
             // 
             this.cmdExportToFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cmdExportToFile.Enabled = false;
-            this.cmdExportToFile.Location = new System.Drawing.Point(14, 395);
+            this.cmdExportToFile.Location = new System.Drawing.Point(14, 343);
             this.cmdExportToFile.Name = "cmdExportToFile";
             this.cmdExportToFile.Size = new System.Drawing.Size(102, 24);
             this.cmdExportToFile.TabIndex = 3;
@@ -497,7 +441,7 @@ namespace AppUI_OrfDBHandler
             this.lvwDestination.HideSelection = false;
             this.lvwDestination.Location = new System.Drawing.Point(14, 53);
             this.lvwDestination.Name = "lvwDestination";
-            this.lvwDestination.Size = new System.Drawing.Size(540, 335);
+            this.lvwDestination.Size = new System.Drawing.Size(540, 283);
             this.lvwDestination.TabIndex = 0;
             this.lvwDestination.UseCompatibleStateImageBehavior = false;
             this.lvwDestination.View = System.Windows.Forms.View.Details;
@@ -607,11 +551,67 @@ namespace AppUI_OrfDBHandler
             this.mnuHelpAbout.Text = "&About Protein Collection Editor";
             this.mnuHelpAbout.Click += new System.EventHandler(this.mnuHelpAbout_Click);
             // 
+            // cmdDestAdd
+            // 
+            this.cmdDestAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdDestAdd.Enabled = false;
+            this.cmdDestAdd.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.cmdDestAdd.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdDestAdd.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.cmdDestAdd.Location = new System.Drawing.Point(491, 153);
+            this.cmdDestAdd.Name = "cmdDestAdd";
+            this.cmdDestAdd.Size = new System.Drawing.Size(39, 31);
+            this.cmdDestAdd.TabIndex = 5;
+            this.cmdDestAdd.ThemedImage = ((System.Drawing.Bitmap)(resources.GetObject("cmdDestAdd.ThemedImage")));
+            this.cmdDestAdd.Click += new System.EventHandler(this.cmdDestAdd_Click);
+            // 
+            // cmdDestRemove
+            // 
+            this.cmdDestRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdDestRemove.Enabled = false;
+            this.cmdDestRemove.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.cmdDestRemove.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdDestRemove.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.cmdDestRemove.Location = new System.Drawing.Point(491, 202);
+            this.cmdDestRemove.Name = "cmdDestRemove";
+            this.cmdDestRemove.Size = new System.Drawing.Size(39, 33);
+            this.cmdDestRemove.TabIndex = 6;
+            this.cmdDestRemove.ThemedImage = ((System.Drawing.Bitmap)(resources.GetObject("cmdDestRemove.ThemedImage")));
+            this.cmdDestRemove.Click += new System.EventHandler(this.cmdDestRemove_Click);
+            // 
+            // cmdDestAddAll
+            // 
+            this.cmdDestAddAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdDestAddAll.Enabled = false;
+            this.cmdDestAddAll.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.cmdDestAddAll.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdDestAddAll.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.cmdDestAddAll.Location = new System.Drawing.Point(491, 103);
+            this.cmdDestAddAll.Name = "cmdDestAddAll";
+            this.cmdDestAddAll.Size = new System.Drawing.Size(39, 33);
+            this.cmdDestAddAll.TabIndex = 3;
+            this.cmdDestAddAll.ThemedImage = ((System.Drawing.Bitmap)(resources.GetObject("cmdDestAddAll.ThemedImage")));
+            this.cmdDestAddAll.Click += new System.EventHandler(this.cmdDestAddAll_Click);
+            // 
+            // cmdDestRemoveAll
+            // 
+            this.cmdDestRemoveAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdDestRemoveAll.Enabled = false;
+            this.cmdDestRemoveAll.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.cmdDestRemoveAll.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdDestRemoveAll.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.cmdDestRemoveAll.Location = new System.Drawing.Point(491, 252);
+            this.cmdDestRemoveAll.Name = "cmdDestRemoveAll";
+            this.cmdDestRemoveAll.Size = new System.Drawing.Size(39, 32);
+            this.cmdDestRemoveAll.TabIndex = 4;
+            this.cmdDestRemoveAll.ThemedImage = ((System.Drawing.Bitmap)(resources.GetObject("cmdDestRemoveAll.ThemedImage")));
+            this.cmdDestRemoveAll.Click += new System.EventHandler(this.cmdDestRemoveAll_Click);
+            // 
             // frmCollectionEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1132, 524);
+            this.ClientSize = new System.Drawing.Size(1132, 472);
             this.Controls.Add(this.pnlDest);
             this.Controls.Add(this.SourceDestSplit);
             this.Controls.Add(this.pnlSource);
@@ -687,7 +687,7 @@ namespace AppUI_OrfDBHandler
         private System.Windows.Forms.MenuItem mnuAdminTestingInterface;
         private System.Windows.Forms.Label lblBatchProgress;
         private System.Windows.Forms.Button cmdExportToFile;
-        private System.Windows.Forms.Label lblTargetServer;
         private System.Windows.Forms.Button cmdSaveDestCollection;
+        private System.Windows.Forms.Label lblTargetDatabase;
     }
 }

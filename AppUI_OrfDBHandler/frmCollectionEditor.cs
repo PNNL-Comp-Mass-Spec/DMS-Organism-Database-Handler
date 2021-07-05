@@ -49,7 +49,7 @@ namespace AppUI_OrfDBHandler
             Application.Run(new frmCollectionEditor());
         }
 
-        private const string ProgramDate = "July 4, 2021";
+        private const string ProgramDate = "July 5, 2021";
 
         private DataTable mOrganisms;
         private DataTable mProteinCollections;
@@ -480,25 +480,17 @@ namespace AppUI_OrfDBHandler
             {
                 if (string.IsNullOrWhiteSpace(mPsConnectionString))
                 {
-                    lblTargetServer.Text = "ERROR determining target server: mPSConnectionString is empty";
+                    lblTargetDatabase.Text = "ERROR determining target database: mPSConnectionString is empty";
                     return;
                 }
 
-                var reExtractServerName = new Regex(@"Data Source\s*=\s*([^\s;]+)", RegexOptions.IgnoreCase);
-                var reMatch = reExtractServerName.Match(mPsConnectionString);
+                var dbTools = PRISMDatabaseUtils.DbToolsFactory.GetDBTools(mPsConnectionString);
 
-                if (reMatch.Success)
-                {
-                    lblTargetServer.Text = "Target server: " + reMatch.Groups[1].Value;
-                }
-                else
-                {
-                    lblTargetServer.Text = "Target server: UNKNOWN -- name not found in " + mPsConnectionString;
-                }
+                lblTargetDatabase.Text = string.Format("Target database: {0} (on {1})", dbTools.DatabaseName, dbTools.ServerName);
             }
             catch (Exception ex)
             {
-                lblTargetServer.Text = "ERROR determining target server: " + ex.Message;
+                lblTargetDatabase.Text = "ERROR determining target database: " + ex.Message;
             }
         }
 
