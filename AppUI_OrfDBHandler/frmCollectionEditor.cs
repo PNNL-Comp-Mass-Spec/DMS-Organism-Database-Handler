@@ -49,7 +49,7 @@ namespace AppUI_OrfDBHandler
             Application.Run(new frmCollectionEditor());
         }
 
-        private const string ProgramDate = "July 1, 2021";
+        private const string ProgramDate = "July 4, 2021";
 
         private DataTable mOrganisms;
         private DataTable mProteinCollections;
@@ -391,6 +391,7 @@ namespace AppUI_OrfDBHandler
             mUploadHandler.FASTAFileWarnings += FASTAFileWarningsHandler;
             mUploadHandler.ValidationProgress += ValidationProgressHandler;
             mUploadHandler.WroteLineEndNormalizedFASTA += NormalizedFASTAFileGenerationHandler;
+            mUploadHandler.LoadStart += LoadStartHandler;
 
             pgbMain.Value = 0;
             lblCurrentTask.Text = string.Empty;
@@ -921,6 +922,7 @@ namespace AppUI_OrfDBHandler
         #endregion
 
         #region "Progress Event Handlers"
+
         private void ImportStartHandler(string taskTitle)
         {
             //mFileBatcher.LoadStart();
@@ -935,6 +937,14 @@ namespace AppUI_OrfDBHandler
         {
             //mFileBatcher.ProgressUpdate()
             pgbMain.Value = (int)Math.Round(fractionDone * 100d);
+            Application.DoEvents();
+        }
+
+        private void LoadStartHandler(string taskTitle)
+        {
+            pgbMain.Value = 0;
+            lblCurrentTask.Text = taskTitle;
+            pnlProgBar.Visible = true;
             Application.DoEvents();
         }
 
