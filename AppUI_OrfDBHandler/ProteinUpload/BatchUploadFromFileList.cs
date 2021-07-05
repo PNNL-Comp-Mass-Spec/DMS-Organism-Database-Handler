@@ -22,7 +22,6 @@ namespace AppUI_OrfDBHandler.ProteinUpload
             mUploader.LoadProgress += OnLoadProgress;
             mUploader.LoadStart += OnLoadStart;
             mUploader.LoadEnd += OnLoadEnd;
-            mUploader.LoadStart += OnLoadStart;
 
             mDatabaseAccessor = new DBTask(psConnectionString);
             RegisterEvents(mDatabaseAccessor);
