@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using OrganismDatabaseHandler.DatabaseTools;
 
 namespace AppUI_OrfDBHandler
@@ -64,24 +65,27 @@ namespace AppUI_OrfDBHandler
 
             if (inputFile.Exists)
             {
-                System.IO.TextReader tr = fi.OpenText();
-                var tmpLineCache = tr.ReadLine();
+                using var reader = new StreamReader(new FileStream(inputFile.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
 
                 // Get table format
-
-                while (tmpLineCache != null)
+                while (!reader.EndOfStream)
                 {
-                    var checkString = tmpLineCache.Substring(0, 2);
+                    var dataLine = reader.ReadLine();
+                    if (string.IsNullOrWhiteSpace(dataLine))
+                        continue;
+
+                    var checkString = dataLine.Substring(0, 2);
                     if (checkString != "--")      // not a comment line. Process further
                     {
                         if (checkString == " {")   // Beginning of an entry block
                         {
                             var rawEntry = new List<string>();
-                            var entryLine = tr.ReadLine();
+                            var entryLine = reader.ReadLine();
+
                             while (entryLine?.Substring(0, 2) != " }")
                             {
                                 rawEntry.Add(entryLine);
-                                entryLine = tr.ReadLine();
+                                entryLine = reader.ReadLine();
                             }
 
                             ProcessTranslationEntry(rawEntry);
@@ -92,12 +96,6 @@ namespace AppUI_OrfDBHandler
                             Console.WriteLine("Skipping: entryDA.Update(mTranslation_Entries)");
                             Console.WriteLine("Skipping: idDA.Update(mTranslation_Tables)");
                         }
-
-                        tmpLineCache = tr.ReadLine();
-                    }
-                    else
-                    {
-                        tmpLineCache = tr.ReadLine();           // comment line. Ignore
                     }
                 }
             }
