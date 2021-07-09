@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 using OrganismDatabaseHandler.DatabaseTools;
 using OrganismDatabaseHandler.ProteinExport;
 using OrganismDatabaseHandler.ProteinImport;
-using OrganismDatabaseHandler.SequenceInfo;
 using PRISM;
 using PRISMDatabaseUtils;
 using ProteinFileReader;
@@ -181,8 +178,6 @@ namespace AppUI_OrfDBHandler
                     mImporter.AddAuthenticationHash(proteinCollectionID, genSHA, currentFastaProteinCount, currentFastaResidueCount);
                 }
 
-                // Debug.WriteLine("End: " + tmpFilename + ": " + DateTime.Now.ToLongTimeString);
-                // Debug.Flush();
                 fileArchiver.ArchiveCollection(
                     proteinCollectionID,
                     ArchiveOutputFilesBase.CollectionTypes.Static,
@@ -221,40 +216,6 @@ namespace AppUI_OrfDBHandler
             }
 
             reader.CloseFile();
-        }
-
-        private Dictionary<string, int> GetProteinSortingIndices(string filePath)
-        {
-            var fi = new FileInfo(filePath);
-            var nameHash = new Dictionary<string, int>();
-            var counter = default(int);
-
-            var nameRegex = new Regex(
-                @"^\>(?<name>\S+)\s*(?<description>.*)$",
-                RegexOptions.Compiled);
-
-            TextReader tr = fi.OpenText();
-            var s = tr.ReadLine();
-
-            while (s != null)
-            {
-                if (nameRegex.IsMatch(s))
-                {
-                    counter++;
-                    var m = nameRegex.Match(s);
-                    var tmpName = m.Groups["name"].Value;
-                    if (!nameHash.ContainsKey(tmpName.ToLower()))
-                    {
-                        nameHash.Add(tmpName.ToLower(), counter);
-                    }
-                }
-
-                s = tr.ReadLine();
-            }
-
-            tr.Close();
-
-            return nameHash;
         }
 
         [Obsolete("Valid, but unused and could take a very long time")]

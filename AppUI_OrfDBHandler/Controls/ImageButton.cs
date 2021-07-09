@@ -13,9 +13,6 @@ namespace AppUI_OrfDBHandler.Controls
     public class ImageButton : Button
     {
         private int ComCtlMajorVersion = -1;
-        private const int BCM_SETIMAGELIST = 5634;
-        public const int WM_PAINT = 15;
-        public const int WM_ENABLE = 10;
         private Bitmap themedImage;
 
         public ImageButton()

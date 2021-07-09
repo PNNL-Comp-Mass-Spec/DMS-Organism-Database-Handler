@@ -203,10 +203,6 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 counter++;
 
-                if (counter % eventTriggerThresh == 0)
-                {
-                    // OnDetailedProgressUpdate("Processing: " + tmpName, Math.Round(counter / (double)counterMax, 3));
-                }
                 var proteinLength = proteinSequence.Length;
                 var proteinDescription = hexCodeFinder.Replace(currentRow["Description"].ToString(), " ");
                 var proteinName = ExportComponent.ReferenceExtender(currentRow["Name"].ToString());

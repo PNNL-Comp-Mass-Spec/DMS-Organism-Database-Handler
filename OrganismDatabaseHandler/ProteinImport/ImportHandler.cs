@@ -21,17 +21,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         private readonly FASTAReader mImporter;
 
-        // Unused constants
-        // protected const string ProteinCollectionsTable = "T_Protein_Collections";
-        // protected const string ProteinsTable = "T_Proteins";
-        // protected const string MembersTable = "T_Protein_Collection_Members";
-        // protected const string NamesTable = "T_Protein_Names";
-        // protected const string PositionTable = "T_Position_Info";
-        // protected const string CollectionProteinMap = "V_Protein_Collections_By_Organism";
-
         private DataTable mCollectionsList;
-
-        private DataTable mAuthoritiesTable;
 
         public event LoadStartEventHandler LoadStart;
         public event LoadProgressEventHandler LoadProgress;

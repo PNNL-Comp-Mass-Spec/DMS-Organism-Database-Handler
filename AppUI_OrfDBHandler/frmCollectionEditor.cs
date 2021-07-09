@@ -586,13 +586,6 @@ namespace AppUI_OrfDBHandler
 
         private void cmdSaveDestCollection_Click(object sender, EventArgs e)
         {
-            //DialogResult resultReturn
-
-            //var frmAddCollection = new frmAddNewCollection();
-            //int tmpOrganismID;
-            //int tmpAnnotationTypeID;
-            //List<string> tmpSelectedProteinList;
-
             if (lvwDestination.Items.Count <= 0)
             {
                 if (mUploadHandler != null)

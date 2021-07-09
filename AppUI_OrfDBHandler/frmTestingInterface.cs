@@ -2,7 +2,6 @@
 using System.Data;
 using System.IO;
 using System.Windows.Forms;
-using AppUI_OrfDBHandler.ProteinUpload;
 using OrganismDatabaseHandler.ProteinExport;
 using OrganismDatabaseHandler.ProteinImport;
 
@@ -109,8 +108,6 @@ namespace AppUI_OrfDBHandler
 
         private void cmdExportFASTA_Click(object sender, EventArgs e)
         {
-            //Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS exporter;
-            //var tmpNameList = new ArrayList();
             var dialog = new FolderBrowserDialog
             {
                 //DefaultExt = ".fasta",
