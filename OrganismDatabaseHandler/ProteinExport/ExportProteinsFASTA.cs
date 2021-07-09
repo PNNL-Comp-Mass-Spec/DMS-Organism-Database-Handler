@@ -20,29 +20,29 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// Export the proteins to the given file
         /// </summary>
         /// <param name="proteins"></param>
-        /// <param name="destinationPath">Destination file path; will get updated with the final path</param>
+        /// <param name="fastaFilePath">Destination file path; will get updated with the final path</param>
         public override string Export(
             ProteinStorage.ProteinStorage proteins,
-            ref string destinationPath)
+            ref string fastaFilePath)
         {
             const int requiredSizeMb = 150;
 
-            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out var errorMessage);
+            var success = DiskInfo.GetDiskFreeSpace(fastaFilePath, out var currentFreeSpaceBytes, out var errorMessage);
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))
                     errorMessage = "DiskInfo.GetDiskFreeSpace returned a blank error message";
-                throw new IOException("Unable to save FASTA file at " + destinationPath + ". " + errorMessage);
+                throw new IOException("Unable to save FASTA file at " + fastaFilePath + ". " + errorMessage);
             }
 
-            if (!FileTools.ValidateFreeDiskSpace(destinationPath, requiredSizeMb, currentFreeSpaceBytes, out errorMessage))
+            if (!FileTools.ValidateFreeDiskSpace(fastaFilePath, requiredSizeMb, currentFreeSpaceBytes, out errorMessage))
             {
                 if (string.IsNullOrEmpty(errorMessage))
                     errorMessage = "FileTools.ValidateFreeDiskSpace returned a blank error message";
-                throw new IOException("Unable to save FASTA file at " + destinationPath + ". " + errorMessage);
+                throw new IOException("Unable to save FASTA file at " + fastaFilePath + ". " + errorMessage);
             }
 
-            using (var writer = new StreamWriter(destinationPath))
+            using (var writer = new StreamWriter(fastaFilePath))
             {
                 var alternateNames = string.Empty;
 
@@ -89,25 +89,25 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
             }
 
-            var fingerprint = GenerateFileAuthenticationHash(destinationPath);
+            var fingerprint = GenerateFileAuthenticationHash(fastaFilePath);
 
-            var fi = new FileInfo(destinationPath);
+            var sourceFile = new FileInfo(fastaFilePath);
 
             var newDestinationPath = Path.Combine(
-                Path.GetDirectoryName(destinationPath),
-                fingerprint + Path.GetExtension(destinationPath));
+                Path.GetDirectoryName(fastaFilePath) ?? string.Empty,
+                fingerprint + Path.GetExtension(fastaFilePath));
 
             var targetFi = new FileInfo(newDestinationPath);
 
-            if (fi.Exists)
+            if (sourceFile.Exists)
             {
                 if (targetFi.Exists)
                 {
                     targetFi.Delete();
                 }
 
-                fi.MoveTo(newDestinationPath);
-                destinationPath = newDestinationPath;
+                sourceFile.MoveTo(newDestinationPath);
+                fastaFilePath = newDestinationPath;
             }
 
             OnExportEnd();
@@ -119,89 +119,71 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// Export the proteins to the given file
         /// </summary>
         /// <param name="proteinTables"></param>
-        /// <param name="destinationPath">Destination file path; will get updated with the final path</param>
+        /// <param name="fastaFilePath">Destination file path; will get updated with the final path</param>
         public override string Export(
             DataSet proteinTables,
-            ref string destinationPath)
+            ref string fastaFilePath)
         {
             foreach (DataTable proteinTable in proteinTables.Tables)
             {
-                WriteFromDataTable(proteinTable, destinationPath);
+                WriteFromDataTable(proteinTable, fastaFilePath);
             }
 
-            return FinalizeFile(ref destinationPath);
+            return FinalizeFile(ref fastaFilePath);
         }
 
         /// <summary>
         /// Export the proteins to the given file
         /// </summary>
         /// <param name="proteinTable"></param>
-        /// <param name="destinationPath">Destination file path; will get updated with the final path</param>
+        /// <param name="fastaFilePath">Destination file path; will get updated with the final path</param>
         public override string Export(
             DataTable proteinTable,
-            ref string destinationPath)
+            ref string fastaFilePath)
         {
             if (proteinTable.Rows.Count > 0)
             {
-                WriteFromDataTable(proteinTable, destinationPath);
+                WriteFromDataTable(proteinTable, fastaFilePath);
             }
             else
             {
-                return FinalizeFile(ref destinationPath);
+                return FinalizeFile(ref fastaFilePath);
             }
 
-            return destinationPath;
+            return fastaFilePath;
         }
 
-        public int WriteFromDataTable(DataTable proteinTable, string destinationPath)
+        public int WriteFromDataTable(DataTable proteinTable, string fastaFilePath)
         {
             const int requiredSizeMb = 150;
 
-            var counter = default(int);
             var proteinsWritten = 0;
 
             var hexCodeFinder = new Regex(@"[\x00-\x1F\x7F-\xFF]", RegexOptions.Compiled);
 
             var alternateNames = string.Empty;
 
-            var success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out var errorMessage);
+            var success = DiskInfo.GetDiskFreeSpace(fastaFilePath, out var currentFreeSpaceBytes, out var errorMessage);
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))
                     errorMessage = "DiskInfo.GetDiskFreeSpace returned a blank error message";
-                throw new IOException("Unable to append to FASTA file at " + destinationPath + ". " + errorMessage);
+                throw new IOException("Unable to append to FASTA file at " + fastaFilePath + ". " + errorMessage);
             }
 
-            if (!FileTools.ValidateFreeDiskSpace(destinationPath, requiredSizeMb, currentFreeSpaceBytes, out errorMessage))
+            if (!FileTools.ValidateFreeDiskSpace(fastaFilePath, requiredSizeMb, currentFreeSpaceBytes, out errorMessage))
             {
                 if (string.IsNullOrEmpty(errorMessage))
                     errorMessage = "FileTools.ValidateFreeDiskSpace returned a blank error message";
-                throw new IOException("Unable to append to FASTA file at " + destinationPath + ". " + errorMessage);
+                throw new IOException("Unable to append to FASTA file at " + fastaFilePath + ". " + errorMessage);
             }
 
             // Open the output file for append
-            using var writer = new StreamWriter(new FileStream(destinationPath, FileMode.Append, FileAccess.Write, FileShare.Read));
+            using var writer = new StreamWriter(new FileStream(fastaFilePath, FileMode.Append, FileAccess.Write, FileShare.Read));
 
-            // OnDetailedExportStart("Writing: " + proteinTable.TableName);
-
-            var counterMax = proteinTable.Rows.Count;
-            int eventTriggerThresh;
-            if (counterMax <= 25)
-            {
-                eventTriggerThresh = 1;
-            }
-            else
-            {
-                eventTriggerThresh = (int)Math.Round(counterMax / 25d);
-            }
-
-            var foundRows = proteinTable.Select("");
-
-            foreach (var currentRow in foundRows)
+            foreach (var currentRow in proteinTable.Select(string.Empty))
             {
                 var proteinSequence = ExportComponent.SequenceExtender(currentRow["Sequence"].ToString(), proteinTable.Rows.Count);
-
-                counter++;
 
                 var proteinLength = proteinSequence.Length;
                 var proteinDescription = hexCodeFinder.Replace(currentRow["Description"].ToString(), " ");
@@ -225,29 +207,29 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <summary>
         /// Rename the file to include the fingerprint
         /// </summary>
-        /// <param name="destinationPath">File path to finalize; will get updated with the new name that includes the fingerprint</param>
+        /// <param name="fastaFilePath">File path to finalize; will get updated with the new name that includes the fingerprint</param>
         /// <returns>Fingerprint, e.g. 9B916A8B</returns>
-        public string FinalizeFile(ref string destinationPath)
+        public string FinalizeFile(ref string fastaFilePath)
         {
-            var fingerprint = GenerateFileAuthenticationHash(destinationPath);
+            var fingerprint = GenerateFileAuthenticationHash(fastaFilePath);
 
-            var fi = new FileInfo(destinationPath);
+            var sourceFile = new FileInfo(fastaFilePath);
 
             var newDestinationPath = Path.Combine(
-                Path.GetDirectoryName(destinationPath),
-                fingerprint + Path.GetExtension(destinationPath));
+                Path.GetDirectoryName(fastaFilePath) ?? string.Empty,
+                fingerprint + Path.GetExtension(fastaFilePath));
 
-            var targetFi = new FileInfo(newDestinationPath);
+            var destinationFile = new FileInfo(newDestinationPath);
 
-            if (fi.Exists)
+            if (sourceFile.Exists)
             {
-                if (targetFi.Exists)
+                if (destinationFile.Exists)
                 {
-                    targetFi.Delete();
+                    destinationFile.Delete();
                 }
 
-                fi.MoveTo(newDestinationPath);
-                destinationPath = newDestinationPath;
+                sourceFile.MoveTo(newDestinationPath);
+                fastaFilePath = newDestinationPath;
             }
 
             OnExportEnd();
