@@ -130,13 +130,6 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProteinUpload\BatchUploadFromFileList.cs" />
-    <Compile Include="ProteinUpload\frmBatchUploadFromFileList.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ProteinUpload\frmBatchUploadFromFileList.Designer.cs">
-      <DependentUpon>frmBatchUploadFromFileList.cs</DependentUpon>
-    </Compile>
     <Compile Include="SyncFASTAFileArchive.cs">
       <SubType>Code</SubType>
     </Compile>
