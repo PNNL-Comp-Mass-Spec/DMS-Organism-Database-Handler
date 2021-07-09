@@ -46,13 +46,12 @@ namespace AppUI_OrfDBHandler
         {
             if (mSearchActive)
             {
+                return;
             }
-            else
-            {
-                txtLiveSearch.Text = null;
-                txtLiveSearch.ForeColor = SystemColors.ControlText;
-                mSearchActive = true;
-            }
+
+            txtLiveSearch.Text = null;
+            txtLiveSearch.ForeColor = SystemColors.ControlText;
+            mSearchActive = true;
         }
 
         private void txtLiveSearch_Leave(object sender, EventArgs e)
@@ -188,7 +187,7 @@ namespace AppUI_OrfDBHandler
                 }
                 else
                 {
-                    compareResult = string.Compare(item1.SubItems[colIndex].Text, item2.SubItems[colIndex].Text, StringComparison.Ordinal);
+                    compareResult = string.CompareOrdinal(item1.SubItems[colIndex].Text, item2.SubItems[colIndex].Text);
                 }
 
                 if (mSortAscending)
@@ -199,7 +198,6 @@ namespace AppUI_OrfDBHandler
                 return -compareResult;
             }
         }
-
 
         /// <summary>
         /// Use this method to chain events between classes
