@@ -56,6 +56,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public Dictionary<string, string> Authorities { get; private set; }
 
+        [Obsolete("Unused")]
         protected string GetCollectionNameFromId(int proteinCollectionId)
         {
             var foundRows = mCollectionsList.Select("Protein_Collection_ID = " + proteinCollectionId);
@@ -118,6 +119,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             return organismTable;
         }
 
+        [Obsolete("Unused")]
         public DataTable LoadAnnotationTypes(
             int proteinCollectionId)
         {
@@ -379,8 +381,13 @@ namespace OrganismDatabaseHandler.ProteinImport
             return proteinStorage;
         }
 
-        // Function to load fasta file contents with no checking against the existing database entries
-        // used to load up the source collection ListView
+        /// <summary>
+        /// Function to load fasta file contents with no checking against the existing database entries
+        /// used to load up the source collection ListView
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="fileType"></param>
+        [Obsolete("Unused")]
         public DataTable LoadProteinsRaw(
             string filePath,
             ProteinImportFileTypes fileType)
@@ -479,6 +486,8 @@ namespace OrganismDatabaseHandler.ProteinImport
         #endregion
 
         #region "Stored Procedure Access"
+
+        [Obsolete("Unused")]
         protected int RunSP_UpdateProteinCollectionsByOrganism()
         {
             var dbTools = mSQLAccess.DbTools;
