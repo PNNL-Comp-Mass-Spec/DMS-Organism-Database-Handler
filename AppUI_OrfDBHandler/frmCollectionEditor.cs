@@ -49,7 +49,7 @@ namespace AppUI_OrfDBHandler
             Application.Run(new frmCollectionEditor());
         }
 
-        private const string ProgramDate = "July 5, 2021";
+        private const string ProgramDate = "July 9, 2021";
 
         private DataTable mOrganisms;
         private DataTable mProteinCollections;

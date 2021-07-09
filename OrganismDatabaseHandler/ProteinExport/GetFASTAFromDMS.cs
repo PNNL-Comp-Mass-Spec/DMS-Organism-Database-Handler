@@ -806,7 +806,6 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             OnWarningEvent("GetHashFileValidationInfo cannot determine the parent directory of " + fastaFile.FullName);
             return new FileInfo(hashFileName);
-
         }
 
         /// <summary>
