@@ -77,8 +77,8 @@ namespace AppUI_OrfDBHandler
             string displayMember,
             string valueMember)
         {
-            //foreach (DataRow dr in list.Rows)
-            //    Debug.WriteLine(dr[0].ToString() + ", " + dr[1].ToString() + ", " + dr[2].ToString() + ", ");
+            //foreach (DataRow dataRow in list.Rows)
+            //    Debug.WriteLine(dataRow[0].ToString() + ", " + dataRow[1].ToString() + ", " + dataRow[2].ToString() + ", ");
 
             cbo.DataSource = list;
             cbo.DisplayMember = displayMember;

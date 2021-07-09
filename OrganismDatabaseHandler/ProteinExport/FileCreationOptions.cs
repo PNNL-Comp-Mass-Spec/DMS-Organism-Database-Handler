@@ -28,10 +28,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var optionsHash = new Dictionary<string, string>();
 
             DataRow[] foundRows;
-
-            string tmpKeyword;
-            string tmpValue;
-
+            
             var validKeyword = default(bool);
             var validValue = default(bool);
 
@@ -59,71 +56,73 @@ namespace OrganismDatabaseHandler.ProteinExport
             foreach (Match m in mCollection)
             {
                 // optionsHash.Add(m.Groups("keyword").Value, m.Groups("value").Value)
-                tmpKeyword = m.Groups["keyword"].Value;
-                tmpValue = m.Groups["value"].Value;
+                var keyword = m.Groups["keyword"].Value;
+                var value = m.Groups["value"].Value;
 
                 // Check for valid keyword/value pair
-                foundRows = mCreationValuesTable.Select("Keyword = '" + tmpKeyword + "' AND Value_String = '" + tmpValue + "'");
+                foundRows = mCreationValuesTable.Select("Keyword = '" + keyword + "' AND Value_String = '" + value + "'");
                 if (foundRows.Length < 1)
                 {
                     // check if keyword or value is bad
                     var errorString = new StringBuilder();
 
-                    var checkRows = mCreationValuesTable.Select("Keyword = '" + tmpKeyword);
+                    var checkRows = mCreationValuesTable.Select("Keyword = '" + keyword);
                     if (checkRows.Length > 0)
                         validKeyword = true;
 
-                    checkRows = mCreationValuesTable.Select("Value_String = '" + tmpValue + "'");
+                    checkRows = mCreationValuesTable.Select("Value_String = '" + value + "'");
                     if (checkRows.Length > 0)
                         validValue = true;
 
                     if (!validKeyword)
                     {
-                        errorString.AppendFormat("Keyword: {0} is not valid", tmpKeyword);
+                        errorString.AppendFormat("Keyword: {0} is not valid", keyword);
                     }
 
                     if (!validValue)
                     {
                         if (errorString.ToString().Length > 0)
                             errorString.Append(", ");
-                        errorString.AppendFormat("Value: {0} is not a valid option", tmpValue);
+                        errorString.AppendFormat("Value: {0} is not a valid option", value);
                     }
 
                     throw new Exception(errorString.ToString());
                 }
 
-                if (optionsHash.ContainsKey(tmpKeyword))
+                if (optionsHash.ContainsKey(keyword))
                 {
-                    throw new Exception(tmpKeyword + " is a duplicate keyword");
+                    throw new Exception(keyword + " is a duplicate keyword");
                 }
 
-                optionsHash.Add(tmpKeyword, tmpValue);
+                optionsHash.Add(keyword, value);
             }
 
             // Parse dictionary into canonical options string for return
             foundRows = mKeywordTable.Select("", "Keyword_ID ASC");
-            foreach (var dr in foundRows)
+            foreach (var dataRow in foundRows)
             {
                 if (cleanOptionsString.ToString().Length > 0)
                 {
                     cleanOptionsString.Append(",");
                 }
 
-                tmpKeyword = dr["Keyword"].ToString();
-                if (optionsHash.ContainsKey(tmpKeyword))
+                var keyword = dataRow["Keyword"].ToString();
+                string value;
+
+                if (optionsHash.ContainsKey(keyword))
                 {
-                    tmpValue = optionsHash[tmpKeyword];
+                    value = optionsHash[keyword];
                 }
                 else
                 {
-                    tmpValue = dr["Default_Value"].ToString();
+                    value = dataRow["Default_Value"].ToString();
                 }
 
-                switch (tmpKeyword)
+                switch (keyword)
                 {
                     case "seq_direction":
                         // Convert from string to an enum (case insensitive matching to enum value names)
-                        SequenceDirection = (GetFASTAFromDMS.SequenceTypes)Enum.Parse(typeof(GetFASTAFromDMS.SequenceTypes), tmpValue, true);
+                        SequenceDirection = (GetFASTAFromDMS.SequenceTypes)Enum.Parse(typeof(GetFASTAFromDMS.SequenceTypes), value, true);
                         break;
 
                     case "filetype":
@@ -131,9 +130,9 @@ namespace OrganismDatabaseHandler.ProteinExport
                         break;
                 }
 
-                cleanOptionsString.Append(tmpKeyword);
+                cleanOptionsString.Append(keyword);
                 cleanOptionsString.Append("=");
-                cleanOptionsString.Append(tmpValue);
+                cleanOptionsString.Append(value);
             }
 
             return cleanOptionsString.ToString();

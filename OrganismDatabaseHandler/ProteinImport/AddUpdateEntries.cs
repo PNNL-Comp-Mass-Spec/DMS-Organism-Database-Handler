@@ -103,7 +103,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             foreach (var s in selectedProteinList)
             {
-                var tmpPc = pc.GetProtein(s);
+                var storageEntry = pc.GetProtein(s);
 
                 counter++;
                 if (counter % eventTriggerThresh == 0)
@@ -111,7 +111,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                     OnProgressUpdate(counter / (double)counterMax);
                 }
 
-                tmpPc.ProteinId = AddProteinSequence(tmpPc);
+                storageEntry.ProteinId = AddProteinSequence(storageEntry);
             }
 
             OnLoadEnd();
@@ -139,16 +139,17 @@ namespace OrganismDatabaseHandler.ProteinImport
                     eventTriggerThresh = 100;
             }
 
-            foreach (var s in selectedProteinList)
+            foreach (var protein in selectedProteinList)
             {
-                var tmpPc = pc.GetProtein(s);
+                var storageEntry = pc.GetProtein(protein);
+
                 counter++;
                 if (counter % eventTriggerThresh == 0)
                 {
                     OnProgressUpdate(counter / (double)counterMax);
                 }
 
-                tmpPc.ReferenceId = AddProteinReference(tmpPc.Reference, tmpPc.Description, organismId, authorityId, tmpPc.ProteinId, MaximumProteinNameLength);
+                storageEntry.ReferenceId = AddProteinReference(storageEntry.Reference, storageEntry.Description, authorityId, storageEntry.ProteinId, MaximumProteinNameLength);
             }
 
             OnLoadEnd();
@@ -180,18 +181,19 @@ namespace OrganismDatabaseHandler.ProteinImport
             var numProteinsActual = 0;
             var numResiduesActual = 0;
 
-            foreach (var s in selectedProteinList)
+            foreach (var protein in selectedProteinList)
             {
-                var tmpPc = pc.GetProtein(s);
+                var storageEntry = pc.GetProtein(protein);
+
                 numProteinsActual++;
                 if (numProteinsActual % eventTriggerThresh == 0)
                 {
                     OnProgressUpdate(numProteinsActual / (double)counterMax);
                 }
 
-                numResiduesActual += tmpPc.Length;
+                numResiduesActual += storageEntry.Length;
 
-                tmpPc.MemberId = AddProteinCollectionMember(tmpPc.ReferenceId, tmpPc.ProteinId, tmpPc.SortingIndex, proteinCollectionId);
+                storageEntry.MemberId = AddProteinCollectionMember(storageEntry.ReferenceId, storageEntry.ProteinId, storageEntry.SortingIndex, proteinCollectionId);
             }
 
             if (numProteinsActual != numProteinsExpected)
@@ -226,10 +228,10 @@ namespace OrganismDatabaseHandler.ProteinImport
         {
             var totalLength = default(int);
 
-            foreach (var s in selectedProteinList)
+            foreach (var protein in selectedProteinList)
             {
-                var tmpPc = proteinCollection.GetProtein(s);
-                totalLength += tmpPc.Sequence.Length;
+                var storageEntry = proteinCollection.GetProtein(protein);
+                totalLength += storageEntry.Sequence.Length;
             }
 
             return totalLength;
@@ -886,8 +888,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             string description,
             int proteinId)
         {
-            var tmpHash = proteinName + "_" + description + "_" + proteinId;
-            var tmpGenSha = GenerateHash(tmpHash.ToLower());
+            var nameToHash = proteinName + "_" + description + "_" + proteinId;
+            var sha1Hash = GenerateHash(nameToHash.ToLower());
 
             var dbTools = mDatabaseAccessor.DbTools;
 
@@ -898,7 +900,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             // Define parameters for the procedure's arguments
             dbTools.AddParameter(cmdSave, "@Reference_ID", SqlType.Int).Value = referenceId;
-            dbTools.AddParameter(cmdSave, "@SHA1Hash", SqlType.VarChar, 40).Value = tmpGenSha;
+            dbTools.AddParameter(cmdSave, "@SHA1Hash", SqlType.VarChar, 40).Value = sha1Hash;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
 
             // Execute the stored procedure
@@ -938,7 +940,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             int proteinId,
             string proteinSequence)
         {
-            var tmpGenSha = GenerateHash(proteinSequence);
+            var sha1Hash = GenerateHash(proteinSequence);
 
             var dbTools = mDatabaseAccessor.DbTools;
 
@@ -949,7 +951,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             // Define parameters for the procedure's arguments
             dbTools.AddParameter(cmdSave, "@Protein_ID", SqlType.Int).Value = proteinId;
-            dbTools.AddParameter(cmdSave, "@SHA1Hash", SqlType.VarChar, 40).Value = tmpGenSha;
+            dbTools.AddParameter(cmdSave, "@SHA1Hash", SqlType.VarChar, 40).Value = sha1Hash;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
 
             // Execute the stored procedure

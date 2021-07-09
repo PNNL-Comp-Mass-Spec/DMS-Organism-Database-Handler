@@ -66,10 +66,15 @@ namespace OrganismDatabaseHandler.ProteinExport
                 "Archived_File_State_ID <> 3 " +
                 "ORDER BY File_Modification_Date DESC";
 
-            var tmpTable = DatabaseAccessor.GetTable(checkSql);
+            var queryResults = DatabaseAccessor.GetTable(checkSql);
             var collectionListHexHash = GenerateHash(proteinCollectionsList + "/" + creationOptionsString);
-            if (tmpTable.Rows.Count == 0)
+
+            DataTable archivedOutputFileData;
+
+            if (queryResults.Rows.Count == 0)
             {
+                // Add a new entry to T_Archived_Output_Files
+
                 var proteinCount = GetProteinCount(sourceFilePath);
 
                 var archivePath = GenerateArchivePath(
@@ -81,17 +86,18 @@ namespace OrganismDatabaseHandler.ProteinExport
                     proteinCollectionId, creationOptionsString, sourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount,
                     archivePath, Enum.GetName(typeof(CollectionTypes), archivedFileType), proteinCollectionsList, collectionListHexHash);
 
-                tmpTable = DatabaseAccessor.GetTable(checkSql);
+                archivedOutputFileData = DatabaseAccessor.GetTable(checkSql);
             }
             else
             {
                 // Archived file entry already exists
+                archivedOutputFileData = queryResults;
 
-                archivedFileEntryId = Convert.ToInt32(tmpTable.Rows[0]["Archived_File_ID"]);
-                var collectionListHexHashInDb = tmpTable.Rows[0]["Collection_List_Hex_Hash"].ToString();
-                var proteinCollectionsListFromDb = tmpTable.Rows[0]["Protein_Collection_List"].ToString();
+                archivedFileEntryId = Convert.ToInt32(archivedOutputFileData.Rows[0]["Archived_File_ID"]);
+                var collectionListHexHashInDb = archivedOutputFileData.Rows[0]["Collection_List_Hex_Hash"].ToString();
+                var proteinCollectionsListFromDb = archivedOutputFileData.Rows[0]["Protein_Collection_List"].ToString();
 
-                if (tmpTable.Rows[0]["Protein_Collection_List"].GetType().Name == "DBNull" ||
+                if (archivedOutputFileData.Rows[0]["Protein_Collection_List"].GetType().Name == "DBNull" ||
                     string.IsNullOrEmpty(collectionListHexHashInDb) ||
                     proteinCollectionsListFromDb != (proteinCollectionsList ?? "") ||
                     collectionListHexHashInDb != (collectionListHexHash ?? ""))
@@ -100,7 +106,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
             }
 
-            mArchivedFilePath = tmpTable.Rows[0]["Archived_File_Path"].ToString();
+            mArchivedFilePath = archivedOutputFileData.Rows[0]["Archived_File_Path"].ToString();
 
             try
             {

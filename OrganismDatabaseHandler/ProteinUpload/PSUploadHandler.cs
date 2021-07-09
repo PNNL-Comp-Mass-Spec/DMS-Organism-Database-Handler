@@ -430,10 +430,10 @@ namespace OrganismDatabaseHandler.ProteinUpload
                 OnLoadEnd();
             }
 
-            var tmpFileName = Path.GetTempPath();
+            var tempFileName = Path.GetTempPath();
 
             OnLoadStart("Generating Hash fingerprint");
-            var fingerprint = mExport.ExportFASTAFile(collectionId, tmpFileName, GetFASTAFromDMS.SequenceTypes.Forward);
+            var fingerprint = mExport.ExportFASTAFile(collectionId, tempFileName, GetFASTAFromDMS.SequenceTypes.Forward);
             OnLoadEnd();
 
             OnLoadStart("Storing fingerprint in T_Protein_Collections");

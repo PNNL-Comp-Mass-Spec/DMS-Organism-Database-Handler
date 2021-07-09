@@ -8,7 +8,6 @@ namespace OrganismDatabaseHandler.DatabaseTools
 {
     public class DBTask : EventNotifier
     {
-
 #region "Member Variables"
 
         #endregion
@@ -78,12 +77,12 @@ namespace OrganismDatabaseHandler.DatabaseTools
             var foundRows = dt.Select(filterString);
             var dataDictionary = new Dictionary<string, string>(foundRows.Length);
 
-            foreach (var dr in foundRows)
+            foreach (var dataRow in foundRows)
             {
-                var key = dr[keyFieldName].ToString();
+                var key = dataRow[keyFieldName].ToString();
                 if (!dataDictionary.ContainsKey(key))
                 {
-                    dataDictionary.Add(key, dr[valueFieldName].ToString());
+                    dataDictionary.Add(key, dataRow[valueFieldName].ToString());
                 }
             }
 
@@ -99,9 +98,9 @@ namespace OrganismDatabaseHandler.DatabaseTools
             var foundRows = dt.Select(filterString);
             var dataDictionary = new Dictionary<int, string>(foundRows.Length);
 
-            foreach (var dr in foundRows)
+            foreach (var dataRow in foundRows)
             {
-                var key = dr[keyFieldName].ToString();
+                var key = dataRow[keyFieldName].ToString();
                 if (!int.TryParse(key, out var keyValue))
                 {
                     continue;
@@ -109,7 +108,7 @@ namespace OrganismDatabaseHandler.DatabaseTools
 
                 if (!dataDictionary.ContainsKey(keyValue))
                 {
-                    dataDictionary.Add(keyValue, dr[valueFieldName].ToString());
+                    dataDictionary.Add(keyValue, dataRow[valueFieldName].ToString());
                 }
             }
 

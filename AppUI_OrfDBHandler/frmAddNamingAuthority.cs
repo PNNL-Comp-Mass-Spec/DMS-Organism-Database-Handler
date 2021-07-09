@@ -82,9 +82,7 @@ namespace AppUI_OrfDBHandler
 
                 newAddressSb.Append(m.Groups[4].Value);
 
-                var newAddress = newAddressSb.ToString();
-
-                return newAddress;
+                return newAddressSb.ToString();
             }
 
             return rawAddress;
@@ -92,9 +90,8 @@ namespace AppUI_OrfDBHandler
 
         private void txtAuthWeb_Validating(object sender, CancelEventArgs e)
         {
-            var txt = (TextBox)sender;
-            var tmpAddress = ValidateWebAddressFormat(txt.Text);
-            txt.Text = tmpAddress;
+            var targetTextBox = (TextBox)sender;
+            targetTextBox.Text = ValidateWebAddressFormat(targetTextBox.Text);
         }
     }
 }

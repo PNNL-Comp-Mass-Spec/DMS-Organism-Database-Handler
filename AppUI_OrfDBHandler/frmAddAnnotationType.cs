@@ -70,23 +70,23 @@ namespace AppUI_OrfDBHandler
         {
             cboAuthorityName.SelectedIndexChanged -= cboAuthorityName_SelectedIndexChanged;
 
-            var dr = mAuthoritiesTable.NewRow();
+            var dataRow = mAuthoritiesTable.NewRow();
 
-            dr["ID"] = -2;
-            dr["Display_Name"] = "Add New Naming Authority...";
-            dr["Details"] = "Brings up a dialog box to allow adding a naming authority to the list";
+            dataRow["ID"] = -2;
+            dataRow["Display_Name"] = "Add New Naming Authority...";
+            dataRow["Details"] = "Brings up a dialog box to allow adding a naming authority to the list";
 
             var pk1 = new DataColumn[1];
             pk1[0] = mAuthoritiesTable.Columns["ID"];
             mAuthoritiesTable.PrimaryKey = pk1;
 
-            if (mAuthoritiesTable.Rows.Contains(dr["ID"]))
+            if (mAuthoritiesTable.Rows.Contains(dataRow["ID"]))
             {
-                var rdr = mAuthoritiesTable.Rows.Find(dr["ID"]);
+                var rdr = mAuthoritiesTable.Rows.Find(dataRow["ID"]);
                 mAuthoritiesTable.Rows.Remove(rdr);
             }
 
-            mAuthoritiesTable.Rows.Add(dr);
+            mAuthoritiesTable.Rows.Add(dataRow);
 
             cboAuthorityName.DataSource = mAuthoritiesTable;
             cboAuthorityName.DisplayMember = "Display_Name";
@@ -129,23 +129,23 @@ namespace AppUI_OrfDBHandler
 
                 authAdd.FormLocation = new Point(Left + 20, Top + 30);
 
-                var tmpAuthId = authAdd.AddNamingAuthority();
+                var authorityId = authAdd.AddNamingAuthority();
 
-                if (!authAdd.EntryExists && tmpAuthId > 0)
+                if (!authAdd.EntryExists && authorityId > 0)
                 {
-                    var dr = mAuthoritiesTable.NewRow();
+                    var dataRow = mAuthoritiesTable.NewRow();
 
-                    dr["ID"] = tmpAuthId;
-                    dr["Display_Name"] = authAdd.ShortName;
-                    dr["Details"] = authAdd.FullName;
+                    dataRow["ID"] = authorityId;
+                    dataRow["Display_Name"] = authAdd.ShortName;
+                    dataRow["Details"] = authAdd.FullName;
 
-                    mAuthoritiesTable.Rows.Add(dr);
+                    mAuthoritiesTable.Rows.Add(dataRow);
                     mAuthoritiesTable.AcceptChanges();
                     LoadAuthoritiesList();
-                    AuthorityID = tmpAuthId;
+                    AuthorityID = authorityId;
                 }
 
-                cboAuthorityName.SelectedValue = tmpAuthId;
+                cboAuthorityName.SelectedValue = authorityId;
             }
         }
 

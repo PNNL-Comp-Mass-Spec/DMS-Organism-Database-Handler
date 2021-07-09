@@ -44,7 +44,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             using (var writer = new StreamWriter(destinationPath))
             {
-                var tmpAltNames = string.Empty;
+                var alternateNames = string.Empty;
 
                 OnExportStart("Writing to FASTA File");
 
@@ -62,30 +62,28 @@ namespace OrganismDatabaseHandler.ProteinExport
                     eventTriggerThresh = (int)Math.Round(counterMax / 25d);
                 }
 
-                var nameList = proteins.GetSortedProteinNames();
-
-                foreach (var tmpName in nameList)
+                foreach (var proteinName in proteins.GetSortedProteinNames())
                 {
-                    OnExportStart("Writing: " + tmpName);
+                    OnExportStart("Writing: " + proteinName);
 
-                    var tmpPc = proteins.GetProtein(tmpName);
-                    var tmpSeq = tmpPc.Sequence;
+                    var proteinInfo = proteins.GetProtein(proteinName);
+                    var proteinSequence = proteinInfo.Sequence;
 
                     counter++;
 
                     if (counter % eventTriggerThresh == 0)
                     {
-                        OnProgressUpdate("Processing: " + tmpName, Math.Round(counter / (double)counterMax, 3));
+                        OnProgressUpdate("Processing: " + proteinName, Math.Round(counter / (double)counterMax, 3));
                     }
 
-                    var proteinLength = tmpSeq.Length;
-                    var tmpDesc = hexCodeFinder.Replace(tmpPc.Description, " ");
+                    var proteinLength = proteinSequence.Length;
+                    var proteinDescription = hexCodeFinder.Replace(proteinInfo.Description, " ");
 
-                    writer.WriteLine((">" + tmpPc.Reference + " " + tmpDesc + tmpAltNames).Trim());
+                    writer.WriteLine((">" + proteinInfo.Reference + " " + proteinDescription + alternateNames).Trim());
 
                     for (var startIndex = 0; startIndex < proteinLength; startIndex += mSeqLineLength)
                     {
-                        var seqLine = tmpSeq.Substring(startIndex, mSeqLineLength);
+                        var seqLine = proteinSequence.Substring(startIndex, mSeqLineLength);
                         writer.WriteLine(seqLine);
                     }
                 }
@@ -164,7 +162,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             var hexCodeFinder = new Regex(@"[\x00-\x1F\x7F-\xFF]", RegexOptions.Compiled);
 
-            var tmpAltNames = string.Empty;
+            var alternateNames = string.Empty;
 
             var success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out var errorMessage);
             if (!success)
@@ -201,7 +199,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             foreach (var currentRow in foundRows)
             {
-                var tmpSeq = ExportComponent.SequenceExtender(currentRow["Sequence"].ToString(), proteinTable.Rows.Count);
+                var proteinSequence = ExportComponent.SequenceExtender(currentRow["Sequence"].ToString(), proteinTable.Rows.Count);
 
                 counter++;
 
@@ -209,17 +207,16 @@ namespace OrganismDatabaseHandler.ProteinExport
                 {
                     // OnDetailedProgressUpdate("Processing: " + tmpName, Math.Round(counter / (double)counterMax, 3));
                 }
+                var proteinLength = proteinSequence.Length;
+                var proteinDescription = hexCodeFinder.Replace(currentRow["Description"].ToString(), " ");
+                var proteinName = ExportComponent.ReferenceExtender(currentRow["Name"].ToString());
 
-                var proteinLength = tmpSeq.Length;
-                var tmpDesc = hexCodeFinder.Replace(currentRow["Description"].ToString(), " ");
-                var tmpName = ExportComponent.ReferenceExtender(currentRow["Name"].ToString());
-
-                writer.WriteLine((">" + tmpName + " " + tmpDesc + tmpAltNames).Trim());
+                writer.WriteLine((">" + proteinName + " " + proteinDescription + alternateNames).Trim());
 
                 for (var startIndex = 0; startIndex < proteinLength; startIndex += mSeqLineLength)
                 {
                     var charLength = Math.Min(mSeqLineLength, proteinLength - startIndex);
-                    var seqLinePortion = tmpSeq.Substring(startIndex, charLength);
+                    var seqLinePortion = proteinSequence.Substring(startIndex, charLength);
                     writer.WriteLine(seqLinePortion);
                 }
 

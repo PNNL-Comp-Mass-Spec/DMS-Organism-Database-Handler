@@ -60,9 +60,9 @@ namespace AppUI_OrfDBHandler
             const string sqlQuery2 = "SELECT * FROM " + IdTableName;
             mTranslationTables = dba.GetTable(sqlQuery2);
 
-            var fi = new System.IO.FileInfo(filePath);
+            var inputFile = new System.IO.FileInfo(filePath);
 
-            if (fi.Exists)
+            if (inputFile.Exists)
             {
                 System.IO.TextReader tr = fi.OpenText();
                 var tmpLineCache = tr.ReadLine();
@@ -114,7 +114,7 @@ namespace AppUI_OrfDBHandler
             var base3List = string.Empty;
             var nameList = new List<string>();
 
-            var tmpStartPos = default(int);
+            var startPos = default(int);
 
             const string trimString = " ,\"";
             var trimChars = trimString.ToCharArray();
@@ -127,13 +127,13 @@ namespace AppUI_OrfDBHandler
                 {
                     case "nam":
                         tmp = s.TrimStart();
-                        tmpStartPos = tmp.IndexOf(" ", StringComparison.Ordinal) + 1;
-                        tmp = tmp.Substring(tmpStartPos);
+                        startPos = tmp.IndexOf(" ", StringComparison.Ordinal) + 1;
+                        tmp = tmp.Substring(startPos);
                         tmp = tmp.Trim(trimChars);
-                        var tmpNameList = tmp.Split(";".ToCharArray());
-                        foreach (var tmpName in tmpNameList)
+                        
+                        foreach (var name in tmp.Split(";".ToCharArray()))
                         {
-                            nameList.Add(tmpName);
+                            nameList.Add(name);
                         }
 
                         break;
@@ -147,15 +147,15 @@ namespace AppUI_OrfDBHandler
 
                     case "ncb":
                         tmp = s.TrimStart();
-                        tmpStartPos = tmp.IndexOf("\"", StringComparison.Ordinal) + 1;
-                        tmp = tmp.Substring(tmpStartPos);
+                        startPos = tmp.IndexOf("\"", StringComparison.Ordinal) + 1;
+                        tmp = tmp.Substring(startPos);
                         tmp = tmp.TrimEnd(trimChars);
                         aaList = tmp;
                         break;
 
                     case "snc":
                         tmp = s.TrimStart();
-                        tmp = tmp.Substring(tmpStartPos); // TODO: This either does nothing, or undesirable things.
+                        tmp = tmp.Substring(startPos); // TODO: This either does nothing, or undesirable things.
                         tmp = tmp.TrimEnd(trimChars);
                         startList = tmp;
                         break;
@@ -191,9 +191,9 @@ namespace AppUI_OrfDBHandler
 
         private string ProcessBaseString(string rawBaseString)
         {
-            var tmpString = rawBaseString.TrimStart();
+            var trimmedString = rawBaseString.TrimStart();
 
-            return tmpString.Substring(10);
+            return trimmedString.Substring(10);
         }
 
         private bool SplitCodonEntries(
@@ -216,39 +216,34 @@ namespace AppUI_OrfDBHandler
                 return false;
             }
 
-            bool tmpStart;
-
             var counter = 0;
-            DataRow dr;
+            DataRow dataRow;
 
-            foreach (var tmpName in nameList)
+            foreach (var name in nameList)
             {
-                dr = mTranslationTables.NewRow();
-                dr["Translation_Table_Name"] = tmpName.Trim() + " (ID = " + id + ")";
-                dr["DNA_Translation_Table_ID"] = id;
-                mTranslationTables.Rows.Add(dr);
+                dataRow = mTranslationTables.NewRow();
+                dataRow["Translation_Table_Name"] = name.Trim() + " (ID = " + id + ")";
+                dataRow["DNA_Translation_Table_ID"] = id;
+                mTranslationTables.Rows.Add(dataRow);
             }
 
-            var arrAA = aaString.ToCharArray();
-
-            foreach (var tmpAA in arrAA)
+            foreach (var aminoAcid in aaString.ToCharArray())
             {
-                dr = mTranslationEntries.NewRow();
-                var tmpStartString = startString.Substring(counter, 1);
-                tmpStart = tmpStartString == "M";
+                dataRow = mTranslationEntries.NewRow();
+                var startSequence = startString.Substring(counter, 1);
 
                 var base1 = base1List.Substring(counter, 1);
                 var base2 = base2List.Substring(counter, 1);
                 var base3 = base3List.Substring(counter, 1);
 
-                dr["Coded_AA"] = tmpAA;
-                dr["Start_Sequence"] = tmpStartString;
-                dr["Base_1"] = base1;
-                dr["Base_2"] = base2;
-                dr["Base_3"] = base3;
-                dr["DNA_Translation_Table_ID"] = id;
+                dataRow["Coded_AA"] = aminoAcid;
+                dataRow["Start_Sequence"] = startSequence;
+                dataRow["Base_1"] = base1;
+                dataRow["Base_2"] = base2;
+                dataRow["Base_3"] = base3;
+                dataRow["DNA_Translation_Table_ID"] = id;
 
-                mTranslationEntries.Rows.Add(dr);
+                mTranslationEntries.Rows.Add(dataRow);
                 counter++;
             }
 

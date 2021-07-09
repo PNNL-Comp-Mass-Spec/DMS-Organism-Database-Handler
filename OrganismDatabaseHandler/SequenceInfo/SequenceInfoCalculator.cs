@@ -42,10 +42,10 @@ namespace OrganismDatabaseHandler.SequenceInfo
 
         public void CalculateSequenceInfo(string sequence)
         {
-            var tmpSeqInfo = SequenceInfo(sequence);
-            MonoisotopicMass = tmpSeqInfo.MonoisotopicMass;
-            AverageMass = tmpSeqInfo.AverageMass;
-            MolecularFormula = tmpSeqInfo.MolecularFormula;
+            var seqInfo = SequenceInfo(sequence);
+            MonoisotopicMass = seqInfo.MonoisotopicMass;
+            AverageMass = seqInfo.AverageMass;
+            MolecularFormula = seqInfo.MolecularFormula;
             SequenceLength = sequence.Length;
             SHA1Hash = GenerateHash(sequence);
         }
@@ -113,19 +113,19 @@ namespace OrganismDatabaseHandler.SequenceInfo
             RegisterEvents(getSql);
 
             const string sqlString = "SELECT * FROM T_Residues WHERE [Num_C] > 0";
-            var tmpAATable = getSql.GetTable(sqlString);
+            var aminoAcidTable = getSql.GetTable(sqlString);
 
-            foreach (DataRow dr in tmpAATable.Rows)
+            foreach (DataRow dataRow in aminoAcidTable.Rows)
             {
-                var singleLetterSymbol = dr["Residue_Symbol"].ToString();
-                var description = dr["Description"].ToString();
-                var countC = Convert.ToInt32(dr["Num_C"]);
-                var countH = Convert.ToInt32(dr["Num_H"]);
-                var countN = Convert.ToInt32(dr["Num_N"]);
-                var countO = Convert.ToInt32(dr["Num_O"]);
-                var countS = Convert.ToInt32(dr["Num_S"]);
-                var monoMass = Convert.ToDouble(dr["Monoisotopic_Mass"]);
-                var avgMass = Convert.ToDouble(dr["Average_Mass"]);
+                var singleLetterSymbol = dataRow["Residue_Symbol"].ToString();
+                var description = dataRow["Description"].ToString();
+                var countC = Convert.ToInt32(dataRow["Num_C"]);
+                var countH = Convert.ToInt32(dataRow["Num_H"]);
+                var countN = Convert.ToInt32(dataRow["Num_N"]);
+                var countO = Convert.ToInt32(dataRow["Num_O"]);
+                var countS = Convert.ToInt32(dataRow["Num_S"]);
+                var monoMass = Convert.ToDouble(dataRow["Monoisotopic_Mass"]);
+                var avgMass = Convert.ToDouble(dataRow["Average_Mass"]);
 
                 AddAminoAcid(new AminoAcidInfo(singleLetterSymbol, description, countC, countH, countN, countO, countS, avgMass, monoMass));
             }

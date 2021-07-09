@@ -69,11 +69,11 @@ namespace AppUI_OrfDBHandler
             lvw.BeginUpdate();
             foreach (var cRow in collectionRows)
             {
-                var tmpCreated = Convert.ToDateTime(cRow["Created"]);
-                var tmpMod = Convert.ToDateTime(cRow["Modified"]);
+                var created = Convert.ToDateTime(cRow["Created"]);
+                var modified = Convert.ToDateTime(cRow["Modified"]);
                 var item = new ListViewItem {Text = cRow["Name"].ToString(), Tag = cRow["ID"]};
-                item.SubItems.Add(tmpCreated.ToString("yyyy-MM-dd"));
-                item.SubItems.Add(tmpMod.ToString("yyyy-MM-dd"));
+                item.SubItems.Add(created.ToString("yyyy-MM-dd"));
+                item.SubItems.Add(modified.ToString("yyyy-MM-dd"));
                 item.SubItems.Add(cRow["State"].ToString());
                 lvw.Items.Add(item);
             }

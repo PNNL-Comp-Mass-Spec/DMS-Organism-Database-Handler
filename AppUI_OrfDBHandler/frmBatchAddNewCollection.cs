@@ -250,18 +250,17 @@ namespace AppUI_OrfDBHandler
 
         #region "Directory Loading"
 
-        private Dictionary<int, string> CollectionsTableToList(DataTable dt)
+        private Dictionary<int, string> CollectionsTableToList(DataTable dataTable)
         {
-            var collectionInfo = new Dictionary<int, string>(dt.Rows.Count);
-            var foundRows = dt.Select("", "Protein_Collection_ID");
+            var collectionInfo = new Dictionary<int, string>(dataTable.Rows.Count);
 
-            foreach (var dr in foundRows)
+            foreach (var dataRow in dataTable.Select("", "Protein_Collection_ID"))
             {
-                var tmpId = DatabaseUtilsExtensions.GetInteger(null, dr["Protein_Collection_ID"]);
-                var tmpName = dr["FileName"].ToString();
-                if (!collectionInfo.ContainsKey(tmpId))
+                var proteinCollectionID = DatabaseUtilsExtensions.GetInteger(null, dataRow["Protein_Collection_ID"]);
+                var fileName = dataRow["FileName"].ToString();
+                if (!collectionInfo.ContainsKey(proteinCollectionID))
                 {
-                    collectionInfo.Add(tmpId, tmpName);
+                    collectionInfo.Add(proteinCollectionID, fileName);
                 }
             }
 
@@ -377,23 +376,23 @@ namespace AppUI_OrfDBHandler
             cboAnnotationTypePicker.SelectedIndexChanged -= cboAnnotationTypePicker_SelectedIndexChanged;
 
             cbo.BeginUpdate();
-            var dr = authList.NewRow();
+            var dataRow = authList.NewRow();
 
-            dr["ID"] = -2;
-            dr["Display_Name"] = "Add New Annotation Type...";
-            dr["Details"] = "Brings up a dialog box to allow adding a naming authority to the list";
+            dataRow["ID"] = -2;
+            dataRow["Display_Name"] = "Add New Annotation Type...";
+            dataRow["Details"] = "Brings up a dialog box to allow adding a naming authority to the list";
 
             var pk1 = new DataColumn[1];
             pk1[0] = authList.Columns["ID"];
             authList.PrimaryKey = pk1;
 
-            if (authList.Rows.Contains(dr["ID"]))
+            if (authList.Rows.Contains(dataRow["ID"]))
             {
-                var rdr = authList.Rows.Find(dr["ID"]);
+                var rdr = authList.Rows.Find(dataRow["ID"]);
                 authList.Rows.Remove(rdr);
             }
 
-            authList.Rows.Add(dr);
+            authList.Rows.Add(dataRow);
             authList.AcceptChanges();
 
             cbo.DataSource = authList;
@@ -634,20 +633,20 @@ namespace AppUI_OrfDBHandler
         /// <returns>True if success, false if no protein collections are selected or if one or more is missing a description and/or source</returns>
         private bool MakeCheckedFileList()
         {
-            var tmpNameList = new Dictionary<string, ProteinCollectionMetadata>();
+            var nameList = new Dictionary<string, ProteinCollectionMetadata>();
 
             foreach (ListViewItem li in lvwSelectedFiles.Items)
             {
                 var fastaFilePath = GetSelectedFileColumn(li, SelectedFileColumn.FilePath);
 
-                if (!tmpNameList.ContainsKey(fastaFilePath))
+                if (!nameList.ContainsKey(fastaFilePath))
                 {
                     var udtMetadata = new ProteinCollectionMetadata
                     {
                         Description = GetSelectedFileColumn(li, SelectedFileColumn.Description),
                         Source = GetSelectedFileColumn(li, SelectedFileColumn.Source)
                     };
-                    tmpNameList.Add(fastaFilePath, udtMetadata);
+                    nameList.Add(fastaFilePath, udtMetadata);
                 }
             }
 
@@ -656,7 +655,7 @@ namespace AppUI_OrfDBHandler
                 var upInfo = item.Value;
                 var fi = upInfo.FileInformation;
 
-                if (tmpNameList.TryGetValue(fi.FullName, out var udtMetadata))
+                if (nameList.TryGetValue(fi.FullName, out var udtMetadata))
                 {
                     upInfo.Description = udtMetadata.Description;
                     upInfo.Source = udtMetadata.Source;
@@ -869,10 +868,10 @@ namespace AppUI_OrfDBHandler
                     var fastaFilePath = GetSelectedFileColumn(li, SelectedFileColumn.FilePath);
 
                     // Update organism in mSelectedFileList
-                    var tmpUpInfo = mSelectedFileList[fastaFilePath];
-                    tmpUpInfo.OrganismId = SelectedOrganismID;
+                    var uploadInfo = mSelectedFileList[fastaFilePath];
+                    uploadInfo.OrganismId = SelectedOrganismID;
 
-                    mSelectedFileList[fastaFilePath] = tmpUpInfo;
+                    mSelectedFileList[fastaFilePath] = uploadInfo;
 
                     // Update organism in lvwSelectedFiles
                     li.SubItems[(int)SelectedFileColumn.Organism].Text = cbo.Text;
@@ -894,29 +893,27 @@ namespace AppUI_OrfDBHandler
             if (SelectedAnnotationTypeID == -2)
             {
                 // Bring up an additional dialog
-                var annTypeAdd = new AddAnnotationTypeType(mPsConnectionString);
-                RegisterEvents(annTypeAdd);
+                var annotationTypeHandler = new AddAnnotationTypeType(mPsConnectionString);
+                RegisterEvents(annotationTypeHandler);
 
-                annTypeAdd.FormLocation = new Point(Left + Width + 10, Top);
+                annotationTypeHandler.FormLocation = new Point(Left + Width + 10, Top);
 
-                var tmpAnnTypeId = annTypeAdd.AddAnnotationType();
-                // Dim AuthorityAdd As New AddNamingAuthority(mPSConnectionString)
-                // tempAuthorityID = AuthAdd.AddNamingAuthority
+                var annotationTypeId = annotationTypeHandler.AddAnnotationType();
 
-                if (!annTypeAdd.EntryExists && tmpAnnTypeId > 0)
+                if (!annotationTypeHandler.EntryExists && annotationTypeId > 0)
                 {
-                    var dr = mAnnotationTypeList.NewRow();
+                    var dataRow = mAnnotationTypeList.NewRow();
 
-                    dr["ID"] = tmpAnnTypeId;
-                    dr["Display_Name"] = annTypeAdd.DisplayName;
-                    dr["Details"] = annTypeAdd.Description;
+                    dataRow["ID"] = annotationTypeId;
+                    dataRow["Display_Name"] = annotationTypeHandler.DisplayName;
+                    dataRow["Details"] = annotationTypeHandler.Description;
 
-                    mAnnotationTypeList.Rows.Add(dr);
+                    mAnnotationTypeList.Rows.Add(dataRow);
                     mAnnotationTypeList.AcceptChanges();
                     LoadAnnotationTypePicker(cboAnnotationTypePicker, mAnnotationTypeList);
-                    SelectedAnnotationTypeID = tmpAnnTypeId;
+                    SelectedAnnotationTypeID = annotationTypeId;
 
-                    cboAnnotationTypePicker.SelectedValue = tmpAnnTypeId;
+                    cboAnnotationTypePicker.SelectedValue = annotationTypeId;
                 }
             }
 
@@ -926,11 +923,11 @@ namespace AppUI_OrfDBHandler
                 {
                     // Update annotation type in mSelectedFileList
                     var fastaFilePath = GetSelectedFileColumn(li, SelectedFileColumn.FilePath);
-                    var tmpUpInfo = mSelectedFileList[fastaFilePath];
+                    var uploadInfo = mSelectedFileList[fastaFilePath];
 
                     mSelectedFileList[fastaFilePath] =
                         new PSUploadHandler.UploadInfo(
-                            tmpUpInfo.FileInformation,
+                            uploadInfo.FileInformation,
                             SelectedOrganismID,
                             SelectedAnnotationTypeID);
 

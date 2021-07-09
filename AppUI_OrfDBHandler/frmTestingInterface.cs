@@ -111,19 +111,18 @@ namespace AppUI_OrfDBHandler
         {
             //Protein_Exporter.ExportProteinCollectionsIFC.IGetFASTAFromDMS exporter;
             //var tmpNameList = new ArrayList();
-
-            var sd = new FolderBrowserDialog
+            var dialog = new FolderBrowserDialog
             {
                 //DefaultExt = ".fasta",
                 //FileName = cboCollectionsList.Text + ".fasta",
                 SelectedPath = mLastOutputDirectory,
             };
 
-            var r = sd.ShowDialog();
+            var result = dialog.ShowDialog();
 
-            if (r == DialogResult.OK)
+            if (result == DialogResult.OK)
             {
-                var filePath = sd.SelectedPath;
+                var filePath = dialog.SelectedPath;
                 mLastOutputDirectory = filePath;
 
                 mExporter = new GetFASTAFromDMS(txtConnString.Text);

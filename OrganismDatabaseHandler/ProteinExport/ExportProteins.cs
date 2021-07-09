@@ -28,14 +28,14 @@ namespace OrganismDatabaseHandler.ProteinExport
             ref string destinationPath,
             List<string> selectedProteinList)
         {
-            var tmpProteinsList = new ProteinStorage.ProteinStorage(Path.GetFileNameWithoutExtension(destinationPath));
+            var newStorage = new ProteinStorage.ProteinStorage(Path.GetFileNameWithoutExtension(destinationPath));
 
             foreach (var reference in selectedProteinList)
             {
-                tmpProteinsList.AddProtein(proteins.GetProtein(reference));
+                newStorage.AddProtein(proteins.GetProtein(reference));
             }
 
-            return Export(tmpProteinsList, ref destinationPath);
+            return Export(newStorage, ref destinationPath);
         }
 
         /// <summary>

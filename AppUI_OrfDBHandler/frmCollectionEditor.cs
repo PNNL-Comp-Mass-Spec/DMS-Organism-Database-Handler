@@ -366,9 +366,9 @@ namespace AppUI_OrfDBHandler
             cmdDestRemove.Enabled = false;
             cmdDestRemoveAll.Enabled = false;
 
-            var tmpSelectedFileList = frmBatchUpload.FileList;
+            var selectedFileList = frmBatchUpload.FileList;
 
-            mBatchLoadTotalCount = tmpSelectedFileList.Count;
+            mBatchLoadTotalCount = selectedFileList.Count;
 
             if (mUploadHandler != null)
             {
@@ -405,7 +405,7 @@ namespace AppUI_OrfDBHandler
 
                 mUploadHandler.MaximumProteinNameLength = frmBatchUpload.ValidationMaxProteinNameLength;
 
-                mUploadHandler.BatchUpload(tmpSelectedFileList);
+                mUploadHandler.BatchUpload(selectedFileList);
             }
             catch (Exception ex)
             {
@@ -627,10 +627,10 @@ namespace AppUI_OrfDBHandler
                 cboCollectionPicker.Enabled = true;
                 cboOrganismFilter.Enabled = true;
 
-                var tmpOrganismId = frmAddCollection.OrganismId;
-                var tmpAnnotationTypeId = frmAddCollection.AnnotationTypeId;
+                var organismId = frmAddCollection.OrganismId;
+                var annotationTypeId = frmAddCollection.AnnotationTypeId;
 
-                var tmpSelectedProteinList = ScanDestinationCollectionWindow(lvwDestination);
+                var selectedProteins = ScanDestinationCollectionWindow(lvwDestination);
 
                 if (mUploadHandler == null)
                 {
@@ -646,11 +646,11 @@ namespace AppUI_OrfDBHandler
                     mUploadHandler.WroteLineEndNormalizedFASTA += NormalizedFASTAFileGenerationHandler;
                 }
 
-                mUploadHandler.UploadCollection(mImportHandler.CollectionMembers, tmpSelectedProteinList,
+                mUploadHandler.UploadCollection(mImportHandler.CollectionMembers, selectedProteins,
                                                  frmAddCollection.CollectionName, frmAddCollection.CollectionDescription,
                                                  frmAddCollection.CollectionSource,
-                                                 AddUpdateEntries.CollectionTypes.ProtOriginalSource, tmpOrganismId,
-                                                 tmpAnnotationTypeId);
+                                                 AddUpdateEntries.CollectionTypes.ProtOriginalSource, organismId,
+                                                 annotationTypeId);
 
                 RefreshCollectionList();
 
@@ -658,7 +658,7 @@ namespace AppUI_OrfDBHandler
 
                 cboOrganismFilter.Enabled = true;
                 cboCollectionPicker.Enabled = true;
-                cboOrganismFilter.SelectedValue = tmpOrganismId;
+                cboOrganismFilter.SelectedValue = organismId;
             }
 
             if (mUploadHandler != null)

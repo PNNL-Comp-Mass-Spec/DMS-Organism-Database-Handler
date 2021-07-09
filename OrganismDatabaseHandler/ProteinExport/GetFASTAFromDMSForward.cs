@@ -89,8 +89,8 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             var trueName = string.Empty;
 
-            var tmpId = default(int);
-            var tmpIdListSb = new StringBuilder();
+            var proteinCollectionID = default(int);
+            var proteinCollectionIDs = new List<string>();
 
             var nameCheckRegex = new Regex(@"(?<CollectionName>.+)(?<direction>_(forward|reversed|scrambled)).*\.(?<type>(fasta|fasta\.pro))");
 
@@ -123,10 +123,10 @@ namespace OrganismDatabaseHandler.ProteinExport
                     var authCheckRows = authorizationTable.Select("Protein_Collection_Name = '" + nameString + "' OR Protein_Collection_Name = 'Administrator'");
                     if (authCheckRows.Length > 0)
                     {
-                        tmpId = FindIdByName(nameString);
+                        proteinCollectionID = FindIdByName(nameString);
                         var passPhraseSql = "SELECT Passphrase " +
                                             "FROM T_Encrypted_Collection_Passphrases " +
-                                            "WHERE Protein_Collection_ID = " + tmpId;
+                                            "WHERE Protein_Collection_ID = " + proteinCollectionID;
                         var passPhraseTable = mDatabaseAccessor.GetTable(passPhraseSql);
 
                         proteinCollectionPassphrases.Add(nameString, passPhraseTable.Rows[0]["Passphrase"].ToString());
@@ -147,23 +147,23 @@ namespace OrganismDatabaseHandler.ProteinExport
             // (in case the system-defined temp directory is on a different drive than the target folder)
 
             FileInfo fiOutputPathCheck;
-            string tmpOutputPath;
+            string tempOutputFilePath;
 
             do
             {
-                var tmpOutputPathCandidate = Path.GetTempFileName();
+                var outputPathCandidate = Path.GetTempFileName();
                 try
                 {
                     // The GetTempFileName function created a temp file that we don't need; delete it now (but use try/catch just in case the deletion fails for some freak reason)
-                    File.Delete(tmpOutputPathCandidate);
+                    File.Delete(outputPathCandidate);
                 }
                 catch
                 {
                     // Intentionally ignored
                 }
 
-                tmpOutputPath = Path.Combine(destinationFolderPath, Path.GetFileName(tmpOutputPathCandidate));
-                fiOutputPathCheck = new FileInfo(tmpOutputPath);
+                tempOutputFilePath = Path.Combine(destinationFolderPath, Path.GetFileName(outputPathCandidate));
+                fiOutputPathCheck = new FileInfo(tempOutputFilePath);
             }
             while (fiOutputPathCheck.Exists);
 
@@ -222,12 +222,12 @@ namespace OrganismDatabaseHandler.ProteinExport
                     string collectionSql;
                     if (padWithPrimaryAnnotation)
                     {
-                        tmpId = FindIdByName(trueName);
+                        proteinCollectionID = FindIdByName(trueName);
                         collectionSql =
                             "SELECT Name, Description, Sequence, Protein_ID " +
                             "FROM V_Protein_Database_Export " +
                             "WHERE " +
-                                "Protein_Collection_ID = " + tmpId + " " +
+                                "Protein_Collection_ID = " + proteinCollectionID + " " +
                                 "AND Sorting_Index BETWEEN " + sectionStart + " AND " + sectionEnd + " " +
                             "ORDER BY Sorting_Index";
                     }
@@ -236,7 +236,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                         collectionSql =
                             "SELECT Name, Description, Sequence, Protein_ID " +
                             "FROM V_Protein_Database_Export " +
-                            "WHERE Protein_Collection_ID = " + tmpId + ") " +
+                            "WHERE Protein_Collection_ID = " + proteinCollectionID + ") " +
                                 "AND Annotation_Type_ID = " + alternateAnnotationTypeId + " " +
                                 "AND Sorting_Index BETWEEN " + sectionStart + " AND " + sectionEnd + " " +
                             "ORDER BY Sorting_Index";
@@ -271,7 +271,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     currentFileProteinCount = collectionTable.Rows.Count;
 
                     // collection.Tables.Add(collectionTable)
-                    mFileDumper.Export(collectionTable, ref tmpOutputPath);
+                    mFileDumper.Export(collectionTable, ref tempOutputFilePath);
 
                     currentCollectionPos = sectionEnd + 1;
                     currentCollectionCount += currentFileProteinCount;
@@ -286,8 +286,8 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
                 while (currentFileProteinCount > 0);
 
-                tmpIdListSb.Append(tmpId.ToString("000000"));
-                tmpIdListSb.Append("+");
+                proteinCollectionIDs.Add(proteinCollectionID.ToString("000000"));
+
                 if (currentCollectionCount != collectionLength)
                 {
                     throw new Exception(string.Format(
@@ -299,11 +299,10 @@ namespace OrganismDatabaseHandler.ProteinExport
                 proteinCollectionsExported++;
             }
 
-            OnExportComplete(tmpOutputPath);
+            OnExportComplete(tempOutputFilePath);
 
-            var tmpFi = new FileInfo(tmpOutputPath);
+            var tempOutputFile = new FileInfo(tempOutputFilePath);
 
-            tmpIdListSb.Remove(tmpIdListSb.Length - 1, 1);
             string name; // = hash;
 
             if (protCollectionList.Count > 1)
@@ -311,7 +310,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 // Generate a filename composed of the protein collection IDs, separated by plus signs
                 // For example, "002041+001810"
 
-                name = tmpIdListSb.ToString();
+                name = string.Join("+", proteinCollectionIDs);
                 if (destinationFolderPath.Length + name.Length > 225)
                 {
                     // If exporting a large number of protein collections, name can be very long
@@ -344,16 +343,16 @@ namespace OrganismDatabaseHandler.ProteinExport
                 File.Delete(FullOutputPath);
             }
 
-            tmpFi.MoveTo(FullOutputPath);
+            tempOutputFile.MoveTo(FullOutputPath);
 
             // Assuming the final file now exists, delete the temporary file (if present)
             var finalOutputFile = new FileInfo(FullOutputPath);
             if (finalOutputFile.Exists)
             {
-                tmpFi = new FileInfo(tmpOutputPath);
-                if (tmpFi.Exists)
+                var fileToDelete = new FileInfo(tempOutputFilePath);
+                if (fileToDelete.Exists)
                 {
-                    tmpFi.Delete();
+                    fileToDelete.Delete();
                 }
             }
 
@@ -450,16 +449,14 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public DataTable GetCollectionsByOrganismTable(int organismId)
         {
-            var tmpTable = mCollectionsCache.Clone();
+            var matchingProteinCollections = mCollectionsCache.Clone();
 
-            var foundRows = mCollectionsCache.Select("[Organism_ID] = " + organismId);
-
-            foreach (var dr in foundRows)
+            foreach (var dataRow in mCollectionsCache.Select("[Organism_ID] = " + organismId))
             {
-                tmpTable.ImportRow(dr);
+                matchingProteinCollections.ImportRow(dataRow);
             }
 
-            return tmpTable;
+            return matchingProteinCollections;
         }
 
         public Dictionary<string, string> GetOrganismList()
