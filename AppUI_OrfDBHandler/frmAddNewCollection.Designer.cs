@@ -55,7 +55,7 @@
             this.txtCollectionName.BackColor = System.Drawing.SystemColors.Window;
             this.txtCollectionName.Location = new System.Drawing.Point(12, 30);
             this.txtCollectionName.Name = "txtCollectionName";
-            this.txtCollectionName.Size = new System.Drawing.Size(470, 21);
+            this.txtCollectionName.Size = new System.Drawing.Size(470, 24);
             this.txtCollectionName.TabIndex = 0;
             this.txtCollectionName.Leave += new System.EventHandler(this.txtCollectionName_Leave);
             // 
@@ -74,7 +74,7 @@
             this.cboOrganismPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboOrganismPicker.Location = new System.Drawing.Point(4, 216);
             this.cboOrganismPicker.Name = "cboOrganismPicker";
-            this.cboOrganismPicker.Size = new System.Drawing.Size(445, 21);
+            this.cboOrganismPicker.Size = new System.Drawing.Size(445, 25);
             this.cboOrganismPicker.TabIndex = 2;
             // 
             // lblOrganismPicker
@@ -100,7 +100,7 @@
             this.cboAuthorityPicker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboAuthorityPicker.Location = new System.Drawing.Point(4, 258);
             this.cboAuthorityPicker.Name = "cboAuthorityPicker";
-            this.cboAuthorityPicker.Size = new System.Drawing.Size(445, 21);
+            this.cboAuthorityPicker.Size = new System.Drawing.Size(445, 25);
             this.cboAuthorityPicker.TabIndex = 5;
             // 
             // cmdAddOrganism
@@ -156,9 +156,9 @@
             // 
             this.lblSource.Location = new System.Drawing.Point(10, 125);
             this.lblSource.Name = "lblSource";
-            this.lblSource.Size = new System.Drawing.Size(214, 17);
+            this.lblSource.Size = new System.Drawing.Size(240, 17);
             this.lblSource.TabIndex = 13;
-            this.lblSource.Text = "Source (person, url, ftp site, etc.)";
+            this.lblSource.Text = "Source (Person, URL, FTP site)";
             // 
             // txtSource
             // 
@@ -235,10 +235,10 @@
             // frmAddNewCollection
             // 
             this.AcceptButton = this.cmdOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(510, 352);
+            this.ClientSize = new System.Drawing.Size(510, 344);
             this.Controls.Add(this.lblProteinCount);
             this.Controls.Add(this.lblResidueCount);
             this.Controls.Add(this.cmdOK);

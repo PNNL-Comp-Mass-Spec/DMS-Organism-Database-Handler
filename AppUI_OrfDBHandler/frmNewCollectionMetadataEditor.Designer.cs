@@ -41,7 +41,7 @@
             this.txtDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDescription.Location = new System.Drawing.Point(11, 28);
-            this.txtDescription.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtDescription.Margin = new System.Windows.Forms.Padding(2);
             this.txtDescription.Multiline = true;
             this.txtDescription.Name = "txtDescription";
             this.txtDescription.Size = new System.Drawing.Size(364, 56);
@@ -62,7 +62,7 @@
             this.lblSource.Location = new System.Drawing.Point(9, 93);
             this.lblSource.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblSource.Name = "lblSource";
-            this.lblSource.Size = new System.Drawing.Size(156, 18);
+            this.lblSource.Size = new System.Drawing.Size(200, 18);
             this.lblSource.TabIndex = 2;
             this.lblSource.Text = "Source (Person, URL, FTP site)";
             // 
@@ -71,7 +71,7 @@
             this.txtSource.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSource.Location = new System.Drawing.Point(11, 114);
-            this.txtSource.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtSource.Margin = new System.Windows.Forms.Padding(2);
             this.txtSource.Multiline = true;
             this.txtSource.Name = "txtSource";
             this.txtSource.Size = new System.Drawing.Size(364, 56);
@@ -83,7 +83,7 @@
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Location = new System.Drawing.Point(311, 179);
-            this.cmdCancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cmdCancel.Margin = new System.Windows.Forms.Padding(2);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(63, 22);
             this.cmdCancel.TabIndex = 5;
@@ -95,7 +95,7 @@
             this.cmdOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdOk.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.cmdOk.Location = new System.Drawing.Point(232, 179);
-            this.cmdOk.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cmdOk.Margin = new System.Windows.Forms.Padding(2);
             this.cmdOk.Name = "cmdOk";
             this.cmdOk.Size = new System.Drawing.Size(63, 22);
             this.cmdOk.TabIndex = 4;
@@ -115,7 +115,7 @@
             this.Controls.Add(this.lblSource);
             this.Controls.Add(this.txtDescription);
             this.Controls.Add(this.lblDescription);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "frmNewCollectionMetadataEditor";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

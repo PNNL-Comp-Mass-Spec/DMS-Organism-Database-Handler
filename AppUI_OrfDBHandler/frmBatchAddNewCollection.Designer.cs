@@ -249,7 +249,7 @@ namespace AppUI_OrfDBHandler
             // 
             // colSource
             // 
-            this.colSource.Text = "Source (person, URL, FTP)";
+            this.colSource.Text = "Source (Person, URL, FTP site)";
             this.colSource.Width = 150;
             // 
             // colAnnType
