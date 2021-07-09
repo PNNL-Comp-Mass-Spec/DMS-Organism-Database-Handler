@@ -120,7 +120,6 @@ namespace OrganismDatabaseHandler.ProteinImport
         public void UpdateProteinNames(
             ProteinStorage.ProteinStorage pc,
             List<string> selectedProteinList,
-            int organismId,
             int authorityId)
         {
             OnLoadStart("Storing Protein Names and Descriptions specific to this protein collection");
@@ -358,12 +357,11 @@ namespace OrganismDatabaseHandler.ProteinImport
         public int AddProteinReference(
             string proteinName,
             string description,
-            int organismId,
             int authorityId,
             int proteinId,
             int maxProteinNameLength)
         {
-            return RunSP_AddProteinReference(proteinName, description, organismId, authorityId, proteinId, maxProteinNameLength);
+            return RunSP_AddProteinReference(proteinName, description, authorityId, proteinId, maxProteinNameLength);
         }
 
         public int AddAuthenticationHash(
@@ -755,7 +753,6 @@ namespace OrganismDatabaseHandler.ProteinImport
         protected int RunSP_AddProteinReference(
             string proteinName,
             string description,
-            int organismId,
             int authorityId,
             int proteinId,
             int maxProteinNameLength)
@@ -772,12 +769,6 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Define parameters for the procedure's arguments
             dbTools.AddParameter(cmdSave, "@name", SqlType.VarChar, 128).Value = proteinName;
             dbTools.AddParameter(cmdSave, "@description", SqlType.VarChar, 900).Value = description;
-
-            // TODO (org fix) Remove this reference and fix associated stored procedure
-            // myParam = dbTools.AddParameter(cmdSave, "@organism_ID", SqlType.Int)
-            // myParam.Direction = ParameterDirection.Input
-            // myParam.Value = OrganismID
-
             dbTools.AddParameter(cmdSave, "@authority_ID", SqlType.Int).Value = authorityId;
             dbTools.AddParameter(cmdSave, "@protein_ID", SqlType.Int).Value = proteinId;
 
@@ -829,7 +820,6 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             // Get return value
             return dbTools.GetInteger(returnParam.Value);
-
         }
 
         protected int RunSP_AddCRC32FileAuthentication(

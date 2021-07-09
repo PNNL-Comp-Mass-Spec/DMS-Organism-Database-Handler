@@ -407,7 +407,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
             mUpload.CompareProteinId(fileContents, selectedProteins);
 
             // task 3 - Add Protein References to T_Protein_Names
-            mUpload.UpdateProteinNames(fileContents, selectedProteins, organismId, annotationTypeId);
+            mUpload.UpdateProteinNames(fileContents, selectedProteins, annotationTypeId);
 
             // task 4 - Add new collection members to T_Protein_Collection_Members
             mUpload.UpdateProteinCollectionMembers(collectionId, fileContents, selectedProteins, numProteins, numResidues);
