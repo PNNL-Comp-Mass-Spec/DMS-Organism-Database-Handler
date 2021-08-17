@@ -9,7 +9,7 @@ namespace AppUI_OrfDBHandler
 {
     public partial class frmTestingInterface : Form
     {
-        // Ignore Spelling: filetype, na, outbox
+        // Ignore Spelling: fasta, filetype, na, outbox
 
         public frmTestingInterface()
         {
@@ -127,19 +127,19 @@ namespace AppUI_OrfDBHandler
                 mExporter.FileGenerationProgress += UpdateProgress;
                 mExporter.FileGenerationCompleted += CompletedTask;
 
-                //True Legacy fasta file
+                //True Legacy FASTA file
                 //fingerprint = mExporter.ExportFASTAFile("na", "na", "HCMV_2003+H_sapiens_IPI_2005-04-04.fasta", filePath)
 
-                //Legacy fasta file with existing protein collection
+                //Legacy FASTA file with existing protein collection
                 //fingerprint = mExporter.ExportFASTAFile("Shewanella_2003-12-19", "seq_direction=forward,filetype=fasta", "Shewanella_2003-12-19.fasta", filePath)
 
-                //Legacy fasta file with existing protein collection
+                //Legacy FASTA file with existing protein collection
                 //fingerprint = mExporter.ExportFASTAFile("M_Musculus_2007-10-24_IPI,Y_pestis_CO92_2006-05-22,Y_pestis_PestoidesF_2006-05-23,Y_pseudotuberculosis_All_2005-08-25", "seq_direction=forward,filetype=fasta", "na", filePath)
 
-                //Legacy fasta file with existing protein collection
+                //Legacy FASTA file with existing protein collection
                 //fingerprint = mExporter.ExportFASTAFile("H_sapiens_IPI_2008-02-07", "seq_direction=decoy", "na", filePath)
 
-                //Legacy fasta file with existing protein collection
+                //Legacy FASTA file with existing protein collection
                 //fingerprint = mExporter.ExportFASTAFile("na", "na", "Shewanella_2003-12-19.fasta", filePath)
                 mExporter.ExportFASTAFile("na", "na", "GOs_Surface_Sargasso_Meso_2009-02-11_24.fasta", filePath);
 

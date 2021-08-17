@@ -225,8 +225,8 @@ namespace OrganismDatabaseHandler.ProteinExport
             if (!sourceFile.Exists)
             {
                 // Be careful changing this message; the AnalysisResources class in the Analysis Manager
-                // looks for error messages that start with "Legacy fasta file not found:"
-                var msg = "Legacy fasta file not found: " + legacyStaticFilePath + " (path comes from V_Legacy_Static_File_Locations)";
+                // looks for error messages that start with "Legacy FASTA file not found:"
+                var msg = "Legacy FASTA file not found: " + legacyStaticFilePath + " (path comes from V_Legacy_Static_File_Locations)";
                 OnErrorEvent(msg);
                 throw new Exception(msg);
             }

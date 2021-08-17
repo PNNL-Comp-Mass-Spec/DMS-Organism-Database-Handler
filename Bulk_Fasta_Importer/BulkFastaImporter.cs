@@ -9,7 +9,7 @@ using ValidateFastaFile;
 namespace Bulk_Fasta_Importer
 {
     /// <summary>
-    /// This class reads a text file specifying one or more fasta files to load into the Protein Sequences database
+    /// This class reads a text file specifying one or more FASTA files to load into the Protein Sequences database
     /// </summary>
     /// <remarks>
     /// <para>
@@ -199,7 +199,7 @@ namespace Bulk_Fasta_Importer
 
                     if (string.IsNullOrWhiteSpace(dataCols[0]))
                     {
-                        ShowWarning("Fasta file path is empty for line: " + currentLine);
+                        ShowWarning("FASTA file path is empty for line: " + currentLine);
                         continue;
                     }
 
@@ -212,7 +212,7 @@ namespace Bulk_Fasta_Importer
                     var fastaFile = new FileInfo(fastaFilePath);
                     if (!fastaFile.Exists)
                     {
-                        ShowWarning("Fasta file not found: " + fastaFilePath);
+                        ShowWarning("FASTA file not found: " + fastaFilePath);
                         continue;
                     }
 
@@ -239,7 +239,7 @@ namespace Bulk_Fasta_Importer
 
                     if (proteinCollectionID > 0)
                     {
-                        ShowWarning("Fasta file already exists as a protein collection; skipping " + fastaFile.Name);
+                        ShowWarning("FASTA file already exists as a protein collection; skipping " + fastaFile.Name);
                         continue;
                     }
 
@@ -263,7 +263,7 @@ namespace Bulk_Fasta_Importer
             }
             catch (Exception ex)
             {
-                ShowErrorMessage("Error reading the Fasta Info File: " + ex.Message);
+                ShowErrorMessage("Error reading the FASTA Info File: " + ex.Message);
                 return new List<FastaFileInfoType>();
             }
         }
@@ -630,7 +630,7 @@ namespace Bulk_Fasta_Importer
             }
             catch (Exception ex)
             {
-                ShowErrorMessage("Error uploading fasta file list: " + ex.Message);
+                ShowErrorMessage("Error uploading FASTA file list: " + ex.Message);
                 return false;
             }
         }
@@ -661,7 +661,7 @@ namespace Bulk_Fasta_Importer
 
         private void UploadHandler_InvalidFASTAFile(string fastaFilePath, List<CustomFastaValidator.ErrorInfoExtended> errorCollection)
         {
-            ShowWarning("Invalid fasta file: " + fastaFilePath);
+            ShowWarning("Invalid FASTA file: " + fastaFilePath);
             try
             {
                 foreach (var item in errorCollection)
