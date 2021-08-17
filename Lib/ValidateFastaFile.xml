@@ -105,14 +105,14 @@
         </member>
         <member name="P:ValidateFastaFile.CustomFastaValidator.FullErrorCollection">
             <summary>
-            Keys are fasta filename
-            Values are the list of fasta file errors
+            Keys are FASTA filename
+            Values are the list of FASTA file errors
             </summary>
         </member>
         <member name="P:ValidateFastaFile.CustomFastaValidator.FullWarningCollection">
             <summary>
-            Keys are fasta filename
-            Values are the list of fasta file warnings
+            Keys are FASTA filename
+            Values are the list of FASTA file warnings
             </summary>
         </member>
         <member name="M:ValidateFastaFile.CustomFastaValidator.FASTAFileValid(System.String)">
@@ -176,7 +176,7 @@
         </member>
         <member name="T:ValidateFastaFile.FastaValidator">
             <summary>
-            This class will read a protein fasta file and validate its contents
+            This class will read a protein FASTA file and validate its contents
             </summary>
             <remarks>
             <para>
@@ -943,7 +943,7 @@
         </member>
         <member name="P:ValidateFastaFile.FastaValidator.ExistingProteinHashFile">
             <summary>
-            Existing protein hash file to load into memory instead of computing new hash values while reading the fasta file
+            Existing protein hash file to load into memory instead of computing new hash values while reading the FASTA file
             </summary>
         </member>
         <member name="P:ValidateFastaFile.FastaValidator.MaximumFileErrorsToTrack">
@@ -1029,33 +1029,33 @@
         </member>
         <member name="M:ValidateFastaFile.FastaValidator.AnalyzeFastaFile(System.String,ValidateFastaFile.NestedStringIntList)">
             <summary>
-            Examine the given fasta file to look for problems.
-            Optionally create a new, fixed fasta file
+            Examine the given FASTA file to look for problems.
+            Optionally create a new, fixed FASTA file
             Optionally also consolidate proteins with duplicate sequences
             </summary>
             <param name="fastaFilePathToCheck"></param>
             <param name="preloadedProteinNamesToKeep">
-            Preloaded list of protein names to include in the fixed fasta file
-            Keys are protein names, values are the number of entries written to the fixed fasta file for the given protein name
+            Preloaded list of protein names to include in the fixed FASTA file
+            Keys are protein names, values are the number of entries written to the fixed FASTA file for the given protein name
             </param>
             <returns>True if the file was successfully analyzed (even if errors were found)</returns>
             <remarks>Assumes fastaFilePathToCheck exists</remarks>
         </member>
         <member name="M:ValidateFastaFile.FastaValidator.AutoDetermineFastaProteinNameSpannerCharLength(System.String,System.Int32)">
             <summary>
-            Pre-scan a portion of the Fasta file to determine the appropriate value for mProteinNameSpannerCharLength
+            Pre-scan a portion of the FASTA file to determine the appropriate value for mProteinNameSpannerCharLength
             </summary>
-            <param name="fastaFilePathToTest">Fasta file to examine</param>
+            <param name="fastaFilePathToTest">FASTA file to examine</param>
             <param name="terminatorSize">Linefeed length (1 for LF or 2 for CRLF)</param>
             <remarks>
-            Reads 50 MB chunks from 10 sections of the Fasta file (or the entire Fasta file if under 500 MB in size)
+            Reads 50 MB chunks from 10 sections of the FASTA file (or the entire FASTA file if under 500 MB in size)
             Keeps track of the portion of protein names in common between adjacent proteins
             Uses this information to determine an appropriate value for mProteinNameSpannerCharLength
             </remarks>
         </member>
         <member name="M:ValidateFastaFile.FastaValidator.AutoDetermineFastaProteinNameSpannerCharLength(System.IO.FileInfo,System.Int32,System.Collections.Generic.IDictionary{System.String,System.Int32},System.Int64,System.Int64)">
             <summary>
-            Read a portion of the Fasta file, comparing adjacent protein names and keeping track of the name portions in common
+            Read a portion of the FASTA file, comparing adjacent protein names and keeping track of the name portions in common
             </summary>
             <param name="fastaFile"></param>
             <param name="terminatorSize"></param>
@@ -1073,8 +1073,8 @@
         </member>
         <member name="M:ValidateFastaFile.FastaValidator.CorrectForDuplicateProteinSeqsInFasta(System.Boolean,System.Boolean,System.String,System.Collections.Generic.IList{ValidateFastaFile.ProteinHashInfo})">
             <summary>
-            Looks for duplicate proteins in the Fasta file
-            Creates a new fasta file that has exact duplicates removed
+            Looks for duplicate proteins in the FASTA file
+            Creates a new FASTA file that has exact duplicates removed
             Will consolidate proteins with the same sequence if consolidateDuplicateProteinSeqsInFasta=True
             </summary>
             <param name="consolidateDuplicateProteinSeqsInFasta"></param>
@@ -1139,7 +1139,7 @@
         </member>
         <member name="M:ValidateFastaFile.FastaValidator.SimpleProcessFile(System.String)">
             <summary>
-            Validate a single fasta file
+            Validate a single FASTA file
             </summary>
             <returns>True if success; false if a fatal error</returns>
             <remarks>
@@ -1152,7 +1152,7 @@
             Main processing function
             </summary>
             <param name="inputFilePath"></param>
-            <param name="outputFolderPath"></param>
+            <param name="outputDirectoryPath"></param>
             <param name="parameterFilePath"></param>
             <param name="resetErrorCode"></param>
             <returns>True if success, False if failure</returns>
