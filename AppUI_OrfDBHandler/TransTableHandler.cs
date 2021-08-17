@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using OrganismDatabaseHandler.DatabaseTools;
+using PRISMDatabaseUtils;
 
 namespace AppUI_OrfDBHandler
 {
@@ -50,10 +51,15 @@ namespace AppUI_OrfDBHandler
             return new DataTable();
         }
 
+        /// <summary>
+        /// Look through the given ASN.1 file and scan for translation table entries
+        /// </summary>
+        /// <param name="filePath"></param>
         private void ScanFileForEntries(string filePath)
         {
-            // Look through a given ASN.1 file and scan for translation table entries
-            var dba = new DBTask(mConnectionString);
+            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(mConnectionString, "PRISMSeq_Uploader");
+
+            var dba = new DBTask(connectionStringToUse);
 
             const string sqlQuery1 = "SELECT * FROM " + EntriesTableName;
             mTranslationEntries = dba.GetTable(sqlQuery1);

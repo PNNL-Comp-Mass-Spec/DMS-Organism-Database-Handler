@@ -68,7 +68,9 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public AddUpdateEntries(string pisConnectionString)
         {
-            mDatabaseAccessor = new DBTask(pisConnectionString);
+            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(pisConnectionString, "OrganismDatabaseHandler");
+
+            mDatabaseAccessor = new DBTask(connectionStringToUse);
             RegisterEvents(mDatabaseAccessor);
 
             mHasher = new System.Security.Cryptography.SHA1Managed();

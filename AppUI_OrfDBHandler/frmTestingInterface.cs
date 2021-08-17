@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows.Forms;
 using OrganismDatabaseHandler.ProteinExport;
 using OrganismDatabaseHandler.ProteinImport;
+using PRISMDatabaseUtils;
 
 namespace AppUI_OrfDBHandler
 {
@@ -47,14 +48,16 @@ namespace AppUI_OrfDBHandler
 
         private void cmdLoadFF_Click(object sender, EventArgs e)
         {
-            var importHandler = new ImportHandler(txtConnString.Text);
+            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(txtConnString.Text, "PRISMSeq_Uploader");
+
+            var importHandler = new ImportHandler(connectionStringToUse);
 
             //importHandler.LoadProteins(txtFASTAFilePath.Text, "", Protein_Importer.IImportProteins.ProteinImportFileTypes.FASTA, 4, 1);
 
             //Protein_Importer.IReadFASTA FASTAHandler;
             //// FASTAHandler = new Protein_Importer.FASTAReader();
             //TableManipulationBase.DBTask sqlData;
-            //sqlData = new TableManipulationBase.DBTask(txtConnString.Text, true);
+            //sqlData = new TableManipulationBase.DBTask(connectionStringToUse, true);
 
             //string SQL = "SELECT * FROM " + "T_Proteins";
             //SqlClient.SqlDataAdapter dmsDA = new SqlClient.SqlDataAdapter(SQL, sqlData.Connection);

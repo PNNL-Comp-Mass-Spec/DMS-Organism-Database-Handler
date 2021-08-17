@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using OrganismDatabaseHandler.ProteinImport;
 using PRISM;
+using PRISMDatabaseUtils;
 
 namespace AppUI_OrfDBHandler
 {
@@ -37,7 +38,9 @@ namespace AppUI_OrfDBHandler
         {
             mConnectionString = psConnectionString;
 
-            mAuthAdd = new AddNamingAuthorityType(mConnectionString);
+            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(mConnectionString, "PRISMSeq_Uploader");
+
+            mAuthAdd = new AddNamingAuthorityType(connectionStringToUse);
             RegisterEvents(mAuthAdd);
 
             mAuthorities = mAuthAdd.AuthoritiesTable;
@@ -65,20 +68,22 @@ namespace AppUI_OrfDBHandler
             var frmAnn = new frmAddAnnotationType();
             int annTypeId;
 
+            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(mConnectionString, "PRISMSeq_Uploader");
+
             if (mSpRunner == null)
             {
-                mSpRunner = new AddUpdateEntries(mConnectionString);
+                mSpRunner = new AddUpdateEntries(connectionStringToUse);
                 RegisterEvents(mSpRunner);
             }
 
             if (mAuthAdd == null)
             {
-                mAuthAdd = new AddNamingAuthorityType(mConnectionString);
+                mAuthAdd = new AddNamingAuthorityType(connectionStringToUse);
                 RegisterEvents(mAuthAdd);
             }
 
             frmAnn.AuthorityTable = mAuthorities;
-            frmAnn.ConnectionString = mConnectionString;
+            frmAnn.ConnectionString = connectionStringToUse;
             frmAnn.DesktopLocation = mFormLocation;
             var r = frmAnn.ShowDialog();
 

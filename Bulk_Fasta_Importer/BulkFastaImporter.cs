@@ -139,10 +139,13 @@ namespace Bulk_Fasta_Importer
             mLocalErrorCode = BulkImporterErrorCodes.NoError;
             mLastProgressTime = DateTime.UtcNow;
 
-            mDbToolsDms = DbToolsFactory.GetDBTools(DmsConnectionString);
+            var dmsConnectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(DmsConnectionString, "Bulk_Fasta_Importer");
+            var proteinseqsConnectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(ProteinseqsConnectionString, "Bulk_Fasta_Importer");
+
+            mDbToolsDms = DbToolsFactory.GetDBTools(dmsConnectionStringToUse);
             RegisterEvents(mDbToolsDms);
 
-            mDbToolsProteinSeqs = DbToolsFactory.GetDBTools(ProteinseqsConnectionString);
+            mDbToolsProteinSeqs = DbToolsFactory.GetDBTools(proteinseqsConnectionStringToUse);
             RegisterEvents(mDbToolsProteinSeqs);
 
             ValidationAllowAllSymbolsInProteinNames = false;

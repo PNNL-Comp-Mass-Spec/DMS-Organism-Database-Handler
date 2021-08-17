@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using OrganismDatabaseHandler.DatabaseTools;
 using OrganismDatabaseHandler.ProteinImport;
 using PRISM;
+using PRISMDatabaseUtils;
 
 namespace AppUI_OrfDBHandler
 {
@@ -19,10 +20,12 @@ namespace AppUI_OrfDBHandler
 
         public CollectionStatePickerHandler(string psConnectionString)
         {
-            mGetTables = new DBTask(psConnectionString);
+            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(psConnectionString, "PRISMSeq_Uploader");
+
+            mGetTables = new DBTask(connectionStringToUse);
             RegisterEvents(mGetTables);
 
-            mSpAccess = new AddUpdateEntries(psConnectionString);
+            mSpAccess = new AddUpdateEntries(connectionStringToUse);
             RegisterEvents(mSpAccess);
 
             mForceReload = true;

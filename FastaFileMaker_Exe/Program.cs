@@ -2,14 +2,15 @@
 using FastaFileMaker.Properties;
 using OrganismDatabaseHandler.ProteinExport;
 using PRISM;
+using PRISMDatabaseUtils;
 
 namespace FastaFileMaker
 {
     internal static class Program
     {
-        // Ignore Spelling: filetype, na, proteinseqs, Shewanella, yyyy-MM-dd, hh:mm:ss tt
+        // Ignore Spelling: fasta, filetype, na, proteinseqs, Shewanella, yyyy-MM-dd, hh:mm:ss tt
 
-        public const string ProgramDate = "July 1, 2021";
+        public const string ProgramDate = "August 16, 2021";
 
         private const int DebugLevel = 4;
         private const int FastaGenTimeoutIntervalMinutes = 70;

@@ -11,6 +11,7 @@ using AppUI_OrfDBHandler.Properties;
 using OrganismDatabaseHandler.ProteinImport;
 using OrganismDatabaseHandler.ProteinUpload;
 using PRISM;
+using PRISMDatabaseUtils;
 using ValidateFastaFile;
 
 namespace AppUI_OrfDBHandler
@@ -49,7 +50,7 @@ namespace AppUI_OrfDBHandler
             Application.Run(new frmCollectionEditor());
         }
 
-        private const string ProgramDate = "July 9, 2021";
+        private const string ProgramDate = "August 16, 2021";
 
         private DataTable mOrganisms;
         private DataTable mProteinCollections;
@@ -484,7 +485,9 @@ namespace AppUI_OrfDBHandler
                     return;
                 }
 
-                var dbTools = PRISMDatabaseUtils.DbToolsFactory.GetDBTools(mPsConnectionString);
+                var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(mPsConnectionString, "PRISMSeq_Uploader");
+
+                var dbTools = DbToolsFactory.GetDBTools(connectionStringToUse);
 
                 lblTargetDatabase.Text = string.Format("Target database: {0} (on {1})", dbTools.DatabaseName, dbTools.ServerName);
             }

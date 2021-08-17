@@ -30,7 +30,9 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public ImportHandler(string psConnectionString)
         {
-            mSQLAccess = new DBTask(psConnectionString);
+            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(psConnectionString, "OrganismDatabaseHandler");
+
+            mSQLAccess = new DBTask(connectionStringToUse);
             RegisterEvents(mSQLAccess);
 
             mImporter = new FASTAReader();

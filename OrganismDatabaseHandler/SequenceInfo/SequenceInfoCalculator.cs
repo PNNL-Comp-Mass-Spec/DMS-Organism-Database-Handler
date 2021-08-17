@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using OrganismDatabaseHandler.DatabaseTools;
 using PRISM;
+using PRISMDatabaseUtils;
 
 namespace OrganismDatabaseHandler.SequenceInfo
 {
@@ -109,7 +110,9 @@ namespace OrganismDatabaseHandler.SequenceInfo
         {
             mAminoAcids = new Dictionary<string, AminoAcidInfo>(30);
 
-            var getSql = new DBTask(mDMSConnectionString);
+            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(mDMSConnectionString, "OrganismDatabaseHandler");
+
+            var getSql = new DBTask(connectionStringToUse);
             RegisterEvents(getSql);
 
             const string sqlString = "SELECT * FROM T_Residues WHERE [Num_C] > 0";

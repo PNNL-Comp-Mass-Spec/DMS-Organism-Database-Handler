@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using OrganismDatabaseHandler.ProteinImport;
 using PRISM;
+using PRISMDatabaseUtils;
 
 namespace AppUI_OrfDBHandler
 {
@@ -41,7 +42,9 @@ namespace AppUI_OrfDBHandler
 
             if (mSpRunner == null)
             {
-                mSpRunner = new AddUpdateEntries(mConnectionString);
+                var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(mConnectionString, "PRISMSeq_Uploader");
+
+                mSpRunner = new AddUpdateEntries(connectionStringToUse);
                 RegisterEvents(mSpRunner);
             }
 
@@ -78,7 +81,9 @@ namespace AppUI_OrfDBHandler
 
         private DataTable GetAuthoritiesList()
         {
-            mImporter ??= new ImportHandler(mConnectionString);
+            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(mConnectionString, "PRISMSeq_Uploader");
+
+            mImporter ??= new ImportHandler(connectionStringToUse);
 
             return mImporter.LoadAuthorities();
         }

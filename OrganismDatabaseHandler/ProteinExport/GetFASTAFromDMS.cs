@@ -75,13 +75,15 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             sha1Provider = new SHA1Managed();
 
-            if (string.IsNullOrWhiteSpace(dbConnectionString))
+            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(dbConnectionString, "OrganismDatabaseHandler");
+
+            if (string.IsNullOrWhiteSpace(connectionStringToUse))
             {
                 mDatabaseAccessor = null;
             }
             else
             {
-                mDatabaseAccessor = new DBTask(dbConnectionString);
+                mDatabaseAccessor = new DBTask(connectionStringToUse);
                 RegisterEvents(mDatabaseAccessor);
             }
 

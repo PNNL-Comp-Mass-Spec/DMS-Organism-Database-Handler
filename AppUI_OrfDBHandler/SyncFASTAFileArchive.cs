@@ -32,10 +32,12 @@ namespace AppUI_OrfDBHandler
 
         public SyncFASTAFileArchive(string psConnectionString)
         {
-            mDatabaseAccessor = new DBTask(psConnectionString);
+            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(psConnectionString, "PRISMSeq_Uploader");
+
+            mDatabaseAccessor = new DBTask(connectionStringToUse);
             RegisterEvents(mDatabaseAccessor);
 
-            mImporter = new AddUpdateEntries(psConnectionString);
+            mImporter = new AddUpdateEntries(connectionStringToUse);
             RegisterEvents(mImporter);
         }
 
