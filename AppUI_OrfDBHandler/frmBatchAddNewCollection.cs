@@ -84,7 +84,7 @@ namespace AppUI_OrfDBHandler
         private string mLastSelectedAnnotationType = string.Empty;
 
         /// <summary>
-        /// Keys are full paths to the fasta file
+        /// Keys are full paths to the FASTA file
         /// Values are FileInfo instances
         /// </summary>
         private Dictionary<string, FileInfo> mFileList;
@@ -315,7 +315,7 @@ namespace AppUI_OrfDBHandler
         #region "UI Loading Functions"
 
         /// <summary>
-        /// Populate the top ListView with fasta files in the selected folder
+        /// Populate the top ListView with FASTA files in the selected folder
         /// </summary>
         private void LoadListView()
         {
@@ -331,7 +331,7 @@ namespace AppUI_OrfDBHandler
 
                 var item = new ListViewItem
                 {
-                    // Fasta file name (with the extension)
+                    // FASTA file name (with the extension)
                     Text = fi.Name
                 };
 
@@ -341,7 +341,7 @@ namespace AppUI_OrfDBHandler
                 // File Size
                 item.SubItems.Add(Numeric2Bytes(fi.Length));
 
-                // Whether or not the fasta file is already a protein collection
+                // Whether or not the FASTA file is already a protein collection
                 if (mCollectionsList.ContainsValue(proteinCollectionName))
                 {
                     item.SubItems.Add("Yes");
@@ -513,6 +513,7 @@ namespace AppUI_OrfDBHandler
                     }
 
                     var newLi = new ListViewItem(proteinCollection);
+
                     // Organism (Column 1)
                     newLi.SubItems.Add(cboOrganismSelect.Text);
 
@@ -672,7 +673,7 @@ namespace AppUI_OrfDBHandler
 
             if (FileList.Count == 0)
             {
-                MessageBox.Show("No fasta files are selected", "Nothing to Do", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("No FASTA files are selected", "Nothing to Do", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return false;
             }
 
@@ -716,7 +717,7 @@ namespace AppUI_OrfDBHandler
         private void SelectComboBoxItemByName(ComboBox objComboBox, string strValue, int intDataColumnIndexToCheck)
         {
             // Look for strValue in a ComboBox that has a data table attached via the .DataSource property
-            // If the value is found, then the given item in the ComboBox is selected
+            // If the value is found, the given item in the ComboBox is selected
 
             try
             {
@@ -845,10 +846,8 @@ namespace AppUI_OrfDBHandler
 
                     var proteinCollection = li.SubItems[(int)SelectedFileColumn.ProteinCollectionName].Text;
 
-                    var kvDescriptionSource = new KeyValuePair<string, string>(updatedDescription, updatedSource);
-
                     // Add/update the dictionary item
-                    mCachedFileDescriptions[proteinCollection] = kvDescriptionSource;
+                    mCachedFileDescriptions[proteinCollection] = new KeyValuePair<string, string>(updatedDescription, updatedSource); ;
                 }
             }
         }

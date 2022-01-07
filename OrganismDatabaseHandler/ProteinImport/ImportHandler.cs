@@ -119,7 +119,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                 "SELECT Annotation_Type_ID " +
                 "FROM V_Protein_Collection_Authority " +
                 "WHERE Protein_Collection_ID = " + proteinCollectionId;
-            
+
             var annotationTypeIdTable = mSQLAccess.GetTable(sqlQuery);
 
             DataRow dataRow;
@@ -437,9 +437,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public ProteinStorage.ProteinStorage LoadProteinsForBatch(string fullFilePath)
         {
-            var ps = LoadFASTA(fullFilePath);
-
-            return ps;
+            return LoadFASTA(fullFilePath);
         }
 
         #region "Event Handlers"
