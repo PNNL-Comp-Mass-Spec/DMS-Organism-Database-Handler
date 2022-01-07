@@ -40,6 +40,10 @@ namespace AppUI_OrfDBHandler
             this.pgbMain = new System.Windows.Forms.ProgressBar();
             this.pnlSource = new System.Windows.Forms.Panel();
             this.lblTargetDatabase = new System.Windows.Forms.Label();
+            this.cmdDestAdd = new AppUI_OrfDBHandler.Controls.ImageButton();
+            this.cmdDestRemove = new AppUI_OrfDBHandler.Controls.ImageButton();
+            this.cmdDestAddAll = new AppUI_OrfDBHandler.Controls.ImageButton();
+            this.cmdDestRemoveAll = new AppUI_OrfDBHandler.Controls.ImageButton();
             this.gbxSourceCollection = new System.Windows.Forms.GroupBox();
             this.cboAnnotationTypePicker = new System.Windows.Forms.ComboBox();
             this.lblAnnotationTypeFilter = new System.Windows.Forms.Label();
@@ -79,10 +83,6 @@ namespace AppUI_OrfDBHandler
             this.mnuAdminTestingInterface = new System.Windows.Forms.MenuItem();
             this.mnuHelp = new System.Windows.Forms.MenuItem();
             this.mnuHelpAbout = new System.Windows.Forms.MenuItem();
-            this.cmdDestAdd = new AppUI_OrfDBHandler.Controls.ImageButton();
-            this.cmdDestRemove = new AppUI_OrfDBHandler.Controls.ImageButton();
-            this.cmdDestAddAll = new AppUI_OrfDBHandler.Controls.ImageButton();
-            this.cmdDestRemoveAll = new AppUI_OrfDBHandler.Controls.ImageButton();
             this.pnlProgBar.SuspendLayout();
             this.pnlProgBarUpper.SuspendLayout();
             this.pnlProgBarLower.SuspendLayout();
@@ -177,6 +177,62 @@ namespace AppUI_OrfDBHandler
             this.lblTargetDatabase.Size = new System.Drawing.Size(500, 18);
             this.lblTargetDatabase.TabIndex = 21;
             this.lblTargetDatabase.Text = "Target database: ";
+            // 
+            // cmdDestAdd
+            // 
+            this.cmdDestAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdDestAdd.Enabled = false;
+            this.cmdDestAdd.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.cmdDestAdd.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdDestAdd.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.cmdDestAdd.Location = new System.Drawing.Point(491, 153);
+            this.cmdDestAdd.Name = "cmdDestAdd";
+            this.cmdDestAdd.Size = new System.Drawing.Size(39, 31);
+            this.cmdDestAdd.TabIndex = 5;
+            this.cmdDestAdd.ThemedImage = ((System.Drawing.Bitmap)(resources.GetObject("cmdDestAdd.ThemedImage")));
+            this.cmdDestAdd.Click += new System.EventHandler(this.cmdDestAdd_Click);
+            // 
+            // cmdDestRemove
+            // 
+            this.cmdDestRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdDestRemove.Enabled = false;
+            this.cmdDestRemove.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.cmdDestRemove.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdDestRemove.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.cmdDestRemove.Location = new System.Drawing.Point(491, 202);
+            this.cmdDestRemove.Name = "cmdDestRemove";
+            this.cmdDestRemove.Size = new System.Drawing.Size(39, 33);
+            this.cmdDestRemove.TabIndex = 6;
+            this.cmdDestRemove.ThemedImage = ((System.Drawing.Bitmap)(resources.GetObject("cmdDestRemove.ThemedImage")));
+            this.cmdDestRemove.Click += new System.EventHandler(this.cmdDestRemove_Click);
+            // 
+            // cmdDestAddAll
+            // 
+            this.cmdDestAddAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdDestAddAll.Enabled = false;
+            this.cmdDestAddAll.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.cmdDestAddAll.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdDestAddAll.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.cmdDestAddAll.Location = new System.Drawing.Point(491, 103);
+            this.cmdDestAddAll.Name = "cmdDestAddAll";
+            this.cmdDestAddAll.Size = new System.Drawing.Size(39, 33);
+            this.cmdDestAddAll.TabIndex = 3;
+            this.cmdDestAddAll.ThemedImage = ((System.Drawing.Bitmap)(resources.GetObject("cmdDestAddAll.ThemedImage")));
+            this.cmdDestAddAll.Click += new System.EventHandler(this.cmdDestAddAll_Click);
+            // 
+            // cmdDestRemoveAll
+            // 
+            this.cmdDestRemoveAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdDestRemoveAll.Enabled = false;
+            this.cmdDestRemoveAll.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.cmdDestRemoveAll.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdDestRemoveAll.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.cmdDestRemoveAll.Location = new System.Drawing.Point(491, 252);
+            this.cmdDestRemoveAll.Name = "cmdDestRemoveAll";
+            this.cmdDestRemoveAll.Size = new System.Drawing.Size(39, 32);
+            this.cmdDestRemoveAll.TabIndex = 4;
+            this.cmdDestRemoveAll.ThemedImage = ((System.Drawing.Bitmap)(resources.GetObject("cmdDestRemoveAll.ThemedImage")));
+            this.cmdDestRemoveAll.Click += new System.EventHandler(this.cmdDestRemoveAll_Click);
             // 
             // gbxSourceCollection
             // 
@@ -550,62 +606,6 @@ namespace AppUI_OrfDBHandler
             this.mnuHelpAbout.Index = 0;
             this.mnuHelpAbout.Text = "&About Protein Collection Editor";
             this.mnuHelpAbout.Click += new System.EventHandler(this.mnuHelpAbout_Click);
-            // 
-            // cmdDestAdd
-            // 
-            this.cmdDestAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdDestAdd.Enabled = false;
-            this.cmdDestAdd.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.cmdDestAdd.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdDestAdd.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.cmdDestAdd.Location = new System.Drawing.Point(491, 153);
-            this.cmdDestAdd.Name = "cmdDestAdd";
-            this.cmdDestAdd.Size = new System.Drawing.Size(39, 31);
-            this.cmdDestAdd.TabIndex = 5;
-            this.cmdDestAdd.ThemedImage = ((System.Drawing.Bitmap)(resources.GetObject("cmdDestAdd.ThemedImage")));
-            this.cmdDestAdd.Click += new System.EventHandler(this.cmdDestAdd_Click);
-            // 
-            // cmdDestRemove
-            // 
-            this.cmdDestRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdDestRemove.Enabled = false;
-            this.cmdDestRemove.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.cmdDestRemove.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdDestRemove.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.cmdDestRemove.Location = new System.Drawing.Point(491, 202);
-            this.cmdDestRemove.Name = "cmdDestRemove";
-            this.cmdDestRemove.Size = new System.Drawing.Size(39, 33);
-            this.cmdDestRemove.TabIndex = 6;
-            this.cmdDestRemove.ThemedImage = ((System.Drawing.Bitmap)(resources.GetObject("cmdDestRemove.ThemedImage")));
-            this.cmdDestRemove.Click += new System.EventHandler(this.cmdDestRemove_Click);
-            // 
-            // cmdDestAddAll
-            // 
-            this.cmdDestAddAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdDestAddAll.Enabled = false;
-            this.cmdDestAddAll.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.cmdDestAddAll.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdDestAddAll.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.cmdDestAddAll.Location = new System.Drawing.Point(491, 103);
-            this.cmdDestAddAll.Name = "cmdDestAddAll";
-            this.cmdDestAddAll.Size = new System.Drawing.Size(39, 33);
-            this.cmdDestAddAll.TabIndex = 3;
-            this.cmdDestAddAll.ThemedImage = ((System.Drawing.Bitmap)(resources.GetObject("cmdDestAddAll.ThemedImage")));
-            this.cmdDestAddAll.Click += new System.EventHandler(this.cmdDestAddAll_Click);
-            // 
-            // cmdDestRemoveAll
-            // 
-            this.cmdDestRemoveAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdDestRemoveAll.Enabled = false;
-            this.cmdDestRemoveAll.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.cmdDestRemoveAll.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdDestRemoveAll.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.cmdDestRemoveAll.Location = new System.Drawing.Point(491, 252);
-            this.cmdDestRemoveAll.Name = "cmdDestRemoveAll";
-            this.cmdDestRemoveAll.Size = new System.Drawing.Size(39, 32);
-            this.cmdDestRemoveAll.TabIndex = 4;
-            this.cmdDestRemoveAll.ThemedImage = ((System.Drawing.Bitmap)(resources.GetObject("cmdDestRemoveAll.ThemedImage")));
-            this.cmdDestRemoveAll.Click += new System.EventHandler(this.cmdDestRemoveAll_Click);
             // 
             // frmCollectionEditor
             // 
