@@ -215,12 +215,12 @@ namespace Bulk_Fasta_Importer
                 Console.WriteLine("Use /L to log messages to a file; optionally specify the filename using /L:FilePath");
                 Console.WriteLine();
 
-                Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2014");
+                Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)");
                 Console.WriteLine("Version: " + GetAppVersion());
                 Console.WriteLine();
 
                 Console.WriteLine("E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov");
-                Console.WriteLine("Website: http://panomics.pnnl.gov/ or http://omics.pnl.gov");
+                Console.WriteLine("Website: https://github.com/PNNL-Comp-Mass-Spec/ or https://panomics.pnnl.gov/ or https://www.pnnl.gov/integrative-omics");
                 Console.WriteLine();
 
                 // Delay for 750 msec in case the user double clicked this file from within Windows Explorer (or started the program via a shortcut)

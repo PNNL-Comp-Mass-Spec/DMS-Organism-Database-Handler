@@ -373,12 +373,12 @@ namespace FastaFileMaker
                     "Optionally use /D to log the details of the protein collections, options, and resultant file to a log file."));
                 Console.WriteLine();
 
-                Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2009");
+                Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)");
                 Console.WriteLine("Version: " + GetAppVersion(ProgramDate));
                 Console.WriteLine();
 
                 Console.WriteLine("E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov");
-                Console.WriteLine("Website: https://omics.pnl.gov/ or https://panomics.pnnl.gov/");
+                Console.WriteLine("Website: https://github.com/PNNL-Comp-Mass-Spec/ or https://panomics.pnnl.gov/ or https://www.pnnl.gov/integrative-omics");
                 Console.WriteLine();
 
                 Console.WriteLine("Licensed under the Apache License, Version 2.0; you may not use this file except in compliance with the License.  " +
