@@ -475,10 +475,31 @@ namespace AppUI_OrfDBHandler
                 {
                     var fastaFilePath = GetFolderContentsColumn(li, FolderContentsColumn.FilePath);
 
+                    if (cboOrganismSelect.SelectedValue == null)
+                    {
+                        if (string.IsNullOrWhiteSpace(cboOrganismSelect.Text))
+                        {
+                            MessageBox.Show("Please select an organism", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            return;
+                        }
+
+                        if (!SelectClosestMatchingOrganism(cboOrganismSelect))
+                        {
+                            MessageBox.Show("Invalid organism: " + cboOrganismSelect.Text, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            return;
+                        }
+                    }
+
+                    if (cboOrganismSelect.SelectedValue == null || !int.TryParse(cboOrganismSelect.SelectedValue.ToString(), out var organismId))
+                    {
+                        MessageBox.Show("Please select a valid organism", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+                    }
+
                     var upInfo = new PSUploadHandler.UploadInfo
                     {
                         FileInformation = mFileList[fastaFilePath],
-                        OrganismId = (int)cboOrganismSelect.SelectedValue,
+                        OrganismId = organismId,
                         AnnotationTypeId = (int)cboAnnotationTypePicker.SelectedValue,
                         Description = string.Empty,
                         Source = string.Empty
@@ -744,6 +765,24 @@ namespace AppUI_OrfDBHandler
             }
         }
 
+        private bool SelectClosestMatchingOrganism(ListControl cbo)
+        {
+            var textToFind = cbo.Text;
+            if (string.IsNullOrWhiteSpace(textToFind))
+                return false;
+
+            foreach (DataRowView item in mOrganismListSorted)
+            {
+                if (item[2].ToString().StartsWith(textToFind))
+                {
+                    cbo.SelectedValue = item[0];
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private void SortListView(ListView lv, int lastClickedColIndex, int colIndex, bool isDateColumn)
         {
             // Determine whether the column is the same as the last column clicked.
@@ -858,7 +897,16 @@ namespace AppUI_OrfDBHandler
         {
             var cbo = (ComboBox)sender;
 
-            SelectedOrganismID = (int)cbo.SelectedValue;
+            if (cbo.SelectedValue == null || !int.TryParse(cbo.SelectedValue.ToString(), out var selectedOrganismId))
+            {
+                // A valid item is not currently selected
+                // Look for the first item that starts with the text
+
+                SelectClosestMatchingOrganism(cbo);
+                return;
+            }
+
+            SelectedOrganismID = selectedOrganismId;
             CheckTransferEnable();
             if (lvwSelectedFiles.SelectedItems.Count > 0)
             {
