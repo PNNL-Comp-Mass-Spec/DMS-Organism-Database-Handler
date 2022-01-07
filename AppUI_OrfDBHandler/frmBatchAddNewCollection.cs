@@ -823,9 +823,7 @@ namespace AppUI_OrfDBHandler
         /// <param name="value"></param>
         private string StripWhiteSpace(string value)
         {
-            var updatedValue = value.Trim().Replace("\t", "; ").Replace(Environment.NewLine, "; ").Replace("\r", "; ").Replace("\n", "; ");
-
-            return updatedValue;
+            return value.Trim().Replace("\t", "; ").Replace(Environment.NewLine, "; ").Replace("\r", "; ").Replace("\n", "; ");
         }
 
         private void UpdateProteinCollectionMetadata()
@@ -886,7 +884,7 @@ namespace AppUI_OrfDBHandler
                     var proteinCollection = li.SubItems[(int)SelectedFileColumn.ProteinCollectionName].Text;
 
                     // Add/update the dictionary item
-                    mCachedFileDescriptions[proteinCollection] = new KeyValuePair<string, string>(updatedDescription, updatedSource); ;
+                    mCachedFileDescriptions[proteinCollection] = new KeyValuePair<string, string>(updatedDescription, updatedSource);
                 }
             }
         }
