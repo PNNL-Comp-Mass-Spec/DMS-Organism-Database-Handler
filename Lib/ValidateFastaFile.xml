@@ -4,11 +4,6 @@
         <name>ValidateFastaFile</name>
     </assembly>
     <members>
-        <member name="T:ValidateFastaFile.clsCustomValidateFastaFiles">
-            <summary>
-            Old class name
-            </summary>
-        </member>
         <member name="T:ValidateFastaFile.CustomFastaValidator">
             <summary>
             Custom FASTA validator
@@ -158,22 +153,6 @@
             <param name="filePath"></param>
             <returns>True if the file was successfully processed (even if it contains errors)</returns>
         </member>
-        <member name="T:ValidateFastaFile.clsValidateFastaFile">
-            <summary>
-            Old FASTA file validator class name
-            </summary>
-        </member>
-        <member name="M:ValidateFastaFile.clsValidateFastaFile.#ctor">
-            <summary>
-            Parameterless constructor
-            </summary>
-        </member>
-        <member name="M:ValidateFastaFile.clsValidateFastaFile.#ctor(System.String)">
-            <summary>
-            Constructor
-            </summary>
-            <param name="parameterFilePath"></param>
-        </member>
         <member name="T:ValidateFastaFile.FastaValidator">
             <summary>
             This class will read a protein FASTA file and validate its contents
@@ -185,7 +164,7 @@
             </para>
             <para>
             E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
-            Website: https://omics.pnl.gov/ or https://panomics.pnnl.gov/
+            Website: https://github.com/PNNL-Comp-Mass-Spec/ or https://panomics.pnnl.gov/ or https://www.pnnl.gov/integrative-omics
             </para>
             <para>
             Licensed under the Apache License, Version 2.0; you may not use this file except
@@ -506,11 +485,6 @@
             Stats dictionary
             </summary>
         </member>
-        <member name="P:ValidateFastaFile.FastaValidator.MsgInfosAndSummary.Count">
-            <summary>
-            Number of items in Messages
-            </summary>
-        </member>
         <member name="M:ValidateFastaFile.FastaValidator.MsgInfosAndSummary.Reset">
             <summary>
             Clear cached messages
@@ -538,7 +512,8 @@
         </member>
         <member name="P:ValidateFastaFile.FastaValidator.RuleDefinition.MatchIndicatesProblem">
             <summary>
-            True means text matching the RegEx means a problem; false means if text doesn't match the RegEx, then that means a problem
+            True means text matching the RegEx means a problem
+            False means if text doesn't match the RegEx, that means a problem
             </summary>
         </member>
         <member name="P:ValidateFastaFile.FastaValidator.RuleDefinition.MessageWhenProblem">
@@ -772,8 +747,17 @@
         </member>
         <member name="F:ValidateFastaFile.FastaValidator.mProteinAccessionSepChars">
             <summary>
-            This array has a space and a non-breaking space
+            <para>
+            This array has a space and a non-breaking space (\x00a0)
+            </para>
+            <para>
+            \xfffd (the Unicode replacement character) is included to match a non-breaking space
+            when reading an input file that does not specify an encoding using a BOM at the start of the file
+            </para>
             </summary>
+            <remarks>
+            It should not include a tab since we check for that separately
+            </remarks>
         </member>
         <member name="F:ValidateFastaFile.FastaValidator.mCheckForDuplicateProteinSequences">
             <summary>
@@ -810,20 +794,6 @@
             will be tracked by the same dictionary, which could result in a dictionary surpassing the 2 GB boundary
             </remarks>
         </member>
-        <member name="M:ValidateFastaFile.FastaValidator.get_OptionSwitch(ValidateFastaFile.FastaValidator.SwitchOptions)">
-            <summary>
-            Gets a processing option
-            </summary>
-            <param name="switchName"></param>
-            <remarks>Be sure to call SetDefaultRules() after setting all of the options</remarks>
-        </member>
-        <member name="M:ValidateFastaFile.FastaValidator.set_OptionSwitch(ValidateFastaFile.FastaValidator.SwitchOptions,System.Boolean)">
-            <summary>
-            Sets a processing option
-            </summary>
-            <param name="switchName"></param>
-            <param name="value"></param>
-        </member>
         <member name="M:ValidateFastaFile.FastaValidator.SetOptionSwitch(ValidateFastaFile.FastaValidator.SwitchOptions,System.Boolean)">
             <summary>
             Set a processing option
@@ -838,25 +808,12 @@
             </summary>
             <param name="switchName"></param>
         </member>
-        <member name="M:ValidateFastaFile.FastaValidator.get_ErrorWarningCounts(ValidateFastaFile.FastaValidator.MsgTypeConstants,ValidateFastaFile.FastaValidator.ErrorWarningCountTypes)">
-            <summary>
-            Get error warning counts for the given message type and count type
-            </summary>
-            <param name="messageType"></param>
-            <param name="countType"></param>
-        </member>
         <member name="M:ValidateFastaFile.FastaValidator.GetErrorWarningCounts(ValidateFastaFile.FastaValidator.MsgTypeConstants,ValidateFastaFile.FastaValidator.ErrorWarningCountTypes)">
             <summary>
             Get error warning counts for the given message type and count type
             </summary>
             <param name="messageType"></param>
             <param name="countType"></param>
-        </member>
-        <member name="M:ValidateFastaFile.FastaValidator.get_FixedFASTAFileStats(ValidateFastaFile.FastaValidator.FixedFASTAFileValues)">
-            <summary>
-            Get fixed FASTA file stats for the given stat category
-            </summary>
-            <param name="statCategory"></param>
         </member>
         <member name="M:ValidateFastaFile.FastaValidator.GetFixedFASTAFileStats(ValidateFastaFile.FastaValidator.FixedFASTAFileValues)">
             <summary>
@@ -889,23 +846,9 @@
             FASTA file path
             </summary>
         </member>
-        <member name="M:ValidateFastaFile.FastaValidator.get_ErrorMessageTextByIndex(System.Int32,System.String)">
-            <summary>
-            Get error message text by index in mErrors
-            </summary>
-            <param name="index"></param>
-            <param name="valueSeparator"></param>
-        </member>
         <member name="M:ValidateFastaFile.FastaValidator.GetErrorMessageTextByIndex(System.Int32,System.String)">
             <summary>
             Get error message text by index in mErrors
-            </summary>
-            <param name="index"></param>
-            <param name="valueSeparator"></param>
-        </member>
-        <member name="M:ValidateFastaFile.FastaValidator.get_WarningMessageTextByIndex(System.Int32,System.String)">
-            <summary>
-            Get warning message text by index in mFileWarnings
             </summary>
             <param name="index"></param>
             <param name="valueSeparator"></param>
@@ -917,23 +860,11 @@
             <param name="index"></param>
             <param name="valueSeparator"></param>
         </member>
-        <member name="M:ValidateFastaFile.FastaValidator.get_ErrorsByIndex(System.Int32)">
-            <summary>
-            Get error details, by index in mErrors
-            </summary>
-            <param name="errorIndex"></param>
-        </member>
         <member name="M:ValidateFastaFile.FastaValidator.GetErrorsByIndex(System.Int32)">
             <summary>
             Get error details, by index in mErrors
             </summary>
             <param name="errorIndex"></param>
-        </member>
-        <member name="M:ValidateFastaFile.FastaValidator.get_WarningsByIndex(System.Int32)">
-            <summary>
-            Get warning details, by index in mWarnings
-            </summary>
-            <param name="warningIndex"></param>
         </member>
         <member name="M:ValidateFastaFile.FastaValidator.GetWarningsByIndex(System.Int32)">
             <summary>
@@ -1118,6 +1049,15 @@
             </summary>
             <remarks>Used by CustomValidateFastaFiles</remarks>
         </member>
+        <member name="M:ValidateFastaFile.FastaValidator.IsLikelyDNA(System.Text.StringBuilder,System.Double@)">
+            <summary>
+            Return true if all of the characters in residues are A, T, C, or G
+            </summary>
+            <param name="residues"></param>
+            <param name="percentNucleicAcidSymbol">
+            Value between 0 and 100 indicating the percent of the residues that are A, T, C, or G
+            </param>
+        </member>
         <member name="M:ValidateFastaFile.FastaValidator.LoadParameterFileSettings(System.String)">
             <summary>
             Load settings from a parameter file
@@ -1167,6 +1107,11 @@
             <returns>True if the section named sectionName is present and if it contains an item with keyName = "RuleCount"</returns>
             <remarks>Even if RuleCount = 0, this function will return True</remarks>
         </member>
+        <member name="M:ValidateFastaFile.FastaValidator.ResetStructures">
+            <summary>
+            Reset the error arrays and stats variables
+            </summary>
+        </member>
         <member name="M:ValidateFastaFile.FastaValidator.SaveSettingsToParameterFile(System.String)">
             <summary>
             Save settings to a parameter file
@@ -1178,6 +1123,18 @@
             Updates the validation rules using the current options
             </summary>
             <remarks>Call this function after setting new options using SetOptionSwitch</remarks>
+        </member>
+        <member name="M:ValidateFastaFile.FastaValidator.SetRule(System.Collections.Generic.List{ValidateFastaFile.FastaValidator.RuleDefinition},System.String,System.Boolean,System.String,System.Int16,System.Boolean)">
+            <summary>
+            Add a new rule
+            </summary>
+            <param name="rules"></param>
+            <param name="matchRegEx"></param>
+            <param name="matchIndicatesProblem"></param>
+            <param name="messageWhenProblem"></param>
+            <param name="severity"></param>
+            <param name="displayMatchAsExtraInfo"></param>
+            <returns>Custom rule ID assigned to the rule</returns>
         </member>
         <member name="T:ValidateFastaFile.MemoryUsageLogger">
             <summary>
@@ -1521,7 +1478,7 @@
             Constructor
             </summary>
             <param name="seqHash"></param>
-            <param name="sbResidues"></param>
+            <param name="residues"></param>
             <param name="proteinName"></param>
         </member>
         <member name="M:ValidateFastaFile.ProteinHashInfo.AddAdditionalProtein(System.String)">
