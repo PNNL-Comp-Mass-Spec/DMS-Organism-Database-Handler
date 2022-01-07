@@ -1159,31 +1159,36 @@ namespace AppUI_OrfDBHandler
         {
             if (e.KeyCode == Keys.F5)
             {
-                try
+                RefreshFiles();
+            }
+        }
+
+        private void RefreshFiles()
+        {
+            try
+            {
+                var folderPath = SelectedNodeFolderPath;
+                if (string.IsNullOrWhiteSpace(folderPath))
+                    return;
+                var currentFolder = new DirectoryInfo(folderPath);
+
+                while (!currentFolder.Exists && currentFolder.Parent != null)
                 {
-                    var folderPath = SelectedNodeFolderPath;
-                    if (string.IsNullOrWhiteSpace(folderPath))
-                        return;
-                    var currentFolder = new DirectoryInfo(folderPath);
-
-                    while (!currentFolder.Exists && currentFolder.Parent != null)
-                    {
-                        currentFolder = currentFolder.Parent;
-                    }
-
-                    ctlTreeViewFolderBrowser.Populate(currentFolder.FullName);
-
-                    InitializeTreeView(currentFolder.FullName);
-
-                    if (!ctlTreeViewFolderBrowser.SelectedNode.IsExpanded)
-                    {
-                        ctlTreeViewFolderBrowser.SelectedNode.Expand();
-                    }
+                    currentFolder = currentFolder.Parent;
                 }
-                catch (Exception ex)
+
+                ctlTreeViewFolderBrowser.Populate(currentFolder.FullName);
+
+                InitializeTreeView(currentFolder.FullName);
+
+                if (!ctlTreeViewFolderBrowser.SelectedNode.IsExpanded)
                 {
-                    MessageBox.Show("Error in NodeMouseDoubleClick: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    ctlTreeViewFolderBrowser.SelectedNode.Expand();
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error in RefreshFiles: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
 
