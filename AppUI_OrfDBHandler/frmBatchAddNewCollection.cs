@@ -1138,6 +1138,14 @@ namespace AppUI_OrfDBHandler
             }
         }
 
+        private void lvwFolderContents_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F5)
+            {
+                RefreshFiles();
+            }
+        }
+
         private void ctlTreeViewFolderBrowser_AfterSelect(object sender, TreeViewEventArgs e)
         {
             AfterNodeSelect();
