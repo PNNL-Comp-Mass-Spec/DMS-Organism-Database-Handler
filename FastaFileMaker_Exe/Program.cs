@@ -2,7 +2,6 @@
 using FastaFileMaker.Properties;
 using OrganismDatabaseHandler.ProteinExport;
 using PRISM;
-using PRISMDatabaseUtils;
 
 namespace FastaFileMaker
 {
