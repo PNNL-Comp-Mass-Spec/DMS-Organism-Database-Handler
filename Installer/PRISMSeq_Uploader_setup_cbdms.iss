@@ -13,10 +13,12 @@ WelcomeLabel2=This will install [name/ver] on your computer. This version is cus
 ; WelcomeLabel2=Welcome message%n%nAdditional sentence
 
 [Files]
+Source: ..\Executables\Debug_CBDMS_GUI\CsvHelper.dll                                    ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\PRISMSeq_Uploader.exe                            ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\PRISMSeq_Uploader.exe.config                     ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\FlexibleFileSortUtility.dll                      ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Bcl.AsyncInterfaces.dll                ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Bcl.HashCode.dll                       ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\Npgsql.dll                                       ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\OrganismDatabaseHandler.dll                      ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\PRISM.dll                                        ; DestDir: {app}
@@ -31,6 +33,7 @@ Source: ..\Executables\Debug_CBDMS_GUI\System.Numerics.Vectors.dll              
 Source: ..\Executables\Debug_CBDMS_GUI\System.Runtime.CompilerServices.Unsafe.dll       ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\System.Text.Encodings.Web.dll                    ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\System.Text.Json.dll                             ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Threading.Channels.dll                    ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\System.Threading.Tasks.Extensions.dll            ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\System.ValueTuple.dll                            ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\ValidateFastaFile.dll                            ; DestDir: {app}
@@ -38,7 +41,7 @@ Source: ..\Executables\Debug_CBDMS_GUI\ValidateFastaFile.dll                    
 Source: ..\Aux_Files\delete_16x.ico                                  ; DestDir: {app}
 Source: ..\AppUI_OrfDBHandler\PRISMSeq_Favicon.ico                   ; DestDir: {app}
 
-Source: ..\RevisionHistory.txt               ; DestDir: {app}
+Source: ..\RevisionHistory.txt                                       ; DestDir: {app}
 
 [Dirs]
 Name: {commonappdata}\PRISMSeq_Uploader_CBDMS; Flags: uninsalwaysuninstall

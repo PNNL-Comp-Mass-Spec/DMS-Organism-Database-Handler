@@ -13,10 +13,12 @@ WelcomeLabel2=This will install [name/ver] on your computer.
 ; WelcomeLabel2=Welcome message%n%nAdditional sentence
 
 [Files]
+Source: ..\Executables\Debug\CsvHelper.dll                                    ; DestDir: {app}
 Source: ..\Executables\Debug\PRISMSeq_Uploader.exe                            ; DestDir: {app}
 Source: ..\Executables\Debug\PRISMSeq_Uploader.exe.config                     ; DestDir: {app}
 Source: ..\Executables\Debug\FlexibleFileSortUtility.dll                      ; DestDir: {app}
 Source: ..\Executables\Debug\Microsoft.Bcl.AsyncInterfaces.dll                ; DestDir: {app}
+Source: ..\Executables\Debug\Microsoft.Bcl.HashCode.dll                       ; DestDir: {app}
 Source: ..\Executables\Debug\Npgsql.dll                                       ; DestDir: {app}
 Source: ..\Executables\Debug\OrganismDatabaseHandler.dll                      ; DestDir: {app}
 Source: ..\Executables\Debug\PRISM.dll                                        ; DestDir: {app}
@@ -31,6 +33,7 @@ Source: ..\Executables\Debug\System.Numerics.Vectors.dll                      ; 
 Source: ..\Executables\Debug\System.Runtime.CompilerServices.Unsafe.dll       ; DestDir: {app}
 Source: ..\Executables\Debug\System.Text.Encodings.Web.dll                    ; DestDir: {app}
 Source: ..\Executables\Debug\System.Text.Json.dll                             ; DestDir: {app}
+Source: ..\Executables\Debug\System.Threading.Channels.dll                    ; DestDir: {app}
 Source: ..\Executables\Debug\System.Threading.Tasks.Extensions.dll            ; DestDir: {app}
 Source: ..\Executables\Debug\System.ValueTuple.dll                            ; DestDir: {app}
 Source: ..\Executables\Debug\ValidateFastaFile.dll                            ; DestDir: {app}
