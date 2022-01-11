@@ -365,7 +365,7 @@ namespace FastaFileMaker
                     "When exporting protein collections, use optional switch /C to change the protein collection export options. " +
                     "The default is: " + DefaultCollectionOptions));
                 Console.WriteLine();
-                Console.WriteLine("To export a legacy fasta file, use /L, for example /L:FileName.fasta");
+                Console.WriteLine("To export a legacy FASTA file, use /L, for example /L:FileName.fasta");
                 Console.WriteLine();
                 Console.WriteLine("Optionally use /O to specify the output directory.");
                 Console.WriteLine(ConsoleMsgUtils.WrapParagraph(
@@ -401,7 +401,7 @@ namespace FastaFileMaker
         {
             string crc32Hash;
 
-            // Instantiate fasta tool if not already done
+            // Instantiate FASTA tool if not already done
             if (mFastaTools == null)
             {
                 if (string.IsNullOrEmpty(mFastaToolsCnStr))
@@ -443,7 +443,7 @@ namespace FastaFileMaker
                 return false;
             }
 
-            // Wait for fasta creation to finish
+            // Wait for FASTA creation to finish
             while (!mGenerationComplete)
             {
                 System.Threading.Thread.Sleep(2000);

@@ -85,22 +85,22 @@ namespace AppUI_OrfDBHandler
         private int mBatchLoadCurrentCount;
 
         /// <summary>
-        /// Keys are fasta file names, values are lists of errors
+        /// Keys are FASTA file names, values are lists of errors
         /// </summary>
         private readonly Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> mFileErrorList;
 
         /// <summary>
-        /// Keys are fasta file names, values are dictionaries of error messages, tracking the count of each error
+        /// Keys are FASTA file names, values are dictionaries of error messages, tracking the count of each error
         /// </summary>
         private readonly Dictionary<string, Dictionary<string, int>> mSummarizedFileErrorList;
 
         /// <summary>
-        /// Keys are fasta file names, values are lists of warnings
+        /// Keys are FASTA file names, values are lists of warnings
         /// </summary>
         private readonly Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> mFileWarningList;
 
         /// <summary>
-        /// Keys are fasta file names, values are dictionaries of warning messages, tracking the count of each warning
+        /// Keys are FASTA file names, values are dictionaries of warning messages, tracking the count of each warning
         /// </summary>
         private readonly Dictionary<string, Dictionary<string, int>> mSummarizedFileWarningList;
 
@@ -116,7 +116,7 @@ namespace AppUI_OrfDBHandler
 
         /// <summary>
         /// Tracks the description and source that the user has entered for each FASTA file
-        /// Key: fasta file name
+        /// Key: FASTA file name
         /// Value: KeyValuePair of Description and Source
         /// </summary>
         /// <remarks>Useful in case validation fails and the uploader needs to try again to upload a FASTA file</remarks>

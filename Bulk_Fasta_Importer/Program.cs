@@ -211,7 +211,7 @@ namespace Bulk_Fasta_Importer
                 Console.WriteLine("The default is /MaxLength:" + FastaValidator.DEFAULT_MAXIMUM_PROTEIN_NAME_LENGTH);
                 Console.WriteLine();
 
-                Console.WriteLine("Use /Preview to see the fasta files that would be imported");
+                Console.WriteLine("Use /Preview to see the FASTA files that would be imported");
                 Console.WriteLine("Use /L to log messages to a file; optionally specify the filename using /L:FilePath");
                 Console.WriteLine();
 

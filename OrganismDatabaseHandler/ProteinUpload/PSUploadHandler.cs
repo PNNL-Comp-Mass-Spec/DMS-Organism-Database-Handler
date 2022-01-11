@@ -217,9 +217,9 @@ namespace OrganismDatabaseHandler.ProteinUpload
 
                 mValidator.MaximumProteinNameLength = mMaximumProteinNameLength;
 
-                OnLoadStart("Validating fasta files");
+                OnLoadStart("Validating FASTA files");
 
-                // Validate the fasta file (send full path)
+                // Validate the FASTA file (send full path)
                 // This function returns True if the file is successfully processed (even if it has errors)
                 var fileValidated = mValidator.StartValidateFASTAFile(currentFile.FullName);
 

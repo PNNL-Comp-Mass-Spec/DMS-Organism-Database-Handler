@@ -259,7 +259,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
             }
 
-            // The file is not present on the local computer (or the file size is different or it is older than the parent fasta file)
+            // The file is not present on the local computer (or the file size is different or it is older than the parent FASTA file)
             // We need to create a lock file, then copy the .fasta file locally
 
             if (string.IsNullOrEmpty(legacyStaticFilePath))
@@ -513,9 +513,9 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             try
             {
-                OnDebugEvent("Retrieving fasta file for protein collections " + string.Join(",", protCollectionList.ToArray()));
+                OnDebugEvent("Retrieving FASTA file for protein collections " + string.Join(",", protCollectionList.ToArray()));
 
-                // Export the fasta file
+                // Export the FASTA file
                 crc32Hash = ExporterComponent.ExportFASTAFile(protCollectionList, destinationFolderPath, alternateAnnotationTypeId, padWithPrimaryAnnotation);
 
                 if (string.IsNullOrEmpty(crc32Hash))
@@ -574,7 +574,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 interimFastaFile.MoveTo(finalFileFi.FullName);
 
-                OnStatusEvent("Created fasta file " + finalFileFi.FullName);
+                OnStatusEvent("Created FASTA file " + finalFileFi.FullName);
 
                 // Update the hash validation file
                 UpdateHashValidationFile(finalFileFi.FullName, crc32Hash);
@@ -762,7 +762,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var legacyStaticFileLocations = mDatabaseAccessor.GetTable(legacyLocationsSql);
             if (legacyStaticFileLocations.Rows.Count == 0)
             {
-                var msg = "Legacy fasta file " + legacyFASTAFileName + " not found in V_Legacy_Static_File_Locations; unable to continue";
+                var msg = "Legacy FASTA file " + legacyFASTAFileName + " not found in V_Legacy_Static_File_Locations; unable to continue";
                 OnErrorEvent(msg);
                 throw new Exception(msg);
             }
@@ -829,9 +829,9 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <summary>
         /// Validates that the hash of a .fasta file matches the expected hash value
         /// If the actual hash differs and if forceRegenerateHash=True, then this strExpectedHash get updated
-        /// forceRegenerateHash should be set to True only when processing legacy fasta files that have been newly copied to this computer
+        /// forceRegenerateHash should be set to True only when processing legacy FASTA files that have been newly copied to this computer
         /// </summary>
-        /// <param name="fastaFilePath">Fasta file to check</param>
+        /// <param name="fastaFilePath">FASTA file to check</param>
         /// <param name="expectedHash">Expected CRC32 hash; updated if incorrect and forceRegenerateHash is true</param>
         /// <param name="retryHoldoffHours">Time between re-generating the hash value for an existing file</param>
         /// <param name="forceRegenerateHash">Re-generate the hash</param>
@@ -870,7 +870,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                         if ((expectedHash ?? "") != (crc32Hash ?? "") && forceRegenerateHash)
                         {
                             // Hash values don't match, but forceRegenerateHash=True
-                            // Update the hash value stored in T_Legacy_File_Upload_Requests for this fasta file
+                            // Update the hash value stored in T_Legacy_File_Upload_Requests for this FASTA file
                             RunSP_AddLegacyFileUploadRequest(fastaFile.Name, crc32Hash);
 
                             // Update expectedHash
@@ -889,7 +889,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
             catch (Exception ex)
             {
-                var msg = "Exception while re-computing the hash of the fasta file: " + ex.Message;
+                var msg = "Exception while re-computing the hash of the FASTA file: " + ex.Message;
                 OnErrorEvent(msg, ex);
                 OnFileGenerationProgressUpdate(msg, 0d);
             }
@@ -906,11 +906,11 @@ namespace OrganismDatabaseHandler.ProteinExport
         private void OnFileGenerationCompleted(string outputPath)
         {
             mFinalOutputPath = outputPath;
-            OnDebugEvent("Saved fasta file to " + outputPath);
+            OnDebugEvent("Saved FASTA file to " + outputPath);
         }
 
         /// <summary>
-        /// Raises event FileGenerationCompleted is raised once the fasta file is done being created
+        /// Raises event FileGenerationCompleted is raised once the FASTA file is done being created
         /// </summary>
         /// <param name="finalOutputPath"></param>
         private void OnTaskCompletion(string finalOutputPath)

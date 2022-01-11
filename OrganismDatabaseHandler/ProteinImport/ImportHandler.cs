@@ -374,7 +374,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         }
 
         /// <summary>
-        /// Function to load fasta file contents with no checking against the existing database entries
+        /// Function to load FASTA file contents with no checking against the existing database entries
         /// used to load up the source collection ListView
         /// </summary>
         /// <param name="filePath"></param>
@@ -442,7 +442,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         #region "Event Handlers"
 
-        // Handles the LoadStart event for the fasta importer module
+        // Handles the LoadStart event for the FASTA importer module
         protected void Task_LoadStart(string taskTitle)
         {
             // mPersistentTaskNum += 1

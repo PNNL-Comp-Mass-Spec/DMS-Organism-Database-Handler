@@ -27,17 +27,17 @@ namespace AppUI_OrfDBHandler
         private Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> mFileWarningList;      // Tracks the warnings found for each file
 
         /// <summary>
-        /// Keys are fasta file paths, values are upload info
+        /// Keys are FASTA file paths, values are upload info
         /// </summary>
         private Dictionary<string, PSUploadHandler.UploadInfo> mFileValidList;
 
         /// <summary>
-        /// Keys are fasta file names, values are dictionaries of error messages, tracking the count of each error
+        /// Keys are FASTA file names, values are dictionaries of error messages, tracking the count of each error
         /// </summary>
         private Dictionary<string, Dictionary<string, int>> mSummarizedFileErrors;
 
         /// <summary>
-        /// Keys are fasta file names, values are dictionaries of warning messages, tracking the count of each warning
+        /// Keys are FASTA file names, values are dictionaries of warning messages, tracking the count of each warning
         /// </summary>
         private Dictionary<string, Dictionary<string, int>> mSummarizedFileWarnings;
 
