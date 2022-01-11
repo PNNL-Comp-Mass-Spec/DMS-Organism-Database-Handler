@@ -84,11 +84,14 @@ namespace FastaFileMaker
 
         private static void FastaTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if (DateTime.UtcNow.Subtract(mFastaGenStartTime).TotalMinutes >= FastaGenTimeoutIntervalMinutes)
-            {
-                mFastaGenTimeOut = true;        // Set the timeout flag so an error will be reported
-                mGenerationComplete = true;     // Set the completion flag so the fasta generation wait loop will exit
-            }
+            if (DateTime.UtcNow.Subtract(mFastaGenStartTime).TotalMinutes < FastaGenTimeoutIntervalMinutes)
+                return;
+
+            // Set the timeout flag so an error will be reported
+            mFastaGenTimeOut = true;
+
+            // Set the completion flag so the FASTA generation wait loop will exit
+            mGenerationComplete = true;
         }
 
         #endregion

@@ -139,41 +139,37 @@ namespace Bulk_Fasta_Importer
                 {
                     return false;
                 }
-                else
+
+                // Query commandLineParser to see if various parameters are present
+                if (commandLineParser.RetrieveValueForParameter("I", out var inputFilePath))
                 {
-                    // Query commandLineParser to see if various parameters are present
-                    if (commandLineParser.RetrieveValueForParameter("I", out var inputFilePath))
-                    {
-                        mInputFilePath = inputFilePath;
-                    }
-                    else if (commandLineParser.NonSwitchParameterCount > 0)
-                    {
-                        mInputFilePath = commandLineParser.RetrieveNonSwitchParameter(0);
-                    }
-
-                    if (commandLineParser.RetrieveValueForParameter("L", out var logFilePath))
-                    {
-                        mLogMessagesToFile = true;
-                        if (!string.IsNullOrEmpty(logFilePath))
-                        {
-                            mLogFilePath = logFilePath;
-                        }
-                    }
-
-                    if (commandLineParser.IsParameterPresent("Preview"))
-                        mPreviewMode = true;
-
-                    if (commandLineParser.RetrieveValueForParameter("MaxLength", out var maxNameLength))
-                    {
-                        if (!int.TryParse(maxNameLength, out mMaxProteinNameLength))
-                        {
-                            ShowErrorMessage("Integer not found for the /MaxLength switch");
-                            return false;
-                        }
-                    }
-
-                    return true;
+                    mInputFilePath = inputFilePath;
                 }
+                else if (commandLineParser.NonSwitchParameterCount > 0)
+                {
+                    mInputFilePath = commandLineParser.RetrieveNonSwitchParameter(0);
+                }
+
+                if (commandLineParser.RetrieveValueForParameter("L", out var logFilePath))
+                {
+                    mLogMessagesToFile = true;
+                    if (!string.IsNullOrEmpty(logFilePath))
+                    {
+                        mLogFilePath = logFilePath;
+                    }
+                }
+
+                if (commandLineParser.IsParameterPresent("Preview"))
+                    mPreviewMode = true;
+
+                if (commandLineParser.RetrieveValueForParameter("MaxLength", out var maxNameLength) &&
+                    !int.TryParse(maxNameLength, out mMaxProteinNameLength))
+                {
+                    ShowErrorMessage("Integer not found for the /MaxLength switch");
+                    return false;
+                }
+
+                return true;
             }
             catch (Exception ex)
             {
