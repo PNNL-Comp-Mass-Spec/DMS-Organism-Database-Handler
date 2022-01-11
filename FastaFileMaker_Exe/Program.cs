@@ -58,8 +58,8 @@ namespace FastaFileMaker
 
         private static void FastaTools_FileGenerationCompleted(string fullOutputPath)
         {
-            mFastaFileName = System.IO.Path.GetFileName(fullOutputPath);  // Get the name of the fasta file that was generated
-            mGenerationComplete = true;     // Set the completion flag
+            mFastaFileName = System.IO.Path.GetFileName(fullOutputPath);
+            mGenerationComplete = true;
         }
 
         private static DateTime dtLastLogTime = DateTime.MinValue;

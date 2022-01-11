@@ -28,7 +28,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var optionsHash = new Dictionary<string, string>();
 
             DataRow[] foundRows;
-            
+
             var validKeyword = default(bool);
             var validValue = default(bool);
 
