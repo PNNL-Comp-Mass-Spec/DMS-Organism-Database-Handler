@@ -20,7 +20,7 @@ namespace FastaFileMaker
         private static string mFastaFileName;
         private static System.Timers.Timer mFastaTimer;
         private static bool mFastaGenTimeOut;
-        private static bool mGenerationComplete = false;
+        private static bool mGenerationComplete;
 
         private static DateTime mFastaGenStartTime = DateTime.UtcNow;
 

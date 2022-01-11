@@ -130,7 +130,7 @@ namespace Bulk_Fasta_Importer
         {
             // Returns True if no problems; otherwise, returns false
 
-            var strValidParameters = new string[] { "I", "L", "Preview", "MaxLength" };
+            var strValidParameters = new[] { "I", "L", "Preview", "MaxLength" };
 
             try
             {
