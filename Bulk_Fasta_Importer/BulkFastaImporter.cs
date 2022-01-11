@@ -548,7 +548,7 @@ namespace Bulk_Fasta_Importer
         {
             var sourceFileList = new List<FastaFileInfoType>();
 
-            var udtFastaFileInfo = new FastaFileInfoType()
+            var udtFastaFileInfo = new FastaFileInfoType
             {
                 FilePath = fastaFilePath,
                 OrganismId = organismId,

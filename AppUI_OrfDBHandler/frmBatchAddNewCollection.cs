@@ -869,7 +869,7 @@ namespace AppUI_OrfDBHandler
 
             // Show a window with the most commonly used description and source
 
-            var oMetadataWindow = new frmNewCollectionMetadataEditor()
+            var oMetadataWindow = new frmNewCollectionMetadataEditor
             {
                 Description = MostCommonItem(descriptionList),
                 Source = MostCommonItem(sourceList)

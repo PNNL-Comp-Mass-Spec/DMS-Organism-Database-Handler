@@ -297,7 +297,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
 
                     if (eResult == DialogResult.No)
                     {
-                        var errorCollection = new List<CustomFastaValidator.ErrorInfoExtended>()
+                        var errorCollection = new List<CustomFastaValidator.ErrorInfoExtended>
                         {
                             new(
                                 0, " N/A ", logMessageIfCancelled, "", logLabelIfCancelled)
@@ -319,7 +319,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
                         {
                             // No proteins
 
-                            var errorCollection = new List<CustomFastaValidator.ErrorInfoExtended>()
+                            var errorCollection = new List<CustomFastaValidator.ErrorInfoExtended>
                             {
                                 new(
                                     0, " N/A ", "No valid proteins were loaded from the .Fasta file", "", "Error")

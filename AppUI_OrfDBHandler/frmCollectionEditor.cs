@@ -606,7 +606,7 @@ namespace AppUI_OrfDBHandler
                 return;
             }
 
-            var frmAddCollection = new frmAddNewCollection()
+            var frmAddCollection = new frmAddNewCollection
             {
                 CollectionName = Path.GetFileNameWithoutExtension(mSelectedFilePath),
                 IsLocalFile = mLocalFileLoaded,

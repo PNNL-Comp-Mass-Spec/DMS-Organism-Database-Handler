@@ -158,7 +158,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             var creationOptions = creationOptionsHandler.MakeCreationOptionsString(outputSequenceType);
 
-            var protCollectionList = new List<string>()
+            var protCollectionList = new List<string>
             {
                 proteinCollectionName
             };
