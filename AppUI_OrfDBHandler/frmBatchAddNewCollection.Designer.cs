@@ -66,6 +66,7 @@ namespace AppUI_OrfDBHandler
             this.cboOrganismSelect = new System.Windows.Forms.ComboBox();
             this.cmdRemoveFile = new AppUI_OrfDBHandler.Controls.ImageButton();
             this.cmdAddFile = new AppUI_OrfDBHandler.Controls.ImageButton();
+            this.cmdUpdateOrganisms = new System.Windows.Forms.Button();
             this.fraValidationOptions.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -119,7 +120,7 @@ namespace AppUI_OrfDBHandler
             this.cmdCancel.Location = new System.Drawing.Point(1129, 621);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(60, 29);
-            this.cmdCancel.TabIndex = 20;
+            this.cmdCancel.TabIndex = 21;
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
@@ -129,7 +130,7 @@ namespace AppUI_OrfDBHandler
             this.cmdUploadChecked.Location = new System.Drawing.Point(999, 621);
             this.cmdUploadChecked.Name = "cmdUploadChecked";
             this.cmdUploadChecked.Size = new System.Drawing.Size(120, 29);
-            this.cmdUploadChecked.TabIndex = 19;
+            this.cmdUploadChecked.TabIndex = 20;
             this.cmdUploadChecked.Text = "&Upload new FASTAs";
             this.cmdUploadChecked.Click += new System.EventHandler(this.cmdUploadChecked_Click);
             // 
@@ -349,7 +350,7 @@ namespace AppUI_OrfDBHandler
             this.lblStatus.Location = new System.Drawing.Point(244, 281);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(211, 38);
-            this.lblStatus.TabIndex = 21;
+            this.lblStatus.TabIndex = 22;
             this.lblStatus.Text = "Status";
             // 
             // cboOrganismSelect
@@ -389,12 +390,23 @@ namespace AppUI_OrfDBHandler
             this.cmdAddFile.ThemedImage = ((System.Drawing.Bitmap)(resources.GetObject("cmdAddFile.ThemedImage")));
             this.cmdAddFile.Click += new System.EventHandler(this.cmdAddFile_Click);
             // 
+            // cmdUpdateOrganisms
+            // 
+            this.cmdUpdateOrganisms.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdUpdateOrganisms.Location = new System.Drawing.Point(591, 602);
+            this.cmdUpdateOrganisms.Name = "cmdUpdateOrganisms";
+            this.cmdUpdateOrganisms.Size = new System.Drawing.Size(91, 51);
+            this.cmdUpdateOrganisms.TabIndex = 19;
+            this.cmdUpdateOrganisms.Text = "Update &Organisms";
+            this.cmdUpdateOrganisms.Click += new System.EventHandler(this.cmdUpdateOrganisms_Click);
+            // 
             // frmBatchAddNewCollection
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(1199, 665);
+            this.Controls.Add(this.cmdUpdateOrganisms);
             this.Controls.Add(this.cboOrganismSelect);
             this.Controls.Add(this.cmdRemoveFile);
             this.Controls.Add(this.cmdAddFile);
@@ -459,5 +471,6 @@ namespace AppUI_OrfDBHandler
         private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.CheckBox chkValidationAllowDash;
         private System.Windows.Forms.ComboBox cboOrganismSelect;
+        private System.Windows.Forms.Button cmdUpdateOrganisms;
     }
 }

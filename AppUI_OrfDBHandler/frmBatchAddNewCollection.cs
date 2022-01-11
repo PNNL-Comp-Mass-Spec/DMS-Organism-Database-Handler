@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using OrganismDatabaseHandler.ProteinImport;
 using OrganismDatabaseHandler.ProteinUpload;
 using PRISM;
 using PRISMDatabaseUtils;
@@ -20,6 +21,7 @@ namespace AppUI_OrfDBHandler
         // Ignore spelling: lvw, uploader, Passphrase, terabytes, petabytes, exabytes, zettabytes, yottabytes
 
         public frmBatchAddNewCollection(
+            ImportHandler importHandler,
             DataTable organismList,
             DataTable annotationTypeList,
             DataTable existingCollectionsList,
@@ -38,6 +40,8 @@ namespace AppUI_OrfDBHandler
             mStatusResetTimer.Start();
 
             ClearStatus();
+
+            mImportHandler = importHandler;
 
             mOrganismListSorted = new DataView(organismList) { Sort = "Display_Name" };
 
@@ -92,7 +96,9 @@ namespace AppUI_OrfDBHandler
         // Keys are file paths, values are UploadInfo objects
         private Dictionary<string, PSUploadHandler.UploadInfo> mSelectedFileList;
 
-        private readonly DataView mOrganismListSorted;
+        private readonly ImportHandler mImportHandler;
+
+        private DataView mOrganismListSorted;
 
         private readonly DataTable mAnnotationTypeList;
         private readonly DataTable mCollectionsTable;
@@ -1065,6 +1071,15 @@ namespace AppUI_OrfDBHandler
         private void cmdUpdateDescription_Click(object sender, EventArgs e)
         {
             UpdateProteinCollectionMetadata();
+        }
+
+        private void cmdUpdateOrganisms_Click(object sender, EventArgs e)
+        {
+            var organismList = mImportHandler.LoadOrganisms();
+
+            mOrganismListSorted = new DataView(organismList) { Sort = "Display_Name" };
+
+            LoadOrganismPicker(cboOrganismSelect, mOrganismListSorted);
         }
 
         #endregion

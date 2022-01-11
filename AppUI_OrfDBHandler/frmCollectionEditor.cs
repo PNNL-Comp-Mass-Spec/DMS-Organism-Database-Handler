@@ -294,6 +294,7 @@ namespace AppUI_OrfDBHandler
             mSummarizedFileWarningList?.Clear();
 
             var frmBatchUpload = new frmBatchAddNewCollection(
+                mImportHandler,
                 mOrganisms,
                 mAnnotationTypes,
                 mProteinCollectionNames,
