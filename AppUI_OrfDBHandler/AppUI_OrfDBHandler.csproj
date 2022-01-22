@@ -203,6 +203,8 @@ xcopy "$(TargetDir)*.exe"  "$(SolutionDir)Executables\Debug\" /d /y /f
 xcopy "$(TargetDir)*.dll" "$(SolutionDir)Executables\Debug\" /d /y /f
 xcopy "$(TargetDir)*.pdb" "$(SolutionDir)Executables\Debug\" /d /y /f
 
+xcopy "$(TargetDir)PRISMSeq_Uploader.exe.config" "$(SolutionDir)Executables\Debug\" /d /y /f
+
 if not exist "$(SolutionDir)Executables\Debug_CBDMS_GUI" mkdir "$(SolutionDir)Executables\Debug_CBDMS_GUI"
 xcopy "$(TargetDir)*.exe"  "$(SolutionDir)Executables\Debug_CBDMS_GUI\" /d /y /f
 xcopy "$(TargetDir)*.dll" "$(SolutionDir)Executables\Debug_CBDMS_GUI\" /d /y /f
