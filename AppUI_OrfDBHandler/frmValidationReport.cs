@@ -163,7 +163,9 @@ namespace AppUI_OrfDBHandler
         {
             var foundRows = mOrganisms.Select("ID = " + organismId);
 
-            return foundRows[0]["Display_Name"].ToString();
+            return foundRows.Length > 0 
+                ? foundRows[0]["Display_Name"].ToString() 
+                : "Unknown organism id: " + organismId;
         }
 
         private void BindFileListToErrorComboBox(Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>> contents)
