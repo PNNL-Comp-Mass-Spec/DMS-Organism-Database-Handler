@@ -172,15 +172,7 @@ namespace AppUI_OrfDBHandler
 
         public string SelectedOrganismName
         {
-            get
-            {
-                if (cboOrganismSelect.Items.Count > 0)
-                {
-                    return cboOrganismSelect.Text;
-                }
-
-                return string.Empty;
-            }
+            get => cboOrganismSelect.Items.Count > 0 ? cboOrganismSelect.Text : string.Empty;
             set => mLastSelectedOrganism = value;
         }
 
