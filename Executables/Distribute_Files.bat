@@ -36,4 +36,4 @@ echo.
 echo Copying DLL to the AnalysisManager
 xcopy Debug\OrganismDatabaseHandler.dll ..\..\..\DataMining\DMS_Managers\Analysis_Manager\AM_Common /d /y
 
-pause
+if not "%1"=="NoPause" pause
