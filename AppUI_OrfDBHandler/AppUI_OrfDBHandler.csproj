@@ -152,6 +152,9 @@
     <EmbeddedResource Include="frmNewCollectionMetadataEditor.resx">
       <DependentUpon>frmNewCollectionMetadataEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmTestingInterface.resx">
+      <DependentUpon>frmTestingInterface.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmValidationReport.resx">
       <DependentUpon>frmValidationReport.cs</DependentUpon>
     </EmbeddedResource>
