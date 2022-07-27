@@ -185,6 +185,7 @@ namespace AppUI_OrfDBHandler
         {
         }
 
+        [Obsolete("Referenced by hidden button")]
         private void cmdUpdateArchiveTables_Click(object sender, EventArgs e)
         {
             if (mSyncer == null)

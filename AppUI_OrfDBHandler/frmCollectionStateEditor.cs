@@ -8,6 +8,7 @@ using PRISM;
 
 namespace AppUI_OrfDBHandler
 {
+    [Obsolete("Class referenced by hidden tools menu")]
     public partial class frmCollectionStateEditor : Form
     {
         public frmCollectionStateEditor(string proteinStorageConnectionString)

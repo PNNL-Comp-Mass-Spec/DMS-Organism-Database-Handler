@@ -12,6 +12,7 @@ using ProteinFileReader;
 
 namespace AppUI_OrfDBHandler
 {
+    [Obsolete("Referenced by hidden button and hidden menu")]
     public class SyncFASTAFileArchive : EventNotifier
     {
         // Ignore Spelling: filetype
@@ -41,6 +42,7 @@ namespace AppUI_OrfDBHandler
             RegisterEvents(mImporter);
         }
 
+        [Obsolete("Unused")]
         public int SyncCollectionsAndArchiveTables(string outputPath)
         {
             const string sql =
@@ -84,6 +86,7 @@ namespace AppUI_OrfDBHandler
             return 0;
         }
 
+        [Obsolete("Referenced by hidden button")]
         public void UpdateSHA1Hashes()
         {
             const string sql = "SELECT Protein_Collection_ID, FileName, Authentication_Hash, NumProteins " +

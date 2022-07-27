@@ -873,6 +873,7 @@ namespace AppUI_OrfDBHandler
         //    mFileBatcher.UploadBatch();
         //}
 
+        [Obsolete("The tools menu is hidden")]
         private void mnuToolsCollectionEdit_Click(object sender, EventArgs e)
         {
             var cse = new frmCollectionStateEditor(mPsConnectionString);
@@ -1075,6 +1076,7 @@ namespace AppUI_OrfDBHandler
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        [Obsolete("Referenced by hidden menu")]
         private void mnuAdminNameHashRefresh_Click(object sender, EventArgs e)
         {
             if (mSyncer == null)

@@ -84,11 +84,13 @@ namespace AppUI_OrfDBHandler
             lvw.EndUpdate();
         }
 
+        [Obsolete("View retired in 2022")]
         public void FillListView(ListView listViewToFill)
         {
             FillFilteredListView(listViewToFill, "");
         }
 
+        [Obsolete("View retired in 2022")]
         public void FillFilteredListView(ListView listViewToFill, string filterString)
         {
             listViewToFill.Items.Clear();
@@ -101,6 +103,7 @@ namespace AppUI_OrfDBHandler
             SetupPickerListView(listViewToFill, mListViewData, filterString);
         }
 
+        [Obsolete("View retired in 2022")]
         public DataTable GetCollectionTable()
         {
             const string SQL = "SELECT * FROM V_Collection_State_Picker ORDER BY [Name]";
