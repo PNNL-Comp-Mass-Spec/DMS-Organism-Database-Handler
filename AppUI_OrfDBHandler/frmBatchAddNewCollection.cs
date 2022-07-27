@@ -255,10 +255,11 @@ namespace AppUI_OrfDBHandler
             foreach (var dataRow in dataTable.Select("", "Protein_Collection_ID"))
             {
                 var proteinCollectionID = DatabaseUtilsExtensions.GetInteger(null, dataRow["Protein_Collection_ID"]);
-                var fileName = dataRow["FileName"].ToString();
+                var collectionName = dataRow["Collection_Name"].ToString();
+
                 if (!collectionInfo.ContainsKey(proteinCollectionID))
                 {
-                    collectionInfo.Add(proteinCollectionID, fileName);
+                    collectionInfo.Add(proteinCollectionID, collectionName);
                 }
             }
 

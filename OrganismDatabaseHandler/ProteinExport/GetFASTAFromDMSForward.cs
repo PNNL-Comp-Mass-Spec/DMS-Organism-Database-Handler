@@ -19,7 +19,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         /// <summary>
         /// Keys are protein collection IDs
-        /// Values are filename
+        /// Values are protein collection name
         /// </summary>
         private readonly Dictionary<int, string> mAllCollections;
 
@@ -110,7 +110,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Check each collection name for encryption of contents
             foreach (var nameString in protCollectionList)
             {
-                var encCheckRows = mCollectionsCache.Select("Filename = '" + nameString + "' AND Contents_Encrypted > 0");
+                var encCheckRows = mCollectionsCache.Select("Collection_Name = '" + nameString + "' AND Contents_Encrypted > 0");
 
                 if (encCheckRows.Length > 0)
                 {
@@ -197,7 +197,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 // Lookup the number of proteins that should be in this protein collection
                 var lengthCheckSql = "SELECT NumProteins FROM T_Protein_Collections " +
-                                     "WHERE FileName = '" + proteinCollectionName + "'";
+                                     "WHERE Collection_Name = '" + proteinCollectionName + "'";
 
                 var lengthCheckTable = mDatabaseAccessor.GetTable(lengthCheckSql);
                 int collectionLength;
@@ -429,7 +429,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 RefreshCollectionCache();
             }
 
-            return mDatabaseAccessor.DataTableToDictionaryIntegerKeys(mCollectionsCache, "Protein_Collection_ID", "FileName");
+            return mDatabaseAccessor.DataTableToDictionaryIntegerKeys(mCollectionsCache, "Protein_Collection_ID", "Collection_Name");
         }
 
         public Dictionary<string, string> GetCollectionsByOrganism(int organismId)
@@ -444,7 +444,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 RefreshCollectionCache();
             }
 
-            return mDatabaseAccessor.DataTableToDictionary(mCollectionsCache, "Protein_Collection_ID", "FileName", "[Organism_ID] = " + organismId);
+            return mDatabaseAccessor.DataTableToDictionary(mCollectionsCache, "Protein_Collection_ID", "Collection_Name", "[Organism_ID] = " + organismId);
         }
 
         public DataTable GetCollectionsByOrganismTable(int organismId)
@@ -522,11 +522,11 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             // Make sure there are no leading or trailing spaces
             collectionName = collectionName.Trim();
-            var foundRows = mCollectionsCache.Select("[FileName] = '" + collectionName + "'");
+            var foundRows = mCollectionsCache.Select("[Collection_Name] = '" + collectionName + "'");
             if (foundRows.Length == 0)
             {
                 RefreshCollectionCache();
-                foundRows = mCollectionsCache.Select("[FileName] = '" + collectionName + "'");
+                foundRows = mCollectionsCache.Select("[Collection_Name] = '" + collectionName + "'");
             }
 
             int id;
@@ -555,7 +555,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             if (foundRows.Count > 0)
             {
-                return foundRows[0]["FileName"].ToString();
+                return foundRows[0]["Collection_Name"].ToString();
             }
 
             return string.Empty;
@@ -586,7 +586,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
         public string GetStoredHash(string proteinCollectionName)
         {
-            var foundRows = mCollectionsCache.Select("[FileName] = '" + proteinCollectionName + "'");
+            var foundRows = mCollectionsCache.Select("[Collection_Name] = '" + proteinCollectionName + "'");
             return foundRows[0]["Authentication_Hash"]?.ToString();
         }
 

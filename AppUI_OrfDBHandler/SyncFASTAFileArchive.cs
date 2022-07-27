@@ -46,7 +46,7 @@ namespace AppUI_OrfDBHandler
         public int SyncCollectionsAndArchiveTables(string outputPath)
         {
             const string sql =
-                "SELECT Protein_Collection_ID, FileName, Authentication_Hash, DateModified, Collection_Type_ID, NumProteins " +
+                "SELECT Protein_Collection_ID, Collection_Name, Authentication_Hash, DateModified, Collection_Type_ID, NumProteins " +
                 "FROM V_Missing_Archive_Entries";
 
             // TODO add collection list string
@@ -69,10 +69,10 @@ namespace AppUI_OrfDBHandler
 
             foreach (DataRow dataRow in dt.Rows)
             {
-                OnSyncProgressUpdate("Processing - '" + dataRow["FileName"] + "'", currentCollectionProteinCount / (double)mTotalProteinsCount);
+                OnSyncProgressUpdate("Processing - '" + dataRow["Collection_Name"] + "'", currentCollectionProteinCount / (double)mTotalProteinsCount);
                 currentCollectionProteinCount = Convert.ToInt32(dataRow["NumProteins"]);
                 var proteinCollectionId = Convert.ToInt32(dataRow["Protein_Collection_ID"]);
-                var sourceFilePath = Path.Combine(outputPath, dataRow["FileName"] + ".fasta");
+                var sourceFilePath = Path.Combine(outputPath, dataRow["Collection_Name"] + ".fasta");
                 var sha1 = dataRow["Authentication_Hash"].ToString();
 
                 fileArchiver.ArchiveCollection(
@@ -89,7 +89,7 @@ namespace AppUI_OrfDBHandler
         [Obsolete("Referenced by hidden button")]
         public void UpdateSHA1Hashes()
         {
-            const string sql = "SELECT Protein_Collection_ID, FileName, Authentication_Hash, NumProteins " +
+            const string sql = "SELECT Protein_Collection_ID, Collection_Name, Authentication_Hash, NumProteins " +
                       "FROM V_Missing_Archive_Entries";
 
             var dt = mDatabaseAccessor.GetTable(sql);
@@ -126,7 +126,7 @@ namespace AppUI_OrfDBHandler
             {
                 var proteinCollectionID = Convert.ToInt32(dataRow["Protein_Collection_ID"]);
                 var storedSHA = dataRow["Authentication_Hash"].ToString();
-                var filename = dataRow["FileName"].ToString();
+                var collectionName = dataRow["Collection_Name"].ToString();
                 mGeneratedFastaFilePath = string.Empty;
 
                 elapsedTimeSb.Remove(0, elapsedTimeSb.Length);
@@ -166,7 +166,7 @@ namespace AppUI_OrfDBHandler
                     mCurrentStatusMsg,
                     mCurrentProteinCount / (double)mTotalProteinsCount);
 
-                var fullPath = Path.Combine(tempFilePath, filename + ".fasta");
+                var fullPath = Path.Combine(tempFilePath, collectionName + ".fasta");
 
                 var genSHA = mExporter.ExportFASTAFile(proteinCollectionID, fullPath, GetFASTAFromDMS.SequenceTypes.Forward);
 

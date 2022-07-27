@@ -12,9 +12,9 @@ namespace OrganismDatabaseHandler.ProteinStorage
         protected readonly SortedSet<string> ProteinNames;
         private string mPassPhrase;
 
-        public ProteinStorage(string fastaFileName)
+        public ProteinStorage(string fastaFilePath)
         {
-            FileName = fastaFileName;
+            FilePath = fastaFilePath;
             Proteins = new Dictionary<string, ProteinStorageEntry>();
             ProteinNames = new SortedSet<string>();
         }
@@ -35,7 +35,10 @@ namespace OrganismDatabaseHandler.ProteinStorage
             }
         }
 
-        protected string FileName { get; set; }
+        /// <summary>
+        /// Full path to the FASTA file
+        /// </summary>
+        protected string FilePath { get; set; }
 
         public ProteinStorageEntry GetProtein(string reference)
         {
@@ -95,7 +98,7 @@ namespace OrganismDatabaseHandler.ProteinStorage
 
         public override string ToString()
         {
-            return FileName + ": " + ProteinNames.Count + " proteins";
+            return FilePath + ": " + ProteinNames.Count + " proteins";
         }
     }
 }

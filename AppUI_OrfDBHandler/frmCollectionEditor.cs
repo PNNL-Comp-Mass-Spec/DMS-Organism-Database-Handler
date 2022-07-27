@@ -49,7 +49,7 @@ namespace AppUI_OrfDBHandler
             Application.Run(new frmCollectionEditor());
         }
 
-        private const string ProgramDate = "April 27, 2022";
+        private const string ProgramDate = "July 27, 2022";
 
         private DataTable mOrganisms;
         private DataTable mProteinCollections;
@@ -573,7 +573,7 @@ namespace AppUI_OrfDBHandler
             var foundRows = mProteinCollections.Select("Protein_Collection_ID = " + cboCollectionPicker.SelectedValue);
 
             ImportProgressHandler(0.5d);
-            mSelectedFilePath = foundRows[0]["FileName"].ToString();
+            mSelectedFilePath = foundRows[0]["Collection_Name"].ToString();
             UpdateCachedInfoAfterLoadingProteins();
 
             ImportProgressHandler(1.0d);

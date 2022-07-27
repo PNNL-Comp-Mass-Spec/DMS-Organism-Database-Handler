@@ -525,8 +525,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            // Note that the @fileName parameter is actually the protein collection name; not the original .fasta file name
-            dbTools.AddParameter(cmdSave, "@fileName", SqlType.VarChar, 128).Value = proteinCollectionName;
+            dbTools.AddParameter(cmdSave, "@collectionName", SqlType.VarChar, 128).Value = proteinCollectionName;
             dbTools.AddParameter(cmdSave, "@Description", SqlType.VarChar, 900).Value = description;
             dbTools.AddParameter(cmdSave, "@collectionSource", SqlType.VarChar, 900).Value = collectionSource;
             dbTools.AddParameter(cmdSave, "@collection_type", SqlType.Int).Value = (int)collectionType;
@@ -769,16 +768,16 @@ namespace OrganismDatabaseHandler.ProteinImport
             var returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@name", SqlType.VarChar, 128).Value = proteinName;
+            dbTools.AddParameter(cmdSave, "@proteinName", SqlType.VarChar, 128).Value = proteinName;
             dbTools.AddParameter(cmdSave, "@description", SqlType.VarChar, 900).Value = description;
-            dbTools.AddParameter(cmdSave, "@authority_ID", SqlType.Int).Value = authorityId;
-            dbTools.AddParameter(cmdSave, "@protein_ID", SqlType.Int).Value = proteinId;
+            dbTools.AddParameter(cmdSave, "@authorityID", SqlType.Int).Value = authorityId;
+            dbTools.AddParameter(cmdSave, "@proteinID", SqlType.Int).Value = proteinId;
 
             var textToHash = proteinName + "_" + description + "_" + proteinId;
             dbTools.AddParameter(cmdSave, "@nameDescHash", SqlType.VarChar, 40).Value = GenerateHash(textToHash.ToLower());
 
             var messageParam = dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
-            dbTools.AddParameter(cmdSave, "@MaxProteinNameLength", SqlType.Int).Value = maxProteinNameLength;
+            dbTools.AddParameter(cmdSave, "@maxProteinNameLength", SqlType.Int).Value = maxProteinNameLength;
 
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
@@ -814,8 +813,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            // Note that the @fileName parameter is actually the protein collection name; not the original .fasta file name
-            dbTools.AddParameter(cmdSave, "@fileName", SqlType.VarChar, 128).Value = proteinCollectionName;
+            dbTools.AddParameter(cmdSave, "@collectionName", SqlType.VarChar, 128).Value = proteinCollectionName;
 
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);

@@ -53,7 +53,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         {
             var foundRows = mCollectionsList.Select("Protein_Collection_ID = " + proteinCollectionId);
             var dataRow = foundRows[0];
-            var collectionName = mSQLAccess.DbTools.GetString(dataRow["FileName"]);
+            var collectionName = mSQLAccess.DbTools.GetString(dataRow["Collection_Name"]);
 
             return collectionName;
         }
@@ -220,12 +220,12 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public DataTable LoadProteinCollections()
         {
-            const string pcSql = "SELECT MIN(FileName) AS FileName, Protein_Collection_ID, " +
+            const string pcSql = "SELECT MIN(Collection_Name) AS Collection_Name, Protein_Collection_ID, " +
                         "MIN(Organism_ID) AS Organism_ID, MIN(Authority_ID) AS Authority_ID, " +
                         "MIN(Display) AS Display, MIN(Authentication_Hash) AS Authentication_Hash " +
                         "FROM V_Protein_Collections_By_Organism " +
                         "GROUP BY Protein_Collection_ID " +
-                        "ORDER BY MIN(FileName)";
+                        "ORDER BY MIN(Collection_Name)";
 
             var proteinCollectionTable = mSQLAccess.GetTable(pcSql);
 
@@ -242,10 +242,10 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         protected DataTable LoadProteinCollections(int organismId)
         {
-            var sqlQuery = "SELECT FileName, Protein_Collection_ID, Organism_ID, Authority_ID, Display, Authentication_Hash" +
+            var sqlQuery = "SELECT Collection_Name, Protein_Collection_ID, Organism_ID, Authority_ID, Display, Authentication_Hash" +
                            " FROM V_Protein_Collections_By_Organism" +
                            " WHERE Organism_ID = " + organismId +
-                           " ORDER BY FileName";
+                           " ORDER BY Collection_Name";
             var proteinCollectionTable = mSQLAccess.GetTable(sqlQuery);
 
             var dataRow = proteinCollectionTable.NewRow();
@@ -262,16 +262,16 @@ namespace OrganismDatabaseHandler.ProteinImport
         public DataTable LoadProteinCollectionNames()
         {
             const string pcSql =
-                "SELECT Protein_Collection_ID, FileName, Authority_ID " +
+                "SELECT Protein_Collection_ID, Collection_Name, Authority_ID " +
                 "FROM V_Protein_Collections_By_Organism " +
-                "ORDER BY FileName";
+                "ORDER BY Collection_Name";
 
             var proteinCollectionTable = mSQLAccess.GetTable(pcSql);
 
             var dataRow = proteinCollectionTable.NewRow();
 
             dataRow["Protein_Collection_ID"] = 0;
-            dataRow["FileName"] = " -- None Selected -- ";
+            dataRow["Collection_Name"] = " -- None Selected -- ";
 
             proteinCollectionTable.Rows.InsertAt(dataRow, 0);
             proteinCollectionTable.AcceptChanges();
@@ -307,7 +307,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var sqlQuery =
                 "SELECT Protein_Collection_ID, Primary_Annotation_Type_ID " +
                 "FROM T_Protein_Collections " +
-                "WHERE FileName = '" + collectionName + "' ORDER BY FileName";
+                "WHERE Collection_Name = '" + collectionName + "' ORDER BY Collection_Name";
 
             var proteinCollectionTable = mSQLAccess.GetTable(sqlQuery);
             var foundRow = proteinCollectionTable.Rows[0];
