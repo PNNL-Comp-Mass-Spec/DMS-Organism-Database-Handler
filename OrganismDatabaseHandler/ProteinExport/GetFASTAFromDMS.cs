@@ -228,7 +228,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             {
                 // Be careful changing this message; the AnalysisResources class in the Analysis Manager
                 // looks for error messages that start with "Legacy FASTA file not found:"
-                var msg = "Legacy FASTA file not found: " + legacyStaticFilePath + " (path comes from V_Legacy_Static_File_Locations)";
+                var msg = "Legacy FASTA file not found: " + legacyStaticFilePath + " (path comes from v_legacy_static_file_locations)";
                 OnErrorEvent(msg);
                 throw new Exception(msg);
             }
@@ -408,12 +408,12 @@ namespace OrganismDatabaseHandler.ProteinExport
             string finalFileName;
             string finalFileHash;
 
-            var fileNameSql = "SELECT Archived_File_Path, Archived_File_ID, Authentication_Hash " +
-                              "FROM T_Archived_Output_Files " +
-                              "WHERE Collection_List_Hex_Hash = '" + filenameSha1Hash + "' AND " +
-                                     "Protein_Collection_List = '" + proteinCollectionList + "' AND " +
-                                     "Archived_File_State_ID <> 3 " +
-                              "ORDER BY File_Modification_Date Desc";
+            var fileNameSql = "SELECT archived_file_path, archived_file_id, authentication_hash " +
+                              "FROM t_archived_output_files " +
+                              "WHERE collection_list_hex_hash = '" + filenameSha1Hash + "' AND " +
+                                     "protein_collection_list = '" + proteinCollectionList + "' AND " +
+                                     "archived_file_state_id <> 3 " +
+                              "ORDER BY file_modification_date Desc";
 
             var fileNameTable = mDatabaseAccessor.GetTable(fileNameSql);
             if (fileNameTable.Rows.Count >= 1)
@@ -757,18 +757,18 @@ namespace OrganismDatabaseHandler.ProteinExport
         private bool LookupLegacyFastaFileDetails(string legacyFASTAFileName, out string legacyStaticFilePathOutput, out string crc32HashOutput)
         {
             // Lookup the details for LegacyFASTAFileName in the database
-            var legacyLocationsSql = "SELECT FileName, Full_Path, Authentication_Hash FROM V_Legacy_Static_File_Locations WHERE FileName = '" + legacyFASTAFileName + "'";
+            var legacyLocationsSql = "SELECT file_name, full_path, authentication_hash FROM v_legacy_static_file_locations WHERE file_name = '" + legacyFASTAFileName + "'";
 
             var legacyStaticFileLocations = mDatabaseAccessor.GetTable(legacyLocationsSql);
             if (legacyStaticFileLocations.Rows.Count == 0)
             {
-                var msg = "Legacy FASTA file " + legacyFASTAFileName + " not found in V_Legacy_Static_File_Locations; unable to continue";
+                var msg = "Legacy FASTA file " + legacyFASTAFileName + " not found in v_legacy_static_file_locations; unable to continue";
                 OnErrorEvent(msg);
                 throw new Exception(msg);
             }
 
-            legacyStaticFilePathOutput = legacyStaticFileLocations.Rows[0]["Full_Path"].ToString();
-            crc32HashOutput = legacyStaticFileLocations.Rows[0]["Authentication_Hash"]?.ToString() ?? string.Empty;
+            legacyStaticFilePathOutput = legacyStaticFileLocations.Rows[0]["full_path"].ToString();
+            crc32HashOutput = legacyStaticFileLocations.Rows[0]["authentication_hash"]?.ToString() ?? string.Empty;
 
             return true;
         }

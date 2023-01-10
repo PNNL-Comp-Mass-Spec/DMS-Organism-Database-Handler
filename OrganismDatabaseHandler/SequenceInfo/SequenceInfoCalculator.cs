@@ -115,20 +115,26 @@ namespace OrganismDatabaseHandler.SequenceInfo
             var getSql = new DBTask(connectionStringToUse);
             RegisterEvents(getSql);
 
-            const string sqlString = "SELECT * FROM T_Residues WHERE [Num_C] > 0";
+            const string sqlString =
+                "SELECT Residue_ID, Residue_Symbol, Description, Abbreviation, Average_Mass, Monoisotopic_Mass, " +
+                "       Num_C, Num_H, Num_N, Num_O, Num_S, " +
+                "       Empirical_Formula, Amino_Acid_Name " +
+                "FROM T_Residues " +
+                "WHERE Num_C > 0";
+
             var aminoAcidTable = getSql.GetTable(sqlString);
 
             foreach (DataRow dataRow in aminoAcidTable.Rows)
             {
-                var singleLetterSymbol = dataRow["Residue_Symbol"].ToString();
-                var description = dataRow["Description"].ToString();
-                var countC = Convert.ToInt32(dataRow["Num_C"]);
-                var countH = Convert.ToInt32(dataRow["Num_H"]);
-                var countN = Convert.ToInt32(dataRow["Num_N"]);
-                var countO = Convert.ToInt32(dataRow["Num_O"]);
-                var countS = Convert.ToInt32(dataRow["Num_S"]);
-                var monoMass = Convert.ToDouble(dataRow["Monoisotopic_Mass"]);
-                var avgMass = Convert.ToDouble(dataRow["Average_Mass"]);
+                var singleLetterSymbol = dataRow["residue_symbol"].ToString();
+                var description = dataRow["description"].ToString();
+                var countC = Convert.ToInt32(dataRow["num_c"]);
+                var countH = Convert.ToInt32(dataRow["num_h"]);
+                var countN = Convert.ToInt32(dataRow["num_n"]);
+                var countO = Convert.ToInt32(dataRow["num_o"]);
+                var countS = Convert.ToInt32(dataRow["num_s"]);
+                var monoMass = Convert.ToDouble(dataRow["monoisotopic_mass"]);
+                var avgMass = Convert.ToDouble(dataRow["average_mass"]);
 
                 AddAminoAcid(new AminoAcidInfo(singleLetterSymbol, description, countC, countH, countN, countO, countS, avgMass, monoMass));
             }

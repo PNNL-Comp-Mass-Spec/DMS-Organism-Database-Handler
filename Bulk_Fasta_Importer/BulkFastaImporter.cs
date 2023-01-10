@@ -91,7 +91,7 @@ namespace Bulk_Fasta_Importer
 
         public BulkFastaImporter(string dmsConnString, string proteinSeqsConnString)
         {
-            mFileDate = "July 27, 2022";
+            mFileDate = "January 9, 2023";
 
             if (string.IsNullOrWhiteSpace(dmsConnString))
             {
@@ -304,7 +304,7 @@ namespace Bulk_Fasta_Importer
         {
             try
             {
-                const string sqlQuery = "SELECT ID, Display_Name FROM V_Annotation_Type_Picker";
+                const string sqlQuery = "SELECT id, display_name FROM v_annotation_type_picker";
 
                 mAnnotationTypeInfo.Clear();
 
@@ -314,7 +314,7 @@ namespace Bulk_Fasta_Importer
 
                 if (!success)
                 {
-                    ReportDatabaseError("Error obtaining data from V_Annotation_Type_Picker using GetQueryResultsDataTable");
+                    ReportDatabaseError("Error obtaining data from v_annotation_type_picker using GetQueryResultsDataTable");
                     return false;
                 }
 
@@ -339,7 +339,7 @@ namespace Bulk_Fasta_Importer
         {
             try
             {
-                const string sqlQuery = "SELECT Organism_ID, Name FROM V_Organism_Export";
+                const string sqlQuery = "SELECT organism_id, name FROM v_organism_export";
 
                 mOrganismInfo.Clear();
 
@@ -349,7 +349,7 @@ namespace Bulk_Fasta_Importer
 
                 if (!success)
                 {
-                    ReportDatabaseError("Error obtaining data from V_Organism_Export using GetQueryResultsDataTable");
+                    ReportDatabaseError("Error obtaining data from v_organism_export using GetQueryResultsDataTable");
                     return false;
                 }
 
@@ -374,7 +374,7 @@ namespace Bulk_Fasta_Importer
         {
             try
             {
-                const string sqlQuery = "SELECT DISTINCT Protein_Collection_ID, Name, Collection_State FROM V_Protein_Collection_List_Export";
+                const string sqlQuery = "SELECT DISTINCT protein_collection_id, name, collection_state FROM v_protein_collection_list_export";
 
                 mProteinCollectionInfo.Clear();
 
@@ -384,7 +384,7 @@ namespace Bulk_Fasta_Importer
 
                 if (!success)
                 {
-                    ReportDatabaseError("Error obtaining data from V_Protein_Collection_List_Export using GetQueryResultsDataTable");
+                    ReportDatabaseError("Error obtaining data from v_protein_collection_list_export using GetQueryResultsDataTable");
                     return false;
                 }
 

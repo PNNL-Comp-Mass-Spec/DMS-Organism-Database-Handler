@@ -25,12 +25,12 @@ namespace AppUI_OrfDBHandler
                 // txtCollectionName.Visible = false;
                 txtCollectionName.Text = CollectionName;
 
-                mOrganisms.Rows[0]["Display_Name"] = " -- Select an Organism --";
-                mOrganisms.Rows[0]["ID"] = 0;
+                mOrganisms.Rows[0]["display_name"] = " -- Select an Organism --";
+                mOrganisms.Rows[0]["id"] = 0;
                 mOrganisms.AcceptChanges();
 
-                BindToCombo(cboAuthorityPicker, mAnnotationTypes, "Display_Name", "ID");
-                BindToCombo(cboOrganismPicker, mOrganisms, "Display_Name", "ID");
+                BindToCombo(cboAuthorityPicker, mAnnotationTypes, "display_name", "id");
+                BindToCombo(cboOrganismPicker, mOrganisms, "display_name", "id");
                 //cboOrganismPicker.Items.RemoveAt(0);
                 cboOrganismPicker.SelectedValue = 1;
                 cboOrganismPicker.SelectedIndexChanged += cboOrganismPicker_SelectedIndexChanged;
@@ -40,9 +40,9 @@ namespace AppUI_OrfDBHandler
             {
                 txtCollectionName.Visible = true;
                 txtCollectionName.Text = CollectionName;
-                BindToCombo(cboOrganismPicker, mOrganisms, "Display_Name", "ID");
+                BindToCombo(cboOrganismPicker, mOrganisms, "display_name", "id");
                 cboOrganismPicker.SelectedValue = OrganismId;
-                BindToCombo(cboAuthorityPicker, mAnnotationTypes, "Display_Name", "ID");
+                BindToCombo(cboAuthorityPicker, mAnnotationTypes, "display_name", "id");
                 cboAuthorityPicker.SelectedValue = AnnotationTypeId;
                 cboAuthorityPicker.Enabled = false;
                 cboOrganismPicker.Enabled = false;
@@ -81,10 +81,12 @@ namespace AppUI_OrfDBHandler
             //    Debug.WriteLine(dataRow[0].ToString() + ", " + dataRow[1].ToString() + ", " + dataRow[2].ToString() + ", ");
 
             cbo.DataSource = list;
+
             cbo.DisplayMember = displayMember;
-            //cbo.DisplayMember = list.Columns["Display_Name"].ColumnName.ToString();
+            //cbo.DisplayMember = list.Columns["display_name"].ColumnName.ToString();
+
             cbo.ValueMember = valueMember;
-            //cbo.ValueMember = list.Columns["ID"].ColumnName.ToString();
+            //cbo.ValueMember = list.Columns["id"].ColumnName.ToString();
         }
 
         #region "Event Handlers"

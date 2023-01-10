@@ -56,7 +56,7 @@ namespace AppUI_OrfDBHandler
             {
                 foreach (var filterElement in criteriaCollection)
                 {
-                    filterString += "[Name] LIKE '%" + filterElement + "%' OR [State] LIKE '%" + filterElement + "%' OR ";
+                    filterString += "Name LIKE '%" + filterElement + "%' OR State LIKE '%" + filterElement + "%' OR ";
                 }
 
                 // Trim off final " OR "
@@ -72,12 +72,12 @@ namespace AppUI_OrfDBHandler
             lvw.BeginUpdate();
             foreach (var cRow in collectionRows)
             {
-                var created = Convert.ToDateTime(cRow["Created"]);
-                var modified = Convert.ToDateTime(cRow["Modified"]);
-                var item = new ListViewItem {Text = cRow["Name"].ToString(), Tag = cRow["ID"]};
+                var created = Convert.ToDateTime(cRow["created"]);
+                var modified = Convert.ToDateTime(cRow["modified"]);
+                var item = new ListViewItem {Text = cRow["name"].ToString(), Tag = cRow["id"]};
                 item.SubItems.Add(created.ToString("yyyy-MM-dd"));
                 item.SubItems.Add(modified.ToString("yyyy-MM-dd"));
-                item.SubItems.Add(cRow["State"].ToString());
+                item.SubItems.Add(cRow["state"].ToString());
                 lvw.Items.Add(item);
             }
 
@@ -106,18 +106,14 @@ namespace AppUI_OrfDBHandler
         [Obsolete("View retired in 2022")]
         public DataTable GetCollectionTable()
         {
-            const string SQL = "SELECT * FROM V_Collection_State_Picker ORDER BY [Name]";
-            var cTable = mGetTables.GetTable(SQL);
-            return cTable;
+            const string SQL = "SELECT id, name, organism_name, state, created, modified FROM v_collection_state_picker ORDER BY name";
+            return mGetTables.GetTable(SQL);
         }
 
         public DataTable GetStates()
         {
-            const string SQL = "SELECT State, Collection_State_ID as ID " +
-                      "FROM T_Protein_Collection_States ORDER BY Collection_State_ID";
-            var sTable = mGetTables.GetTable(SQL);
-
-            return sTable;
+            const string SQL = "SELECT state, collection_state_id as id FROM t_protein_collection_states ORDER BY collection_state_id";
+            return mGetTables.GetTable(SQL);
         }
     }
 }

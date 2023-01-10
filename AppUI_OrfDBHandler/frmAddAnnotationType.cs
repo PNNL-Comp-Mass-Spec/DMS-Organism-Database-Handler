@@ -72,25 +72,25 @@ namespace AppUI_OrfDBHandler
 
             var dataRow = mAuthoritiesTable.NewRow();
 
-            dataRow["ID"] = -2;
-            dataRow["Display_Name"] = "Add New Naming Authority...";
-            dataRow["Details"] = "Brings up a dialog box to allow adding a naming authority to the list";
+            dataRow["id"] = -2;
+            dataRow["display_name"] = "Add New Naming Authority...";
+            dataRow["details"] = "Brings up a dialog box to allow adding a naming authority to the list";
 
             var pk1 = new DataColumn[1];
-            pk1[0] = mAuthoritiesTable.Columns["ID"];
+            pk1[0] = mAuthoritiesTable.Columns["id"];
             mAuthoritiesTable.PrimaryKey = pk1;
 
-            if (mAuthoritiesTable.Rows.Contains(dataRow["ID"]))
+            if (mAuthoritiesTable.Rows.Contains(dataRow["id"]))
             {
-                var rdr = mAuthoritiesTable.Rows.Find(dataRow["ID"]);
+                var rdr = mAuthoritiesTable.Rows.Find(dataRow["id"]);
                 mAuthoritiesTable.Rows.Remove(rdr);
             }
 
             mAuthoritiesTable.Rows.Add(dataRow);
 
             cboAuthorityName.DataSource = mAuthoritiesTable;
-            cboAuthorityName.DisplayMember = "Display_Name";
-            cboAuthorityName.ValueMember = "ID";
+            cboAuthorityName.DisplayMember = "display_name";
+            cboAuthorityName.ValueMember = "id";
 
             cboAuthorityName.SelectedIndexChanged += cboAuthorityName_SelectedIndexChanged;
         }
@@ -135,9 +135,9 @@ namespace AppUI_OrfDBHandler
                 {
                     var dataRow = mAuthoritiesTable.NewRow();
 
-                    dataRow["ID"] = authorityId;
-                    dataRow["Display_Name"] = authAdd.ShortName;
-                    dataRow["Details"] = authAdd.FullName;
+                    dataRow["id"] = authorityId;
+                    dataRow["display_name"] = authAdd.ShortName;
+                    dataRow["details"] = authAdd.FullName;
 
                     mAuthoritiesTable.Rows.Add(dataRow);
                     mAuthoritiesTable.AcceptChanges();

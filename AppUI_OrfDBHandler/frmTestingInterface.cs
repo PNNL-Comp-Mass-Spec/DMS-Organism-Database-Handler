@@ -36,8 +36,8 @@ namespace AppUI_OrfDBHandler
             importer = new ImportHandler(txtConnString.Text);
             collectionList = importer.LoadProteinCollections();
             cboCollectionsList.DataSource = collectionList;
-            cboCollectionsList.DisplayMember = "Display";
-            cboCollectionsList.ValueMember = "Protein_Collection_ID";
+            cboCollectionsList.DisplayMember = "display";
+            cboCollectionsList.ValueMember = "protein_collection_id";
         }
 
         private void cmdLoadTT_Click(object sender, EventArgs e)

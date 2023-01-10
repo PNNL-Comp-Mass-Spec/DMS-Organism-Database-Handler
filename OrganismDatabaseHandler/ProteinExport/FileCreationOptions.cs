@@ -34,9 +34,9 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             var cleanOptionsString = new StringBuilder();
 
-            const string keywordTableSQL = "SELECT Keyword_ID, Keyword, Default_Value FROM T_Creation_Option_Keywords";
-            //var valuesTableSQL = "SELECT Value_ID, Value_String, Keyword_ID FROM T_Creation_Option_Values";
-            const string creationValuesSQL = "SELECT Keyword, Value_String, String_Element FROM V_Creation_String_Lookup";
+            const string keywordTableSQL = "SELECT keyword_id, keyword, default_value FROM t_creation_option_keywords";
+            //var valuesTableSQL = "SELECT value_id, value_string, keyword_id FROM t_creation_option_values";
+            const string creationValuesSQL = "SELECT keyword, value_string, string_element FROM v_creation_string_lookup";
 
             mKeywordTable ??= mDatabaseAccessor.GetTable(keywordTableSQL);
 
@@ -60,17 +60,17 @@ namespace OrganismDatabaseHandler.ProteinExport
                 var value = m.Groups["value"].Value;
 
                 // Check for valid keyword/value pair
-                foundRows = mCreationValuesTable.Select("Keyword = '" + keyword + "' AND Value_String = '" + value + "'");
+                foundRows = mCreationValuesTable.Select("keyword = '" + keyword + "' AND value_String = '" + value + "'");
                 if (foundRows.Length < 1)
                 {
                     // check if keyword or value is bad
                     var errorString = new StringBuilder();
 
-                    var checkRows = mCreationValuesTable.Select("Keyword = '" + keyword);
+                    var checkRows = mCreationValuesTable.Select("keyword = '" + keyword);
                     if (checkRows.Length > 0)
                         validKeyword = true;
 
-                    checkRows = mCreationValuesTable.Select("Value_String = '" + value + "'");
+                    checkRows = mCreationValuesTable.Select("value_string = '" + value + "'");
                     if (checkRows.Length > 0)
                         validValue = true;
 
@@ -98,7 +98,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
 
             // Parse dictionary into canonical options string for return
-            foundRows = mKeywordTable.Select("", "Keyword_ID ASC");
+            foundRows = mKeywordTable.Select("", "keyword_id ASC");
             foreach (var dataRow in foundRows)
             {
                 if (cleanOptionsString.ToString().Length > 0)
@@ -106,7 +106,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     cleanOptionsString.Append(",");
                 }
 
-                var keyword = dataRow["Keyword"].ToString();
+                var keyword = dataRow["keyword"].ToString();
                 string value;
 
                 if (optionsHash.ContainsKey(keyword))
@@ -115,7 +115,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
                 else
                 {
-                    value = dataRow["Default_Value"].ToString();
+                    value = dataRow["default_value"].ToString();
                 }
 
                 switch (keyword)

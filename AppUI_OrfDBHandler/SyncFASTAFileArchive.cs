@@ -46,8 +46,8 @@ namespace AppUI_OrfDBHandler
         public int SyncCollectionsAndArchiveTables(string outputPath)
         {
             const string sql =
-                "SELECT Protein_Collection_ID, Collection_Name, Authentication_Hash, DateModified, Collection_Type_ID, NumProteins " +
-                "FROM V_Missing_Archive_Entries";
+                "SELECT protein_collection_id, collection_name, authentication_hash, date_modified, collection_type_id, num_proteins " +
+                "FROM v_missing_archive_entries";
 
             // TODO add collection list string
             const string proteinCollectionList = "";
@@ -58,7 +58,7 @@ namespace AppUI_OrfDBHandler
             var currentCollectionProteinCount = 0;
             foreach (DataRow dataRow in dt.Rows)
             {
-                mTotalProteinsCount += Convert.ToInt32(dataRow["NumProteins"]);
+                mTotalProteinsCount += Convert.ToInt32(dataRow["num_proteins"]);
             }
 
             const GetFASTAFromDMS.SequenceTypes outputSequenceType = GetFASTAFromDMS.SequenceTypes.Forward;
@@ -69,11 +69,11 @@ namespace AppUI_OrfDBHandler
 
             foreach (DataRow dataRow in dt.Rows)
             {
-                OnSyncProgressUpdate("Processing - '" + dataRow["Collection_Name"] + "'", currentCollectionProteinCount / (double)mTotalProteinsCount);
-                currentCollectionProteinCount = Convert.ToInt32(dataRow["NumProteins"]);
-                var proteinCollectionId = Convert.ToInt32(dataRow["Protein_Collection_ID"]);
-                var sourceFilePath = Path.Combine(outputPath, dataRow["Collection_Name"] + ".fasta");
-                var sha1 = dataRow["Authentication_Hash"].ToString();
+                OnSyncProgressUpdate("Processing - '" + dataRow["collection_name"] + "'", currentCollectionProteinCount / (double)mTotalProteinsCount);
+                currentCollectionProteinCount = Convert.ToInt32(dataRow["num_proteins"]);
+                var proteinCollectionId = Convert.ToInt32(dataRow["protein_collection_id"]);
+                var sourceFilePath = Path.Combine(outputPath, dataRow["collection_name"] + ".fasta");
+                var sha1 = dataRow["authentication_hash"].ToString();
 
                 fileArchiver.ArchiveCollection(
                     proteinCollectionId,
@@ -89,14 +89,14 @@ namespace AppUI_OrfDBHandler
         [Obsolete("Referenced by hidden button")]
         public void UpdateSHA1Hashes()
         {
-            const string sql = "SELECT Protein_Collection_ID, Collection_Name, Authentication_Hash, NumProteins " +
-                      "FROM V_Missing_Archive_Entries";
+            const string sql = "SELECT protein_collection_id, collection_name, authentication_hash, num_proteins " +
+                               "FROM v_missing_archive_entries";
 
             var dt = mDatabaseAccessor.GetTable(sql);
 
             foreach (DataRow dataRow in dt.Rows)
             {
-                mTotalProteinsCount += Convert.ToInt32(dataRow["NumProteins"]);
+                mTotalProteinsCount += Convert.ToInt32(dataRow["num_proteins"]);
             }
 
             var elapsedTimeSb = new StringBuilder();
@@ -124,9 +124,9 @@ namespace AppUI_OrfDBHandler
 
             foreach (DataRow dataRow in dt.Rows)
             {
-                var proteinCollectionID = Convert.ToInt32(dataRow["Protein_Collection_ID"]);
-                var storedSHA = dataRow["Authentication_Hash"].ToString();
-                var collectionName = dataRow["Collection_Name"].ToString();
+                var proteinCollectionID = Convert.ToInt32(dataRow["protein_collection_id"]);
+                var storedSHA = dataRow["authentication_hash"].ToString();
+                var collectionName = dataRow["collection_name"].ToString();
                 mGeneratedFastaFilePath = string.Empty;
 
                 elapsedTimeSb.Remove(0, elapsedTimeSb.Length);
@@ -199,7 +199,7 @@ namespace AppUI_OrfDBHandler
                 var fileToDelete = new FileInfo(fullPath);
                 fileToDelete.Delete();
 
-                mCurrentProteinCount += Convert.ToInt32(dataRow["NumProteins"]);
+                mCurrentProteinCount += Convert.ToInt32(dataRow["num_proteins"]);
             }
 
             OnSyncCompletion();
@@ -223,10 +223,10 @@ namespace AppUI_OrfDBHandler
             reader.CloseFile();
         }
 
-        [Obsolete("Valid, but unused and could take a very long time")]
+        [Obsolete("Valid, but unused and could take a very long time to run")]
         public void RefreshNameHashes()
         {
-            const string nameCountSQL = "SELECT TOP 1 Reference_ID FROM T_Protein_Names ORDER BY Reference_ID DESC";
+            const string nameCountSQL = "select top 1 reference_id from t_protein_names order by reference_id desc";
 
             var nameCountResults = mDatabaseAccessor.GetTable(nameCountSQL);
             var totalNameCount = Convert.ToInt32(nameCountResults.Rows[0]["Reference_ID"]);
@@ -250,10 +250,10 @@ namespace AppUI_OrfDBHandler
                     Debug.WriteLine("");
                 }
 
-                var rowRetrievalSql = "SELECT Reference_ID, Name, Description, Protein_ID " +
-                                      "FROM T_Protein_Names " +
-                                      "WHERE Reference_ID > " + startIndex + " and Reference_ID <= " + counter +
-                                      "ORDER BY Reference_ID";
+                var rowRetrievalSql = "SELECT reference_id, name, description, protein_id " +
+                                      "FROM t_protein_names " +
+                                      "WHERE reference_id > " + startIndex + " AND reference_id <= " + counter +
+                                      "ORDER BY reference_id";
 
                 // Protein_Name(+"_" + Description + "_" + ProteinID.ToString)
                 var proteinListResults = mDatabaseAccessor.GetTable(rowRetrievalSql);
@@ -261,10 +261,10 @@ namespace AppUI_OrfDBHandler
                 {
                     foreach (DataRow dataRow in proteinListResults.Rows)
                     {
-                        var refId = dbTools.GetInteger(dataRow["Reference_ID"]);
-                        var proteinName = dbTools.GetString(dataRow["Name"]);
-                        var description = dbTools.GetString(dataRow["Description"]);
-                        var proteinId = dbTools.GetInteger(dataRow["Protein_ID"]);
+                        var refId = dbTools.GetInteger(dataRow["reference_id"]);
+                        var proteinName = dbTools.GetString(dataRow["name"]);
+                        var description = dbTools.GetString(dataRow["description"]);
+                        var proteinId = dbTools.GetInteger(dataRow["protein_id"]);
 
                         mImporter.UpdateProteinNameHash(
                             refId,

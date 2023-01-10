@@ -51,9 +51,9 @@ namespace OrganismDatabaseHandler.ProteinImport
         [Obsolete("Unused")]
         protected string GetCollectionNameFromId(int proteinCollectionId)
         {
-            var foundRows = mCollectionsList.Select("Protein_Collection_ID = " + proteinCollectionId);
+            var foundRows = mCollectionsList.Select("protein_collection_id = " + proteinCollectionId);
             var dataRow = foundRows[0];
-            var collectionName = mSQLAccess.DbTools.GetString(dataRow["Collection_Name"]);
+            var collectionName = mSQLAccess.DbTools.GetString(dataRow["collection_name"]);
 
             return collectionName;
         }
@@ -90,14 +90,18 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public DataTable LoadOrganisms()
         {
-            const string orgSQL = "SELECT * FROM V_Organism_Picker ORDER BY Short_Name";
+            const string orgSQL = 
+                "SELECT id, short_name, display_name, storage_location, organism_name, organism_name_abbrev_genus, og_short_name, search_terms, collection_count " +
+                "FROM v_organism_picker " +
+                "ORDER BY short_name";
+
             var organismTable = mSQLAccess.GetTable(orgSQL);
 
             var dataRow = organismTable.NewRow();
 
-            dataRow["ID"] = 0;
-            dataRow["Short_Name"] = "None";
-            dataRow["Display_Name"] = " -- None Selected -- ";
+            dataRow["id"] = 0;
+            dataRow["short_name"] = "None";
+            dataRow["display_name"] = " -- None Selected -- ";
 
             organismTable.Rows.InsertAt(dataRow, 0);
 
@@ -105,7 +109,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             var pk1 = new DataColumn[1];
 
-            pk1[0] = organismTable.Columns["ID"];
+            pk1[0] = organismTable.Columns["id"];
             organismTable.PrimaryKey = pk1;
 
             return organismTable;
@@ -116,9 +120,9 @@ namespace OrganismDatabaseHandler.ProteinImport
             int proteinCollectionId)
         {
             var sqlQuery =
-                "SELECT Annotation_Type_ID " +
-                "FROM V_Protein_Collection_Authority " +
-                "WHERE Protein_Collection_ID = " + proteinCollectionId;
+                "SELECT annotation_type_id " +
+                "FROM v_protein_collection_authority " +
+                "WHERE protein_collection_id = " + proteinCollectionId;
 
             var annotationTypeIdTable = mSQLAccess.GetTable(sqlQuery);
 
@@ -127,24 +131,25 @@ namespace OrganismDatabaseHandler.ProteinImport
             foreach (DataRow currentDr in annotationTypeIdTable.Rows)
             {
                 dataRow = currentDr;
-                authIdSb.Append(dataRow["Annotation_Type_ID"]);
+                authIdSb.Append(dataRow["annotation_type_id"]);
                 authIdSb.Append(", ");
             }
 
             authIdSb.Remove(authIdSb.Length - 2, 2);
 
             var authSql =
-                "SELECT * FROM V_Annotation_Type_Picker " +
-                "WHERE ID IN (" + authIdSb + ") " +
-                "ORDER BY Display_Name";
+                "SELECT id, display_name, details, authority_id " +
+                "FROM v_annotation_type_picker " +
+                "WHERE id IN (" + authIdSb + ") " +
+                "ORDER BY display_name";
 
             var authorityTable = mSQLAccess.GetTable(authSql);
 
             dataRow = authorityTable.NewRow();
 
-            dataRow["ID"] = 0;
-            dataRow["Display_Name"] = " -- None Selected -- ";
-            dataRow["Details"] = "None Selected";
+            dataRow["id"] = 0;
+            dataRow["display_name"] = " -- None Selected -- ";
+            dataRow["details"] = "None Selected";
 
             authorityTable.Rows.InsertAt(dataRow, 0);
 
@@ -152,7 +157,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             var pk1 = new DataColumn[1];
 
-            pk1[0] = authorityTable.Columns["ID"];
+            pk1[0] = authorityTable.Columns["id"];
             authorityTable.PrimaryKey = pk1;
 
             return authorityTable;
@@ -160,39 +165,39 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public DataTable LoadAnnotationTypes()
         {
-            const string AuthSQL = "SELECT * FROM V_Annotation_Type_Picker ORDER BY Display_Name";
+            const string AuthSQL = "SELECT id, display_name, details, authority_id FROM v_annotation_type_picker ORDER BY display_name";
             var annotationTypeTable = mSQLAccess.GetTable(AuthSQL);
 
             var dataRow = annotationTypeTable.NewRow();
 
-            dataRow["ID"] = 0;
-            dataRow["Display_Name"] = " -- None Selected -- ";
+            dataRow["id"] = 0;
+            dataRow["display_name"] = " -- None Selected -- ";
             // dataRow["name"] = " -- None Selected -- ";
-            dataRow["Details"] = "None Selected";
+            dataRow["details"] = "None Selected";
 
             annotationTypeTable.Rows.InsertAt(dataRow, 0);
 
             annotationTypeTable.AcceptChanges();
-            Authorities = mSQLAccess.DataTableToDictionary(annotationTypeTable, "ID", "Display_Name");
+            Authorities = mSQLAccess.DataTableToDictionary(annotationTypeTable, "id", "display_name");
 
             return annotationTypeTable;
         }
 
         public DataTable LoadAuthorities()
         {
-            const string AuthSQL = "SELECT * FROM V_Authority_Picker ORDER BY Display_Name";
+            const string AuthSQL = "SELECT id, display_name, details FROM v_authority_picker ORDER BY display_name";
             var authorityTable = mSQLAccess.GetTable(AuthSQL);
 
             var dataRow = authorityTable.NewRow();
 
-            dataRow["ID"] = 0;
-            dataRow["Display_Name"] = " -- None Selected -- ";
-            dataRow["Details"] = "None Selected";
+            dataRow["id"] = 0;
+            dataRow["display_name"] = " -- None Selected -- ";
+            dataRow["details"] = "None Selected";
 
             authorityTable.Rows.InsertAt(dataRow, 0);
 
             authorityTable.AcceptChanges();
-            Authorities = mSQLAccess.DataTableToDictionary(authorityTable, "ID", "Display_Name");
+            Authorities = mSQLAccess.DataTableToDictionary(authorityTable, "id", "display_name");
 
             return authorityTable;
         }
@@ -220,19 +225,20 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public DataTable LoadProteinCollections()
         {
-            const string pcSql = "SELECT MIN(Collection_Name) AS Collection_Name, Protein_Collection_ID, " +
-                        "MIN(Organism_ID) AS Organism_ID, MIN(Authority_ID) AS Authority_ID, " +
-                        "MIN(Display) AS Display, MIN(Authentication_Hash) AS Authentication_Hash " +
-                        "FROM V_Protein_Collections_By_Organism " +
-                        "GROUP BY Protein_Collection_ID " +
-                        "ORDER BY MIN(Collection_Name)";
+            const string pcSql = 
+                "SELECT min(collection_name) as collection_name, protein_collection_id, " +
+                "       min(organism_id) as organism_id, min(authority_id) as authority_id, " +
+                "       min(display) as display, min(authentication_hash) as authentication_hash " +
+                "FROM v_protein_collections_by_organism " +
+                "GROUP BY protein_collection_id " +
+                "ORDER BY min(collection_name)";
 
             var proteinCollectionTable = mSQLAccess.GetTable(pcSql);
 
             var dataRow = proteinCollectionTable.NewRow();
 
-            dataRow["Protein_Collection_ID"] = 0;
-            dataRow["Display"] = " -- None Selected -- ";
+            dataRow["protein_collection_id"] = 0;
+            dataRow["display"] = " -- None Selected -- ";
 
             proteinCollectionTable.Rows.InsertAt(dataRow, 0);
             proteinCollectionTable.AcceptChanges();
@@ -242,16 +248,17 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         protected DataTable LoadProteinCollections(int organismId)
         {
-            var sqlQuery = "SELECT Collection_Name, Protein_Collection_ID, Organism_ID, Authority_ID, Display, Authentication_Hash" +
-                           " FROM V_Protein_Collections_By_Organism" +
-                           " WHERE Organism_ID = " + organismId +
-                           " ORDER BY Collection_Name";
+            var sqlQuery = 
+                "SELECT collection_name, protein_collection_id, organism_id, authority_id, display, authentication_hash " +
+                "FROM v_protein_collections_by_organism " +
+                "WHERE organism_id = " + organismId + " " +
+                "ORDER BY collection_name";
             var proteinCollectionTable = mSQLAccess.GetTable(sqlQuery);
 
             var dataRow = proteinCollectionTable.NewRow();
 
-            dataRow["Protein_Collection_ID"] = 0;
-            dataRow["Display"] = " -- None Selected -- ";
+            dataRow["protein_collection_id"] = 0;
+            dataRow["display"] = " -- None Selected -- ";
 
             proteinCollectionTable.Rows.InsertAt(dataRow, 0);
             proteinCollectionTable.AcceptChanges();
@@ -262,16 +269,16 @@ namespace OrganismDatabaseHandler.ProteinImport
         public DataTable LoadProteinCollectionNames()
         {
             const string pcSql =
-                "SELECT Protein_Collection_ID, Collection_Name, Authority_ID " +
-                "FROM V_Protein_Collections_By_Organism " +
-                "ORDER BY Collection_Name";
+                "SELECT protein_collection_id, collection_name, authority_id " +
+                "FROM v_protein_collections_by_organism " +
+                "ORDER BY collection_name";
 
             var proteinCollectionTable = mSQLAccess.GetTable(pcSql);
 
             var dataRow = proteinCollectionTable.NewRow();
 
-            dataRow["Protein_Collection_ID"] = 0;
-            dataRow["Collection_Name"] = " -- None Selected -- ";
+            dataRow["protein_collection_id"] = 0;
+            dataRow["collection_name"] = " -- None Selected -- ";
 
             proteinCollectionTable.Rows.InsertAt(dataRow, 0);
             proteinCollectionTable.AcceptChanges();
@@ -287,15 +294,18 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             if (authorityId <= 0)
             {
-                var foundRows = mCollectionsList.Select("Protein_Collection_ID = " + collectionId);
-                authorityId = mSQLAccess.DbTools.GetInteger(foundRows[0]["Authority_ID"]);
+                var foundRows = mCollectionsList.Select("protein_collection_id = " + collectionId);
+                authorityId = mSQLAccess.DbTools.GetInteger(foundRows[0]["authority_id"]);
             }
 
             var sqlQuery =
-                "SELECT * From V_Protein_Storage_Entry_Import " +
-                "WHERE Protein_Collection_ID = " + collectionId + " " +
-                "AND Annotation_Type_ID = " + authorityId + " " +
-                "ORDER BY Name";
+                "SELECT name, description, sequence, monoisotopic_mass, average_mass, length, molecular_formula, " +
+                "       annotation_type_id, protein_id, reference_id, protein_collection_id, " +
+                "       primary_annotation_type_id, sha1_hash, member_id, sorting_index " +
+                "FROM v_protein_storage_entry_import " +
+                "WHERE protein_collection_id = " + collectionId + " " +
+                "AND annotation_type_id = " + authorityId + " " +
+                "ORDER BY name";
             return LoadCollectionMembers(sqlQuery);
         }
 
@@ -305,9 +315,9 @@ namespace OrganismDatabaseHandler.ProteinImport
             int authorityId)
         {
             var sqlQuery =
-                "SELECT Protein_Collection_ID, Primary_Annotation_Type_ID " +
-                "FROM T_Protein_Collections " +
-                "WHERE Collection_Name = '" + collectionName + "' ORDER BY Collection_Name";
+                "SELECT protein_collection_id, primary_annotation_type_id " +
+                "FROM t_protein_collections " +
+                "WHERE collection_name = '" + collectionName + "' ORDER BY collection_name";
 
             var proteinCollectionTable = mSQLAccess.GetTable(sqlQuery);
             var foundRow = proteinCollectionTable.Rows[0];
@@ -350,14 +360,14 @@ namespace OrganismDatabaseHandler.ProteinImport
             foreach (var dataRow in proteinCollectionMembers)
             {
                 var ce = new ProteinStorageEntry(
-                    dbTools.GetString(dataRow["Name"]),
-                    dbTools.GetString(dataRow["Description"]),
-                    dbTools.GetString(dataRow["Sequence"]),
-                    dbTools.GetInteger(dataRow["Length"]),
-                    dbTools.GetDouble(dataRow["Monoisotopic_Mass"]),
-                    dbTools.GetDouble(dataRow["Average_Mass"]),
-                    dbTools.GetString(dataRow["Molecular_Formula"]),
-                    dbTools.GetString(dataRow["SHA1_Hash"]),
+                    dbTools.GetString(dataRow["name"]),
+                    dbTools.GetString(dataRow["description"]),
+                    dbTools.GetString(dataRow["sequence"]),
+                    dbTools.GetInteger(dataRow["length"]),
+                    dbTools.GetDouble(dataRow["monoisotopic_mass"]),
+                    dbTools.GetDouble(dataRow["average_mass"]),
+                    dbTools.GetString(dataRow["molecular_formula"]),
+                    dbTools.GetString(dataRow["sha1_hash"]),
                     counter);
 
                 if (counter % triggerCount > 0)
@@ -365,7 +375,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                     Task_LoadProgress((float)(counter / (double)proteinCount));
                 }
 
-                ce.ProteinId = dbTools.GetInteger(dataRow["Protein_ID"]);
+                ce.ProteinId = dbTools.GetInteger(dataRow["protein_id"]);
                 proteinStorage.AddProtein(ce);
                 counter++;
             }
@@ -384,7 +394,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             string filePath,
             ProteinImportFileTypes fileType)
         {
-            var proteinDatabaseTable = mSQLAccess.GetTableTemplate("V_Protein_Database_Export");
+            var proteinDatabaseTable = mSQLAccess.GetTableTemplate("v_protein_database_export");
             var counter = default(int);
             int triggerCount;
 
@@ -418,9 +428,9 @@ namespace OrganismDatabaseHandler.ProteinImport
             foreach (var entry in CollectionMembers.GetEntriesIEnumerable())
             {
                 var dataRow = proteinDatabaseTable.NewRow();
-                dataRow["Name"] = entry.Reference;
-                dataRow["Description"] = entry.Description;
-                dataRow["Sequence"] = entry.Sequence;
+                dataRow["name"] = entry.Reference;
+                dataRow["description"] = entry.Description;
+                dataRow["sequence"] = entry.Sequence;
                 proteinDatabaseTable.Rows.Add(dataRow);
 
                 if (counter % triggerCount > 0)

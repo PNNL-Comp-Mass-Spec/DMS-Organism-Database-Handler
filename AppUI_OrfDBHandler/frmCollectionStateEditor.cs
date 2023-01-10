@@ -87,8 +87,8 @@ namespace AppUI_OrfDBHandler
 
             cboStateChanger.BeginUpdate();
             cboStateChanger.DataSource = mStatesTable;
-            cboStateChanger.DisplayMember = "State";
-            cboStateChanger.ValueMember = "ID";
+            cboStateChanger.DisplayMember = "state";
+            cboStateChanger.ValueMember = "id";
             cboStateChanger.EndUpdate();
 
             cboStateChanger.SelectedIndexChanged += cboStateChanger_SelectedIndexChanged;

@@ -49,7 +49,7 @@ namespace AppUI_OrfDBHandler
             Application.Run(new frmCollectionEditor());
         }
 
-        private const string ProgramDate = "July 27, 2022";
+        private const string ProgramDate = "January 9, 2023";
 
         private DataTable mOrganisms;
         private DataTable mProteinCollections;
@@ -237,8 +237,8 @@ namespace AppUI_OrfDBHandler
         {
             cboOrganismFilter.BeginUpdate();
             cboOrganismFilter.DataSource = organismList;
-            cboOrganismFilter.DisplayMember = "Display_Name";
-            cboOrganismFilter.ValueMember = "ID";
+            cboOrganismFilter.DisplayMember = "display_name";
+            cboOrganismFilter.ValueMember = "id";
 
             cboOrganismFilter.EndUpdate();
         }
@@ -246,9 +246,9 @@ namespace AppUI_OrfDBHandler
         private void BindAnnotationTypeListToControl(DataTable annotationTypeList)
         {
             cboAnnotationTypePicker.BeginUpdate();
-            cboAnnotationTypePicker.DisplayMember = "Display_Name";
+            cboAnnotationTypePicker.DisplayMember = "display_name";
             // cboAnnotationTypePicker.DisplayMember = "name";
-            cboAnnotationTypePicker.ValueMember = "ID";
+            cboAnnotationTypePicker.ValueMember = "id";
             cboAnnotationTypePicker.DataSource = annotationTypeList;
             cboAnnotationTypePicker.Refresh();
 
@@ -274,8 +274,8 @@ namespace AppUI_OrfDBHandler
             {
                 cboCollectionPicker.Enabled = true;
                 cboCollectionPicker.DataSource = collectionList;
-                cboCollectionPicker.DisplayMember = "Display";
-                cboCollectionPicker.ValueMember = "Protein_Collection_ID";
+                cboCollectionPicker.DisplayMember = "display";
+                cboCollectionPicker.ValueMember = "protein_collection_id";
 
                 cmdLoadProteins.Enabled = true;
             }

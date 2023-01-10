@@ -43,7 +43,7 @@ namespace AppUI_OrfDBHandler
 
             mImportHandler = importHandler;
 
-            mOrganismListSorted = new DataView(organismList) { Sort = "Display_Name" };
+            mOrganismListSorted = new DataView(organismList) { Sort = "display_name" };
 
             mAnnotationTypeList = annotationTypeList;
             mCollectionsTable = existingCollectionsList;
@@ -252,10 +252,10 @@ namespace AppUI_OrfDBHandler
         {
             var collectionInfo = new Dictionary<int, string>(dataTable.Rows.Count);
 
-            foreach (var dataRow in dataTable.Select("", "Protein_Collection_ID"))
+            foreach (var dataRow in dataTable.Select("", "protein_collection_id"))
             {
-                var proteinCollectionID = DatabaseUtilsExtensions.GetInteger(null, dataRow["Protein_Collection_ID"]);
-                var collectionName = dataRow["Collection_Name"].ToString();
+                var proteinCollectionID = DatabaseUtilsExtensions.GetInteger(null, dataRow["protein_collection_id"]);
+                var collectionName = dataRow["collection_name"].ToString();
 
                 if (!collectionInfo.ContainsKey(proteinCollectionID))
                 {
@@ -364,8 +364,8 @@ namespace AppUI_OrfDBHandler
         {
             cboOrganismSelect.SelectedIndexChanged -= cboOrganismSelect_SelectedIndexChanged;
             cbo.DataSource = orgList;
-            cbo.DisplayMember = "Display_Name";
-            cbo.ValueMember = "ID";
+            cbo.DisplayMember = "display_name";
+            cbo.ValueMember = "id";
 
             cboOrganismSelect.SelectedIndexChanged += cboOrganismSelect_SelectedIndexChanged;
         }
@@ -377,17 +377,17 @@ namespace AppUI_OrfDBHandler
             cbo.BeginUpdate();
             var dataRow = authList.NewRow();
 
-            dataRow["ID"] = -2;
-            dataRow["Display_Name"] = "Add New Annotation Type...";
-            dataRow["Details"] = "Brings up a dialog box to allow adding a naming authority to the list";
+            dataRow["id"] = -2;
+            dataRow["display_name"] = "Add New Annotation Type...";
+            dataRow["details"] = "Brings up a dialog box to allow adding a naming authority to the list";
 
             var pk1 = new DataColumn[1];
-            pk1[0] = authList.Columns["ID"];
+            pk1[0] = authList.Columns["id"];
             authList.PrimaryKey = pk1;
 
-            if (authList.Rows.Contains(dataRow["ID"]))
+            if (authList.Rows.Contains(dataRow["id"]))
             {
-                var rdr = authList.Rows.Find(dataRow["ID"]);
+                var rdr = authList.Rows.Find(dataRow["id"]);
                 authList.Rows.Remove(rdr);
             }
 
@@ -395,8 +395,8 @@ namespace AppUI_OrfDBHandler
             authList.AcceptChanges();
 
             cbo.DataSource = authList;
-            cbo.DisplayMember = "Display_Name";
-            cbo.ValueMember = "ID";
+            cbo.DisplayMember = "display_name";
+            cbo.ValueMember = "id";
             cbo.EndUpdate();
 
             cboAnnotationTypePicker.SelectedIndexChanged += cboAnnotationTypePicker_SelectedIndexChanged;
@@ -948,9 +948,9 @@ namespace AppUI_OrfDBHandler
                 {
                     var dataRow = mAnnotationTypeList.NewRow();
 
-                    dataRow["ID"] = annotationTypeId;
-                    dataRow["Display_Name"] = annotationTypeHandler.DisplayName;
-                    dataRow["Details"] = annotationTypeHandler.Description;
+                    dataRow["id"] = annotationTypeId;
+                    dataRow["display_name"] = annotationTypeHandler.DisplayName;
+                    dataRow["details"] = annotationTypeHandler.Description;
 
                     mAnnotationTypeList.Rows.Add(dataRow);
                     mAnnotationTypeList.AcceptChanges();
@@ -1070,7 +1070,7 @@ namespace AppUI_OrfDBHandler
         {
             var organismList = mImportHandler.LoadOrganisms();
 
-            mOrganismListSorted = new DataView(organismList) { Sort = "Display_Name" };
+            mOrganismListSorted = new DataView(organismList) { Sort = "display_name" };
 
             LoadOrganismPicker(cboOrganismSelect, mOrganismListSorted);
         }
