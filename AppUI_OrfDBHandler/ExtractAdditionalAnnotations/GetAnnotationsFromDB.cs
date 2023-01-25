@@ -28,7 +28,7 @@ namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
             var info = new AnnotationInfo();
 
             // Get Protein Collection Name
-            var sqlQuery1 = "SELECT TOP 1 Name FROM V_Collection_Picker " +
+            var sqlQuery1 = "SELECT Name FROM V_Collection_Picker " +
                             "WHERE ID = " + proteinCollectionId;
             var nameLookupTable = mDatabaseHelper.GetTable(sqlQuery1);
 

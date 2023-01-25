@@ -226,7 +226,7 @@ namespace AppUI_OrfDBHandler
         [Obsolete("Valid, but unused and could take a very long time to run")]
         public void RefreshNameHashes()
         {
-            const string nameCountSQL = "select top 1 reference_id from t_protein_names order by reference_id desc";
+            const string nameCountSQL = "Select reference_id From t_protein_names order by reference_id Desc OFFSET 0 Rows FETCH FIRST 1 ROW ONLY";
 
             var nameCountResults = mDatabaseAccessor.GetTable(nameCountSQL);
             var totalNameCount = Convert.ToInt32(nameCountResults.Rows[0]["Reference_ID"]);
