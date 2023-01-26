@@ -19,6 +19,7 @@ Source: ..\Executables\Debug\PRISMSeq_Uploader.exe.config                     ; 
 Source: ..\Executables\Debug\FlexibleFileSortUtility.dll                      ; DestDir: {app}
 Source: ..\Executables\Debug\Microsoft.Bcl.AsyncInterfaces.dll                ; DestDir: {app}
 Source: ..\Executables\Debug\Microsoft.Bcl.HashCode.dll                       ; DestDir: {app}
+Source: ..\Executables\Debug\Microsoft.Extensions.Logging.Abstractions.dll    ; DestDir: {app}
 Source: ..\Executables\Debug\Npgsql.dll                                       ; DestDir: {app}
 Source: ..\Executables\Debug\OrganismDatabaseHandler.dll                      ; DestDir: {app}
 Source: ..\Executables\Debug\PRISM.dll                                        ; DestDir: {app}
@@ -28,6 +29,8 @@ Source: ..\Executables\Debug\ProteinFileReader.dll                            ; 
 Source: ..\Executables\Debug\Raccoom.TreeViewFolderBrowser.DataProviders.dll  ; DestDir: {app}
 Source: ..\Executables\Debug\Raccoom.TreeViewFolderBrowser.dll                ; DestDir: {app}
 Source: ..\Executables\Debug\System.Buffers.dll                               ; DestDir: {app}
+Source: ..\Executables\Debug\System.Collections.Immutable.dll                 ; DestDir: {app}
+Source: ..\Executables\Debug\System.Diagnostics.DiagnosticSource.dll          ; DestDir: {app}
 Source: ..\Executables\Debug\System.Memory.dll                                ; DestDir: {app}
 Source: ..\Executables\Debug\System.Numerics.Vectors.dll                      ; DestDir: {app}
 Source: ..\Executables\Debug\System.Runtime.CompilerServices.Unsafe.dll       ; DestDir: {app}

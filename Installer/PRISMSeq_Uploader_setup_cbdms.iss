@@ -19,6 +19,7 @@ Source: ..\Executables\Debug_CBDMS_GUI\PRISMSeq_Uploader.exe.config             
 Source: ..\Executables\Debug_CBDMS_GUI\FlexibleFileSortUtility.dll                      ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Bcl.AsyncInterfaces.dll                ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Bcl.HashCode.dll                       ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Extensions.Logging.Abstractions.dll    ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\Npgsql.dll                                       ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\OrganismDatabaseHandler.dll                      ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\PRISM.dll                                        ; DestDir: {app}
@@ -28,6 +29,8 @@ Source: ..\Executables\Debug_CBDMS_GUI\ProteinFileReader.dll                    
 Source: ..\Executables\Debug_CBDMS_GUI\Raccoom.TreeViewFolderBrowser.DataProviders.dll  ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\Raccoom.TreeViewFolderBrowser.dll                ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\System.Buffers.dll                               ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Collections.Immutable.dll                 ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Diagnostics.DiagnosticSource.dll          ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\System.Memory.dll                                ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\System.Numerics.Vectors.dll                      ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\System.Runtime.CompilerServices.Unsafe.dll       ; DestDir: {app}
