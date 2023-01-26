@@ -1046,9 +1046,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            return dbTools.GetInteger(returnParam.Value);
         }
 
         private string GenerateHash(string sourceText)
