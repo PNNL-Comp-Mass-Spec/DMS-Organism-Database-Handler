@@ -704,9 +704,9 @@ namespace OrganismDatabaseHandler.ProteinImport
         /// <summary>
         /// Deletes the proteins for the given protein collection in preparation for re-uploading the proteins
         /// </summary>
+        /// <remarks>NumResidues in T_Protein_Collections is set to 0</remarks>
         /// <param name="proteinCollectionId"></param>
         /// <param name="numProteinsForReLoad">The number of proteins that will be uploaded after this delete</param>
-        /// <remarks>NumResidues in T_Protein_Collections is set to 0</remarks>
         protected int RunSP_DeleteProteinCollectionMembers(int proteinCollectionId, int numProteinsForReLoad)
         {
             var dbTools = mDatabaseAccessor.DbTools;

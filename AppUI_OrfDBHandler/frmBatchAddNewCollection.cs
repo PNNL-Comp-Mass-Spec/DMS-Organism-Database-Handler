@@ -434,7 +434,6 @@ namespace AppUI_OrfDBHandler
         /// <summary>
         /// Return the value formatted to include one or two digits after the decimal point
         /// </summary>
-        /// <param name="value"></param>
         /// <remarks>
         /// Examples:
         /// 1
@@ -444,6 +443,7 @@ namespace AppUI_OrfDBHandler
         /// 1.2
         /// 0.12
         /// </remarks>
+        /// <param name="value"></param>
         private string FormatDecimal(double value)
         {
             if (value >= 100d)

@@ -776,15 +776,15 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <summary>
         /// Construct the hashcheck file path, given the FASTA file path and its CRC32 hash
         /// </summary>
-        /// <param name="strFastaFilePath"></param>
-        /// <param name="crc32Hash"></param>
-        /// <param name="hashCheckExtension">Hashcheck file extension; if an empty string, the default of .hashcheck is used</param>
-        /// <returns>FileInfo object for the .hashcheck file</returns>
         /// <remarks>
         /// Example .hashcheck filenames:
         /// ID_004137_23AA5A07.fasta.23AA5A07.hashcheck
         /// H_sapiens_Ensembl_v68_2013-01-08.fasta.DF687525.hashcheck
         /// </remarks>
+        /// <param name="strFastaFilePath"></param>
+        /// <param name="crc32Hash"></param>
+        /// <param name="hashCheckExtension">Hashcheck file extension; if an empty string, the default of .hashcheck is used</param>
+        /// <returns>FileInfo object for the .hashcheck file</returns>
         private FileInfo GetHashFileValidationInfo(string strFastaFilePath, string crc32Hash, string hashCheckExtension = "")
         {
             string extensionToUse;
@@ -831,13 +831,13 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// If the actual hash differs and if forceRegenerateHash=True, then this strExpectedHash get updated
         /// forceRegenerateHash should be set to True only when processing legacy FASTA files that have been newly copied to this computer
         /// </summary>
+        /// <remarks>Public method because the Analysis Manager uses this class when running offline jobs</remarks>
         /// <param name="fastaFilePath">FASTA file to check</param>
         /// <param name="expectedHash">Expected CRC32 hash; updated if incorrect and forceRegenerateHash is true</param>
         /// <param name="retryHoldoffHours">Time between re-generating the hash value for an existing file</param>
         /// <param name="forceRegenerateHash">Re-generate the hash</param>
         /// <param name="hashcheckExtension">Hashcheck file extension; if an empty string, the default of .hashcheck is used</param>
         /// <returns>True if the hash values match, or if forceRegenerateHash=True</returns>
-        /// <remarks>Public method because the Analysis Manager uses this class when running offline jobs</remarks>
         public bool ValidateMatchingHash(string fastaFilePath, ref string expectedHash, int retryHoldoffHours = 48, bool forceRegenerateHash = false, string hashcheckExtension = "")
         {
             try
