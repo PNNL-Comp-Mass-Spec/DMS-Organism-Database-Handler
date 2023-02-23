@@ -1032,15 +1032,15 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             var dbTools = mDatabaseAccessor.DbTools;
 
-            var cmdSave = dbTools.CreateCommand("AddLegacyFileUploadRequest", CommandType.StoredProcedure);
+            var cmdSave = dbTools.CreateCommand("add_legacy_file_upload_request", CommandType.StoredProcedure);
 
             // Define parameter for procedure's return value
-            var returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue);
+            var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
             dbTools.AddParameter(cmdSave, "@legacy_File_name", SqlType.VarChar, 128).Value = legacyFilename;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256).Direction = ParameterDirection.Output;
-            dbTools.AddParameter(cmdSave, "@AuthenticationHash", SqlType.VarChar, 8).Value = authenticationHash;
+            dbTools.AddParameter(cmdSave, "@authenticationHash", SqlType.VarChar, 8).Value = authenticationHash;
 
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);

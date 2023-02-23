@@ -1540,7 +1540,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE DeleteProteinCollectionMembers
+CREATE PROCEDURE delete_protein_collection_members
 /****************************************************
 **
 **	Desc: Deletes Protein Collection Member Entries from a given Protein Collection ID
@@ -1579,7 +1579,7 @@ As
 	---------------------------------------------------
 
 	declare @transName varchar(32)
-	set @transName = 'DeleteProteinCollectionMembers'
+	set @transName = 'delete_protein_collection_members'
 	begin transaction @transName
 --	print 'start transaction' -- debug only
 
@@ -1613,7 +1613,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE GetProteinCollectionID
+CREATE PROCEDURE get_protein_collection_id
 /****************************************************
 **
 **	Desc: Gets CollectionID for given FileName
@@ -1647,7 +1647,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE AddUpdateProteinCollection
+CREATE PROCEDURE add_update_protein_collection
 /****************************************************
 **
 **	Desc: Adds a new protein collection entry
@@ -1709,7 +1709,7 @@ As
 	declare @Collection_ID int
 	set @Collection_ID = 0
 	
-	execute @Collection_ID = GetProteinCollectionID @fileName
+	execute @Collection_ID = get_protein_collection_id @fileName
 	
 	if @Collection_ID > 0 and @mode = 'add'
 	begin
@@ -1807,7 +1807,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE GetProteinID
+CREATE PROCEDURE get_protein_id
 /****************************************************
 **
 **	Desc: Gets ProteinID for given length and SHA-1 Hash
@@ -1842,7 +1842,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE AddProteinReference
+CREATE PROCEDURE add_protein_reference
 
 /****************************************************
 **
@@ -1884,7 +1884,7 @@ As
 	declare @Reference_ID int
 	set @Reference_ID = 0
 	
-	execute @Reference_ID = GetProteinReferenceID @name, @description
+	execute @Reference_ID = get_protein_reference_id @name, @description
 	
 	if @Reference_ID > 0
 	begin
@@ -1897,7 +1897,7 @@ As
 	---------------------------------------------------
 
 	declare @transName varchar(32)
-	set @transName = 'AddProteinReferenceEntry'
+	set @transName = 'add_protein_referenceEntry'
 	begin transaction @transName
 
 	INSERT INTO T_Protein_Names (
@@ -1915,7 +1915,7 @@ As
 	)
 		
 		
-	--execute @Protein_ID = GetProteinID @length, @sha1_hash 		
+	--execute @Protein_ID = get_protein_id @length, @sha1_hash 		
 	SELECT @Reference_ID = @@Identity
 		
 		--
@@ -1943,7 +1943,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE AddProteinSequence
+CREATE PROCEDURE add_protein_sequence
 
 /****************************************************
 **
@@ -1988,7 +1988,7 @@ As
 	declare @Protein_ID int
 	set @Protein_ID = 0
 	
-	execute @Protein_ID = GetProteinID @length, @sha1_hash
+	execute @Protein_ID = get_protein_id @length, @sha1_hash
 	
 	if @Protein_ID > 0 and @mode = 'add'
 	begin
@@ -2066,7 +2066,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE GetProteinReferenceID
+CREATE PROCEDURE get_protein_reference_id
 /****************************************************
 **
 **	Desc: Gets CollectionID for given FileName
@@ -2107,7 +2107,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE AddUpdateProteinCollectionMember
+CREATE PROCEDURE add_update_protein_collection_member
 /****************************************************
 **
 **	Desc: Adds a new protein collection member
@@ -2204,7 +2204,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE GetProteinCollectionMemberCount
+CREATE PROCEDURE get_protein_collection_member_count
 /****************************************************
 **
 **	Desc: Gets Collection Member count for given Collection_ID

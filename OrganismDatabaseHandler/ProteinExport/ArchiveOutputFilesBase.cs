@@ -123,15 +123,15 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             var dbTools = DatabaseAccessor.DbTools;
 
-            var cmdSave = dbTools.CreateCommand("AddArchivedFileEntryXRef", CommandType.StoredProcedure);
+            var cmdSave = dbTools.CreateCommand("add_archived_file_entry_xref", CommandType.StoredProcedure);
 
             // Define parameters
 
-            dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue);
+            dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
-            dbTools.AddParameter(cmdSave, "@Collection_ID", SqlType.Int).Value = proteinCollectionId;
+            dbTools.AddParameter(cmdSave, "@collection_ID", SqlType.Int).Value = proteinCollectionId;
 
-            dbTools.AddParameter(cmdSave, "@Archived_File_ID", SqlType.Int).Value = archivedFileId;
+            dbTools.AddParameter(cmdSave, "@archived_File_ID", SqlType.Int).Value = archivedFileId;
 
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 250, ParameterDirection.Output);
 

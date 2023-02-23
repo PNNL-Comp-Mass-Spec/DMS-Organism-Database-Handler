@@ -173,17 +173,17 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             var dbTools = DatabaseAccessor.DbTools;
 
-            var cmdSave = dbTools.CreateCommand("UpdateFileArchiveEntryCollectionList", CommandType.StoredProcedure);
+            var cmdSave = dbTools.CreateCommand("update_file_archive_entry_collection_list", CommandType.StoredProcedure);
 
             // Define parameter for procedure's return value
-            var returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue);
+            var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@Archived_File_Entry_ID", SqlType.Int).Value = archivedFileEntryId;
-            dbTools.AddParameter(cmdSave, "@ProteinCollectionList", SqlType.VarChar, 8000).Value = proteinCollectionsList;
-            dbTools.AddParameter(cmdSave, "@SHA1Hash", SqlType.VarChar, 28).Value = collectionListHash;
+            dbTools.AddParameter(cmdSave, "@archived_File_Entry_ID", SqlType.Int).Value = archivedFileEntryId;
+            dbTools.AddParameter(cmdSave, "@proteinCollectionList", SqlType.VarChar, 8000).Value = proteinCollectionsList;
+            dbTools.AddParameter(cmdSave, "@sha1Hash", SqlType.VarChar, 28).Value = collectionListHash;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 512).Direction = ParameterDirection.Output;
-            dbTools.AddParameter(cmdSave, "@CollectionListHexHash", SqlType.VarChar, 128).Value = collectionListHexHash;
+            dbTools.AddParameter(cmdSave, "@collectionListHexHash", SqlType.VarChar, 128).Value = collectionListHexHash;
 
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
@@ -208,10 +208,10 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             var dbTools = DatabaseAccessor.DbTools;
 
-            var cmdSave = dbTools.CreateCommand("AddOutputFileArchiveEntry", CommandType.StoredProcedure);
+            var cmdSave = dbTools.CreateCommand("add_output_file_archive_entry", CommandType.StoredProcedure);
 
             // Define parameter for procedure's return value
-            var returnParam = dbTools.AddParameter(cmdSave, "@Return", SqlType.Int, ParameterDirection.ReturnValue);
+            var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
             dbTools.AddParameter(cmdSave, "@protein_collection_ID", SqlType.Int).Value = proteinCollectionId;

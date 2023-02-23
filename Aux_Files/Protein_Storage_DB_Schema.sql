@@ -131,52 +131,52 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[FK_T_Posit
 ALTER TABLE [dbo].[T_Position_Info] DROP CONSTRAINT FK_T_Position_Info_T_Reading_Frame_Types
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[AddProteinReference]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[AddProteinReference]
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[add_protein_reference]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[add_protein_reference]
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[AddProteinSequence]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[AddProteinSequence]
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[add_protein_sequence]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[add_protein_sequence]
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[AddSHA1FileAuthentication]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[AddSHA1FileAuthentication]
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[add_sha1_file_authentication]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[add_sha1_file_authentication]
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[AddUpdateProteinCollection]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[AddUpdateProteinCollection]
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[add_update_protein_collection]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[add_update_protein_collection]
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[AddUpdateProteinCollectionMember]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[AddUpdateProteinCollectionMember]
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[add_update_protein_collection_member]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[add_update_protein_collection_member]
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[DeleteProteinCollectionMembers]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[DeleteProteinCollectionMembers]
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[delete_protein_collection_members]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[delete_protein_collection_members]
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[GetProteinCollectionID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[GetProteinCollectionID]
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[get_protein_collection_id]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[get_protein_collection_id]
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[GetProteinCollectionMemberCount]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[GetProteinCollectionMemberCount]
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[get_protein_collection_member_count]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[get_protein_collection_member_count]
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[GetProteinCollectionState]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[GetProteinCollectionState]
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[get_protein_collection_state]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[get_protein_collection_state]
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[GetProteinID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[GetProteinID]
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[get_protein_id]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[get_protein_id]
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[GetProteinReferenceID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[GetProteinReferenceID]
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[get_protein_reference_id]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[get_protein_reference_id]
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[UpdateProteinCollectionState]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[UpdateProteinCollectionState]
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[update_protein_collection_state]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[update_protein_collection_state]
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[UpdateProteinCollectionsByOrganism]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
@@ -1232,7 +1232,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE AddProteinReference
+CREATE PROCEDURE add_protein_reference
 
 /****************************************************
 **
@@ -1275,7 +1275,7 @@ As
 	declare @Reference_ID int
 	set @Reference_ID = 0
 	
-	execute @Reference_ID = GetProteinReferenceID @name, @description, @nameDescHash
+	execute @Reference_ID = get_protein_reference_id @name, @description, @nameDescHash
 	
 	if @Reference_ID > 0
 	begin
@@ -1288,7 +1288,7 @@ As
 	---------------------------------------------------
 
 	declare @transName varchar(32)
-	set @transName = 'AddProteinReferenceEntry'
+	set @transName = 'add_protein_referenceEntry'
 	begin transaction @transName
 
 	INSERT INTO T_Protein_Names (
@@ -1308,7 +1308,7 @@ As
 	)
 		
 		
-	--execute @Protein_ID = GetProteinID @length, @sha1_hash 		
+	--execute @Protein_ID = get_protein_id @length, @sha1_hash 		
 	SELECT @Reference_ID = @@Identity
 		
 		--
@@ -1336,7 +1336,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE AddProteinSequence
+CREATE PROCEDURE add_protein_sequence
 
 /****************************************************
 **
@@ -1381,7 +1381,7 @@ As
 	declare @Protein_ID int
 	set @Protein_ID = 0
 	
-	execute @Protein_ID = GetProteinID @length, @sha1_hash
+	execute @Protein_ID = get_protein_id @length, @sha1_hash
 	
 	if @Protein_ID > 0 and @mode = 'add'
 	begin
@@ -1453,7 +1453,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE AddSHA1FileAuthentication
+CREATE PROCEDURE add_sha1_file_authentication
 
 /****************************************************
 **
@@ -1491,7 +1491,7 @@ As
 	---------------------------------------------------
 
 	declare @transName varchar(32)
-	set @transName = 'AddSHA1FileAuthentication'
+	set @transName = 'add_sha1_file_authentication'
 	begin transaction @transName
 
 
@@ -1534,7 +1534,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE AddUpdateProteinCollection
+CREATE PROCEDURE add_update_protein_collection
 /****************************************************
 **
 **	Desc: Adds a new protein collection entry
@@ -1597,7 +1597,7 @@ As
 	declare @Collection_ID int
 	set @Collection_ID = 0
 	
-	execute @Collection_ID = GetProteinCollectionID @fileName
+	execute @Collection_ID = get_protein_collection_id @fileName
 	
 	if @Collection_ID > 0 and @mode = 'add'
 	begin
@@ -1694,7 +1694,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-GRANT  EXECUTE  ON [dbo].[AddUpdateProteinCollection]  TO [DMSWebUser]
+GRANT  EXECUTE  ON [dbo].[add_update_protein_collection]  TO [DMSWebUser]
 GO
 
 SET QUOTED_IDENTIFIER ON 
@@ -1702,7 +1702,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE AddUpdateProteinCollectionMember
+CREATE PROCEDURE add_update_protein_collection_member
 /****************************************************
 **
 **	Desc: Adds a new protein collection member
@@ -1799,7 +1799,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE DeleteProteinCollectionMembers
+CREATE PROCEDURE delete_protein_collection_members
 /****************************************************
 **
 **	Desc: Deletes Protein Collection Member Entries from a given Protein Collection ID
@@ -1867,7 +1867,7 @@ As
 	---------------------------------------------------
 
 	declare @transName varchar(32)
-	set @transName = 'DeleteProteinCollectionMembers'
+	set @transName = 'delete_protein_collection_members'
 	begin transaction @transName
 --	print 'start transaction' -- debug only
 
@@ -1901,7 +1901,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE GetProteinCollectionID
+CREATE PROCEDURE get_protein_collection_id
 /****************************************************
 **
 **	Desc: Gets CollectionID for given FileName
@@ -1935,7 +1935,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE GetProteinCollectionMemberCount
+CREATE PROCEDURE get_protein_collection_member_count
 /****************************************************
 **
 **	Desc: Gets Collection Member count for given Collection_ID
@@ -1978,7 +1978,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE GetProteinCollectionState
+CREATE PROCEDURE get_protein_collection_state
 /****************************************************
 **
 **	Desc: Gets Collection State Name for given CollectionID
@@ -2023,7 +2023,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE GetProteinID
+CREATE PROCEDURE get_protein_id
 /****************************************************
 **
 **	Desc: Gets ProteinID for given length and SHA-1 Hash
@@ -2058,7 +2058,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE GetProteinReferenceID
+CREATE PROCEDURE get_protein_reference_id
 /****************************************************
 **
 **	Desc: Gets CollectionID for given FileName
@@ -2100,7 +2100,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE PROCEDURE UpdateProteinCollectionState
+CREATE PROCEDURE update_protein_collection_state
 /****************************************************
 **
 **	Desc: Adds a new protein collection member
@@ -2154,7 +2154,7 @@ As
 	---------------------------------------------------
 
 	declare @transName varchar(32)
-	set @transName = 'UpdateProteinCollectionState'
+	set @transName = 'update_protein_collection_state'
 	begin transaction @transName
 	
 	---------------------------------------------------
