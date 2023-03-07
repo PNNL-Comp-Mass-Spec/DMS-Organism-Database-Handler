@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppUI_OrfDBHandler", "AppUI_OrfDBHandler\AppUI_OrfDBHandler.csproj", "{78AD9853-60BB-4B10-8FF2-418B3A21092D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PRISMSeq_Uploader", "PRISMSeq_Uploader\PRISMSeq_Uploader.csproj", "{78AD9853-60BB-4B10-8FF2-418B3A21092D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastaFileMaker_Exe", "FastaFileMaker_Exe\FastaFileMaker_Exe.csproj", "{B291F511-6EB2-447A-B7E2-B2A2E50AF2DE}"
 EndProject

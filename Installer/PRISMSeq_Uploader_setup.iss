@@ -42,7 +42,7 @@ Source: ..\Executables\Debug\System.ValueTuple.dll                            ; 
 Source: ..\Executables\Debug\ValidateFastaFile.dll                            ; DestDir: {app}
 
 Source: ..\Aux_Files\delete_16x.ico                                  ; DestDir: {app}
-Source: ..\AppUI_OrfDBHandler\PRISMSeq_Favicon.ico                   ; DestDir: {app}
+Source: ..\PRISMSeq_Uploader\PRISMSeq_Favicon.ico                    ; DestDir: {app}
 
 Source: ..\RevisionHistory.txt                                       ; DestDir: {app}
 
@@ -83,7 +83,7 @@ ChangesAssociations=false
 InfoAfterFile=.\postinstall.rtf
 EnableDirDoesntExistWarning=false
 AlwaysShowDirOnReadyPage=true
-SetupIconFile=..\AppUI_OrfDBHandler\PRISMSeq_Favicon.ico
+SetupIconFile=..\PRISMSeq_Uploader\PRISMSeq_Favicon.ico
 UninstallDisplayIcon={app}\delete_16x.ico
 ShowTasksTreeLines=true
 OutputDir=.\Output
