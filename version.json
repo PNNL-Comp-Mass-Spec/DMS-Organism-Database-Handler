@@ -1,0 +1,18 @@
+{ // Monolithic/shared versioning config file
+  "$schema": "https://raw.githubusercontent.com/dotnet/Nerdbank.GitVersioning/main/src/NerdBank.GitVersioning/version.schema.json",
+  "version": "1.6",
+  "assemblyVersion": {
+    "precision": "build"
+  },
+  "pathFilters": [
+    ":/OrganismDatabaseHandler", // Consider all committed file changes in this project folder for version increases
+    ":/PRISMSeq_Uploader", // Consider all committed file changes in this project folder for version increases
+    ":/Bulk_Fasta_Importer", // Consider all committed file changes in this project folder for version increases
+    ":/FastaFileMaker_Exe", // Consider all committed file changes in this project folder for version increases
+    ":/Lib", // Consider all committed file changes in this dependency folder for version increases
+    ":^/PRISMSeq_Uploader/bin/DistributeProgram.bat" // Exclude changes to this file
+  ],
+  "publicReleaseRefSpec": [
+    "^refs/heads/master$" // we release out of master
+  ]
+}

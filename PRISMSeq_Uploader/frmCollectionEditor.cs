@@ -21,6 +21,8 @@ namespace PRISMSeq_Uploader
 
         public frmCollectionEditor()
         {
+            ProgramDate = ThisAssembly.GitCommitDate.ToLocalTime().ToString("MMMM dd, yyyy");
+
             // Initialize Dictionaries
             mFileErrorList = new Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>>();
             mCachedFileDescriptions = new Dictionary<string, KeyValuePair<string, string>>();
@@ -49,7 +51,7 @@ namespace PRISMSeq_Uploader
             Application.Run(new frmCollectionEditor());
         }
 
-        private const string ProgramDate = "January 26, 2023";
+        private readonly string ProgramDate;
 
         private DataTable mOrganisms;
         private DataTable mProteinCollections;

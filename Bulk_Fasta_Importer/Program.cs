@@ -13,7 +13,12 @@ namespace Bulk_Fasta_Importer
     /// </summary>
     internal static class Program
     {
-        public const string ProgramDate = "January 26, 2023";
+        public static readonly string ProgramDate;
+
+        static Program()
+        {
+            ProgramDate = ThisAssembly.GitCommitDate.ToLocalTime().ToString("MMMM dd, yyyy");
+        }
 
         private static string mInputFilePath;
         private static bool mPreviewMode;

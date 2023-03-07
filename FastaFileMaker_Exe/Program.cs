@@ -9,7 +9,12 @@ namespace FastaFileMaker
     {
         // Ignore Spelling: fasta, filetype, na, proteinseqs, Shewanella, yyyy-MM-dd, hh:mm:ss tt
 
-        public const string ProgramDate = "January 26, 2023";
+        public static readonly string ProgramDate;
+
+        static Program()
+        {
+            ProgramDate = ThisAssembly.GitCommitDate.ToLocalTime().ToString("MMMM dd, yyyy");
+        }
 
         private const int DebugLevel = 4;
         private const int FastaGenTimeoutIntervalMinutes = 70;
