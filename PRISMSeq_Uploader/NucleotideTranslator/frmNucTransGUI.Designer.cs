@@ -1,4 +1,4 @@
-﻿namespace AppUI_OrfDBHandler.NucleotideTranslator
+﻿namespace PRISMSeq_Uploader.NucleotideTranslator
 {
     partial class frmNucTransGUI
     {

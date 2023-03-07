@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
+namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
 {
     public partial class frmExtractFromFlatFile : Form
     {

@@ -3,7 +3,7 @@ using System.Data;
 using OrganismDatabaseHandler.DatabaseTools;
 using PRISM;
 
-namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
+namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
 {
     internal interface IGetAnnotationsFromDb
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using OrganismDatabaseHandler.ProteinImport;
 
-namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
+namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
 {
     [Obsolete("Unused")]
     internal class ExtractFromFlatFile

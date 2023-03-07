@@ -2,7 +2,7 @@
 using System.Collections;
 using OrganismDatabaseHandler.DatabaseTools;
 
-namespace AppUI_OrfDBHandler.NucleotideTranslator
+namespace PRISMSeq_Uploader.NucleotideTranslator
 {
     [Obsolete("Uses old table name")]
     public class TranslateNucleotides

@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using PRISM;
 
-namespace AppUI_OrfDBHandler
+namespace PRISMSeq_Uploader
 {
     public partial class frmAddAnnotationType : Form
     {

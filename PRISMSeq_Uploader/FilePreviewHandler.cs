@@ -6,7 +6,7 @@ using OrganismDatabaseHandler.ProteinImport;
 using OrganismDatabaseHandler.ProteinStorage;
 using PRISM;
 
-namespace AppUI_OrfDBHandler
+namespace PRISMSeq_Uploader
 {
     public class FilePreviewHandler : EventNotifier
     {

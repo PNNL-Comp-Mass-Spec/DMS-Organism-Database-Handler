@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-namespace AppUI_OrfDBHandler
+namespace PRISMSeq_Uploader
 {
     public partial class frmFilePreview : Form
     {

@@ -1,6 +1,6 @@
-﻿using AppUI_OrfDBHandler.Controls;
+﻿using PRISMSeq_Uploader.Controls;
 
-namespace AppUI_OrfDBHandler
+namespace PRISMSeq_Uploader
 {
     partial class frmCollectionEditor
     {
@@ -40,10 +40,10 @@ namespace AppUI_OrfDBHandler
             this.pgbMain = new System.Windows.Forms.ProgressBar();
             this.pnlSource = new System.Windows.Forms.Panel();
             this.lblTargetDatabase = new System.Windows.Forms.Label();
-            this.cmdDestAdd = new AppUI_OrfDBHandler.Controls.ImageButton();
-            this.cmdDestRemove = new AppUI_OrfDBHandler.Controls.ImageButton();
-            this.cmdDestAddAll = new AppUI_OrfDBHandler.Controls.ImageButton();
-            this.cmdDestRemoveAll = new AppUI_OrfDBHandler.Controls.ImageButton();
+            this.cmdDestAdd = new PRISMSeq_Uploader.Controls.ImageButton();
+            this.cmdDestRemove = new PRISMSeq_Uploader.Controls.ImageButton();
+            this.cmdDestAddAll = new PRISMSeq_Uploader.Controls.ImageButton();
+            this.cmdDestRemoveAll = new PRISMSeq_Uploader.Controls.ImageButton();
             this.gbxSourceCollection = new System.Windows.Forms.GroupBox();
             this.cboAnnotationTypePicker = new System.Windows.Forms.ComboBox();
             this.lblAnnotationTypeFilter = new System.Windows.Forms.Label();

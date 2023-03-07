@@ -1,4 +1,4 @@
-﻿namespace AppUI_OrfDBHandler
+﻿namespace PRISMSeq_Uploader
 {
     partial class frmAddNamingAuthority
     {

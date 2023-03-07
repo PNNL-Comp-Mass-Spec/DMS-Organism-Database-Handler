@@ -6,7 +6,7 @@ using OrganismDatabaseHandler.DatabaseTools;
 using OrganismDatabaseHandler.ProteinUpload;
 using PRISM;
 
-namespace AppUI_OrfDBHandler.ProteinUpload
+namespace PRISMSeq_Uploader.ProteinUpload
 {
     public class BatchUploadFromFileList : EventNotifier
     {

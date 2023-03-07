@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
+namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
 {
     [Obsolete("Unused")]
     internal class AnnotationInfo

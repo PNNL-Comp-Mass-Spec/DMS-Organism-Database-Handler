@@ -1,4 +1,4 @@
-﻿namespace AppUI_OrfDBHandler.ProteinUpload
+﻿namespace PRISMSeq_Uploader.ProteinUpload
 {
     partial class frmBatchUploadFromFileList
     {

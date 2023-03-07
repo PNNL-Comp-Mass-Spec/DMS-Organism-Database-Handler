@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace AppUI_OrfDBHandler.NucleotideTranslator
+namespace PRISMSeq_Uploader.NucleotideTranslator
 {
     internal class TranslationEntry
     {

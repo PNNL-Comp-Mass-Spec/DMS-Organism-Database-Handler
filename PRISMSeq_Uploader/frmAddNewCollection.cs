@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows.Forms;
 
-namespace AppUI_OrfDBHandler
+namespace PRISMSeq_Uploader
 {
     public partial class frmAddNewCollection : Form
     {

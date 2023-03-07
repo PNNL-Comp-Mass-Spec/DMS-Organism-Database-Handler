@@ -10,7 +10,7 @@ using PRISM;
 using PRISMDatabaseUtils;
 using ProteinFileReader;
 
-namespace AppUI_OrfDBHandler
+namespace PRISMSeq_Uploader
 {
     [Obsolete("Referenced by hidden button and hidden menu")]
     public class SyncFASTAFileArchive : EventNotifier

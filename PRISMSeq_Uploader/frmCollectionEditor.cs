@@ -6,14 +6,14 @@ using System.Drawing;
 using System.IO;
 using System.Timers;
 using System.Windows.Forms;
-using AppUI_OrfDBHandler.Properties;
+using PRISMSeq_Uploader.Properties;
 using OrganismDatabaseHandler.ProteinImport;
 using OrganismDatabaseHandler.ProteinUpload;
 using PRISM;
 using PRISMDatabaseUtils;
 using ValidateFastaFile;
 
-namespace AppUI_OrfDBHandler
+namespace PRISMSeq_Uploader
 {
     public partial class frmCollectionEditor : Form
     {

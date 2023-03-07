@@ -6,7 +6,7 @@ using OrganismDatabaseHandler.ProteinImport;
 using PRISM;
 using PRISMDatabaseUtils;
 
-namespace AppUI_OrfDBHandler
+namespace PRISMSeq_Uploader
 {
     public class AddAnnotationTypeType : EventNotifier
     {

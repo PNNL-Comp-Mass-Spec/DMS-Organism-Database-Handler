@@ -1,6 +1,6 @@
-﻿using AppUI_OrfDBHandler.Controls;
+﻿using PRISMSeq_Uploader.Controls;
 
-namespace AppUI_OrfDBHandler
+namespace PRISMSeq_Uploader
 {
     partial class frmBatchAddNewCollection
     {
@@ -64,8 +64,8 @@ namespace AppUI_OrfDBHandler
             this.cmdUpdateDescription = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
             this.cboOrganismSelect = new System.Windows.Forms.ComboBox();
-            this.cmdRemoveFile = new AppUI_OrfDBHandler.Controls.ImageButton();
-            this.cmdAddFile = new AppUI_OrfDBHandler.Controls.ImageButton();
+            this.cmdRemoveFile = new PRISMSeq_Uploader.Controls.ImageButton();
+            this.cmdAddFile = new PRISMSeq_Uploader.Controls.ImageButton();
             this.cmdUpdateOrganisms = new System.Windows.Forms.Button();
             this.fraValidationOptions.SuspendLayout();
             this.SuspendLayout();

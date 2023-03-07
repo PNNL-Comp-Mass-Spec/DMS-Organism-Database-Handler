@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using OrganismDatabaseHandler.ProteinUpload;
 using ValidateFastaFile;
 
-namespace AppUI_OrfDBHandler
+namespace PRISMSeq_Uploader
 {
     public partial class frmValidationReport : Form
     {

@@ -14,7 +14,7 @@ using PRISMDatabaseUtils;
 using Raccoom.Windows.Forms;
 using ValidateFastaFile;
 
-namespace AppUI_OrfDBHandler
+namespace PRISMSeq_Uploader
 {
     public partial class frmBatchAddNewCollection : Form
     {

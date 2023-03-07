@@ -8,7 +8,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace AppUI_OrfDBHandler.Controls
+namespace PRISMSeq_Uploader.Controls
 {
     public class ImageButton : Button
     {

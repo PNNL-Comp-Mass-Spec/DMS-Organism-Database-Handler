@@ -6,7 +6,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace AppUI_OrfDBHandler.ProteinUpload
+namespace PRISMSeq_Uploader.ProteinUpload
 {
     public partial class frmBatchUploadFromFileList : Form
     {

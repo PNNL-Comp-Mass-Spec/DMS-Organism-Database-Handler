@@ -90,7 +90,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public DataTable LoadOrganisms()
         {
-            const string orgSQL = 
+            const string orgSQL =
                 "SELECT id, short_name, display_name, storage_location, organism_name, organism_name_abbrev_genus, og_short_name, search_terms, collection_count " +
                 "FROM v_organism_picker " +
                 "ORDER BY short_name";
@@ -225,7 +225,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public DataTable LoadProteinCollections()
         {
-            const string pcSql = 
+            const string pcSql =
                 "SELECT min(collection_name) as collection_name, protein_collection_id, " +
                 "       min(organism_id) as organism_id, min(authority_id) as authority_id, " +
                 "       min(display) as display, min(authentication_hash) as authentication_hash " +
@@ -248,7 +248,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         protected DataTable LoadProteinCollections(int organismId)
         {
-            var sqlQuery = 
+            var sqlQuery =
                 "SELECT collection_name, protein_collection_id, organism_id, authority_id, display, authentication_hash " +
                 "FROM v_protein_collections_by_organism " +
                 "WHERE organism_id = " + organismId + " " +

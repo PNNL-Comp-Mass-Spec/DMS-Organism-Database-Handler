@@ -5,7 +5,7 @@ using System.IO;
 using OrganismDatabaseHandler.DatabaseTools;
 using PRISMDatabaseUtils;
 
-namespace AppUI_OrfDBHandler
+namespace PRISMSeq_Uploader
 {
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     //

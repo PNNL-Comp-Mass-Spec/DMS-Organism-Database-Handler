@@ -6,7 +6,7 @@ using System.Timers;
 using System.Windows.Forms;
 using PRISM;
 
-namespace AppUI_OrfDBHandler
+namespace PRISMSeq_Uploader
 {
     [Obsolete("Class referenced by hidden tools menu")]
     public partial class frmCollectionStateEditor : Form

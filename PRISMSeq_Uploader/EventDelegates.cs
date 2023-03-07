@@ -1,4 +1,4 @@
-﻿namespace AppUI_OrfDBHandler
+﻿namespace PRISMSeq_Uploader
 {
     public delegate void FormStatusEventHandler(bool visible);
     public delegate void RefreshRequestEventHandler(int lineCount);

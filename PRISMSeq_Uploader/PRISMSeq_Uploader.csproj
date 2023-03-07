@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -7,11 +7,11 @@
     <ProjectGuid>{78AD9853-60BB-4B10-8FF2-418B3A21092D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AssemblyName>PRISMSeq_Uploader</AssemblyName>
-    <RootNamespace>AppUI_OrfDBHandler</RootNamespace>
+    <RootNamespace>PRISMSeq_Uploader</RootNamespace>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <LangVersion>latest</LangVersion>
-    <StartupObject>AppUI_OrfDBHandler.frmCollectionEditor</StartupObject>
+    <StartupObject>PRISMSeq_Uploader.frmCollectionEditor</StartupObject>
     <ApplicationIcon>PRISMSeq_Favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

@@ -1,4 +1,4 @@
-﻿namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
+﻿namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
 {
     partial class frmExtractFromFlatFile
     {

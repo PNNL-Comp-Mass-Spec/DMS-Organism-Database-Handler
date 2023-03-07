@@ -6,7 +6,7 @@ using OrganismDatabaseHandler.ProteinExport;
 using OrganismDatabaseHandler.ProteinImport;
 using PRISMDatabaseUtils;
 
-namespace AppUI_OrfDBHandler
+namespace PRISMSeq_Uploader
 {
     public partial class frmTestingInterface : Form
     {

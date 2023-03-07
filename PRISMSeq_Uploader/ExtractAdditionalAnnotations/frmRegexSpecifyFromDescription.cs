@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace AppUI_OrfDBHandler.ExtractAdditionalAnnotations
+namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
 {
     [Obsolete("Unused")]
     public partial class frmRegexSpecifyFromDescription : Form
