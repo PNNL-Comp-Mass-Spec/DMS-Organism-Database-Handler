@@ -412,9 +412,9 @@ namespace OrganismDatabaseHandler.ProteinImport
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@collection_ID", SqlType.Int).Value = proteinCollectionId;
+            dbTools.AddParameter(cmdSave, "@collectionID", SqlType.Int).Value = proteinCollectionId;
 
-            var stateNameParam = dbTools.AddParameter(cmdSave, "@state_Name", SqlType.VarChar, 32, ParameterDirection.Output);
+            var stateNameParam = dbTools.AddParameter(cmdSave, "@stateName", SqlType.VarChar, 32, ParameterDirection.Output);
 
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
@@ -458,11 +458,11 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Define parameters for the procedure's arguments
             dbTools.AddParameter(cmdSave, "@sequence", SqlType.Text).Value = sequence;
             dbTools.AddParameter(cmdSave, "@length", SqlType.Int).Value = length;
-            dbTools.AddParameter(cmdSave, "@molecular_formula", SqlType.VarChar, 128).Value = molecularFormula;
-            dbTools.AddParameter(cmdSave, "@monoisotopic_mass", SqlType.Float, 8).Value = monoisotopicMass;
-            dbTools.AddParameter(cmdSave, "@average_mass", SqlType.Float, 8).Value = averageMass;
-            dbTools.AddParameter(cmdSave, "@sha1_hash", SqlType.VarChar, 40).Value = sha1Hash;
-            dbTools.AddParameter(cmdSave, "@is_encrypted", SqlType.TinyInt).Value = encryptionFlag;
+            dbTools.AddParameter(cmdSave, "@molecularFormula", SqlType.VarChar, 128).Value = molecularFormula;
+            dbTools.AddParameter(cmdSave, "@monoisotopicMass", SqlType.Float, 8).Value = monoisotopicMass;
+            dbTools.AddParameter(cmdSave, "@averageMass", SqlType.Float, 8).Value = averageMass;
+            dbTools.AddParameter(cmdSave, "@sha1Hash", SqlType.VarChar, 40).Value = sha1Hash;
+            dbTools.AddParameter(cmdSave, "@isEncrypted", SqlType.TinyInt).Value = encryptionFlag;
             dbTools.AddParameter(cmdSave, "@mode", SqlType.VarChar, 12).Value = mode.ToString();
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
 
@@ -490,13 +490,13 @@ namespace OrganismDatabaseHandler.ProteinImport
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@protein_ID", SqlType.Int).Value = proteinId;
+            dbTools.AddParameter(cmdSave, "@proteinID", SqlType.Int).Value = proteinId;
             dbTools.AddParameter(cmdSave, "@sequence", SqlType.Text).Value = sequence;
             dbTools.AddParameter(cmdSave, "@length", SqlType.Int).Value = length;
-            dbTools.AddParameter(cmdSave, "@molecular_formula", SqlType.VarChar, 128).Value = molecularFormula;
-            dbTools.AddParameter(cmdSave, "@monoisotopic_mass", SqlType.Float, 8).Value = monoisotopicMass;
-            dbTools.AddParameter(cmdSave, "@average_mass", SqlType.Float, 8).Value = averageMass;
-            dbTools.AddParameter(cmdSave, "@sha1_hash", SqlType.VarChar, 40).Value = sha1Hash;
+            dbTools.AddParameter(cmdSave, "@molecularFormula", SqlType.VarChar, 128).Value = molecularFormula;
+            dbTools.AddParameter(cmdSave, "@monoisotopicMass", SqlType.Float, 8).Value = monoisotopicMass;
+            dbTools.AddParameter(cmdSave, "@averageMass", SqlType.Float, 8).Value = averageMass;
+            dbTools.AddParameter(cmdSave, "@sha1Hash", SqlType.VarChar, 40).Value = sha1Hash;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
 
             // Execute the stored procedure
@@ -528,9 +528,9 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@collectionName", SqlType.VarChar, 128).Value = proteinCollectionName;
             dbTools.AddParameter(cmdSave, "@Description", SqlType.VarChar, 900).Value = description;
             dbTools.AddParameter(cmdSave, "@collectionSource", SqlType.VarChar, 900).Value = collectionSource;
-            dbTools.AddParameter(cmdSave, "@collection_type", SqlType.Int).Value = (int)collectionType;
-            dbTools.AddParameter(cmdSave, "@collection_state", SqlType.Int).Value = (int)collectionState;
-            dbTools.AddParameter(cmdSave, "@primary_annotation_type_id", SqlType.Int).Value = annotationTypeId;
+            dbTools.AddParameter(cmdSave, "@collectionType", SqlType.Int).Value = (int)collectionType;
+            dbTools.AddParameter(cmdSave, "@collectionState", SqlType.Int).Value = (int)collectionState;
+            dbTools.AddParameter(cmdSave, "@primaryAnnotationTypeId", SqlType.Int).Value = annotationTypeId;
             dbTools.AddParameter(cmdSave, "@numProteins", SqlType.Int).Value = numProteins;
             dbTools.AddParameter(cmdSave, "@numResidues", SqlType.Int).Value = numResidues;
             dbTools.AddParameter(cmdSave, "@mode", SqlType.VarChar, 12).Value = mode.ToString();
@@ -587,10 +587,10 @@ namespace OrganismDatabaseHandler.ProteinImport
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@reference_ID", SqlType.Int).Value = referenceId;
-            dbTools.AddParameter(cmdSave, "@protein_ID", SqlType.Int).Value = proteinId;
-            dbTools.AddParameter(cmdSave, "@sorting_index", SqlType.Int).Value = sortingIndex;
-            dbTools.AddParameter(cmdSave, "@protein_collection_ID", SqlType.Int).Value = proteinCollectionId;
+            dbTools.AddParameter(cmdSave, "@referenceID", SqlType.Int).Value = referenceId;
+            dbTools.AddParameter(cmdSave, "@proteinID", SqlType.Int).Value = proteinId;
+            dbTools.AddParameter(cmdSave, "@sortingIndex", SqlType.Int).Value = sortingIndex;
+            dbTools.AddParameter(cmdSave, "@proteinCollectionID", SqlType.Int).Value = proteinCollectionId;
             dbTools.AddParameter(cmdSave, "@mode", SqlType.VarChar, 10).Value = mode;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
 
@@ -614,9 +614,9 @@ namespace OrganismDatabaseHandler.ProteinImport
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@protein_Collection_ID", SqlType.Int).Value = proteinCollectionId;
-            dbTools.AddParameter(cmdSave, "@encryption_Passphrase", SqlType.VarChar, 64).Value = passphrase;
-            dbTools.AddParameter(cmdSave, "@passphrase_SHA1_Hash", SqlType.VarChar, 40).Value = phraseHash;
+            dbTools.AddParameter(cmdSave, "@proteinCollectionID", SqlType.Int).Value = proteinCollectionId;
+            dbTools.AddParameter(cmdSave, "@encryptionPassphrase", SqlType.VarChar, 64).Value = passphrase;
+            dbTools.AddParameter(cmdSave, "@passphraseSHA1Hash", SqlType.VarChar, 40).Value = phraseHash;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
 
             // Execute the stored procedure
@@ -641,7 +641,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Define parameters for the procedure's arguments
             dbTools.AddParameter(cmdSave, "@name", SqlType.VarChar, 64).Value = shortName;
             dbTools.AddParameter(cmdSave, "@description", SqlType.VarChar, 128).Value = fullName;
-            dbTools.AddParameter(cmdSave, "@web_address", SqlType.VarChar, 128).Value = webAddress;
+            dbTools.AddParameter(cmdSave, "@webAddress", SqlType.VarChar, 128).Value = webAddress;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
 
             // Execute the stored procedure
@@ -690,8 +690,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@protein_collection_ID", SqlType.Int).Value = proteinCollectionId;
-            dbTools.AddParameter(cmdSave, "@state_ID", SqlType.Int).Value = collectionStateId;
+            dbTools.AddParameter(cmdSave, "@proteinCollectionID", SqlType.Int).Value = proteinCollectionId;
+            dbTools.AddParameter(cmdSave, "@stateID", SqlType.Int).Value = collectionStateId;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
 
             // Execute the stored procedure
@@ -720,7 +720,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@collection_ID", SqlType.Int).Value = proteinCollectionId;
+            dbTools.AddParameter(cmdSave, "@collectionID", SqlType.Int).Value = proteinCollectionId;
             dbTools.AddParameter(cmdSave, "@numProteinsForReLoad", SqlType.Int).Value = numProteinsForReLoad;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
 
@@ -742,7 +742,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@collection_ID", SqlType.Int).Value = proteinCollectionId;
+            dbTools.AddParameter(cmdSave, "@collectionID", SqlType.Int).Value = proteinCollectionId;
 
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
@@ -836,7 +836,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@collection_ID", SqlType.Int).Value = proteinCollectionId;
+            dbTools.AddParameter(cmdSave, "@collectionID", SqlType.Int).Value = proteinCollectionId;
             dbTools.AddParameter(cmdSave, "@crc32FileHash", SqlType.VarChar, 40).Value = authenticationHash;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
             dbTools.AddParameter(cmdSave, "@numProteins", SqlType.Int).Value = numProteins;
@@ -861,8 +861,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@protein_Collection_ID", SqlType.Int).Value = proteinCollectionId;
-            dbTools.AddParameter(cmdSave, "@organism_ID", SqlType.Int).Value = organismId;
+            dbTools.AddParameter(cmdSave, "@proteinCollectionID", SqlType.Int).Value = proteinCollectionId;
+            dbTools.AddParameter(cmdSave, "@organismID", SqlType.Int).Value = organismId;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
 
             // Execute the stored procedure
@@ -889,7 +889,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@reference_ID", SqlType.Int).Value = referenceId;
+            dbTools.AddParameter(cmdSave, "@referenceID", SqlType.Int).Value = referenceId;
             dbTools.AddParameter(cmdSave, "@sha1Hash", SqlType.VarChar, 40).Value = sha1Hash;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
 
@@ -913,7 +913,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@collection_ID", SqlType.Int).Value = proteinCollectionId;
+            dbTools.AddParameter(cmdSave, "@collectionID", SqlType.Int).Value = proteinCollectionId;
             dbTools.AddParameter(cmdSave, "@numProteins", SqlType.Int).Value = numProteins;
             dbTools.AddParameter(cmdSave, "@numResidues", SqlType.Int).Value = numResidues;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
@@ -940,7 +940,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@protein_ID", SqlType.Int).Value = proteinId;
+            dbTools.AddParameter(cmdSave, "@proteinID", SqlType.Int).Value = proteinId;
             dbTools.AddParameter(cmdSave, "@sha1Hash", SqlType.VarChar, 40).Value = sha1Hash;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
 

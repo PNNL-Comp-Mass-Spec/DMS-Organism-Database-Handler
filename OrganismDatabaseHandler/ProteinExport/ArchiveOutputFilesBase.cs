@@ -129,9 +129,9 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
-            dbTools.AddParameter(cmdSave, "@collection_ID", SqlType.Int).Value = proteinCollectionId;
+            dbTools.AddParameter(cmdSave, "@collectionID", SqlType.Int).Value = proteinCollectionId;
 
-            dbTools.AddParameter(cmdSave, "@archived_File_ID", SqlType.Int).Value = archivedFileId;
+            dbTools.AddParameter(cmdSave, "@archivedFileID", SqlType.Int).Value = archivedFileId;
 
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 250, ParameterDirection.Output);
 

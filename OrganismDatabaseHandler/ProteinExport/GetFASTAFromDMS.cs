@@ -1038,7 +1038,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@legacy_File_name", SqlType.VarChar, 128).Value = legacyFilename;
+            dbTools.AddParameter(cmdSave, "@legacyFileName", SqlType.VarChar, 128).Value = legacyFilename;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256).Direction = ParameterDirection.Output;
             dbTools.AddParameter(cmdSave, "@authenticationHash", SqlType.VarChar, 8).Value = authenticationHash;
 

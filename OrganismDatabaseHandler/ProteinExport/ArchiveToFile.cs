@@ -179,7 +179,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@archived_File_Entry_ID", SqlType.Int).Value = archivedFileEntryId;
+            dbTools.AddParameter(cmdSave, "@archivedFileEntryID", SqlType.Int).Value = archivedFileEntryId;
             dbTools.AddParameter(cmdSave, "@proteinCollectionList", SqlType.VarChar, 8000).Value = proteinCollectionsList;
             dbTools.AddParameter(cmdSave, "@sha1Hash", SqlType.VarChar, 28).Value = collectionListHash;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 512).Direction = ParameterDirection.Output;
@@ -214,16 +214,16 @@ namespace OrganismDatabaseHandler.ProteinExport
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@protein_collection_ID", SqlType.Int).Value = proteinCollectionId;
-            dbTools.AddParameter(cmdSave, "@crc32_authentication", SqlType.VarChar, 40).Value = authenticationHash;
-            dbTools.AddParameter(cmdSave, "@file_modification_date", SqlType.DateTime).Value = fileModificationDate;
-            dbTools.AddParameter(cmdSave, "@file_size", SqlType.BigInt).Value = outputFileSize;
-            dbTools.AddParameter(cmdSave, "@protein_count", SqlType.Int).Value = proteinCount;
-            dbTools.AddParameter(cmdSave, "@archived_file_type", SqlType.VarChar, 64).Value = archivedFileType;
-            dbTools.AddParameter(cmdSave, "@creation_options", SqlType.VarChar, 250).Value = creationOptionsString;
-            dbTools.AddParameter(cmdSave, "@protein_collection_string", SqlType.VarChar, 8000).Value = proteinCollectionsList;
-            dbTools.AddParameter(cmdSave, "@collection_string_hash", SqlType.VarChar, 40).Value = collectionListHexHash;
-            dbTools.AddParameter(cmdSave, "@archived_file_path", SqlType.VarChar, 250).Value = archivedFileFullPath;
+            dbTools.AddParameter(cmdSave, "@proteinCollectionID", SqlType.Int).Value = proteinCollectionId;
+            dbTools.AddParameter(cmdSave, "@crc32Authentication", SqlType.VarChar, 40).Value = authenticationHash;
+            dbTools.AddParameter(cmdSave, "@fileModificationDate", SqlType.DateTime).Value = fileModificationDate;
+            dbTools.AddParameter(cmdSave, "@fileSize", SqlType.BigInt).Value = outputFileSize;
+            dbTools.AddParameter(cmdSave, "@proteinCount", SqlType.Int).Value = proteinCount;
+            dbTools.AddParameter(cmdSave, "@archivedFileType", SqlType.VarChar, 64).Value = archivedFileType;
+            dbTools.AddParameter(cmdSave, "@creationOptions", SqlType.VarChar, 250).Value = creationOptionsString;
+            dbTools.AddParameter(cmdSave, "@proteinCollectionString", SqlType.VarChar, 8000).Value = proteinCollectionsList;
+            dbTools.AddParameter(cmdSave, "@collectionStringHash", SqlType.VarChar, 40).Value = collectionListHexHash;
+            dbTools.AddParameter(cmdSave, "@archivedFilePath", SqlType.VarChar, 250).Value = archivedFileFullPath;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 512).Direction = ParameterDirection.Output;
 
             // Execute the stored procedure
