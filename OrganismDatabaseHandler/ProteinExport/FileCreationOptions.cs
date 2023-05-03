@@ -51,9 +51,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var optionsStringParser = new Regex(
                 @"(?<keyword>[^,\s]*)\s*=\s*(?<value>[^,\s]+)");
 
-            var mCollection = optionsStringParser.Matches(optionsString);
-
-            foreach (Match m in mCollection)
+            foreach (Match m in optionsStringParser.Matches(optionsString))
             {
                 // optionsHash.Add(m.Groups("keyword").Value, m.Groups("value").Value)
                 var keyword = m.Groups["keyword"].Value;
