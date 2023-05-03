@@ -101,7 +101,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
 
             // Parse dictionary into canonical options string for return
-            foundRows = mKeywordTable.Select("", "keyword_id ASC");
+            foundRows = mKeywordTable.Select(string.Empty, "keyword_id ASC");
 
             foreach (var dataRow in foundRows)
             {

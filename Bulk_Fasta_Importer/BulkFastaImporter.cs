@@ -119,7 +119,7 @@ namespace Bulk_Fasta_Importer
             {
                 return mLocalErrorCode switch
                 {
-                    BulkImporterErrorCodes.NoError => "",
+                    BulkImporterErrorCodes.NoError => string.Empty,
                     BulkImporterErrorCodes.DatabaseError => "Database query error",
                     BulkImporterErrorCodes.UnspecifiedError => "Unspecified localized error",
                     _ => "Unknown error state"

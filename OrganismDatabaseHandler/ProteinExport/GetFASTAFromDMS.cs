@@ -882,7 +882,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                         // Update the hash validation file
                         UpdateHashValidationFile(fastaFilePath, crc32Hash, hashcheckExtension);
 
-                        if ((expectedHash ?? "") != (crc32Hash ?? "") && forceRegenerateHash)
+                        if ((expectedHash ?? string.Empty) != (crc32Hash ?? string.Empty) && forceRegenerateHash)
                         {
                             // Hash values don't match, but forceRegenerateHash=True
                             // Update the hash value stored in T_Legacy_File_Upload_Requests for this FASTA file
@@ -1079,7 +1079,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var sha1Hash = sha1Provider.ComputeHash(byteSourceText);
 
             // And convert it to String format for return
-            var sha1String = BitConverter.ToString(sha1Hash).Replace("-", "").ToLower();
+            var sha1String = BitConverter.ToString(sha1Hash).Replace("-", string.Empty).ToLower();
 
             return sha1String;
         }

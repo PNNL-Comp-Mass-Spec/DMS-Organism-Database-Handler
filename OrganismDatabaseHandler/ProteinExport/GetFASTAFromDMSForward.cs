@@ -96,7 +96,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             if (!CheckProteinCollectionNameValidity(protCollectionList))
             {
-                return "";
+                return string.Empty;
             }
 
             var user = new WindowsPrincipal(WindowsIdentity.GetCurrent());

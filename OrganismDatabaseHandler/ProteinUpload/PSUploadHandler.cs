@@ -257,7 +257,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
 
                 if (mNormalizedFastaFilePath != null)
                 {
-                    if (currentFile.FullName != (mNormalizedFastaFilePath ?? ""))
+                    if (currentFile.FullName != (mNormalizedFastaFilePath ?? string.Empty))
                     {
                         upInfo.FileInformation = new FileInfo(mNormalizedFastaFilePath);
                     }
@@ -301,7 +301,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
                     {
                         var errorCollection = new List<CustomFastaValidator.ErrorInfoExtended>
                         {
-                            new(0, " N/A ", logMessageIfCancelled, "", logLabelIfCancelled)
+                            new(0, " N/A ", logMessageIfCancelled, string.Empty, logLabelIfCancelled)
                         };
                         OnInvalidFASTAFile(currentFile.FullName, errorCollection);
                     }
@@ -323,7 +323,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
 
                             var errorCollection = new List<CustomFastaValidator.ErrorInfoExtended>
                             {
-                                new(0, " N/A ", "No valid proteins were loaded from the .Fasta file", "", "Error")
+                                new(0, " N/A ", "No valid proteins were loaded from the .Fasta file", string.Empty, "Error")
                             };
 
                             OnInvalidFASTAFile(upInfo.FileInformation.FullName, errorCollection);

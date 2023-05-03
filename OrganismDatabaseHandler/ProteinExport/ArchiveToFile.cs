@@ -31,7 +31,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
             else
             {
-                var connectionStringCheck = databaseAccessor.ConnectionString.ToLower().Replace(" ", "");
+                var connectionStringCheck = databaseAccessor.ConnectionString.ToLower().Replace(" ", string.Empty);
 
                 if (connectionStringCheck.Contains("source=cbdms"))
                 {
@@ -100,8 +100,8 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 if (archivedOutputFileData.Rows[0]["Protein_Collection_List"].GetType().Name == "DBNull" ||
                     string.IsNullOrEmpty(collectionListHexHashInDb) ||
-                    proteinCollectionsListFromDb != (proteinCollectionsList ?? "") ||
-                    collectionListHexHashInDb != (collectionListHexHash ?? ""))
+                    proteinCollectionsListFromDb != (proteinCollectionsList ?? string.Empty) ||
+                    collectionListHexHashInDb != (collectionListHexHash ?? string.Empty))
                 {
                     RunSP_UpdateFileArchiveEntryCollectionList(archivedFileEntryId, proteinCollectionsList, sourceAuthenticationHash, collectionListHexHash);
                 }
@@ -149,7 +149,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var sha1Hash = mSHA1Provider.ComputeHash(byteSourceText);
 
             // And convert it to String format for return
-            return BitConverter.ToString(sha1Hash).Replace("-", "").ToLower();
+            return BitConverter.ToString(sha1Hash).Replace("-", string.Empty).ToLower();
         }
 
         protected string GenerateArchivePath(
