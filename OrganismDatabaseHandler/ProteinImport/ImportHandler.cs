@@ -509,9 +509,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            return DBToolsBase.GetReturnCode(returnParam);
         }
 
         #endregion

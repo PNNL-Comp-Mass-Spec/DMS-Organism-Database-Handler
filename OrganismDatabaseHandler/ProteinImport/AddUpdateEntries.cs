@@ -418,6 +418,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var cmdSave = dbTools.CreateCommand("get_protein_collection_state", CommandType.StoredProcedure);
 
             // Define parameter for procedure's return value
+            // If querying a Postgres DB, dbTools will auto-change "@return" to "_returnCode"
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
@@ -428,11 +429,13 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            var returnValue = dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code
+            var returnValue = DBToolsBase.GetReturnCode(returnParam);
+
             if (returnValue != 0)
             {
-                OnWarningEvent("Stored procedure get_protein_collection_state returned a non-zero return code: " + returnValue);
+                OnWarningEvent("Procedure get_protein_collection_state returned a non-zero return code: " + returnValue);
             }
 
             return dbTools.GetString(stateNameParam.Value);
@@ -463,6 +466,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             cmdSave.CommandTimeout = 300;
 
             // Define parameter for procedure's return value
+            // If querying a Postgres DB, dbTools will auto-change "@return" to "_returnCode"
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
@@ -479,8 +483,9 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            return dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code
+            return DBToolsBase.GetReturnCode(returnParam);
         }
 
         protected int RunSP_UpdateProteinSequenceInfo(
@@ -497,6 +502,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var cmdSave = dbTools.CreateCommand("update_protein_sequence_info", CommandType.StoredProcedure);
 
             // Define parameter for procedure's return value
+            // If querying a Postgres DB, dbTools will auto-change "@return" to "_returnCode"
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
@@ -512,8 +518,9 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            return dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code
+            return DBToolsBase.GetReturnCode(returnParam);
         }
 
         protected int RunSP_AddUpdateProteinCollection(
@@ -532,6 +539,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var cmdSave = dbTools.CreateCommand("add_update_protein_collection", CommandType.StoredProcedure);
 
             // Define parameter for procedure's return value
+            // If querying a Postgres DB, dbTools will auto-change "@return" to "_returnCode"
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
@@ -549,15 +557,16 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code
+            var returnCode = DBToolsBase.GetReturnCode(returnParam);
 
-            if (ret == 0)
+            if (returnCode == 0)
             {
                 // A zero was returned for the protein collection ID; this indicates and error
                 // Raise an exception
 
-                var msg = "add_update_protein_collection returned 0 for the Protein Collection ID";
+                var msg = "Procedure add_update_protein_collection returned 0 for the Protein Collection ID";
 
                 var spMsg = dbTools.GetString(messageParam.Value);
 
@@ -566,7 +575,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                 throw new ConstraintException(msg);
             }
 
-            return ret;
+            return returnCode;
         }
 
         protected int RunSP_AddProteinCollectionMember(
@@ -594,6 +603,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var cmdSave = dbTools.CreateCommand("add_update_protein_collection_member", CommandType.StoredProcedure);
 
             // Define parameter for procedure's return value
+            // If querying a Postgres DB, dbTools will auto-change "@return" to "_returnCode"
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
@@ -607,8 +617,9 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            return dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code
+            return DBToolsBase.GetReturnCode(returnParam);
         }
 
         protected int RunSP_AddUpdateEncryptionMetadata(
@@ -632,8 +643,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            return dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            return DBToolsBase.GetReturnCode(returnParam);
         }
 
         protected int RunSP_AddNamingAuthority(
@@ -657,8 +668,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            return dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            return DBToolsBase.GetReturnCode(returnParam);
         }
 
         protected int RunSP_AddAnnotationType(
@@ -684,8 +695,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            return dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            return DBToolsBase.GetReturnCode(returnParam);
         }
 
         protected int RunSP_UpdateProteinCollectionStates(
@@ -707,8 +718,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            return dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            return DBToolsBase.GetReturnCode(returnParam);
         }
 
         /// <summary>
@@ -737,8 +748,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            return dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            return DBToolsBase.GetReturnCode(returnParam);
         }
 
         [Obsolete("Unused")]
@@ -757,8 +768,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            return dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            return DBToolsBase.GetReturnCode(returnParam);
         }
 
         protected int RunSP_AddProteinReference(
@@ -792,15 +803,15 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            var returnCode= DBToolsBase.GetReturnCode(returnParam);
 
-            if (ret == 0)
+            if (returnCode == 0)
             {
                 // A zero was returned for the protein reference ID; this indicates an error
                 // Raise an exception
 
-                var msg = "add_protein_reference returned 0";
+                var msg = "Procedure add_protein_reference returned 0";
 
                 var spMsg = dbTools.GetString(messageParam.Value);
 
@@ -810,7 +821,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                 throw new ConstraintException(msg);
             }
 
-            return ret;
+            return returnCode;
         }
 
         protected int RunSP_GetProteinCollectionID(string proteinCollectionName)
@@ -828,8 +839,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            return dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            return DBToolsBase.GetReturnCode(returnParam);
         }
 
         protected int RunSP_AddCRC32FileAuthentication(
@@ -855,8 +866,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            return dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            return DBToolsBase.GetReturnCode(returnParam);
         }
 
         protected int RunSP_AddCollectionOrganismXref(
@@ -878,8 +889,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            return dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            return DBToolsBase.GetReturnCode(returnParam);
         }
 
         protected int RunSP_UpdateProteinNameHash(
@@ -906,8 +917,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            return dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            return DBToolsBase.GetReturnCode(returnParam);
         }
 
         protected int RunSP_UpdateProteinCollectionCounts(
@@ -931,8 +942,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            return dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            return DBToolsBase.GetReturnCode(returnParam);
         }
 
         [Obsolete("Unused")]
@@ -957,8 +968,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            return dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            return DBToolsBase.GetReturnCode(returnParam);
         }
 
         [Obsolete("Unused")]
@@ -977,8 +988,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            return dbTools.GetInteger(returnParam.Value);
+            // The return code is an integer on SQL Server, but is text on Postgres
+            return DBToolsBase.GetReturnCode(returnParam);
         }
 
         #endregion

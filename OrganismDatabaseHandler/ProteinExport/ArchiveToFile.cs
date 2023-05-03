@@ -176,6 +176,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var cmdSave = dbTools.CreateCommand("update_file_archive_entry_collection_list", CommandType.StoredProcedure);
 
             // Define parameter for procedure's return value
+            // If querying a Postgres DB, dbTools will auto-change "@return" to "_returnCode"
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
@@ -188,10 +189,9 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            // The return code is an integer on SQL Server, but is text on Postgres
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code
+            return DBToolsBase.GetReturnCode(returnParam);
         }
 
         protected int RunSP_AddOutputFileArchiveEntry(
@@ -211,6 +211,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var cmdSave = dbTools.CreateCommand("add_output_file_archive_entry", CommandType.StoredProcedure);
 
             // Define parameter for procedure's return value
+            // If querying a Postgres DB, dbTools will auto-change "@return" to "_returnCode"
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
@@ -231,10 +232,9 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             mArchivedFilePath = archivedFileFullPath;
 
-            // Get return value
-            var ret = dbTools.GetInteger(returnParam.Value);
-
-            return ret;
+            // The return code is an integer on SQL Server, but is text on Postgres
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code
+            return DBToolsBase.GetReturnCode(returnParam);
         }
     }
 }
