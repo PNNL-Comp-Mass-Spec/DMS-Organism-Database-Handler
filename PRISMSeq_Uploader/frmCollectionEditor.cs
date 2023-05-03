@@ -260,6 +260,7 @@ namespace PRISMSeq_Uploader
         private void BindCollectionListToControl(ICollection collectionList)
         {
             cboCollectionPicker.BeginUpdate();
+
             if (collectionList.Count == 0)
             {
                 cboCollectionPicker.DataSource = null;
@@ -942,6 +943,7 @@ namespace PRISMSeq_Uploader
         private void SyncProgressHandler(string statusMsg, double fractionDone)
         {
             lblBatchProgress.Text = statusMsg;
+
             if (fractionDone > 1.0d)
             {
                 fractionDone = 1.0d;

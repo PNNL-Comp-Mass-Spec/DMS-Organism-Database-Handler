@@ -53,6 +53,7 @@ namespace PRISMSeq_Uploader
         public void ShowPreview(string filePath, int horizontalPos, int verticalPos, int height)
         {
             mCurrentFilePath = filePath;
+
             if (mFrmPreview == null)
             {
                 mFrmPreview = new frmFilePreview();
@@ -63,6 +64,7 @@ namespace PRISMSeq_Uploader
             mFrmPreview.DesktopLocation = new Point(horizontalPos, verticalPos);
             mFrmPreview.Height = height;
             mFrmPreview.WindowName = "Preview of: " + Path.GetFileName(filePath);
+
             if (!mFrmPreview.Visible)
             {
                 mFrmPreview.Show();

@@ -35,6 +35,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             Array.Resize(ref buffer, 256);
 
             var success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out var errorMessage);
+
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))
@@ -68,6 +69,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 var encoding = new ASCIIEncoding();
 
                 int eventTriggerThresh;
+
                 if (counterMax <= 25)
                 {
                     eventTriggerThresh = 1;
@@ -140,6 +142,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             Array.Resize(ref buffer, 256);
 
             var success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out var errorMessage);
+
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))
@@ -174,6 +177,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     var encoding = new ASCIIEncoding();
 
                     int eventTriggerThresh;
+
                     if (counterMax <= 25)
                     {
                         eventTriggerThresh = 1;

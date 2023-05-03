@@ -90,6 +90,7 @@ namespace PRISMSeq_Uploader
             if (openDialog.ShowDialog() == DialogResult.OK)
             {
                 var newFilePath = openDialog.FileName;
+
                 if (proxy.Name == "cmdBrowseTT")
                 {
                     txtTransFilePath.Text = newFilePath;
@@ -226,6 +227,7 @@ namespace PRISMSeq_Uploader
         {
             mProgressMessage = statusMsg;
             var percentComplete = (int)Math.Round(fractionDone * 100d);
+
             if (fractionDone > 0d)
             {
                 pgbAdminConsole.Value = (int)Math.Round(fractionDone * 100d);

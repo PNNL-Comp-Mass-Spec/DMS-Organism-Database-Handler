@@ -48,6 +48,7 @@ namespace Bulk_Fasta_Importer
             try
             {
                 var proceed = false;
+
                 if (commandLineParser.ParseCommandLine())
                 {
                     if (SetOptionsUsingCommandLineParameters(commandLineParser))
@@ -79,6 +80,7 @@ namespace Bulk_Fasta_Importer
                 fastaImporter.ProgressReset += BulkImporter_ProgressReset;
 
                 fastaImporter.LogMessagesToFile = mLogMessagesToFile;
+
                 if (!string.IsNullOrEmpty(mLogFilePath))
                     fastaImporter.LogFilePath = mLogFilePath;
 
@@ -86,6 +88,7 @@ namespace Bulk_Fasta_Importer
                 var paramFilePathPlaceholder = string.Empty;
 
                 int returnCode;
+
                 if (fastaImporter.ProcessFilesWildcard(mInputFilePath, outputFolderNamePlaceholder, paramFilePathPlaceholder))
                 {
                     returnCode = 0;
@@ -93,6 +96,7 @@ namespace Bulk_Fasta_Importer
                 else
                 {
                     returnCode = (int)fastaImporter.ErrorCode;
+
                     if (returnCode != 0 && !mQuietMode)
                     {
                         Console.WriteLine("Error while processing: " + fastaImporter.GetErrorMessage());
@@ -120,6 +124,7 @@ namespace Bulk_Fasta_Importer
             if (percentComplete > 100)
                 percentComplete = 100;
             Console.Write("Processing: " + percentComplete + "% ");
+
             if (addCarriageReturn)
             {
                 Console.WriteLine();
@@ -158,6 +163,7 @@ namespace Bulk_Fasta_Importer
                 if (commandLineParser.RetrieveValueForParameter("L", out var logFilePath))
                 {
                     mLogMessagesToFile = true;
+
                     if (!string.IsNullOrEmpty(logFilePath))
                     {
                         mLogFilePath = logFilePath;

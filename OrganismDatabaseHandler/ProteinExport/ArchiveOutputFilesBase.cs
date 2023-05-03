@@ -68,6 +68,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             string proteinCollectionList)
         {
             var proteinCollectionId = GetProteinCollectionId(proteinCollectionName);
+
             if (proteinCollectionId <= 0)
             {
                 PRISM.ConsoleMsgUtils.ShowWarning("Protein collection not found: " + proteinCollectionName);

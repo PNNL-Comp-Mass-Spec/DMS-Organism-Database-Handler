@@ -28,6 +28,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             const int requiredSizeMb = 150;
 
             var success = DiskInfo.GetDiskFreeSpace(fastaFilePath, out var currentFreeSpaceBytes, out var errorMessage);
+
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))
@@ -53,6 +54,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 var hexCodeFinder = new Regex(@"[\x00-\x1F\x7F-\xFF]", RegexOptions.Compiled);
 
                 int eventTriggerThresh;
+
                 if (counterMax <= 25)
                 {
                     eventTriggerThresh = 1;
@@ -164,6 +166,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var alternateNames = string.Empty;
 
             var success = DiskInfo.GetDiskFreeSpace(fastaFilePath, out var currentFreeSpaceBytes, out var errorMessage);
+
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))

@@ -22,6 +22,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var readSize = BUFFER_SIZE;
 
             var count = stream.Read(buffer, 0, readSize);
+
             while (count > 0)
             {
                 for (var i = 0; i < count; i++)
@@ -49,6 +50,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             for (uint i = 0; i <= 255; i++)
             {
                 var dwCrc = i;
+
                 // ReSharper disable once RedundantAssignment
                 for (var j = 8; j >= 1; j -= 1)
                 {

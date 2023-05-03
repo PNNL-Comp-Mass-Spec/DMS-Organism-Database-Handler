@@ -128,6 +128,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             DataRow dataRow;
             var authIdSb = new System.Text.StringBuilder();
+
             foreach (DataRow currentDr in annotationTypeIdTable.Rows)
             {
                 dataRow = currentDr;
@@ -414,6 +415,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             }
 
             var proteinCount = CollectionMembers.ProteinCount;
+
             if (proteinCount > 20)
             {
                 triggerCount = (int)Math.Round(proteinCount / 20d);
@@ -425,6 +427,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             // Move certain elements of the protein record to a DataTable for display in the source window
             Task_LoadStart("Updating Display List...");
+
             foreach (var entry in CollectionMembers.GetEntriesIEnumerable())
             {
                 var dataRow = proteinDatabaseTable.NewRow();

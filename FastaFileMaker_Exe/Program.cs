@@ -232,6 +232,7 @@ namespace FastaFileMaker
                 var logFileName = "FastaFileMakerLog_" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
 
                 string logFilePath;
+
                 if (!string.IsNullOrEmpty(logDirectoryPath))
                 {
                     logFilePath = System.IO.Path.Combine(logDirectoryPath, logFileName);
@@ -264,6 +265,7 @@ namespace FastaFileMaker
                 }
 
                 System.IO.FileInfo fiFastaFile;
+
                 if (!string.IsNullOrEmpty(destinationDirectoryPath))
                 {
                     fiFastaFile = new System.IO.FileInfo(System.IO.Path.Combine(destinationDirectoryPath, fastaFileName));
@@ -334,6 +336,7 @@ namespace FastaFileMaker
                         // User specified a non-switch parameter
                         // Assume it is a protein collection list
                         mProteinCollectionList = commandLineParser.RetrieveNonSwitchParameter(0);
+
                         if (mProteinCollectionList.EndsWith(".fasta", StringComparison.OrdinalIgnoreCase) ||
                             mProteinCollectionList.EndsWith(".fasta\"", StringComparison.OrdinalIgnoreCase))
                         {
@@ -455,6 +458,7 @@ namespace FastaFileMaker
             while (!mGenerationComplete)
             {
                 System.Threading.Thread.Sleep(2000);
+
                 if (DateTime.UtcNow.Subtract(mFastaGenStartTime).TotalMinutes >= FastaGenTimeoutIntervalMinutes)
                 {
                     mFastaGenTimeOut = true;
@@ -463,6 +467,7 @@ namespace FastaFileMaker
             }
 
             mFastaTimer.Stop();
+
             if (mFastaGenTimeOut)
             {
                 // Fasta generator hung - report error and exit

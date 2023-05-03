@@ -70,6 +70,7 @@ namespace PRISMSeq_Uploader
             var collectionRows = dt.Select(filterString);
 
             lvw.BeginUpdate();
+
             foreach (var cRow in collectionRows)
             {
                 var created = Convert.ToDateTime(cRow["created"]);
@@ -94,6 +95,7 @@ namespace PRISMSeq_Uploader
         public void FillFilteredListView(ListView listViewToFill, string filterString)
         {
             listViewToFill.Items.Clear();
+
             if (mForceReload)
             {
                 mListViewData = GetCollectionTable();

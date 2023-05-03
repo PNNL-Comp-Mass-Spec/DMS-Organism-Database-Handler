@@ -71,6 +71,7 @@ namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
             for (var columnNumber = 1; columnNumber <= valuesByColumnId.Count; columnNumber++)
             {
                 string columnName;
+
                 if (useContentsAsColumnNames)
                 {
                     columnName = valuesByColumnId[columnNumber];
@@ -121,6 +122,7 @@ namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
             for (var columnNumber = 2; columnNumber <= columnCount; columnNumber++)
             {
                 var dataValue = dataLine[columnNumber];
+
                 if (dataValue.Length > 0)
                 {
                     lvItem.SubItems.Add(dataValue);
@@ -132,6 +134,7 @@ namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
             }
 
             var blankColumnCount = maxColumnCount - columnCount;
+
             if (blankColumnCount > 0)
             {
                 for (var columnNumber = 1; columnNumber <= blankColumnCount; columnNumber++)
@@ -162,9 +165,11 @@ namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
             using (var reader = new StreamReader(new FileStream(inputFile.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
             {
                 var firstLineStored = false;
+
                 while (!reader.EndOfStream)
                 {
                     var entryLine = reader.ReadLine();
+
                     if (!firstLineStored)
                     {
                         mFirstLine = entryLine;
@@ -216,6 +221,7 @@ namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
         {
             var li = new System.Windows.Forms.ListViewItem(groupId.ToString());
             li.SubItems.Add(mAnnotationStorage.GetGroupName(groupId));
+
             if (mAnnotationStorage.GetAnnotationAuthorityId(groupId) > 0)
             {
                 li.SubItems.Add(mAuthorities[mAnnotationStorage.GetAnnotationAuthorityId(groupId).ToString()]);
@@ -245,6 +251,7 @@ namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
         public void UploadNewNames(int primaryReferenceNameColumnId)
         {
             ParseLoadedFile(primaryReferenceNameColumnId);
+
             if (mUploader == null)
             {
                 mUploader = new AddUpdateEntries(mPsConnectionString);
@@ -260,6 +267,7 @@ namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
                 {
                     var ag = mAnnotationStorage.GetGroup(columnCount);
                     var referenceLookup = ag.GetAllXRefs();
+
                     foreach (var proteinName in referenceLookup.Keys)
                         mUploader.AddProteinReference(
                             proteinName,
@@ -286,6 +294,7 @@ namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
                 if (!ht.ContainsKey(name))
                 {
                     int id;
+
                     if (mProteinIdLookup.ContainsKey(name))
                     {
                         id = mProteinIdLookup[name];

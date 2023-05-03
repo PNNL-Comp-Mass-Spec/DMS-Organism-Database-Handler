@@ -61,6 +61,7 @@ namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
         private void lvwNewNames_SelectedIndexChanged(object sender, EventArgs e)
         {
             var lvw = (System.Windows.Forms.ListView)sender;
+
             if (lvw.SelectedItems.Count > 0)
             {
                 mCurrentGroupId = Convert.ToInt32(lvw.SelectedItems[0].Text);
@@ -176,6 +177,7 @@ namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
             var a = new ArrayList();
 
             cbo.BeginUpdate();
+
             foreach (var item in authorityList)
             {
                 var authorityName = item.Value;

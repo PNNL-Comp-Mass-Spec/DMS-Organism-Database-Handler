@@ -80,6 +80,7 @@ namespace OrganismDatabaseHandler.DatabaseTools
             foreach (var dataRow in foundRows)
             {
                 var key = dataRow[keyFieldName].ToString();
+
                 if (!dataDictionary.ContainsKey(key))
                 {
                     dataDictionary.Add(key, dataRow[valueFieldName].ToString());
@@ -101,6 +102,7 @@ namespace OrganismDatabaseHandler.DatabaseTools
             foreach (var dataRow in foundRows)
             {
                 var key = dataRow[keyFieldName].ToString();
+
                 if (!int.TryParse(key, out var keyValue))
                 {
                     continue;

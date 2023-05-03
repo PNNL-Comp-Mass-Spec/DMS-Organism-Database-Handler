@@ -46,6 +46,7 @@ namespace PRISMSeq_Uploader
         private void cmdRefresh_Click(object sender, EventArgs e)
         {
             RefreshRequest?.Invoke(mCurrentLineCount);
+
             if (cmdRefresh.Enabled)
             {
                 cmdRefresh.Enabled = false;
@@ -62,6 +63,7 @@ namespace PRISMSeq_Uploader
                 var value = Convert.ToInt32(m.Groups[0].Value);
                 txtLineCount.Text = value.ToString();
                 mCurrentLineCount = value;
+
                 if (!cmdRefresh.Enabled)
                 {
                     cmdRefresh.Enabled = true;

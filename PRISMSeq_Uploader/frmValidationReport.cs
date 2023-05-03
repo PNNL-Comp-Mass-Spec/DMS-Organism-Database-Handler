@@ -108,6 +108,7 @@ namespace PRISMSeq_Uploader
             List<CustomFastaValidator.ErrorInfoExtended> itemCollection)
         {
             objListView.Items.Clear();
+
             if (itemListByFile?.Count > 0)
             {
                 if (itemListByFile.TryGetValue(selectedItemText, out var itemList))
@@ -163,8 +164,8 @@ namespace PRISMSeq_Uploader
         {
             var foundRows = mOrganisms.Select("ID = " + organismId);
 
-            return foundRows.Length > 0 
-                ? foundRows[0]["Display_Name"].ToString() 
+            return foundRows.Length > 0
+                ? foundRows[0]["Display_Name"].ToString()
                 : "Unknown organism id: " + organismId;
         }
 

@@ -254,6 +254,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
                 }
 
                 OnBatchProgressUpdate("Loading: " + currentFile.Name);
+
                 if (mNormalizedFastaFilePath != null)
                 {
                     if (currentFile.FullName != (mNormalizedFastaFilePath ?? ""))
@@ -266,6 +267,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
 
                 var existingCollectionId = mUpload.GetProteinCollectionId(proteinCollectionName);
                 DialogResult eResult;
+
                 if (existingCollectionId > 0)
                 {
                     var collectionState = mUpload.GetProteinCollectionState(existingCollectionId);
@@ -312,6 +314,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
                 if (eResult == DialogResult.Yes)
                 {
                     var proteinStorage = mImporter.LoadProteinsForBatch(upInfo.FileInformation.FullName);
+
                     if (proteinStorage != null)
                     {
                         if (proteinStorage.ProteinCount == 0)

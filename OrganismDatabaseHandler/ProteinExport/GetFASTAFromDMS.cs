@@ -237,6 +237,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             // If it exists, and if a .lock file does not exist, then compare file sizes and file modification dates
 
             var finalFile = new FileInfo(Path.Combine(destinationFolderPath, legacyFASTAFileName));
+
             if (finalFile.Exists && finalFile.Length > 0L)
             {
                 // Make sure a .lock file doesn't exist
@@ -276,6 +277,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var sourceFileSizeMB = sourceFile.Length / 1024.0d / 1024.0d;
 
             var success = DiskInfo.GetDiskFreeSpace(destinationPath, out var currentFreeSpaceBytes, out var errorMessage);
+
             if (!success)
             {
                 if (string.IsNullOrEmpty(errorMessage))
@@ -309,6 +311,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Check again for the existence of the desired .Fasta file
             // It's possible another process created .Fasta file while this process was waiting for the other process's lock file to disappear
             finalFile.Refresh();
+
             if (finalFile.Exists && sourceFile.Length == finalFile.Length && finalFile.LastWriteTimeUtc >= sourceFile.LastWriteTimeUtc.AddSeconds(-0.1d))
             {
                 // The final file now does exist (and has the correct size / date)
@@ -331,6 +334,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Copy the .Fasta file from the remote computer to this computer
             // We're temporarily naming it with a SHA1 hash based on the filename
             var interimFastaFile = new FileInfo(Path.Combine(destinationFolderPath, filenameSha1Hash + "_" + Path.GetFileNameWithoutExtension(legacyStaticFilePath) + ".fasta"));
+
             if (interimFastaFile.Exists)
             {
                 interimFastaFile.Delete();
@@ -341,6 +345,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             // Now that the copy is done, rename the file to the final name
             finalFile.Refresh();
+
             if (finalFile.Exists)
             {
                 // Somehow the final file has appeared in the folder; it could be a corrupt version of the .fasta file
@@ -416,6 +421,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                               "ORDER BY file_modification_date Desc";
 
             var fileNameTable = mDatabaseAccessor.GetTable(fileNameSql);
+
             if (fileNameTable.Rows.Count >= 1)
             {
                 var foundRow = fileNameTable.Rows[0];
@@ -436,6 +442,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 // If it exists, and if a .lock file does not exist, then we can safely assume the .Fasta file is ready for use
 
                 finalFileFi = new FileInfo(Path.Combine(destinationFolderPath, finalFileName));
+
                 if (finalFileFi.Exists && finalFileFi.Length > 0L)
                 {
                     // Make sure a .lock file doesn't exist
@@ -475,6 +482,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 // Check again for the existence of the desired .Fasta file
                 // It's possible another process created the .Fasta file while this process was waiting for the other process's lock file to disappear
                 finalFileFi.Refresh();
+
                 if (finalFileFi.Exists && finalFileFi.Length > 0L)
                 {
                     // The final file now does exist (and is non-zero in size); we're good to go
@@ -600,12 +608,14 @@ namespace OrganismDatabaseHandler.ProteinExport
             var intAttemptCount = 0;
 
             var lockFile = new FileInfo(Path.Combine(destinationFolderPath, lockFileHash + ".lock"));
+
             while (true)
             {
                 intAttemptCount++;
                 try
                 {
                     lockFile.Refresh();
+
                     if (lockFile.Exists)
                     {
                         var lockTimeoutTime = lockFile.LastWriteTimeUtc.AddMinutes(60d);
@@ -617,6 +627,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                         {
                             Thread.Sleep(5000);
                             lockFile.Refresh();
+
                             if (DateTime.UtcNow.Subtract(startTime).TotalMinutes >= 60d)
                             {
                                 break;
@@ -624,6 +635,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                         }
 
                         lockFile.Refresh();
+
                         if (lockFile.Exists)
                         {
                             var warningMsg = LockFileProgressText + " still exists; assuming another process timed out; thus, now deleting file " + lockFile.Name;
@@ -736,6 +748,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             lockStream?.Close();
 
             var lockFile = new FileInfo(Path.Combine(destinationFolderPath, lockFileHash + ".lock"));
+
             if (lockFile.Exists)
             {
                 lockFile.Delete();
@@ -760,6 +773,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             var legacyLocationsSql = "SELECT file_name, full_path, authentication_hash FROM v_legacy_static_file_locations WHERE file_name = '" + legacyFASTAFileName + "'";
 
             var legacyStaticFileLocations = mDatabaseAccessor.GetTable(legacyLocationsSql);
+
             if (legacyStaticFileLocations.Rows.Count == 0)
             {
                 var msg = "Legacy FASTA file " + legacyFASTAFileName + " not found in v_legacy_static_file_locations; unable to continue";
@@ -788,6 +802,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         private FileInfo GetHashFileValidationInfo(string strFastaFilePath, string crc32Hash, string hashCheckExtension = "")
         {
             string extensionToUse;
+
             if (string.IsNullOrWhiteSpace(hashCheckExtension))
             {
                 extensionToUse = HashcheckSuffix;
@@ -930,6 +945,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                                   "Target=" + targetFilePath);
 
                 string strServers;
+
                 if (sourceBacklogMB > 0 && targetBacklogMB > 0)
                 {
                     strServers = mFileTools.GetServerShareBase(sourceFilePath) + " and " + mFileTools.GetServerShareBase(targetFilePath);

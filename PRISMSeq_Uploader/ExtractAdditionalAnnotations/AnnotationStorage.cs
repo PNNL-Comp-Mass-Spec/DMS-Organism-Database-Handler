@@ -40,6 +40,7 @@ namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
             var ag = GetGroup(groupId);
             ag.AddAnnotation(primaryReferenceName, xRefName);
             mAnnotationGroups[groupId] = ag;
+
             if (!mGlobalProteinNameList.Contains(primaryReferenceName))
             {
                 mGlobalProteinNameList.Add(primaryReferenceName);

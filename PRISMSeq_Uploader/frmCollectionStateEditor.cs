@@ -178,6 +178,7 @@ namespace PRISMSeq_Uploader
                 }
 
                 int compareResult;
+
                 if (item1 == null)
                 {
                     compareResult = 1;

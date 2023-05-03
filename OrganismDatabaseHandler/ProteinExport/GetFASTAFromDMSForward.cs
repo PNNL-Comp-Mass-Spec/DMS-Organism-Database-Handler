@@ -121,6 +121,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                     var authorizationTable = mDatabaseAccessor.GetTable(authorizationSql);
                     var authCheckRows = authorizationTable.Select("protein_collection_name = '" + nameString + "' OR protein_collection_name = 'Administrator'");
+
                     if (authCheckRows.Length > 0)
                     {
                         proteinCollectionID = FindIdByName(nameString);
@@ -177,6 +178,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
 
             var proteinCollectionsExported = 0;
+
             foreach (var proteinCollName in protCollectionList)
             {
                 var currentCollectionPos = 0;
@@ -220,6 +222,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     var sectionEnd = sectionStart + 10000;
 
                     string collectionSql;
+
                     if (padWithPrimaryAnnotation)
                     {
                         proteinCollectionID = FindIdByName(trueName);
@@ -247,6 +250,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     if (proteinCollectionPassphrases.TryGetValue(trueName, out var passPhraseForCollection))
                     {
                         mRijndaelDecryption = new RijndaelEncryptionHandler(passPhraseForCollection);
+
                         foreach (DataRow decryptionRow in collectionTable.Rows)
                         {
                             var cipherSeq = decryptionRow["Sequence"].ToString();
@@ -257,6 +261,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     }
 
                     string tableName;
+
                     if (collectionLength < 10000)
                     {
                         tableName = trueName;
@@ -277,6 +282,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     currentCollectionCount += currentFileProteinCount;
 
                     var fractionDoneOverall = 0d;
+
                     if (collectionLength > 0)
                     {
                         fractionDoneOverall = proteinCollectionsExported / (double)protCollectionList.Count + currentCollectionCount / (double)collectionLength / protCollectionList.Count;
@@ -311,12 +317,14 @@ namespace OrganismDatabaseHandler.ProteinExport
                 // For example, "002041+001810"
 
                 name = string.Join("+", proteinCollectionIDs);
+
                 if (destinationFolderPath.Length + name.Length > 225)
                 {
                     // If exporting a large number of protein collections, name can be very long
                     // This can lead to error: The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters
                     // Thus, truncate name
                     var intMaxNameLength = 225 - destinationFolderPath.Length;
+
                     if (intMaxNameLength < 30)
                         intMaxNameLength = 30;
 
@@ -324,6 +332,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                     // Find the last plus sign and truncate just before it
                     var intLastPlusLocation = name.LastIndexOf('+');
+
                     if (intLastPlusLocation > 30)
                     {
                         name = name.Substring(0, intLastPlusLocation);
@@ -347,9 +356,11 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             // Assuming the final file now exists, delete the temporary file (if present)
             var finalOutputFile = new FileInfo(FullOutputPath);
+
             if (finalOutputFile.Exists)
             {
                 var fileToDelete = new FileInfo(tempOutputFilePath);
+
                 if (fileToDelete.Exists)
                 {
                     fileToDelete.Delete();
@@ -388,6 +399,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             foreach (var name in protCollectionList)
             {
                 var id = FindIdByName(name);
+
                 if (id < 1)
                 {
                     throw new Exception("The collection named '" + name + "' does not exist in the system");
@@ -528,6 +540,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Make sure there are no leading or trailing spaces
             collectionName = collectionName.Trim();
             var foundRows = mCollectionsCache.Select("collection_name = '" + collectionName + "'");
+
             if (foundRows.Length == 0)
             {
                 RefreshCollectionCache();

@@ -92,6 +92,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var counter = default(int);
 
             int eventTriggerThresh;
+
             if (counterMax <= 100)
             {
                 eventTriggerThresh = 1;
@@ -99,6 +100,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             else
             {
                 eventTriggerThresh = (int)Math.Round(counterMax / 100d);
+
                 if (eventTriggerThresh > 100)
                     eventTriggerThresh = 100;
             }
@@ -108,6 +110,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                 var storageEntry = pc.GetProtein(s);
 
                 counter++;
+
                 if (counter % eventTriggerThresh == 0)
                 {
                     OnProgressUpdate(counter / (double)counterMax);
@@ -129,6 +132,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var counterMax = selectedProteinList.Count;
 
             int eventTriggerThresh;
+
             if (counterMax <= 100)
             {
                 eventTriggerThresh = 1;
@@ -136,6 +140,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             else
             {
                 eventTriggerThresh = (int)Math.Round(counterMax / 100d);
+
                 if (eventTriggerThresh > 100)
                     eventTriggerThresh = 100;
             }
@@ -145,6 +150,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                 var storageEntry = pc.GetProtein(protein);
 
                 counter++;
+
                 if (counter % eventTriggerThresh == 0)
                 {
                     OnProgressUpdate(counter / (double)counterMax);
@@ -166,6 +172,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var counterMax = selectedProteinList.Count;
 
             int eventTriggerThresh;
+
             if (counterMax <= 100)
             {
                 eventTriggerThresh = 1;
@@ -173,6 +180,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             else
             {
                 eventTriggerThresh = (int)Math.Round(counterMax / 100d);
+
                 if (eventTriggerThresh > 100)
                     eventTriggerThresh = 100;
             }
@@ -187,6 +195,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                 var storageEntry = pc.GetProtein(protein);
 
                 numProteinsActual++;
+
                 if (numProteinsActual % eventTriggerThresh == 0)
                 {
                     OnProgressUpdate(numProteinsActual / (double)counterMax);
@@ -440,6 +449,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             SpModes mode)
         {
             var encryptionFlag = 0;
+
             if (isEncrypted)
             {
                 encryptionFlag = 1;

@@ -30,6 +30,7 @@ namespace PRISMSeq_Uploader.ProteinUpload
         private void frmBatchUploadFromFileList_Load(object sender, EventArgs e)
         {
             PopulateDropDowns();
+
             if (FileCollection != null)
             {
                 // Me.LoadFileNamingAuthorities();
@@ -49,6 +50,7 @@ namespace PRISMSeq_Uploader.ProteinUpload
             var saveFilePath = Path.Combine(mSavePath, SaveFileName);
 
             var fi = new FileInfo(saveFilePath);
+
             if (fi.Exists)
             {
                 fi.Delete();
@@ -117,11 +119,13 @@ namespace PRISMSeq_Uploader.ProteinUpload
             if (FileCollection.Count > 0)
             {
                 lvwFiles.BeginUpdate();
+
                 foreach (var fli in FileCollection.Values)
                 {
                     var li = new ListViewItem() { Text = fli.FileName };
                     li.SubItems.Add(fli.FullFilePath);
                     li.SubItems.Add(fli.OrganismName);
+
                     if (fli.AnnotationTypeId > 0)
                     {
                         var foundRows = mAnnotationTypeList.Select("ID = " + fli.AnnotationTypeId);
@@ -157,6 +161,7 @@ namespace PRISMSeq_Uploader.ProteinUpload
         private void cmdUploadFiles_Click(object sender, EventArgs e)
         {
             var selectedCount = BuildSelectedFilesList();
+
             if (selectedCount > 0)
             {
                 DialogResult = DialogResult.OK;
@@ -215,6 +220,7 @@ namespace PRISMSeq_Uploader.ProteinUpload
         {
             cboAnnotationType.SelectedIndexChanged -= cboAnnotationType_SelectedIndexChanged;
             cboOrganismPicker.SelectedIndexChanged -= cboOrganismPicker_SelectedIndexChanged;
+
             if (lvwFiles.SelectedItems.Count == 0)
             {
                 return;
@@ -224,6 +230,7 @@ namespace PRISMSeq_Uploader.ProteinUpload
             {
                 var li = lvwFiles.SelectedItems[0];
                 var fli = FileCollection[li.Text];
+
                 if (fli.AnnotationTypeId > 0)
                 {
                     cboAnnotationType.SelectedValue = fli.AnnotationTypeId;

@@ -56,6 +56,7 @@ namespace PRISMSeq_Uploader
             const string CreationOptionsString = "seq_direction=forward,filetype=fasta";
 
             var currentCollectionProteinCount = 0;
+
             foreach (DataRow dataRow in dt.Rows)
             {
                 mTotalProteinsCount += Convert.ToInt32(dataRow["num_proteins"]);
@@ -104,6 +105,7 @@ namespace PRISMSeq_Uploader
             var tempFilePath = Path.GetTempPath();
 
             string connectionString;
+
             if (mDatabaseAccessor == null || string.IsNullOrWhiteSpace(mDatabaseAccessor.ConnectionString))
             {
                 connectionString = string.Empty;
@@ -131,6 +133,7 @@ namespace PRISMSeq_Uploader
 
                 elapsedTimeSb.Remove(0, elapsedTimeSb.Length);
                 var elapsedTime = DateTime.UtcNow.Subtract(startTime);
+
                 if (elapsedTime.Minutes < 1 && elapsedTime.Hours == 0)
                 {
                     elapsedTimeSb.Append("less than ");
@@ -211,6 +214,7 @@ namespace PRISMSeq_Uploader
             residueCount = 0;
 
             var reader = new FastaFileReader();
+
             if (reader.OpenFile(fastaFilePath))
             {
                 while (reader.ReadNextProteinEntry())
@@ -257,6 +261,7 @@ namespace PRISMSeq_Uploader
 
                 // Protein_Name(+"_" + Description + "_" + ProteinID.ToString)
                 var proteinListResults = mDatabaseAccessor.GetTable(rowRetrievalSql);
+
                 if (proteinListResults.Rows.Count > 0)
                 {
                     foreach (DataRow dataRow in proteinListResults.Rows)

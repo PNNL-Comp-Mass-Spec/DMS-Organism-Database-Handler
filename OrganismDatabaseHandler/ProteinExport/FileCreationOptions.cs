@@ -61,16 +61,19 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 // Check for valid keyword/value pair
                 foundRows = mCreationValuesTable.Select("keyword = '" + keyword + "' AND value_String = '" + value + "'");
+
                 if (foundRows.Length < 1)
                 {
                     // check if keyword or value is bad
                     var errorString = new StringBuilder();
 
                     var checkRows = mCreationValuesTable.Select("keyword = '" + keyword);
+
                     if (checkRows.Length > 0)
                         validKeyword = true;
 
                     checkRows = mCreationValuesTable.Select("value_string = '" + value + "'");
+
                     if (checkRows.Length > 0)
                         validValue = true;
 
@@ -99,6 +102,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             // Parse dictionary into canonical options string for return
             foundRows = mKeywordTable.Select("", "keyword_id ASC");
+
             foreach (var dataRow in foundRows)
             {
                 if (cleanOptionsString.ToString().Length > 0)

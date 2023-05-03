@@ -76,6 +76,7 @@ namespace OrganismDatabaseHandler.SequenceInfo
             catch (Exception ex)
             {
                 string sequenceExcerpt;
+
                 if (sequence.Length <= 20)
                 {
                     sequenceExcerpt = sequence;
@@ -279,6 +280,7 @@ namespace OrganismDatabaseHandler.SequenceInfo
             }
 
             Sequence += info.Sequence;
+
             if (!Invalidated)
             {
                 C += info.C;

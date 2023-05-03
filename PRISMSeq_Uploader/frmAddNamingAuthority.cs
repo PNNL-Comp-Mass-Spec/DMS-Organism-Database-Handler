@@ -67,6 +67,7 @@ namespace PRISMSeq_Uploader
             if (r1.IsMatch(rawAddress))
             {
                 var m = r1.Match(rawAddress);
+
                 if (m.Groups[1].Value.Length == 0)
                 {
                     newAddressSb.Append("http://");

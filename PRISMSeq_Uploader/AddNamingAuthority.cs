@@ -56,6 +56,7 @@ namespace PRISMSeq_Uploader
                 FullName = frmAuth.FullName;
                 mWebAddress = frmAuth.WebAddress;
                 authId = mSpRunner.AddNamingAuthority(ShortName, FullName, mWebAddress);
+
                 if (authId < 0)
                 {
                     MessageBox.Show(

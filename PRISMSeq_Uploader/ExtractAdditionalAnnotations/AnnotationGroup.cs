@@ -35,6 +35,7 @@ namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
             else
             {
                 xrefList = mAnnotationData[primaryReferenceName];
+
                 if (!xrefList.Contains(xRefName))
                 {
                     xrefList.Add(xRefName);
@@ -51,6 +52,7 @@ namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
         public SortedSet<string> GetAllPrimaryReferences()
         {
             var annotationKeys = new SortedSet<string>();
+
             foreach (var s in mAnnotationData.Keys)
                 annotationKeys.Add(s);
 
@@ -68,9 +70,11 @@ namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
                 foreach (var primeXRef in xrefList)
                 {
                     var additionalXRefs = primeXRef.Split(XRefDelimiter.ToCharArray());
+
                     foreach (var xref in additionalXRefs)
                     {
                         var newItem = xref;
+
                         if (!newXRefList.Contains(newItem))
                         {
                             newXRefList.Add(newItem);

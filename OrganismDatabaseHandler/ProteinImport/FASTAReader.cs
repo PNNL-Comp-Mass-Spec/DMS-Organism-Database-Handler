@@ -99,6 +99,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                         {
                             seqInfo.CalculateSequenceInfo(sequence.ToString());
                             recordCount++;
+
                             if (recordCount % 100 == 0)
                             {
                                 // trigger progress bar update every 100th record
@@ -116,6 +117,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                         sequence.Clear();
 
                         Match descMatch;
+
                         if (mDescLineRegEx.IsMatch(dataLine))
                         {
                             descMatch = mDescLineRegEx.Match(dataLine);
@@ -168,6 +170,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         protected int LineEndCharacterCount(string filePath)
         {
             var fastaFile = new FileInfo(filePath);
+
             if (!fastaFile.Exists)
                 return 2;
 
@@ -176,6 +179,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             while (!fileReader.EndOfStream)
             {
                 var testCode = fileReader.Read();
+
                 if (testCode == 10 || testCode == 13)
                 {
                     if (fileReader.EndOfStream)
@@ -184,6 +188,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                     }
 
                     var testCode2 = fileReader.Read();
+
                     if (testCode2 == 10 || testCode2 == 13)
                     {
                         return 2;

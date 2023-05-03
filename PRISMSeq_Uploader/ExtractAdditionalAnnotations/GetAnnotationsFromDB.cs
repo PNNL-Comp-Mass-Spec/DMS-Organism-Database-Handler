@@ -41,6 +41,7 @@ namespace PRISMSeq_Uploader.ExtractAdditionalAnnotations
             var authorityLookupTable = mDatabaseHelper.GetTable(sqlQuery2);
 
             var authorityLookupRows = authorityLookupTable.Select("");
+
             foreach (var dr in authorityLookupRows)
             {
                 info.AddAuthorityNameToLookup(

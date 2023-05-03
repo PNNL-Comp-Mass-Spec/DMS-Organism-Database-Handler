@@ -77,10 +77,12 @@ namespace PRISMSeq_Uploader
                 while (!reader.EndOfStream)
                 {
                     var dataLine = reader.ReadLine();
+
                     if (string.IsNullOrWhiteSpace(dataLine))
                         continue;
 
                     var checkString = dataLine.Substring(0, 2);
+
                     if (checkString != "--")      // not a comment line. Process further
                     {
                         if (checkString == " {")   // Beginning of an entry block
@@ -134,7 +136,7 @@ namespace PRISMSeq_Uploader
                         startPos = tmp.IndexOf(" ", StringComparison.Ordinal) + 1;
                         tmp = tmp.Substring(startPos);
                         tmp = tmp.Trim(trimChars);
-                        
+
                         foreach (var name in tmp.Split(";".ToCharArray()))
                         {
                             nameList.Add(name);

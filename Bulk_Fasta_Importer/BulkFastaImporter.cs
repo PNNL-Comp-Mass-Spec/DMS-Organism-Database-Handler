@@ -162,6 +162,7 @@ namespace Bulk_Fasta_Importer
                 var sourceFileNames = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
 
                 var fiInfoFile = new FileInfo(fastaInfoFilePath);
+
                 if (!fiInfoFile.Exists)
                 {
                     ShowErrorMessage("File not found: " + fastaInfoFilePath);
@@ -188,9 +189,11 @@ namespace Bulk_Fasta_Importer
                     // FastaFilePath, OrganismName_or_ID, AnnotationTypeName_or_ID
 
                     var dataCols = dataLine.Split('\t');
+
                     if (dataCols.Length < 3)
                     {
                         ShowWarning("Invalid row; does not have 3 columns: " + dataLine);
+
                         if (!requiredColsShown)
                         {
                             ShowMessage("Required columns are: FastaFilePath, OrganismName_or_ID, and AnnotationTypeName_or_ID");
@@ -207,12 +210,14 @@ namespace Bulk_Fasta_Importer
                     }
 
                     var fastaFilePath = dataCols[0];
+
                     if (fastaFilePath.IndexOf(Path.DirectorySeparatorChar) < 0 && fiInfoFile.DirectoryName != null)
                     {
                         fastaFilePath = Path.Combine(fiInfoFile.DirectoryName, dataCols[0]);
                     }
 
                     var fastaFile = new FileInfo(fastaFilePath);
+
                     if (!fastaFile.Exists)
                     {
                         ShowWarning("FASTA file not found: " + fastaFilePath);
@@ -413,6 +418,7 @@ namespace Bulk_Fasta_Importer
             if (!mDatabaseDataLoaded)
             {
                 annotationTypeId = 0;
+
                 if (!LoadDatabaseInfo())
                     return false;
             }
@@ -423,6 +429,7 @@ namespace Bulk_Fasta_Importer
                 if (!mAnnotationTypeInfo.ContainsValue(annotationTypeId))
                 {
                     ShowWarning("Invalid Annotation Type ID: " + annotationTypeId);
+
                     if (!mAnnotationViewInfoShown)
                     {
                         Console.WriteLine("  ... see view V_Annotation_Type_Picker in the ProteinSeqs database");
@@ -441,6 +448,7 @@ namespace Bulk_Fasta_Importer
             }
 
             ShowWarning("Invalid Annotation Name: " + annotationTypeNameOrId);
+
             if (!mAnnotationViewInfoShown)
             {
                 Console.WriteLine("  ... see view V_Annotation_Type_Picker in the ProteinSeqs database");
@@ -455,6 +463,7 @@ namespace Bulk_Fasta_Importer
             if (!mDatabaseDataLoaded)
             {
                 organismId = 0;
+
                 if (!LoadDatabaseInfo())
                     return false;
             }
@@ -465,6 +474,7 @@ namespace Bulk_Fasta_Importer
                 if (!mOrganismInfo.ContainsValue(organismId))
                 {
                     ShowWarning("Invalid Organism ID: " + organismId);
+
                     if (!mOrganismViewInfoShown)
                     {
                         Console.WriteLine("  ... see view V_Organism_Export in the DMS5 database");
@@ -483,6 +493,7 @@ namespace Bulk_Fasta_Importer
             }
 
             ShowWarning("Invalid Organism Name: " + organismNameOrId);
+
             if (!mOrganismViewInfoShown)
             {
                 Console.WriteLine("  ... see view V_Organism_Export in the DMS5 database");
@@ -503,6 +514,7 @@ namespace Bulk_Fasta_Importer
             if (!mDatabaseDataLoaded)
             {
                 proteinCollectionId = 0;
+
                 if (!LoadDatabaseInfo())
                     return false;
             }
@@ -568,6 +580,7 @@ namespace Bulk_Fasta_Importer
             foreach (var sourceFile in sourceFileList)
             {
                 var fiSourceFile = new FileInfo(sourceFile.FilePath);
+
                 if (!fiSourceFile.Exists)
                 {
                     ShowWarning("File not found: " + sourceFile.FilePath);
@@ -613,9 +626,11 @@ namespace Bulk_Fasta_Importer
             try
             {
                 Console.WriteLine();
+
                 if (PreviewMode)
                 {
                     ShowMessage("Previewing upload of " + fileInfoList.Count + " file(s)");
+
                     foreach (var fileInfo in fileInfoList)
                     {
                         Console.WriteLine(fileInfo.FileInformation.FullName);

@@ -164,6 +164,7 @@ namespace PRISMSeq_Uploader.Controls
             }
 
             FlatStyle = FlatStyle.Standard;
+
             if (images.Length > 0)
                 Image = images[0];
 
@@ -217,6 +218,7 @@ namespace PRISMSeq_Uploader.Controls
 
                     if (controlHeight > 256)
                         controlHeight = 256;
+
                     if (controlWidth > 256)
                         controlWidth = 256;
 
@@ -285,6 +287,7 @@ namespace PRISMSeq_Uploader.Controls
         protected override void WndProc(ref Message m)
         {
             base.WndProc(ref m);
+
             if (!DropDown)
                 return;
 

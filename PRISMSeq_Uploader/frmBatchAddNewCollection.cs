@@ -509,6 +509,7 @@ namespace PRISMSeq_Uploader
                     if (mSelectedFileList.ContainsKey(upInfo.FileInformation.FullName))
                     {
                         mSelectedFileList.Remove(upInfo.FileInformation.FullName);
+
                         foreach (ListViewItem si in lvwSelectedFiles.Items)
                         {
                             if ((si.Text ?? "") == proteinCollection)
@@ -574,6 +575,7 @@ namespace PRISMSeq_Uploader
         private void AfterNodeSelect()
         {
             var folderPath = SelectedNodeFolderPath;
+
             if (string.IsNullOrWhiteSpace(folderPath))
                 return;
             ScanDirectory(folderPath);
@@ -642,6 +644,7 @@ namespace PRISMSeq_Uploader
             }
 
             ctlTreeViewFolderBrowser.Populate();
+
             if (!ctlTreeViewFolderBrowser.TopNode.IsExpanded)
             {
                 ctlTreeViewFolderBrowser.TopNode.Expand();
@@ -719,6 +722,7 @@ namespace PRISMSeq_Uploader
                 lvwSelectedFiles.Items.Remove(li);
 
                 var filePath = GetSelectedFileColumn(li, SelectedFileColumn.FilePath);
+
                 if (mSelectedFileList.ContainsKey(filePath))
                 {
                     mSelectedFileList.Remove(filePath);
@@ -767,6 +771,7 @@ namespace PRISMSeq_Uploader
         private bool SelectClosestMatchingOrganism(ListControl cbo)
         {
             var textToFind = cbo.Text;
+
             if (string.IsNullOrWhiteSpace(textToFind))
                 return false;
 
@@ -905,6 +910,7 @@ namespace PRISMSeq_Uploader
 
             SelectedOrganismID = selectedOrganismId;
             CheckTransferEnable();
+
             if (lvwSelectedFiles.SelectedItems.Count > 0)
             {
                 foreach (ListViewItem li in lvwSelectedFiles.SelectedItems)
@@ -1002,6 +1008,7 @@ namespace PRISMSeq_Uploader
         private void cmdUploadChecked_Click(object sender, EventArgs e)
         {
             var validInfo = MakeCheckedFileList();
+
             if (!validInfo)
                 return;
             mReallyClose = true;
@@ -1209,6 +1216,7 @@ namespace PRISMSeq_Uploader
             if (e.Button == MouseButtons.Right)
             {
                 var folderPath = SelectedNodeFolderPath;
+
                 if (string.IsNullOrWhiteSpace(folderPath))
                     return;
                 Clipboard.SetText(folderPath);
@@ -1229,6 +1237,7 @@ namespace PRISMSeq_Uploader
             try
             {
                 var folderPath = SelectedNodeFolderPath;
+
                 if (string.IsNullOrWhiteSpace(folderPath))
                     return;
                 var currentFolder = new DirectoryInfo(folderPath);
