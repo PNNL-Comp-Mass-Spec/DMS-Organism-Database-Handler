@@ -75,7 +75,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                 var fastaFile = new FileInfo(mFASTAFilePath);
                 var fileLength = fastaFile.Length;
 
-                if (!fastaFile.Exists || fileLength <= 0)
+                if (!fastaFile.Exists || fileLength == 0)
                 {
                     return fastaContents;
                 }
