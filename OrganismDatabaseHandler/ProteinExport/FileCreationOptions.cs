@@ -29,8 +29,8 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             DataRow[] foundRows;
 
-            var validKeyword = default(bool);
-            var validValue = default(bool);
+            var validKeyword = false;
+            var validValue = false;
 
             var cleanOptionsString = new StringBuilder();
 

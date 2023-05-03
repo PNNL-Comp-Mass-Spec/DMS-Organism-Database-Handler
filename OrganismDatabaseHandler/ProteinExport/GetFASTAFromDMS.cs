@@ -534,7 +534,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
 
                 var firstCollectionProcessed = false;
-                var archivedFileId = default(int);
+                var archivedFileId = 0;
 
                 foreach (var collectionName in protCollectionList)
                 {

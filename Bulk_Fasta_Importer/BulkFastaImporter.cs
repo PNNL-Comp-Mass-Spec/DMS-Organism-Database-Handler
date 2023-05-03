@@ -170,7 +170,7 @@ namespace Bulk_Fasta_Importer
                     return sourceFileList;
                 }
 
-                var requiredColsShown = default(bool);
+                var requiredColsShown = false;
                 var currentLine = 0;
 
                 using var reader = new StreamReader(new FileStream(fiInfoFile.FullName, FileMode.Open, FileAccess.Read, FileShare.Read));

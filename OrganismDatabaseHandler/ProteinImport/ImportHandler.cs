@@ -67,7 +67,8 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             if (!string.IsNullOrWhiteSpace(errorMessage))
             {
-                var proteinsLoaded = default(int);
+                var proteinsLoaded = 0;
+
                 try
                 {
                     if (fastaContents != null)
@@ -341,7 +342,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         {
             var proteinStorage = new ProteinStorageDMS(string.Empty);
             int triggerCount;
-            var counter = default(int);
+            var counter = 0;
 
             LoadStart?.Invoke("Retrieving Protein Entries...");
 
@@ -396,7 +397,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             ProteinImportFileTypes fileType)
         {
             var proteinDatabaseTable = mSQLAccess.GetTableTemplate("v_protein_database_export");
-            var counter = default(int);
+            var counter = 0;
             int triggerCount;
 
             switch (fileType)

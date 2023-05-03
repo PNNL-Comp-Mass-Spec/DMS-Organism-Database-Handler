@@ -89,7 +89,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         {
             OnLoadStart("Comparing to existing sequences and adding new proteins");
             var counterMax = selectedProteinList.Count;
-            var counter = default(int);
+            var counter = 0;
 
             int eventTriggerThresh;
 
@@ -128,7 +128,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             int authorityId)
         {
             OnLoadStart("Storing Protein Names and Descriptions specific to this protein collection");
-            var counter = default(int);
+            var counter = 0;
             var counterMax = selectedProteinList.Count;
 
             int eventTriggerThresh;
@@ -236,7 +236,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             ProteinStorage.ProteinStorage proteinCollection,
             List<string> selectedProteinList)
         {
-            var totalLength = default(int);
+            var totalLength = 0;
 
             foreach (var protein in selectedProteinList)
             {
@@ -781,6 +781,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         {
             if (maxProteinNameLength <= 0)
                 maxProteinNameLength = 32;
+
             var dbTools = mDatabaseAccessor.DbTools;
 
             var cmdSave = dbTools.CreateCommand("add_protein_reference", CommandType.StoredProcedure);

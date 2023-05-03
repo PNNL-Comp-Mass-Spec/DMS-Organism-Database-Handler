@@ -89,7 +89,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             var trueName = string.Empty;
 
-            var proteinCollectionID = default(int);
+            var proteinCollectionID = 0;
             var proteinCollectionIDs = new List<string>();
 
             var nameCheckRegex = new Regex(@"(?<CollectionName>.+)(?<direction>_(forward|reversed|scrambled)).*\.(?<type>(fasta|fasta\.pro))");

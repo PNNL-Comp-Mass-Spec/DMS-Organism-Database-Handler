@@ -64,7 +64,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var seqInfo = new SequenceInfoCalculator();
             RegisterEvents(seqInfo);
 
-            var recordCount = default(int);
+            var recordCount = 0;
 
             mFASTAFilePath = filePath;
 
