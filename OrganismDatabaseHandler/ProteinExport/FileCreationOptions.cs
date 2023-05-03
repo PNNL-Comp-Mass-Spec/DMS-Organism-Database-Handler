@@ -111,16 +111,9 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
 
                 var keyword = dataRow["keyword"].ToString();
-                string value;
-
-                if (optionsHash.ContainsKey(keyword))
-                {
-                    value = optionsHash[keyword];
-                }
-                else
-                {
-                    value = dataRow["default_value"].ToString();
-                }
+                var value = optionsHash.TryGetValue(keyword, out var definedValue)
+                    ? definedValue
+                    : dataRow["default_value"].ToString();
 
                 switch (keyword)
                 {
