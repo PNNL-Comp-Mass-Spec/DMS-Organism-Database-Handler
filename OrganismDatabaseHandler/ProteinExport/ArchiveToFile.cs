@@ -233,6 +233,8 @@ namespace OrganismDatabaseHandler.ProteinExport
             mArchivedFilePath = archivedFileFullPath;
 
             // The return code is an integer on SQL Server, but is text on Postgres
+            // The return code will be the archived file id if no errors; it will be 0 if an error
+
             // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code
             return DBToolsBase.GetReturnCode(returnParam);
         }

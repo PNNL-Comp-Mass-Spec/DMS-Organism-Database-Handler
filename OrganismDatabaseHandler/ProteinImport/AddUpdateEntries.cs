@@ -563,7 +563,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             if (returnCode == 0)
             {
-                // A zero was returned for the protein collection ID; this indicates and error
+                // A zero was returned for the protein collection ID; this indicates an error
                 // Raise an exception
 
                 var msg = "Procedure add_update_protein_collection returned 0 for the Protein Collection ID";
@@ -696,6 +696,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
+            // The return code will be the annotation type ID of the newly inserted row in table t_annotation_types
+            // However, if the annotation type already existed, the return code will be the negative value of the existing annotation type ID
             return DBToolsBase.GetReturnCode(returnParam);
         }
 
