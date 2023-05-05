@@ -753,11 +753,11 @@ namespace OrganismDatabaseHandler.ProteinImport
         }
 
         protected int RunSP_AddProteinReference(
-            string proteinName,
-            string description,
-            int authorityId,
-            int proteinId,
-            int maxProteinNameLength)
+              string proteinName,
+              string description,
+              int authorityId,
+              int proteinId,
+              int maxProteinNameLength)
         {
             if (maxProteinNameLength <= 0)
                 maxProteinNameLength = 32;
@@ -785,7 +785,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
-            var returnCode= DBToolsBase.GetReturnCode(returnParam);
+            var returnCode = DBToolsBase.GetReturnCode(returnParam);
 
             if (returnCode == 0)
             {
