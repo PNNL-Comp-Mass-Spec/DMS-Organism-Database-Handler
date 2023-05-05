@@ -743,25 +743,6 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Define parameters for the procedure's arguments
             dbTools.AddParameter(cmdSave, "@collectionID", SqlType.Int).Value = proteinCollectionId;
             dbTools.AddParameter(cmdSave, "@numProteinsForReLoad", SqlType.Int).Value = numProteinsForReLoad;
-            // Execute the stored procedure
-            dbTools.ExecuteSP(cmdSave);
-
-            // The return code is an integer on SQL Server, but is text on Postgres
-            return DBToolsBase.GetReturnCode(returnParam);
-        }
-
-        [Obsolete("Unused")]
-        protected int RunSP_GetProteinCollectionMemberCount(int proteinCollectionId)
-        {
-            var dbTools = mDatabaseAccessor.DbTools;
-
-            var cmdSave = dbTools.CreateCommand("get_protein_collection_member_count", CommandType.StoredProcedure);
-
-            // Define parameter for procedure's return value
-            var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
-
-            // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@collectionID", SqlType.Int).Value = proteinCollectionId;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.InputOutput);
 
             // Execute the stored procedure
@@ -937,52 +918,6 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@collectionID", SqlType.Int).Value = proteinCollectionId;
             dbTools.AddParameter(cmdSave, "@numProteins", SqlType.Int).Value = numProteins;
             dbTools.AddParameter(cmdSave, "@numResidues", SqlType.Int).Value = numResidues;
-
-            // Execute the stored procedure
-            dbTools.ExecuteSP(cmdSave);
-
-            // The return code is an integer on SQL Server, but is text on Postgres
-            return DBToolsBase.GetReturnCode(returnParam);
-        }
-
-        [Obsolete("Unused")]
-        protected int RunSP_UpdateProteinSequenceHash(
-            int proteinId,
-            string proteinSequence)
-        {
-            var sha1Hash = GenerateHash(proteinSequence);
-
-            var dbTools = mDatabaseAccessor.DbTools;
-
-            var cmdSave = dbTools.CreateCommand("update_protein_sequence_hash", CommandType.StoredProcedure);
-
-            // Define parameter for procedure's return value
-            var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
-
-            // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@proteinID", SqlType.Int).Value = proteinId;
-            dbTools.AddParameter(cmdSave, "@sha1Hash", SqlType.VarChar, 40).Value = sha1Hash;
-            dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.Output);
-
-            // Execute the stored procedure
-            dbTools.ExecuteSP(cmdSave);
-
-            // The return code is an integer on SQL Server, but is text on Postgres
-            return DBToolsBase.GetReturnCode(returnParam);
-        }
-
-        [Obsolete("Unused")]
-        protected int RunSP_GetProteinIDFromName(string proteinName)
-        {
-            var dbTools = mDatabaseAccessor.DbTools;
-
-            var cmdSave = dbTools.CreateCommand("get_protein_id_from_name", CommandType.StoredProcedure);
-
-            // Define parameter for procedure's return value
-            var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
-
-            // Define parameters for the procedure's arguments
-            dbTools.AddParameter(cmdSave, "@name", SqlType.VarChar, 128).Value = proteinName;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.InputOutput);
 
             // Execute the stored procedure
