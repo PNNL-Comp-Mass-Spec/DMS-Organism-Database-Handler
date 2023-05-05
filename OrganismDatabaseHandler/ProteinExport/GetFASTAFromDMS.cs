@@ -1056,7 +1056,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             // Define parameters for the procedure's arguments
             dbTools.AddParameter(cmdSave, "@legacyFileName", SqlType.VarChar, 128).Value = legacyFilename;
-            dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256).Direction = ParameterDirection.Output;
+            dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256).Direction = ParameterDirection.InputOutput;
             dbTools.AddParameter(cmdSave, "@authenticationHash", SqlType.VarChar, 8).Value = authenticationHash;
 
             // Execute the stored procedure

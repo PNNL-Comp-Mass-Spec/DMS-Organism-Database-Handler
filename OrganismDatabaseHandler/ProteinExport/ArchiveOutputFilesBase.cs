@@ -134,7 +134,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             dbTools.AddParameter(cmdSave, "@archivedFileID", SqlType.Int).Value = archivedFileId;
 
-            dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 250, ParameterDirection.Output);
+            dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 250, ParameterDirection.InputOutput);
 
             return dbTools.ExecuteSP(cmdSave, out _);
         }
