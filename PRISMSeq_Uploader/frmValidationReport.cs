@@ -239,10 +239,7 @@ namespace PRISMSeq_Uploader
 
         private void FillValidListView()
         {
-            if (mFileValidList == null)
-            {
-                mFileValidList = new Dictionary<string, PSUploadHandler.UploadInfo>();
-            }
+            mFileValidList ??= new Dictionary<string, PSUploadHandler.UploadInfo>();
 
             if (mFileValidList.Count == 0)
             {
@@ -260,7 +257,12 @@ namespace PRISMSeq_Uploader
                 var li = new ListViewItem(fileName);
                 li.SubItems.Add(GetOrganismName(uploadInfo.OrganismId));
                 li.SubItems.Add(uploadInfo.ProteinCount.ToString());
-                li.SubItems.Add(uploadInfo.ExportedProteinCount.ToString());
+
+                // The third column is titled "Actual Count", but it is no longer used
+                // li.SubItems.Add(uploadInfo.ExportedProteinCount.ToString());
+
+                // Store an empty string instead
+                li.SubItems.Add(string.Empty);
 
                 lvwValidList.Items.Add(li);
             }

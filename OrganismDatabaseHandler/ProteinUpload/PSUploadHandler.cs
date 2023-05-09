@@ -45,6 +45,8 @@ namespace OrganismDatabaseHandler.ProteinUpload
             public int AnnotationTypeId;
             public int ProteinCount;
             public List<string> ErrorList;
+
+            [Obsolete("Unused")]
             public int ExportedProteinCount;
         }
 
@@ -332,7 +334,6 @@ namespace OrganismDatabaseHandler.ProteinUpload
                         {
                             upInfo.ProteinCount = proteinStorage.ProteinCount;
                             CollectionBatchUploadCoordinator(proteinStorage, currentFile.FullName, upInfo.OrganismId, upInfo.AnnotationTypeId, upInfo.Description, upInfo.Source);
-                            // upInfo.ExportedProteinCount = mExport.ExportedProteinCount;
                             OnValidFASTAFileUpload(upInfo.FileInformation.FullName, upInfo);
                             proteinStorage.ClearProteinEntries();
                         }
