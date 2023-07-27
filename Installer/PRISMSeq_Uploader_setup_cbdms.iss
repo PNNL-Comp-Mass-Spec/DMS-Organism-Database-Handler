@@ -54,8 +54,8 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 ; Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 
 [Icons]
-Name: {commondesktop}\PRISMSeq Uploader CBDMS; Filename: {app}\PRISMSeq Uploader.exe; Tasks: desktopicon; Comment: PRISMSeq Uploader for CBDMS 
-Name: {group}\PRISMSeq Uploader CBDMS;         Filename: {app}\PRISMSeq Uploader.exe; Comment: PRISMSeq Uploader for CBDMS 
+Name: {commondesktop}\PRISMSeq Uploader CBDMS; Filename: {app}\PRISMSeq_Uploader.exe; Tasks: desktopicon; Comment: PRISMSeq Uploader for CBDMS 
+Name: {group}\PRISMSeq Uploader CBDMS;         Filename: {app}\PRISMSeq_Uploader.exe; Comment: PRISMSeq Uploader for CBDMS 
 
 [Setup]
 AppName=PRISMSeq_Uploader_for_CBDMS
