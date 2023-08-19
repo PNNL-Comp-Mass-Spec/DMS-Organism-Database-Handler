@@ -70,7 +70,29 @@ namespace OrganismDatabaseHandler.ProteinExport
                 "      archived_file_state_id <> 3 " +
                 "ORDER BY archived_file_id DESC";
 
-            var queryResults = DatabaseAccessor.GetTable(checkSql);
+            var queryResultsA = DatabaseAccessor.GetTable(checkSql);
+
+            DataTable queryResults;
+
+            if (queryResultsA.Rows.Count > 0)
+            {
+                queryResults = queryResultsA;
+            }
+            else
+            {
+                // Wait between 2 and 6 seconds and check again in case another manager is also trying to create the same protein collection
+
+                var rand = new Random();
+                var sleepTimeSeconds = 2 + rand.NextDouble() * 4;
+
+                PRISM.ConsoleMsgUtils.ShowDebug(
+                    "Sleeping for {0:0.0} seconds, then re-checking table t_archived_output_files for hash {1}",
+                    sleepTimeSeconds, sourceAuthenticationHash);
+
+                PRISM.AppUtils.SleepMilliseconds((int)Math.Round(sleepTimeSeconds * 1000, 0));
+
+                queryResults = DatabaseAccessor.GetTable(checkSql);
+            }
 
             DataTable archivedOutputFileData;
 
