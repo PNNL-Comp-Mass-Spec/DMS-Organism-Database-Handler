@@ -59,16 +59,18 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             var fi = new FileInfo(sourceFilePath);
 
+            var collectionListHexHash = GenerateHash(proteinCollectionsList + "/" + creationOptionsString);
+
             // Check for existence of Archive Entry
             var checkSql =
                 "SELECT archived_file_id, archived_file_path, coalesce(protein_collection_list, '') as protein_collection_list, coalesce(collection_list_hex_hash, '') as collection_list_hex_hash " +
                 "FROM t_archived_output_files " +
                 "WHERE authentication_hash = '" + sourceAuthenticationHash + "' AND " +
+                "      collection_list_hex_hash = '" + collectionListHexHash + "' AND " +
                 "      archived_file_state_id <> 3 " +
-                "ORDER BY file_modification_date DESC";
+                "ORDER BY archived_file_id DESC";
 
             var queryResults = DatabaseAccessor.GetTable(checkSql);
-            var collectionListHexHash = GenerateHash(proteinCollectionsList + "/" + creationOptionsString);
 
             DataTable archivedOutputFileData;
 
