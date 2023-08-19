@@ -78,7 +78,7 @@ namespace FastaFileMaker
             if (DebugLevel >= 3)
             {
                 // Limit the logging to once every minimumLogIntervalSec seconds
-                if (DateTime.UtcNow.Subtract(dtLastLogTime).TotalSeconds >= (double)minimumLogIntervalSec ||
+                if (DateTime.UtcNow.Subtract(dtLastLogTime).TotalSeconds >= minimumLogIntervalSec ||
                     fractionDone - dblFractionDoneSaved >= 0.25d)
                 {
                     dtLastLogTime = DateTime.UtcNow;
