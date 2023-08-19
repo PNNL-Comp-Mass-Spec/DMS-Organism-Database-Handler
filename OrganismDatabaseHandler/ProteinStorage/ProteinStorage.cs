@@ -48,10 +48,8 @@ namespace OrganismDatabaseHandler.ProteinStorage
             {
                 return proteinEntry;
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         public SortedSet<string> GetSortedProteinNames()
@@ -80,10 +78,8 @@ namespace OrganismDatabaseHandler.ProteinStorage
                 {
                     return mPassPhrase;
                 }
-                else
-                {
-                    return null;
-                }
+
+                return null;
             }
             set => mPassPhrase = value;
         }
