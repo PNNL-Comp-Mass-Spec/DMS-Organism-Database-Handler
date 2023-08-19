@@ -351,7 +351,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
         public int UploadCollection(
             ProteinStorage.ProteinStorage fileContents,
             List<string> selectedProteins,
-            string filepath,
+            string filePath,
             string description,
             string collectionSource,
             AddUpdateEntries.CollectionTypes collectionType,
@@ -360,7 +360,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
         {
             // task 2a - Get Protein_Collection_ID or make a new one
 
-            var proteinCollectionName = Path.GetFileNameWithoutExtension(filepath);
+            var proteinCollectionName = Path.GetFileNameWithoutExtension(filePath);
             var existingCollectionId = mUpload.GetProteinCollectionId(proteinCollectionName);
 
             var collectionState = mUpload.GetProteinCollectionState(existingCollectionId);
@@ -448,7 +448,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
 
         protected int CollectionBatchUploadCoordinator(
             ProteinStorage.ProteinStorage fileContents,
-            string filepath,
+            string filePath,
             int organismId,
             int annotationTypeId,
             string description,
@@ -460,13 +460,13 @@ namespace OrganismDatabaseHandler.ProteinUpload
             selectedList.Sort();
 
             return UploadCollection(
-                fileContents, selectedList, filepath, description, source,
+                fileContents, selectedList, filePath, description, source,
                 AddUpdateEntries.CollectionTypes.ProtOriginalSource, organismId, annotationTypeId);
         }
 
-        public void SetValidationOptions(ValidationOptionConstants eValidationOptionName, bool blnEnabled)
+        public void SetValidationOptions(ValidationOptionConstants eValidationOptionName, bool enabled)
         {
-            mValidationOptions[(int)eValidationOptionName] = blnEnabled;
+            mValidationOptions[(int)eValidationOptionName] = enabled;
         }
 
         private void Export_FileGenerationCompleted(string fullOutputPath)

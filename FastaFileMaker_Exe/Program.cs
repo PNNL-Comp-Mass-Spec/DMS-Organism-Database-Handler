@@ -409,7 +409,7 @@ namespace FastaFileMaker
                                       string creationOpts,
                                       string legacyFasta,
                                       string destinationDirectoryPath,
-                                      bool blnLogProteinFileDetails)
+                                      bool logProteinFileDetails)
         {
             string crc32Hash;
 
@@ -478,7 +478,7 @@ namespace FastaFileMaker
                 return false;
             }
 
-            if (blnLogProteinFileDetails)
+            if (logProteinFileDetails)
             {
                 LogProteinFileDetails(proteinCollectionList, creationOpts, legacyFasta, crc32Hash, destinationDirectoryPath, mFastaFileName, string.Empty);
             }
