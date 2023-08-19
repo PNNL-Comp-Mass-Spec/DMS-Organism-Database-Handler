@@ -248,13 +248,17 @@ namespace OrganismDatabaseHandler.ProteinExport
             dbTools.AddParameter(cmdSave, "@creationOptions", SqlType.VarChar, 250).Value = creationOptionsString;
             dbTools.AddParameter(cmdSave, "@proteinCollectionString", SqlType.VarChar, 8000).Value = proteinCollectionsList;
             dbTools.AddParameter(cmdSave, "@collectionStringHash", SqlType.VarChar, 40).Value = collectionListHexHash;
-            dbTools.AddParameter(cmdSave, "@archivedFilePath", SqlType.VarChar, 250).Value = archivedFileFullPath;
+
+            var archivedFilePathParam = dbTools.AddParameter(cmdSave, "@archivedFilePath", SqlType.VarChar, 250);
+            archivedFilePathParam.Direction = ParameterDirection.InputOutput;
+            archivedFilePathParam.Value = archivedFileFullPath;
+
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 512).Direction = ParameterDirection.InputOutput;
 
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
 
-            mArchivedFilePath = archivedFileFullPath;
+            mArchivedFilePath = archivedFilePathParam.Value.ToString();
 
             // The return code is an integer on SQL Server, but is text on Postgres
             // The return code will be the archived file id if no errors; it will be 0 if an error
