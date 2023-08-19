@@ -28,7 +28,7 @@ namespace Bulk_Fasta_Importer
     /// </remarks>
     public class BulkFastaImporter : PRISM.FileProcessor.ProcessFilesBase
     {
-        // Ignore Spelling: uploader, ProteinSeqs
+        // Ignore Spelling: Auth, DMS, FASTA, ProteinSeqs, Seqs, uploader
 
         public const string DmsConnectionString = "Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI;";
         public const string ProteinseqsConnectionString = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;";
@@ -91,6 +91,7 @@ namespace Bulk_Fasta_Importer
 
         public BulkFastaImporter(string dmsConnString, string proteinSeqsConnString)
         {
+            // ReSharper disable once StringLiteralTypo
             mFileDate = ThisAssembly.GitCommitDate.ToLocalTime().ToString("MMMM dd, yyyy");
 
             if (string.IsNullOrWhiteSpace(dmsConnString))

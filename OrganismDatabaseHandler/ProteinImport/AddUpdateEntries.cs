@@ -11,6 +11,8 @@ namespace OrganismDatabaseHandler.ProteinImport
 {
     public class AddUpdateEntries : EventNotifier
     {
+        // Ignore Spelling: Passphrase, Sha, Xref
+
         public enum SpModes
         {
             Add,

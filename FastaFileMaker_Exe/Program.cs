@@ -13,6 +13,7 @@ namespace FastaFileMaker
 
         static Program()
         {
+            // ReSharper disable once StringLiteralTypo
             ProgramDate = ThisAssembly.GitCommitDate.ToLocalTime().ToString("MMMM dd, yyyy");
         }
 

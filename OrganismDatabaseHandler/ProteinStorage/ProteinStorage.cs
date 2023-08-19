@@ -4,6 +4,8 @@ namespace OrganismDatabaseHandler.ProteinStorage
 {
     public class ProteinStorage
     {
+        // Ignore Spelling: FASTA
+
         /// <summary>
         /// Keys are Protein_Name
         /// </summary>

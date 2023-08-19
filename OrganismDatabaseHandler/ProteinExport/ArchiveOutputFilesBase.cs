@@ -9,6 +9,8 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public abstract class ArchiveOutputFilesBase
     {
+        // Ignore Spelling: Accessor
+
         public enum CollectionTypes
         {
             Static = 1,

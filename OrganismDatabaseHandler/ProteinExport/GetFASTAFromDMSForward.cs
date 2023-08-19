@@ -4,7 +4,6 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Security.Principal;
-using System.Text;
 using System.Text.RegularExpressions;
 using OrganismDatabaseHandler.DatabaseTools;
 
@@ -12,7 +11,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class GetFASTAFromDMSForward
     {
-        // Ignore Spelling: fastapro, passphrase
+        // Ignore Spelling: Accessor, fastapro, passphrase, prot
 
         private readonly DBTask mDatabaseAccessor;
         private readonly ExportProteins mFileDumper;
