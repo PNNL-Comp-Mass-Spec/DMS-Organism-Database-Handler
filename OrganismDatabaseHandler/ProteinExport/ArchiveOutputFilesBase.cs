@@ -93,6 +93,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             using var fileReader = new StreamReader(new FileStream(sourceFile.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
 
+            // ReSharper disable once MoveVariableDeclarationInsideLoopCondition
             string dataLine;
             var counter = 0;
 
