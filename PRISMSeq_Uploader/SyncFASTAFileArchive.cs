@@ -127,7 +127,7 @@ namespace PRISMSeq_Uploader
             foreach (DataRow dataRow in dt.Rows)
             {
                 var proteinCollectionID = Convert.ToInt32(dataRow["protein_collection_id"]);
-                var storedSHA = dataRow["authentication_hash"].ToString();
+                var storedAuthenticationHash = dataRow["authentication_hash"].ToString();
                 var collectionName = dataRow["collection_name"].ToString();
                 mGeneratedFastaFilePath = string.Empty;
 
@@ -171,9 +171,9 @@ namespace PRISMSeq_Uploader
 
                 var fullPath = Path.Combine(tempFilePath, collectionName + ".fasta");
 
-                var genSHA = mExporter.ExportFASTAFile(proteinCollectionID, fullPath, GetFASTAFromDMS.SequenceTypes.Forward);
+                var crc32Hash = mExporter.ExportFASTAFile(proteinCollectionID, fullPath, GetFASTAFromDMS.SequenceTypes.Forward);
 
-                if (!storedSHA.Equals(genSHA))
+                if (!storedAuthenticationHash.Equals(crc32Hash))
                 {
                     var currentFastaProteinCount = 0;
                     var currentFastaResidueCount = 0;
@@ -183,21 +183,14 @@ namespace PRISMSeq_Uploader
                         CountProteinsAndResidues(mGeneratedFastaFilePath, out currentFastaProteinCount, out currentFastaResidueCount);
                     }
 
-                    mImporter.AddAuthenticationHash(proteinCollectionID, genSHA, currentFastaProteinCount, currentFastaResidueCount);
+                    mImporter.AddAuthenticationHash(proteinCollectionID, storedAuthenticationHash, currentFastaProteinCount, currentFastaResidueCount);
                 }
 
                 fileArchiver.ArchiveCollection(
                     proteinCollectionID,
                     ArchiveOutputFilesBase.CollectionTypes.Static,
                     GetFASTAFromDMS.SequenceTypes.Forward,
-                    fullPath, creationOptionsString, genSHA, "");
-
-                // ArchiveCollection(
-                //     proteinCollectionID,
-                //     IArchiveOutputFiles.CollectionTypes.static,
-                //     fullPath, genSHA);
-
-                // nameList.Clear();
+                    fullPath, creationOptionsString, storedAuthenticationHash, "");
 
                 var fileToDelete = new FileInfo(fullPath);
                 fileToDelete.Delete();

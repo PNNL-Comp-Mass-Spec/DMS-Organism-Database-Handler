@@ -192,7 +192,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         protected int RunSP_UpdateFileArchiveEntryCollectionList(
             int archivedFileEntryId,
             string proteinCollectionsList,
-            string collectionListHash,
+            string authenticationHash,
             string collectionListHexHash)
         {
             var dbTools = DatabaseAccessor.DbTools;
@@ -206,9 +206,9 @@ namespace OrganismDatabaseHandler.ProteinExport
             // Define parameters for the procedure's arguments
             dbTools.AddParameter(cmdSave, "@archivedFileEntryID", SqlType.Int).Value = archivedFileEntryId;
             dbTools.AddParameter(cmdSave, "@proteinCollectionList", SqlType.VarChar, 8000).Value = proteinCollectionsList;
-            dbTools.AddParameter(cmdSave, "@sha1Hash", SqlType.VarChar, 28).Value = collectionListHash;
-            dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 512).Direction = ParameterDirection.InputOutput;
+            dbTools.AddParameter(cmdSave, "@crc32Authentication", SqlType.VarChar, 28).Value = authenticationHash;
             dbTools.AddParameter(cmdSave, "@collectionListHexHash", SqlType.VarChar, 128).Value = collectionListHexHash;
+            dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 512).Direction = ParameterDirection.InputOutput;
 
             // Execute the stored procedure
             dbTools.ExecuteSP(cmdSave);
