@@ -189,6 +189,14 @@ namespace OrganismDatabaseHandler.ProteinExport
             return pathString;
         }
 
+        /// <summary>
+        /// Updates the protein collection list and hash values in T_Archived_Output_Files for the given archived output file
+        /// </summary>
+        /// <param name="archivedFileEntryId">Archive output file ID</param>
+        /// <param name="proteinCollectionsList">Protein collection list (comma-separated list of protein collection names)</param>
+        /// <param name="authenticationHash">CRC32 authentication hash (hash of the bytes in the file)</param>
+        /// <param name="collectionListHexHash">SHA-1 hash of the protein collection list and creation options (separated by a forward slash)</param>
+        /// <returns>0 if no error; return code if an error</returns>
         protected int RunSP_UpdateFileArchiveEntryCollectionList(
             int archivedFileEntryId,
             string proteinCollectionsList,
@@ -218,6 +226,28 @@ namespace OrganismDatabaseHandler.ProteinExport
             return DBToolsBase.GetReturnCode(returnParam);
         }
 
+        // ReSharper disable CommentTypo
+
+        /// <summary>
+        /// Adds an archive output file to table T_Archived_Output_Files
+        /// </summary>
+        /// <param name="proteinCollectionId">Protein collection ID</param>
+        /// <param name="creationOptionsString">Creation options (e.g. 'seq_direction=forward,filetype=fasta')</param>
+        /// <param name="authenticationHash">CRC32 authentication hash (hash of the bytes in the file)</param>
+        /// <param name="fileModificationDate">File modification timestamp</param>
+        /// <param name="outputFileSize">File size, in bytes</param>
+        /// <param name="proteinCount">Protein count</param>
+        /// <param name="archivedFileFullPath">Full path to th file</param>
+        /// <param name="archivedFileType">Archived file type ('static' if a single protein collection; 'dynamic' if a combination of multiple protein collections)</param>
+        /// <param name="proteinCollectionsList">Protein collection list (comma-separated list of protein collection names)</param>
+        /// <param name="collectionListHexHash">SHA-1 hash of the protein collection list and creation options (separated by a forward slash)</param>
+        /// <remarks>
+        /// Example for collectionListHexHash:
+        /// The SHA-1 hash of 'H_sapiens_UniProt_SPROT_2023-03-01,Tryp_Pig_Bov/seq_direction=forward,filetype=fasta'
+        /// is '11822db6bbfc1cb23c0a728a0b53c3b9d97db1f5'
+        /// </remarks>
+        /// <returns>Archived output file ID of the newly added row</returns>
+        // ReSharper restore CommentTypo
         protected int RunSP_AddOutputFileArchiveEntry(
             int proteinCollectionId,
             string creationOptionsString,
