@@ -256,8 +256,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                         foreach (DataRow decryptionRow in collectionTable.Rows)
                         {
                             var cipherSeq = decryptionRow["Sequence"].ToString();
-                            var clearSeq = mRijndaelDecryption.Decrypt(cipherSeq);
-                            decryptionRow["Sequence"] = clearSeq;
+                            decryptionRow["Sequence"] = mRijndaelDecryption.Decrypt(cipherSeq);
                             decryptionRow.AcceptChanges();
                         }
                     }
