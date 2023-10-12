@@ -82,8 +82,8 @@ namespace OrganismDatabaseHandler.ProteinExport
             {
                 // Wait between 2 and 6 seconds and check again in case another manager is also trying to create the same protein collection
 
-                var rand = new Random();
-                var sleepTimeSeconds = 2 + rand.NextDouble() * 4;
+                var randomGenerator = new Random();
+                var sleepTimeSeconds = 2 + randomGenerator.NextDouble() * 4;
 
                 PRISM.ConsoleMsgUtils.ShowDebug(
                     "Sleeping for {0:0.0} seconds, then re-checking table t_archived_output_files for hash {1}",

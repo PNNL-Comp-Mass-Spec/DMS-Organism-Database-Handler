@@ -69,8 +69,8 @@ namespace FastaFileMaker
             mGenerationComplete = true;
         }
 
-        private static DateTime dtLastLogTime = DateTime.MinValue;
-        private static double dblFractionDoneSaved = -1;
+        private static DateTime mLastLogTime = DateTime.MinValue;
+        private static double mFractionDoneSaved = -1;
 
         private static void FastaTools_FileGenerationProgress(string statusMsg, double fractionDone)
         {
