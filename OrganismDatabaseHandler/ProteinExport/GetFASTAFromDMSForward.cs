@@ -43,12 +43,13 @@ namespace OrganismDatabaseHandler.ProteinExport
             mFileDumper = new ExportProteinsFASTA(this);
             mExtension = ".fasta";
 
-            if (mFileDumper != null)
-            {
-                mFileDumper.ExportStart += OnExportStart;
-                mFileDumper.ExportProgress += OnExportProgressUpdate;
-            }
             RegisterEvents(mFileDumper);
+
+            if (mFileDumper == null)
+                return;
+
+            mFileDumper.ExportStart += OnExportStart;
+            mFileDumper.ExportProgress += OnExportProgressUpdate;
         }
 
         public event FileGenerationCompletedEventHandler FileGenerationCompleted;
