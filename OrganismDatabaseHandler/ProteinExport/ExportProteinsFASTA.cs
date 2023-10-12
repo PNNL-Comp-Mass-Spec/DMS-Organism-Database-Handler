@@ -182,26 +182,49 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
 
             // Open the output file for append
-            using var writer = new StreamWriter(new FileStream(fastaFilePath, FileMode.Append, FileAccess.Write, FileShare.Read));
+            // Sometimes the file is locked by an antivirus tool, so try up to four times to instantiate the writer
 
-            foreach (var currentRow in proteinTable.Select(string.Empty))
+            for (var iteration = 1; iteration <= 4; iteration++)
             {
-                var proteinSequence = ExportComponent.SequenceExtender(currentRow["Sequence"].ToString(), proteinTable.Rows.Count);
+                proteinsWritten = 0;
 
-                var proteinLength = proteinSequence.Length;
-                var proteinDescription = hexCodeFinder.Replace(currentRow["Description"].ToString(), " ");
-                var proteinName = ExportComponent.ReferenceExtender(currentRow["Name"].ToString());
-
-                writer.WriteLine((">" + proteinName + " " + proteinDescription + alternateNames).Trim());
-
-                for (var startIndex = 0; startIndex < proteinLength; startIndex += mSeqLineLength)
+                try
                 {
-                    var charLength = Math.Min(mSeqLineLength, proteinLength - startIndex);
-                    var seqLinePortion = proteinSequence.Substring(startIndex, charLength);
-                    writer.WriteLine(seqLinePortion);
-                }
+                    using var writer = new StreamWriter(new FileStream(fastaFilePath, FileMode.Append, FileAccess.Write, FileShare.Read));
 
-                proteinsWritten++;
+                    foreach (var currentRow in proteinTable.Select(string.Empty))
+                    {
+                        var proteinSequence = ExportComponent.SequenceExtender(currentRow["Sequence"].ToString(), proteinTable.Rows.Count);
+
+                        var proteinLength = proteinSequence.Length;
+                        var proteinDescription = hexCodeFinder.Replace(currentRow["Description"].ToString(), " ");
+                        var proteinName = ExportComponent.ReferenceExtender(currentRow["Name"].ToString());
+
+                        writer.WriteLine((">" + proteinName + " " + proteinDescription + alternateNames).Trim());
+
+                        for (var startIndex = 0; startIndex < proteinLength; startIndex += mSeqLineLength)
+                        {
+                            var charLength = Math.Min(mSeqLineLength, proteinLength - startIndex);
+                            var seqLinePortion = proteinSequence.Substring(startIndex, charLength);
+                            writer.WriteLine(seqLinePortion);
+                        }
+
+                        proteinsWritten++;
+                    }
+
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    OnErrorEvent(string.Format("Error opening {0} for append (iteration {1})", fastaFilePath, iteration), ex);
+
+                    var randomGenerator = new Random();
+                    var sleepTimeMsec = randomGenerator.Next(3000, 8000);
+
+                    OnDebugEvent("Sleeping for {0:F1} seconds", sleepTimeMsec / 1000.0);
+
+                    AppUtils.SleepMilliseconds(sleepTimeMsec);
+                }
             }
 
             return proteinsWritten;
