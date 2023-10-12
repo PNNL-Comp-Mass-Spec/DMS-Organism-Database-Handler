@@ -6,10 +6,11 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
 using OrganismDatabaseHandler.DatabaseTools;
+using PRISM;
 
 namespace OrganismDatabaseHandler.ProteinExport
 {
-    public class GetFASTAFromDMSForward
+    public class GetFASTAFromDMSForward : EventNotifier
     {
         // Ignore Spelling: Accessor, fastapro, passphrase, prot
 

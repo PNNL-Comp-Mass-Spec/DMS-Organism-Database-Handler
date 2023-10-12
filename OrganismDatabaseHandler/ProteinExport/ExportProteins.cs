@@ -4,7 +4,7 @@ using System.IO;
 
 namespace OrganismDatabaseHandler.ProteinExport
 {
-    public abstract class ExportProteins
+    public abstract class ExportProteins : PRISM.EventNotifier
     {
         protected GetFASTAFromDMSForward ExportComponent;
 
