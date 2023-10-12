@@ -23,7 +23,10 @@ namespace PRISMSeq_Uploader
         private DataTable collectionList;
         private string mLastOutputDirectory = @"D:\outbox\output_test\";
 
+#pragma warning disable CS0618 // Type or member is obsolete
         private SyncFASTAFileArchive mSyncer;
+#pragma warning restore CS0618 // Type or member is obsolete
+
         private GetFASTAFromDMS mExporter;
 
         private string mTaskMessage;

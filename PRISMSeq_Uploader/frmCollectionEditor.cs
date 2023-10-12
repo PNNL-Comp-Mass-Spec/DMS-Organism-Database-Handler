@@ -112,7 +112,9 @@ namespace PRISMSeq_Uploader
         /// </summary>
         private readonly Dictionary<string, PSUploadHandler.UploadInfo> mValidUploadsList;
 
+#pragma warning disable CS0618 // Type or member is obsolete
         private SyncFASTAFileArchive mSyncer;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         private readonly System.Timers.Timer mSearchTimer;
 
@@ -1089,9 +1091,8 @@ namespace PRISMSeq_Uploader
                 mSyncer.SyncProgress += SyncProgressHandler;
             }
 
-#pragma warning disable CS0618 // Type or member is obsolete
+
             mSyncer.RefreshNameHashes();
-#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         private void MenuItem5_Click(object sender, EventArgs e)
