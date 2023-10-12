@@ -76,17 +76,26 @@ namespace FastaFileMaker
         {
             const int minimumLogIntervalSec = 15;
 
-            if (DebugLevel >= 3)
+#pragma warning disable CS0162 // Unreachable code detected
+
+            if (DebugLevel < 3)
             {
-                // Limit the logging to once every minimumLogIntervalSec seconds
-                if (DateTime.UtcNow.Subtract(dtLastLogTime).TotalSeconds >= minimumLogIntervalSec ||
-                    fractionDone - dblFractionDoneSaved >= 0.25d)
-                {
-                    dtLastLogTime = DateTime.UtcNow;
-                    dblFractionDoneSaved = fractionDone;
-                    Console.WriteLine("Generating Fasta file, " + (fractionDone * 100d).ToString("0.0") + "% complete, " + statusMsg);
-                }
+                // ReSharper disable once HeuristicUnreachableCode
+                return;
             }
+
+#pragma warning restore CS0162 // Unreachable code detected
+
+            // Limit the logging to once every minimumLogIntervalSec seconds, but do show progress when 25%, 50%, and 75% done
+            var showProgress = DateTime.UtcNow.Subtract(mLastLogTime).TotalSeconds >= minimumLogIntervalSec ||
+                               fractionDone - mFractionDoneSaved >= 0.25d;
+
+            if (!showProgress)
+                return;
+
+            mLastLogTime = DateTime.UtcNow;
+            mFractionDoneSaved = fractionDone;
+            Console.WriteLine("Generating Fasta file, " + (fractionDone * 100d).ToString("0.0") + "% complete, " + statusMsg);
         }
 
         private static void FastaTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -109,77 +118,70 @@ namespace FastaFileMaker
 
             try
             {
-                var blnProceed = false;
-
                 mProteinCollectionList = string.Empty;
                 mCreationOpts = string.Empty;
                 mLegacyFasta = string.Empty;
                 mOutputDirectory = string.Empty;
                 mLogProteinFileDetails = false;
 
-                if (commandLineParser.ParseCommandLine())
-                {
-                    if (SetOptionsUsingCommandLineParameters(commandLineParser))
-                        blnProceed = true;
-                }
+                var validParameters = commandLineParser.ParseCommandLine() && SetOptionsUsingCommandLineParameters(commandLineParser);
 
-                if (!blnProceed ||
+                if (!validParameters ||
                     commandLineParser.NeedToShowHelp ||
                     commandLineParser.ParameterCount + commandLineParser.NonSwitchParameterCount == 0 ||
                     (mProteinCollectionList.Length == 0 && mLegacyFasta.Length == 0))
                 {
                     ShowProgramHelp();
+                    return;
                 }
-                else
+
+                // To hard-code defaults, enter them here
+                // mProteinCollectionList = "Shewanella_2006-07-11";
+                // mCreationOpts = "seq_direction=forward,filetype=fasta";
+                // mLegacyFasta = "na";
+                // mOutputDirectory = "C:\DMS_Temp_Org";
+                // mLogProteinFileDetails = True;
+
+                if (mLegacyFasta.Length == 0)
                 {
-                    // To hard-code defaults, enter them here
-                    // mProteinCollectionList = "Shewanella_2006-07-11";
-                    // mCreationOpts = "seq_direction=forward,filetype=fasta";
-                    // mLegacyFasta = "na";
-                    // mOutputDirectory = "C:\DMS_Temp_Org";
-                    // mLogProteinFileDetails = True;
-
-                    if (mLegacyFasta.Length == 0)
-                    {
-                        mLegacyFasta = "na";
-                    }
-
-                    if (mCreationOpts.Length == 0)
-                    {
-                        mCreationOpts = DefaultCollectionOptions;
-                    }
-
-                    if (mOutputDirectory.Length == 0)
-                    {
-                        mOutputDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                    }
-
-                    if (mProteinCollectionList.IndexOf(',') > 0 &&
-                        mProteinCollectionList.IndexOf(".fasta", StringComparison.OrdinalIgnoreCase) > 0)
-                    {
-                        ConsoleMsgUtils.ShowError("Protein collection list should not have file extension .fasta; edit the list: " + mProteinCollectionList);
-                        return;
-                    }
-
-                    if (mProteinCollectionList.IndexOf(',') < 0 &&
-                        mProteinCollectionList.EndsWith(".fasta", StringComparison.OrdinalIgnoreCase))
-                    {
-                        ConsoleMsgUtils.ShowWarning("Auto removing '.fasta' from the protein collection name");
-                        mProteinCollectionList = mProteinCollectionList.Substring(0, mProteinCollectionList.Length - ".fasta".Length);
-                    }
-
-                    // Data Source=proteinseqs;Initial Catalog=Protein_Sequences
-                    var proteinSeqsConnectionString = Settings.Default.ProteinSeqsDBConnectStr;
-
-                    if (!string.IsNullOrWhiteSpace(proteinSeqsConnectionString))
-                    {
-                        mFastaToolsCnStr = proteinSeqsConnectionString;
-                    }
-
-                    TestExport(mProteinCollectionList, mCreationOpts, mLegacyFasta, mOutputDirectory, mLogProteinFileDetails);
-
-                    Console.WriteLine("Destination directory: " + mOutputDirectory);
+                    mLegacyFasta = "na";
                 }
+
+                if (mCreationOpts.Length == 0)
+                {
+                    mCreationOpts = DefaultCollectionOptions;
+                }
+
+                if (mOutputDirectory.Length == 0)
+                {
+                    mOutputDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                }
+
+                if (mProteinCollectionList.IndexOf(',') > 0 &&
+                    mProteinCollectionList.IndexOf(".fasta", StringComparison.OrdinalIgnoreCase) > 0)
+                {
+                    ConsoleMsgUtils.ShowError("Protein collection list should not have file extension .fasta; edit the list: " + mProteinCollectionList);
+                    return;
+                }
+
+                if (mProteinCollectionList.IndexOf(',') < 0 &&
+                    mProteinCollectionList.EndsWith(".fasta", StringComparison.OrdinalIgnoreCase))
+                {
+                    ConsoleMsgUtils.ShowWarning("Auto removing '.fasta' from the protein collection name");
+                    mProteinCollectionList = mProteinCollectionList.Substring(0, mProteinCollectionList.Length - ".fasta".Length);
+                }
+
+                // Data Source=proteinseqs;Initial Catalog=Protein_Sequences
+                var proteinSeqsConnectionString = Settings.Default.ProteinSeqsDBConnectStr;
+
+                if (!string.IsNullOrWhiteSpace(proteinSeqsConnectionString))
+                {
+                    mFastaToolsCnStr = proteinSeqsConnectionString;
+                }
+
+                TestExport(mProteinCollectionList, mCreationOpts, mLegacyFasta, mOutputDirectory, mLogProteinFileDetails);
+
+                Console.WriteLine("Destination directory: " + mOutputDirectory);
             }
             catch (Exception ex)
             {
@@ -341,19 +343,19 @@ namespace FastaFileMaker
                 {
                     // Neither /P nor /L were used
 
-                    if (commandLineParser.NonSwitchParameterCount > 0)
-                    {
-                        // User specified a non-switch parameter
-                        // Assume it is a protein collection list
-                        mProteinCollectionList = commandLineParser.RetrieveNonSwitchParameter(0);
+                    if (commandLineParser.NonSwitchParameterCount <= 0)
+                        return true;
 
-                        if (mProteinCollectionList.EndsWith(".fasta", StringComparison.OrdinalIgnoreCase) ||
-                            mProteinCollectionList.EndsWith(".fasta\"", StringComparison.OrdinalIgnoreCase))
-                        {
-                            // User specified a .fasta file
-                            mLegacyFasta = string.Copy(mProteinCollectionList);
-                            mProteinCollectionList = string.Empty;
-                        }
+                    // User specified a non-switch parameter
+                    // Assume it is a protein collection list
+                    mProteinCollectionList = commandLineParser.RetrieveNonSwitchParameter(0);
+
+                    if (mProteinCollectionList.EndsWith(".fasta", StringComparison.OrdinalIgnoreCase) ||
+                        mProteinCollectionList.EndsWith(".fasta\"", StringComparison.OrdinalIgnoreCase))
+                    {
+                        // User specified a .fasta file
+                        mLegacyFasta = string.Copy(mProteinCollectionList);
+                        mProteinCollectionList = string.Empty;
                     }
                 }
 
@@ -450,6 +452,7 @@ namespace FastaFileMaker
             // Furthermore, even if mFastaTimer_Elapsed sets mFastaGenTimeOut to True, this won't do any good since mFastaTools.ExportFASTAFile will still be running
             mFastaGenTimeOut = false;
             mFastaGenStartTime = DateTime.UtcNow;
+
             try
             {
                 mFastaTimer.Start();
