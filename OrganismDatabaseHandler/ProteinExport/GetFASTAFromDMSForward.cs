@@ -48,6 +48,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 mFileDumper.ExportStart += OnExportStart;
                 mFileDumper.ExportProgress += OnExportProgressUpdate;
             }
+            RegisterEvents(mFileDumper);
         }
 
         public event FileGenerationCompletedEventHandler FileGenerationCompleted;

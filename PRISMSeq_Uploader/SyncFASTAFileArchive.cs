@@ -117,6 +117,7 @@ namespace PRISMSeq_Uploader
 
             mExporter = new GetFASTAFromDMS(connectionString, GetFASTAFromDMS.SequenceTypes.Forward);
             mExporter.FileGenerationCompleted += Exporter_FileGenerationCompleted;
+            RegisterEvents(mExporter);
 
             const string creationOptionsString = "seq_direction=forward,filetype=fasta";
             OnSyncStart("Updating Collections and Archive Entries");

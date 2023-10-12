@@ -169,6 +169,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
             mExport = new GetFASTAFromDMS(psConnectionString, GetFASTAFromDMS.SequenceTypes.Forward);
             mExport.FileGenerationCompleted += Export_FileGenerationCompleted;
             mExport.FileGenerationProgress += Export_FileGenerationProgress;
+            RegisterEvents(mExport);
 
             mValidator = new CustomFastaValidator();
             mValidator.ProgressUpdate += Task_LoadProgress;

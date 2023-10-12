@@ -2,6 +2,7 @@
 using FastaFileMaker.Properties;
 using OrganismDatabaseHandler.ProteinExport;
 using PRISM;
+using PRISM.Logging;
 
 namespace FastaFileMaker
 {
@@ -294,6 +295,14 @@ namespace FastaFileMaker
             }
         }
 
+        private static void RegisterEvents(IEventNotifier sourceClass)
+        {
+            sourceClass.DebugEvent += FastaTools_DebugEvent;
+            sourceClass.ErrorEvent += FastaTools_ErrorEvent;
+            sourceClass.StatusEvent += FastaTools_StatusEvent;
+            sourceClass.WarningEvent += FastaTools_WarningEvent;
+        }
+
         private static bool SetOptionsUsingCommandLineParameters(clsParseCommandLine commandLineParser)
         {
             // Returns True if no problems; otherwise, returns false
@@ -424,10 +433,8 @@ namespace FastaFileMaker
                 }
 
                 mFastaTools = new GetFASTAFromDMS(mFastaToolsCnStr);
-                mFastaTools.DebugEvent += FastaTools_DebugEvent;
-                mFastaTools.ErrorEvent += FastaTools_ErrorEvent;
-                mFastaTools.StatusEvent += FastaTools_StatusEvent;
-                mFastaTools.WarningEvent += FastaTools_WarningEvent;
+                RegisterEvents(mFastaTools);
+
                 mFastaTools.FileGenerationStarted += FastaTools_FileGenerationStarted;
                 mFastaTools.FileGenerationCompleted += FastaTools_FileGenerationCompleted;
                 mFastaTools.FileGenerationProgress += FastaTools_FileGenerationProgress;

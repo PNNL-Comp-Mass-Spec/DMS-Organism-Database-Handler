@@ -135,6 +135,8 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             if (ExporterComponent != null)
             {
+                RegisterEvents(ExporterComponent);
+
                 ExporterComponent.FileGenerationCompleted += OnFileGenerationCompleted;
                 ExporterComponent.FileGenerationStarted += OnFileGenerationStarted;
                 ExporterComponent.FileGenerationProgress += OnFileGenerationProgressUpdate;
