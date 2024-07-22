@@ -31,7 +31,7 @@ namespace Bulk_Fasta_Importer
         // Ignore Spelling: Auth, DMS, FASTA, ProteinSeqs, Seqs, uploader
 
         public const string DmsConnectionString = "Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI;";
-        public const string ProteinseqsConnectionString = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;";
+        public const string ProteinseqsConnectionString = "host=prismdb2;Port=5432;Database=dms;UserId=svc-dms";
 
         public enum BulkImporterErrorCodes
         {

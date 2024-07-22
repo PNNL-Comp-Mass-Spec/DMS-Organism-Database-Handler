@@ -8,7 +8,7 @@ namespace FastaFileMaker
 {
     internal static class Program
     {
-        // Ignore Spelling: fasta, filetype, na, proteinseqs, Shewanella, yyyy-MM-dd, hh:mm:ss tt
+        // Ignore Spelling: fasta, filetype, na, prismdb2, proteinseqs, Shewanella, yyyy-MM-dd, hh:mm:ss tt
 
         public static readonly string ProgramDate;
 
@@ -22,7 +22,7 @@ namespace FastaFileMaker
         private const int FastaGenTimeoutIntervalMinutes = 70;
         private const string DefaultCollectionOptions = "seq_direction=forward,filetype=fasta";
         private static GetFASTAFromDMS mFastaTools;
-        private static string mFastaToolsCnStr = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;";
+        private static string mFastaToolsCnStr = "host=prismdb2;Port=5432;Database=dms;UserId=svc-dms";
         private static string mMessage;
         private static string mFastaFileName;
         private static System.Timers.Timer mFastaTimer;
@@ -171,7 +171,8 @@ namespace FastaFileMaker
                     mProteinCollectionList = mProteinCollectionList.Substring(0, mProteinCollectionList.Length - ".fasta".Length);
                 }
 
-                // Data Source=proteinseqs;Initial Catalog=Protein_Sequences
+                // Prior to July 2024:    Data Source=proteinseqs;Initial Catalog=Protein_Sequences
+                // Starting in July 2024: host=prismdb2;Port=5432;Database=dms;UserId=svc-dms
                 var proteinSeqsConnectionString = Settings.Default.ProteinSeqsDBConnectStr;
 
                 if (!string.IsNullOrWhiteSpace(proteinSeqsConnectionString))

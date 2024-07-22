@@ -17,7 +17,7 @@ namespace PRISMSeq_Uploader
 {
     public partial class frmCollectionEditor : Form
     {
-        // Ignore Spelling: proteinseqs
+        // Ignore Spelling: prismdb2, proteinseqs
 
         public frmCollectionEditor()
         {
@@ -67,7 +67,7 @@ namespace PRISMSeq_Uploader
         /// <summary>
         /// Protein sequences database connection string
         /// </summary>
-        private string mPsConnectionString = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI;";
+        private string mPsConnectionString = "host=prismdb2;Port=5432;Database=dms;UserId=svc-dms";
 
         private string mLastSelectedOrganism = string.Empty;
         private string mLastSelectedAnnotationType = string.Empty;
@@ -130,7 +130,7 @@ namespace PRISMSeq_Uploader
         {
             // Get initial info - organism list, full collections list
 
-            // Data Source=proteinseqs;Initial Catalog=Protein_Sequences
+            // host=prismdb2;Port=5432;Database=dms;UserId=svc-dms
             var connectionString = Settings.Default.ProteinSeqsDBConnectStr;
 
             // Uncomment to upload to the test database
@@ -1090,7 +1090,6 @@ namespace PRISMSeq_Uploader
                 mSyncer = new SyncFASTAFileArchive(mPsConnectionString);
                 mSyncer.SyncProgress += SyncProgressHandler;
             }
-
 
             mSyncer.RefreshNameHashes();
         }

@@ -159,7 +159,7 @@
             this.txtConnString.Name = "txtConnString";
             this.txtConnString.Size = new System.Drawing.Size(1176, 31);
             this.txtConnString.TabIndex = 7;
-            this.txtConnString.Text = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSP" +
+            this.txtConnString.Text = "host=prismdb2;Port=5432;Database=dms;UserId=svc-dms" +
     "I;";
             // 
             // gbxConnectionString

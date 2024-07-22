@@ -64,10 +64,10 @@ namespace Bulk_Fasta_Importer
                     return -1;
                 }
 
-                // Data Source=proteinseqs;Initial Catalog=Protein_Sequences
+                // host=prismdb2;Port=5432;Database=dms;UserId=svc-dms
                 var proteinSeqsConnectionString = Settings.Default.ProteinSeqsDBConnectStr;
 
-                // Data Source=dms5;Initial Catalog=Protein_Sequences
+                // host=prismdb2;Port=5432;Database=dms;UserId=svc-dms
                 var dmsConnectionString = Settings.Default.DMSConnectStr;
 
                 var fastaImporter = new BulkFastaImporter(dmsConnectionString, proteinSeqsConnectionString)

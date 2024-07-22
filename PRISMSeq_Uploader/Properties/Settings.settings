@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="ProteinSeqsDBConnectStr" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI</Value>
+      <Value Profile="(Default)">host=prismdb2;Port=5432;Database=dms;UserId=svc-dms</Value>
     </Setting>
     <Setting Name="LastSelectedOrganism" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
