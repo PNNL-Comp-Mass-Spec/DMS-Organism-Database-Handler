@@ -31,9 +31,9 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
             else
             {
-                var connectionStringCheck = databaseAccessor.ConnectionString.ToLower().Replace(" ", string.Empty);
+                var hostName = DbToolsFactory.GetHostNameFromConnectionString(databaseAccessor.ConnectionString);
 
-                if (connectionStringCheck.Contains("source=cbdms"))
+                if (hostName.Equals("cbdms", StringComparison.OrdinalIgnoreCase))
                 {
                     mBaseArchivePath = @"\\cbdms\DMS_FASTA_File_Archive\";
                 }
