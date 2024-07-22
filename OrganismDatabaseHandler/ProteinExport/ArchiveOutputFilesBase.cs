@@ -18,8 +18,11 @@ namespace OrganismDatabaseHandler.ProteinExport
         }
 
         private readonly GetFASTAFromDMSForward mExporter;
+
         protected readonly DBTask DatabaseAccessor;
+
         protected string LastError;
+
         // Unused: protected GetFASTAFromDMS.SequenceTypes mOutputSequenceType;
 
         protected string mArchivedFilePath;
@@ -35,8 +38,8 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="databaseAccessor"></param>
-        /// <param name="exporterModule"></param>
+        /// <param name="databaseAccessor">Database accessor</param>
+        /// <param name="exporterModule">Protein exporter module</param>
         protected ArchiveOutputFilesBase(DBTask databaseAccessor, GetFASTAFromDMS exporterModule)
         {
             DatabaseAccessor = databaseAccessor;

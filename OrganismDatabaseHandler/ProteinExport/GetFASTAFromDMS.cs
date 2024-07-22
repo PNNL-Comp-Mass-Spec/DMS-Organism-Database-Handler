@@ -388,7 +388,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
 
             // ValidateMatchingHash will use GenerateFileAuthenticationHash() to generate a hash for the given file
-            // Since this can be time consuming, we only do this every 48 hours
+            // Since this can be time-consuming, we only do this every 48 hours
             // If the generated hash does not match the expected hash (finalFileHash) then we will re-generate the .fasta file
             if (ValidateMatchingHash(finalFileFi.FullName, ref finalFileHash, 48, forceRegenerateHash))
             {
@@ -441,7 +441,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             if (finalFileName.Length > 0)
             {
                 // Look for file finalFileName in folder destinationFolderPath
-                // If it exists, and if a .lock file does not exist, then we can safely assume the .Fasta file is ready for use
+                // If it exists, and if a .lock file does not exist, we can safely assume the .Fasta file is ready for use
 
                 finalFileFi = new FileInfo(Path.Combine(destinationFolderPath, finalFileName));
 
@@ -457,7 +457,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                         // Another program is creating a .Fasta file; cannot assume it is ready-for-use
                     }
                     // ValidateMatchingHash will use GenerateFileAuthenticationHash() to generate a hash for the given file
-                    // Since this can be time consuming, we only do this every 48 hours
+                    // Since this can be time-consuming, we only do this every 48 hours
                     // If the generated hash does not match the expected hash (finalFileHash) then we will re-generate the .fasta file
                     else if (ValidateMatchingHash(finalFileFi.FullName, ref finalFileHash))
                     {
@@ -467,7 +467,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
             }
 
-            // If we get here, then finalFileName is empty or the file is not present or the LockFile is present or the hash file is out-of-date
+            // If we get here, finalFileName is empty or the file is not present or the LockFile is present or the hash file is out-of-date
             // Try to create a lock file, then either wait for an existing lock file to go away or export the database
             var lockStream = CreateLockStream(destinationFolderPath, lockFileHash, "Protein collection list " + proteinCollectionList);
 
@@ -611,6 +611,28 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             var lockFile = new FileInfo(Path.Combine(destinationFolderPath, lockFileHash + ".lock"));
 
+            string collectionListOrLegacyName;
+
+            // Change the first letter of proteinCollectionListOrLegacyFastaFileName to lower case
+            if (proteinCollectionListOrLegacyFastaFileName.Length > 1)
+            {
+                collectionListOrLegacyName = string.Format("{0}{1}",
+                    proteinCollectionListOrLegacyFastaFileName.Substring(0, 1).ToLower(),
+                    proteinCollectionListOrLegacyFastaFileName.Substring(1));
+            }
+            else
+            {
+                collectionListOrLegacyName = proteinCollectionListOrLegacyFastaFileName;
+            }
+
+            var hostName = DbToolsFactory.GetHostNameFromConnectionString(mDatabaseAccessor.ConnectionString);
+
+            var message = string.Format("Creating FASTA file for {0}; ProteinSeqs DB host name '{1}'",
+                collectionListOrLegacyName, hostName);
+
+            OnFileGenerationStarted(message);
+            ConsoleMsgUtils.ShowDebug(message);
+
             while (true)
             {
                 intAttemptCount++;
@@ -622,6 +644,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     {
                         var lockTimeoutTime = lockFile.LastWriteTimeUtc.AddMinutes(60d);
                         var msg = LockFileProgressText + " found; waiting until it is deleted or until " + lockTimeoutTime.ToLocalTime() + ": " + lockFile.Name;
+
                         OnDebugEvent(msg);
                         OnFileGenerationProgressUpdate(msg, 0d);
 
@@ -859,6 +882,9 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             try
             {
+                var hostName = DbToolsFactory.GetHostNameFromConnectionString(mDatabaseAccessor.ConnectionString);
+                OnDebugEvent("Validating FASTA file hash info loaded from {0}", hostName);
+
                 var fastaFile = new FileInfo(fastaFilePath);
 
                 if (fastaFile.Exists)
@@ -870,9 +896,16 @@ namespace OrganismDatabaseHandler.ProteinExport
                         if (DateTime.UtcNow.Subtract(hashValidationFile.LastWriteTimeUtc).TotalHours <= retryHoldoffHours)
                         {
                             OnDebugEvent("Validated hash validation file (recently verified): " + hashValidationFile.FullName);
+
                             // Hash check file exists, and the file is less than 48 hours old
                             return true;
                         }
+
+                        OnDebugEvent("Calling GenerateFileAuthenticationHash() since the hash validation file is more than {0} hours old", retryHoldoffHours);
+                    }
+                    else
+                    {
+                        OnDebugEvent("Calling GenerateFileAuthenticationHash() since the hash validation file does not exist");
                     }
 
                     // Either the hash validation file doesn't exist, or it's too old, or forceRegenerateHash = True
