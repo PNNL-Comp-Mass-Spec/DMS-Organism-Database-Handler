@@ -278,7 +278,13 @@ namespace OrganismDatabaseHandler.ProteinUpload
                     string logMessageIfCancelled;
                     string logLabelIfCancelled;
 
-                    if (collectionState == "New" || collectionState == "Provisional")
+                    if (collectionState == "Offline" || collectionState == "Proteins_Deleted")
+                    {
+                        logMessageIfCancelled = "N/A";
+                        logLabelIfCancelled = "N/A";
+                        eResult = DialogResult.Yes;
+                    }
+                    else if (collectionState == "New" || collectionState == "Provisional")
                     {
                         var warningMessage = "The Collection '" + proteinCollectionName + "' has been declared '" +
                                              collectionState + "'. Are you sure you want to replace its contents?";
@@ -433,6 +439,12 @@ namespace OrganismDatabaseHandler.ProteinUpload
                 OnLoadStart("Storing encryption metadata");
                 mUpload.UpdateEncryptionMetadata(collectionId, fileContents.PassPhrase);
                 OnLoadEnd();
+            }
+
+            if (existingCollectionId > 0 && (collectionState == "Offline" || collectionState == "Proteins_Deleted"))
+            {
+                // Update the protein collection state to 1
+                mUpload.UpdateProteinCollectionState(collectionId, 1);
             }
 
             var tempFileName = Path.GetTempPath();
