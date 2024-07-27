@@ -19,6 +19,7 @@ Source: ..\Executables\Debug_CBDMS_GUI\PRISMSeq_Uploader.exe.config             
 Source: ..\Executables\Debug_CBDMS_GUI\FlexibleFileSortUtility.dll                      ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Bcl.AsyncInterfaces.dll                ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Bcl.HashCode.dll                       ; DestDir: {app}
+Source: ..\Executables\Debug\Microsoft.Extensions.DependencyInjection.Abstractions.dll ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Extensions.Logging.Abstractions.dll    ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\Npgsql.dll                                       ; DestDir: {app}
 Source: ..\Executables\Debug_CBDMS_GUI\OrganismDatabaseHandler.dll                      ; DestDir: {app}

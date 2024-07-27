@@ -19,6 +19,7 @@ Source: ..\Executables\Debug\PRISMSeq_Uploader.exe.config                     ; 
 Source: ..\Executables\Debug\FlexibleFileSortUtility.dll                      ; DestDir: {app}
 Source: ..\Executables\Debug\Microsoft.Bcl.AsyncInterfaces.dll                ; DestDir: {app}
 Source: ..\Executables\Debug\Microsoft.Bcl.HashCode.dll                       ; DestDir: {app}
+Source: ..\Executables\Debug\Microsoft.Extensions.DependencyInjection.Abstractions.dll ; DestDir: {app}
 Source: ..\Executables\Debug\Microsoft.Extensions.Logging.Abstractions.dll    ; DestDir: {app}
 Source: ..\Executables\Debug\Npgsql.dll                                       ; DestDir: {app}
 Source: ..\Executables\Debug\OrganismDatabaseHandler.dll                      ; DestDir: {app}
