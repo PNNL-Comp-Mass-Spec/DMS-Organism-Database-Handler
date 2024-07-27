@@ -130,7 +130,9 @@ namespace PRISMSeq_Uploader
         {
             // Get initial info - organism list, full collections list
 
-            // host=prismdb2;Port=5432;Database=dms;UserId=svc-dms
+            // Prior to July 2024:    Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI
+            // Starting in July 2024: host=prismdb2;Port=5432;Database=dms;UserId=svc-dms
+
             var connectionString = Settings.Default.ProteinSeqsDBConnectStr;
 
             // Uncomment to upload to the test database

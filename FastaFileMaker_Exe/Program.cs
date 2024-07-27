@@ -171,7 +171,7 @@ namespace FastaFileMaker
                     mProteinCollectionList = mProteinCollectionList.Substring(0, mProteinCollectionList.Length - ".fasta".Length);
                 }
 
-                // Prior to July 2024:    Data Source=proteinseqs;Initial Catalog=Protein_Sequences
+                // Prior to July 2024:    Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI
                 // Starting in July 2024: host=prismdb2;Port=5432;Database=dms;UserId=svc-dms
                 var proteinSeqsConnectionString = Settings.Default.ProteinSeqsDBConnectStr;
 
