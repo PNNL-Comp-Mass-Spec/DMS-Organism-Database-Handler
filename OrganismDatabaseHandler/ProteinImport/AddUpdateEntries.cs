@@ -736,8 +736,8 @@ namespace OrganismDatabaseHandler.ProteinImport
         /// </summary>
         /// <remarks>NumResidues in T_Protein_Collections is set to 0</remarks>
         /// <param name="proteinCollectionId"></param>
-        /// <param name="numProteinsForReLoad">The number of proteins that will be uploaded after this delete</param>
-        protected int RunSP_DeleteProteinCollectionMembers(int proteinCollectionId, int numProteinsForReLoad)
+        /// <param name="numProteinsForReload">The number of proteins that will be uploaded after this delete</param>
+        protected int RunSP_DeleteProteinCollectionMembers(int proteinCollectionId, int numProteinsForReload)
         {
             var dbTools = mDatabaseAccessor.DbTools;
 
@@ -751,7 +751,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             // Define parameters for the procedure's arguments
             dbTools.AddParameter(cmdSave, "@collectionID", SqlType.Int).Value = proteinCollectionId;
-            dbTools.AddParameter(cmdSave, "@numProteinsForReLoad", SqlType.Int).Value = numProteinsForReLoad;
+            dbTools.AddParameter(cmdSave, "@numProteinsForReload", SqlType.Int).Value = numProteinsForReload;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.InputOutput);
 
             // Execute the stored procedure
