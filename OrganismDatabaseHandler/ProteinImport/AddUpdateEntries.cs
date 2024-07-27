@@ -267,6 +267,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                 SpModes.Add);
         }
 
+        [Obsolete("Unused")]
         public int UpdateProteinSequenceInfo(
             int proteinId,
             string sequence,
@@ -490,6 +491,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             return DBToolsBase.GetReturnCode(returnParam);
         }
 
+        [Obsolete("Unused")]
         protected int RunSP_UpdateProteinSequenceInfo(
             int proteinId,
             string sequence,
