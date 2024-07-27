@@ -18,7 +18,7 @@ namespace PRISMSeq_Uploader
 {
     public partial class frmBatchAddNewCollection : Form
     {
-        // Ignore spelling: lvw, uploader, Passphrase, terabytes, petabytes, exabytes, zettabytes, yottabytes
+        // Ignore spelling: frm, lvw, uploader, Passphrase, terabytes, petabytes, exabytes, zettabytes, yottabytes
 
         public frmBatchAddNewCollection(
             ImportHandler importHandler,
@@ -340,7 +340,7 @@ namespace PRISMSeq_Uploader
                 // File Size
                 item.SubItems.Add(Numeric2Bytes(fi.Length));
 
-                // Whether or not the FASTA file is already a protein collection
+                // Check whether the FASTA file is already a protein collection
                 if (mCollectionsList.ContainsValue(proteinCollectionName))
                 {
                     item.SubItems.Add("Yes");

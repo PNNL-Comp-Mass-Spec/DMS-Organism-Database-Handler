@@ -6,6 +6,8 @@ namespace PRISMSeq_Uploader
 {
     public partial class frmAddNewCollection : Form
     {
+        // Ignore Spelling: frm
+
         public frmAddNewCollection()
         {
             base.Load += frmAddNewCollection_Load;

@@ -7,7 +7,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class GetFASTAFromDMSScrambled : GetFASTAFromDMSForward
     {
-        // Ignore Spelling: fastapro
+        // Ignore Spelling: accessor, fastapro
 
         private Random mRndNumGen;
 

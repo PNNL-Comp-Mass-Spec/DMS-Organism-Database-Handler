@@ -9,6 +9,8 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class ExportProteinsFASTA : ExportProteins
     {
+        // Ignore Spelling: fasta
+
         private readonly int mSeqLineLength = 60;
 
         // ReSharper disable once ConvertToPrimaryConstructor

@@ -10,6 +10,8 @@ namespace PRISMSeq_Uploader
 {
     public partial class frmValidationReport : Form
     {
+        // Ignore spelling: frm
+
         public frmValidationReport()
         {
             base.Load += frmValidationReport_Load;

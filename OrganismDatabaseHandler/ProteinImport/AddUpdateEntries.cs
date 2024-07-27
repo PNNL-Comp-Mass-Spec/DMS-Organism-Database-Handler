@@ -432,7 +432,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
-            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
             var returnValue = DBToolsBase.GetReturnCode(returnParam);
 
             if (returnValue != 0)
@@ -464,7 +464,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             var cmdSave = dbTools.CreateCommand("add_protein_sequence", CommandType.StoredProcedure);
 
-            // Use a 5 minute timeout
+            // Use a 5-minute timeout
             cmdSave.CommandTimeout = 300;
 
             // Define parameter for procedure's return value
@@ -486,7 +486,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
-            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
             return DBToolsBase.GetReturnCode(returnParam);
         }
 
@@ -521,7 +521,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
-            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
             return DBToolsBase.GetReturnCode(returnParam);
         }
 
@@ -560,7 +560,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
-            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
             var returnCode = DBToolsBase.GetReturnCode(returnParam);
 
             if (returnCode == 0)
@@ -620,7 +620,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
-            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
             return DBToolsBase.GetReturnCode(returnParam);
         }
 
@@ -646,6 +646,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
             return DBToolsBase.GetReturnCode(returnParam);
         }
 
@@ -671,6 +672,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
             return DBToolsBase.GetReturnCode(returnParam);
         }
 
@@ -698,6 +700,8 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
+
             // The return code will be the annotation type ID of the newly inserted row in table t_annotation_types
             // However, if the annotation type already existed, the return code will be the negative value of the existing annotation type ID
             return DBToolsBase.GetReturnCode(returnParam);
@@ -723,6 +727,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
             return DBToolsBase.GetReturnCode(returnParam);
         }
 
@@ -738,7 +743,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             var cmdSave = dbTools.CreateCommand("delete_protein_collection_members", CommandType.StoredProcedure);
 
-            // Use a 10 minute timeout
+            // Use a 10-minute timeout
             cmdSave.CommandTimeout = 600;
 
             // Define parameter for procedure's return value
@@ -753,6 +758,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
             return DBToolsBase.GetReturnCode(returnParam);
         }
 
@@ -771,6 +777,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var cmdSave = dbTools.CreateCommand("add_protein_reference", CommandType.StoredProcedure);
 
             // Define parameter for procedure's return value
+            // Although the datatype is specified as an integer here, dbTools will change it to text
             var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
 
             // Define parameters for the procedure's arguments
@@ -789,6 +796,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
             var returnCode = DBToolsBase.GetReturnCode(returnParam);
 
             if (returnCode == 0)
@@ -825,6 +833,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
             return DBToolsBase.GetReturnCode(returnParam);
         }
 
@@ -852,6 +861,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
             return DBToolsBase.GetReturnCode(returnParam);
         }
 
@@ -875,6 +885,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
             return DBToolsBase.GetReturnCode(returnParam);
         }
 
@@ -903,6 +914,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
             return DBToolsBase.GetReturnCode(returnParam);
         }
 
@@ -928,6 +940,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
+            // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
             return DBToolsBase.GetReturnCode(returnParam);
         }
 

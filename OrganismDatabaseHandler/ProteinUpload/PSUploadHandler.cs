@@ -243,7 +243,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
                     OnFASTAFileWarnings(currentFile.FullName, mValidator.RecordedFASTAFileWarnings(currentFile.Name));
                 }
 
-                // Now check whether or not any errors were found for the file
+                // Now check whether any errors were found for the file
                 if (!mValidator.FASTAFileValid(currentFile.Name))
                 {
                     // Errors were found; return the error collection with the InvalidFASTAFile event
@@ -381,7 +381,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
             if (existingCollectionId <= 0)
             {
                 // Note that we're storing 0 for NumResidues at this time
-                // That value will be updated later after all of the proteins have been added
+                // That value will be updated later after the proteins have been added
                 var newCollectionId = mUpload.MakeNewProteinCollection(
                     proteinCollectionName, description,
                     collectionSource, collectionType,
