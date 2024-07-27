@@ -368,7 +368,9 @@ namespace OrganismDatabaseHandler.ProteinUpload
 
             if (collectionState != "Unknown" &&
                 collectionState != "New" &&
-                collectionState != "Provisional")
+                collectionState != "Provisional" &&
+                collectionState != "Offline" &&
+                collectionState != "Proteins_Deleted")
             {
                 throw new Exception("Protein collections in state " + collectionState + " cannot be updated");
             }
