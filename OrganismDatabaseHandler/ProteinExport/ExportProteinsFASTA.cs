@@ -11,6 +11,7 @@ namespace OrganismDatabaseHandler.ProteinExport
     {
         private readonly int mSeqLineLength = 60;
 
+        // ReSharper disable once ConvertToPrimaryConstructor
         public ExportProteinsFASTA(GetFASTAFromDMSForward exportComponent)
             : base(exportComponent)
         {
