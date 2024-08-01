@@ -351,7 +351,20 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public int GetProteinCollectionId(string proteinCollectionName)
         {
-            return GetProteinCollectionID(proteinCollectionName);
+            var dbTools = mDatabaseAccessor.DbTools;
+
+            var query = string.Format("SELECT protein_collection_id FROM t_protein_collections WHERE collection_name = '{0}'", proteinCollectionName);
+
+            var dbCmd = dbTools.CreateCommand(query);
+
+            var success = dbTools.GetQueryScalar(dbCmd, out var queryResult, 1);
+
+            if (!success)
+            {
+                throw new Exception(string.Format("Error looking up the protein collection ID using {0}", query));
+            }
+
+            return queryResult.CastDBVal<int>();
         }
 
         public int AddCollectionOrganismXref(int proteinCollectionId, int organismId)
@@ -819,25 +832,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             return returnCode;
         }
 
-        protected int GetProteinCollectionID(string proteinCollectionName)
-        {
-            var dbTools = mDatabaseAccessor.DbTools;
-
-            var query = string.Format("SELECT protein_collection_id FROM t_protein_collections WHERE collection_name = '{0}'", proteinCollectionName);
-
-            var dbCmd = dbTools.CreateCommand(query);
-
-            var success = dbTools.GetQueryScalar(dbCmd, out var queryResult, 1);
-
-            if (!success)
-            {
-                throw new Exception(string.Format("Error looking up the protein collection ID using {0}", query));
-            }
-
-            return queryResult.CastDBVal<int>();
-        }
-
-        [Obsolete("Use GetProteinCollectionID instead")]
+        [Obsolete("Use GetProteinCollectionId instead")]
         protected int RunSP_GetProteinCollectionID(string proteinCollectionName)
         {
             var dbTools = mDatabaseAccessor.DbTools;
