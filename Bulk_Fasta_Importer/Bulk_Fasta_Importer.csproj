@@ -8,10 +8,11 @@
     <OutputType>Exe</OutputType>
     <AssemblyName>Bulk_Fasta_Importer</AssemblyName>
     <RootNamespace>Bulk_Fasta_Importer</RootNamespace>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <LangVersion>latest</LangVersion>
     <StartupObject>Bulk_Fasta_Importer.Program</StartupObject>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>

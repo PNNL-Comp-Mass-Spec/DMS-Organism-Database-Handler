@@ -8,11 +8,12 @@
     <OutputType>WinExe</OutputType>
     <AssemblyName>PRISMSeq_Uploader</AssemblyName>
     <RootNamespace>PRISMSeq_Uploader</RootNamespace>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <LangVersion>latest</LangVersion>
     <StartupObject>PRISMSeq_Uploader.frmCollectionEditor</StartupObject>
     <ApplicationIcon>PRISMSeq_Favicon.ico</ApplicationIcon>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
