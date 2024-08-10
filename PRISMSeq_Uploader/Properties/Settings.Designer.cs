@@ -25,7 +25,7 @@ namespace PRISMSeq_Uploader.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("host=prismdb2;Port=5432;Database=dms;UserId=svc-dms")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=pceditor")]
         public string ProteinSeqsDBConnectStr {
             get {
                 return ((string)(this["ProteinSeqsDBConnectStr"]));

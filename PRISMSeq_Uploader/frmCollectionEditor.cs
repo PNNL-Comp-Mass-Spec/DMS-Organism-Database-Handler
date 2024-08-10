@@ -67,7 +67,7 @@ namespace PRISMSeq_Uploader
         /// <summary>
         /// Protein sequences database connection string
         /// </summary>
-        private string mPsConnectionString = "host=prismdb2;Port=5432;Database=dms;UserId=svc-dms";
+        private string mPsConnectionString = "Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=pceditor";
 
         private string mLastSelectedOrganism = string.Empty;
         private string mLastSelectedAnnotationType = string.Empty;
@@ -130,8 +130,9 @@ namespace PRISMSeq_Uploader
         {
             // Get initial info - organism list, full collections list
 
-            // Prior to July 2024:    Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI
-            // Starting in July 2024: host=prismdb2;Port=5432;Database=dms;UserId=svc-dms
+            // Prior to July 2024:      Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI
+            // Starting in July 2024:   host=prismdb2;Port=5432;Database=dms;UserId=svc-dms
+            // Starting in August 2024: Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=pceditor
 
             var connectionString = Settings.Default.ProteinSeqsDBConnectStr;
 
