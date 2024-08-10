@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="ProteinSeqsDBConnectStr" Type="System.String" Scope="User">
-      <Value Profile="(Default)">host=prismdb2;Port=5432;Database=dms;UserId=svc-dms</Value>
+      <Value Profile="(Default)">Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=dmsreader;Password=dms4fun</Value>
     </Setting>
   </Settings>
 </SettingsFile>

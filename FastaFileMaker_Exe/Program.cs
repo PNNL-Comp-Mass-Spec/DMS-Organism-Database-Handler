@@ -22,7 +22,7 @@ namespace FastaFileMaker
         private const int FastaGenTimeoutIntervalMinutes = 70;
         private const string DefaultCollectionOptions = "seq_direction=forward,filetype=fasta";
         private static GetFASTAFromDMS mFastaTools;
-        private static string mFastaToolsCnStr = "host=prismdb2;Port=5432;Database=dms;UserId=svc-dms";
+        private static string mFastaToolsCnStr = "host=prismdb2;Port=5432;Database=dms;UserId=dmsreader;Password=dms4fun";
         private static string mMessage;
         private static string mFastaFileName;
         private static System.Timers.Timer mFastaTimer;
@@ -171,8 +171,9 @@ namespace FastaFileMaker
                     mProteinCollectionList = mProteinCollectionList.Substring(0, mProteinCollectionList.Length - ".fasta".Length);
                 }
 
-                // Prior to July 2024:    Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI
-                // Starting in July 2024: host=prismdb2;Port=5432;Database=dms;UserId=svc-dms
+                // Prior to July 2024:      Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI
+                // Starting in July 2024:   Host=prismdb2;Port=5432;Database=dms;UserId=svc-dms
+                // Starting in August 2024: Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=dmsreader
                 var proteinSeqsConnectionString = Settings.Default.ProteinSeqsDBConnectStr;
 
                 if (!string.IsNullOrWhiteSpace(proteinSeqsConnectionString))
