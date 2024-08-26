@@ -758,7 +758,7 @@ namespace PRISMSeq_Uploader
             ScanSourceCollectionWindow(lvwSource, lvwDestination, false);
         }
 
-        // Double click to remove selected member from the destination collection
+        // Double-click to remove selected member from the destination collection
         private void lvwDestination_DoubleClick(
             object sender,
             EventArgs e)

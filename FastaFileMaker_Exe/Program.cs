@@ -77,13 +77,12 @@ namespace FastaFileMaker
             const int minimumLogIntervalSec = 15;
 
 #pragma warning disable CS0162 // Unreachable code detected
-
+            // ReSharper disable HeuristicUnreachableCode
             if (DebugLevel < 3)
             {
-                // ReSharper disable once HeuristicUnreachableCode
                 return;
             }
-
+            // ReSharper restore HeuristicUnreachableCode
 #pragma warning restore CS0162 // Unreachable code detected
 
             // Limit the logging to once every minimumLogIntervalSec seconds, but do show progress when 25%, 50%, and 75% done
@@ -409,7 +408,7 @@ namespace FastaFileMaker
                     "You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0");
                 Console.WriteLine();
 
-                // Delay for 750 msec in case the user double clicked this file from within Windows Explorer (or started the program via a shortcut)
+                // Delay for 750 msec in case the user double-clicked this file from within Windows Explorer (or started the program via a shortcut)
                 System.Threading.Thread.Sleep(750);
             }
             catch (Exception ex)
