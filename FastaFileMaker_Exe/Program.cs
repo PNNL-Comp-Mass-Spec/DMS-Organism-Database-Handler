@@ -22,7 +22,7 @@ namespace FastaFileMaker
         private const int FastaGenTimeoutIntervalMinutes = 70;
         private const string DefaultCollectionOptions = "seq_direction=forward,filetype=fasta";
         private static GetFASTAFromDMS mFastaTools;
-        private static string mFastaToolsCnStr = "host=prismdb2;Port=5432;Database=dms;UserId=dmsreader;Password=dms4fun";
+        private static string mFastaToolsCnStr = "host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=dmsreader;Password=dms4fun";
         private static string mMessage;
         private static string mFastaFileName;
         private static System.Timers.Timer mFastaTimer;
