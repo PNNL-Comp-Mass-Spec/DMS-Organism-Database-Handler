@@ -5,6 +5,8 @@ namespace PRISMSeq_Uploader
 {
     public partial class frmNewCollectionMetadataEditor : Form
     {
+        // Ignore Spelling: frm
+
         public frmNewCollectionMetadataEditor()
         {
             InitializeComponent();

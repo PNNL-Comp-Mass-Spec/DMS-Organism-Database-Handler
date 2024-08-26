@@ -10,7 +10,7 @@ namespace PRISMSeq_Uploader
 {
     public partial class frmTestingInterface : Form
     {
-        // Ignore Spelling: fasta, filetype, na, outbox
+        // Ignore Spelling: fasta, filetype, frm, na, outbox
 
         public frmTestingInterface()
         {

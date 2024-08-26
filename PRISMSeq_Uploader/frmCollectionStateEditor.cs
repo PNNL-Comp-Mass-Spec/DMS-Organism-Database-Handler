@@ -11,6 +11,8 @@ namespace PRISMSeq_Uploader
     [Obsolete("Class referenced by hidden tools menu")]
     public partial class frmCollectionStateEditor : Form
     {
+        // Ignore Spelling: frm
+
         public frmCollectionStateEditor(string proteinStorageConnectionString)
         {
             searchTimer = new System.Timers.Timer(2000d);

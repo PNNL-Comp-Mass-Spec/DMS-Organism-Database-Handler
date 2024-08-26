@@ -7,6 +7,8 @@ namespace PRISMSeq_Uploader
 {
     public partial class frmFilePreview : Form
     {
+        // Ignore Spelling: frm
+
         public frmFilePreview()
         {
             base.Load += frmFilePreview_Load;

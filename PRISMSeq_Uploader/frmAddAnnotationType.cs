@@ -8,6 +8,8 @@ namespace PRISMSeq_Uploader
 {
     public partial class frmAddAnnotationType : Form
     {
+        // Ignore Spelling: frm
+
         public frmAddAnnotationType()
         {
             Load += frmAddAnnotationType_Load;

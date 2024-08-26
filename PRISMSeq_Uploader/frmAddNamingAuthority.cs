@@ -8,6 +8,8 @@ namespace PRISMSeq_Uploader
 {
     public partial class frmAddNamingAuthority : Form
     {
+        // Ignore Spelling: frm
+
         public frmAddNamingAuthority()
         {
             base.Load += frmAddNamingAuthority_Load;

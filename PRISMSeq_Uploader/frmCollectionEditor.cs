@@ -17,7 +17,7 @@ namespace PRISMSeq_Uploader
 {
     public partial class frmCollectionEditor : Form
     {
-        // Ignore Spelling: prismdb2, proteinseqs
+        // Ignore Spelling: frm, prismdb2, proteinseqs
 
         public frmCollectionEditor()
         {
