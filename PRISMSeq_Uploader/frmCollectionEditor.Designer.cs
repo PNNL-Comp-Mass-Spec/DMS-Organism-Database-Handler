@@ -542,7 +542,9 @@ namespace PRISMSeq_Uploader
             // 
             this.mnuToolsCollectionEdit.Index = 0;
             this.mnuToolsCollectionEdit.Text = "&Edit Collection States...";
+#pragma warning disable CS0618 // Type or member is obsolete
             this.mnuToolsCollectionEdit.Click += new System.EventHandler(this.mnuToolsCollectionEdit_Click);
+#pragma warning restore CS0618 // Type or member is obsolete
             // 
             // mnuToolsSep1
             // 
@@ -572,7 +574,9 @@ namespace PRISMSeq_Uploader
             this.mnuAdminNameHashRefresh.Index = 1;
             this.mnuAdminNameHashRefresh.Text = "Refresh Protein Name Hashes";
             this.mnuAdminNameHashRefresh.Visible = false;
+#pragma warning disable CS0618 // Type or member is obsolete
             this.mnuAdminNameHashRefresh.Click += new System.EventHandler(this.mnuAdminNameHashRefresh_Click);
+#pragma warning restore CS0618 // Type or member is obsolete
             // 
             // mnuAdminUpdateSHA
             // 

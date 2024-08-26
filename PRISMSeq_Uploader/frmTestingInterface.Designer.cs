@@ -266,10 +266,12 @@
             this.cmdUpdateArchiveTables.TabIndex = 9;
             this.cmdUpdateArchiveTables.Text = "Sync Archive Tables";
             this.cmdUpdateArchiveTables.Visible = false;
+#pragma warning disable CS0618 // Type or member is obsolete
             this.cmdUpdateArchiveTables.Click += new System.EventHandler(this.cmdUpdateArchiveTables_Click);
-            // 
-            // Button3
-            // 
+#pragma warning restore CS0618 // Type or member is obsolete
+                              // 
+                              // Button3
+                              // 
             this.Button3.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.Button3.Location = new System.Drawing.Point(1392, 35);
             this.Button3.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
