@@ -5,6 +5,8 @@ namespace OrganismDatabaseHandler.ProteinStorage
 {
     public class ProteinStorageEntry
     {
+        // Ignore Spelling: SHA
+
         public ProteinStorageEntry(
             string reference,
             string description,
@@ -85,10 +87,8 @@ namespace OrganismDatabaseHandler.ProteinStorage
             {
                 return Reference + ", ResidueCount=0";
             }
-            else
-            {
-                return Reference + ", ResidueCount=" + Length + ", " + Sequence.Substring(0, 20);
-            }
+
+            return Reference + ", ResidueCount=" + Length + ", " + Sequence.Substring(0, 20);
         }
     }
 }
