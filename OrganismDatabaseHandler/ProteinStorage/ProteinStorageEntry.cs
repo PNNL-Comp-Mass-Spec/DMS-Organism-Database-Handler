@@ -36,27 +36,7 @@ namespace OrganismDatabaseHandler.ProteinStorage
             NameXRefs = new List<string>();
         }
 
-        private string mAlternateReference;
-
         public string Reference { get; private set; }
-
-        protected string AlternateReference
-        {
-            get => mAlternateReference;
-            set
-            {
-                if (value.Length > 0)
-                {
-                    mAlternateReference = value;
-                }
-                else
-                {
-                    mAlternateReference = null;
-                }
-            }
-        }
-
-        public bool HasAlternateReference => mAlternateReference != null;
 
         public string Description { get; }
 
@@ -79,8 +59,6 @@ namespace OrganismDatabaseHandler.ProteinStorage
         public int ReferenceId { get; set; }
 
         public int MemberId { get; set; }
-
-        public int AuthorityId { get; set; }
 
         public int SortingIndex { get; set; }
 
