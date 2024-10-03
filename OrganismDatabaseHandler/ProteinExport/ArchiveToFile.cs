@@ -46,6 +46,17 @@ namespace OrganismDatabaseHandler.ProteinExport
             mSHA1Provider = new SHA1Managed();
         }
 
+        /// <summary>
+        /// Store the archived FASTA file in the database
+        /// </summary>
+        /// <param name="proteinCollectionId">Protein collection ID</param>
+        /// <param name="sourceFilePath">Source file path</param>
+        /// <param name="creationOptionsString">Creation options string, e.g. "seq_direction=forward,filetype=fasta"</param>
+        /// <param name="sourceAuthenticationHash">CRC32 authentication hash (hash of the bytes in the file), e.g. "0479A8A4"</param>
+        /// <param name="outputSequenceType">Sequence type enum</param>
+        /// <param name="archivedFileType">Protein collection type enum</param>
+        /// <param name="proteinCollectionsList">Protein collection list (comma-separated list of protein collection names)</param>
+        /// <returns>Archive output file ID</returns>
         protected override int DispositionFile(
             int proteinCollectionId,
             string sourceFilePath,
@@ -57,13 +68,17 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             int archivedFileEntryId;
 
+            // Assure that the creation options string is lowercase
+            var creationOptionsLowercase = creationOptionsString.ToLower();
+
             var fi = new FileInfo(sourceFilePath);
 
-            var collectionListHexHash = GenerateHash(proteinCollectionsList + "/" + creationOptionsString);
+            // Compute a SHA-1 hash of the protein collection list and creation options (separated by a forward slash)
+            var collectionListHexHash = GenerateHash(proteinCollectionsList + "/" + creationOptionsLowercase);
 
             // Check for existence of Archive Entry
             var checkSql =
-                "SELECT archived_file_id, archived_file_path, coalesce(protein_collection_list, '') as protein_collection_list, coalesce(collection_list_hex_hash, '') as collection_list_hex_hash " +
+                "SELECT archived_file_id, archived_file_path, coalesce(protein_collection_list, '') AS protein_collection_list, coalesce(collection_list_hex_hash, '') AS collection_list_hex_hash " +
                 "FROM t_archived_output_files " +
                 "WHERE authentication_hash = '" + sourceAuthenticationHash + "' AND " +
                 "      collection_list_hex_hash = '" + collectionListHexHash + "' AND " +
@@ -98,7 +113,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             if (queryResults.Rows.Count == 0)
             {
-                // Add a new entry to T_Archived_Output_Files
+                // Add a new entry to pc.t_archived_output_files
 
                 var proteinCount = GetProteinCount(sourceFilePath);
 
@@ -108,7 +123,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     archivedFileType, outputSequenceType);
 
                 archivedFileEntryId = RunSP_AddOutputFileArchiveEntry(
-                    proteinCollectionId, creationOptionsString, sourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount,
+                    proteinCollectionId, creationOptionsLowercase, sourceAuthenticationHash, fi.LastWriteTime, fi.Length, proteinCount,
                     archivePath, Enum.GetName(typeof(CollectionTypes), archivedFileType), proteinCollectionsList, collectionListHexHash);
 
                 archivedOutputFileData = DatabaseAccessor.GetTable(checkSql);
@@ -190,7 +205,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         }
 
         /// <summary>
-        /// Updates the protein collection list and hash values in T_Archived_Output_Files for the given archived output file
+        /// Updates the protein collection list and hash values in pc.t_archived_output_files for the given archived output file
         /// </summary>
         /// <param name="archivedFileEntryId">Archive output file ID</param>
         /// <param name="proteinCollectionsList">Protein collection list (comma-separated list of protein collection names)</param>
