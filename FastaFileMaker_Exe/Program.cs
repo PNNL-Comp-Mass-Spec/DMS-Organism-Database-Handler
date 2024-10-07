@@ -170,9 +170,13 @@ namespace FastaFileMaker
                     mProteinCollectionList = mProteinCollectionList.Substring(0, mProteinCollectionList.Length - ".fasta".Length);
                 }
 
-                // Prior to July 2024:      Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI
-                // Starting in July 2024:   Host=prismdb2;Port=5432;Database=dms;UserId=svc-dms
-                // Starting in August 2024: Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=dmsreader
+                // Prior to July 2024:       Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI
+                // Starting in July 2024:    Host=prismdb2;Port=5432;Database=dms;UserId=svc-dms
+                // Starting in August 2024:  Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=dmsreader
+                // Starting in October 2024: Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=pceditor
+
+                // The user needs to be "pceditor" since table pc.t_archived_output_files may need to be updated
+
                 var proteinSeqsConnectionString = Settings.Default.ProteinSeqsDBConnectStr;
 
                 if (!string.IsNullOrWhiteSpace(proteinSeqsConnectionString))
