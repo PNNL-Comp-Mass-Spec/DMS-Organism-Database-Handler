@@ -146,6 +146,13 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
             }
 
+            if (archivedOutputFileData.Rows.Count == 0)
+            {
+                throw new Exception(string.Format(
+                    "Archive output file was not added to pc.t_archived_output_files (or has an invalid state); no matches to: {0}",
+                    checkSql));
+            }
+
             mArchivedFilePath = archivedOutputFileData.Rows[0]["Archived_File_Path"].ToString();
 
             try
