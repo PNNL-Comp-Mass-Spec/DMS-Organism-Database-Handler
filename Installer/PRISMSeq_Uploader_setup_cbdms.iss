@@ -13,34 +13,58 @@ WelcomeLabel2=This will install [name/ver] on your computer. This version is cus
 ; WelcomeLabel2=Welcome message%n%nAdditional sentence
 
 [Files]
-Source: ..\Executables\Debug_CBDMS_GUI\CsvHelper.dll                                    ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\PRISMSeq_Uploader.exe                            ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\PRISMSeq_Uploader.exe.config                     ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\FlexibleFileSortUtility.dll                      ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Bcl.AsyncInterfaces.dll                ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Bcl.HashCode.dll                       ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Extensions.DependencyInjection.Abstractions.dll ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Extensions.Logging.Abstractions.dll    ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\Npgsql.dll                                       ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\OrganismDatabaseHandler.dll                      ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\PRISM.dll                                        ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\PRISMDatabaseUtils.dll                           ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\PRISMWin.dll                                     ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\ProteinFileReader.dll                            ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\Raccoom.TreeViewFolderBrowser.DataProviders.dll  ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\Raccoom.TreeViewFolderBrowser.dll                ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\System.Buffers.dll                               ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\System.Collections.Immutable.dll                 ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\System.Diagnostics.DiagnosticSource.dll          ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\System.Memory.dll                                ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\System.Numerics.Vectors.dll                      ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\System.Runtime.CompilerServices.Unsafe.dll       ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\System.Text.Encodings.Web.dll                    ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\System.Text.Json.dll                             ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\System.Threading.Channels.dll                    ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\System.Threading.Tasks.Extensions.dll            ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\System.ValueTuple.dll                            ; DestDir: {app}
-Source: ..\Executables\Debug_CBDMS_GUI\ValidateFastaFile.dll                            ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\PRISMSeq_Uploader.exe                                      ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\PRISMSeq_Uploader.exe.config                               ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Azure.Core.dll                                             ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Azure.Identity.dll                                         ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\CsvHelper.dll                                              ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\FlexibleFileSortUtility.dll                                ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Bcl.AsyncInterfaces.dll                          ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Bcl.HashCode.dll                                 ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Data.SqlClient.dll                               ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Data.SqlClient.SNI.arm64.dll                     ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Data.SqlClient.SNI.x64.dll                       ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Data.SqlClient.SNI.x86.dll                       ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Extensions.DependencyInjection.Abstractions.dll  ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Extensions.Logging.Abstractions.dll              ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Identity.Client.dll                              ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.Identity.Client.Extensions.Msal.dll              ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.IdentityModel.Abstractions.dll                   ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.IdentityModel.JsonWebTokens.dll                  ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.IdentityModel.Logging.dll                        ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.IdentityModel.Protocols.dll                      ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll        ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Microsoft.IdentityModel.Tokens.dll                         ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Npgsql.dll                                                 ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\OrganismDatabaseHandler.dll                                ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\PRISM.dll                                                  ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\PRISMDatabaseUtils.dll                                     ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\PRISMWin.dll                                               ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\ProteinFileReader.dll                                      ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Raccoom.TreeViewFolderBrowser.DataProviders.dll            ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\Raccoom.TreeViewFolderBrowser.dll                          ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Buffers.dll                                         ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.ClientModel.dll                                     ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Collections.Immutable.dll                           ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Configuration.ConfigurationManager.dll              ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Diagnostics.DiagnosticSource.dll                    ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.IdentityModel.Tokens.Jwt.dll                        ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.IO.FileSystem.AccessControl.dll                     ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Memory.Data.dll                                     ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Memory.dll                                          ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Numerics.Vectors.dll                                ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Runtime.CompilerServices.Unsafe.dll                 ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Security.AccessControl.dll                          ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Security.Cryptography.ProtectedData.dll             ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Security.Permissions.dll                            ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Security.Principal.Windows.dll                      ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Text.Encodings.Web.dll                              ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Text.Json.dll                                       ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Threading.Channels.dll                              ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.Threading.Tasks.Extensions.dll                      ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\System.ValueTuple.dll                                      ; DestDir: {app}
+Source: ..\Executables\Debug_CBDMS_GUI\ValidateFastaFile.dll                                      ; DestDir: {app}
+
 
 Source: ..\Aux_Files\delete_16x.ico                                  ; DestDir: {app}
 Source: ..\PRISMSeq_Uploader\PRISMSeq_Favicon.ico                    ; DestDir: {app}
@@ -55,8 +79,8 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 ; Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 
 [Icons]
-Name: {commondesktop}\PRISMSeq Uploader CBDMS; Filename: {app}\PRISMSeq_Uploader.exe; Tasks: desktopicon; Comment: PRISMSeq Uploader for CBDMS 
-Name: {group}\PRISMSeq Uploader CBDMS;         Filename: {app}\PRISMSeq_Uploader.exe; Comment: PRISMSeq Uploader for CBDMS 
+Name: {commondesktop}\PRISMSeq Uploader CBDMS; Filename: {app}\PRISMSeq_Uploader.exe; Tasks: desktopicon; Comment: PRISMSeq Uploader for CBDMS
+Name: {group}\PRISMSeq Uploader CBDMS;         Filename: {app}\PRISMSeq_Uploader.exe; Comment: PRISMSeq Uploader for CBDMS
 
 [Setup]
 AppName=PRISMSeq_Uploader_for_CBDMS
