@@ -224,57 +224,56 @@ namespace PRISMSeq_Uploader
         [Obsolete("Valid, but unused and could take a very long time to run")]
         public void RefreshNameHashes()
         {
-            const string nameCountSQL = "Select reference_id From t_protein_names order by reference_id Desc OFFSET 0 Rows FETCH FIRST 1 ROW ONLY";
+            const string maxIdSQL = "SELECT MAX(reference_id) AS max_reference_id FROM pc.t_protein_names";
 
-            var nameCountResults = mDatabaseAccessor.GetTable(nameCountSQL);
-            var totalNameCount = Convert.ToInt32(nameCountResults.Rows[0]["Reference_ID"]);
+            var maxIdResults = mDatabaseAccessor.GetTable(maxIdSQL);
+            var maxReferenceId = Convert.ToInt32(maxIdResults.Rows[0]["max_reference_id"]);
 
             var startIndex = 0;
             var stepValue = 10000;
 
-            if (totalNameCount <= stepValue)
+            if (maxReferenceId <= stepValue)
             {
-                stepValue = totalNameCount;
+                stepValue = maxReferenceId;
             }
 
             OnSyncStart("Updating Name Hashes");
 
             var dbTools = mDatabaseAccessor.DbTools;
 
-            for (var counter = stepValue; counter <= totalNameCount + stepValue; counter += stepValue)
+            for (var counter = stepValue; counter <= maxReferenceId + stepValue; counter += stepValue)
             {
-                if (counter >= totalNameCount - stepValue)
+                if (counter >= maxReferenceId - stepValue)
                 {
                     Debug.WriteLine("");
                 }
 
                 var rowRetrievalSql = "SELECT reference_id, name, description, protein_id " +
-                                      "FROM t_protein_names " +
+                                      "FROM pc.t_protein_names " +
                                       "WHERE reference_id > " + startIndex + " AND reference_id <= " + counter +
                                       "ORDER BY reference_id";
 
-                // Protein_Name(+"_" + Description + "_" + ProteinID.ToString)
                 var proteinListResults = mDatabaseAccessor.GetTable(rowRetrievalSql);
 
-                if (proteinListResults.Rows.Count > 0)
+                if (proteinListResults.Rows.Count == 0)
+                    continue;
+
+                foreach (DataRow dataRow in proteinListResults.Rows)
                 {
-                    foreach (DataRow dataRow in proteinListResults.Rows)
-                    {
-                        var refId = dbTools.GetInteger(dataRow["reference_id"]);
-                        var proteinName = dbTools.GetString(dataRow["name"]);
-                        var description = dbTools.GetString(dataRow["description"]);
-                        var proteinId = dbTools.GetInteger(dataRow["protein_id"]);
+                    var refId = dbTools.GetInteger(dataRow["reference_id"]);
+                    var proteinName = dbTools.GetString(dataRow["name"]);
+                    var description = dbTools.GetString(dataRow["description"]);
+                    var proteinId = dbTools.GetInteger(dataRow["protein_id"]);
 
-                        mImporter.UpdateProteinNameHash(
-                            refId,
-                            proteinName,
-                            description,
-                            proteinId);
-                    }
-
-                    OnSyncProgressUpdate("Processing " + startIndex + " to " + counter, counter / (double)totalNameCount);
-                    startIndex = counter + 1;
+                    mImporter.UpdateProteinNameHash(
+                        refId,
+                        proteinName,
+                        description,
+                        proteinId);
                 }
+
+                OnSyncProgressUpdate("Processing " + startIndex + " to " + counter, counter / (double)maxReferenceId);
+                startIndex = counter + 1;
             }
 
             OnSyncCompletion();
