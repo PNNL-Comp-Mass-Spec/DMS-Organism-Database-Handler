@@ -38,6 +38,8 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         private readonly DBTask mDatabaseAccessor;
 
+        private readonly System.Text.ASCIIEncoding mEncoding;
+
         private readonly System.Security.Cryptography.SHA1Managed mHasher;
 
         #region "Properties"
@@ -74,6 +76,9 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             mDatabaseAccessor = new DBTask(connectionStringToUse);
             RegisterEvents(mDatabaseAccessor);
+
+            // Create an encoding object to ensure the encoding standard for the source text
+            mEncoding = new System.Text.ASCIIEncoding();
 
             mHasher = new System.Security.Cryptography.SHA1Managed();
         }
@@ -412,11 +417,8 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public string GenerateHash(string sourceText)
         {
-            // Create an encoding object to ensure the encoding standard for the source text
-            var encoding = new System.Text.ASCIIEncoding();
-
             // Retrieve a byte array based on the source text
-            var byteSourceText = encoding.GetBytes(sourceText);
+            var byteSourceText = mEncoding.GetBytes(sourceText);
 
             // Compute the hash value from the source
             var sha1Hash = mHasher.ComputeHash(byteSourceText);
