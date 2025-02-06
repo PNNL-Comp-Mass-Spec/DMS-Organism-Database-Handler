@@ -400,6 +400,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             return RunSP_AddCRC32FileAuthentication(proteinCollectionId, authenticationHash, numProteins, totalResidues);
         }
 
+        [Obsolete("Valid, but unused")]
         public int UpdateProteinNameHash(
             int referenceId,
             string proteinName,
@@ -905,6 +906,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             return DBToolsBase.GetReturnCode(returnParam);
         }
 
+        [Obsolete("Valid, but unused")]
         protected int RunSP_UpdateProteinNameHash(
             int referenceId,
             string proteinName,
