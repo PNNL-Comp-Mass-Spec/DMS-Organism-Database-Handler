@@ -8,4 +8,4 @@ Release_DLL
 
 Debug_DLL/*
 *.user
-/.vs
+**/.vs
