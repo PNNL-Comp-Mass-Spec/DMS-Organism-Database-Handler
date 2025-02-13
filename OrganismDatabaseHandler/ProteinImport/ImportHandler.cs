@@ -67,9 +67,7 @@ namespace OrganismDatabaseHandler.ProteinImport
         {
             var foundRows = mCollectionsList.Select("protein_collection_id = " + proteinCollectionId);
             var dataRow = foundRows[0];
-            var collectionName = mSQLAccess.DbTools.GetString(dataRow["collection_name"]);
-
-            return collectionName;
+            return mSQLAccess.DbTools.GetString(dataRow["collection_name"]);
         }
 
         protected bool LoadFASTA(string filePath, out ProteinStorage.ProteinStorage fastaContents)
