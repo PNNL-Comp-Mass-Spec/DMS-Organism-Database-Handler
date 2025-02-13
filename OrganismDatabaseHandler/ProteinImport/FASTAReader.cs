@@ -121,6 +121,20 @@ namespace OrganismDatabaseHandler.ProteinImport
                         if (currentPosition > 0) // dump current record
                         {
                             seqInfo.CalculateSequenceInfo(sequence.ToString());
+
+                            if (seqInfo.MonoisotopicMass < 20)
+                            {
+                                // The protein mass is likely 18.0105633, which indicates that the residue masses are all zero
+                                // Abort adding this protein collection
+
+                                LastErrorMessage = string.Format("Computed mass for protein {0} is {1:F1}, which is too low; aborting upload of {2}",
+                                    proteinName,
+                                    seqInfo.MonoisotopicMass,
+                                    mFASTAFilePath);
+
+                                return false;
+                            }
+
                             recordCount++;
 
                             if (recordCount % 100 == 0)
