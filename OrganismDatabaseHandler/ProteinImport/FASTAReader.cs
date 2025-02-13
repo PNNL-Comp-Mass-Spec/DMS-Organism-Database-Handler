@@ -59,7 +59,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             fastaContents = new ProteinStorage.ProteinStorage(filePath);
 
-            var reference = string.Empty;
+            var proteinName = string.Empty;
             var description = string.Empty;
             var sequence = new StringBuilder();
 
@@ -130,12 +130,12 @@ namespace OrganismDatabaseHandler.ProteinImport
                             }
 
                             fastaContents.AddProtein(new ProteinStorageEntry(
-                                reference, description, sequence.ToString(), seqInfo.SequenceLength,
+                                proteinName, description, sequence.ToString(), seqInfo.SequenceLength,
                                 seqInfo.MonoisotopicMass, seqInfo.AverageMass,
                                 seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount));
                         }
 
-                        reference = string.Empty;
+                        proteinName = string.Empty;
                         description = string.Empty;
                         sequence.Clear();
 
@@ -144,13 +144,13 @@ namespace OrganismDatabaseHandler.ProteinImport
                         if (mDescLineRegEx.IsMatch(dataLine))
                         {
                             descMatch = mDescLineRegEx.Match(dataLine);
-                            reference = descMatch.Groups["name"].Value;
+                            proteinName = descMatch.Groups["name"].Value;
                             description = descMatch.Groups["description"].Value;
                         }
                         else if (mNoDescLineRegEx.IsMatch(dataLine))
                         {
                             descMatch = mNoDescLineRegEx.Match(dataLine);
-                            reference = descMatch.Groups[1].Value;
+                            proteinName = descMatch.Groups[1].Value;
                             description = string.Empty;
                         }
                     }
@@ -174,7 +174,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                     recordCount++;
 
                     fastaContents.AddProtein(new ProteinStorageEntry(
-                        reference, description, sequence.ToString(), seqInfo.SequenceLength,
+                        proteinName, description, sequence.ToString(), seqInfo.SequenceLength,
                         seqInfo.MonoisotopicMass, seqInfo.AverageMass,
                         seqInfo.MolecularFormula, seqInfo.SHA1Hash, recordCount));
                 }

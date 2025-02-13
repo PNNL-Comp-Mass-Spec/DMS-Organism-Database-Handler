@@ -14,6 +14,10 @@ namespace OrganismDatabaseHandler.ProteinStorage
         protected readonly SortedSet<string> ProteinNames;
         private string mPassPhrase;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="fastaFilePath"></param>
         public ProteinStorage(string fastaFilePath)
         {
             FilePath = fastaFilePath;

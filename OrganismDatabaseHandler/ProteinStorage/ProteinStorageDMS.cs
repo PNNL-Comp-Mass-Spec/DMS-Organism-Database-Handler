@@ -4,8 +4,14 @@ namespace OrganismDatabaseHandler.ProteinStorage
 {
     public class ProteinStorageDMS : ProteinStorage
     {
+        // Ignore Spelling: fasta
+
         private readonly Dictionary<int, SortedSet<string>> mUniqueProteinIdList;        // Protein_ID, Protein_Name
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="fastaFileName"></param>
         public ProteinStorageDMS(string fastaFileName)
             : base(fastaFileName)
         {

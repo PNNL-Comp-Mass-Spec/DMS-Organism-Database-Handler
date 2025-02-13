@@ -149,10 +149,10 @@ namespace OrganismDatabaseHandler.SequenceInfo
                 var countN = Convert.ToInt32(dataRow["num_n"]);
                 var countO = Convert.ToInt32(dataRow["num_o"]);
                 var countS = Convert.ToInt32(dataRow["num_s"]);
-                var monoMass = Convert.ToDouble(dataRow["monoisotopic_mass"]);
-                var avgMass = Convert.ToDouble(dataRow["average_mass"]);
+                var averageMass = Convert.ToDouble(dataRow["average_mass"]);
+                var monoisotopicMass = Convert.ToDouble(dataRow["monoisotopic_mass"]);
 
-                AddAminoAcid(new AminoAcidInfo(singleLetterSymbol, description, countC, countH, countN, countO, countS, avgMass, monoMass));
+                AddAminoAcid(new AminoAcidInfo(singleLetterSymbol, description, countC, countH, countN, countO, countS, averageMass, monoisotopicMass));
             }
         }
 
@@ -163,17 +163,34 @@ namespace OrganismDatabaseHandler.SequenceInfo
 
         internal class AminoAcidInfo : SequenceInfo
         {
-            public AminoAcidInfo(string seq, string name,
+            /// <summary>
+            /// Constructor
+            /// </summary>
+            /// <param name="singleLetterSymbol">Single letter amino acid symbol</param>
+            /// <param name="description">Amino acid description (typically the three letter amino acid symbol)</param>
+            /// <param name="countC">Carbon count</param>
+            /// <param name="countH">Hydrogen count</param>
+            /// <param name="countN">Nitrogen count</param>
+            /// <param name="countO">Oxygen count</param>
+            /// <param name="countS">Sulfur count</param>
+            /// <param name="averageMass">Average mass</param>
+            /// <param name="monoisotopicMass">Monoisotopic mass</param>
+            /// <exception cref="ApplicationException"></exception>
+            public AminoAcidInfo(
+                string singleLetterSymbol, string description,
                 int countC, int countH, int countN, int countO, int countS,
-                double average, double monoisotopic)
-                : base(seq, name, countC, countH, countN, countO, countS, average, monoisotopic)
+                double averageMass, double monoisotopicMass)
+                : base(singleLetterSymbol, description, countC, countH, countN, countO, countS, averageMass, monoisotopicMass)
             {
-                if (seq.Length != 1)
+                if (singleLetterSymbol.Length != 1)
                 {
-                    throw new ApplicationException("'" + seq + "' is not a valid amino acid.  Must be only one character long.");
+                    throw new ApplicationException("'" + singleLetterSymbol + "' is not a valid amino acid; must be a single letter amino acid symbol");
                 }
             }
 
+            /// <summary>
+            /// One letter amino acid symbol
+            /// </summary>
             public string Symbol => Sequence;
         }
 
@@ -208,28 +225,28 @@ namespace OrganismDatabaseHandler.SequenceInfo
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="seq"></param>
-        /// <param name="seqName"></param>
-        /// <param name="cCount"></param>
-        /// <param name="hCount"></param>
-        /// <param name="nCount"></param>
-        /// <param name="oCount"></param>
-        /// <param name="sCount"></param>
-        /// <param name="average"></param>
-        /// <param name="monoisotopic"></param>
+        /// <param name="seq">Protein sequence</param>
+        /// <param name="seqName">Sequence description (empty string for proteins, three letter amino acid symbol for amino acids)</param>
+        /// <param name="countC">Carbon count</param>
+        /// <param name="countH">Hydrogen count</param>
+        /// <param name="countN">Nitrogen count</param>
+        /// <param name="countO">Oxygen count</param>
+        /// <param name="countS">Sulfur count</param>
+        /// <param name="averageMass">Average mass</param>
+        /// <param name="monoisotopicMass">Monoisotopic mass</param>
         public SequenceInfo(string seq, string seqName,
-            int cCount, int hCount, int nCount, int oCount, int sCount,
-            double average, double monoisotopic)
+            int countC, int countH, int countN, int countO, int countS,
+            double averageMass, double monoisotopicMass)
         {
             Sequence = seq;
             Name = seqName;
-            C = cCount;
-            H = hCount;
-            N = nCount;
-            O = oCount;
-            S = sCount;
-            mAverageMass = average;
-            mMonoisotopicMass = monoisotopic;
+            C = countC;
+            H = countH;
+            N = countN;
+            O = countO;
+            S = countS;
+            mAverageMass = averageMass;
+            mMonoisotopicMass = monoisotopicMass;
         }
 
         public string Sequence { get; private set; }
