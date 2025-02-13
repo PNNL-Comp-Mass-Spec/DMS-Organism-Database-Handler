@@ -1023,7 +1023,7 @@ namespace PRISMSeq_Uploader
         {
             if (mFilePreviewer == null)
             {
-                mFilePreviewer = new FilePreviewHandler();
+                mFilePreviewer = new FilePreviewHandler(mDbConnectionString);
                 RegisterEvents(mFilePreviewer);
 
                 mFilePreviewer.FormStatus += OnPreviewFormStatusChange;

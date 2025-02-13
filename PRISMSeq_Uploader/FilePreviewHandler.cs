@@ -17,8 +17,13 @@ namespace PRISMSeq_Uploader
 
         public event FormStatusEventHandler FormStatus;
 
-        public FilePreviewHandler()
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="dbConnectionString">Protein sequences database connection string</param>
+        public FilePreviewHandler(string dbConnectionString)
         {
+            mDbConnectionString = dbConnectionString;
             mFrmPreview = new frmFilePreview();
             mFrmPreview.RefreshRequest += FillPreview;
             mFrmPreview.FormClosed += OnFormClose;
@@ -30,7 +35,7 @@ namespace PRISMSeq_Uploader
         {
             if (mLoader == null)
             {
-                mLoader = new FASTAReader();
+                mLoader = new FASTAReader(mDbConnectionString);
                 RegisterEvents(mLoader);
             }
 

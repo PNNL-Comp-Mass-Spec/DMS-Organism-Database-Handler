@@ -12,6 +12,7 @@ namespace OrganismDatabaseHandler.ProteinImport
     {
         private string mFASTAFilePath;
 
+        private readonly string mDbConnectionString;
         private readonly Regex mDescLineRegEx;
         private readonly Regex mNoDescLineRegEx;
         private readonly Regex mDescLineMatcher;
@@ -23,8 +24,10 @@ namespace OrganismDatabaseHandler.ProteinImport
         /// <summary>
         /// Constructor
         /// </summary>
-        public FASTAReader()
+        /// <param name="dbConnectionString">Protein sequences database connection string</param>
+        public FASTAReader(string dbConnectionString)
         {
+            mDbConnectionString = dbConnectionString;
             mDescLineMatcher = new Regex(@"^\>.+$");
             mDescLineRegEx = new Regex(@"^\>(?<name>\S+)\s+(?<description>.*)$");
             mNoDescLineRegEx = new Regex(@"^\>(?<name>\S+)$");
@@ -57,8 +60,22 @@ namespace OrganismDatabaseHandler.ProteinImport
             var description = string.Empty;
             var sequence = new StringBuilder();
 
-            var seqInfo = new SequenceInfoCalculator();
-            RegisterEvents(seqInfo);
+            LastErrorMessage = string.Empty;
+
+            SequenceInfoCalculator seqInfo;
+
+            try
+            {
+                seqInfo = new SequenceInfoCalculator(mDbConnectionString);
+                RegisterEvents(seqInfo);
+            }
+            catch (Exception ex)
+            {
+                var stackTrace = StackTraceFormatter.GetExceptionStackTrace(ex);
+                LastErrorMessage = string.Format("Error initializing the sequence info calculator: {0}; {1}", ex.Message, stackTrace);
+
+                return false;
+            }
 
             var recordCount = 0;
 

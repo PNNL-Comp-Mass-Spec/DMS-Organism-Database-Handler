@@ -39,7 +39,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             mSQLAccess = new DBTask(connectionStringToUse);
             RegisterEvents(mSQLAccess);
 
-            mImporter = new FASTAReader();
+            mImporter = new FASTAReader(connectionStringToUse);
             RegisterEvents(mImporter);
 
             mImporter.LoadStart += Task_LoadStart;

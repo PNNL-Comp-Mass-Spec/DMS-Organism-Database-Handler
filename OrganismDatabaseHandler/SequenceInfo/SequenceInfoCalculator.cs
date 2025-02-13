@@ -11,20 +11,16 @@ namespace OrganismDatabaseHandler.SequenceInfo
 {
     public class SequenceInfoCalculator : EventNotifier
     {
+        // Ignore Spelling: SHA
+
+        // Prior to February 2025:    Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI
+        // Starting in February 2025: Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=pceditor
+
+        private const string DEFAULT_DB_CONNECTION_STRING = "Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=pceditor";
+
         private static Dictionary<string, AminoAcidInfo> mAminoAcids;
 
-
-        private readonly string mDMSConnectionString = "Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI;";
-
-        public SequenceInfoCalculator()
-        {
-            if (mAminoAcids == null)
-            {
-                InitializeFromDMS();
-            }
-
-            sha1Provider ??= new SHA1Managed();
-        }
+        private readonly string mDMSConnectionString;
 
         private static SHA1Managed mSHA1Provider;
 
@@ -38,6 +34,29 @@ namespace OrganismDatabaseHandler.SequenceInfo
 
         public string SHA1Hash { get; private set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="dbConnectionString">DMS database connection string</param>
+        public SequenceInfoCalculator(string dbConnectionString)
+        {
+            if (string.IsNullOrWhiteSpace(dbConnectionString))
+            {
+                mDMSConnectionString = DEFAULT_DB_CONNECTION_STRING;
+            }
+            else
+            {
+                mDMSConnectionString = dbConnectionString;
+            }
+
+            // Note that mAminoAcids is a static dictionary
+            if (mAminoAcids == null)
+            {
+                InitializeFromDMS();
+            }
+
+            mSHA1Provider = new SHA1Managed();
+        }
 
         public void CalculateSequenceInfo(string sequence)
         {
