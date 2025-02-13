@@ -137,10 +137,7 @@ namespace PRISMSeq_Uploader
                         tmp = tmp.Substring(startPos);
                         tmp = tmp.Trim(trimChars);
 
-                        foreach (var name in tmp.Split(";".ToCharArray()))
-                        {
-                            nameList.Add(name);
-                        }
+                        nameList.AddRange(tmp.Split(";".ToCharArray()));
 
                         break;
 
@@ -233,7 +230,7 @@ namespace PRISMSeq_Uploader
                 mTranslationTables.Rows.Add(dataRow);
             }
 
-            foreach (var aminoAcid in aaString.ToCharArray())
+            foreach (var aminoAcid in aaString)
             {
                 dataRow = mTranslationEntries.NewRow();
                 var startSequence = startString.Substring(counter, 1);
