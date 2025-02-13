@@ -11,6 +11,8 @@ namespace OrganismDatabaseHandler.ProteinImport
 {
     public class ImportHandler : EventNotifier
     {
+        // Ignore Spelling: fasta
+
         /// <summary>
         /// Protein import file types (effectively only FASTA, since Access is deprecated)
         /// </summary>

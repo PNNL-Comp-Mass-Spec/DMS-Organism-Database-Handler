@@ -10,6 +10,8 @@ namespace OrganismDatabaseHandler.ProteinImport
 {
     public class FASTAReader : EventNotifier
     {
+        // Ignore Spelling: fasta
+
         private string mFASTAFilePath;
 
         private readonly string mDbConnectionString;

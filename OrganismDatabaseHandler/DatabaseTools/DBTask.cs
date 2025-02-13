@@ -8,6 +8,7 @@ namespace OrganismDatabaseHandler.DatabaseTools
 {
     public class DBTask : EventNotifier
     {
+        // Ignore Spelling: Sql
 
         /// <summary>
         /// Database connection string
