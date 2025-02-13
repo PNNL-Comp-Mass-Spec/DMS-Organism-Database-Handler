@@ -34,9 +34,9 @@ namespace PRISMSeq_Uploader
             set => mFormLocation = value;
         }
 
-        public AddAnnotationTypeType(string psConnectionString)
+        public AddAnnotationTypeType(string dbConnectionString)
         {
-            mConnectionString = psConnectionString;
+            mConnectionString = dbConnectionString;
 
             var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(mConnectionString, "PRISMSeq_Uploader");
 

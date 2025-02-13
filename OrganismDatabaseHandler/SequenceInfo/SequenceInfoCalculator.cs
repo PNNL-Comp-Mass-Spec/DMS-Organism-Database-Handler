@@ -13,7 +13,6 @@ namespace OrganismDatabaseHandler.SequenceInfo
     {
         private static Dictionary<string, AminoAcidInfo> mAminoAcids;
 
-        private static SHA1Managed sha1Provider;
 
         private readonly string mDMSConnectionString = "Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI;";
 
@@ -27,6 +26,7 @@ namespace OrganismDatabaseHandler.SequenceInfo
             sha1Provider ??= new SHA1Managed();
         }
 
+        private static SHA1Managed mSHA1Provider;
 
         public double MonoisotopicMass { get; private set; }
 
@@ -97,12 +97,10 @@ namespace OrganismDatabaseHandler.SequenceInfo
             var byteSourceText = ue.GetBytes(sourceText);
 
             // Compute the hash value from the source
-            var sha1HashBytes = sha1Provider.ComputeHash(byteSourceText);
+            var sha1HashBytes = mSHA1Provider.ComputeHash(byteSourceText);
 
-            // And convert it to String format for return
-            var sha1String = ToHexString(sha1HashBytes);
-
-            return sha1String;
+            // Convert it to a string
+            return ToHexString(sha1HashBytes);
         }
 
         private void InitializeFromDMS()

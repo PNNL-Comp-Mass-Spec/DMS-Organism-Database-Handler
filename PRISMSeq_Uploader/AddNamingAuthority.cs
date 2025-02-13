@@ -29,9 +29,9 @@ namespace PRISMSeq_Uploader
             set => mFormLocation = value;
         }
 
-        public AddNamingAuthorityType(string psConnectionString)
+        public AddNamingAuthorityType(string dbConnectionString)
         {
-            mConnectionString = psConnectionString;
+            mConnectionString = dbConnectionString;
             AuthoritiesTable = GetAuthoritiesList();
         }
 

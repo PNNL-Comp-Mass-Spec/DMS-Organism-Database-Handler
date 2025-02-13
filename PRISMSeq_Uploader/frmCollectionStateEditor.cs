@@ -22,14 +22,14 @@ namespace PRISMSeq_Uploader
 
             InitializeComponent();
 
-            mPsConnectionString = proteinStorageConnectionString;
+            mDbConnectionString = proteinStorageConnectionString;
         }
 
         private readonly System.Timers.Timer searchTimer;
 
         private bool mSearchActive;
         private CollectionStatePickerHandler mHandler;
-        private readonly string mPsConnectionString;
+        private readonly string mDbConnectionString;
         private DataTable mStatesTable;
         private int mSelectedNewStateId = 1;
         private bool mSortOrderAsc = true;
@@ -74,7 +74,7 @@ namespace PRISMSeq_Uploader
 
         private void frmCollectionStateEditor_Load(object sender, EventArgs e)
         {
-            mHandler = new CollectionStatePickerHandler(mPsConnectionString);
+            mHandler = new CollectionStatePickerHandler(mDbConnectionString);
             RegisterEvents(mHandler);
 
             mStatesTable = mHandler.GetStates();

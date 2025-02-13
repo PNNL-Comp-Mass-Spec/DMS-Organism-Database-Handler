@@ -67,7 +67,7 @@ namespace PRISMSeq_Uploader
         /// <summary>
         /// Protein sequences database connection string
         /// </summary>
-        private string mPsConnectionString = "Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=pceditor";
+        private string mDbConnectionString = "Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=pceditor";
 
         private string mLastSelectedOrganism = string.Empty;
         private string mLastSelectedAnnotationType = string.Empty;
@@ -141,12 +141,13 @@ namespace PRISMSeq_Uploader
 
             if (!string.IsNullOrWhiteSpace(connectionString))
             {
-                mPsConnectionString = connectionString;
+                mDbConnectionString = connectionString;
             }
 
             UpdateServerNameLabel();
 
-            mImportHandler = new ImportHandler(mPsConnectionString);
+            mImportHandler ??= new ImportHandler(mDbConnectionString);
+
             mImportHandler.LoadStart += ImportStartHandler;
             mImportHandler.LoadProgress += ImportProgressHandler;
             mImportHandler.LoadEnd += ImportEndHandler;
@@ -305,7 +306,7 @@ namespace PRISMSeq_Uploader
                 mOrganisms,
                 mAnnotationTypes,
                 mProteinCollectionNames,
-                mPsConnectionString,
+                mDbConnectionString,
                 mLastBatchUploadDirectoryPath,
                 mCachedFileDescriptions);
 
@@ -390,7 +391,7 @@ namespace PRISMSeq_Uploader
                 mUploadHandler.WroteLineEndNormalizedFASTA -= NormalizedFASTAFileGenerationHandler;
             }
 
-            mUploadHandler = new PSUploadHandler(mPsConnectionString);
+            mUploadHandler = new PSUploadHandler(mDbConnectionString);
             RegisterEvents(mUploadHandler);
 
             mUploadHandler.BatchProgress += BatchImportProgressHandler;
@@ -487,13 +488,13 @@ namespace PRISMSeq_Uploader
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(mPsConnectionString))
+                if (string.IsNullOrWhiteSpace(mDbConnectionString))
                 {
-                    lblTargetDatabase.Text = "ERROR determining target database: mPSConnectionString is empty";
+                    lblTargetDatabase.Text = "ERROR determining target database: mDbConnectionString is empty";
                     return;
                 }
 
-                var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(mPsConnectionString, "PRISMSeq_Uploader");
+                var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(mDbConnectionString, "PRISMSeq_Uploader");
 
                 var dbTools = DbToolsFactory.GetDBTools(connectionStringToUse);
 
@@ -632,7 +633,7 @@ namespace PRISMSeq_Uploader
 
                 if (mUploadHandler == null)
                 {
-                    mUploadHandler = new PSUploadHandler(mPsConnectionString);
+                    mUploadHandler = new PSUploadHandler(mDbConnectionString);
                     RegisterEvents(mUploadHandler);
 
                     mUploadHandler.BatchProgress += BatchImportProgressHandler;
@@ -859,21 +860,21 @@ namespace PRISMSeq_Uploader
         //private void mnuToolsFBatchUpload_Click(object sender, EventArgs e)
         //{
         //    //Steal this to use with file-directed loading
-        //    mFileBatcher = new BatchUploadFromFileList(mPSConnectionString);
+        //    mFileBatcher = new BatchUploadFromFileList(mDbConnectionString);
         //    mFileBatcher.UploadBatch();
         //}
 
         [Obsolete("The tools menu is hidden")]
         private void mnuToolsCollectionEdit_Click(object sender, EventArgs e)
         {
-            var cse = new frmCollectionStateEditor(mPsConnectionString);
+            var cse = new frmCollectionStateEditor(mDbConnectionString);
             cse.ShowDialog();
         }
 
         // Unused
         //private void mnuToolsExtractFromFile_Click(object sender, EventArgs e)
         //{
-        //    var f = new frmExtractFromFlatFile(mImportHandler.Authorities, mPsConnectionString);
+        //    var f = new frmExtractFromFlatFile(mImportHandler.Authorities, mDbConnectionString);
         //    f.ShowDialog();
         //}
 
@@ -884,7 +885,7 @@ namespace PRISMSeq_Uploader
         //    string outputPath = string.Empty;
 
         //    if (mSyncer == null)
-        //        mSyncer = new SyncFASTAFileArchive(mPSConnectionString);
+        //        mSyncer = new SyncFASTAFileArchive(mDbConnectionString);
 
         //    f.RootFolder = Environment.SpecialFolder.MyComputer;
         //    f.ShowNewFolderButton = true;
@@ -1066,7 +1067,7 @@ namespace PRISMSeq_Uploader
         {
             if (mSyncer == null)
             {
-                mSyncer = new SyncFASTAFileArchive(mPsConnectionString);
+                mSyncer = new SyncFASTAFileArchive(mDbConnectionString);
                 mSyncer.SyncProgress += SyncProgressHandler;
             }
 

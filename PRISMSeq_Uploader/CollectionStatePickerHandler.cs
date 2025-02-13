@@ -18,9 +18,9 @@ namespace PRISMSeq_Uploader
         private readonly DBTask mGetTables;
         private readonly AddUpdateEntries mSpAccess;
 
-        public CollectionStatePickerHandler(string psConnectionString)
+        public CollectionStatePickerHandler(string dbConnectionString)
         {
-            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(psConnectionString, "PRISMSeq_Uploader");
+            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(dbConnectionString, "PRISMSeq_Uploader");
 
             mGetTables = new DBTask(connectionStringToUse);
             RegisterEvents(mGetTables);

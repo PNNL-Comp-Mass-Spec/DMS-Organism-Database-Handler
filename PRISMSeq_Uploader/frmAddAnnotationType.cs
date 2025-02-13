@@ -18,7 +18,7 @@ namespace PRISMSeq_Uploader
         }
 
         private DataTable mAuthoritiesTable;
-        private string mPsConnectionString;
+        private string mDbConnectionString;
 
         public string TypeName { get; set; }
 
@@ -30,7 +30,7 @@ namespace PRISMSeq_Uploader
 
         public string ConnectionString
         {
-            set => mPsConnectionString = value;
+            set => mDbConnectionString = value;
         }
 
         public DataTable AuthorityTable
@@ -122,7 +122,7 @@ namespace PRISMSeq_Uploader
             if (AuthorityID == -2)
             {
                 // Bring up addition dialog
-                var authAdd = new AddNamingAuthorityType(mPsConnectionString);
+                var authAdd = new AddNamingAuthorityType(mDbConnectionString);
                 RegisterEvents(authAdd);
 
                 authAdd.FormLocation = new Point(Left + 20, Top + 30);

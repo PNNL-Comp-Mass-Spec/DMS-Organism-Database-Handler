@@ -63,9 +63,13 @@ namespace OrganismDatabaseHandler.ProteinImport
             LoadEnd?.Invoke();
         }
 
-        public AddUpdateEntries(string pisConnectionString)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="dbConnectionString">Protein sequences database connection string</param>
+        public AddUpdateEntries(string dbConnectionString)
         {
-            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(pisConnectionString, "OrganismDatabaseHandler");
+            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(dbConnectionString, "OrganismDatabaseHandler");
 
             mDatabaseAccessor = new DBTask(connectionStringToUse);
             RegisterEvents(mDatabaseAccessor);

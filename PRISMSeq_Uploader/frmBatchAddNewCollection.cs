@@ -25,7 +25,7 @@ namespace PRISMSeq_Uploader
             DataTable organismList,
             DataTable annotationTypeList,
             DataTable existingCollectionsList,
-            string psConnectionString,
+            string dbConnectionString,
             string selectedFolderPath,
             Dictionary<string, KeyValuePair<string, string>> cachedFileDescriptions)
         {
@@ -47,7 +47,7 @@ namespace PRISMSeq_Uploader
 
             mAnnotationTypeList = annotationTypeList;
             mCollectionsTable = existingCollectionsList;
-            mPsConnectionString = psConnectionString;
+            mDbConnectionString = dbConnectionString;
 
             mCachedFileDescriptions = cachedFileDescriptions;
 
@@ -107,7 +107,7 @@ namespace PRISMSeq_Uploader
         /// </summary>
         private Dictionary<int, string> mCollectionsList;
 
-        private readonly string mPsConnectionString;
+        private readonly string mDbConnectionString;
         private bool mReallyClose;
         private FilePreviewHandler mFilePreviewer;
 
@@ -921,7 +921,7 @@ namespace PRISMSeq_Uploader
             if (SelectedAnnotationTypeID == -2)
             {
                 // Bring up an additional dialog
-                var annotationTypeHandler = new AddAnnotationTypeType(mPsConnectionString);
+                var annotationTypeHandler = new AddAnnotationTypeType(mDbConnectionString);
                 RegisterEvents(annotationTypeHandler);
 
                 annotationTypeHandler.FormLocation = new Point(Left + Width + 10, Top);

@@ -28,9 +28,13 @@ namespace OrganismDatabaseHandler.ProteinImport
         public event LoadEndEventHandler LoadEnd;
         public event CollectionLoadCompleteEventHandler CollectionLoadComplete;
 
-        public ImportHandler(string psConnectionString)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="dbConnectionString">Protein sequences database connection string</param>
+        public ImportHandler(string dbConnectionString)
         {
-            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(psConnectionString, "OrganismDatabaseHandler");
+            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(dbConnectionString, "OrganismDatabaseHandler");
 
             mSQLAccess = new DBTask(connectionStringToUse);
             RegisterEvents(mSQLAccess);

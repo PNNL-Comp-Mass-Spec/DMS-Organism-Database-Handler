@@ -31,9 +31,9 @@ namespace PRISMSeq_Uploader
 
         private string mGeneratedFastaFilePath;
 
-        public SyncFASTAFileArchive(string psConnectionString)
+        public SyncFASTAFileArchive(string dbConnectionString)
         {
-            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(psConnectionString, "PRISMSeq_Uploader");
+            var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(dbConnectionString, "PRISMSeq_Uploader");
 
             mDatabaseAccessor = new DBTask(connectionStringToUse);
             RegisterEvents(mDatabaseAccessor);

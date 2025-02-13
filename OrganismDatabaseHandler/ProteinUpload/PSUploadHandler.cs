@@ -154,19 +154,23 @@ namespace OrganismDatabaseHandler.ProteinUpload
             ValidFASTAFileLoaded?.Invoke(fastaFilePath, uploadData);
         }
 
-        public PSUploadHandler(string psConnectionString)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="dbConnectionString">Protein sequences database connection string</param>
+        public PSUploadHandler(string dbConnectionString)
         {
             // Reserve space for tracking up to 10 validation updates (expand later if needed)
             mValidationOptions = new bool[11];
 
-            mUpload = new AddUpdateEntries(psConnectionString);
+            mUpload = new AddUpdateEntries(dbConnectionString);
             RegisterEvents(mUpload);
 
             mUpload.LoadStart += LoadStartHandler;
             mUpload.LoadProgress += LoadProgressHandler;
             mUpload.LoadEnd += LoadEndHandler;
 
-            mExport = new GetFASTAFromDMS(psConnectionString, GetFASTAFromDMS.SequenceTypes.Forward);
+            mExport = new GetFASTAFromDMS(dbConnectionString, GetFASTAFromDMS.SequenceTypes.Forward);
             mExport.FileGenerationCompleted += Export_FileGenerationCompleted;
             mExport.FileGenerationProgress += Export_FileGenerationProgress;
             RegisterEvents(mExport);
@@ -175,7 +179,7 @@ namespace OrganismDatabaseHandler.ProteinUpload
             mValidator.ProgressUpdate += Task_LoadProgress;
             mValidator.WroteLineEndNormalizedFASTA += OnNormalizedFASTAGeneration;
 
-            mImporter = new ImportHandler(psConnectionString);
+            mImporter = new ImportHandler(dbConnectionString);
             mImporter.LoadStart += LoadStartHandler;
             mImporter.LoadProgress += LoadProgressHandler;
             mImporter.LoadEnd += LoadEndHandler;
