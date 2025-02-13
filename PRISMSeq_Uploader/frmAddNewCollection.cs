@@ -127,8 +127,8 @@ namespace PRISMSeq_Uploader
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             CollectionName = null;
-            OrganismId = default;
-            AnnotationTypeId = default;
+            OrganismId = 0;
+            AnnotationTypeId = 0;
         }
     }
 }

@@ -111,7 +111,7 @@ namespace PRISMSeq_Uploader
 
         private void ProcessTranslationEntry(IEnumerable<string> rawEntryCollection)
         {
-            var id = default(int);
+            var id = 0;
 
             var aaList = string.Empty;
             var startList = string.Empty;
@@ -120,7 +120,7 @@ namespace PRISMSeq_Uploader
             var base3List = string.Empty;
             var nameList = new List<string>();
 
-            var startPos = default(int);
+            var startPos = 0;
 
             const string trimString = " ,\"";
             var trimChars = trimString.ToCharArray();

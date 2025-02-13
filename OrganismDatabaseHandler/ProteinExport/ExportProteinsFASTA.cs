@@ -53,7 +53,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 OnExportStart("Writing to FASTA File");
 
                 var counterMax = proteins.ProteinCount;
-                var counter = default(int);
+                var counter = 0;
                 var hexCodeFinder = new Regex(@"[\x00-\x1F\x7F-\xFF]", RegexOptions.Compiled);
 
                 int eventTriggerThresh;

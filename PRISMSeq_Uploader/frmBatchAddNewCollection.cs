@@ -1262,7 +1262,7 @@ namespace PRISMSeq_Uploader
 
             public int Compare(object x, object y)
             {
-                var returnVal = default(int);
+                var returnVal = 0;
                 var compared = false;
 
                 if (mSortingDates)
