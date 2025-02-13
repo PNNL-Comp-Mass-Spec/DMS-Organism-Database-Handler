@@ -84,6 +84,7 @@ namespace PRISMSeq_Uploader
         {
             var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(mConnectionString, "PRISMSeq_Uploader");
 
+            // Initialize mImporter if null
             mImporter ??= new ImportHandler(connectionStringToUse);
 
             return mImporter.LoadAuthorities();

@@ -24,7 +24,7 @@ namespace OrganismDatabaseHandler.DatabaseTools
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="connectionString"></param>
+        /// <param name="connectionString">Database connection string</param>
         public DBTask(string connectionString)
         {
             DbTools = DbToolsFactory.GetDBTools(connectionString);

@@ -146,6 +146,7 @@ namespace PRISMSeq_Uploader
 
             UpdateServerNameLabel();
 
+            // Initialize mImportHandler if null
             mImportHandler ??= new ImportHandler(mDbConnectionString);
 
             mImportHandler.LoadStart += ImportStartHandler;

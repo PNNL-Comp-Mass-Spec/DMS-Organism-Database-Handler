@@ -52,19 +52,19 @@ namespace Bulk_Fasta_Importer
         /// <summary>
         /// Organism info, where keys are organism name and values are organism ID
         /// </summary>
-        /// <remarks>String searches will be case insensitive</remarks>
+        /// <remarks>String searches will be case-insensitive</remarks>
         private Dictionary<string, int> mOrganismInfo;
 
         /// <summary>
         /// Annotation type info, where keys are annotation type names and values are annotation type IDs
         /// </summary>
-        /// <remarks>String searches will be case insensitive</remarks>
+        /// <remarks>String searches will be case-insensitive</remarks>
         private Dictionary<string, int> mAnnotationTypeInfo;
 
         /// <summary>
         /// Protein collection info, where keys are protein collection names and values are protein collection IDs
         /// </summary>
-        /// <remarks>String searches will be case insensitive</remarks>
+        /// <remarks>String searches will be case-insensitive</remarks>
         private Dictionary<string, int> mProteinCollectionInfo;
 
         private bool mDatabaseDataLoaded;

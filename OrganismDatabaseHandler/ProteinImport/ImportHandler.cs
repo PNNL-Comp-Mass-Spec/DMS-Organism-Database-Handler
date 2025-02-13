@@ -11,9 +11,17 @@ namespace OrganismDatabaseHandler.ProteinImport
 {
     public class ImportHandler : EventNotifier
     {
+        /// <summary>
+        /// Protein import file types (effectively only FASTA, since Access is deprecated)
+        /// </summary>
         public enum ProteinImportFileTypes
         {
+            /// <summary>
+            /// FASTA file with protein names, descriptions, and sequences
+            /// </summary>
             FASTA,
+
+            [Obsolete("Unused import file type")]
             Access
         }
 

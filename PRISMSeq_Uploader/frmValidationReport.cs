@@ -241,6 +241,7 @@ namespace PRISMSeq_Uploader
 
         private void FillValidListView()
         {
+            // Initialize mFileValidList if null
             mFileValidList ??= new Dictionary<string, PSUploadHandler.UploadInfo>();
 
             if (mFileValidList.Count == 0)

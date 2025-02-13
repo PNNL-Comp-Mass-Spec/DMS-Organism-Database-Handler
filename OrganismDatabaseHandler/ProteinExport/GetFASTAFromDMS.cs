@@ -69,7 +69,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// Constructor that takes connection string, database format type, and output sequence type
         /// </summary>
         /// <param name="dbConnectionString">Database connection string; empty string if offline and only planning to use ValidateMatchingHash</param>
-        /// <param name="outputSequenceType"></param>
+        /// <param name="outputSequenceType">Output sequence type</param>
         /// <param name="decoyUsesXXX">When true, decoy proteins start with XXX_ instead of Reversed_</param>
         public GetFASTAFromDMS(string dbConnectionString, SequenceTypes outputSequenceType, bool decoyUsesXXX = true)
         {

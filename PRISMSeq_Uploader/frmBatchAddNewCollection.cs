@@ -225,6 +225,7 @@ namespace PRISMSeq_Uploader
         {
             mCollectionsList = CollectionsTableToList(mCollectionsTable);
 
+            // Initialize mFileList if null
             mFileList ??= new Dictionary<string, FileInfo>();
 
             FileList = new List<PSUploadHandler.UploadInfo>();
@@ -308,6 +309,7 @@ namespace PRISMSeq_Uploader
 
             lvwFolderContents.Items.Clear();
 
+            // Initialize mCollectionsList if null
             mCollectionsList ??= new Dictionary<int, string>();
 
             foreach (var fi in mFileList.Values)
@@ -448,6 +450,7 @@ namespace PRISMSeq_Uploader
         {
             try
             {
+                // Initialize mSelectedFileList if null
                 mSelectedFileList ??= new Dictionary<string, PSUploadHandler.UploadInfo>(StringComparer.CurrentCultureIgnoreCase);
 
                 foreach (ListViewItem li in lvwFolderContents.SelectedItems)
@@ -558,6 +561,7 @@ namespace PRISMSeq_Uploader
 
             if (string.IsNullOrWhiteSpace(folderPath))
                 return;
+
             ScanDirectory(folderPath);
         }
 
