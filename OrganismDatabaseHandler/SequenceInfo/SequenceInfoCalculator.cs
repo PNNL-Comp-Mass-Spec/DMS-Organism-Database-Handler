@@ -70,6 +70,7 @@ namespace OrganismDatabaseHandler.SequenceInfo
 
         protected SequenceInfo SequenceInfo(string sequence, string description = "")
         {
+            // Pass an empty string for the sequence since each amino acid will be appended using the for loop below
             var result = new SequenceInfo(string.Empty, description);
 
             var aaString = sequence.ToCharArray();
