@@ -199,7 +199,7 @@ namespace PRISMSeq_Uploader
             return trimmedString.Substring(10);
         }
 
-        private bool SplitCodonEntries(
+        private void SplitCodonEntries(
             string aaString,
             string startString,
             string base1List,
@@ -216,7 +216,7 @@ namespace PRISMSeq_Uploader
                 baseLength != base2List.Length ||
                 baseLength != base3List.Length)
             {
-                return false;
+                return;
             }
 
             var counter = 0;
@@ -249,8 +249,6 @@ namespace PRISMSeq_Uploader
                 mTranslationEntries.Rows.Add(dataRow);
                 counter++;
             }
-
-            return default;
         }
     }
 }
