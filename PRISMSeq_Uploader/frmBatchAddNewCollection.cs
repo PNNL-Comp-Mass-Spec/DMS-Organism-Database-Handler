@@ -57,8 +57,6 @@ namespace PRISMSeq_Uploader
             InitializeTreeView(selectedFolderPath);
         }
 
-        #region "Constants, enums, and member variables"
-
         private enum FolderContentsColumn
         {
             FileName = 0,
@@ -137,10 +135,6 @@ namespace PRISMSeq_Uploader
         private bool mStatusResetRequired;
         private DateTime mStatusClearTime;
         private readonly Timer mStatusResetTimer;
-
-        #endregion
-
-        #region "Properties"
 
         public List<PSUploadHandler.UploadInfo> FileList { get; private set; }
 
@@ -227,8 +221,6 @@ namespace PRISMSeq_Uploader
             }
         }
 
-        #endregion
-
         private void frmBatchAddNewCollection_Load(object sender, EventArgs e)
         {
             mCollectionsList = CollectionsTableToList(mCollectionsTable);
@@ -245,8 +237,6 @@ namespace PRISMSeq_Uploader
             SelectComboBoxItemByName(cboOrganismSelect, mLastSelectedOrganism, 2);
             SelectComboBoxItemByName(cboAnnotationTypePicker, mLastSelectedAnnotationType, 1);
         }
-
-        #region "Directory Loading"
 
         private Dictionary<int, string> CollectionsTableToList(DataTable dataTable)
         {
@@ -308,10 +298,6 @@ namespace PRISMSeq_Uploader
 
             LoadListView();
         }
-
-        #endregion
-
-        #region "UI Loading Functions"
 
         /// <summary>
         /// Populate the top ListView with FASTA files in the selected folder
@@ -402,10 +388,6 @@ namespace PRISMSeq_Uploader
             cboAnnotationTypePicker.SelectedIndexChanged += cboAnnotationTypePicker_SelectedIndexChanged;
         }
 
-        #endregion
-
-        #region "Internal Service Functions"
-
         public string Numeric2Bytes(double b)
         {
             var bSize = new string[9];
@@ -461,8 +443,6 @@ namespace PRISMSeq_Uploader
             // Two digits after the decimal
             return value.ToString("0.00");
         }
-
-        #endregion
 
         private void AddFileToSelectedList()
         {
@@ -893,8 +873,6 @@ namespace PRISMSeq_Uploader
             }
         }
 
-        #region "Button and Combo Handlers"
-
         private void cboOrganismSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
             var cbo = (ComboBox)sender;
@@ -1081,8 +1059,6 @@ namespace PRISMSeq_Uploader
 
             LoadOrganismPicker(cboOrganismSelect, mOrganismListSorted);
         }
-
-        #endregion
 
         private void lvwSelectedFiles_Click(object sender, EventArgs e)
         {

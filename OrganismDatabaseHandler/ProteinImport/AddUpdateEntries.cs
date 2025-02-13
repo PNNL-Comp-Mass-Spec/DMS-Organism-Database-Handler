@@ -42,13 +42,8 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         private readonly System.Security.Cryptography.SHA1Managed mHasher;
 
-        #region "Properties"
-
         public int MaximumProteinNameLength { get; set; }
 
-        #endregion
-
-        #region "Events"
         public event LoadStartEventHandler LoadStart;
         public event LoadEndEventHandler LoadEnd;
         public event LoadProgressEventHandler LoadProgress;
@@ -67,8 +62,6 @@ namespace OrganismDatabaseHandler.ProteinImport
         {
             LoadEnd?.Invoke();
         }
-
-        #endregion
 
         public AddUpdateEntries(string pisConnectionString)
         {
@@ -426,8 +419,6 @@ namespace OrganismDatabaseHandler.ProteinImport
             // And convert it to String format for return
             return RijndaelEncryptionHandler.ToHexString(sha1Hash);
         }
-
-        #region "Stored Procedure Access"
 
         protected string RunSP_GetProteinCollectionState(
             int proteinCollectionId)
@@ -963,7 +954,5 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
             return DBToolsBase.GetReturnCode(returnParam);
         }
-
-        #endregion
     }
 }

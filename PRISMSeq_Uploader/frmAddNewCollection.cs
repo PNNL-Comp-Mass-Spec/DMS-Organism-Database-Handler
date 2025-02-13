@@ -91,8 +91,6 @@ namespace PRISMSeq_Uploader
             //cbo.ValueMember = list.Columns["id"].ColumnName.ToString();
         }
 
-        #region "Event Handlers"
-
         private void txtCollectionName_Leave(object sender, EventArgs e)
         {
             CollectionName = txtCollectionName.Text;
@@ -132,7 +130,5 @@ namespace PRISMSeq_Uploader
             OrganismId = default;
             AnnotationTypeId = default;
         }
-
-        #endregion
     }
 }

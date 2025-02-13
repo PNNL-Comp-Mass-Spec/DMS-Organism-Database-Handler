@@ -454,8 +454,6 @@ namespace OrganismDatabaseHandler.ProteinImport
             return LoadFASTA(fullFilePath);
         }
 
-        #region "Event Handlers"
-
         // Handles the LoadStart event for the FASTA importer module
         protected void Task_LoadStart(string taskTitle)
         {
@@ -487,9 +485,6 @@ namespace OrganismDatabaseHandler.ProteinImport
         {
             CollectionLoadComplete?.Invoke(collectionsList);
         }
-        #endregion
-
-        #region "Stored Procedure Access"
 
         [Obsolete("Unused")]
         protected int RunSP_UpdateProteinCollectionsByOrganism()
@@ -512,7 +507,5 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Get return value
             return DBToolsBase.GetReturnCode(returnParam);
         }
-
-        #endregion
     }
 }

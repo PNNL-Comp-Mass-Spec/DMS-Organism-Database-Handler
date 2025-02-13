@@ -20,8 +20,6 @@ namespace PRISMSeq_Uploader
         private DataTable mAuthoritiesTable;
         private string mPsConnectionString;
 
-        #region "Return Properties"
-
         public string TypeName { get; set; }
 
         public string Description { get; set; }
@@ -39,8 +37,6 @@ namespace PRISMSeq_Uploader
         {
             set => mAuthoritiesTable = value;
         }
-
-        #endregion
 
         private void frmAddAnnotationType_Load(object sender, EventArgs e)
         {

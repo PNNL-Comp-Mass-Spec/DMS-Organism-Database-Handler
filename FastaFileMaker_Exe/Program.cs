@@ -37,8 +37,6 @@ namespace FastaFileMaker
         private static string mOutputDirectory;
         private static bool mLogProteinFileDetails;
 
-        #region "Event handlers"
-
         private static void FastaTools_DebugEvent(string message)
         {
             ConsoleMsgUtils.ShowDebug(message);
@@ -108,8 +106,6 @@ namespace FastaFileMaker
             // Set the completion flag so the FASTA generation wait loop will exit
             mGenerationComplete = true;
         }
-
-        #endregion
 
         public static void Main()
         {

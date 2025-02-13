@@ -8,11 +8,6 @@ namespace OrganismDatabaseHandler.DatabaseTools
 {
     public class DBTask : EventNotifier
     {
-#region "Member Variables"
-
-        #endregion
-
-        #region "Properties"
 
         /// <summary>
         /// Database connection string
@@ -25,8 +20,6 @@ namespace OrganismDatabaseHandler.DatabaseTools
 #pragma warning disable CS3003 // Type is not CLS-compliant
         public IDBTools DbTools { get; }
 #pragma warning restore CS3003 // Type is not CLS-compliant
-
-        #endregion
 
         /// <summary>
         /// Constructor

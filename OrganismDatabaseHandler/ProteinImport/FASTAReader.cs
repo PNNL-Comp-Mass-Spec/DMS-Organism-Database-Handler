@@ -16,13 +16,9 @@ namespace OrganismDatabaseHandler.ProteinImport
         private readonly Regex mNoDescLineRegEx;
         private readonly Regex mDescLineMatcher;
 
-        #region "Events"
-
         public event LoadStartEventHandler LoadStart;
         public event LoadEndEventHandler LoadEnd;
         public event LoadProgressEventHandler LoadProgress;
-
-        #endregion
 
         /// <summary>
         /// Constructor

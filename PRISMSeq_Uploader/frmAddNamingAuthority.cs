@@ -17,15 +17,11 @@ namespace PRISMSeq_Uploader
             InitializeComponent();
         }
 
-        #region "Return Properties"
-
         public string ShortName { get; set; }
 
         public string FullName { get; set; }
 
         public string WebAddress { get; set; }
-
-        #endregion
 
         private void frmAddNamingAuthority_Load(object sender, EventArgs e)
         {

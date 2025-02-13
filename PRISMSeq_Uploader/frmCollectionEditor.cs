@@ -505,8 +505,6 @@ namespace PRISMSeq_Uploader
             }
         }
 
-        #region "ComboBox handlers"
-
         private void cboOrganismList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (Convert.ToInt32(cboOrganismFilter.SelectedValue) != 0)
@@ -570,10 +568,6 @@ namespace PRISMSeq_Uploader
                 mSelectedAnnotationTypeId = Convert.ToInt32(foundRows[0]["Authority_ID"]);
             }
         }
-
-        #endregion
-
-        #region "Action Button Handlers"
 
         private void cmdLoadProteins_Click(object sender, EventArgs e)
         {
@@ -679,10 +673,6 @@ namespace PRISMSeq_Uploader
             mUploadHandler = null;
         }
 
-        #endregion
-
-        #region "LiveSearch Handlers"
-
         private void txtLiveSearch_TextChanged(object sender, EventArgs e)
         {
             if (txtLiveSearch.Text.Length > 0 && txtLiveSearch.ForeColor.ToString() != "Color [InactiveCaption]")
@@ -746,10 +736,6 @@ namespace PRISMSeq_Uploader
                 mSearchTimer.Stop();
             }
         }
-
-        #endregion
-
-        #region "ListView Event Handlers"
 
         private void lvwSource_DoubleClick(
             object sender,
@@ -864,10 +850,6 @@ namespace PRISMSeq_Uploader
             lblCurrProteinCount.Text = "Protein Count: " + lvwDest.Items.Count;
         }
 
-        #endregion
-
-        #region "Menu Option Handlers"
-
         private void mnuFileExit_Click(object sender, EventArgs e)
         {
             Application.Exit();
@@ -915,10 +897,6 @@ namespace PRISMSeq_Uploader
         //        int errorCode = mSyncer.SyncCollectionsAndArchiveTables(outputPath);
         //    }
         //}
-
-        #endregion
-
-        #region "Progress Event Handlers"
 
         private void ImportStartHandler(string taskTitle)
         {
@@ -1076,8 +1054,6 @@ namespace PRISMSeq_Uploader
         {
             MessageBox.Show("Error: " + message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
-
-        #endregion
 
         /// <summary>
         /// Valid, but could take a very long time

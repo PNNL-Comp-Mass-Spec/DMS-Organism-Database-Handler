@@ -27,7 +27,6 @@ namespace OrganismDatabaseHandler.SequenceInfo
             sha1Provider ??= new SHA1Managed();
         }
 
-        #region "Ken's Added Properties "
 
         public double MonoisotopicMass { get; private set; }
 
@@ -39,7 +38,6 @@ namespace OrganismDatabaseHandler.SequenceInfo
 
         public string SHA1Hash { get; private set; }
 
-        #endregion
 
         public void CalculateSequenceInfo(string sequence)
         {

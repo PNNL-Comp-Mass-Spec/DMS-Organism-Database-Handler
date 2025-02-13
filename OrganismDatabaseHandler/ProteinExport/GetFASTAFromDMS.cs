@@ -947,8 +947,6 @@ namespace OrganismDatabaseHandler.ProteinExport
             return false;
         }
 
-        #region "Events and Event Handlers"
-
         public event FileGenerationCompletedEventHandler FileGenerationCompleted;
         public event FileGenerationProgressEventHandler FileGenerationProgress;
         public event FileGenerationStartedEventHandler FileGenerationStarted;
@@ -1071,8 +1069,6 @@ namespace OrganismDatabaseHandler.ProteinExport
         {
             return ExporterComponent.FindNameById(proteinCollectionId);
         }
-
-        #endregion
 
         private int RunSP_AddLegacyFileUploadRequest(string legacyFilename, string authenticationHash)
         {

@@ -35,8 +35,6 @@ namespace PRISMSeq_Uploader
         private bool mSortOrderAsc = true;
         private int mSelectedCol;
 
-        #region "Live Search Handler"
-
         private void txtLiveSearch_TextChanged(object sender, EventArgs e)
         {
             if (mSearchActive)
@@ -69,14 +67,10 @@ namespace PRISMSeq_Uploader
             }
         }
 
-        #endregion
-
         internal void TimerHandler(object sender, ElapsedEventArgs e)
         {
             mHandler.FillFilteredListView(lvwCollections, txtLiveSearch.Text);
         }
-
-        #region "Form Event Handlers"
 
         private void frmCollectionStateEditor_Load(object sender, EventArgs e)
         {
@@ -128,8 +122,6 @@ namespace PRISMSeq_Uploader
                 mHandler.FillListView(lvwCollections);
             }
         }
-
-        #endregion
 
         private void lvwSearchResults_ColumnClick(object sender, ColumnClickEventArgs e)
         {

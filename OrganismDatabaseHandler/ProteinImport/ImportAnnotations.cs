@@ -10,7 +10,6 @@ namespace OrganismDatabaseHandler.ProteinImport
     {
         // Structure GOInfoCategories
         // End Structure
-
     }
 
     [Obsolete("Unused")]
@@ -111,8 +110,6 @@ namespace OrganismDatabaseHandler.ProteinImport
 
     public class GeneOntologyListOBO
     {
-
-        #region "Regular Expressions"
         private Regex rEntryHeader;
         private Regex rIdLine;
         private Regex rNameLine;
@@ -125,7 +122,6 @@ namespace OrganismDatabaseHandler.ProteinImport
         private Regex rXrefAnalogLine;
         private Regex rRelationshipLine;
         private Regex rSubsetLine;
-        #endregion
 
         // Send it the text block from a single entry
         public GeneOntologyListOBO(List<string> goEntryText)
