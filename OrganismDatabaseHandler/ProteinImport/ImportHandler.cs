@@ -72,35 +72,28 @@ namespace OrganismDatabaseHandler.ProteinImport
             return collectionName;
         }
 
-        protected ProteinStorage.ProteinStorage LoadFASTA(string filePath)
+        protected bool LoadFASTA(string filePath, out ProteinStorage.ProteinStorage fastaContents)
         {
             // check for existence of current file
-            var fastaContents = mImporter.GetProteinEntries(filePath);
+            var success = mImporter.GetProteinEntries(filePath, out fastaContents);
 
             var errorMessage = mImporter.LastErrorMessage;
 
-            if (!string.IsNullOrWhiteSpace(errorMessage))
+            if (!success || !string.IsNullOrWhiteSpace(errorMessage))
             {
-                var proteinsLoaded = 0;
-
-                try
+                if (fastaContents == null || string.IsNullOrWhiteSpace(errorMessage))
                 {
-                    if (fastaContents != null)
-                    {
-                        proteinsLoaded = fastaContents.ProteinCount;
-                    }
-                }
-                catch (Exception)
-                {
-                    // Ignore errors here
+                    MessageBox.Show("Error loading proteins using GetProteinEntries (no error message)");
+                    return false;
                 }
 
-                MessageBox.Show("GetProteinEntries returned an error after loading " + proteinsLoaded + " proteins: " + errorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("GetProteinEntries returned an error after loading " + fastaContents.ProteinCount + " proteins: " + errorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                fastaContents?.ClearProteinEntries();
+                fastaContents.ClearProteinEntries();
+                return false;
             }
 
-            return fastaContents;
+            return true;
         }
 
         public DataTable LoadOrganisms()
@@ -322,6 +315,7 @@ namespace OrganismDatabaseHandler.ProteinImport
                 "WHERE protein_collection_id = " + collectionId + " " +
                 "AND annotation_type_id = " + authorityId + " " +
                 "ORDER BY name";
+
             return LoadCollectionMembers(sqlQuery);
         }
 
@@ -417,7 +411,14 @@ namespace OrganismDatabaseHandler.ProteinImport
             switch (fileType)
             {
                 case ProteinImportFileTypes.FASTA:
-                    CollectionMembers = LoadFASTA(filePath);
+                    var success = LoadFASTA(filePath, out var fastaContents);
+
+                    if (!success)
+                    {
+                        return null;
+                    }
+
+                    CollectionMembers = fastaContents;
                     break;
 
                 default:
@@ -463,9 +464,9 @@ namespace OrganismDatabaseHandler.ProteinImport
             return proteinDatabaseTable;
         }
 
-        public ProteinStorage.ProteinStorage LoadProteinsForBatch(string fullFilePath)
+        public bool LoadProteinsForBatch(string fullFilePath, out ProteinStorage.ProteinStorage fastaContents)
         {
-            return LoadFASTA(fullFilePath);
+            return LoadFASTA(fullFilePath, out fastaContents);
         }
 
         // Handles the LoadStart event for the FASTA importer module

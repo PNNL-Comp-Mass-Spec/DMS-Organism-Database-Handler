@@ -324,35 +324,39 @@ namespace OrganismDatabaseHandler.ProteinUpload
                     eResult = DialogResult.Yes;
                 }
 
-                if (eResult == DialogResult.Yes)
+                if (eResult != DialogResult.Yes)
+                    continue;
+
+                var success = mImporter.LoadProteinsForBatch(upInfo.FileInformation.FullName, out var proteinStorage);
+
+                if (!success || proteinStorage == null)
                 {
-                    var proteinStorage = mImporter.LoadProteinsForBatch(upInfo.FileInformation.FullName);
-
-                    if (proteinStorage != null)
+                    var errorCollection = new List<CustomFastaValidator.ErrorInfoExtended>
                     {
-                        if (proteinStorage.ProteinCount == 0)
-                        {
-                            // No proteins
+                        new(0, " N/A ", "Error calling LoadProteinsForBatch", string.Empty, "Error")
+                    };
 
-                            var errorCollection = new List<CustomFastaValidator.ErrorInfoExtended>
-                            {
-                                new(0, " N/A ", "No valid proteins were loaded from the .Fasta file", string.Empty, "Error")
-                            };
+                    OnInvalidFASTAFile(upInfo.FileInformation.FullName, errorCollection);
+                    continue;
+                }
 
-                            OnInvalidFASTAFile(upInfo.FileInformation.FullName, errorCollection);
-                        }
-                        else
+                if (proteinStorage.ProteinCount == 0)
+                {
+                    // No proteins
+
+                    var errorCollection = new List<CustomFastaValidator.ErrorInfoExtended>
                         {
-                            upInfo.ProteinCount = proteinStorage.ProteinCount;
-                            CollectionBatchUploadCoordinator(proteinStorage, currentFile.FullName, upInfo.OrganismId, upInfo.AnnotationTypeId, upInfo.Description, upInfo.Source);
-                            OnValidFASTAFileUpload(upInfo.FileInformation.FullName, upInfo);
-                            proteinStorage.ClearProteinEntries();
-                        }
-                    }
-                    else
-                    {
-                        OnInvalidFASTAFile(upInfo.FileInformation.FullName, mValidator.RecordedFASTAFileErrors(currentFile.FullName));
-                    }
+                            new(0, " N/A ", "No valid proteins were loaded from the .Fasta file", string.Empty, "Error")
+                        };
+
+                    OnInvalidFASTAFile(upInfo.FileInformation.FullName, errorCollection);
+                }
+                else
+                {
+                    upInfo.ProteinCount = proteinStorage.ProteinCount;
+                    CollectionBatchUploadCoordinator(proteinStorage, currentFile.FullName, upInfo.OrganismId, upInfo.AnnotationTypeId, upInfo.Description, upInfo.Source);
+                    OnValidFASTAFileUpload(upInfo.FileInformation.FullName, upInfo);
+                    proteinStorage.ClearProteinEntries();
                 }
             }
 

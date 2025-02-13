@@ -10,10 +10,11 @@ namespace PRISMSeq_Uploader
 {
     public class FilePreviewHandler : EventNotifier
     {
-        private ProteinStorage mProteins;
-        private FASTAReader mLoader;
         private string mCurrentFilePath;
+        private readonly string mDbConnectionString;
         private frmFilePreview mFrmPreview;
+        private FASTAReader mLoader;
+        private ProteinStorage mProteins;
 
         public event FormStatusEventHandler FormStatus;
 
@@ -39,7 +40,10 @@ namespace PRISMSeq_Uploader
                 RegisterEvents(mLoader);
             }
 
-            mProteins = mLoader.GetProteinEntries(filePath, lineCount);
+            var success = mLoader.GetProteinEntries(filePath, lineCount, out mProteins);
+
+            if (!success)
+                return;
 
             var newPreviewContents = mProteins.GetEntriesIEnumerable().Select(protein =>
             {
@@ -47,6 +51,7 @@ namespace PRISMSeq_Uploader
                 li.SubItems.Add(protein.Description);
                 return li;
             }).ToArray();
+
             mFrmPreview.SetPreviewItems(newPreviewContents);
         }
 

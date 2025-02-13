@@ -37,26 +37,27 @@ namespace OrganismDatabaseHandler.ProteinImport
 
         public string LastErrorMessage { get; private set; }
 
-        public ProteinStorage.ProteinStorage GetProteinEntries(string filePath)
+        public bool GetProteinEntries(string filePath, out ProteinStorage.ProteinStorage fastaContents)
         {
-            return LoadFASTAFile(filePath, -1);
+            return LoadFASTAFile(filePath, -1, out fastaContents);
         }
 
-        public ProteinStorage.ProteinStorage GetProteinEntries(string filePath, int numRecordsToLoad)
+        public bool GetProteinEntries(string filePath, int numRecordsToLoad, out ProteinStorage.ProteinStorage fastaContents)
         {
-            return LoadFASTAFile(filePath, numRecordsToLoad);
+            return LoadFASTAFile(filePath, numRecordsToLoad, out fastaContents);
         }
 
-        public ProteinStorage.ProteinStorage LoadFASTAFile(string filePath)
+        [Obsolete("Unused method; duplicate of GetProteinEntries()")]
+        public bool LoadFASTAFile(string filePath, out ProteinStorage.ProteinStorage fastaContents)
         {
-            return LoadFASTAFile(filePath, -1);
+            return LoadFASTAFile(filePath, -1, out fastaContents);
         }
 
-        public ProteinStorage.ProteinStorage LoadFASTAFile(string filePath, int numRecordsToLoad)
+        public bool LoadFASTAFile(string filePath, int numRecordsToLoad, out ProteinStorage.ProteinStorage fastaContents)
         {
             var currentPosition = 0;
 
-            var fastaContents = new ProteinStorage.ProteinStorage(filePath);
+            fastaContents = new ProteinStorage.ProteinStorage(filePath);
 
             var reference = string.Empty;
             var description = string.Empty;
@@ -90,9 +91,16 @@ namespace OrganismDatabaseHandler.ProteinImport
                 var fastaFile = new FileInfo(mFASTAFilePath);
                 var fileLength = fastaFile.Length;
 
-                if (!fastaFile.Exists || fileLength == 0)
+                if (!fastaFile.Exists)
                 {
-                    return fastaContents;
+                    LastErrorMessage = string.Format("FASTA file not found: {0}", mFASTAFilePath);
+                    return false;
+                }
+
+                if (fileLength == 0)
+                {
+                    LastErrorMessage = string.Format("FASTA file is zero bytes: {0}", mFASTAFilePath);
+                    return false;
                 }
 
                 // Trigger the setup of the progress bar
@@ -172,14 +180,21 @@ namespace OrganismDatabaseHandler.ProteinImport
                 }
 
                 LoadEnd?.Invoke();
+
+                if (recordCount > 0)
+                {
+                    return true;
+                }
+
+                LastErrorMessage = string.Format("FASTA file does not have any proteins: {0}", mFASTAFilePath);
+                return false;
             }
             catch (Exception ex)
             {
-                var stackTrace = PRISM.StackTraceFormatter.GetExceptionStackTrace(ex);
-                LastErrorMessage = ex.Message + "; " + stackTrace;
+                var stackTrace = StackTraceFormatter.GetExceptionStackTrace(ex);
+                LastErrorMessage = string.Format("Error loading the FASTA file: {0}; {1}", ex.Message, stackTrace);
+                return false;
             }
-
-            return fastaContents;
         }
 
         protected int LineEndCharacterCount(string filePath)
