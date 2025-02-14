@@ -83,12 +83,6 @@
     <Compile Include="frmAddNamingAuthority.Designer.cs">
       <DependentUpon>frmAddNamingAuthority.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmAddNewCollection.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmAddNewCollection.Designer.cs">
-      <DependentUpon>frmAddNewCollection.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmBatchAddNewCollection.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -100,12 +94,6 @@
     </Compile>
     <Compile Include="frmCollectionEditor.Designer.cs">
       <DependentUpon>frmCollectionEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmCollectionStateEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmCollectionStateEditor.Designer.cs">
-      <DependentUpon>frmCollectionStateEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="frmFilePreview.cs">
       <SubType>Form</SubType>
@@ -137,19 +125,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TransTableHandler.cs" />
-    <EmbeddedResource Include="frmAddNewCollection.resx">
-      <DependentUpon>frmAddNewCollection.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="frmBatchAddNewCollection.resx">
       <DependentUpon>frmBatchAddNewCollection.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmCollectionEditor.resx">
       <DependentUpon>frmCollectionEditor.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmCollectionStateEditor.resx">
-      <DependentUpon>frmCollectionStateEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmNewCollectionMetadataEditor.resx">
