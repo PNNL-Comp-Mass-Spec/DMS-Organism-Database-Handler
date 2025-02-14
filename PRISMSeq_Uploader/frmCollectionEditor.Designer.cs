@@ -46,6 +46,7 @@ namespace PRISMSeq_Uploader
             this.mnuHelp = new System.Windows.Forms.MenuItem();
             this.mnuHelpAbout = new System.Windows.Forms.MenuItem();
             this.gbxSourceCollection = new System.Windows.Forms.GroupBox();
+            this.cmdUpdateCachedCollectionMembers = new System.Windows.Forms.Button();
             this.cmdLoadFile = new System.Windows.Forms.Button();
             this.cboAnnotationTypePicker = new System.Windows.Forms.ComboBox();
             this.lblAnnotationTypeFilter = new System.Windows.Forms.Label();
@@ -180,6 +181,7 @@ namespace PRISMSeq_Uploader
             this.gbxSourceCollection.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbxSourceCollection.Controls.Add(this.cmdUpdateCachedCollectionMembers);
             this.gbxSourceCollection.Controls.Add(this.cmdLoadFile);
             this.gbxSourceCollection.Controls.Add(this.cboAnnotationTypePicker);
             this.gbxSourceCollection.Controls.Add(this.lblAnnotationTypeFilter);
@@ -197,6 +199,15 @@ namespace PRISMSeq_Uploader
             this.gbxSourceCollection.TabStop = false;
             this.gbxSourceCollection.Text = "Source Collection";
             // 
+            // cmdUpdateCachedCollectionMembers
+            // 
+            this.cmdUpdateCachedCollectionMembers.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cmdUpdateCachedCollectionMembers.Location = new System.Drawing.Point(540, 372);
+            this.cmdUpdateCachedCollectionMembers.Name = "cmdUpdateCachedCollectionMembers";
+            this.cmdUpdateCachedCollectionMembers.Size = new System.Drawing.Size(298, 40);
+            this.cmdUpdateCachedCollectionMembers.TabIndex = 21;
+            this.cmdUpdateCachedCollectionMembers.Text = "&Update cached protein collection members";
+            this.cmdUpdateCachedCollectionMembers.Click += new System.EventHandler(this.cmdUpdateCachedCollectionMembers_Click);
             // 
             // cmdLoadFile
             // 
@@ -354,6 +365,7 @@ namespace PRISMSeq_Uploader
         private System.Windows.Forms.MenuItem mnuFileExit;
         private System.Windows.Forms.MenuItem mnuHelpAbout;
         private System.Windows.Forms.GroupBox gbxSourceCollection;
+        private System.Windows.Forms.Button cmdUpdateCachedCollectionMembers;
         private System.Windows.Forms.Button cmdLoadFile;
         private System.Windows.Forms.ComboBox cboAnnotationTypePicker;
         private System.Windows.Forms.Label lblAnnotationTypeFilter;

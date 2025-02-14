@@ -431,6 +431,71 @@ namespace PRISMSeq_Uploader
             lvwSource.Enabled = true;
         }
 
+        private void UpdateCachedProteinCollectionMembersInDB()
+        {
+            try
+            {
+                var proteinseqsConnectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(mDbConnectionString, "PRISMSeq_Uploader");
+
+                var dbTools = DbToolsFactory.GetDBTools(proteinseqsConnectionStringToUse);
+                RegisterEvents(dbTools);
+
+                var cmdSave = dbTools.CreateCommand("update_cached_protein_collection_members", CommandType.StoredProcedure);
+
+                // Use a 5-minute timeout
+                cmdSave.CommandTimeout = 300;
+
+                // Define parameter for procedure's return value
+                // If querying a Postgres DB, dbTools will auto-change "@return" to "_returnCode"
+                var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
+
+                // Define parameters for the procedure's arguments
+                dbTools.AddParameter(cmdSave, "@maxCollectionsToUpdate", SqlType.Int).Value = 0;
+                var messageParam = dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.InputOutput);
+
+                // Call the procedure
+                dbTools.ExecuteSP(cmdSave);
+
+                // The return code is an integer on SQL Server, but is text on Postgres
+                // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
+                var returnCode = DBToolsBase.GetReturnCode(returnParam);
+
+                string msg;
+
+                if (returnCode == 0)
+                {
+                    msg = "Updated cached protein collection members";
+                }
+                else
+                {
+                    msg = string.Format("Procedure update_cached_protein_collection_members returned a non-zero return code: {0}", returnCode);
+                }
+
+                var procedureMessage = dbTools.GetString(messageParam.Value);
+
+                if (!string.IsNullOrEmpty(procedureMessage))
+                {
+                    msg += "; " + procedureMessage;
+                }
+
+                if (returnCode == 0)
+                {
+                    MessageBox.Show(msg, "Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    OnWarningEvent(msg);
+                }
+            }
+            catch (Exception ex)
+            {
+                var msg = "ERROR calling procedure update_cached_protein_collection_members: " + ex.Message;
+                OnErrorEvent(msg, ex);
+
+                lblTargetDatabase.Text = msg;
+            }
+        }
+
         private void UpdateServerNameLabel()
         {
             try
@@ -444,6 +509,7 @@ namespace PRISMSeq_Uploader
                 var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(mDbConnectionString, "PRISMSeq_Uploader");
 
                 var dbTools = DbToolsFactory.GetDBTools(connectionStringToUse);
+                RegisterEvents(dbTools);
 
                 lblTargetDatabase.Text = string.Format("Target database: {0} (on {1})", dbTools.DatabaseName, dbTools.ServerName);
             }
@@ -520,7 +586,7 @@ namespace PRISMSeq_Uploader
         private void cmdLoadProteins_Click(object sender, EventArgs e)
         {
             ImportStartHandler("Retrieving Protein Entries..");
-            var foundRows = mProteinCollections.Select("Protein_Collection_ID = " + cboCollectionPicker.SelectedValue);
+            // var foundRows = mProteinCollections.Select("Protein_Collection_ID = " + cboCollectionPicker.SelectedValue);
 
             ImportProgressHandler(0.5d);
             UpdateCachedInfoAfterLoadingProteins();
@@ -534,7 +600,9 @@ namespace PRISMSeq_Uploader
             BatchLoadController();
         }
 
+        private void cmdUpdateCachedCollectionMembers_Click(object sender, EventArgs e)
         {
+            UpdateCachedProteinCollectionMembersInDB();
         }
 
         private void mnuFileExit_Click(object sender, EventArgs e)
@@ -666,7 +734,7 @@ namespace PRISMSeq_Uploader
         /// Use this method to chain events between classes
         /// </summary>
         /// <param name="sourceClass"></param>
-        protected void RegisterEvents(EventNotifier sourceClass)
+        protected void RegisterEvents(IEventNotifier sourceClass)
         {
             // sourceClass.DebugEvent += OnDebugEvent;
             // sourceClass.StatusEvent += OnStatusEvent;
