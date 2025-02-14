@@ -419,6 +419,18 @@ namespace PRISMSeq_Uploader
             MessageBox.Show(strMessage, "About Protein Collection Editor", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        private void UpdateCachedInfoAfterLoadingProteins()
+        {
+            mSelectedCollectionId = Convert.ToInt32(cboCollectionPicker.SelectedValue);
+            mSelectedAnnotationTypeId = Convert.ToInt32(cboAnnotationTypePicker.SelectedValue);
+
+            mCollectionMembers = mImportHandler.LoadCollectionMembersById(mSelectedCollectionId, mSelectedAnnotationTypeId);
+
+            mSourceListViewHandler.Load(mCollectionMembers);
+            lvwSource.Focus();
+            lvwSource.Enabled = true;
+        }
+
         private void UpdateServerNameLabel()
         {
             try
@@ -522,17 +534,7 @@ namespace PRISMSeq_Uploader
             BatchLoadController();
         }
 
-        internal void UpdateCachedInfoAfterLoadingProteins()
         {
-            mSelectedCollectionId = Convert.ToInt32(cboCollectionPicker.SelectedValue);
-            mSelectedAnnotationTypeId = Convert.ToInt32(cboAnnotationTypePicker.SelectedValue);
-
-            mCollectionMembers = mImportHandler.LoadCollectionMembersById(mSelectedCollectionId, mSelectedAnnotationTypeId);
-
-            mSourceListViewHandler.Load(mCollectionMembers);
-            lvwSource.Focus();
-            lvwSource.Enabled = true;
-        }
         }
 
         private void mnuFileExit_Click(object sender, EventArgs e)
