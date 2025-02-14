@@ -2,15 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Timers;
 using System.Windows.Forms;
-using PRISMSeq_Uploader.Properties;
 using OrganismDatabaseHandler.ProteinImport;
 using OrganismDatabaseHandler.ProteinUpload;
-using PRISM;
 using PRISMDatabaseUtils;
+using PRISMSeq_Uploader.Properties;
+using PRISM.Logging;
 using ValidateFastaFile;
 
 namespace PRISMSeq_Uploader
@@ -31,14 +29,9 @@ namespace PRISMSeq_Uploader
             mFileWarningList = new Dictionary<string, List<CustomFastaValidator.ErrorInfoExtended>>();
             mSummarizedFileWarningList = new Dictionary<string, Dictionary<string, int>>();
 
-            mSearchTimer = new System.Timers.Timer(2000d);
-            mSearchTimer.Elapsed += SearchTimerHandler;
-
             Load += frmCollectionEditor_Load;
 
             InitializeComponent();
-
-            CheckTransferButtonsEnabledStatus();
 
             ReadSettings();
         }
@@ -60,7 +53,6 @@ namespace PRISMSeq_Uploader
         private DataTable mCollectionMembers;
         private int mSelectedOrganismId;
         private int mSelectedAnnotationTypeId;
-        private string mSelectedFilePath;
         private int mSelectedCollectionId;
         private string mLastBatchUploadDirectoryPath;
 
@@ -77,11 +69,6 @@ namespace PRISMSeq_Uploader
         private ImportHandler mImportHandler;
         private PSUploadHandler mUploadHandler;
         private DataListViewHandler mSourceListViewHandler;
-        // Unused: private BatchUploadFromFileList mFileBatcher;
-
-        private bool mLocalFileLoaded;
-
-        private bool mSearchActive;
 
         private int mBatchLoadTotalCount;
         private int mBatchLoadCurrentCount;
@@ -111,12 +98,6 @@ namespace PRISMSeq_Uploader
         /// Values are upload info
         /// </summary>
         private readonly Dictionary<string, PSUploadHandler.UploadInfo> mValidUploadsList;
-
-#pragma warning disable CS0618 // Type or member is obsolete
-        private SyncFASTAFileArchive mSyncer;
-#pragma warning restore CS0618 // Type or member is obsolete
-
-        private readonly System.Timers.Timer mSearchTimer;
 
         /// <summary>
         /// Tracks the description and source that the user has entered for each FASTA file
@@ -153,7 +134,6 @@ namespace PRISMSeq_Uploader
             mImportHandler.LoadProgress += ImportProgressHandler;
             mImportHandler.LoadEnd += ImportEndHandler;
             mImportHandler.CollectionLoadComplete += CollectionLoadHandler;
-            //mnuToolsFBatchUpload.Enabled = false;
 
             lblBatchProgress.Text = "Fetching Organism and Collection Lists...";
 
@@ -165,46 +145,13 @@ namespace PRISMSeq_Uploader
             mSourceListViewHandler = new DataListViewHandler(lvwSource);
 
             cmdLoadProteins.Enabled = false;
-            txtLiveSearch.Visible = false;
-            pbxLiveSearchBkg.Visible = false;
-            pbxLiveSearchCancel.Visible = false;
-            lblSearchCount.Text = string.Empty;
-            cmdExportToFile.Enabled = false;
-            cmdSaveDestCollection.Enabled = false;
 
             cboAnnotationTypePicker.SelectedIndexChanged += cboAnnotationTypePicker_SelectedIndexChanged;
             lblBatchProgress.Text = string.Empty;
 
-            CheckTransferButtonsEnabledStatus();
-
             // Setup collections for selected organism
 
             // Use 2-3 second delay after collection change before refreshing member list
-        }
-
-        private void CheckTransferButtonsEnabledStatus()
-        {
-            if (lvwSource.Items.Count > 0)
-            {
-                cmdDestAdd.Enabled = true;
-                cmdDestAddAll.Enabled = true;
-            }
-            else
-            {
-                cmdDestAdd.Enabled = false;
-                cmdDestAddAll.Enabled = false;
-            }
-
-            if (lvwDestination.Items.Count > 0)
-            {
-                cmdDestRemove.Enabled = true;
-                cmdDestRemoveAll.Enabled = true;
-            }
-            else
-            {
-                cmdDestRemove.Enabled = false;
-                cmdDestRemoveAll.Enabled = false;
-            }
         }
 
         private void RefreshCollectionList()
@@ -276,9 +223,6 @@ namespace PRISMSeq_Uploader
                 cboCollectionPicker.Enabled = false;
 
                 cmdLoadProteins.Enabled = false;
-                txtLiveSearch.Visible = false;
-                pbxLiveSearchBkg.Visible = false;
-                pbxLiveSearchCancel.Visible = false;
             }
             else
             {
@@ -371,11 +315,6 @@ namespace PRISMSeq_Uploader
                 return;
 
             gbxSourceCollection.Enabled = false;
-            gbxDestinationCollection.Enabled = false;
-            cmdDestAdd.Enabled = false;
-            cmdDestAddAll.Enabled = false;
-            cmdDestRemove.Enabled = false;
-            cmdDestRemoveAll.Enabled = false;
 
             var selectedFileList = frmBatchUpload.FileList;
 
@@ -447,11 +386,6 @@ namespace PRISMSeq_Uploader
 
             lblBatchProgress.Text = string.Empty;
             gbxSourceCollection.Enabled = true;
-            gbxDestinationCollection.Enabled = true;
-            cmdDestAdd.Enabled = true;
-            cmdDestAddAll.Enabled = true;
-            cmdDestRemove.Enabled = true;
-            cmdDestRemoveAll.Enabled = true;
 
             mBatchLoadCurrentCount = 0;
         }
@@ -577,12 +511,9 @@ namespace PRISMSeq_Uploader
             var foundRows = mProteinCollections.Select("Protein_Collection_ID = " + cboCollectionPicker.SelectedValue);
 
             ImportProgressHandler(0.5d);
-            mSelectedFilePath = foundRows[0]["Collection_Name"].ToString();
             UpdateCachedInfoAfterLoadingProteins();
 
             ImportProgressHandler(1.0d);
-            txtLiveSearch.Visible = true;
-            pbxLiveSearchBkg.Visible = true;
             ImportEndHandler();
         }
 
@@ -591,314 +522,23 @@ namespace PRISMSeq_Uploader
             BatchLoadController();
         }
 
-        private void cmdSaveDestCollection_Click(object sender, EventArgs e)
-        {
-            if (lvwDestination.Items.Count <= 0)
-            {
-                if (mUploadHandler != null)
-                {
-                    mUploadHandler.BatchProgress -= BatchImportProgressHandler;
-                    mUploadHandler.LoadProgress -= ImportProgressHandler;
-                    mUploadHandler.ValidFASTAFileLoaded -= ValidFASTAUploadHandler;
-                    mUploadHandler.InvalidFASTAFile -= InvalidFASTAFileHandler;
-                    mUploadHandler.FASTAFileWarnings -= FASTAFileWarningsHandler;
-                    mUploadHandler.ValidationProgress -= ValidationProgressHandler;
-                    mUploadHandler.WroteLineEndNormalizedFASTA -= NormalizedFASTAFileGenerationHandler;
-                }
-
-                mUploadHandler = null;
-                return;
-            }
-
-            var frmAddCollection = new frmAddNewCollection
-            {
-                CollectionName = Path.GetFileNameWithoutExtension(mSelectedFilePath),
-                IsLocalFile = mLocalFileLoaded,
-                AnnotationTypes = mAnnotationTypes,
-                OrganismList = mOrganisms,
-                OrganismId = mSelectedOrganismId,
-                AnnotationTypeId = mSelectedAnnotationTypeId
-            };
-
-            var eResult = frmAddCollection.ShowDialog();
-
-            if (eResult == DialogResult.OK)
-            {
-                cboCollectionPicker.Enabled = true;
-                cboOrganismFilter.Enabled = true;
-
-                var organismId = frmAddCollection.OrganismId;
-                var annotationTypeId = frmAddCollection.AnnotationTypeId;
-
-                var selectedProteins = ScanDestinationCollectionWindow(lvwDestination);
-
-                if (mUploadHandler == null)
-                {
-                    mUploadHandler = new PSUploadHandler(mDbConnectionString);
-                    RegisterEvents(mUploadHandler);
-
-                    mUploadHandler.BatchProgress += BatchImportProgressHandler;
-                    mUploadHandler.LoadProgress += ImportProgressHandler;
-                    mUploadHandler.ValidFASTAFileLoaded += ValidFASTAUploadHandler;
-                    mUploadHandler.InvalidFASTAFile += InvalidFASTAFileHandler;
-                    mUploadHandler.FASTAFileWarnings += FASTAFileWarningsHandler;
-                    mUploadHandler.ValidationProgress += ValidationProgressHandler;
-                    mUploadHandler.WroteLineEndNormalizedFASTA += NormalizedFASTAFileGenerationHandler;
-                }
-
-                mUploadHandler.UploadCollection(mImportHandler.CollectionMembers, selectedProteins,
-                                                 frmAddCollection.CollectionName, frmAddCollection.CollectionDescription,
-                                                 frmAddCollection.CollectionSource,
-                                                 AddUpdateEntries.CollectionTypes.ProtOriginalSource, organismId,
-                                                 annotationTypeId);
-
-                RefreshCollectionList();
-
-                ClearFromDestinationCollectionWindow(lvwDestination, true);
-
-                cboOrganismFilter.Enabled = true;
-                cboCollectionPicker.Enabled = true;
-                cboOrganismFilter.SelectedValue = organismId;
-            }
-
-            if (mUploadHandler != null)
-            {
-                mUploadHandler.BatchProgress -= BatchImportProgressHandler;
-                mUploadHandler.LoadProgress -= ImportProgressHandler;
-                mUploadHandler.ValidFASTAFileLoaded -= ValidFASTAUploadHandler;
-                mUploadHandler.InvalidFASTAFile -= InvalidFASTAFileHandler;
-                mUploadHandler.FASTAFileWarnings -= FASTAFileWarningsHandler;
-                mUploadHandler.ValidationProgress -= ValidationProgressHandler;
-                mUploadHandler.WroteLineEndNormalizedFASTA -= NormalizedFASTAFileGenerationHandler;
-            }
-
-            mUploadHandler = null;
-        }
-
-        private void txtLiveSearch_TextChanged(object sender, EventArgs e)
-        {
-            if (txtLiveSearch.Text.Length > 0 && txtLiveSearch.ForeColor.ToString() != "Color [InactiveCaption]")
-            {
-                mSearchTimer.Start();
-            }
-            else if (string.IsNullOrEmpty(txtLiveSearch.Text) && !mSearchActive)
-            {
-                pbxLiveSearchCancel_Click(this, null);
-            }
-            else
-            {
-                mSearchActive = false;
-                mSearchTimer.Stop();
-            }
-        }
-
-        private void txtLiveSearch_Click(object sender, EventArgs e)
-        {
-            if (mSearchActive)
-            {
-                return;
-            }
-
-            txtLiveSearch.TextChanged -= txtLiveSearch_TextChanged;
-            txtLiveSearch.Text = null;
-            txtLiveSearch.ForeColor = SystemColors.ControlText;
-            mSearchActive = true;
-            pbxLiveSearchCancel.Visible = true;
-            txtLiveSearch.TextChanged += txtLiveSearch_TextChanged;
-        }
-
-        private void txtLiveSearch_Leave(object sender, EventArgs e)
-        {
-            if (txtLiveSearch.Text.Length == 0)
-            {
-                txtLiveSearch.ForeColor = SystemColors.InactiveCaption;
-                txtLiveSearch.Text = "Search";
-                mSearchActive = false;
-                mSearchTimer.Stop();
-                mSourceListViewHandler.Load(mCollectionMembers);
-            }
-        }
-
-        private void pbxLiveSearchCancel_Click(object sender, EventArgs e)
-        {
-            txtLiveSearch.Text = string.Empty;
-            txtLiveSearch_Leave(this, null);
-            lvwSource.Focus();
-            pbxLiveSearchCancel.Visible = false;
-        }
-
-        internal void SearchTimerHandler(
-            object sender,
-            ElapsedEventArgs e)
-        {
-            if (mSearchActive)
-            {
-                mSourceListViewHandler.Load(mCollectionMembers, txtLiveSearch.Text);
-                mSearchActive = false;
-                mSearchTimer.Stop();
-            }
-        }
-
-        private void lvwSource_DoubleClick(
-            object sender,
-            EventArgs e)
-        {
-            ScanSourceCollectionWindow(lvwSource, lvwDestination, false);
-        }
-
-        // Double-click to remove selected member from the destination collection
-        private void lvwDestination_DoubleClick(
-            object sender,
-            EventArgs e)
-        {
-            ClearFromDestinationCollectionWindow(lvwDestination, false);
-        }
-
         internal void UpdateCachedInfoAfterLoadingProteins()
         {
             mSelectedCollectionId = Convert.ToInt32(cboCollectionPicker.SelectedValue);
             mSelectedAnnotationTypeId = Convert.ToInt32(cboAnnotationTypePicker.SelectedValue);
 
             mCollectionMembers = mImportHandler.LoadCollectionMembersById(mSelectedCollectionId, mSelectedAnnotationTypeId);
-            mLocalFileLoaded = false;
 
             mSourceListViewHandler.Load(mCollectionMembers);
             lvwSource.Focus();
             lvwSource.Enabled = true;
         }
-
-        //DoubleClick to Move the selected member to the destination collection
-
-        private void cmdDestAddAll_Click(object sender, EventArgs e)
-        {
-            ScanSourceCollectionWindow(lvwSource, lvwDestination, true);
-            CheckTransferButtonsEnabledStatus();
-        }
-
-        private void cmdDestAdd_Click(object sender, EventArgs e)
-        {
-            ScanSourceCollectionWindow(lvwSource, lvwDestination, false);
-            CheckTransferButtonsEnabledStatus();
-        }
-
-        private void cmdDestRemove_Click(object sender, EventArgs e)
-        {
-            ClearFromDestinationCollectionWindow(lvwDestination, false);
-            CheckTransferButtonsEnabledStatus();
-        }
-
-        private void cmdDestRemoveAll_Click(object sender, EventArgs e)
-        {
-            ClearFromDestinationCollectionWindow(lvwDestination, true);
-            CheckTransferButtonsEnabledStatus();
-        }
-
-        private void ScanSourceCollectionWindow(ListView lvwSrc, ListView lvwDest, bool selectAll)
-        {
-            ListViewItem entry;
-
-            if (selectAll)
-            {
-                foreach (ListViewItem currentEntry in lvwSrc.Items)
-                {
-                    entry = currentEntry;
-                    // Need to figure out some way to check for duplicates (maybe just at upload time)
-                    lvwDest.Items.Add(entry.Text);
-                }
-            }
-            else
-            {
-                foreach (ListViewItem currentEntry1 in lvwSrc.SelectedItems)
-                {
-                    entry = currentEntry1;
-                    // Need to figure out some way to check for duplicates (maybe just at upload time)
-                    lvwDest.Items.Add(entry.Text);
-                }
-            }
-
-            lblCurrProteinCount.Text = "Protein Count: " + lvwDest.Items.Count;
-            cmdExportToFile.Enabled = true;
-            cmdSaveDestCollection.Enabled = true;
-        }
-
-        private List<string> ScanDestinationCollectionWindow(ListView lvwDest)
-        {
-            var selectedList = new List<string>();
-
-            foreach (ListViewItem li in lvwDest.Items)
-            {
-                selectedList.Add(li.Text);
-            }
-
-            return selectedList;
-        }
-
-        private void ClearFromDestinationCollectionWindow(ListView lvwDest, bool selectAll)
-        {
-            if (selectAll)
-            {
-                lvwDest.Items.Clear();
-                cmdSaveDestCollection.Enabled = false;
-                cmdExportToFile.Enabled = false;
-            }
-            else
-            {
-                foreach (ListViewItem entry in lvwDest.SelectedItems)
-                {
-                    entry.Remove();
-                }
-            }
-
-            lblCurrProteinCount.Text = "Protein Count: " + lvwDest.Items.Count;
         }
 
         private void mnuFileExit_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
-
-        // Unused
-        //private void mnuToolsFBatchUpload_Click(object sender, EventArgs e)
-        //{
-        //    //Steal this to use with file-directed loading
-        //    mFileBatcher = new BatchUploadFromFileList(mDbConnectionString);
-        //    mFileBatcher.UploadBatch();
-        //}
-
-        [Obsolete("The tools menu is hidden")]
-        private void mnuToolsCollectionEdit_Click(object sender, EventArgs e)
-        {
-            var cse = new frmCollectionStateEditor(mDbConnectionString);
-            cse.ShowDialog();
-        }
-
-        // Unused
-        //private void mnuToolsExtractFromFile_Click(object sender, EventArgs e)
-        //{
-        //    var f = new frmExtractFromFlatFile(mImportHandler.Authorities, mDbConnectionString);
-        //    f.ShowDialog();
-        //}
-
-        // Unused
-        //private void mnuToolsUpdateArchives_Click(object sender, EventArgs e)
-        //{
-        //    var f = new FolderBrowserDialog();
-        //    string outputPath = string.Empty;
-
-        //    if (mSyncer == null)
-        //        mSyncer = new SyncFASTAFileArchive(mDbConnectionString);
-
-        //    f.RootFolder = Environment.SpecialFolder.MyComputer;
-        //    f.ShowNewFolderButton = true;
-
-        //    var r = f.ShowDialog();
-
-        //    if (r == DialogResult.OK)
-        //    {
-        //        outputPath = f.SelectedPath;
-        //        int errorCode = mSyncer.SyncCollectionsAndArchiveTables(outputPath);
-        //    }
-        //}
 
         private void ImportStartHandler(string taskTitle)
         {
@@ -925,25 +565,12 @@ namespace PRISMSeq_Uploader
             Application.DoEvents();
         }
 
-        private void SyncProgressHandler(string statusMsg, double fractionDone)
-        {
-            lblBatchProgress.Text = statusMsg;
-
-            if (fractionDone > 1.0d)
-            {
-                fractionDone = 1.0d;
-            }
-
-            ImportProgressHandler(fractionDone);
-        }
-
         private void ImportEndHandler()
         {
             //mFileBatcher.LoadEnd()
 
             lblCurrentTask.Text = "Complete: " + lblCurrentTask.Text;
             Invalidate();
-            gbxDestinationCollection.Invalidate();
             gbxSourceCollection.Invalidate();
             Application.DoEvents();
         }
@@ -962,7 +589,6 @@ namespace PRISMSeq_Uploader
             cboCollectionPicker.Enabled = true;
             cboOrganismFilter.Enabled = true;
             lblBatchProgress.Text = string.Empty;
-            //mnuToolsFBatchUpload.Enabled = true;
 
             cboOrganismFilter.SelectedIndexChanged += cboOrganismList_SelectedIndexChanged;
             cboCollectionPicker.SelectedIndexChanged += cboCollectionPicker_SelectedIndexChanged;
@@ -1055,30 +681,6 @@ namespace PRISMSeq_Uploader
         private void OnErrorEvent(string message, Exception ex)
         {
             MessageBox.Show("Error: " + message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-        }
-
-        /// <summary>
-        /// Valid, but could take a very long time
-        /// Thus, the menu item is disabled
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        [Obsolete("Referenced by hidden menu")]
-        private void mnuAdminNameHashRefresh_Click(object sender, EventArgs e)
-        {
-            if (mSyncer == null)
-            {
-                mSyncer = new SyncFASTAFileArchive(mDbConnectionString);
-                mSyncer.SyncProgress += SyncProgressHandler;
-            }
-
-            mSyncer.RefreshNameHashes();
-        }
-
-        private void MenuItem5_Click(object sender, EventArgs e)
-        {
-            var frmTesting = new frmTestingInterface();
-            frmTesting.Show();
         }
 
         private void mnuHelpAbout_Click(object sender, EventArgs e)
