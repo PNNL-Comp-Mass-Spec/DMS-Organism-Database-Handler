@@ -1090,7 +1090,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256).Direction = ParameterDirection.InputOutput;
             dbTools.AddParameter(cmdSave, "@authenticationHash", SqlType.VarChar, 8).Value = authenticationHash;
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres

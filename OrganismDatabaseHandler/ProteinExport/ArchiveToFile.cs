@@ -240,7 +240,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             dbTools.AddParameter(cmdSave, "@collectionListHexHash", SqlType.VarChar, 128).Value = collectionListHexHash;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 512).Direction = ParameterDirection.InputOutput;
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
@@ -307,7 +307,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 512).Direction = ParameterDirection.InputOutput;
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             mArchivedFilePath = archivedFilePathParam.Value.ToString();

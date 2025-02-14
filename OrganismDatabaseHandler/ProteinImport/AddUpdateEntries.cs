@@ -440,7 +440,7 @@ namespace OrganismDatabaseHandler.ProteinImport
 
             var stateNameParam = dbTools.AddParameter(cmdSave, "@stateName", SqlType.VarChar, 32, ParameterDirection.InputOutput);
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
@@ -494,7 +494,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@mode", SqlType.VarChar, 12).Value = mode.ToString();
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.InputOutput);
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
@@ -530,7 +530,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@sha1Hash", SqlType.VarChar, 40).Value = sha1Hash;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.InputOutput);
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
@@ -569,7 +569,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@mode", SqlType.VarChar, 12).Value = mode.ToString();
             var messageParam = dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 512, ParameterDirection.InputOutput);
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
@@ -583,10 +583,13 @@ namespace OrganismDatabaseHandler.ProteinImport
 
                 var msg = "Procedure add_update_protein_collection returned 0 for the Protein Collection ID";
 
-                var spMsg = dbTools.GetString(messageParam.Value);
+                var procedureMessage = dbTools.GetString(messageParam.Value);
 
-                if (!string.IsNullOrEmpty(spMsg))
-                    msg += "; " + spMsg;
+                if (!string.IsNullOrEmpty(procedureMessage))
+                {
+                    msg += "; " + procedureMessage;
+                }
+
                 throw new ConstraintException(msg);
             }
 
@@ -629,7 +632,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@mode", SqlType.VarChar, 10).Value = mode;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.InputOutput);
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
@@ -655,7 +658,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@passphraseSHA1Hash", SqlType.VarChar, 40).Value = phraseHash;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.InputOutput);
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
@@ -681,7 +684,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@webAddress", SqlType.VarChar, 128).Value = webAddress;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.InputOutput);
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
@@ -709,7 +712,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@authID", SqlType.Int).Value = authorityId;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.InputOutput);
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
@@ -736,7 +739,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@stateID", SqlType.Int).Value = collectionStateId;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.InputOutput);
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
@@ -767,7 +770,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@numProteinsForReload", SqlType.Int).Value = numProteinsForReload;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.InputOutput);
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
@@ -805,7 +808,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             var messageParam = dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.InputOutput);
             dbTools.AddParameter(cmdSave, "@maxProteinNameLength", SqlType.Int).Value = maxProteinNameLength;
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
@@ -819,10 +822,12 @@ namespace OrganismDatabaseHandler.ProteinImport
 
                 var msg = "Procedure add_protein_reference returned 0";
 
-                var spMsg = dbTools.GetString(messageParam.Value);
+                var procedureMessage = dbTools.GetString(messageParam.Value);
 
-                if (!string.IsNullOrEmpty(spMsg))
-                    msg += "; " + spMsg;
+                if (!string.IsNullOrEmpty(procedureMessage))
+                {
+                    msg += "; " + procedureMessage;
+                }
 
                 throw new ConstraintException(msg);
             }
@@ -843,7 +848,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             // Define parameters for the procedure's arguments
             dbTools.AddParameter(cmdSave, "@collectionName", SqlType.VarChar, 128).Value = proteinCollectionName;
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
@@ -871,7 +876,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@numProteins", SqlType.Int).Value = numProteins;
             dbTools.AddParameter(cmdSave, "@totalResidueCount", SqlType.Int).Value = totalResidueCount;
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
@@ -895,7 +900,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@organismID", SqlType.Int).Value = organismId;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.InputOutput);
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
@@ -925,7 +930,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@sha1Hash", SqlType.VarChar, 40).Value = sha1Hash;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.InputOutput);
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
@@ -951,7 +956,7 @@ namespace OrganismDatabaseHandler.ProteinImport
             dbTools.AddParameter(cmdSave, "@numResidues", SqlType.Int).Value = numResidues;
             dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.InputOutput);
 
-            // Execute the stored procedure
+            // Call the procedure
             dbTools.ExecuteSP(cmdSave);
 
             // The return code is an integer on SQL Server, but is text on Postgres
