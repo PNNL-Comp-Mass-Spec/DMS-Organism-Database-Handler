@@ -176,7 +176,7 @@ namespace OrganismDatabaseHandler.ProteinExport
             }
             else
             {
-                OnExportStart("Exporting " + protCollectionList.Count + "protein collections: " + collectionNameList);
+                OnExportStart("Exporting " + protCollectionList.Count + " protein collections: " + collectionNameList);
             }
 
             var proteinCollectionsExported = 0;
