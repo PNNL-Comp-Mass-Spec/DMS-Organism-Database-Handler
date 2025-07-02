@@ -820,11 +820,11 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// ID_004137_23AA5A07.fasta.23AA5A07.hashcheck
         /// H_sapiens_Ensembl_v68_2013-01-08.fasta.DF687525.hashcheck
         /// </remarks>
-        /// <param name="strFastaFilePath"></param>
+        /// <param name="fastaFilePath"></param>
         /// <param name="crc32Hash"></param>
         /// <param name="hashCheckExtension">Hashcheck file extension; if an empty string, the default of .hashcheck is used</param>
         /// <returns>FileInfo object for the .hashcheck file</returns>
-        private FileInfo GetHashFileValidationInfo(string strFastaFilePath, string crc32Hash, string hashCheckExtension = "")
+        private FileInfo GetHashFileValidationInfo(string fastaFilePath, string crc32Hash, string hashCheckExtension = "")
         {
             string extensionToUse;
 
@@ -837,7 +837,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 extensionToUse = hashCheckExtension;
             }
 
-            var fastaFile = new FileInfo(strFastaFilePath);
+            var fastaFile = new FileInfo(fastaFilePath);
 
             var hashFileName = fastaFile.Name + "." + crc32Hash + extensionToUse;
 
@@ -853,12 +853,12 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <summary>
         /// Update the hashcheck file
         /// </summary>
-        /// <param name="strFastaFilePath"></param>
+        /// <param name="fastaFilePath"></param>
         /// <param name="crc32Hash"></param>
         /// <param name="hashcheckExtension">Hashcheck file extension; if an empty string, the default of .hashcheck is used</param>
-        private void UpdateHashValidationFile(string strFastaFilePath, string crc32Hash, string hashcheckExtension = "")
+        private void UpdateHashValidationFile(string fastaFilePath, string crc32Hash, string hashcheckExtension = "")
         {
-            var fiHashValidationFile = GetHashFileValidationInfo(strFastaFilePath, crc32Hash, hashcheckExtension);
+            var fiHashValidationFile = GetHashFileValidationInfo(fastaFilePath, crc32Hash, hashcheckExtension);
 
             using var writer = new StreamWriter(new FileStream(fiHashValidationFile.FullName, FileMode.Create, FileAccess.Write, FileShare.Read));
 
