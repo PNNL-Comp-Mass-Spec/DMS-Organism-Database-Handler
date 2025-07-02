@@ -431,7 +431,34 @@ namespace PRISMSeq_Uploader
             lvwSource.Enabled = true;
         }
 
-        private void UpdateCachedProteinCollectionMembersInDB()
+        private void UpdateCachedProteinCollectionMembersAndProteinHeadersInDB()
+        {
+            try
+            {
+                var success1 = UpdateCachedProteinCollectionMembersInDB(out var collectionMembersStatus);
+                var success2 = UpdateCachedProteinHeadersInDB(out var proteinHeadersStatus);
+
+                var msg = string.Format("{0}; {1}", collectionMembersStatus, proteinHeadersStatus);
+
+                if (success1 && success2)
+                {
+                    MessageBox.Show(msg, "Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    OnWarningEvent(msg);
+                }
+            }
+            catch (Exception ex)
+            {
+                var msg = "ERROR calling methods UpdateCachedProteinCollectionMembersInDB and UpdateCachedProteinHeadersInDB: " + ex.Message;
+                OnErrorEvent(msg, ex);
+
+                lblTargetDatabase.Text = msg;
+            }
+        }
+
+        private bool UpdateCachedProteinCollectionMembersInDB(out string statusMessage)
         {
             try
             {
@@ -478,21 +505,76 @@ namespace PRISMSeq_Uploader
                     msg += "; " + procedureMessage;
                 }
 
-                if (returnCode == 0)
-                {
-                    MessageBox.Show(msg, "Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    OnWarningEvent(msg);
-                }
+                statusMessage = msg;
+                return returnCode == 0;
             }
             catch (Exception ex)
             {
-                var msg = "ERROR calling procedure update_cached_protein_collection_members: " + ex.Message;
-                OnErrorEvent(msg, ex);
+                statusMessage = "ERROR calling procedure update_cached_protein_collection_members: " + ex.Message;
+                OnErrorEvent(statusMessage, ex);
 
-                lblTargetDatabase.Text = msg;
+                lblTargetDatabase.Text = statusMessage;
+                return false;
+            }
+        }
+
+        private bool UpdateCachedProteinHeadersInDB(out string statusMessage)
+        {
+            try
+            {
+                var proteinseqsConnectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(mDbConnectionString, "PRISMSeq_Uploader");
+
+                var dbTools = DbToolsFactory.GetDBTools(proteinseqsConnectionStringToUse);
+                RegisterEvents(dbTools);
+
+                var cmdSave = dbTools.CreateCommand("add_new_protein_headers", CommandType.StoredProcedure);
+
+                // Use a 5-minute timeout
+                cmdSave.CommandTimeout = 300;
+
+                // Define parameter for procedure's return value
+                // If querying a Postgres DB, dbTools will auto-change "@return" to "_returnCode"
+                var returnParam = dbTools.AddParameter(cmdSave, "@return", SqlType.Int, ParameterDirection.ReturnValue);
+
+                // Define parameters for the procedure's arguments
+                dbTools.AddParameter(cmdSave, "@maxProteinsToProcess", SqlType.Int).Value = 0;
+                var messageParam = dbTools.AddParameter(cmdSave, "@message", SqlType.VarChar, 256, ParameterDirection.InputOutput);
+
+                // Call the procedure
+                dbTools.ExecuteSP(cmdSave);
+
+                // The return code is an integer on SQL Server, but is text on Postgres
+                // Use GetReturnCode to obtain the integer, or find the first integer in the text-based return code (-1 if no integer is found)
+                var returnCode = DBToolsBase.GetReturnCode(returnParam);
+
+                string msg;
+
+                if (returnCode == 0)
+                {
+                    msg = "Updated cached protein sequence headers";
+                }
+                else
+                {
+                    msg = string.Format("Procedure add_new_protein_headers returned a non-zero return code: {0}", returnCode);
+                }
+
+                var procedureMessage = dbTools.GetString(messageParam.Value);
+
+                if (!string.IsNullOrEmpty(procedureMessage))
+                {
+                    msg += "; " + procedureMessage;
+                }
+
+                statusMessage = msg;
+                return returnCode == 0;
+            }
+            catch (Exception ex)
+            {
+                statusMessage = "ERROR calling procedure update_cached_protein_collection_members: " + ex.Message;
+                OnErrorEvent(statusMessage, ex);
+
+                lblTargetDatabase.Text = statusMessage;
+                return false;
             }
         }
 
@@ -602,7 +684,7 @@ namespace PRISMSeq_Uploader
 
         private void cmdUpdateCachedCollectionMembers_Click(object sender, EventArgs e)
         {
-            UpdateCachedProteinCollectionMembersInDB();
+            UpdateCachedProteinCollectionMembersAndProteinHeadersInDB();
         }
 
         private void mnuFileExit_Click(object sender, EventArgs e)
