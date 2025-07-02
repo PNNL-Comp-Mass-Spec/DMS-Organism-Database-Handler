@@ -981,15 +981,15 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 if (sourceBacklogMB > 0 && targetBacklogMB > 0)
                 {
-                    strServers = mFileTools.GetServerShareBase(sourceFilePath) + " and " + mFileTools.GetServerShareBase(targetFilePath);
+                    strServers = FileTools.GetServerShareBase(sourceFilePath) + " and " + FileTools.GetServerShareBase(targetFilePath);
                 }
                 else if (targetBacklogMB > 0)
                 {
-                    strServers = mFileTools.GetServerShareBase(targetFilePath);
+                    strServers = FileTools.GetServerShareBase(targetFilePath);
                 }
                 else
                 {
-                    strServers = mFileTools.GetServerShareBase(sourceFilePath);
+                    strServers = FileTools.GetServerShareBase(sourceFilePath);
                 }
 
                 var msg = "Waiting for lockfile queue on " + strServers + " to fall below threshold";
