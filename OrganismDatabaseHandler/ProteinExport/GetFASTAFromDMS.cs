@@ -262,7 +262,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
             }
 
-            // The file is not present on the local computer (or the file size is different or it is older than the parent FASTA file)
+            // The file is not present on the local computer (or the file size is different, or it is older than the parent FASTA file)
             // We need to create a lock file, then copy the .fasta file locally
 
             if (string.IsNullOrEmpty(legacyStaticFilePath))
@@ -487,6 +487,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 
                 if (finalFileFi.Exists && finalFileFi.Length > 0L)
                 {
+                    // ReSharper disable once GrammarMistakeInComment
                     // The final file now does exist (and is non-zero in size); we're good to go
 
                     if (string.IsNullOrEmpty(finalFileHash))
@@ -497,7 +498,7 @@ namespace OrganismDatabaseHandler.ProteinExport
                     }
 
                     // ValidateMatchingHash will use GenerateFileAuthenticationHash() to generate a hash for the given file
-                    // Since this can be time consuming, we only do this every 48 hours
+                    // Since this can be time-consuming, we only do this every 48 hours
                     // If the generated hash does not match the expected hash (finalFileHash) then we will re-generate the .fasta file
                     if (ValidateMatchingHash(finalFileFi.FullName, ref finalFileHash))
                     {
@@ -564,9 +565,13 @@ namespace OrganismDatabaseHandler.ProteinExport
                     }
                 }
 
+                // ReSharper disable CommentTypo
+
                 // Rename the new protein collection to the correct, final name on the local computer
                 // E.g. rename from 38FFACAC.fasta to ID_001874_38FFACAC.fasta
                 var interimFastaFile = new FileInfo(mFinalOutputPath);
+
+                // ReSharper restore CommentTypo
 
                 finalFileName = Path.GetFileName(mArchiver.Archived_File_Name);
                 finalFileFi = new FileInfo(Path.Combine(destinationFolderPath, finalFileName));
@@ -811,6 +816,8 @@ namespace OrganismDatabaseHandler.ProteinExport
 
             return true;
         }
+
+        // ReSharper disable once CommentTypo
 
         /// <summary>
         /// Construct the hashcheck file path, given the FASTA file path and its CRC32 hash

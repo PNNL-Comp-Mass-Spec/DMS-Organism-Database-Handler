@@ -368,6 +368,8 @@ namespace OrganismDatabaseHandler.ProteinExport
                 }
             }
 
+            // ReSharper disable once CommentTypo
+
             // Determine the CRC32 hash of the output file
             // This process will also rename the file, e.g. from "C:\Temp\SAR116_RBH_AA_012809_forward.fasta" to "C:\Temp\38FFACAC.fasta"
             var tempFullPath = FullOutputPath;
