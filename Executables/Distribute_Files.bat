@@ -18,10 +18,10 @@ if %Iteration%==2 Goto Done
 
 echo.
 
-set Iteration=2
-set TargetBase=\\floyd\software\PrismSeq_Uploader
+rem set Iteration=2
+rem set TargetBase=\\floyd\software\PrismSeq_Uploader
 
-goto Loop
+rem goto Loop
 
 :Done
 
