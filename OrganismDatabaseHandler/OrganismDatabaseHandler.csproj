@@ -83,7 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Nerdbank.GitVersioning">
-      <Version>3.7.115</Version>
+      <Version>3.9.50</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -94,7 +94,7 @@
       <Version>2.9.24</Version>
     </PackageReference>
     <PackageReference Include="PRISMWin-Library">
-      <Version>1.1.23</Version>
+      <Version>1.1.24</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
