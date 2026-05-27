@@ -13,7 +13,7 @@ namespace OrganismDatabaseHandler.SequenceInfo
     {
         // Ignore Spelling: SHA
 
-        // Prior to February 2025:    Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI
+        // Prior to February 2025:    Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI;Encrypt=False
         // Starting in February 2025: Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=pceditor
 
         private const string DEFAULT_DB_CONNECTION_STRING = "Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=pceditor";
