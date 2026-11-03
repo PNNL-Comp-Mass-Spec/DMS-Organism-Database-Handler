@@ -107,51 +107,71 @@ namespace PRISMSeq_Uploader
         /// <remarks>Useful in case validation fails and the uploader needs to try again to upload a FASTA file</remarks>
         private readonly Dictionary<string, KeyValuePair<string, string>> mCachedFileDescriptions;
 
+        /// <summary>
+        /// Get initial info - organism list, full collections list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void frmCollectionEditor_Load(object sender, EventArgs e)
         {
-            // Get initial info - organism list, full collections list
-
-            // Prior to July 2024:      Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI
-            // Starting in July 2024:   host=prismdb2;Port=5432;Database=dms;UserId=svc-dms
-            // Starting in August 2024: Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=pceditor
-
-            var connectionString = Settings.Default.ProteinSeqsDBConnectStr;
-
-            // Uncomment to upload to the test database
-            // connectionString = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences_T3;Integrated Security=SSPI";
-
-            if (!string.IsNullOrWhiteSpace(connectionString))
+            try
             {
-                mDbConnectionString = connectionString;
+                // Define the connection string
+                // Prior to July 2024:      Data Source=proteinseqs;Initial Catalog=Protein_Sequences;Integrated Security=SSPI
+                // Starting in July 2024:   host=prismdb2;Port=5432;Database=dms;UserId=svc-dms
+                // Starting in August 2024: Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=pceditor
+
+                var connectionString = Settings.Default.ProteinSeqsDBConnectStr;
+
+                // Uncomment to upload to the test database
+                // connectionString = "Data Source=proteinseqs;Initial Catalog=Protein_Sequences_T3;Integrated Security=SSPI";
+
+                if (!string.IsNullOrWhiteSpace(connectionString))
+                {
+                    mDbConnectionString = connectionString;
+                }
+
+                UpdateServerNameLabel();
+
+                // Initialize mImportHandler if null
+                mImportHandler ??= new ImportHandler(mDbConnectionString);
+
+                mImportHandler.LoadStart += ImportStartHandler;
+                mImportHandler.LoadProgress += ImportProgressHandler;
+                mImportHandler.LoadEnd += ImportEndHandler;
+                mImportHandler.CollectionLoadComplete += CollectionLoadHandler;
+
+                lblBatchProgress.Text = "Fetching Organism and Collection Lists...";
+
+                cboCollectionPicker.Enabled = false;
+                cboOrganismFilter.Enabled = false;
+
+                TriggerCollectionTableUpdate(false);
+
+                mSourceListViewHandler = new DataListViewHandler(lvwSource);
+
+                cmdLoadProteins.Enabled = false;
+
+                cboAnnotationTypePicker.SelectedIndexChanged += cboAnnotationTypePicker_SelectedIndexChanged;
+                lblBatchProgress.Text = string.Empty;
+
+                // Setup collections for selected organism
+
+                // Use 2-3 second delay after collection change before refreshing member list
+            }
+            catch (Exception ex)
+            {
+                var message = "Error loading database info: " + ex.Message;
+
+                if (ex.InnerException != null)
+                {
+                    message += "; " + ex.InnerException.Message;
+                }
+
+                lblBatchProgress.Text = message;
+                MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            UpdateServerNameLabel();
-
-            // Initialize mImportHandler if null
-            mImportHandler ??= new ImportHandler(mDbConnectionString);
-
-            mImportHandler.LoadStart += ImportStartHandler;
-            mImportHandler.LoadProgress += ImportProgressHandler;
-            mImportHandler.LoadEnd += ImportEndHandler;
-            mImportHandler.CollectionLoadComplete += CollectionLoadHandler;
-
-            lblBatchProgress.Text = "Fetching Organism and Collection Lists...";
-
-            cboCollectionPicker.Enabled = false;
-            cboOrganismFilter.Enabled = false;
-
-            TriggerCollectionTableUpdate(false);
-
-            mSourceListViewHandler = new DataListViewHandler(lvwSource);
-
-            cmdLoadProteins.Enabled = false;
-
-            cboAnnotationTypePicker.SelectedIndexChanged += cboAnnotationTypePicker_SelectedIndexChanged;
-            lblBatchProgress.Text = string.Empty;
-
-            // Setup collections for selected organism
-
-            // Use 2-3 second delay after collection change before refreshing member list
         }
 
         private void RefreshCollectionList()
