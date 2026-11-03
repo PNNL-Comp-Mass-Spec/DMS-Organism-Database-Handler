@@ -17,7 +17,7 @@ namespace OrganismDatabaseHandler.ProteinExport
     public class GetFASTAFromDMS : EventNotifier
     {
         // ReSharper disable once CommentTypo
-        // Ignore Spelling: Desc, Ensembl, FASTA, fastapro, filetype, hashcheck, Holdoff, Lockfile, na, prot
+        // Ignore Spelling: Desc, Ensembl, FASTA, fastapro, filetype, hashcheck, Holdoff, Lockfile, na, Postgres, prot
 
         public enum SequenceTypes
         {

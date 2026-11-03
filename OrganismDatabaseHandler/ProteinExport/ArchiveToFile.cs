@@ -10,7 +10,7 @@ namespace OrganismDatabaseHandler.ProteinExport
 {
     public class ArchiveToFile : ArchiveOutputFilesBase
     {
-        // Ignore Spelling: Accessor, cbdms
+        // Ignore Spelling: Accessor, cbdms, fasta, filetype, Postgres
 
         private const string DefaultBaseArchivePath = @"\\gigasax\DMS_FASTA_File_Archive\";
 
@@ -259,7 +259,7 @@ namespace OrganismDatabaseHandler.ProteinExport
         /// <param name="fileModificationDate">File modification timestamp</param>
         /// <param name="outputFileSize">File size, in bytes</param>
         /// <param name="proteinCount">Protein count</param>
-        /// <param name="archivedFileFullPath">Full path to th file</param>
+        /// <param name="archivedFileFullPath">Full path to the file</param>
         /// <param name="archivedFileType">Archived file type ('static' if a single protein collection; 'dynamic' if a combination of multiple protein collections)</param>
         /// <param name="proteinCollectionsList">Protein collection list (comma-separated list of protein collection names)</param>
         /// <param name="collectionListHexHash">SHA-1 hash of the protein collection list and creation options (separated by a forward slash)</param>

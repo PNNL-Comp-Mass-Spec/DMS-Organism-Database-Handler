@@ -11,7 +11,7 @@ namespace OrganismDatabaseHandler.SequenceInfo
 {
     public class SequenceInfoCalculator : EventNotifier
     {
-        // Ignore Spelling: SHA
+        // Ignore Spelling: dms, pceditor, SHA
 
         // Prior to February 2025:    Data Source=gigasax;Initial Catalog=DMS5;Integrated Security=SSPI;Encrypt=False
         // Starting in February 2025: Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=pceditor

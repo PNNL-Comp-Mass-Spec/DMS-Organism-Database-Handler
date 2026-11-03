@@ -28,7 +28,7 @@ namespace Bulk_Fasta_Importer
     /// </remarks>
     public class BulkFastaImporter : PRISM.FileProcessor.ProcessFilesBase
     {
-        // Ignore Spelling: Auth, DMS, FASTA, ProteinSeqs, Seqs, uploader
+        // Ignore Spelling: Auth, DMS, FASTA, pceditor, ProteinSeqs, Seqs, uploader, yyyy
 
         public const string DmsConnectionString = "Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=pceditor";
         public const string ProteinseqsConnectionString = "Host=prismdb2.emsl.pnl.gov;Port=5432;Database=dms;UserId=pceditor";

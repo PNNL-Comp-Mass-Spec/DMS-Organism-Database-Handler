@@ -8,7 +8,7 @@ namespace FastaFileMaker
 {
     internal static class Program
     {
-        // Ignore Spelling: fasta, filetype, na, prismdb2, proteinseqs, Shewanella, yyyy-MM-dd, hh:mm:ss tt
+        // Ignore Spelling: dms, dmsreader, fasta, filetype, na, pceditor, prismdb2, proteinseqs, Shewanella, svc-dms, yyyy-MM-dd, hh:mm:ss tt
 
         public static readonly string ProgramDate;
 
