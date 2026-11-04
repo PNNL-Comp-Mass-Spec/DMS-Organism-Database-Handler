@@ -42,7 +42,11 @@ namespace OrganismDatabaseHandler.ProteinImport
         /// Constructor
         /// </summary>
         /// <param name="dbConnectionString">Protein sequences database connection string</param>
-        public ImportHandler(string dbConnectionString)
+        /// <param name="loadProteinCollectionNames">When true, query the database to obtain the protein collection names</param>
+        /// <remarks>
+        /// In order to properly monitor error and warning events, it is better to call this constructor with loadProteinCollectionNames = false, then call TriggerCollectionTableUpdate() after registering event handlers
+        /// </remarks>
+        public ImportHandler(string dbConnectionString, bool loadProteinCollectionNames = true)
         {
             var connectionStringToUse = DbToolsFactory.AddApplicationNameToConnectionString(dbConnectionString, "OrganismDatabaseHandler");
 
@@ -55,7 +59,15 @@ namespace OrganismDatabaseHandler.ProteinImport
             mImporter.LoadStart += Task_LoadStart;
             mImporter.LoadProgress += Task_LoadProgress;
             mImporter.LoadEnd += Task_LoadEnd;
-            mCollectionsList = LoadProteinCollectionNames();
+
+            if (loadProteinCollectionNames)
+            {
+                mCollectionsList = LoadProteinCollectionNames();
+            }
+            else
+            {
+                mCollectionsList = new DataTable();
+            }
         }
 
         public ProteinStorage.ProteinStorage CollectionMembers { get; private set; }
@@ -217,11 +229,13 @@ namespace OrganismDatabaseHandler.ProteinImport
         public void TriggerProteinCollectionsLoad()
         {
             OnCollectionLoadComplete(LoadProteinCollections());
+            mCollectionsList = LoadProteinCollectionNames();
         }
 
         public void TriggerProteinCollectionsLoad(int organismId)
         {
             OnCollectionLoadComplete(LoadProteinCollections(organismId));
+            mCollectionsList = LoadProteinCollectionNames();
         }
 
         public void TriggerProteinCollectionTableUpdate()

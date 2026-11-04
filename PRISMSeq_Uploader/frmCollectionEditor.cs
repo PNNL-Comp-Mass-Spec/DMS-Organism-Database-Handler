@@ -134,12 +134,14 @@ namespace PRISMSeq_Uploader
                 UpdateServerNameLabel();
 
                 // Initialize mImportHandler if null
-                mImportHandler ??= new ImportHandler(mDbConnectionString);
+                mImportHandler ??= new ImportHandler(mDbConnectionString, false);
 
                 mImportHandler.LoadStart += ImportStartHandler;
                 mImportHandler.LoadProgress += ImportProgressHandler;
                 mImportHandler.LoadEnd += ImportEndHandler;
                 mImportHandler.CollectionLoadComplete += CollectionLoadHandler;
+
+                RegisterEvents(mImportHandler);
 
                 lblBatchProgress.Text = "Fetching Organism and Collection Lists...";
 
@@ -197,8 +199,10 @@ namespace PRISMSeq_Uploader
             {
                 mImportHandler.TriggerProteinCollectionTableUpdate();
             }
+
             // CollectionLoadThread = New System.Threading.Thread(AddressOf mImportHandler.TriggerProteinCollectionsLoad)
             // CollectionLoadThread.Start()
+
             if (mSelectedOrganismId > 0)
             {
                 mImportHandler.TriggerProteinCollectionsLoad(mSelectedOrganismId);

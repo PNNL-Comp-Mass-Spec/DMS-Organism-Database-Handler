@@ -179,10 +179,13 @@ namespace OrganismDatabaseHandler.ProteinUpload
             mValidator.ProgressUpdate += Task_LoadProgress;
             mValidator.WroteLineEndNormalizedFASTA += OnNormalizedFASTAGeneration;
 
-            mImporter = new ImportHandler(dbConnectionString);
+            mImporter = new ImportHandler(dbConnectionString, false);
             mImporter.LoadStart += LoadStartHandler;
             mImporter.LoadProgress += LoadProgressHandler;
             mImporter.LoadEnd += LoadEndHandler;
+
+            RegisterEvents(mImporter);
+            mImporter.TriggerProteinCollectionsLoad();
         }
 
         // fileInfoList hash -> key =
